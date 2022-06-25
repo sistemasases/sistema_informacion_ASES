@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-1w5uon7br&w89d60u7v^=0#(*p@fo81_^^x-o9m^2q=1(5v(x0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'modulo_usuario_rol',
+    'modulo_geografico',
+    'modulo_asignacion',
+    'modulo_base',
+    'modulo_carga_masiva',
+    'modulo_instancia',
+    'modulo_seguimiento',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +57,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'modulo_ases.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 TEMPLATES = [
     {
@@ -75,8 +86,12 @@ WSGI_APPLICATION = 'modulo_ases.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ases',
+        'USER' : 'postgres',
+        'PASSWORD' : 'currymvp300212',
+        'HOST' : '127.0.0.1',
+        'DATABASE_PORT' : '5432',
     }
 }
 
