@@ -7,7 +7,7 @@
         <br>
         <h2>SELECCION DE CARGA</h2>
         <br>
-        <form action="carga/" method="post" id="form_carga">
+        <form action="carga/" method="post" id="form_carga" enctype="multipart/form-data">
             {% csrf_token%}
             <label>Tipo de carga</label>
             <select id="tipo_de_carga" name="tipo_de_carga" form="form_carga">
@@ -20,7 +20,7 @@
                 <option value="Retiros">Retiros</option>
             </select>
             <label>Archivo</label>
-            <input type="file" name="file">
+            <input type="file" name="my_file">
             <input type="submit" value="enviar">
         </form>
         <br>

@@ -20,6 +20,6 @@ def ingresar(request):
 
         if (contrasena_request == True):
 
-            return JsonResponse(True, safe=False)
+            return render(request, "prueba_pagina_principal.html")
         
     return JsonResponse(False, safe=False)

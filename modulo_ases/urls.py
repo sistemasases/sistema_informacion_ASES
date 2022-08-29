@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('modulo_base.urls')),
-    path('carga_masiva/', include('modulo_carga_masiva.urls')),
+    path('', TemplateView.as_view(template_name='index.html')),
+    path('easydev/online_marketing_dashboard', TemplateView.as_view(template_name='index.html')),
+    path('ingresar/carga_masiva/', include('modulo_carga_masiva.urls')),
 ]
