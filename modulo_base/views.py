@@ -1,25 +1,31 @@
-from django.shortcuts import render
+from django.views import View
+from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
 
 # Create your views here.
 
-def login_test(request):
-    return render(request, "prueba_login.html")
+class user_manage (View):
 
+    def get(self, request):
+        list_user =User.objects.all()
+        return JsonResponse (list(list_user.values()), safe=False)
 
-def ingresar(request):
+class login_manage (View):
+    def post(self, request):
+        if(request.POST["nombre_ingreso"] and request.POST["password"]):
 
-    if(request.POST["nombre_ingreso"] and request.POST["password"]):
+            username_request = request.POST["nombre_ingreso"]
+            var_usuario =get_object_or_404(User, username = username_request)
+            contrasena_request =check_password( request.POST["password"],var_usuario.password)
 
-        username_request = request.POST["nombre_ingreso"]
-        var_usuario =get_object_or_404(User, username = username_request)
-        contrasena_request =check_password( request.POST["password"],var_usuario.password)
+            if (contrasena_request == True):
 
-        if (contrasena_request == True):
-
-            return render(request, "prueba_pagina_principal.html")
+                return JsonResponse(True, safe=False)
         
-    return JsonResponse(False, safe=False)
+        return JsonResponse(False, safe=False)
+def carga_test(request):
+    return render(request, "prueba_login.html")
