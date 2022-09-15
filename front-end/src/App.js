@@ -1,3 +1,4 @@
+/*
 import React, {useEffect}from 'react';
 import fetch from 'node-fetch';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -28,6 +29,36 @@ function App() {
       </Routes>
     </BrowserRouter>
   )
+}
+
+export default App
+*/
+
+import React from 'react';
+import {Row, Col} from "react-bootstrap";
+import NavBar from "./components/componentesGenerales/NavBar";
+import "./Scss/Styles.css";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import SideBar from "./components/componentesGenerales/SideBar"
+import Analitics from "./components/componentesGenerales/ejemplo_navbar/Analitics.jsx";
+import ProductList from "./components/componentesGenerales/ejemplo_navbar/ProductList.jsx";
+
+const App = () => {
+    return (
+        <BrowserRouter>
+            <Row>
+                <NavBar />
+            </Row>
+            <Row>
+                <SideBar>
+                    <Routes>
+                        <Route path="/"element={<Analitics/>}/>
+                        <Route path="/ProductList"element={<ProductList/>}/>
+                    </Routes>
+                </SideBar>
+            </Row>
+        </BrowserRouter>
+    )
 }
 
 export default App
