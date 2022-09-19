@@ -21,8 +21,8 @@ const NavBar = () =>{
         },
         {
             id:2,
-            path:"/ProductList",
-            name:"ProductList aiiiiiiiiiiiiiiii",
+            path:"/fichaDeEstudiante",
+            name:"fichaDeEstudiante aiiiiiiiiiiiiiiii",
             icon:<FaThList />,
             thisIsOpen:true,
         }
@@ -43,7 +43,7 @@ const NavBar = () =>{
             </Col>
 
             <Dropdown isOpen={isOpen} onClick={toggle} className="dropdown">
-                        <DropdownToggle>un menu</DropdownToggle>
+                        <DropdownToggle><FaBars/></DropdownToggle>
                         <DropdownMenu>
                             <ul className="ulDropdown">
                                 <li>
@@ -55,9 +55,9 @@ const NavBar = () =>{
                                     }
                                 </li>
                             </ul>
-                            
                         </DropdownMenu>
-                </Dropdown>
+            </Dropdown>
+            
             
     </Container>
     )

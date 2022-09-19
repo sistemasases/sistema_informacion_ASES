@@ -5,6 +5,10 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 
 const SideBar = ({children}) =>{
+
+    const[activeTabIndex, setActiveTabIndex] = useState(0);
+    const activeTab = (index)=> setActiveTabIndex(index);
+
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
 
@@ -18,20 +22,21 @@ const SideBar = ({children}) =>{
             path:"/",
             name:"Analitics",
             icon:<FaRegChartBar />,
+            thisIsOpen:false,
             subNav:[
                 {
-                    path:"/ProductList",
-                    name:"ProductList",
+                    path:"/fichaDeEstudiante",
+                    name:"fichaDeEstudiante",
                     icon:<FaThList />,
                 }
             ]
         },
         {
             id:2,
-            path:"/ProductList",
-            name:"ProductList",
+            path:"/fichaDeEstudiante",
+            name:"fichaDeEstudiante",
             icon:<FaThList />,
-            thisIsOpen:true,
+            thisIsOpen:false,
             subNav:[
                 {   
                     path:"/",
@@ -39,8 +44,8 @@ const SideBar = ({children}) =>{
                     icon:<FaRegChartBar />,
                 },
                 {
-                    path:"/ProductList",
-                    name:"ProductList siiiiiiiiiiiiiii",
+                    path:"/fichaDeEstudiante",
+                    name:"fichaDeEstudiante siiiiiiiiiiiiiii",
                     icon:<FaThList />,
                 },
                 {   
@@ -49,8 +54,8 @@ const SideBar = ({children}) =>{
                     icon:<FaRegChartBar />,
                 },
                 {
-                    path:"/ProductList",
-                    name:"ProductList",
+                    path:"/fichaDeEstudiante",
+                    name:"fichaDeEstudiante",
                     icon:<FaThList />,
                 }
             ]
@@ -60,32 +65,35 @@ const SideBar = ({children}) =>{
 
 
     return (
-        <Container className="container">
-            <Row style={{width: isOpen ? "300px" : "50px"}} className="sideBar">
-                <Row className="top_selection">
-                    <h1 style={{display: isOpen ? "block" : "none"}} className="logo">Logo</h1>
-                    <Row style={{marginLeft: isOpen ? "50px" : "0px"}} className="bars">
-                        <FaBars onClick={toggle}/>
+        <Container className="containerSidebar">
+                <Row style={{width: isOpen ? "300px" : "50px"}} className="sideBar">
+                    <Row className="top_selection">
+                        <h1 style={{display: isOpen ? "block" : "none"}} className="logo">Logo</h1>
+                        <Row style={{marginLeft: isOpen ? "50px" : "0px"}} className="bars">
+                            <FaBars onClick={toggle}/>
+                        </Row>
                     </Row>
+                    {
+                        menuItem.map((item, index)=>(
+                            <DropdownItem  key={index} className="link" activeclassName="active" 
+                                        onMouseLeave ={() => activeTab(0)} onMouseEnter ={() => activeTab(item.id)}>
+                                <Row className="icon" >{item.icon} </Row>
+                                <Row style={{display: isOpen ? "block" : "none"}}  className="link_text" >{item.name}</Row>
+                                <Row>
+                                    {isOpen && (item.id === activeTabIndex)  && item.subNav.map((item, index)=>(
+                                        <NavLink to={item.path} key={index} className="subLink" activeclassName="active" >
+                                            <Row className="link_text">{item.name}</Row>
+                                        </NavLink>
+                                    ) )
+                                    }
+                                </Row>
+                            </DropdownItem>
+                        ))
+                    }
                 </Row>
-                {
-                    menuItem.map((item, index)=>(
-                        <DropdownItem  key={index} className="link" activeclassName="active" onClick={showSubNav}>
-                            <Row className="icon" >{item.icon} </Row>
-                            <Row style={{display: isOpen ? "block" : "none"}}  className="link_text" >{item.name}</Row>
-                            <Row>
-                                {isOpen && subNav && item.subNav.map((item, index)=>(
-                                    <NavLink to={item.path} key={index} className="subLink" activeclassName="active" >
-                                        <Row className="link_text">{item.name}</Row>
-                                    </NavLink>
-                                ) )
-                                }
-                            </Row>
-                        </DropdownItem>
-                    ))
-                }
-            </Row>
-            <main>{children}</main>
+
+                <main style={{marginLeft: isOpen ? "300px" : "50px"}}>{children}</main>
+            
         </Container>
     )
 }
