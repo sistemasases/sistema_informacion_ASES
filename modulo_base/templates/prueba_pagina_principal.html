@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>Pruebas HTML</title>
+    </head>
+    <body>
+        <h1>BIENVENIDO</h1>
+        <br>
+        <h2>Selecciona una página</h2>
+        <br>
+        <form action="carga_masiva/" method="post">
+            {% csrf_token%}
+            <input type="submit" value="carga">
+            <input type="submit" value="admin">
+        </form>
+        <br>
+    </body>
+</html>
