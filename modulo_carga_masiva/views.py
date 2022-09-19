@@ -4,34 +4,40 @@ import pandas as pd
 from modulo_usuario_rol.models import estudiante
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from modulo_carga_masiva import serializers
 
 # Create your views here.
 
 def carga_test(request):
     return render(request, "prueba_carga.html")
 
-def validador_carga(request):
-    try:
-        tipo = request.POST["tipo_de_carga"]
-        file = request.FILES["my_file"]
-        if(tipo == "Estudiantes"):
-            return carga_estudiantes(file)
-        elif(tipo == "Usuarios"):
-            return carga_usuarios(file)
-        elif(tipo == "Materias"):
-            return carga_materias(file)
-        elif(tipo == "Notas"):
-            return carga_notas(file)
-        elif(tipo == "Resolución"):
-            return carga_resoluciones(file)
-        elif(tipo == "Programa"):
-            return carga_programas(file)
-        elif(tipo == "Retiros"):
-            return carga_retiros(file)
-        else:
-            return JsonResponse("ERROR: No se selecciono un tipo de carga valido.", safe=False)
-    except: 
-        return JsonResponse("ERROR: No se selecciono un tipo de carga o no se cargo el archivo csv correctamente.", safe=False)
+class Validador_carga(APIView):
+    serializer_class =serializers.Validador_carga
+    def post(self,request):
+        try:
+            tipo = request.POST["tipo_de_carga"]
+            file = request.FILES["my_file"]
+            if(tipo == "Estudiantes"):
+                return carga_estudiantes(file)
+            elif(tipo == "Usuarios"):
+                return carga_usuarios(file)
+            elif(tipo == "Materias"):
+                return carga_materias(file)
+            elif(tipo == "Notas"):
+                return carga_notas(file)
+            elif(tipo == "Resolución"):
+                return carga_resoluciones(file)
+            elif(tipo == "Programa"):
+                return carga_programas(file)
+            elif(tipo == "Retiros"):
+                return carga_retiros(file)
+            else:
+                return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
+        except: 
+            return Response({'ERROR': 'No se selecciono un tipo de carga o no se cargo el archivo csv correctamente.'})
 
 def carga_estudiantes(file):
     try:
@@ -62,9 +68,9 @@ def carga_estudiantes(file):
             )
             lista_estudiantes.append(Estudiante)
         estudiante.objects.bulk_create(lista_estudiantes)
-        return JsonResponse("Carga realziada satisfactoriamente", safe=False)
+        return Response({'Respuesta': 'Carga realziada satisfactoriamente'})
     except:
-        return JsonResponse("ERROR: Error al cargar la informacion en la base de datos.", safe=False)
+        return Response({'ERROR': 'Error al cargar la informacion en la base de datos.'})
 
 def carga_usuarios(file):
     try:
