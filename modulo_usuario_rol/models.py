@@ -2,6 +2,7 @@ from django.db import models
 from modulo_geografico.models import barrio, municipio
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 
 class estudiante (models.Model):
