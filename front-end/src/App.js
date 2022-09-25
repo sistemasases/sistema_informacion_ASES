@@ -36,16 +36,20 @@ export default App
 
 import React from 'react';
 import {Row, Col} from "react-bootstrap";
-import NavBar from "./components/componentesGenerales/NavBar";
+import NavBar from "./components/componentes_generales/NavBar";
 import "./Scss/Styles.css";
 import "./Scss/fichaEstudiante/Styles.css";
 import "./Scss/fichaEstudiante/selector.css";
+import "./App.css";
 
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import SideBar from "./components/componentesGenerales/SideBar"
-import Analitics from "./components/componentesGenerales/ejemplo_navbar/Analitics.jsx";
+import SideBar from "./components/componentes_generales/SideBar"
+import Analitics from "./components/componentes_generales/ejemplo_navbar/Analitics.jsx";
 import FichaDeEstudiante from "./components/fichaDeEstudiante/fichaDeEstudiante.jsx";
+import Login from "./modulos/login/login.jsx";
+import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
+import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 
 const App = () => {
     return (
@@ -57,6 +61,9 @@ const App = () => {
                     <Routes>
                         <Route path="/"element={<Analitics/>}/>
                         <Route path="/fichaDeEstudiante"element={<FichaDeEstudiante/>}/>
+                        <Route path="/login"element={<Login/>}/>
+                        <Route path="/carga_masiva"element={<Carga_masiva/>}/>
+                        <Route path="/gestion_usuario_rol"element={<Gestion_usuario_rol/>}/>
                     </Routes>
                 </SideBar>
             </Row>
