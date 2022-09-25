@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
@@ -17,22 +18,26 @@ def carga_test(request):
 class Validador_carga(APIView):
     serializer_class =serializers.Validador_carga
     def post(self,request):
+        print(request.data)
+        print(request.FILES)
         try:
-            tipo = request.POST["tipo_de_carga"]
-            file = request.FILES["my_file"]
-            if(tipo == "Estudiantes"):
+            tipo = request.data.get('tipo_de_carga')
+            print(tipo)
+            file = request.data.get('file')
+            print(file)
+            if(tipo == 'Estudiante'):
                 return carga_estudiantes(file)
-            elif(tipo == "Usuarios"):
+            elif(tipo == "Usuario"):
                 return carga_usuarios(file)
-            elif(tipo == "Materias"):
+            elif(tipo == "Materia"):
                 return carga_materias(file)
-            elif(tipo == "Notas"):
+            elif(tipo == "Nota"):
                 return carga_notas(file)
             elif(tipo == "Resolución"):
                 return carga_resoluciones(file)
             elif(tipo == "Programa"):
                 return carga_programas(file)
-            elif(tipo == "Retiros"):
+            elif(tipo == "Retiro"):
                 return carga_retiros(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
@@ -43,30 +48,35 @@ def carga_estudiantes(file):
     try:
         lista_estudiantes =[]
         datos = pd.read_csv(file,header=0)
+        print("estos son los datos: "+str(datos))
         for i in range(datos.shape[0]):
-            Estudiante = estudiante(
-            tipo_doc_ini = str(datos.iat[i,0]),
-            num_doc_ini = int(datos.iat[i,1]),
-            tipo_doc = str(datos.iat[i,2]),
-            num_doc = str(datos.iat[i,3]),
-            barrio_ini_id = int(datos.iat[i,4]),
-            ciudad_ini_id = int(datos.iat[i,5]),
-            dir_ini = str(datos.iat[i,6]),
-            telefono_ini = datos.iat[i,7],
-            dir_res = str(datos.iat[i,8]),
-            telefono_res = int(datos.iat[i,9]),
-            email = str(datos.iat[i,10]),
-            acudiente = str(datos.iat[i,11]),
-            telefono_acudiente =int( datos.iat[i,12]),
-            sexo = str(datos.iat[i,13]),
-            colegio = str(datos.iat[i,14]),
-            estamento = str(datos.iat[i,15]),
-            celular = datos.iat[i,16],
-            hijos = datos.iat[i,17],
-            barrio_res_id = int(datos.iat[i,18]),
-            ciudad_res_id = int(datos.iat[i,19])
-            )
-            lista_estudiantes.append(Estudiante)
+            try:
+                Estudiante = estudiante(
+                tipo_doc_ini = str(datos.iat[i,0]),
+                num_doc_ini = int(datos.iat[i,1]),
+                tipo_doc = str(datos.iat[i,2]),
+                num_doc = str(datos.iat[i,3]),
+                barrio_ini_id = int(datos.iat[i,4]),
+                ciudad_ini_id = int(datos.iat[i,5]),
+                dir_ini = str(datos.iat[i,6]),
+                telefono_ini = datos.iat[i,7],
+                dir_res = str(datos.iat[i,8]),
+                telefono_res = int(datos.iat[i,9]),
+                email = str(datos.iat[i,10]),
+                acudiente = str(datos.iat[i,11]),
+                telefono_acudiente =int( datos.iat[i,12]),
+                sexo = str(datos.iat[i,13]),
+                colegio = str(datos.iat[i,14]),
+                estamento = str(datos.iat[i,15]),
+                celular = datos.iat[i,16],
+                hijos = datos.iat[i,17],
+                barrio_res_id = int(datos.iat[i,18]),
+                ciudad_res_id = int(datos.iat[i,19])
+                )
+                lista_estudiantes.append(Estudiante)
+            except:
+                print("Error al cargar el estudiante: " + str(datos.iat[i,3]))
+
         estudiante.objects.bulk_create(lista_estudiantes)
         return Response({'Respuesta': 'Carga realziada satisfactoriamente'})
     except:

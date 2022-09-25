@@ -32,7 +32,7 @@ const InfoBasica = () =>{
                                 <Row className="infoRow1">
                                     <Col className="info">
                                         <Select options={options} className="justMargin1" />
-                                    </Col >  
+                                    </Col>  
                                     <Col className="info">
                                         <h4>cedula </h4>
                                         <h4>1007619729 </h4>

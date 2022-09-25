@@ -28,7 +28,17 @@ const SideBar = ({children}) =>{
                     path:"/fichaDeEstudiante",
                     name:"fichaDeEstudiante",
                     icon:<FaThList />,
-                }
+                },
+                {
+                    path:"/carga_masiva",
+                    name:"Carga Masiva",
+                    icon:<FaThList />,
+                },
+                {
+                    path:"/gestion_usuario_rol",
+                    name:"Gestion Usuario Rol",
+                    icon:<FaThList />,
+                },
             ]
         },
         {
