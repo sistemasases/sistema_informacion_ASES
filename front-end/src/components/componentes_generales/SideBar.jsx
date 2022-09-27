@@ -39,6 +39,11 @@ const SideBar = ({children}) =>{
                     name:"Gestion Usuario Rol",
                     icon:<FaThList />,
                 },
+                {
+                    path:"/inicio_semestre_sistemas",
+                    name:"Inicio Semestre Sistemas",
+                    icon:<FaThList />,
+                },
             ]
         },
         {
