@@ -13,7 +13,10 @@ import { NavLink } from 'react-router-dom';
 const Carga_masiva = () =>{
 
     return (
-        <Container>
+        <Container >
+            <Row className="justify-content-md-center">
+                <h1>CARGA MASIVA</h1>
+            </Row>
             <Row className="containerRow">
                 <Carga_masiva_component/>
             </Row>

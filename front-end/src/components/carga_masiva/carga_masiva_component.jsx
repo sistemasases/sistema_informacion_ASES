@@ -40,11 +40,13 @@ const carga_masiva_component = () =>{
   return (
         <Container>
 
-            <Row className="rowJustFlex">
-                <h1>CARGA MASIVA</h1>
+            <Row >
+                  <h4>Tipo de Carga</h4>
             </Row>
 
-            <Row className="rowJustFlex">
+            <Row className='mt-2' >
+
+              <Col sm={9}>
                 <Form.Select name= "option" onChange={handle_options} >
                   <option value="Estudiante">Estudiante</option>
                   <option value="Usuarios">Usuarios</option>
@@ -54,13 +56,17 @@ const carga_masiva_component = () =>{
                   <option value="Programa">Programa</option>
                   <option value="Retiros">Retiros</option>
                 </Form.Select>
+              </Col>
             </Row>
-
-            <Row className="rowJustFlex">
-                <Form.Control type="file" name='file' onChange={handle_file}/>      
+            <Row className='mt-2'>
+              <Col sm={9}>
+                <Form.Control type="file" name='file' onChange={handle_file}/>   
+              </Col>   
             </Row>
-            <Row className="rowJustFlex">
-                <Button onClick={handle_upload}>Subir</Button>  
+            <Row className='mt-2'>
+              <Col lg={{ span: 0, offset: 0}} >
+                  <Button onClick={handle_upload}>Subir</Button>
+              </Col>  
             </Row>
         </Container>
   )

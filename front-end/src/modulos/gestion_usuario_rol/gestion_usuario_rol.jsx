@@ -28,7 +28,6 @@ const Gestion_usuario_rol = () =>{
             <Row className="containerRow">
 
                 <Selector_usuarios/>
-                <Formulario_asginacion_rol/>
 
             </Row>
             <Row>
