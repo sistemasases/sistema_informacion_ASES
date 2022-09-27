@@ -5,12 +5,9 @@ import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
 
-const NavBar = () =>{
+const NavBar = (props) =>{
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
-
-    const[menuOpen, setMenu] = useState(false);
-    const showMenu = () => setMenu(!menuOpen);
 
     const menuOptions=[
         {
@@ -21,22 +18,22 @@ const NavBar = () =>{
         },
         {
             id:2,
-            path:"/fichaDeEstudiante",
+            path:"/ficha_estudiante",
             name:"fichaDeEstudiante aiiiiiiiiiiiiiiii",
             icon:<FaThList />,
             thisIsOpen:true,
         }
     ]
     return (
-    <Container className="nav">
+    <Container className="nav" >
             <Col>
                 <a>Site name</a>
             </Col>
             <Col className="ulDropdown">            
                 <ul>
                     <li>
-                        <a >price 1</a>
-                        <a >price 2</a>
+                        <a >{props.nombre}</a>
+                        <a >{props.rol}</a>
                     </li>
 
                 </ul>

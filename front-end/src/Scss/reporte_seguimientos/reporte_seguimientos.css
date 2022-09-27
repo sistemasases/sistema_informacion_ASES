@@ -1,0 +1,120 @@
+.container_reportes_seguimientos{
+    display: flex;
+    flex-direction: column;
+}
+
+.row_titulo_reportes_seguimientos{
+    background: red;
+    padding: 15px 25px;
+    display: flex;
+}
+
+.row_selectores_reportes_seguimientos{
+    display: flex;
+}
+
+.col_selectores_reportes_seguimientos{
+    justify-content: right;
+    width: 33%;
+    padding: 10px 0px; 
+    border-bottom: 1px solid black;
+    display: flex;
+}
+
+.row_contenido_reportes_seguimientos{
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.row_align_rigth{
+    padding: 10px 20px;
+    text-align: right;
+}
+
+.row_card_reportes_seguimientos{
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.row_card_content_flex{
+    align-content: center;
+    display: flex;
+}
+.subrow_card_content_flex{
+    width: 50%;
+    align-content: center;
+}
+
+.row_fondo_gris{
+    border: 1px solid black;
+    border-radius: 10px;
+    background: lightgray;
+}
+
+.row_contenido_periodos_reporte_seguimientos{
+    background: white;
+    display: flex;
+    flex-direction: column;
+    margin: 20px 20px;
+    border: 1px solid black;
+    padding: 10px 10px;
+    border-radius: 10px;
+}
+
+.row_contenido_periodos_reporte_seguimientos2{
+    background: white;
+    display: flex;
+    flex-direction: column;
+    margin: 15px 15px;
+    border: 1px solid lightgray;
+}
+
+.link_text_reporte_seguimientos{
+    padding: 2px 2px;
+    display: flex;
+    height: 70px;
+    border: 1px solid lightgray;
+    background: white;
+}
+.col_link_text_reporte_seguimientos_nombre{
+    padding: 8px 8px;
+    background: red;
+    width: 40%;
+}
+
+.col_link_text_reporte_seguimientos_spans{
+    padding: 8px 8px;
+    background: red;
+    width: 10%;
+}
+
+.col_link_text_reporte_seguimientos_info{
+    padding: 8px 8px;
+    background: red;
+    width: 50%;
+}
+
+.row_flex_reporte_seguimientos{
+    color: black;
+    display: flex;
+    width: 100%;
+} 
+
+.link_reporte_seguimientos{
+    color: aliceblue;
+    transition: all 1.5s;
+}
+
+.col_contenido_reporte_seguimientos1{
+    justify-content: center;
+    display: flex;
+    margin: 3px 7%;
+}
+.col_contenido_reporte_seguimientos2{
+    justify-content: center;
+    display: flex;
+    margin-top: 3px;
+    margin-left: 10%;
+    margin-right: 7%;
+}

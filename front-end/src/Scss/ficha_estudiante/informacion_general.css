@@ -1,0 +1,15 @@
+.container_informacion_general{
+    display: flex;
+    margin: 2% 0%;
+}
+
+.columna_informacion_general{
+    margin: 2% 2%;
+    padding: 2% 2%;
+    width: 50%;
+}
+
+.row_flex{
+    display: flex;
+    width: 100%;
+} 

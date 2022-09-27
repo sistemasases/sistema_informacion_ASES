@@ -7,7 +7,7 @@ import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
 
-const InfoBasica = () =>{
+const Info_basica = () =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -23,6 +23,7 @@ const InfoBasica = () =>{
             <Row>
                 <Row className="row1">
                     <Col className="col1">
+                        
                         <Row>
                             <Select options={options} />
                         </Row>
@@ -98,11 +99,11 @@ const InfoBasica = () =>{
                         <Button className="buttonRiesgos">vida Univ.</Button> 
                         <Button className="buttonRiesgos">Geografico</Button>
                     </Col>
-                    <Col> <Button>Radial</Button> <Button>Trayextoria</Button> </Col> 
+                    <Col> <Button>Trayextoria</Button> </Col> 
                 </Row>
             </Row>
         </Container>
     )
 }
 
-export default InfoBasica 
+export default Info_basica 
