@@ -17,8 +17,8 @@ class semestre (models.Model):
     nombre= models.CharField(max_length=30)
     fecha_inicio= models.DateTimeField(auto_now_add=False)
     fecha_fin= models.DateTimeField(auto_now_add=False)
-    id_instancia= models.ForeignKey(instancia ,on_delete=models.CASCADE,default=0)
     semestre_actual= models.BooleanField(default= False)
+    id_instancia= models.ForeignKey(instancia ,on_delete=models.CASCADE,default=0)
 
 
     class Meta:

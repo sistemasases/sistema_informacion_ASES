@@ -17,4 +17,4 @@ class SemestreSerializer(serializers.ModelSerializer):
 	# create a meta class
 	class Meta:
 		model = semestre
-		fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'id_instancia', 'semestre_actual')
+		fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'semestre_actual', 'id_instancia')

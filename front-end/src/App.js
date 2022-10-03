@@ -49,7 +49,8 @@ import Analitics from "./components/componentes_generales/ejemplo_navbar/Analiti
 import FichaDeEstudiante from "./components/fichaDeEstudiante/fichaDeEstudiante.jsx";
 import Login from "./modulos/login/login.jsx";
 import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
-import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas";
+import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia";
+import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 
 const App = () => {
@@ -65,6 +66,7 @@ const App = () => {
                         <Route path="/login"element={<Login/>}/>
                         <Route path="/carga_masiva"element={<Carga_masiva/>}/>
                         <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
+                        <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
                         <Route path="/gestion_usuario_rol"element={<Gestion_usuario_rol/>}/>
                     </Routes>
                 </SideBar>

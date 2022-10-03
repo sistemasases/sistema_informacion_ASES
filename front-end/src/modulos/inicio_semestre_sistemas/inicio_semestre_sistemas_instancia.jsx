@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import Semestre__sistemas_component from "../../components/inicio_semestre_sistemas/semestre_sistemas_component"
+import Inicio_semestre_component from "../../components/inicio_semestre_sistemas/inicio_semestre_component"
 import {Container, Row} from "react-bootstrap";
 
-const Inicio_semestre_sistemas = () =>{
+const Inicio_semestre_sistemas_instancia = () =>{
 
     return (
         <Container>
@@ -10,10 +10,10 @@ const Inicio_semestre_sistemas = () =>{
                 <h1>INICIO DE SEMESTRE - SISTEMAS</h1>
             </Row>
             <Row className="containerRow">
-                <Semestre__sistemas_component/>
+                <Inicio_semestre_component/>
             </Row>
         </Container>
     )
 }
 
-export default Inicio_semestre_sistemas
+export default Inicio_semestre_sistemas_instancia
