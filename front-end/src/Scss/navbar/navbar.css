@@ -7,11 +7,12 @@ body {
 }
 
 .nav {
-    margin-left: 50px;
+    padding-left: 2%;
+    margin-left: 70px;
     z-index: 2;
     width: 100%;
     height: 4rem;
-    background-color:#333;
+    background: rgb(200, 0, 0);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -30,6 +31,9 @@ body {
 
 .nav a {
     color: inherit;
+}
+.boton_usuario{
+    background: rgb(200, 0, 0);
 }
 
 .itemsNav{

@@ -33,8 +33,8 @@ function App() {
 
 export default App
 */
+import React, { Component }  from 'react';
 
-import React from 'react';
 import {Row, Col} from "react-bootstrap";
 import NavBar from "./components/componentes_generales/navbar";
 
@@ -45,7 +45,8 @@ import "./Scss/ficha_estudiante/selector.css";
 import "./Scss/ficha_estudiante/informacion_general.css";
 import "./Scss/ficha_estudiante/academico.css";
 import "./Scss/reporte_seguimientos/reporte_seguimientos.css";
-
+import "./Scss/reporte_seguimientos/desplegable.css"
+import "./Scss/footer/footer.css";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SideBar from "./components/componentes_generales/sideBar";
@@ -54,7 +55,6 @@ import Analitics from "./components/componentes_generales/ejemplo_navbar/Analiti
 import Ficha_estudiante from "./modulos/ficha_estudiante.jsx";
 import Reporte_seguimientos from "./modulos/reporte_seguimientos.jsx";
 import Sin_seguimientos from "./modulos/sin_seguimiento.jsx";
-
 
 
 const App = () => {

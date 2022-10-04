@@ -24,7 +24,6 @@ const Ficha_estudiante = () =>{
     return (
         <Container>
             <Row className="containerRow">
-
                 <Info_basica/>
                 <Selector/>
             </Row>

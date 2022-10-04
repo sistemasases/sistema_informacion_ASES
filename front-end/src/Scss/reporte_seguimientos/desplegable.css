@@ -1,0 +1,142 @@
+
+  
+  .fichas{
+    font: sans-serif;
+    border: 1px solid #D8D8D8;
+    border-radius: 10px;
+    background: #F5F5F5;
+
+    flex-shrink: 0;
+    height: 100%;
+    overflow: auto;
+  }
+  
+  
+  
+  .fichas-item{
+    border-left: 1px solid #D8D8D8;
+    border-right: 1px solid #D8D8D8;
+
+    background: #F5F5F5;
+
+    padding: .75em 1em;
+    display: block;
+  }
+  .fichas-item2{
+    background: white;
+    padding-top: 20px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    display: block;
+  }
+  .fichas-item3{
+    background: white;
+    padding-top: 20px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    display: block;
+  }
+  .fichas-reportes{
+    border: 1px solid #D8D8D8;
+    border-radius: 10px;
+    background: #F5F5F5;
+    
+    padding-top: 20px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    display: block;
+  }
+  
+  .fichas-title{
+    display: flex;
+    font-size: 1.2em;
+    justify-content: space-between;
+  }
+  .fichas-title span i{
+    display: inline-block;
+    width: 1.5em;
+  }
+  .fichas-title .toggle-btn-fichas{
+    cursor: pointer;
+    transition: transform .3s;
+  }
+  .fichas-item.open > .fichas-title .toggle-btn-fichas{
+    transform: rotate(180deg);
+  }
+  .fichas-content{
+    background: white;
+    height: 0;
+    overflow: hidden;
+  }
+  .fichas-item.open > .fichas-content{
+    height: auto;
+  }
+
+  .contenido{
+    border: 2px solid #D8D8D8;
+    border-radius: 6px;
+    background: white;
+  }
+  
+  .fichas-item.plain{
+    text-decoration: none;
+  }
+  .fichas-item.plain:hover{
+    text-decoration: underline;
+  }
+  .fichas-item.plain i{
+    display: inline-block;
+    width: 1.7em;
+  }
+
+  .fichas-item2.open > .fichas-title .toggle-btn-fichas{
+    transform: rotate(180deg);
+  }
+
+  .fichas-item2.open > .fichas-content{
+    height: auto;
+  }
+
+  .fichas-item2.plain{
+    text-decoration: none;
+  }
+  .fichas-item2.plain:hover{
+    text-decoration: underline;
+  }
+  .fichas-item2.plain i{
+    display: inline-block;
+    width: 1.7em;
+  }
+
+  .fichas-item3.open > .fichas-title .toggle-btn-fichas{
+    transform: rotate(180deg);
+  }
+
+  .fichas-item3.open > .fichas-content{
+    height: auto;
+  }
+
+  .fichas-item3.plain{
+    text-decoration: none;
+  }
+  .fichas-item3.plain:hover{
+    text-decoration: underline;
+  }
+  .fichas-item3.plain i{
+    display: inline-block;
+    width: 1.7em;
+  }
+
+  .fichas-reportes.plain{
+    text-decoration: none;
+  }
+  .fichas-reportes.plain:hover{
+    text-decoration: underline;
+  }
+  .fichas-reportes.plain i{
+    display: inline-block;
+    width: 1.7em;
+  }

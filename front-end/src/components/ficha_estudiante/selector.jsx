@@ -57,11 +57,13 @@ const Selector = () =>{
                     <Row className="containerTabs">
                         <Row className="tabs" activeClassName="activeTab">
                             {tabs.map((tab, index)=>(
-                                <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab"} onClick={() => activeTab(tab.id)}>
-                                    <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}
-                                    >
-                                    {tab.name}
-                                    </label>
+                                <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab"} >
+                                    <Row onClick={() => activeTab(tab.id)}>
+                                        <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
+                                            {tab.name}
+                                        </label>
+                                    </Row>
+                                    
                                     {
                                         (tab.id === activeTabIndex)?
                                         (<Row className="contentTab">{tabs[activeTabIndex-1].component}</Row>)

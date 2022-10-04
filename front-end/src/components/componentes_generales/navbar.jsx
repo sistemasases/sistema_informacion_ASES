@@ -40,7 +40,7 @@ const NavBar = (props) =>{
             </Col>
 
             <Dropdown isOpen={isOpen} onClick={toggle} className="dropdown">
-                        <DropdownToggle><FaBars/></DropdownToggle>
+                        <DropdownToggle className="boton_usuario"><i className="boton_usuario" class="bi bi-person-circle"/></DropdownToggle>
                         <DropdownMenu>
                             <ul className="ulDropdown">
                                 <li>

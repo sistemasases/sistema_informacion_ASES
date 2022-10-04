@@ -2,29 +2,32 @@
 
 .containerSidebar{
     display: flex;
+    
 }
+
 main{
     margin-top: 100px;
     width: 100%;
-    padding: 20px;
+    padding-left: 20px;
 }
 
 .sideBar{
     z-index: 2;
     position: fixed;
-    background: #000;
-    color: aliceblue;
-    height: 100vh;
+    background: #F1F1F1;
+    color: black;
+    height: 100%;
 }
 
 .top_selection{
     height: 4rem;
-    width: 50px;
-    background: red;
+    width: 70px;
+    background: #020826;
+    color: #F1F1F1;
     display: flex;
     align-items: center;
     padding: 20px 15px;
-    margin-bottom:50px;
+    margin-bottom:30px;
 }
 
 .logo{
@@ -91,3 +94,68 @@ main{
     font-size: 20px;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.scrollbar_sidebar{
+    width: 10px;
+    height: 100%;
+}
+
+.sidebar_item{
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-item{
+    display: flex;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 10px;
+    font: 18px sans-serif;
+}
+.tamaño_icon{
+    color:black;
+    font-size: 25px;
+}
+.tamaño_font{
+    margin-left: 5px;
+    color:black;
+    font: 18px sans-serif;
+}
+
+.sidebar-title_varios{
+    margin-right: 10px;
+}
+.sidebar-title_final{
+    display: flex;
+    margin-right: 10px;
+    margin-left: 20px;
+    padding-top: 10px;
+    color: black;
+}
+
+
+.sidebar-item.open > .sidebar-title .toggle-btn{
+    transform: rotate(180deg);
+  }
+  .sidebar-content{
+    display: flex;
+    flex-direction:column;
+    height: 0;
+    overflow: hidden;
+  }
+  .sidebar-item.open > .sidebar-content{
+    height: auto;
+  }
+  
+ 

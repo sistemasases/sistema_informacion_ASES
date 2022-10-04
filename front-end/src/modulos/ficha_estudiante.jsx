@@ -8,6 +8,7 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import Footer from '../components/componentes_generales/footer';
 
 
 const Ficha_estudiante = () =>{
@@ -26,8 +27,6 @@ const Ficha_estudiante = () =>{
             <Row className="containerRow">
                 <Info_basica/>
                 <Selector/>
-            </Row>
-            <Row>
             </Row>
         </Container>
     )

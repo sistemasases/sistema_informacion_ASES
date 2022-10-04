@@ -20,10 +20,9 @@ const Info_basica = () =>{
 
     return (
         <Container>
-            <Row>
+            <Row className="info_basica_borde">
                 <Row className="row1">
                     <Col className="col1">
-                        
                         <Row>
                             <Select options={options} />
                         </Row>
@@ -76,11 +75,6 @@ const Info_basica = () =>{
                             <h2 className="justMargin2">ASES</h2>
                             <h1 className="justMargin2"><FaThList /></h1>
                         </Row>
-                        <Row>
-                            <h1 className="justMargin2"><FaThList /></h1>
-                        </Row>
-                        
-                        
                     </Col>
 
                     <Col className="col3">
@@ -92,14 +86,37 @@ const Info_basica = () =>{
                 <Row className="row2">
                     <Col className="colMarcados">
                         <Col><h3>Riesgos</h3></Col>
-                        <Button className="buttonRiesgos">individual</Button> 
-                        <Button className="buttonRiesgos">familiar</Button>
-                        <Button className="buttonRiesgos">academico</Button> 
-                        <Button className="buttonRiesgos">econocmico</Button>
-                        <Button className="buttonRiesgos">vida Univ.</Button> 
-                        <Button className="buttonRiesgos">Geografico</Button>
+                        <Col className="rowJustFlex_column" >
+                            <Col className="rowJustFlex_to_right" >
+                                individual<Button className="buttonRiesgos"></Button> 
+                            </Col>
+                            <Col className="rowJustFlex_to_right">
+                                familiar<Button className="buttonRiesgos"></Button>
+                            </Col>
+                        </Col>
+                        <Col className="rowJustFlex_column">
+                            <Col className="rowJustFlex_to_right">
+                                academico<Button className="buttonRiesgos"></Button>
+                            </Col> 
+                            <Col className="rowJustFlex_to_right">
+                                econocmico<Button className="buttonRiesgos"></Button>
+                            </Col> 
+                        </Col>
+                        <Col className="rowJustFlex_column">
+                            <Col className="rowJustFlex_to_right">
+                                vida Univ.<Button className="buttonRiesgos"></Button> 
+                            </Col>
+                            <Col className="rowJustFlex_to_right">
+                                Geografico<Button className="buttonRiesgos"></Button>
+                            </Col>
+                        </Col>
+                        
+                        
+                        
                     </Col>
-                    <Col> <Button>Trayextoria</Button> </Col> 
+                    <Col> 
+                        <Button className="generar_nuevo_reporte">Generar Nuevo Reporte</Button>
+                    </Col> 
                 </Row>
             </Row>
         </Container>

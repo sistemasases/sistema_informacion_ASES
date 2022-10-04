@@ -6,6 +6,7 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Desplegable from "./desplegable";
+import Desplegable2 from "./desplegable2";
 
 
 /*
@@ -49,9 +50,9 @@ const Informacion_rol = () =>{
                         </Col>
                     </Row>
                 </Row>
-
-                <Desplegable></Desplegable>
-
+            </Row>
+            <Row className="row_desplegable">
+                <Desplegable2></Desplegable2>
             </Row>
         </Container>
     )
