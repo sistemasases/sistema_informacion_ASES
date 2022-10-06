@@ -5,6 +5,7 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import Selector_estudiantes from "../componentes_generales/selector_estudiantes"
 
 
 const Info_basica = () =>{
@@ -15,7 +16,7 @@ const Info_basica = () =>{
     const options = [
   { value: 'chocolate', label: 'Chocolate' },
   { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
+  { value: 'y', label: 'x' }
     ]
 
     return (
@@ -24,28 +25,35 @@ const Info_basica = () =>{
                 <Row className="row1">
                     <Col className="col1">
                         <Row>
-                            <Select options={options} />
+                            <Select options={options}/>
                         </Row>
 
                         <Row className="rowJustFlex">
                             <Col className="colInfo1">
                                 <Row className="infoRow1">
-                                    <Col className="info">
+                                    <Col className="info_basica_selector">
                                         <Select options={options} className="justMargin1" />
-                                    </Col >  
-                                    <Col className="info">
-                                        <h4>cedula </h4>
-                                        <h4>1007619729 </h4>
-                                    </Col>
-                                    <Col className="info">
-                                        <h4>antiguedad </h4>
-                                        <h4>1007619729 </h4>
-                                    </Col>
-                                    <Col className="info">
-                                        <h4>correo </h4>
-                                        <h4>1007619729 </h4>
-                                    </Col>
+                                    </Col>  
+                                    <Row className="info"> 
+                                        <Col className="info_texto">
+                                            <h4>201742505 </h4>
+                                        </Col>
+                                        <Col className="info_texto">
+                                            <h4>jose.david.erazo@correounivalle.edu.co </h4>
+                                        </Col>
+                                    </Row>
+                                    
+                                    <Row className="info">
+                                        <Col className="info_texto">
+                                            <h4>1007619729 </h4>
+                                        </Col>
+                                        <Col className="info_texto">
+                                            <h4>3023675777 </h4>
+                                        </Col>
+                                    </Row>
+                                    
                                 </Row>
+
                                 <Row className="infoRow2">
                                     <h4>Programas academicos </h4>
                                     <Col className="inforow23">

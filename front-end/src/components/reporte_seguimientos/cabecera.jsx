@@ -6,22 +6,12 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
-/*
-Tabla Conteo de Seguimientos:
-- codigo
-- Nombres
-- Apellidos
-- documento
-- Conteos
---- Fichas normales
---- Fichas de inasistencias
-----Total conteos
-- Profesional
-- Practicante
-- Monitor
-*/
-
-
+const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'y', label: 'x' }
+      ]
+  
 
 const Cabecera = () =>{
 
@@ -34,7 +24,7 @@ const Cabecera = () =>{
                     </Col>
                     <Col className="col_selectores_reportes_seguimientos">
                         Selector periodo
-                        <Select></Select>
+                        <Select options={options}></Select>
                     </Col>
                     <Col className="col_selectores_reportes_seguimientos">
                         Selector persona

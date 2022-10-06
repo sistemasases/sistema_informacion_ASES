@@ -1,6 +1,8 @@
 from django.db import models
 from modulo_geografico.models import barrio, municipio
+from modulo_instancia.models import semestre,cohorte
 from django.contrib.auth.models import User
+
 
 # Create your models here.
 
@@ -44,7 +46,7 @@ class usuario_rol (models.Model):
     id_rol= models.ForeignKey(rol,on_delete=models.CASCADE,default=0,related_name='rol_por_asignar')
     id_usuario= models.ForeignKey(User,on_delete=models.CASCADE,default=0,related_name='rol_usuario')
     estado= models.CharField(max_length=30)
-    id_semestre= models.ForeignKey(rol,on_delete=models.CASCADE,default=0,related_name='semestre_realizacion')
+    id_semestre= models.ForeignKey(semestre,on_delete=models.CASCADE,default=0,related_name='semestre_realizacion')
     id_jefe= models.ForeignKey(User,on_delete=models.CASCADE,default=0,related_name='jefe')
 
     class Meta:
@@ -65,3 +67,12 @@ class rol_permiso (models.Model):
     
     class Meta:
         db_table = "rol_permiso"
+
+class cohorte_estudiante(models.Model):
+
+    id_cohorte= models.ForeignKey(cohorte,on_delete=models.CASCADE,default=0)
+    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
+    tiempo_creacion= models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = "cohorte_estudiante"

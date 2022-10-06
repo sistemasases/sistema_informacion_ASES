@@ -11,14 +11,7 @@ const Footer = () =>{
 
     return (
         <Container className="container_footer">
-            <Row className="footer_icons">
-                <Button type="button" className="footer_facebook"><FontAwesomeIcon icon="fa-brands fa-facebook-f" /></Button>
-                <Button type="button" className="footer_youtube"><i class="bi bi-youtube"/></Button>
-                <Button type="button" className="footer_facebook"><i class="bi bi-facebook" ></i></Button>
-                <Button type="button" className="footer_twitter"><i class="bi bi-twitter" ></i></Button>
-                <Button type="button" className="footer_instagram"><i class="bi bi-instagram" ></i></Button>
 
-            </Row>
             <Row className="footer_links">
             <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">http://dintev.univalle.edu.co</a>
             <h4> +57 2 318 2649 / 2653</h4>

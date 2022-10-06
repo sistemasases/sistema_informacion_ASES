@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
-import Select from 'react-select';
+import Select from 'react-select'  ;
 import Switch from 'react-switch';
-import Component_reporte_seguimientos from "../components/reporte_seguimientos/desplegable";
+import InfoBasica from "../../components/ficha_estudiante/info_basica"
+import Selector from "../../components/ficha_estudiante/selector"
+import Login_component from "../../components/login/login_component"
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import Cabecera from "../components/reporte_seguimientos/cabecera";
-import Tabla_sin_seguimientos from "../components/sin_seguimientos/tabla_sin_seguimientos";
 
 
-const Sin_seguimientos = () =>{
+const Login = () =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -22,14 +22,17 @@ const Sin_seguimientos = () =>{
     ]
 
     return (
-        
-        <Container >
+        <Container>
             <Row className="containerRow">
-                <Tabla_sin_seguimientos></Tabla_sin_seguimientos>
-            </Row>
 
+                <Login_component/>
+
+            </Row>
+            <Row>
+
+            </Row>
         </Container>
     )
 }
 
-export default Sin_seguimientos 
+export default Login 

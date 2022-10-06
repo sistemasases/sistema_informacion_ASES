@@ -6,8 +6,6 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Desplegable from "./desplegable";
-import Desplegable2 from "./desplegable2";
-
 
 /*
 Tabla Conteo de Seguimientos:
@@ -52,7 +50,7 @@ const Informacion_rol = () =>{
                 </Row>
             </Row>
             <Row className="row_desplegable">
-                <Desplegable2></Desplegable2>
+                <Desplegable></Desplegable>
             </Row>
         </Container>
     )

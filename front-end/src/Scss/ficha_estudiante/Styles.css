@@ -142,8 +142,17 @@ body {
 }
 
 .info{
-    
-    width: 25%;
+    word-break: break-all;
+    width: 50%;
+    margin: 0px 5px;
+    padding: 0px 10px;
+}
+.info_text{
+    word-break: break-all;
+    width: 100%;
+}
+.info_basica_selector{
+    width: 30%;
     margin: 0px 5px;
     padding: 0px 10px;
 }

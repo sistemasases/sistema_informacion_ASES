@@ -3,7 +3,7 @@ import {useState } from "react";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 
-const desplegable_Item = ({item}) => {
+const Desplegable_item = ({item}) => {
 
     const [open, setOpen] = useState(false)
 
@@ -43,8 +43,8 @@ const desplegable_Item = ({item}) => {
                         </Row>
                 </Row>
                     <div className="fichas-content">
-                        <Row className="contenido">
-                            { item.practicante.map((child, index) => <desplegable_Item key={index} item={child} />) }
+                        <Row className="contenido_fichas">
+                            { item.practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
                         </Row>
                     </div>
                 
@@ -52,8 +52,7 @@ const desplegable_Item = ({item}) => {
         )
     }else if(item.monitor) {
         return (
-
-            <div className={open ? "fichas-item2 open" : "fichas-item2"}>
+            <div className={open ? "fichas-item open" : "fichas-item"}>
                 <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
                 <Row className="link_text_reporte_seguimientos1" >
                                     <Row className="link_text_reporte_seguimientos_hover">
@@ -84,8 +83,8 @@ const desplegable_Item = ({item}) => {
                                 </Row>
                             </Row>
                 <div className="fichas-content">
-                    <Row className="contenido">
-                        { item.monitor.map((child, index) => <desplegable_Item key={index} item={child} />) }
+                    <Row className="contenido_fichas">
+                        { item.monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
                     </Row>
                 </div>
             </div>
@@ -93,7 +92,7 @@ const desplegable_Item = ({item}) => {
     }
     else if (item.reporte){
         return (
-            <div className={open ? "fichas-item3 open" : "fichas-item3"}>
+            <div className={open ? "fichas-item open" : "fichas-item"}>
                 <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
             <Row className="link_text_reporte_seguimientos1" >
                                 <Row className="link_text_reporte_seguimientos_hover">
@@ -138,4 +137,35 @@ const desplegable_Item = ({item}) => {
     
 }
 
-export default desplegable_Item
+export default Desplegable_item
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

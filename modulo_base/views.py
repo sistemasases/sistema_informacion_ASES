@@ -1,14 +1,37 @@
 from django.views import View
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.forms.models import model_to_dict
-from rest_framework import viewsets
-from .serializers import  UserSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from modulo_base import serializers
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
 
 # Create your views here.
+
+class Api_login(APIView):
+
+    serializer_class =serializers.Api_login
+
+    def post(self,request):
+        serializer = self.serializer_class(data=request.data)
+        if (serializer.is_valid()):
+
+            username_request = serializer.validated_data.get('username')
+            var_usuario =get_object_or_404(User, username = username_request)
+            contrasena_request =check_password( serializer.validated_data.get('password') ,var_usuario.password)
+            if (contrasena_request == True):
+
+                return Response({'Respuesta': 'True'})
+        
+            return Response({'Respuesta': 'False'})
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+            )
+
 
 class user_manage (View):
 
@@ -17,29 +40,5 @@ class user_manage (View):
         list_user =User.objects.all()
         return JsonResponse (list(list_user.values()), safe=False)
 
-class login_manage (View):
-    def post(self, request):
-        print(request)
-        if(request.POST["username"] and request.POST["password"]):
-
-            username_request = request.POST["username"]
-            var_usuario =get_object_or_404(User, username = username_request)
-            contrasena_request =check_password( request.POST["password"],var_usuario.password)
-
-            if (contrasena_request == True):
-
-                return JsonResponse(True, safe=False)
-        
-        return JsonResponse(False, safe=False)
 def carga_test(request):
     return render(request, "prueba_login.html")
-
-class TodoView(viewsets.ModelViewSet):
- 
-    # create a serializer class and
-    # assign it to the TodoSerializer class
-    serializer_class = UserSerializer
- 
-    # define a variable and populate it
-    # with the Todo list objects
-    queryset = User.objects.all()

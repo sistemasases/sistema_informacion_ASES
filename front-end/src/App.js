@@ -46,15 +46,21 @@ import "./Scss/ficha_estudiante/informacion_general.css";
 import "./Scss/ficha_estudiante/academico.css";
 import "./Scss/reporte_seguimientos/reporte_seguimientos.css";
 import "./Scss/reporte_seguimientos/desplegable.css"
+import "./Scss/gestion_usuarios_rol/selector_usuarios.css"
+import "./Scss/gestion_usuarios_rol/gestion_usuario_rol.css"
 import "./Scss/footer/footer.css";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SideBar from "./components/componentes_generales/sideBar";
-import Analitics from "./components/componentes_generales/ejemplo_navbar/Analitics.jsx";
+import Login from "./modulos/login/login.jsx";
 //import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
-import Ficha_estudiante from "./modulos/ficha_estudiante.jsx";
-import Reporte_seguimientos from "./modulos/reporte_seguimientos.jsx";
-import Sin_seguimientos from "./modulos/sin_seguimiento.jsx";
+import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
+import Reporte_seguimientos from "./modulos/reporte_seguimientos/reporte_seguimientos.jsx";
+import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
+
+import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
+
+
 
 
 const App = () => {
@@ -63,10 +69,11 @@ const App = () => {
             <Row> 
                 <SideBar>
                     <Routes>
-                        <Route path="/"element={<Analitics/>}/>
+                        <Route path="/"element={<Login/>}/>
                         <Route path="/ficha_estudiante"element={<Ficha_estudiante/>}/>
                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos/>}/>
+                        <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol/>}/>
                     </Routes>
                 </SideBar>
             </Row>

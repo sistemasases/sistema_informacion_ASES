@@ -74,7 +74,7 @@ const SideBar = ({children}) =>{
                         <Row  className="bars">
                             <FaBars onClick={toggle}/>
                         </Row>
-                </Row>
+                    </Row>
                 <Scrollbars className="scrollbar_sidebar">
 
                     {
