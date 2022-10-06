@@ -41,6 +41,7 @@ import "./Scss/Styles.css";
 import "./Scss/fichaEstudiante/Styles.css";
 import "./Scss/fichaEstudiante/selector.css";
 import "./App.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";

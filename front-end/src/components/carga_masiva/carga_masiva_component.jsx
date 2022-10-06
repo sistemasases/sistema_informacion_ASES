@@ -8,6 +8,7 @@ import carga_masiva_service from '../../service/carga_masiva';
 const carga_masiva_component = () =>{
 
   const[switchChecked, setChecked] = useState(false);
+  const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
   
 
   const [state,set_state] = useState({
@@ -16,7 +17,7 @@ const carga_masiva_component = () =>{
   })
   const handle_file = (e) => {
     // Getting the files from the input
-    console.log(e.target.files[0])
+    console.log(e.target.files[0].name)
     set_state({
       ...state,
       [e.target.name] : [e.target.files[0]],
@@ -33,18 +34,34 @@ const carga_masiva_component = () =>{
   const handle_upload=(e)=> {
     let file = [state.file];
     let option = [state.option];
+    let formData = new FormData();
+  
+    //Adding files to the formdata
+    formData.append("tipo_de_carga", option);
+    formData.append("file", file);
+    console.log ("ARCHIVO: "+formData.get("file"))
 
-    carga_masiva_service.carga_masiva(file,option);
+    axios({
+      // Endpoint to send files
+      url: url_carga,
+      method: "POST",
+      // Attaching the form data
+      data: formData,
+    })
+    .then(res=>{console.log(res.data)})
+    .catch(err=>console.log(err))
   }
 
   return (
         <Container>
 
-            <Row className="rowJustFlex">
-                <h1>CARGA MASIVA</h1>
+            <Row >
+                  <h4>Tipo de Carga</h4>
             </Row>
 
-            <Row className="rowJustFlex">
+            <Row className='mt-2' >
+
+              <Col sm={9}>
                 <Form.Select name= "option" onChange={handle_options} >
                   <option value="Estudiante">Estudiante</option>
                   <option value="Usuarios">Usuarios</option>
@@ -54,13 +71,20 @@ const carga_masiva_component = () =>{
                   <option value="Programa">Programa</option>
                   <option value="Retiros">Retiros</option>
                 </Form.Select>
+              </Col>
             </Row>
-
-            <Row className="rowJustFlex">
-                <Form.Control type="file" name='file' onChange={handle_file}/>      
+            <Row className='mt-2'>
+              <Col sm={9}>
+                <Form.Control type="file" name='file' onChange={handle_file}/>   
+              </Col>   
             </Row>
-            <Row className="rowJustFlex">
-                <Button onClick={handle_upload}>Subir</Button>  
+            <Row className='mt-2'>
+              <Col lg={{ span: 0, offset: 0}} >
+                  <Button onClick={handle_upload}>Subir</Button>
+              </Col>  
+            </Row>
+            <Row className='mt-2' >
+                <Form.Control as="textarea" readOnly/>
             </Row>
         </Container>
   )

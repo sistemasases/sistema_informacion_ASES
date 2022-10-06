@@ -18,14 +18,15 @@ def carga_test(request):
 class Validador_carga(APIView):
     serializer_class =serializers.Validador_carga
     def post(self,request):
-        print(request.data)
-        print(request.FILES)
+        print("data 1: " + str(request.data))
+        print("file 1: " + str(request.FILES))
         try:
             tipo = request.data.get('tipo_de_carga')
-            print(tipo)
+            print("data 2: " + str(tipo))
             file = request.data.get('file')
-            print(file)
+            print("file 2: " + str(file))
             if(tipo == 'Estudiante'):
+                print("entro al if")
                 return carga_estudiantes(file)
             elif(tipo == "Usuario"):
                 return carga_usuarios(file)
@@ -45,6 +46,9 @@ class Validador_carga(APIView):
             return Response({'ERROR': 'No se selecciono un tipo de carga o no se cargo el archivo csv correctamente.'})
 
 def carga_estudiantes(file):
+    print("entro al carga_estudiantes")
+    datos = pd.read_csv(file,header=0)
+    print("estos son los datos: "+str(datos))
     try:
         lista_estudiantes =[]
         datos = pd.read_csv(file,header=0)

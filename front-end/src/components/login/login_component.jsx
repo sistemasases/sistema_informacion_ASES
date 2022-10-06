@@ -31,9 +31,9 @@ const login_component = () =>{
           <div className="form-group mt-3">
             <label>Usuario</label>
             <input
-              type="email"
+              type="text"
               className="form-control mt-1"
-              placeholder="Enter email"
+              placeholder="Escribe tu usuario"
             />
           </div>
           <div className="form-group mt-3">
@@ -41,7 +41,7 @@ const login_component = () =>{
             <input
               type="password"
               className="form-control mt-1"
-              placeholder="Enter password"
+              placeholder="Escribe tu contraseña"
             />
           </div>
           <div className="d-grid gap-2 mt-3">
