@@ -6,5 +6,8 @@ urlpatterns = [
     path('user/', views.User_manage.as_view()),
     path('allrol/', views.All_rol.as_view()),
     path('rol/', views.Rol_manage.as_view()),
+    path('user_rol/', views.User_rol.as_view()),
+    path('user_rol_manage/', views.User_rol_manage.as_view()),
+    path('allestudiante/', views.All_estudiante.as_view()),
 ]
 
