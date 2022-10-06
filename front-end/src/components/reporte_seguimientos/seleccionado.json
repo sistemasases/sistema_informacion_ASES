@@ -1,0 +1,94 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[
+    {
+        "nombre":"Analitics",
+        "practicante":[
+            {
+                "monitor":[
+                    {
+                        "reporte":[
+                            {
+                            "datos":"hay reporte"
+                        }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nombre":"fichaDeEstudiante",
+        "practicante":[
+            {   
+
+                "monitor":[
+                    {   
+                        "reporte":[
+                            {
+                            "datos":"hay reporte"
+                            }
+                        ]
+                        
+                    },
+                    {
+                        "reporte":[
+                            {
+                            "datos":"hay reporte"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "monitor":[
+                    {   
+                        "reporte":[
+                            {
+                            "datos":"hay reporte"
+                            }
+                        ]
+                    },
+                    {
+                        "reporte":[
+                            {
+                            "datos":"hay reporte"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nombre":"Analitics",
+        "practicante":[
+            {
+                "monitor":[
+                    {
+                        "reporte":[
+                            {
+                            "datos":"hay reporte"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

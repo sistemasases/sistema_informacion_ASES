@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    
 }
 
 body {
@@ -7,44 +8,50 @@ body {
 }
 
 .containerRow{
-    border: 2px solid gray;
-    margin-left: 2%;
-    margin-right: 2%;
-    margin-bottom: 2%;
-    padding: 2% 2%;
-    width: 96%;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    padding-right: 2%;
+    width: 100%;
     background: white;
 }
 
 
 
 .row1{
+    border: 10px;
+    font: 100% sans-serif;
     width: 100%;
-    padding: 0% 0%;
+    padding: 5px 5px;
     display: flex;
-    background: gray;
+    background: #dfdfdf;
     justify-content: space-between;
 }
 .col1{
+    
+
     width: 70%;
     padding: 1% 2%;
-    background: lightgray;
+    background: #dfdfdf;
 }
 .infoRow1{
-    background: lightgray;
+    background: #dfdfdf;
     width: 100%;
     height: 30%;
     display: flex;
 }
 .infoRow2{
+    margin-top: 50px;
     height:10%;
-    background: yellow;
 }
 .col2{
+    
     width: 10%;
-    background: lightgray;
+    background: #dfdfdf;
 }
 .col3{
+    
+
     width: 20%;
     background: white;
 }
@@ -52,7 +59,8 @@ body {
 
 
 .row2{
-    background: lightgray;
+    font: 100% sans-serif;
+    background: #dfdfdf;
     width: 100%;
     padding: 2% 2%;
     display: flex;
@@ -63,6 +71,19 @@ body {
 .rowJustFlex{
     display: flex;
 }
+.rowJustFlex_to_right{
+    display: flex;
+    justify-content: right;
+}
+.justigy_content_right{
+    justify-content: right;
+}
+.rowJustFlex_column{
+    justify-content: right;
+    margin: 0px 20px;
+    display: flex;
+    flex-direction: column;
+}
 .justMargin1{
     margin-top:20%;
 }
@@ -70,6 +91,12 @@ body {
     margin: 10% 20%;
 }
 
+.info_basica_borde{
+    background: #dfdfdf;
+    border: 3px solid lightgrey;
+    padding: 10px;
+    border-radius: 20px;
+}
 
 
 
@@ -78,12 +105,16 @@ body {
 
 
 
-
-
+.generar_nuevo_reporte{
+    margin-left: 20px;
+    height: 80px;
+}
 
 .infoRow23{
+    border-radius: 10px;
     width: 100%;
-    padding: 0% 0%;
+    padding-top: 10px;
+    padding-left: 10px;
     display: flex;
     background: gray;
     justify-content: space-between;
@@ -95,7 +126,7 @@ body {
     padding: 5px 5px;
     margin: 5% 5%;
     display: flex;
-    background: gray;
+    background: #dfdfdf;
 }
 
 .infoSelect{
@@ -111,7 +142,17 @@ body {
 }
 
 .info{
-    width: 25%;
+    word-break: break-all;
+    width: 50%;
+    margin: 0px 5px;
+    padding: 0px 10px;
+}
+.info_text{
+    word-break: break-all;
+    width: 100%;
+}
+.info_basica_selector{
+    width: 30%;
     margin: 0px 5px;
     padding: 0px 10px;
 }
@@ -127,14 +168,13 @@ body {
 .colMarcados{
     display: flex;
     width: 80%;
-    
 }
 
 .buttonRiesgos{
-    margin: 15px 10px;
-    width: 13%;
-    height: 50%;
+    width: 20px;
+    height: 20px;
     background: white;
+    border-radius: 100%;
 }
 
 

@@ -5,9 +5,10 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import Selector_estudiantes from "../componentes_generales/selector_estudiantes"
 
 
-const InfoBasica = () =>{
+const Info_basica = () =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -20,32 +21,39 @@ const InfoBasica = () =>{
 
     return (
         <Container>
-            <Row>
+            <Row className="info_basica_borde">
                 <Row className="row1">
                     <Col className="col1">
                         <Row>
-                            <Select options={options} />
+                            <Select options={options}/>
                         </Row>
 
                         <Row className="rowJustFlex">
                             <Col className="colInfo1">
                                 <Row className="infoRow1">
-                                    <Col className="info">
+                                    <Col className="info_basica_selector">
                                         <Select options={options} className="justMargin1" />
                                     </Col>  
-                                    <Col className="info">
-                                        <h4>cedula </h4>
-                                        <h4>1007619729 </h4>
-                                    </Col>
-                                    <Col className="info">
-                                        <h4>antiguedad </h4>
-                                        <h4>1007619729 </h4>
-                                    </Col>
-                                    <Col className="info">
-                                        <h4>correo </h4>
-                                        <h4>1007619729 </h4>
-                                    </Col>
+                                    <Row className="info"> 
+                                        <Col className="info_texto">
+                                            <h4>201742505 </h4>
+                                        </Col>
+                                        <Col className="info_texto">
+                                            <h4>jose.david.erazo@correounivalle.edu.co </h4>
+                                        </Col>
+                                    </Row>
+                                    
+                                    <Row className="info">
+                                        <Col className="info_texto">
+                                            <h4>1007619729 </h4>
+                                        </Col>
+                                        <Col className="info_texto">
+                                            <h4>3023675777 </h4>
+                                        </Col>
+                                    </Row>
+                                    
                                 </Row>
+
                                 <Row className="infoRow2">
                                     <h4>Programas academicos </h4>
                                     <Col className="inforow23">
@@ -75,11 +83,6 @@ const InfoBasica = () =>{
                             <h2 className="justMargin2">ASES</h2>
                             <h1 className="justMargin2"><FaThList /></h1>
                         </Row>
-                        <Row>
-                            <h1 className="justMargin2"><FaThList /></h1>
-                        </Row>
-                        
-                        
                     </Col>
 
                     <Col className="col3">
@@ -91,18 +94,41 @@ const InfoBasica = () =>{
                 <Row className="row2">
                     <Col className="colMarcados">
                         <Col><h3>Riesgos</h3></Col>
-                        <Button className="buttonRiesgos">individual</Button> 
-                        <Button className="buttonRiesgos">familiar</Button>
-                        <Button className="buttonRiesgos">academico</Button> 
-                        <Button className="buttonRiesgos">econocmico</Button>
-                        <Button className="buttonRiesgos">vida Univ.</Button> 
-                        <Button className="buttonRiesgos">Geografico</Button>
+                        <Col className="rowJustFlex_column" >
+                            <Col className="rowJustFlex_to_right" >
+                                individual<Button className="buttonRiesgos"></Button> 
+                            </Col>
+                            <Col className="rowJustFlex_to_right">
+                                familiar<Button className="buttonRiesgos"></Button>
+                            </Col>
+                        </Col>
+                        <Col className="rowJustFlex_column">
+                            <Col className="rowJustFlex_to_right">
+                                academico<Button className="buttonRiesgos"></Button>
+                            </Col> 
+                            <Col className="rowJustFlex_to_right">
+                                econocmico<Button className="buttonRiesgos"></Button>
+                            </Col> 
+                        </Col>
+                        <Col className="rowJustFlex_column">
+                            <Col className="rowJustFlex_to_right">
+                                vida Univ.<Button className="buttonRiesgos"></Button> 
+                            </Col>
+                            <Col className="rowJustFlex_to_right">
+                                Geografico<Button className="buttonRiesgos"></Button>
+                            </Col>
+                        </Col>
+                        
+                        
+                        
                     </Col>
-                    <Col> <Button>Radial</Button> <Button>Trayextoria</Button> </Col> 
+                    <Col> 
+                        <Button className="generar_nuevo_reporte">Generar Nuevo Reporte</Button>
+                    </Col> 
                 </Row>
             </Row>
         </Container>
     )
 }
 
-export default InfoBasica 
+export default Info_basica 

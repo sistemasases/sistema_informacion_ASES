@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
-import Select from 'react-select'  ;
+import Select from 'react-select';
 import Switch from 'react-switch';
-import InfoBasica from "../../components/ficha_estudiante/info_basica"
-import Selector from "../../components/ficha_estudiante/selector"
-import Login_component from "../../components/login/login_component"
+import Component_reporte_seguimientos from "../../components/reporte_seguimientos/desplegable";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import Cabecera from "../../components/reporte_seguimientos/cabecera";
+import Informacion_rol from "../../components/reporte_seguimientos/informacion_rol";
 
 
-const Login = () =>{
+const Reporte_seguimientos = () =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -22,17 +22,15 @@ const Login = () =>{
     ]
 
     return (
-        <Container>
+        
+        <Container className="container_reportes_seguimientos">
             <Row className="containerRow">
-
-                <Login_component/>
-
+                <Cabecera></Cabecera>
+                <Informacion_rol></Informacion_rol>
             </Row>
-            <Row>
 
-            </Row>
         </Container>
     )
 }
 
-export default Login 
+export default Reporte_seguimientos 

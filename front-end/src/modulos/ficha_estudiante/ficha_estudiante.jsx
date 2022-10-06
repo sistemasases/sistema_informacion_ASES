@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
-import Select from 'react-select'  ;
+import Select from 'react-select';
 import Switch from 'react-switch';
-import InfoBasica from "./infoBasica"
-import Selector from "./selector"
+
+import Info_basica from "../../components/ficha_estudiante/info_basica";
+import Selector from "../../components/ficha_estudiante/selector";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import Footer from '../../components/componentes_generales/footer';
 
 
-const FichaDeEstudiante = () =>{
+const Ficha_estudiante = () =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -23,15 +25,11 @@ const FichaDeEstudiante = () =>{
     return (
         <Container>
             <Row className="containerRow">
-
-                <InfoBasica/>
+                <Info_basica/>
                 <Selector/>
-            </Row>
-            <Row>
-
             </Row>
         </Container>
     )
 }
 
-export default FichaDeEstudiante 
+export default Ficha_estudiante 
