@@ -16,8 +16,8 @@ from django.contrib.auth.hashers import check_password
 class All_user(APIView):
 
     def get(self, request):
-        print(request)
         list_user =User.objects.all()
+        print(list_user)
         return Response (list(list_user.values()))
 
 class All_rol(APIView):
@@ -102,10 +102,10 @@ class User_rol(APIView):
                 var_old_user_rol = get_object_or_404(usuario_rol, id_usuario = var_usuario)
             except:
                 var_old_user_rol = Empty
-            print(var_semestre.id)
-            print(var_old_user_rol.id_semestre)
-            print(var_semestre.id)
-            print(var_old_user_rol.estado)
+            # print(var_semestre.id)
+            # print(var_old_user_rol.id_semestre)
+            # print(var_semestre.id)
+            # print(var_old_user_rol.estado)
             if(var_old_user_rol != Empty and var_old_user_rol.id_semestre.id == var_semestre.id and var_old_user_rol.estado == "ACTIVO"):
                 print("entre a 1")
                 var_user_rol= var_old_user_rol
@@ -120,14 +120,14 @@ class User_rol(APIView):
                 var_user_rol.id_rol = var_rol
                 var_user_rol.id_semestre = var_semestre
                 var_user_rol.save()
-            elif(var_old_user_rol != Empty and var_old_user_rol.id_semestre != var_semestre):
+            elif(var_old_user_rol != Empty and var_old_user_rol.id_semestre.id != var_semestre):
                 print("entre a 3")
                 var_user_rol= usuario_rol()
                 var_user_rol.id_usuario= var_usuario
                 var_user_rol.id_rol = var_rol
                 var_user_rol.id_semestre = var_semestre
                 var_user_rol.save()
-            elif(var_old_user_rol != Empty and var_old_user_rol.id_semestre == var_semestre and var_old_user_rol.estado != "ACTIVO"):
+            elif(var_old_user_rol != Empty and var_old_user_rol.id_semestre.id == var_semestre and var_old_user_rol.estado != "ACTIVO"):
                 print("entre a 4")
                 var_user_rol= var_old_user_rol
                 var_user_rol.id_usuario= var_usuario

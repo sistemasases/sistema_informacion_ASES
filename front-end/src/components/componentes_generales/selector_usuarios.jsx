@@ -10,6 +10,9 @@ import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
 const selector_usuarios = () =>{
 
+  /*
+    constantes
+  */
   const datos_option_user = []
   const datos_option_rol = []
   var bandera_option_user = true;
@@ -24,7 +27,10 @@ const selector_usuarios = () =>{
     data_user : [],
     data_rol : [],
   })
-
+  /*
+    UseEffect: se ejecuta al iniciar la pestaña. En el está alojada la función de traer todos los usuarios
+    necesaria para el selector de usuarios.
+  */
   useEffect(()=>{
     axios({
       // Endpoint to send files
@@ -42,8 +48,11 @@ const selector_usuarios = () =>{
     })
     
   },[]);
-
-  const aja = (e)=>{
+  /*
+    UseEffect: se ejecuta al iniciar la pestaña. En el está alojada la función de traer todos los usuarios
+    necesaria para el selector de usuarios.
+  */
+  const consulta_all_rol = (e)=>{
     if(bandera=true){
       bandera = false
       axios({
@@ -65,7 +74,24 @@ const selector_usuarios = () =>{
 
     
   }
-  const handle_all_rol = (e)=>{
+
+  const handle_user_selector = (e) => {
+    // Getting the files from the input
+    if(bandera_option_user==true){
+
+      for (var i = 0; i < state.data_user['length'] ; i++) {
+        const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
+        datos_option_user.push(dato)
+      }
+      console.log([datos_option_user]);
+      bandera_option_user = false;
+    }
+    else{
+      console.log([datos_option_user]);
+    }
+  }
+
+  const handle_rol_selector = (e)=>{
     if(bandera_option_rol==true){
 
       for (var i = 0; i < state.data_rol['length'] ; i++) {
@@ -104,12 +130,18 @@ const selector_usuarios = () =>{
       rol_actual: res.data
       
     })})
-    .catch(err=>console.log(err))
+    .catch(err=>console.log(err),
+      set_state({
+        ...state,
+        usuario : [e.value],
+        id_usuario : [e.id], 
+      })
+    )
+    console.log(state.usuario)
     console.log(state.rol_actual)
 
   }
   const handle_option_rol = (e) => {
-    // Getting the files from the input
     console.log(e)
     set_state({
       ...state,
@@ -117,25 +149,11 @@ const selector_usuarios = () =>{
       id_rol : [e.id],
     })
   }
-  const handle_users = (e) => {
-    // Getting the files from the input
-    if(bandera_option_user==true){
 
-      for (var i = 0; i < state.data_user['length'] ; i++) {
-        const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
-        datos_option_user.push(dato)
-      }
-      console.log([datos_option_user]);
-      bandera_option_user = false;
-    }
-    else{
-      console.log([datos_option_user]);
-    }
-  }
   const handle_upload = (e) => {
     // Getting the files from the input
-    console.log([state.rol])
-    console.log([state.usuario])
+    console.log([state.id_rol[0]])
+    console.log([state.id_usuario[0]])
     let formData = new FormData();
   
     //Adding files to the formdata
@@ -154,14 +172,14 @@ const selector_usuarios = () =>{
         <Container>
         <Accordion>
           <Accordion.Item  eventKey="0">
-            <Accordion.Header onClick={aja} >Selector de Usuarios</Accordion.Header>
+            <Accordion.Header onClick={consulta_all_rol} >Selector de Usuarios</Accordion.Header>
             <Accordion.Body>
             <Row className="g-2">
                 <h3>Selecciona un usuario</h3>
             </Row>
             <Row className="mb-3">
 
-                <Select class="form-control" options={datos_option_user} onMenuOpen={handle_users} onChange={handle_option_user} className="justMargin1" />
+                <Select class="form-control" options={datos_option_user} onMenuOpen={handle_user_selector} onChange={handle_option_user} className="justMargin1" />
                 
             </Row>
             <Row className="g-2">
@@ -181,7 +199,7 @@ const selector_usuarios = () =>{
             </Row>
 
             <Row className="g-2" >
-              <Select class="form-control"  options={datos_option_rol} onMenuOpen={handle_all_rol} onChange={handle_option_rol} className="justMargin1" />
+              <Select class="form-control"  options={datos_option_rol} onMenuOpen={handle_rol_selector} onChange={handle_option_rol} className="justMargin1" />
                 
             </Row>
             <Row className='mt-2'> 
@@ -191,7 +209,7 @@ const selector_usuarios = () =>{
                 </Col>
                 <Col>
 
-                    <Button onClick={handle_all_rol}>Cancelar</Button> 
+                    <Button>Cancelar</Button> 
                 </Col>    
             </Row>
             </Accordion.Body>
