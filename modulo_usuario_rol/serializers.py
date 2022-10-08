@@ -11,3 +11,6 @@ class Rol_manage(serializers.Serializer):
 class User_rol(serializers.Serializer):
     id_user = serializers.IntegerField()
     id_rol = serializers.IntegerField()
+
+class User_rol_manage(serializers.Serializer):
+    id = serializers.IntegerField()

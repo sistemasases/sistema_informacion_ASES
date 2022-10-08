@@ -13,7 +13,7 @@ import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 
 const selector_usuarios = () =>{
   const[isOpen, setIsOpen] = useState(false);
-    const toggle = ()=> setIsOpen(!isOpen);
+    const toggle = false;
 
   const datos_option_user = []
   const datos_option_rol = []
@@ -64,6 +64,11 @@ const selector_usuarios = () =>{
       })
 
     }
+    console.log(isOpen.toggle)
+    setIsOpen({
+      ...state,
+      toggle : !toggle
+    })
 
     
   }
@@ -125,7 +130,7 @@ const selector_usuarios = () =>{
   return (
         <Container className="container_selector_usuarios_rol">
                   <Dropdown className="dropdown_selector_usuarios">
-                        <DropdownToggle className="boton_selector_usuario" onClick={aja} onClick={toggle}>
+                        <DropdownToggle className="boton_selector_usuario" onClick={aja}>
                           <Row className="titulo_selector_usuario">
                             <h3>Selecciona un usuario</h3>
                           </Row>

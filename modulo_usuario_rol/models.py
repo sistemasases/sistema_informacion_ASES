@@ -45,9 +45,9 @@ class usuario_rol (models.Model):
 
     id_rol= models.ForeignKey(rol,on_delete=models.CASCADE,default=0,related_name='rol_por_asignar')
     id_usuario= models.ForeignKey(User,on_delete=models.CASCADE,default=0,related_name='rol_usuario')
-    estado= models.CharField(max_length=30)
+    estado= models.CharField(max_length=30,default="ACTIVO")
     id_semestre= models.ForeignKey(semestre,on_delete=models.CASCADE,default=0,related_name='semestre_realizacion')
-    id_jefe= models.ForeignKey(User,on_delete=models.CASCADE,default=0,related_name='jefe')
+    id_jefe= models.ForeignKey(User,on_delete=models.CASCADE,default=1,related_name='jefe')
 
     class Meta:
         db_table = "usuario_rol"
