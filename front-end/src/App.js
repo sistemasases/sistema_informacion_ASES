@@ -38,6 +38,7 @@ import React, { Component }  from 'react';
 import {Row, Col} from "react-bootstrap";
 import NavBar from "./components/componentes_generales/navbar";
 
+
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
 import "./Scss/ficha_estudiante/Styles.css";
