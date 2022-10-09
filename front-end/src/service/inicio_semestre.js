@@ -5,69 +5,20 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const url_carga = 'http://127.0.0.1:8000/wizard/all'
-var selected = {}
+const url_semestre = 'http://127.0.0.1:8000/wizard/semestre_actual'
 
-const inicio_semestre = () => {
-  const opciones = [];
-  var bandera_option = true;
+const inicio_semestre = (instancia) => {
 
-  const [state,set_state] = useState({
-    tabs: [],
+  axios({
+    // Endpoint to send files
+    url: url_semestre,
+    method: "POST",
   })
-
-  useEffect(()=>{
-    axios({
-      url:  url_carga,
-      method: "GET",
-    })
-    .then((respuesta)=>{
-      set_state({
-        ...state,
-        tabs : respuesta.data
-      })
-    })
-    .catch(err=>{
-      return (err)
-    })
-  },[]);
-
-  const handle_instancias = (e) => {
-    if(bandera_option==true){
-      for (var i = 0; i < state.tabs['length'] ; i++) {
-        const dato = { value: state.tabs[i]['nombre'], label: state.tabs[i]['nombre'], id: state.tabs[i]['id'] }
-        opciones.push(dato);
-      }
-      console.log([opciones]);
-      bandera_option = false;
-    }
-    else{
-      console.log([opciones]);
-    }
-  }
-
-  const handle_option_instancia = (e) => {
-    // Getting the files from the input
-    selected = e
-    console.log(selected)
-    set_state({
-      ...state,
-      opciones : [e.value],
-    })
-  }
+  .then(res=>{console.log(res.data)})
+  .catch(err=>console.log(err))
 
   return (
-    <Container>
-      <Row className="rowJustFlex">
-        <p>Para iniciar el semestre selecione la instancia con la cual desea trabajar:</p>
-      </Row>
-      <Row className="rowJustFlex">
-        <Select class="option" options={opciones} onMenuOpen={handle_instancias} onChange={handle_option_instancia} className="option"/>
-      </Row>
-      <Row className="rowJustFlex">
-        <p>Crear semestre: </p>  
-      </Row>
-    </Container>
+    0
   )
 }
 

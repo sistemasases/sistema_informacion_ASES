@@ -24,11 +24,29 @@ class instancia_manage (APIView):
         return Response (list(list_instancia.values()))
 
 class end_semestry_manage (APIView):
-    serializer_class = SemestreSerializer
     def get(self, request):
         print(request)
-        semestreActual = semestre.objects.filter(semestre_actual=True)
-        return Response (list(semestreActual.values()))
+        semestreActual = semestre.objects.filter(semestre_actual=True).first()
+        semestreActual_serializer = SemestreSerializer(semestreActual)
+        return Response (semestreActual_serializer.data)
+
+
+    def patch(self, request):
+        print(request)
+        semestreActual = semestre.objects.filter(semestre_actual=True).first()
+        semestreActual_serializer = SemestreSerializer(semestreActual, data=request.data)
+        if semestreActual_serializer.is_valid():
+            semestreActual_serializer.save()
+            return Response (semestreActual_serializer.data)
+        return Response (semestreActual_serializer.errors)
+
+    def post(self, request):
+        print(request)
+        semestreActual_serializer = SemestreSerializer(data=request.data)
+        if semestreActual_serializer.is_valid():
+            semestreActual_serializer.save()
+            return Response (semestreActual_serializer.data)
+        return Response (semestreActual_serializer.errors)
 
 
 def carga_test(request):

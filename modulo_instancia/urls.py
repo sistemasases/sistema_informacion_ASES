@@ -8,6 +8,6 @@ router.register(r'tasks',views.TodoView, 'task')
 
 urlpatterns = [
     path('all/', instancia_manage.as_view(), name='all_instances'),
-    path('semestre/', end_semestry_manage.as_view(), name='end_semestry'),
+    path('semestre_actual/', end_semestry_manage.as_view(), name='end_semestry'),
     path('', views.carga_test),
 ]

@@ -1,13 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import {Container, Row, Button} from "react-bootstrap";
 import axios from 'axios';
 import Select from 'react-select';
-import { Link, useNavigate } from 'react-router-dom';  
-import Accordion from 'react-bootstrap/Accordion';
-import Form from 'react-bootstrap/Form';
-import Inicio_semestre from '../../service/inicio_semestre';
+import { useNavigate } from 'react-router-dom';
+import Inicio_semestre_service from '../../service/inicio_semestre';
 
-const url_carga = 'http://127.0.0.1:8000/wizard/all'
+const url_instancias = 'http://127.0.0.1:8000/wizard/all'
 
 const inicio_semestre_component = () =>{
     const opciones = [];
@@ -24,7 +22,7 @@ const inicio_semestre_component = () =>{
 
     useEffect(()=>{
         axios({
-            url:  url_carga,
+            url:  url_instancias,
             method: "GET",
         })
         .then((respuesta)=>{
@@ -53,17 +51,18 @@ const inicio_semestre_component = () =>{
     }
 
     const handleButton = () =>{
+        console.log(selected[0]);
+
+        //Inicio_semestre_service.inicio_semestre(selected[0])
+
         navigate('/crear_semestre_sistemas');
     }
 
     const handleActivateButton = (e) =>{
-        console.log(e.value);
+        console.log(e.id);
         var aux=null;
-        if(selected.includes(e.value)){
-            aux = selected.filter(e=>e!==e.value)
-        } else {
-            aux = selected.concat(e.value)
-        }
+        selected.shift();
+        aux = selected.concat(e.id);
         setSelected(aux);
 
         if(aux.length>0){
