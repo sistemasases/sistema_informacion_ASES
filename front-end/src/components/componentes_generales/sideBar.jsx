@@ -13,53 +13,42 @@ import Sidebar_item_closed from './sidebar_item_closed';
 import {Scrollbars} from 'react-custom-scrollbars'; 
 
 /*
-
 <Row style={{width: isOpen ? "300px" : "70px"}} className="sideBar">
                     <Row className="top_selection">
                         <Row  className="bars">
                             <FaBars onClick={toggle}/>
                         </Row>
                     </Row>
-                        {Socioeducativa.map((item, index)=>(
-                        <Row>
-                            {
-                                item.subNav?
-                                (<DropdownItem key={index} className="link" activeclassName="active" 
-                                        onMouseLeave ={() => activeTab(0)} onMouseEnter ={() => activeTab(item.id)}>
-                                    <Row key={index} >
-                                        <Row className="icon"><i Class="FaThList"></i></Row>
-                                        <Row style={{display: isOpen ? "block" : "none"}}  className="link_text" >{item.name}</Row>
-                                    </Row>
-                                    <Row>
-                                        {item.subNav && isOpen && (item.id === activeTabIndex)  && item.subNav.map((item, index)=>(
-                                            <NavLink to={item.path} key={index} className="subLink" activeclassName="active" >
-                                                <Row className="link_text">{item.name}</Row>
-                                            </NavLink>
-                                        ) )
-                                        }
-                                    </Row>
-                                </DropdownItem>)
-                                :
-                                (<Row key={index} className="opcion_simple_separador">
-                                    <NavLink to={item.path} className="opcion_simple" >{item.icon} 
-                                    </NavLink>
-                                    <NavLink to={item.path} style={{display: isOpen ? "block" : "none"}} className="opcion_simple" >{item.name}
-                                    </NavLink>
-                                </Row>)
-                            }
-                        </Row>
-                        ))}
+                <Scrollbars className="scrollbar_sidebar">
+                    {
+                        isOpen ?
+                        (<div className="sidebar_item">
+                            { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
+                        </div>)
+                        :
+                        (<div className="sidebar_item">
+                        { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
+                        </div>)
+                    }
+                </Scrollbars>
+
                 </Row>
                 
+                
+                <Row>
+                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
+                </Row>
+
+                <main style={{marginLeft: isOpen ? "300px" : "50px"}}>
+                    {props.children}
+                    <Footer></Footer>
+                </main>
 */
 
-const SideBar = ({children}) =>{
+const SideBar = (props) =>{
 
-    const[nombreUsuario] = useState("nombre  ");
-    const[rolUsuario] = useState("monitor");
 
-    const[activeTabIndex, setActiveTabIndex] = useState(0);
-    const activeTab = (index)=> setActiveTabIndex(index);
+
 
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
@@ -69,35 +58,38 @@ const SideBar = ({children}) =>{
 
     return (
         <Container className="containerSidebar">
+                <Row className="top_selection">
+                    <FaBars onClick={toggle}/>
+                </Row>
                 <Row style={{width: isOpen ? "300px" : "70px"}} className="sideBar">
-                    <Row className="top_selection">
-                        <Row  className="bars">
-                            <FaBars onClick={toggle}/>
-                        </Row>
-                    </Row>
-                <Scrollbars className="scrollbar_sidebar">
-
-                    {
-                        isOpen ?
-                        (<div className="sidebar_item">
-                            { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
-                        </div>)
-                        :
-                        (<div className="sidebar_item">
-                        { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
-                    </div>)
-                    }
-                </Scrollbars>
+                    
+                    <Scrollbars className="scrollbar_sidebar">
+                        {
+                            isOpen ?
+                            (<div className="sidebar_item">
+                                { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
+                            </div>)
+                            :
+                            (<div className="sidebar_item">
+                            { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
+                            </div>)
+                        }
+                    </Scrollbars>
 
                 </Row>
                 
                 
-                <Row>
-                    <NavBar tamaño={isOpen} nombre={nombreUsuario} rol={rolUsuario}></NavBar>
+                <Row className="row_navbar">
+                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
                 </Row>
-
-                <main style={{marginLeft: isOpen ? "300px" : "50px"}}>{children}<Footer></Footer></main>
-
+                <Col className="inf_der">
+                    <main style={{marginLeft: isOpen ? "300px" : "70px"}}>
+                        {props.children}
+                        
+                    </main>
+                    <Footer></Footer>
+                </Col>
+                    
         </Container>
     )
 }

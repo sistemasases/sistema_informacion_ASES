@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import Desplegable_Item from "./desplegable_Item"
+import Desplegable_Item from "./desplegable_item"
 import items from "./seleccionado.json"
 
 

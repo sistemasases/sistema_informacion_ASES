@@ -9,9 +9,10 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Footer from '../../components/componentes_generales/footer';
+import Info_registros from '../../components/ficha_estudiante/info_registros';
 
 
-const Ficha_estudiante = () =>{
+const Ficha_estudiante = (props) =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -24,10 +25,17 @@ const Ficha_estudiante = () =>{
 
     return (
         <Container>
-            <Row className="containerRow">
-                <Info_basica/>
-                <Selector/>
-            </Row>
+                <Row>
+                    <Col xs={"12"} lg={"9"}>
+                        <Info_basica/>
+                    </Col>
+                    <Col xs={"12"} lg={"3"}>
+                        <Info_registros/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Selector id={props.cedula} nombres={props.nombres}/>
+                </Row>
         </Container>
     )
 }

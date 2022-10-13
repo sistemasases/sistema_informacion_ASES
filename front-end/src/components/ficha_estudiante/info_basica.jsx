@@ -8,6 +8,8 @@ import { NavLink } from 'react-router-dom';
 import Selector_estudiantes from "../componentes_generales/selector_estudiantes";
 import  {useEffect} from 'react';
 import axios from 'axios';
+import Selector from "../../components/ficha_estudiante/selector";
+
 
 
 const Info_basica = () =>{
@@ -26,6 +28,13 @@ const Info_basica = () =>{
       usuario : '',
       data_user : [],
       data_rol : [],
+
+      nombres:'',
+      apellidos: '',
+      cedula:'',
+      correo:'',
+      telefono:'',
+
     })
   
     useEffect(()=>{
@@ -92,7 +101,10 @@ const Info_basica = () =>{
       console.log(e)
       set_state({
         ...state,
-        usuario : [e.value],
+        nombres : [e.value],
+        apellidos : [],
+        correo : [],
+        cedula : [e.id],
       })
     }
     const handle_option_rol = (e) => {
@@ -131,54 +143,66 @@ const Info_basica = () =>{
 
 
     return (
-        <Container>
-            <Row className="info_basica_borde">
-                <Row className="row1">
-                    <Col className="col1">
+      <Container>
+        <Row className="info_basica_borde">
+                  <Col className="col1" xs={"12"} md={"9"}>
                         <Row>
-                            <Select/>
+                            <Select onMouseEnter ={() => aja} 
+                                        options={datos_option_user} onMenuOpen={handle_users} 
+                                        onChange={handle_option_user}  />
                         </Row>
 
-                        <Row className="rowJustFlex">
-                            <Col className="colInfo1">
+                        <Row className="rowJustFlex" >
+                            <Col className="colInfo1" xs={"12"} md={"9"}>
                                 <Row className="infoRow1">
-                                    <Col className="info_basica_selector">
-                                        <Select onMouseEnter ={() => aja} 
-                                        options={datos_option_user} onMenuOpen={handle_users} 
+                                    <Col className="info_basica_selector" md={"6"}>
+                                        <Select options={datos_option_user} onMouseEnter={handle_users} 
                                         onChange={handle_option_user}  className="justMargin1" />
-                                    </Col>  
-                                    <Row className="info"> 
-                                        <Col className="info_texto">
-                                            <h4>201742505 </h4>
-                                        </Col>
-                                        <Col className="info_texto">
-                                            <h4>jose.david.erazo@correounivalle.edu.co </h4>
-                                        </Col>
-                                    </Row>
-                                    
-                                    <Row className="info">
-                                        <Col className="info_texto">
-                                            <h4>1007619729 </h4>
-                                        </Col>
-                                        <Col className="info_texto">
-                                            <h4>3023675777 </h4>
-                                        </Col>
-                                    </Row>
-                                    
+                                        
+                                    </Col>
+                                    <Col md={"6"}>
+                                      <Row className="info"> 
+                                          <Col className="info_texto" xs={"12"} md={"6"}>
+                                              <h4>1 sfasgdsdre</h4>
+                                          </Col>
+                                          <Col className="info_texto" xs={"12"} md={"6"}>
+                                              <h4>{state.nombres}2 </h4>
+                                          </Col>
+                                      </Row>
+                                      
+                                      <Row className="info">
+                                          <Col className="info_texto" xs={"12"} md={"6"}>
+                                              <h4>{state.cedula}3 </h4>
+                                          </Col>
+                                          <Col className="info_texto" xs={"12"} md={"6"}w>
+                                              <h4>{state.telefono}4</h4>
+                                          </Col>
+                                      </Row>
+                                    </Col>
                                 </Row>
 
                                 <Row className="infoRow2">
+                                  <Row>
                                     <h4>Programas academicos </h4>
-                                    <Col className="inforow23">
-                                        <Row className="infoRow23">
-                                            <h4>van los cuadros verdes </h4>
-                                            <Select  />
-                                            <Switch onClick={handleChange}/>
-                                        </Row>
-                                    </Col>
+                                  </Row>
+                                  <Row className="infoRow23"> 
+                                        <Col xs={"12"} md={"7"}>
+                                          <h4>van los cuadros verdes </h4>
+                                        </Col>
+                                        <Col xs={"12"} md={"4"}> 
+                                          <Select  />
+                                        </Col>
+                                        <Col xs={"12"} md={"1"}>
+                                          <Switch onClick={handleChange}/>
+                                        </Col>
+                                  </Row>
                                 </Row>
                             </Col>
-                            <Col className="colInfo2">
+
+
+
+
+                            <Col className="colInfo2" xs={"12"} md={"3"}>
                                 <Row className="infoRow3">
                                     <h4>ICETEX </h4>
                                     <Select  />
@@ -189,58 +213,29 @@ const Info_basica = () =>{
                                 </Row>
                             </Col>
                         </Row>
-                    </Col>
-                    
-                    <Col className="col2">
-                        <Row>
-                            <h2 className="justMargin2">ASES</h2>
-                            <h1 className="justMargin2"><FaThList /></h1>
-                        </Row>
-                    </Col>
+                  </Col>
 
-                    <Col className="col3">
-                        <img src={"./imag1.jpg"}></img>
-                        <h1>COL DE FOTO</h1>
-                    </Col>
-                </Row>
 
-                <Row className="row2">
-                    <Col className="colMarcados">
-                        <Col><h3>Riesgos</h3></Col>
-                        <Col className="rowJustFlex_column" >
-                            <Col className="rowJustFlex_to_right" >
-                                individual<Button className="buttonRiesgos"></Button> 
-                            </Col>
-                            <Col className="rowJustFlex_to_right">
-                                familiar<Button className="buttonRiesgos"></Button>
-                            </Col>
-                        </Col>
-                        <Col className="rowJustFlex_column">
-                            <Col className="rowJustFlex_to_right">
-                                academico<Button className="buttonRiesgos"></Button>
-                            </Col> 
-                            <Col className="rowJustFlex_to_right">
-                                econocmico<Button className="buttonRiesgos"></Button>
-                            </Col> 
-                        </Col>
-                        <Col className="rowJustFlex_column">
-                            <Col className="rowJustFlex_to_right">
-                                vida Univ.<Button className="buttonRiesgos"></Button> 
-                            </Col>
-                            <Col className="rowJustFlex_to_right">
-                                Geografico<Button className="buttonRiesgos"></Button>
-                            </Col>
-                        </Col>
-                        
-                        
-                        
-                    </Col>
-                    <Col> 
-                        <Button className="generar_nuevo_reporte">Generar Nuevo Reporte</Button>
-                    </Col> 
-                </Row>
-            </Row>
-        </Container>
+
+
+                  <Col xs={"12"} md={"3"}>
+                  
+                    <Row>
+                      <Col className="col2" md={"2"}>
+                          <Row>
+                              <h2 className="justMargin2">ASES</h2>
+                              <h1 className="justMargin2"><FaThList /></h1>
+                          </Row>
+                      </Col>
+
+                      <Col className="col3" md={"10"}>
+                          <img src={"./imag12.jpg"}></img>
+                          <h1>COL DE FOTO</h1>
+                      </Col>
+                    </Row>
+                  </Col>
+        </Row>
+      </Container>
     )
 }
 

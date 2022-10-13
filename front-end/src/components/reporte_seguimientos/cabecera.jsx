@@ -13,19 +13,32 @@ const options = [
       ]
   
 
-const Cabecera = () =>{
+const Cabecera = (props) =>{
 
     return (
         <Container>
             <Row className="row_presentacion_reportes_seguimientos">
                 <Row className="row_selectores_reportes_seguimientos">
                     <Col className="col_selectores_reportes_seguimientos">
-                        <h1>Seguimientos</h1>
+                        <h1>Seguimientos   {props.usuario}</h1>
                     </Col>
-                    <Col className="col_selectores_reportes_seguimientos">
-                        Selector periodo
-                        <Select options={options}></Select>
-                    </Col>
+                    {
+                        props.area === '1' ?
+                        (<Col className="col_selectores_reportes_seguimientos">
+                            periodo actuals
+                            <Select  defaultValue={props.area} defaultInputValue={"texto"} isDisabled={true}>
+                            </Select>
+                            <Select  defaultValue={props.area} defaultInputValue={props.area} opti>
+                            </Select>
+                        </Col>)
+                        :
+                        (<Col className="col_selectores_reportes_seguimientos"> 
+                            <Select options={options}>
+                                <label>siiiii</label>
+                            </Select>
+                        </Col>)
+                    }
+                    
                     <Col className="col_selectores_reportes_seguimientos">
                         Selector persona
                         <Select></Select>

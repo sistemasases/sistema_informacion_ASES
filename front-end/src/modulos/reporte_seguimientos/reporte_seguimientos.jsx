@@ -10,7 +10,7 @@ import Cabecera from "../../components/reporte_seguimientos/cabecera";
 import Informacion_rol from "../../components/reporte_seguimientos/informacion_rol";
 
 
-const Reporte_seguimientos = () =>{
+const Reporte_seguimientos = (props) =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -25,7 +25,7 @@ const Reporte_seguimientos = () =>{
         
         <Container className="container_reportes_seguimientos">
             <Row className="containerRow">
-                <Cabecera></Cabecera>
+                <Cabecera usuario={props.usuario} area={props.area}></Cabecera>
                 <Informacion_rol></Informacion_rol>
             </Row>
 
