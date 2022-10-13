@@ -1,12 +1,12 @@
 from queue import Empty
 from django.contrib.auth.models import User
-from numpy import empty
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante
 from modulo_instancia.models import semestre
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from modulo_usuario_rol import serializers
+from django.db.models import F
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
@@ -19,6 +19,20 @@ class All_user(APIView):
         list_user =User.objects.all()
         print(list_user)
         return Response (list(list_user.values()))
+
+class All_user_with_rol(APIView):
+
+    def get(self, request):
+        list_user_rol = list()
+        var_semestre = get_object_or_404(semestre, semestre_actual = True)
+        for user_rol in usuario_rol.objects.filter(id_semestre =var_semestre.id).values():
+            rols= rol.objects.filter(id =user_rol['id_rol_id']).annotate(id_rol=F('id')).values('id_rol','nombre')[0]
+            usuarios= User.objects.filter(id =user_rol['id_usuario_id']).values('id','username','first_name','last_name', 'email')[0]
+            usuarios.update(rols)
+            list_user_rol.append(usuarios)
+
+        
+        return Response (list_user_rol)
 
 class All_rol(APIView):
 
@@ -34,6 +48,22 @@ class All_estudiante(APIView):
         list_estudiante =estudiante.objects.all()
         return Response (list(list_estudiante.values()))
 
+class Estudiante_manage(APIView):
+
+    serializer_class =serializers.Estudiante_manage
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if (serializer.is_valid()):
+
+            id_request = serializer.validated_data.get('id')
+            var_estudiante =estudiante.objects.filter(id =id_request).values()
+            return Response(var_estudiante[0])
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+            )
+
 class User_manage(APIView):
 
     serializer_class =serializers.User_manage
@@ -43,9 +73,8 @@ class User_manage(APIView):
         if (serializer.is_valid()):
 
             id_request = serializer.validated_data.get('id')
-            var_usuario =get_object_or_404(User, id = id_request)
-            print({'Response': str(var_usuario)})
-            return Response(var_usuario)
+            var_usuario =User.objects.filter(id =id_request).values()
+            return Response(var_usuario[0])
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
@@ -60,9 +89,8 @@ class Rol_manage(APIView):
         if (serializer.is_valid()):
 
             id_request = serializer.validated_data.get('id')
-            var_rol =get_object_or_404(rol, id = id_request)
-            print({'Response': str(var_rol)})
-            return Response(var_rol)
+            var_rol =rol.objects.filter(id =id_request).values()
+            return Response(var_rol[0])
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST

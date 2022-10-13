@@ -18,13 +18,8 @@ def carga_test(request):
 class Validador_carga(APIView):
     serializer_class =serializers.Validador_carga
     def post(self,request):
-        print("data 1: " + str(request.data))
-        print("file 1: " + str(request.FILES))
-        try:
             tipo = request.data.get('tipo_de_carga')
-            print("data 2: " + str(tipo))
-            file = request.data.get('file')
-            print("file 2: " + str(file))
+            file = request.data.get('FILES')
             if(tipo == 'Estudiante'):
                 print("entro al if")
                 return carga_estudiantes(file)
@@ -42,49 +37,47 @@ class Validador_carga(APIView):
                 return carga_retiros(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
-        except: 
-            return Response({'ERROR': 'No se selecciono un tipo de carga o no se cargo el archivo csv correctamente.'})
 
 def carga_estudiantes(file):
     print("entro al carga_estudiantes")
+    mensaje = "Resultado de la carga masiva: \n"
+    lista_estudiantes =[]
     datos = pd.read_csv(file,header=0)
     print("estos son los datos: "+str(datos))
-    try:
-        lista_estudiantes =[]
-        datos = pd.read_csv(file,header=0)
-        print("estos son los datos: "+str(datos))
-        for i in range(datos.shape[0]):
-            try:
-                Estudiante = estudiante(
-                tipo_doc_ini = str(datos.iat[i,0]),
-                num_doc_ini = int(datos.iat[i,1]),
-                tipo_doc = str(datos.iat[i,2]),
-                num_doc = str(datos.iat[i,3]),
-                barrio_ini_id = int(datos.iat[i,4]),
-                ciudad_ini_id = int(datos.iat[i,5]),
-                dir_ini = str(datos.iat[i,6]),
-                telefono_ini = datos.iat[i,7],
-                dir_res = str(datos.iat[i,8]),
-                telefono_res = int(datos.iat[i,9]),
-                email = str(datos.iat[i,10]),
-                acudiente = str(datos.iat[i,11]),
-                telefono_acudiente =int( datos.iat[i,12]),
-                sexo = str(datos.iat[i,13]),
-                colegio = str(datos.iat[i,14]),
-                estamento = str(datos.iat[i,15]),
-                celular = datos.iat[i,16],
-                hijos = datos.iat[i,17],
-                barrio_res_id = int(datos.iat[i,18]),
-                ciudad_res_id = int(datos.iat[i,19])
-                )
-                lista_estudiantes.append(Estudiante)
-            except:
-                print("Error al cargar el estudiante: " + str(datos.iat[i,3]))
+    for i in range(datos.shape[0]):
+        try:
+            Estudiante = estudiante(
+            tipo_doc_ini = str(datos.iat[i,0]),
+            num_doc_ini = int(datos.iat[i,1]),
+            tipo_doc = str(datos.iat[i,2]),
+            num_doc = str(datos.iat[i,3]),
+            barrio_ini_id = int(datos.iat[i,4]),
+            ciudad_ini_id = int(datos.iat[i,5]),
+            dir_ini = str(datos.iat[i,6]),
+            telefono_ini = datos.iat[i,7],
+            dir_res = str(datos.iat[i,8]),
+            telefono_res = int(datos.iat[i,9]),
+            email = str(datos.iat[i,10]),
+            acudiente = str(datos.iat[i,11]),
+            telefono_acudiente =int( datos.iat[i,12]),
+            sexo = str(datos.iat[i,13]),
+            colegio = str(datos.iat[i,14]),
+            estamento = str(datos.iat[i,15]),
+            celular = datos.iat[i,16],
+            hijos = datos.iat[i,17],
+            barrio_res_id = int(datos.iat[i,18]),
+            ciudad_res_id = int(datos.iat[i,19]),
+            nombre = str(datos.iat[i,20]),
+            apellido = str(datos.iat[i,21]),
+            cod_univalle = str(datos.iat[i,22])
+            )
+            lista_estudiantes.append(Estudiante)
+            mensaje = mensaje + "Se cargó correctamente el estudiante: " + str(datos.iat[i,22])+ "\n"
+        except:
+            mensaje = mensaje + "Error al cargar el estudiante: " + str(datos.iat[i,22])+ "\n"
 
-        estudiante.objects.bulk_create(lista_estudiantes)
-        return Response({'Respuesta': 'Carga realziada satisfactoriamente'})
-    except:
-        return Response({'ERROR': 'Error al cargar la informacion en la base de datos.'})
+    estudiante.objects.bulk_create(lista_estudiantes)
+    return Response({'mensaje': mensaje,'respuesta': "Carga terminada."})
 
 def carga_usuarios(file):
     try:
