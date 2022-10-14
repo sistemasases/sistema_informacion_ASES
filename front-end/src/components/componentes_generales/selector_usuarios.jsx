@@ -9,6 +9,9 @@ import all_user_service from '../../service/all_users'
 import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
 import DataTable, {createTheme} from 'react-data-table-component';
+var bandera_consulta_rol = 0;
+var bandera_option_user = true;
+var bandera_option_rol = true;
 const selector_usuarios = () =>{
 
   /*
@@ -16,10 +19,6 @@ const selector_usuarios = () =>{
   */
   const datos_option_user = []
   const datos_option_rol = []
-  var bandera_consulta_rol = true;
-  var bandera_consulta_user_rol = true;
-  var bandera_option_user = true;
-  var bandera_option_rol = true;
 
   const [state,set_state] = useState({
     rol: '',
@@ -81,7 +80,7 @@ const selector_usuarios = () =>{
     necesaria para el selector de usuarios.
   */
   const consulta_all_rol = (e)=>{
-    if(bandera_consulta_rol==true){
+    if(bandera_consulta_rol<=0){
       axios({
         // Endpoint to send files
         url:  "http://127.0.0.1:8000/usuario_rol/allrol/",
@@ -96,7 +95,7 @@ const selector_usuarios = () =>{
       .catch(err=>{
           return (err)
       })
-      bandera_consulta_rol = false;
+      bandera_consulta_rol++;
       console.log(bandera_consulta_rol)
 
     }
@@ -104,7 +103,7 @@ const selector_usuarios = () =>{
     
   }
   const consulta_all_user_rol = (e)=>{
-    if(bandera_consulta_user_rol==true){
+
       axios({
         // Endpoint to send files
         url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/",
@@ -120,10 +119,6 @@ const selector_usuarios = () =>{
           return (err)
       })
 
-      bandera_consulta_user_rol = false;
-      console.log(bandera_consulta_user_rol)
-
-    }
   }
 
   const handle_user_selector = (e) => {
@@ -262,8 +257,8 @@ const selector_usuarios = () =>{
   return (
         <Container>
         <Accordion>
-          <Accordion.Item onMenuOpen={consulta_all_rol} eventKey="0">
-            <Accordion.Header >Selector de Usuarios</Accordion.Header>
+          <Accordion.Item  eventKey="0">
+            <Accordion.Header onClick={consulta_all_rol}>Selector de Usuarios</Accordion.Header>
             <Accordion.Body>
             <Row className="g-2">
                 <h3>Selecciona un usuario</h3>
@@ -305,8 +300,8 @@ const selector_usuarios = () =>{
             </Row>
             </Accordion.Body>
           </Accordion.Item>
-          <Accordion.Item  onChange={consulta_all_user_rol} eventKey="1">
-          <Accordion.Header >Lista de Usuarios</Accordion.Header>
+          <Accordion.Item eventKey="1">
+          <Accordion.Header onClick={consulta_all_user_rol}>Lista de Usuarios</Accordion.Header>
             <Accordion.Body>
               <DataTable 
               columns={columnas}

@@ -5,6 +5,7 @@ import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import carga_masiva_service from '../../service/carga_masiva';
+import DataTable, {createTheme} from 'react-data-table-component';
 const carga_masiva_component = () =>{
 
   const[switchChecked, setChecked] = useState(false);
@@ -13,11 +14,22 @@ const carga_masiva_component = () =>{
 
   const [state,set_state] = useState({
     option : '',
-    mensaje : '',
+    mensaje : [],
     respuesta : 'Cargando...',
   })
   const [archivo,set_archivo] = useState(null);
   const [show, setShow] = useState(false);
+  const columnas =[
+    {
+      name: 'DATO',
+      selector: row => row.dato
+    },
+    {
+      name: 'MENSAJE',
+      selector: row => row.mensaje,
+      grow : 2,
+    },
+  ]
 
   const handle_file = (e) => {
 
@@ -48,10 +60,11 @@ const carga_masiva_component = () =>{
       data: formData,
     })
     .then((res)=>{
+      console.log(res)
       set_state({
         ...state,
-        mensaje : res.data.mensaje,
-        respuesta: res.data.respuesta
+        mensaje : res.data,
+        respuesta: "Carga finalizada."
       })
     })
     .catch(err=>{
@@ -97,15 +110,22 @@ const carga_masiva_component = () =>{
             <Row className='mt-2'>
               <Col sm={9}>
                 <Form.Control type="file" name='file' onChange={handle_file}/>   
-              </Col>   
+              </Col>
+              <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0">Plantillas de Carga</a>
+    
             </Row>
             <Row className='mt-2'>
               <Col lg={{ span: 0, offset: 0}} >
                   <Button onClick={handle_upload}>Subir</Button>
-              </Col>  
+              </Col>
             </Row>
             <Row className='mt-2' >
-                <Form.Control as="textarea" value={state.mensaje} readOnly/>
+                <DataTable 
+                  columns={columnas}
+                  data={state.mensaje}
+                  noDataComponent=""
+                  pagination
+                />
             </Row>
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
