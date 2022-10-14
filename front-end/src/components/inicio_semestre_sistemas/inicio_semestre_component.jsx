@@ -4,6 +4,8 @@ import axios from 'axios';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
+import swal from 'sweetalert'
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const url_instancias = 'http://127.0.0.1:8000/wizard/all'
 
@@ -19,6 +21,8 @@ const inicio_semestre_component = () =>{
     const [isDisabled, setDisabled] = useState(false);
 
     const [selected, setSelected] = useState([]);
+
+    const [selectedName, setSelectedName] = useState([]);
 
     useEffect(()=>{
         axios({
@@ -42,28 +46,36 @@ const inicio_semestre_component = () =>{
                 const dato = { value: state.tabs[i]['nombre'], label: state.tabs[i]['nombre'], id: state.tabs[i]['id'] }
                 opciones.push(dato);
             }
-            console.log([opciones]);
             bandera_option = false;
-        }
-        else{
-            console.log([opciones]);
         }
     }
 
     const handleButton = () =>{
-        console.log(selected[0]);
-
-        //Inicio_semestre_service.inicio_semestre(selected[0])
-
-        navigate('/crear_semestre_sistemas');
+        swal({
+            title: "Iniciar Semestre",
+            text: "Usted está apunto de iniciar un nuevo semestre, lo cual finalizará el semestre anterior y se creará uno nuevo en la instancia " + selectedName[0] +
+            " con el nombre "+ "2023-A" +"\n\nEn caso de ser erroneo, por favor contactar con Ases",
+            icon: "info",
+            buttons: ["Cancelar", "Aceptar"]
+        }).then(respuesta=>{
+            if(respuesta){
+                Inicio_semestre_service.inicio_semestre(selected[0]);
+                navigate('/crear_semestre_sistemas');
+            }
+        })
+        
     }
 
     const handleActivateButton = (e) =>{
-        console.log(e.id);
         var aux=null;
         selected.shift();
         aux = selected.concat(e.id);
         setSelected(aux);
+
+        var aux1=null;
+        selectedName.shift();
+        aux1 = selectedName.concat(e.value);
+        setSelectedName(aux1);
 
         if(aux.length>0){
             setDisabled(true);

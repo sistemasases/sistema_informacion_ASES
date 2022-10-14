@@ -27,6 +27,7 @@
     "react-tabs": "^5.1.0",
     "react-text-mask": "^5.5.0",
     "reactstrap": "^9.1.4",
+    "sweetalert": "^2.1.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -57,6 +58,5 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {}
+  "license": "ISC"
 }

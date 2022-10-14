@@ -2,6 +2,7 @@ from pickle import TRUE
 from django.shortcuts import render
 from django.views import View
 from rest_framework.views import APIView
+from rest_framework import generics
 from .models import instancia
 from .models import semestre
 from django.http import JsonResponse
@@ -23,24 +24,31 @@ class instancia_manage (APIView):
         list_instancia =instancia.objects.all()
         return Response (list(list_instancia.values()))
 
-class end_semestry_manage (APIView):
+class semestre_manage (APIView):
+
     def get(self, request):
         print(request)
-        semestreActual = semestre.objects.filter(semestre_actual=True).first()
+        list_instancia =semestre.objects.all()
+        return Response (list(list_instancia.values()))
+
+class end_semestry_manage (APIView):
+    def get(self, request, pk):
+        print(request)
+        semestreActual = semestre.objects.filter(semestre_actual=True).filter(id_instancia_id=pk).first()
         semestreActual_serializer = SemestreSerializer(semestreActual)
         return Response (semestreActual_serializer.data)
 
 
-    def patch(self, request):
+    def put(self, request, pk):
         print(request)
-        semestreActual = semestre.objects.filter(semestre_actual=True).first()
+        semestreActual = semestre.objects.filter(semestre_actual=True).filter(id_instancia_id=pk).first()
         semestreActual_serializer = SemestreSerializer(semestreActual, data=request.data)
         if semestreActual_serializer.is_valid():
             semestreActual_serializer.save()
             return Response (semestreActual_serializer.data)
         return Response (semestreActual_serializer.errors)
 
-    def post(self, request):
+    def post(self, request, pk):
         print(request)
         semestreActual_serializer = SemestreSerializer(data=request.data)
         if semestreActual_serializer.is_valid():
