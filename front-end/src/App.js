@@ -38,7 +38,8 @@ import React, {useState} from 'react';
 import {Row, Col} from "react-bootstrap";
 import NavBar from "./components/componentes_generales/navbar";
 
-
+import 'styled-components';
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
 import "./Scss/ficha_estudiante/Styles.css";
@@ -61,6 +62,7 @@ import Reporte_seguimientos from "./modulos/reporte_seguimientos/reporte_seguimi
 import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
 import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
+import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
 
 /*
 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
@@ -99,6 +101,7 @@ const App = () => {
                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} area={area}/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos usuario={nombreUsuario}/>}/>
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol usuario={nombreUsuario}/>}/>
+                        <Route path="/carga_masiva" element={<Carga_masiva/>}/>
                     </Routes>
                 </SideBar>
             </Row>
