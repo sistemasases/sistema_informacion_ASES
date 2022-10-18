@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const inicio_semestre = async (instancia) => {
+const inicio_semestre = async (instancia, nombre_nuevo) => {
 
+  //URL para el axios
   const url_semestre = 'http://127.0.0.1:8000/wizard/semestre_actual/' + instancia.toString()+"/";
 
+  //variables para la creacion y finalizacion del semestre
   var semestreActual = {
     nombre: '',
     fecha_inicio: null,
@@ -11,7 +13,6 @@ const inicio_semestre = async (instancia) => {
     semestre_actual: false,
     id_instancia: 0
   }
-
   var semestreNuevo = {
     nombre: '',
     fecha_inicio: null,
@@ -20,8 +21,7 @@ const inicio_semestre = async (instancia) => {
     id_instancia: 0
   }
 
-  var nombre_nuevo = 'Error';
-
+  //Varaiables par el dia de ayer, el actual y dentro de 6 meses
   var yesterday = new Date();
   var today = new Date();
   var finish = new Date();
@@ -37,12 +37,15 @@ const inicio_semestre = async (instancia) => {
   var fechaNueva_inico = today.toISOString();
   var fechaNueva_fin = finish.toISOString();
 
+  //conexion con el back para actualizar y crear el semestre en una instancia seleccionada
   axios({
     url: url_semestre,
     method: "GET",
   })
   .then((respuesta)=>{
-
+    if(fechaAnterior > respuesta.data['fecha_fin']){
+      fechaAnterior = respuesta.data['fecha_fin'];
+    }
     semestreActual = {
       nombre: respuesta.data['nombre'],
       fecha_inicio: respuesta.data['fecha_inicio'],
@@ -50,15 +53,6 @@ const inicio_semestre = async (instancia) => {
       semestre_actual: false,
       id_instancia: instancia
     }
-
-    const nombre_semestre = respuesta.data['nombre'].split('-');
-    
-    if(nombre_semestre[1]==='A'){
-      nombre_nuevo = nombre_semestre[0] + '-B'
-    } else {
-      nombre_nuevo = (parseInt(nombre_semestre[0])+1).toString() + '-A';
-    }
-
     semestreNuevo = {
       nombre: nombre_nuevo,
       fecha_inicio: fechaNueva_inico,
@@ -70,33 +64,6 @@ const inicio_semestre = async (instancia) => {
     axios.post(url_semestre, semestreNuevo);
   })
   .catch((err)=>{console.log(err)})
-}
-
-const nombre_semeste_nuevo = (instancia) => {
-
-  const url_semestre = 'http://127.0.0.1:8000/wizard/semestre_actual/' + instancia.toString()+"/";
-
-  var nombre_nuevo = 'Error';
-
-  axios({
-    url: url_semestre,
-    method: "GET",
-  })
-  .then((respuesta)=>{
-
-    const nombre_semestre = respuesta.data['nombre'].split('-');
-    
-    if(!(isNaN(nombre_semestre[0]))){
-      if(nombre_semestre[1]==='A'){
-        nombre_nuevo = nombre_semestre[0] + '-B'
-      } else {
-        nombre_nuevo = (parseInt(nombre_semestre[0])+1).toString() + '-A';
-      }
-    }
-  })
-  .catch((err)=>{console.log(err)})
-
-  return nombre_nuevo;
 }
 
 export default {
