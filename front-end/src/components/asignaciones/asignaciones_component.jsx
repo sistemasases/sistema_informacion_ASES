@@ -6,14 +6,14 @@ import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import carga_masiva_service from '../../service/carga_masiva';
 import DataTable, {createTheme} from 'react-data-table-component';
-const carga_masiva_component = () =>{
+const asignaciones_component = () =>{
 
   const[switchChecked, setChecked] = useState(false);
   const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
   
 
   const [state,set_state] = useState({
-    option : 'Estudiante',
+    option : '',
     mensaje : [],
     respuesta : 'Cargando...',
   })
@@ -142,7 +142,7 @@ const carga_masiva_component = () =>{
   )
 }
 
-export default carga_masiva_component
+export default asignaciones_component
 
 
   

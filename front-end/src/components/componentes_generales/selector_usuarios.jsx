@@ -265,7 +265,7 @@ const selector_usuarios = () =>{
             </Row>
             <Row className="mb-3">
 
-                <Select class="form-control" options={datos_option_user} onMenuOpen={handle_user_selector} onChange={handle_option_user} className="justMargin1" />
+                <Select class="form-control" options={datos_option_user} onMenuOpen={handle_user_selector} onChange={handle_option_user} className="g-2" />
                 
             </Row>
             <Row className="g-2">
@@ -285,7 +285,7 @@ const selector_usuarios = () =>{
             </Row>
 
             <Row className="g-2" >
-              <Select class="form-control"  options={datos_option_rol} onMenuOpen={handle_rol_selector} onChange={handle_option_rol} className="justMargin1" />
+              <Select class="form-control"  options={datos_option_rol} onMenuOpen={handle_rol_selector} onChange={handle_option_rol} className="g-2" />
                 
             </Row>
             <Row className='mt-2'> 
@@ -306,6 +306,7 @@ const selector_usuarios = () =>{
               <DataTable 
               columns={columnas}
               data={state.data_user_rol}
+              noDataComponent="Cargando Información."
               pagination
               />
             </Accordion.Body>
