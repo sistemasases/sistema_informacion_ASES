@@ -63,6 +63,7 @@ import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
 import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
+import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
 
 /*
 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
@@ -102,7 +103,7 @@ const App = () => {
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos usuario={nombreUsuario}/>}/>
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
-
+                        <Route path="/asignaciones" element={<Asignaciones/>}/>
                     </Routes>
                 </SideBar>
             </Row>
