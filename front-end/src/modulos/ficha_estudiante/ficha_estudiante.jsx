@@ -4,12 +4,14 @@ import Switch from 'react-switch';
 
 import Info_basica from "../../components/ficha_estudiante/info_basica";
 import Selector from "../../components/ficha_estudiante/selector";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import {Container, Row, Col, Dropdown, Button} from "styled-bootstrap-grid";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Footer from '../../components/componentes_generales/footer';
 import Info_registros from '../../components/ficha_estudiante/info_registros';
+import Ficha_footer from '../../components/ficha_estudiante/ficha_footer';
+
 
 
 const Ficha_estudiante = (props) =>{
@@ -34,7 +36,9 @@ const Ficha_estudiante = (props) =>{
                     </Col>
                 </Row>
                 <Row>
-                    <Selector id={props.cedula} nombres={props.nombres}/>
+                    <Col xs={"12"}>
+                        <Ficha_footer/>
+                    </Col>
                 </Row>
         </Container>
     )

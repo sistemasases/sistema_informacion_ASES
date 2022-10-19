@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import Select from 'react-select'  ;
 import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import carga_masiva_service from '../../service/carga_masiva';
+import DataTable, {createTheme} from 'react-data-table-component';
 const carga_masiva_component = () =>{
 
   const[switchChecked, setChecked] = useState(false);
@@ -12,16 +13,28 @@ const carga_masiva_component = () =>{
   
 
   const [state,set_state] = useState({
-    file: null,
     option : '',
+    mensaje : [],
+    respuesta : 'Cargando...',
   })
+  const [archivo,set_archivo] = useState(null);
+  const [show, setShow] = useState(false);
+  const columnas =[
+    {
+      name: 'DATO',
+      selector: row => row.dato
+    },
+    {
+      name: 'MENSAJE',
+      selector: row => row.mensaje,
+      grow : 2,
+    },
+  ]
+
   const handle_file = (e) => {
-    // Getting the files from the input
-    console.log(e.target.files[0].name)
-    set_state({
-      ...state,
-      [e.target.name] : [e.target.files[0]],
-    })
+
+    console.log(e.target.files)
+    set_archivo(e.target.files[0])
   }
   const handle_options = (e) => {
     // Getting the files from the input
@@ -32,25 +45,46 @@ const carga_masiva_component = () =>{
     })
   }
   const handle_upload=(e)=> {
-    let file = [state.file];
     let option = [state.option];
     let formData = new FormData();
+    console.log(archivo)
   
     //Adding files to the formdata
     formData.append("tipo_de_carga", option);
-    formData.append("file", file);
-    console.log ("ARCHIVO: "+formData.get("file"))
+    formData.append("FILES", archivo);
 
     axios({
       // Endpoint to send files
       url: url_carga,
       method: "POST",
-      // Attaching the form data
       data: formData,
     })
-    .then(res=>{console.log(res.data)})
-    .catch(err=>console.log(err))
+    .then((res)=>{
+      console.log(res)
+      set_state({
+        ...state,
+        mensaje : res.data,
+        respuesta: "Carga finalizada."
+      })
+    })
+    .catch(err=>{
+      set_state({
+        ...state,
+        respuesta: "ocurrio un error"
+    })})
+    setShow(true)
+    console.log(state.mensaje)
+    console.log(state.respuesta)
+
   }
+  const set_info = (e) => {
+    setShow(false)
+    set_state({
+      ...state,
+      respuesta : 'Cargando...',
+    })
+  }
+  const handleClose = () => setShow(false);
 
   return (
         <Container>
@@ -64,28 +98,46 @@ const carga_masiva_component = () =>{
               <Col sm={9}>
                 <Form.Select name= "option" onChange={handle_options} >
                   <option value="Estudiante">Estudiante</option>
-                  <option value="Usuarios">Usuarios</option>
-                  <option value="Materias">Materias</option>
-                  <option value="Notas">Notas</option>
+                  <option value="Usuario">Usuario</option>
+                  <option value="Materia">Materia</option>
+                  <option value="Nota">Nota</option>
                   <option value="Resolución">Resolución</option>
                   <option value="Programa">Programa</option>
-                  <option value="Retiros">Retiros</option>
+                  <option value="Retiro">Retiro</option>
                 </Form.Select>
               </Col>
             </Row>
             <Row className='mt-2'>
               <Col sm={9}>
                 <Form.Control type="file" name='file' onChange={handle_file}/>   
-              </Col>   
+              </Col>
+              <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0">Plantillas de Carga</a>
+    
             </Row>
             <Row className='mt-2'>
               <Col lg={{ span: 0, offset: 0}} >
                   <Button onClick={handle_upload}>Subir</Button>
-              </Col>  
+              </Col>
             </Row>
             <Row className='mt-2' >
-                <Form.Control as="textarea" readOnly/>
+                <DataTable 
+                  columns={columnas}
+                  data={state.mensaje}
+                  noDataComponent=""
+                  pagination
+                />
             </Row>
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>ESTADO CARGA</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>{state.respuesta}</Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={set_info}>
+                  OK
+                </Button>
+              </Modal.Footer>
+            </Modal>
         </Container>
   )
 }

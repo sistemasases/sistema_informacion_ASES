@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Container, Row, Col, Dropdown} from "react-bootstrap";
+
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
@@ -28,10 +29,12 @@ const NavBar = (props) =>{
     <Container  >
         <Row className="nav">
 
-        <Col md={"4"}>
-                <a>Site name</a>
+            <Col xs={"0"} md={"3"} >
+                <Row>site name</Row>
             </Col>
-            <Col className="ulDropdown" md={"4"}>            
+
+
+            <Col className="ulDropdown" xs={"4"} md={"6"}>            
                 <ul>
                     <li>
                         <a >{props.nombre}</a>
@@ -41,10 +44,12 @@ const NavBar = (props) =>{
                 </ul>
             </Col>
 
-            <Col xs={"12"} md={"4"} className="boton_perfil">
+
+            <Col className="boton_perfil" xs={"8"} md={"3"}>
                 <Row>
                     <Col xs={"8"} className="info_perfil">
-                        holla
+                        <Row>primera linea</Row>
+                        <Row>segunda linea</Row>
                     </Col>
                     <Col xs={"4"} className="desplegable_usuario">
                         <Dropdown isOpen={isOpen} onClick={toggle} className="dropdown">
@@ -63,9 +68,7 @@ const NavBar = (props) =>{
                                 </DropdownMenu>
                     </Dropdown>
                     </Col>
-                </Row>
-                
-                
+                </Row>    
             </Col>
 
         </Row>

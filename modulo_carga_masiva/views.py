@@ -18,17 +18,13 @@ def carga_test(request):
 class Validador_carga(APIView):
     serializer_class =serializers.Validador_carga
     def post(self,request):
-        print("data 1: " + str(request.data))
-        print("file 1: " + str(request.FILES))
-        try:
             tipo = request.data.get('tipo_de_carga')
-            print("data 2: " + str(tipo))
-            file = request.data.get('file')
-            print("file 2: " + str(file))
+            file = request.data.get('FILES')
             if(tipo == 'Estudiante'):
                 print("entro al if")
                 return carga_estudiantes(file)
             elif(tipo == "Usuario"):
+                print("entro al if")
                 return carga_usuarios(file)
             elif(tipo == "Materia"):
                 return carga_materias(file)
@@ -42,18 +38,21 @@ class Validador_carga(APIView):
                 return carga_retiros(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
-        except: 
-            return Response({'ERROR': 'No se selecciono un tipo de carga o no se cargo el archivo csv correctamente.'})
 
 def carga_estudiantes(file):
     print("entro al carga_estudiantes")
+    list_dict_result = []
+    lista_estudiantes =[]
     datos = pd.read_csv(file,header=0)
     print("estos son los datos: "+str(datos))
-    try:
-        lista_estudiantes =[]
-        datos = pd.read_csv(file,header=0)
-        print("estos son los datos: "+str(datos))
-        for i in range(datos.shape[0]):
+    for i in range(datos.shape[0]):
+        if (estudiante.objects.filter(cod_univalle = datos.iat[i,22]).values()):
+            dict_result = {
+                'dato' : datos.iat[i,22],
+                'mensaje' : 'Ya existe en la BD este estudiante.'
+            }
+            list_dict_result.append(dict_result)
+        else:
             try:
                 Estudiante = estudiante(
                 tipo_doc_ini = str(datos.iat[i,0]),
@@ -75,37 +74,68 @@ def carga_estudiantes(file):
                 celular = datos.iat[i,16],
                 hijos = datos.iat[i,17],
                 barrio_res_id = int(datos.iat[i,18]),
-                ciudad_res_id = int(datos.iat[i,19])
+                ciudad_res_id = int(datos.iat[i,19]),
+                nombre = str(datos.iat[i,20]),
+                apellido = str(datos.iat[i,21]),
+                cod_univalle = str(datos.iat[i,22])
                 )
                 lista_estudiantes.append(Estudiante)
+                dict_result = {
+                    'dato' : datos.iat[i,22],
+                    'mensaje' : 'Se cargó correctamente este estudiante.'
+                }
+                list_dict_result.append(dict_result)
             except:
-                print("Error al cargar el estudiante: " + str(datos.iat[i,3]))
+                dict_result = {
+                    'dato' : datos.iat[i,22],
+                    'mensaje' : 'Error al cargar este estudiante.'
+                }
+                list_dict_result.append(dict_result)
 
-        estudiante.objects.bulk_create(lista_estudiantes)
-        return Response({'Respuesta': 'Carga realziada satisfactoriamente'})
-    except:
-        return Response({'ERROR': 'Error al cargar la informacion en la base de datos.'})
+    estudiante.objects.bulk_create(lista_estudiantes)
+    return Response(list_dict_result)
 
 def carga_usuarios(file):
-    try:
-        lista_usuarios =[]
-        datos = pd.read_csv(file,header=0)
-        for i in range(datos.shape[0]):
-            Usuario = User(
-            password = make_password("ases2022"),
-            is_superuser = False,
-            username = str(datos.iat[i,0]),
-            first_name = str(datos.iat[i,1]),
-            last_name = str(datos.iat[i,2]),
-            email = str(datos.iat[i,3]),
-            is_staff = True,
-            is_active = True
-            )
-            lista_usuarios.append(Usuario)
-        User.objects.bulk_create(lista_usuarios)
-    except:
-        print("Error")
-        return JsonResponse("ERROR: Error al cargar la informacion en la base de datos.", safe=False)
+    print("entro al carga_usuarios")
+    list_dict_result = []
+    lista_usuarios =[]
+    datos = pd.read_csv(file,header=0)
+    print("estos son los datos: "+str(datos))
+    for i in range(datos.shape[0]):
+        if (User.objects.filter(username = datos.iat[i,0]).values()):
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'Ya existe un usuario con este username.'
+            }
+            list_dict_result.append(dict_result)
+        else:
+            try:
+                Usuario = User(
+                password = make_password("ases2022"),
+                is_superuser = False,
+                username = str(datos.iat[i,0]),
+                first_name = str(datos.iat[i,1]),
+                last_name = str(datos.iat[i,2]),
+                email = str(datos.iat[i,3]),
+                is_staff = True,
+                is_active = True
+                )
+                lista_usuarios.append(Usuario)
+        
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'Se cargó correctamente este usuario.'
+                }
+                list_dict_result.append(dict_result)
+            except:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'Error al cargar este usuario.'
+                }
+                list_dict_result.append(dict_result)
+
+    User.objects.bulk_create(lista_usuarios)
+    return Response(list_dict_result)
 
 def carga_programas(file):
     datos = pd.read_csv(file,header=0)

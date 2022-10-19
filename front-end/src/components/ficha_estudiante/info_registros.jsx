@@ -4,7 +4,9 @@ import Switch from 'react-switch';
 
 import Info_basica from "../../components/ficha_estudiante/info_basica";
 import Selector from "../../components/ficha_estudiante/selector";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import {Dropdown, Button} from "react-bootstrap";
+import {Container, Row, Col} from "styled-bootstrap-grid";
+
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
@@ -20,25 +22,75 @@ const Info_registros = () =>{
                     <Button >Generar Nuevo Reporte</Button>
                 </Row>
                 <Row className="riesgos">
-                        <Row><h3>Riesgos</h3></Row>
-                            <Col className="rowJustFlex_to_right" xs={"6"} md={"12"}>
-                            <Button className="buttonRiesgos"></Button>individual 
+                        <Row xs={"12"} sm={"12"}>
+                            <Col>
+                                <h3 className="texto_subtitulo">Riesgos</h3>
                             </Col>
-                            <Col className="rowJustFlex_to_right" xs={"6"} md={"12"}>
-                                <Button className="buttonRiesgos"></Button>familiar
+                        </Row>
+
+                        <Row xs={"12"} ms={"12"}>
+                            <Col xs={"0"} sm={"1"} ></Col>
+                            <Col xs={"11"} sm={"10"}>
+
+                                <Row className="row_riesgo">
+                                    <Col xs={"3"} sm={"3"} className="columna_boton_riesgo">
+                                    <Button className="buttonRiesgos"></Button>
+                                    </Col>
+                                    <Col  xs={"9"}  sm={"9"}>
+                                        individual
+                                    </Col>
+                                </Row>
+                                
+                                <Row  className="row_riesgo">
+                                    <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
+                                        <Button className="buttonRiesgos"></Button>
+                                    </Col>
+                                    <Col  xs={"9"}  sm={"9"}>
+                                        familiar
+                                    </Col>
+                                </Row>
+                                
+                                <Row  className="row_riesgo">
+                                        <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
+                                            <Button className="buttonRiesgos"></Button>
+                                        </Col>
+                                        <Col  xs={"9"} sm={"9"}>
+                                        academico
+                                        </Col>
+                                </Row>
+                                
+                                <Row className="row_riesgo">
+                                        <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
+                                            <Button className="buttonRiesgos"></Button>
+                                        </Col>
+                                        <Col  xs={"9"} sm={"9"}>
+                                        econocmico
+                                        </Col>
+                                    </Row>
+                                
+                                <Row className="row_riesgo">
+                                        <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
+                                            <Button className="buttonRiesgos"></Button>
+                                        </Col>
+                                        <Col  xs={"9"} sm={"9"}>
+                                        vida Univ.
+                                        </Col>
+                                    </Row>
+                                
+                                    <Row className="row_riesgo" >
+                                        <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
+                                            <Button className="buttonRiesgos"></Button>
+                                        </Col>
+                                        <Col  xs={"9"} sm={"9"}>
+                                            Geografico
+                                        </Col>
+                                    </Row>
+
                             </Col>
-                            <Col className="rowJustFlex_to_right" xs={"6"} md={"12"}>
-                                <Button className="buttonRiesgos"></Button>academico
-                            </Col> 
-                            <Col className="rowJustFlex_to_right" xs={"6"} md={"12"}>
-                                <Button className="buttonRiesgos"></Button>econocmico
-                            </Col> 
-                            <Col className="rowJustFlex_to_right" xs={"6"} md={"12"}>
-                                <Button className="buttonRiesgos"></Button> vida Univ.
-                            </Col>
-                            <Col className="rowJustFlex_to_right" xs={"6"} md={"12"}>
-                                <Button className="buttonRiesgos"></Button>Geografico
-                            </Col>
+                            
+
+                        </Row>
+                            
                 </Row>
             </Col>
         </Container>

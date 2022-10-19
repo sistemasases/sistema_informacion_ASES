@@ -4,7 +4,7 @@
 }
 
 body {
-    margin: 0;
+    margin: 0;    
 }
 
 .containerRow{
@@ -14,9 +14,6 @@ body {
 
 .row1{
     border: 10px;
-    font: 100% sans-serif;
-
-
 }
 .col1{
     width: 70%;
@@ -37,7 +34,6 @@ body {
 
 
 .row2{
-    font: 100% sans-serif;
     width: 100%;
     display: flex;
 }
@@ -65,7 +61,6 @@ body {
 }
 
 .info_basica_borde{
-    font: 100% sans-serif;
     padding: 5px 5px;
     background: #dfdfdf;
     border: 3px solid lightgrey;
@@ -110,7 +105,7 @@ body {
 }
 .info_texto{
     word-break: break-all;
-    width: 100%;
+    
 }
 .info_basica_selector{
 }
@@ -159,7 +154,6 @@ body {
 
 
 .container_info_registro{
-    font: 100% sans-serif;
     padding-top:5px;
     padding-bottom: 5px;
     padding-left: 5px;
@@ -177,5 +171,44 @@ body {
     border-radius: 10px;
     background: #dfdfdf;
     margin-top: 10px;
-    padding:10px 10px;
+}
+
+.row_riesgo{
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.columna_boton_riesgo{
+    background: yellowgreen;
+}
+
+
+
+
+
+.texto_pequeño{
+    font-size: 14pt;
+    font-family: "Manrope";
+}
+
+
+.texto_subtitulo{
+    font-size: 20pt;
+    font-family: "Manrope";
+}
+
+.texto_titulo{
+    font-size: 36pt;
+    font-family: "Manrope";
+}
+
+
+
+.container_ficha_footer{
+
+}
+
+.ficha_footer{
+    background: #dfdfdf;
+    border-radius: 10px;
 }

@@ -35,9 +35,6 @@ body {
 .nav a {
     color: inherit;
 }
-.boton_usuario{
-    background: rgb(200, 0, 0);
-}
 
 .itemsNav{
     margin-right: 10%;
@@ -60,21 +57,27 @@ body {
 
 .ulDropdown{
     place-items: right;
-    padding-left: 60%;
-    width: 70%;
     list-style: none;
-    display: flex;
-    gap: 1rem;
 }
 
 
 
 .boton_perfil{
     background: #dfdfdf;
+    color:rgb(200, 0, 0);
+    font-size: 14pt;
+    font-family: "Manrope";
+    margin: 0.5rem 0px;
+    height: 3rem;
 }
 .info_perfil{
-    background: rgb(200, 0, 0);
+    height: 3rem;
 }
 .desplegable_usuario{
-    background: blue;
+    background: rgb(100, 0, 0);
+    padding-top: 0.25rem;
+}
+.boton_usuario{
+    background: rgb(200, 0, 0);
+    border-radius: 100%;
 }

@@ -29,7 +29,6 @@ const Gestion_usuario_rol = () =>{
             <Row className="rowJustFlex_usuario_rol2">
 
                 <Selector_usuarios/>
-                <Selector_usuarios_copy/>
             </Row>
             <Row>
 

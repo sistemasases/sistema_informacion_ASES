@@ -8,6 +8,9 @@ from django.contrib.auth.models import User
 
 class estudiante (models.Model):
 
+    nombre= models.CharField(max_length=50,default=None)
+    apellido = models.CharField(max_length=50,default=None)
+    cod_univalle = models.CharField(max_length=12,unique = True)
     tipo_doc_ini= models.CharField(max_length=30)
     num_doc_ini= models.BigIntegerField()
     tipo_doc= models.CharField(max_length=30)
