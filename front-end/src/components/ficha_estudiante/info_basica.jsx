@@ -14,6 +14,7 @@ import Ficha_footer from "./ficha_footer";
 
 
 
+
 const Info_basica = () =>{
 
     const[switchChecked, setChecked] = useState(false);
