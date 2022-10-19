@@ -8,12 +8,6 @@ body {
 }
 
 .containerRow{
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    padding-right: 2%;
-    width: 100%;
-    background: white;
 }
 
 
@@ -21,38 +15,22 @@ body {
 .row1{
     border: 10px;
     font: 100% sans-serif;
-    width: 100%;
-    padding: 5px 5px;
-    display: flex;
-    background: #dfdfdf;
-    justify-content: space-between;
+
+
 }
 .col1{
-    
-
     width: 70%;
-    padding: 1% 2%;
-    background: #dfdfdf;
 }
 .infoRow1{
-    background: #dfdfdf;
-    width: 100%;
-    height: 30%;
-    display: flex;
 }
 .infoRow2{
-    margin-top: 50px;
-    height:10%;
+    padding: 10px 10px;
 }
-.col2{
-    
-    width: 10%;
-    background: #dfdfdf;
+.col2{    
+    word-break: break-all;
 }
 .col3{
-    
-
-    width: 20%;
+    word-break: break-all;
     background: white;
 }
 
@@ -60,9 +38,7 @@ body {
 
 .row2{
     font: 100% sans-serif;
-    background: #dfdfdf;
     width: 100%;
-    padding: 2% 2%;
     display: flex;
 }
 
@@ -80,21 +56,19 @@ body {
 }
 .rowJustFlex_column{
     justify-content: right;
-    margin: 0px 20px;
     display: flex;
     flex-direction: column;
 }
 .justMargin1{
-    margin-top:20%;
 }
 .justMargin2{
-    margin: 10% 20%;
 }
 
 .info_basica_borde{
+    font: 100% sans-serif;
+    padding: 5px 5px;
     background: #dfdfdf;
     border: 3px solid lightgrey;
-    padding: 10px;
     border-radius: 20px;
 }
 
@@ -105,56 +79,40 @@ body {
 
 
 
-.generar_nuevo_reporte{
-    margin-left: 20px;
-    height: 80px;
-}
+
 
 .infoRow23{
     border-radius: 10px;
     width: 100%;
-    padding-top: 10px;
-    padding-left: 10px;
     display: flex;
     background: gray;
     justify-content: space-between;
 
 }
 .infoRow3{
+    
     justify-content: space-between;
     width: 100%;
-    padding: 5px 5px;
-    margin: 5% 5%;
     display: flex;
-    background: #dfdfdf;
 }
 
 .infoSelect{
-    margin: 2% 2%;
 }
 
 .infoRowInterno{
-    padding: 0% 2%;
     width: 70%;
     background: hotpink;
-    padding-top: 0%;
     display: flex;
 }
 
 .info{
     word-break: break-all;
-    width: 50%;
-    margin: 0px 5px;
-    padding: 0px 10px;
 }
-.info_text{
+.info_texto{
     word-break: break-all;
     width: 100%;
 }
 .info_basica_selector{
-    width: 30%;
-    margin: 0px 5px;
-    padding: 0px 10px;
 }
 
 
@@ -189,4 +147,35 @@ body {
 
 .selectPequeño{
     width: 10%;
+}
+
+
+
+
+
+
+
+
+
+
+.container_info_registro{
+    font: 100% sans-serif;
+    padding-top:5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.generar_nuevo_reporte{
+    border-radius: 10px;
+    background: #dfdfdf;
+    padding: 10px 10px;
+    margin-bottom: 5px;
+}
+
+.riesgos{
+    border-radius: 10px;
+    background: #dfdfdf;
+    margin-top: 10px;
+    padding:10px 10px;
 }

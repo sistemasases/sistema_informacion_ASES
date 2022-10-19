@@ -1,14 +1,25 @@
 
 
 .containerSidebar{
-    display: flex;
-    
+    word-break: break-all;
 }
 
 main{
     margin-top: 100px;
-    width: 100%;
-    padding-left: 20px;
+}
+
+.sup_izq{
+    background: darkcyan;
+    width: 70px;
+}
+.sup_der{
+    background: cornflowerblue;
+}
+
+.inf_izq{
+    background: darkolivegreen;
+}
+.inf_der{
 }
 
 .sideBar{
@@ -17,6 +28,8 @@ main{
     background: #F1F1F1;
     color: black;
     height: 100%;
+    position: fixed;
+    top: 4rem;
 }
 
 .top_selection{
@@ -28,6 +41,7 @@ main{
     align-items: center;
     padding: 20px 15px;
     margin-bottom:30px;
+    position: fixed;
 }
 
 .logo{

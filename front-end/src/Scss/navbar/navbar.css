@@ -7,18 +7,21 @@ body {
 }
 
 .nav {
-    padding-left: 2%;
-    margin-left: 70px;
     z-index: 2;
-    width: 100%;
     height: 4rem;
     background: rgb(200, 0, 0);
     color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding-right:  100px;
+    width: 100%;
+
+}
+.row_navbar{
+    z-index: 2;
     position: fixed;
+    left: 70px;
+    background: blue;
+    width: 100%;
+
 }
 
 .nav ul {
@@ -64,3 +67,14 @@ body {
     gap: 1rem;
 }
 
+
+
+.boton_perfil{
+    background: #dfdfdf;
+}
+.info_perfil{
+    background: rgb(200, 0, 0);
+}
+.desplegable_usuario{
+    background: blue;
+}
