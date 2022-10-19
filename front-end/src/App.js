@@ -99,7 +99,7 @@ const App = () => {
                     <Routes>
                         <Route path="/"element={<Login/>}/>
                         <Route path="/ficha_estudiante"element={<Ficha_estudiante usuario={nombreUsuario}/>}/>
-                        <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} area={area}/>}/>
+                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} area={area}/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos usuario={nombreUsuario}/>}/>
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
