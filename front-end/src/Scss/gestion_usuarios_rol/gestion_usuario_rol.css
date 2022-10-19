@@ -1,0 +1,13 @@
+.container_gestion_usuario_rol{
+    display: flex;
+    flex-direction: column;
+}
+
+.rowJustFlex_usuario_rol{
+    text-align: center;
+}
+
+.rowJustFlex_usuario_rol2{
+    width: 100%;
+    justify-content: center;
+}

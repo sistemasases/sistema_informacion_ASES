@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'modulo_seguimiento',
     "corsheaders",
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -101,10 +102,10 @@ WSGI_APPLICATION = 'modulo_ases.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ases',
-        'USER' : 'postgres',
-        'PASSWORD' : 'currymvp300212',
-        'HOST' : '127.0.0.1',
+        'NAME': 'mszacasn',
+        'USER' : 'mszacasn',
+        'PASSWORD' : 'BGCLKJM0p4fPlpbziUER8eupqcCM0HxJ',
+        'HOST' : 'jelani.db.elephantsql.com',
         'DATABASE_PORT' : '5432',
     }
 }
