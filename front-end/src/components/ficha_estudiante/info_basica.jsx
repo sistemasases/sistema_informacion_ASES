@@ -131,7 +131,6 @@ const Info_basica = () =>{
                                     <Col className="info_basica_selector" md={"4"}>
                                         <Select options={datos_option_user} onMouseEnter={handle_users} 
                                         onChange={handle_option_user}  className="justMargin1" />
-                                        
                                     </Col>
                                     <Col md={"8"}>
                                         {
