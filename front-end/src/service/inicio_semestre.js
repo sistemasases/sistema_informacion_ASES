@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const inicio_semestre = async (instancia, nombre_nuevo) => {
+const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_nuevo) => {
 
   //URL para el axios
   const url_semestre = 'http://127.0.0.1:8000/wizard/semestre_actual/' + instancia.toString()+"/";
@@ -21,21 +21,9 @@ const inicio_semestre = async (instancia, nombre_nuevo) => {
     id_instancia: 0
   }
 
-  //Varaiables par el dia de ayer, el actual y dentro de 6 meses
-  var yesterday = new Date();
-  var today = new Date();
-  var finish = new Date();
-
-  yesterday.setDate(yesterday.getDate() - 1)
-  finish.setMonth(finish.getMonth() + 6)
-
-  yesterday.setHours(yesterday.getHours() - 5)
-  today.setHours(today.getHours() - 5)
-  finish.setHours(finish.getHours() - 5)
-
-  var fechaAnterior = yesterday.toISOString();
-  var fechaNueva_inico = today.toISOString();
-  var fechaNueva_fin = finish.toISOString();
+  //Varaiables para la fecha
+  var inicio = new Date(fecha_inicio_nuevo);
+  var fin = new Date(fecha_fin_nuevo);
 
   //conexion con el back para actualizar y crear el semestre en una instancia seleccionada
   axios({
@@ -43,20 +31,17 @@ const inicio_semestre = async (instancia, nombre_nuevo) => {
     method: "GET",
   })
   .then((respuesta)=>{
-    if(fechaAnterior > respuesta.data['fecha_fin']){
-      fechaAnterior = respuesta.data['fecha_fin'];
-    }
     semestreActual = {
       nombre: respuesta.data['nombre'],
       fecha_inicio: respuesta.data['fecha_inicio'],
-      fecha_fin: fechaAnterior,
+      fecha_fin: respuesta.data['fecha_fin'],
       semestre_actual: false,
       id_instancia: instancia
     }
     semestreNuevo = {
       nombre: nombre_nuevo,
-      fecha_inicio: fechaNueva_inico,
-      fecha_fin: fechaNueva_fin,
+      fecha_inicio: inicio.toISOString(),
+      fecha_fin: fin.toISOString(),
       semestre_actual: true,
       id_instancia: instancia
     }

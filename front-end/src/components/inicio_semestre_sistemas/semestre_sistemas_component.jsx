@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Container, Row, Button, Modal, Table, FormGroup, Form} from "react-bootstrap";
-import Inicio_semestre from '../../service/inicio_semestre';
+//import Inicio_semestre from '../../service/inicio_semestre';
 
 const semestre_sistemas_component = () =>{
 
@@ -62,6 +62,7 @@ const semestre_sistemas_component = () =>{
 
     return (
         <Container>
+        <h2>Paso uno</h2>
         <Modal show={show} onHide={handleClose} centered={true} fullscreen={'md-down'} >
             <Modal.Header closeButton>
                 <Modal.Title>Insertar Usuario</Modal.Title>

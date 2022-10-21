@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Semestre__sistemas_component from "../../components/inicio_semestre_sistemas/semestre_sistemas_component"
 import {Container, Row, Accordion,} from "react-bootstrap";
 
@@ -7,7 +7,7 @@ const Inicio_semestre_sistemas = () =>{
     return (
         <Container>
             <Row className="rowJustFlex">
-                <h1>INICIO DE SEMESTRE - SISTEMAS</h1>
+                <h1>INICIO DE SEMESTRE</h1>
             </Row>
             <Row className="containerRow">
                 <Accordion defaultActiveKey="0" flush>
