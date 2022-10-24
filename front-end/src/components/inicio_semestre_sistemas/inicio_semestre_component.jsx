@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Container, Row, Button, Col, Alert} from "react-bootstrap";
+import {Container, Row, Button, Col, Alert, Form} from "react-bootstrap";
 import axios from 'axios';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
@@ -18,21 +18,25 @@ const inicio_semestre_component = () =>{
     const navigate = useNavigate();
 
     //Constante que se usara para extraer todas las instancias
-    const [state,set_state] = useState({
-        tabs: [],
-    })
+    const [state,set_state] = useState({tabs: [],})
 
     //Constante que se usara para activar o desactivar parte de la vista
-    const [isDisabled, setDisabled] = useState(false);
-    const [isError, setError] = useState(false);
     const [isSelected, setIsSelected] = useState(false);
+    const [activated, setActivated] = useState({
+        isDisabled: false,
+        isError: false,
+        isWarning: false,
+        mensaje: "",
+    });
 
     //Constantes que se usaran para los diferentes atributos del semestre
-    const [selected, setSelected] = useState();
-    const [selectedName, setSelectedName] = useState();
-    const [nameSemestre, setNameSemestre] = useState();
-    const [fecha_inicio, setFecha_inicio] = useState();
-    const [fecha_fin, setFecha_fin] = useState();
+    const [semestre, setSemestre] = useState({
+        idInstancia: 0,
+        nombreInstancia: '',
+        nombreSemestre: '',
+        fecha_inicio: '',
+        fecha_fin: '',
+    });
 
     //Conexion con el back para extraer todas las instancias
     useEffect(()=>{
@@ -51,7 +55,7 @@ const inicio_semestre_component = () =>{
         })
     },[]);
 
-    //Funcion que toma las instancias y las transforma en opciones para el select
+    //Prop que toma las instancias y las transforma en opciones para el select
     const handle_instancias = () => {
         if(bandera_option===true){
             for (var i = 0; i < state.tabs['length'] ; i++) {
@@ -62,33 +66,64 @@ const inicio_semestre_component = () =>{
         }
     }
 
-    //Actualiza las variables según el input y crea el nuevo semestre
+    //Manejador de los diferentes inputs
     const handleButton = () =>{
-        if(!(!nameSemestre || nameSemestre === '')){
-            if(!(!fecha_inicio || fecha_inicio === '')){
-                if(!(!fecha_fin || fecha_fin === '')){
-                    Inicio_semestre_service.inicio_semestre(selected, nameSemestre, fecha_inicio, fecha_fin);
+        if(!(!semestre.nombreSemestre || semestre.nombreSemestre === '')){
+            if(!(!semestre.fecha_inicio || semestre.fecha_inicio === '')){
+                if(!(!semestre.fecha_fin || semestre.fecha_fin === '')){
+                    Inicio_semestre_service.inicio_semestre(semestre.idInstancia, semestre.nombreSemestre, semestre.fecha_inicio, semestre.fecha_fin);
                     navigate('/crear_semestre_sistemas');
+                } else {
+                    setActivated({
+                        ...activated,
+                        isWarning: true,
+                        mensaje: "La fecha de finalización no puede estar vacia",
+                    })
                 }
+            } else {
+                setActivated({
+                    ...activated,
+                    isWarning: true,
+                    mensaje: "La fecha de inicio no puede estar vacia",
+                })
             }
+        } else {
+            setActivated({
+                ...activated,
+                isWarning: true,
+                mensaje: "El nombre no puede estar vacio",
+            })
         }
     }
-    const handleNombre = (e) => {
-        setNameSemestre(e.target.value);
-    }
-    const handleFecha_inicio = (e) => {
-        setFecha_inicio(e.target.value);
-    }
-    const handleFecha_fin = (e) => {
-        setFecha_fin(e.target.value);
+    const handleChange = (e) => {
+        setSemestre({
+            ...semestre,
+            [e.target.name]: e.target.value,
+        });
     }
 
-    //Activa el boton una vez se haya seleccionado algo en el select y actualiza los valores a mostrar
+    //funciones para dar formato a las fechas
+    function digitos(int){
+        var result = int.toString();
+        if(int < 10) {
+            result = "0"+ (int).toString();
+        }
+        return result
+    }
+    function formatDate(date) {
+        return [
+            (date.getFullYear()).toString(),
+            digitos(date.getMonth() + 1),
+            digitos(date.getDate()),
+        ].join('-');
+      }
+
+    //Activa las vistas una vez se haya seleccionado algo en el select y actualiza los valores a mostrar
     const handleActivateButton = async (e) =>{
 
-        //codigo para la actualizacion de nameSemestre
-        var nombre_nuevo = null;
-        var fecha = null;
+        //codigo para la obtencion del nombre del semestre y la fecha de finalizacion del semestre anterior
+        var nombre_nuevo = '';
+        var fecha = '';
         await fetch('http://127.0.0.1:8000/wizard/semestre_actual/' + (e.id).toString() +"/")
         .then((res) => res.json())
         .then((res)=>{
@@ -104,25 +139,34 @@ const inicio_semestre_component = () =>{
                 nombre_nuevo = (parseInt(nombre_semestre[0])+1).toString() + '-A';
             }
         }
-        setNameSemestre(nombre_nuevo);
 
-        //codigo para la actualizacion de selected y selectedName
-        setSelected(e.id);
-        setSelectedName(e.value);
+        //variables para las fechas
         var date_inicio = new Date();
         var date_fin = new Date();
         date_fin.setMonth(date_fin.getMonth() + 6);
-        setFecha_inicio(date_inicio);
-        setFecha_fin(date_fin);
+
+        //actualizacion de los datos del semestre
+        setSemestre({
+            ...semestre,
+            idInstancia: e.id,
+            nombreInstancia: e.value,
+            nombreSemestre: nombre_nuevo,
+            fecha_inicio: formatDate(date_inicio),
+            fecha_fin: formatDate(date_fin)
+        });
 
         //Activa o desativa las vistas
-        setIsSelected(true)
+        setIsSelected(true);
         if(fecha < date_inicio){
-            setDisabled(true);
-            setError(false);
+            setActivated({
+                ...activated,
+                isDisabled: true,
+            })
         } else {
-            setError(true);
-            setDisabled(false);
+            setActivated({
+                ...activated,
+                isError: true,
+            })
         }
     }
     
@@ -131,35 +175,45 @@ const inicio_semestre_component = () =>{
             <h2>Paso cero: creación del periodo</h2>
             <Row className="rowJustFlex" hidden={isSelected}>
                 <p>Para iniciar el semestre selecione la instancia con la cual desea trabajar:</p>
-                <Select class="option" options={opciones} onMenuOpen={handle_instancias} onChange={handleActivateButton} className="option"/>
+                <Select class="option" options={opciones} onMenuOpen={handle_instancias} onChange={handleActivateButton} className="option" placeholder="Selecione una instancia"/>
             </Row>
             <Row className="rowJustFlex">
-                <Alert variant='danger' show={isError} onClose={() => {setError(false); setDisabled(false); setIsSelected(false)}} dismissible>
+                <Alert variant='danger' show={activated.isError} onClose={() => {setActivated({...activated, isError: false,}); setIsSelected(false);}} dismissible>
                     <Alert.Heading>Advertencia!</Alert.Heading>
                     <p>El semestre al que desea acceder sigue activo.</p>
                 </Alert>
             </Row>
-            <Row className="rowJustFlex" hidden={!isDisabled}>
-                <p>Usted está apunto de iniciar un nuevo semestre, lo cual finalizará el semestre anterior y se creará uno nuevo en la instancia {selectedName}.</p>
+            <Row className="rowJustFlex" hidden={!activated.isDisabled}>
+                <p>Usted está apunto de iniciar un nuevo semestre, lo cual finalizará el semestre anterior y se creará uno nuevo en la instancia {semestre.nombreInstancia}.</p>
                 <p>Por favor verifique que los argumentos sean correctos e inicie el semestre. </p>
             </Row>
-            <Row className="rowJustFlex" hidden={!isDisabled}>
+            <Row className="rowJustFlex" hidden={!activated.isDisabled}>
                 <Col>
-                    <label><b>Nombre del semestre a crear: </b></label>
-                    <input name='nombre' type='text' value={nameSemestre} onChange={handleNombre}/>
-                    <p/>
-                    <label><b>Fecha de inicio: </b></label>
-                    <input name='fecha_inicio' type='text' value={fecha_inicio} onChange={handleFecha_inicio}/>
-                    <p/>
-                    <label><b>Fecha de finalización: </b></label>
-                    <input name='fecha_fin' type='text' value={fecha_fin} onChange={handleFecha_fin}/>
-                    <p/>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.FloatingLabel>Nombre del semestre a crear:</Form.FloatingLabel>
+                            <Form.Control name='nombreSemestre' type='text' value={semestre.nombreSemestre} onChange={handleChange} placeholder="Nombre del semestre"/>
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.FloatingLabel>Fecha de inicio:</Form.FloatingLabel>
+                            <Form.Control name='fecha_inicio' type="date" value={semestre.fecha_inicio} onChange={handleChange} placeholder="Fecha de inicio del semestre"/>
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.FloatingLabel>Fecha de finalización:</Form.FloatingLabel>
+                            <Form.Control name='fecha_fin' type="date" value={semestre.fecha_fin} onChange={handleChange} placeholder="Fecha de finalización del semestre"/>
+                        </Form.Group>
+                    </Form>
                 </Col>
-                <Col/>
+                <Col>
+                    <Alert variant='danger' show={activated.isWarning}>
+                        <Alert.Heading>Error</Alert.Heading>
+                        <p>{activated.mensaje}</p>
+                </Alert>
+                </Col>
             </Row>
-            <Row className="rowJustFlex" hidden={!isDisabled}>
+            <Row className="rowJustFlex" hidden={!activated.isDisabled}>
                 <Col><Row>
-                <Button variant="secondary" onClick={() => {setError(false); setDisabled(false); setIsSelected(false)}}>Cancelar</Button>
+                <Button variant="secondary" onClick={() => {setActivated({...activated, isDisabled: false,}); setIsSelected(false);}}>Cancelar</Button>
                 </Row></Col>
                 <Col><Row>
                 <Button variant="primary" onClick={handleButton}>Crear Semestre</Button>

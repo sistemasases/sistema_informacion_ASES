@@ -22,8 +22,18 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
   }
 
   //Varaiables para la fecha
-  var inicio = new Date(fecha_inicio_nuevo);
-  var fin = new Date(fecha_fin_nuevo);
+  var inicio = new Date();
+  var fin = new Date();
+  const fechaI = fecha_inicio_nuevo.split('-');
+  inicio.setFullYear(fechaI[0]);
+  inicio.setMonth(fechaI[1] - 1);
+  inicio.setDate(fechaI[2]);
+  inicio.setHours(inicio.getHours() - 5);
+  const fechaF = fecha_fin_nuevo.split('-');
+  fin.setFullYear(fechaF[0]);
+  fin.setMonth(fechaF[1] - 1);
+  fin.setDate(fechaF[2]);
+  fin.setHours(fin.getHours() - 5);
 
   //conexion con el back para actualizar y crear el semestre en una instancia seleccionada
   axios({
