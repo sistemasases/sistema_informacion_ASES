@@ -5,12 +5,9 @@ import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
 
-const NavBar = () =>{
+const NavBar = (props) =>{
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
-
-    const[menuOpen, setMenu] = useState(false);
-    const showMenu = () => setMenu(!menuOpen);
 
     const menuOptions=[
         {
@@ -21,42 +18,57 @@ const NavBar = () =>{
         },
         {
             id:2,
-            path:"/fichaDeEstudiante",
+            path:"/ficha_estudiante",
             name:"fichaDeEstudiante aiiiiiiiiiiiiiiii",
             icon:<FaThList />,
             thisIsOpen:true,
         }
     ]
     return (
-    <Container className="nav">
-            <Col>
+    <Container  >
+        <Row className="nav">
+
+        <Col md={"4"}>
                 <a>Site name</a>
             </Col>
-            <Col className="ulDropdown">            
+            <Col className="ulDropdown" md={"4"}>            
                 <ul>
                     <li>
-                        <a >price 1</a>
-                        <a >price 2</a>
+                        <a >{props.nombre}</a>
+                        <a >{props.rol}</a>
                     </li>
 
                 </ul>
             </Col>
 
-            <Dropdown isOpen={isOpen} onClick={toggle} className="dropdown">
-                        <DropdownToggle><FaBars/></DropdownToggle>
-                        <DropdownMenu>
-                            <ul className="ulDropdown">
-                                <li>
-                                    { isOpen && menuOptions.map((item, index)=>(
-                                    <NavLink className="linkDropdown" activeclassName="active" to={item.path} key={index}>
-                                        {item.name}
-                                    </NavLink>
-                                    ) )
-                                    }
-                                </li>
-                            </ul>
-                        </DropdownMenu>
-            </Dropdown>
+            <Col xs={"12"} md={"4"} className="boton_perfil">
+                <Row>
+                    <Col xs={"8"} className="info_perfil">
+                        holla
+                    </Col>
+                    <Col xs={"4"} className="desplegable_usuario">
+                        <Dropdown isOpen={isOpen} onClick={toggle} className="dropdown">
+                                <DropdownToggle className="boton_usuario"><i className="boton_usuario" class="bi bi-person-circle"/></DropdownToggle>
+                                <DropdownMenu>
+                                    <ul className="ulDropdown">
+                                        <li>
+                                            { isOpen && menuOptions.map((item, index)=>(
+                                            <NavLink className="linkDropdown" activeclassName="active" to={item.path} key={index}>
+                                                {item.name}
+                                            </NavLink>
+                                            ) )
+                                            }
+                                        </li>
+                                    </ul>
+                                </DropdownMenu>
+                    </Dropdown>
+                    </Col>
+                </Row>
+                
+                
+            </Col>
+
+        </Row>
             
             
     </Container>
