@@ -38,6 +38,11 @@ const inicio_semestre_component = () =>{
         fecha_fin: '',
     });
 
+    //variables para las fechas
+    var date_inicio = new Date();
+    var date_fin = new Date();
+    date_fin.setMonth(date_fin.getMonth() + 6);
+
     //Conexion con el back para extraer todas las instancias
     useEffect(()=>{
         axios({
@@ -68,30 +73,30 @@ const inicio_semestre_component = () =>{
 
     //Manejador de los diferentes inputs
     const handleButton = () =>{
-        if(!(!semestre.nombreSemestre || semestre.nombreSemestre === '')){
-            if(!(!semestre.fecha_inicio || semestre.fecha_inicio === '')){
-                if(!(!semestre.fecha_fin || semestre.fecha_fin === '')){
+        if(!(!semestre.nombreSemestre || semestre.nombreSemestre === '') && (semestre.nombreSemestre.includes('-A') || semestre.nombreSemestre.includes('-B')) && (semestre.nombreSemestre.length === 6)){
+            if(!(!semestre.fecha_inicio || semestre.fecha_inicio === '') && (dateToInt(formatDate(date_inicio)) <= dateToInt(semestre.fecha_inicio))){
+                if(!(!semestre.fecha_fin || semestre.fecha_fin === '') && (dateToInt(semestre.fecha_inicio) < dateToInt(semestre.fecha_fin))){
                     Inicio_semestre_service.inicio_semestre(semestre.idInstancia, semestre.nombreSemestre, semestre.fecha_inicio, semestre.fecha_fin);
                     navigate('/crear_semestre_sistemas');
                 } else {
                     setActivated({
                         ...activated,
                         isWarning: true,
-                        mensaje: "La fecha de finalización no puede estar vacia",
+                        mensaje: "La fecha de finalización no puede estar vacia y debe ser superior a la fecha de inicio",
                     })
                 }
             } else {
                 setActivated({
                     ...activated,
                     isWarning: true,
-                    mensaje: "La fecha de inicio no puede estar vacia",
+                    mensaje: "La fecha de inicio no puede estar vacia y debe ser igual o superior a la fecha actual",
                 })
             }
         } else {
             setActivated({
                 ...activated,
                 isWarning: true,
-                mensaje: "El nombre no puede estar vacio",
+                mensaje: "El nombre no puede estar vacio y debe tener un formato parecido a 2022-B",
             })
         }
     }
@@ -118,6 +123,12 @@ const inicio_semestre_component = () =>{
         ].join('-');
       }
 
+    function dateToInt(date) {
+        const fecha = date.split('-');
+        const fechaint = parseInt(fecha[0] + fecha[1] + fecha[2])
+        return fechaint;
+    }
+
     //Activa las vistas una vez se haya seleccionado algo en el select y actualiza los valores a mostrar
     const handleActivateButton = async (e) =>{
 
@@ -139,11 +150,6 @@ const inicio_semestre_component = () =>{
                 nombre_nuevo = (parseInt(nombre_semestre[0])+1).toString() + '-A';
             }
         }
-
-        //variables para las fechas
-        var date_inicio = new Date();
-        var date_fin = new Date();
-        date_fin.setMonth(date_fin.getMonth() + 6);
 
         //actualizacion de los datos del semestre
         setSemestre({
@@ -178,9 +184,13 @@ const inicio_semestre_component = () =>{
                 <Select class="option" options={opciones} onMenuOpen={handle_instancias} onChange={handleActivateButton} className="option" placeholder="Selecione una instancia"/>
             </Row>
             <Row className="rowJustFlex">
-                <Alert variant='danger' show={activated.isError} onClose={() => {setActivated({...activated, isError: false,}); setIsSelected(false);}} dismissible>
+                <Alert variant='danger' show={activated.isError}>
                     <Alert.Heading>Advertencia!</Alert.Heading>
                     <p>El semestre al que desea acceder sigue activo.</p>
+                    <p>¿Desea continuar con la creación del semestre?</p>
+                    <Button variant="secondary" onClick={() => {setActivated({...activated, isError: false,}); setIsSelected(false);}}>Cancelar</Button>
+                    {'  '}
+                    <Button variant="primary" onClick={() => navigate('/crear_semestre_sistemas')}>Crear Semestre</Button>
                 </Alert>
             </Row>
             <Row className="rowJustFlex" hidden={!activated.isDisabled}>
