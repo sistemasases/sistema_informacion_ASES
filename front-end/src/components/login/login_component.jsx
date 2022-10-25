@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+
 const login_component = () =>{
 
   const[switchChecked, setChecked] = useState(false);
@@ -31,9 +32,9 @@ const login_component = () =>{
           <div className="form-group mt-3">
             <label>Usuario</label>
             <input
-              type="email"
+              type="text"
               className="form-control mt-1"
-              placeholder="Enter email"
+              placeholder="Escribe tu usuario"
             />
           </div>
           <div className="form-group mt-3">
@@ -41,13 +42,16 @@ const login_component = () =>{
             <input
               type="password"
               className="form-control mt-1"
-              placeholder="Enter password"
+              placeholder="Escribe tu contraseña"
             />
           </div>
           <div className="d-grid gap-2 mt-3">
             <button onClick={handleSendNewData} className="btn btn-primary">
               Submit
             </button>
+            <a href={"/ficha_estudiante"}  className="sidebar-item">
+                <span className="tamaño_icon">aqui</span>
+            </a>
           </div>
           <p className="forgot-password text-right mt-2">
             Forgot <a href="#">password?</a>

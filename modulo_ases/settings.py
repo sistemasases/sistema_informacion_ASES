@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'modulo_seguimiento',
     "corsheaders",
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,80 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.nav {
+    z-index: 2;
+    height: 4rem;
+    background: rgb(200, 0, 0);
+    color: white;
+    padding-right:  100px;
+    width: 100%;
+
+}
+.row_navbar{
+    z-index: 2;
+    position: fixed;
+    left: 70px;
+    background: blue;
+    width: 100%;
+
+}
+
+.nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+.nav a {
+    color: inherit;
+}
+.boton_usuario{
+    background: rgb(200, 0, 0);
+}
+
+.itemsNav{
+    margin-right: 10%;
+    align-content: flex-end;
+    align-items: right;
+    display: flex;
+}
+
+.itemNav{
+    width: 10%;
+    height: 35%;
+}
+
+.dropdown{
+    margin-right: 0%;
+    width: 10%;
+    height: 30%;
+    cursor: pointer;
+}
+
+.ulDropdown{
+    place-items: right;
+    padding-left: 60%;
+    width: 70%;
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+
+
+.boton_perfil{
+    background: #dfdfdf;
+}
+.info_perfil{
+    background: rgb(200, 0, 0);
+}
+.desplegable_usuario{
+    background: blue;
+}

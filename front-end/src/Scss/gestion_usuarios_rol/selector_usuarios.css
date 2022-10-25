@@ -1,0 +1,24 @@
+.container_selector_usuarios_rol{
+    padding: 20px 20px;
+    background: chartreuse;
+}
+
+.dropdown_selector_usuarios{
+    background: chocolate;
+    width: 100%;
+}
+.boton_selector_usuario{
+    width: 100%;
+    background: cornflowerblue;
+}
+.titulo_selector_usuario{
+    font: sans-serif;
+    text-align: left;
+}
+
+.formulario_selector_usuario{
+    background: crimson;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 10px;
+}

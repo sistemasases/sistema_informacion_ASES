@@ -1,5 +1,4 @@
 from django.db import models
-from modulo_usuario_rol.models import estudiante
 
 # Create your models here.
 
@@ -43,11 +42,3 @@ class cohorte_instancia (models.Model):
     class Meta:
         db_table = "cohorte_instancia"
 
-class cohorte_estudiante(models.Model):
-
-    id_cohorte= models.ForeignKey(cohorte,on_delete=models.CASCADE,default=0)
-    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
-    tiempo_creacion= models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        db_table = "cohorte_estudiante"

@@ -6,6 +6,7 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import all_rols_service from '../../service/all_rols'
 import asignar_rol_service from '../../service/asignar_rol'
+import { FaBuromobelexperte } from 'react-icons/fa';
 const formulario_asginacion_rol = () =>{
 
   const[switchChecked, setChecked] = useState(false);
@@ -13,7 +14,7 @@ const formulario_asginacion_rol = () =>{
 
   const [state,set_state] = useState({
     file: null,
-    option : '',
+    seleccionado : 'ejemplo',
   })
   const handle_file = (e) => {
     // Getting the files from the input
@@ -28,7 +29,8 @@ const formulario_asginacion_rol = () =>{
     console.log(e.target.value)
     set_state({
       ...state,
-      [e.target.name] : [e.target.value]
+      [e.target.name] : [e.target.value],
+      seleccionado : [e.target.value],
     })
   }
   const handle_upload=(e)=> {
@@ -40,25 +42,17 @@ const formulario_asginacion_rol = () =>{
 
   return (
         <Container>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control type="email" placeholder="Enter email" />
-                <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                </Form.Text>
-            </Form.Group>
-
-            <Row className="rowJustFlex">
+            <Row className="g-2">
                 <h3>Nombre Completo</h3>
             </Row>
-            <Row className="rowJustFlex">
-                <h3>Nombre Completo</h3>
+            <Row className="g-2">
+                <Form.Control as="textarea" value={state.seleccionado}  rows={1} readOnly/>
             </Row>
-            <Row className="rowJustFlex">
+            <Row className="g-2">
                 <h3>Rol</h3>
             </Row>
 
-            <Row className="rowJustFlex">
+            <Row className="g-2" >
                 <Form.Select name= "option" onChange={handle_options} >
                   <option value="Estudiante">Estudiante</option>
                   <option value="Usuarios">Usuarios</option>
@@ -69,14 +63,16 @@ const formulario_asginacion_rol = () =>{
                   <option value="Retiros">Retiros</option>
                 </Form.Select>
             </Row>
-            <Row className="rowJustFlex">
-                <Col>
+            <Row className='mt-2'> 
+                <Col lg={{ span: 1, offset: 5}}>
                     <Button onClick={handle_upload}>Aceptar</Button> 
+   
                 </Col>
                 <Col>
+
                     <Button onClick={handle_upload}>Cancelar</Button> 
                 </Col>
-                 
+          
             </Row>
         </Container>
   )
