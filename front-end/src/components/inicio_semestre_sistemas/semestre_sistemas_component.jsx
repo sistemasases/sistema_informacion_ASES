@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Container, Row, Button, Modal, Table, FormGroup, Form} from "react-bootstrap";
+import {Container, Row, Button, Modal, Table, FormGroup, Form, Col} from "react-bootstrap";
+import axios from 'axios';
 //import Inicio_semestre from '../../service/inicio_semestre';
 
 const semestre_sistemas_component = () =>{
@@ -62,7 +63,6 @@ const semestre_sistemas_component = () =>{
 
     return (
         <Container>
-        <h2>Paso uno</h2>
         <Modal show={show} onHide={handleClose} centered={true} fullscreen={'md-down'} >
             <Modal.Header closeButton>
                 <Modal.Title>Insertar Usuario</Modal.Title>
@@ -94,9 +94,10 @@ const semestre_sistemas_component = () =>{
                 <Button variant="primary" onClick={insertar}>Insertar</Button>
             </Modal.Footer>
         </Modal>
-        <Row className="rowJustFlex">
+        <Row className="rowJustFlex" align='left'>
             <Table responsive size="sm" class="table">
                 <thead>
+                    <Button variant="primary" onClick={handleShow}>Insertar Usuario</Button>
                     <tr class="table-info">
                         <th align='center'>Nombre</th>
                         <th align='center'>Apellido</th>
@@ -123,7 +124,6 @@ const semestre_sistemas_component = () =>{
                     ))}
                 </tbody>
             </Table>
-            <Button variant="primary" onClick={handleShow}>Insertar Usuario</Button>
         </Row>
         </Container>
     )
