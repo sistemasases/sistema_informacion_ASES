@@ -1,27 +1,27 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Modal, Table, FormGroup, Form, Col} from "react-bootstrap";
 import axios from 'axios';
+import Select from 'react-select';
+import DataTable, {createTheme} from 'react-data-table-component';
 //import Inicio_semestre from '../../service/inicio_semestre';
+
+var datos_option_rol = [];
 
 const semestre_sistemas_component = () =>{
 
-    const data = [
-        {id: 1, first_name: "Deiby", last_name: "Rodriguez", documento: 123456, correo: "@correounivalle.edu.co"},
-        {id: 2, first_name: "Clara", last_name: "Alvarez", documento: 147258, correo: "@correounivalle.edu.co"},
-        {id: 3, first_name: "Jose", last_name: "Muñoz", documento: 159951, correo: "@correounivalle.edu.co"},
-        {id: 4, first_name: "Luz", last_name: "Murillo", documento: 753698, correo: "@correounivalle.edu.co"},
-        {id: 5, first_name: "Santiago", last_name: "Burbano", documento: 842697, correo: "@correounivalle.edu.co"},
-    ]
+    
+    var bandera_option_rol = true;
 
     const [state,set_state] = useState({
-        data: data,
+        data: [],
         form: {
             id: undefined,
             first_name: undefined, 
             last_name: undefined, 
             documento: undefined, 
             correo: undefined,
-        }
+        },
+        rol: []
     })
 
     const [show, setShow] = useState(false);
@@ -37,6 +37,29 @@ const semestre_sistemas_component = () =>{
             }
         })
     }
+
+    const columnas =[
+        {
+          name: 'USERNAME',
+          selector: row => row.username
+        },
+        {
+          name: 'NOMBRES',
+          selector: row => row.first_name
+        },
+        {
+          name: 'APELLIDOS',
+          selector: row => row.last_name
+        },
+        {
+          name: 'EMAIL',
+          selector: row => row.email
+        },
+        {
+          name: 'ROL',
+          selector: row => row.nombre
+        },
+      ]
 
     const insertar = () =>{
         var nuevo={...state.form};
@@ -60,6 +83,45 @@ const semestre_sistemas_component = () =>{
         }});
         setShow(false);
     }
+
+    useEffect(()=>{
+        axios({
+            url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/3",
+            method: "GET",
+        })
+        .then((respuesta)=>{
+            set_state({
+              ...state,
+              data: respuesta.data
+            })
+        })
+        .catch(err=>{
+            return (err)
+        })
+    },[]);
+
+    const handle_rol_selector = () =>{
+        if(bandera_option_rol){
+        axios.get('http://127.0.0.1:8000/usuario_rol/allrol/')
+        .then((res)=>{
+            set_state({
+                ...state,
+                rol: res.data
+            })
+        })
+        datos_option_rol = [];
+          for (var i = 0; i < state.rol['length'] ; i++) {
+            const dato = { value: state.rol[i]['nombre'], label: state.rol[i]['nombre'], id: state.rol[i]['id'] }
+            datos_option_rol.push(dato);
+          }
+          bandera_option_rol = false;
+        }
+        return datos_option_rol;
+      }
+
+      const handle_option_rol = (e) => {
+        
+      }
 
     return (
         <Container>
@@ -99,6 +161,7 @@ const semestre_sistemas_component = () =>{
                 <thead>
                     <Button variant="primary" onClick={handleShow}>Insertar Usuario</Button>
                     <tr class="table-info">
+                        <th align='center'>Username</th>
                         <th align='center'>Nombre</th>
                         <th align='center'>Apellido</th>
                         <th align='center'>Correo</th>
@@ -109,21 +172,25 @@ const semestre_sistemas_component = () =>{
                 <tbody>
                     {state.data.map((e)=>(
                         <tr>
+                            <td>{e.username}</td>
                             <td>{e.first_name}</td>
                             <td>{e.last_name}</td>
-                            <td>{e.correo}</td>
+                            <td>{e.email}</td>
                             <td>
-                                <Form.Select name= "rol">
-                                    <option value="profesor">Profesor</option>
-                                    <option value="director">Director</option>
-                                    <option value="socieducativo">Socieducativo</option>
-                                </Form.Select>
+                                <Select class="option"  options={datos_option_rol} onMenuOpen={handle_rol_selector} className="option" placeholder="Selecione un rol"/>
                             </td>
                             <td align='center'><input class="form-check-input" type="checkbox" defaultChecked/></td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
+            <DataTable
+                title='Usuarios que continuan'
+                columns={columnas}
+                data={state.data}
+                noDataComponent="Cargando Información."
+                pagination
+            />
         </Row>
         </Container>
     )
