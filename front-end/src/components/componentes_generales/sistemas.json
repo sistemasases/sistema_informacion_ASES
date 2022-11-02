@@ -1,0 +1,203 @@
+[
+    {
+        "id":"1",
+        "path":"/",
+        "name":"sistemas",
+        "icon":"bi-people-fill",
+        "childrens":[
+            {
+                "path":"/ficha_estudiante",
+                "name":"carga de archivos",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"carga de historicos",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"carga masiva",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"carga masiva database",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"gestion de incidencias",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"gistion de instancia",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"gestion de permiso",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"gestion de periodos",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"gestion de usuarios",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte backup",
+                "icon":"bi-people-fill"
+            }
+        ]
+    },
+    {
+        "id":"2",
+        "path":"/ficha_estudiante",
+        "name":"socieducativo",
+        "icon":"bi-people-fill",
+        "childrens":[
+            {
+                "path":"/sin_seguimientos",
+                "name":"estudiantes sin seguimeintos",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"ficha de estudiantes",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"ficha de monitores",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"gestion de asignaciones",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte geogradico Ases",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte formularios",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte de desercion",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte general",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte grafico ASES",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/reporte_seguimientos",
+                "name":"reporte de seguimientos",
+                "icon":"bi-people-fill"
+            }
+            ,
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte grupal",
+                "icon":"bi-people-fill"
+            }
+        ]
+    },
+    {
+        "id":"3",
+        "path":"/",
+        "name":"academico",
+        "icon":"bi-people-fill",
+        "childrens":[
+            {
+                "path":"/ficha_estudiante",
+                "name":"carga de notas",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"inscripcion a monitorias academicas",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"monitorias academicas",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"registro de notas",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reportes historicos academicos",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reportes notas por items",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reportes por docentes",
+                "icon":"bi-people-fill"
+            }
+        ]
+    },
+    {
+        "id":"4",
+        "path":"/",
+        "name":"ICETEX/MEN",
+        "icon":"bi-people-fill",
+        "childrens":[
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte MEN",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reportes ICETEX",
+                "icon":"bi-people-fill"
+            }
+        ]
+    },
+    {
+        "id":"5",
+        "path":"/",
+        "name":"discapacidad",
+        "icon":"bi-people-fill",
+        "childrens":[
+            {
+                "path":"/ficha_estudiante",
+                "name":"registrar nuevo estudiante",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante",
+                "name":"reporte discapacidad e inclusion",
+                "icon":"bi-people-fill"
+            }
+        ]
+    }
+]

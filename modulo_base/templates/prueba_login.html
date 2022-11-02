@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Pruebas HTML</title>
+    </head>
+    <body>
+        <h1>USUARIOS</h1>
+        <br>
+        <h2>Ingresar</h2>
+        <br>
+        <form action="login/" method="post">
+            {% csrf_token%}
+            <label>codigo</label>
+            <input type="text" name="username">
+            <label>contraseña</label>
+            <input type="text" name="password">
+            <input type="submit" value="enviar">
+        </form>
+        <br>
+    </body>
+</html>

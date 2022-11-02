@@ -1,0 +1,54 @@
+.container_footer{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer_icons{
+    margin-bottom: 50px;
+    display: flex;
+    width: 100%;
+    justify-content: right;
+    padding-right: 20px;
+}
+.footer_facebook{
+    margin: 5px;
+    font-size: 25px;
+    background: blue;
+    border-radius: 10px;
+    width: 55px;
+    height: 35px;
+    color:white;
+}
+.footer_twitter{
+    margin: 5px;
+    font-size: 25px;
+    background: lightseagreen;
+    border-radius: 10px;
+    width: 55px;
+    height: 35px;
+    color:white;
+}
+.footer_instagram{
+    margin: 5px;
+    font-size: 25px;
+    background: purple;
+    border-radius: 10px;
+    width: 55px;
+    height: 35px;
+    color:white;
+}
+.footer_youtube{
+    margin: 5px;
+    font-size: 25px;
+    background: red;
+    border-radius: 10px;
+    width: 55px;
+    height: 35px;
+    color:white;
+}
+.footer_links{
+    color: white;
+    padding-left: 20px;
+    background: rgb(200, 0, 0);
+}

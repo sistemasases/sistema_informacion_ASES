@@ -1,0 +1,181 @@
+* {
+    box-sizing: border-box;
+    
+}
+
+body {
+    margin: 0;
+}
+
+.containerRow{
+}
+
+
+
+.row1{
+    border: 10px;
+    font: 100% sans-serif;
+
+
+}
+.col1{
+    width: 70%;
+}
+.infoRow1{
+}
+.infoRow2{
+    padding: 10px 10px;
+}
+.col2{    
+    word-break: break-all;
+}
+.col3{
+    word-break: break-all;
+    background: white;
+}
+
+
+
+.row2{
+    font: 100% sans-serif;
+    width: 100%;
+    display: flex;
+}
+
+
+
+.rowJustFlex{
+    display: flex;
+}
+.rowJustFlex_to_right{
+    display: flex;
+    justify-content: right;
+}
+.justigy_content_right{
+    justify-content: right;
+}
+.rowJustFlex_column{
+    justify-content: right;
+    display: flex;
+    flex-direction: column;
+}
+.justMargin1{
+}
+.justMargin2{
+}
+
+.info_basica_borde{
+    font: 100% sans-serif;
+    padding: 5px 5px;
+    background: #dfdfdf;
+    border: 3px solid lightgrey;
+    border-radius: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+.infoRow23{
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    background: gray;
+    justify-content: space-between;
+
+}
+.infoRow3{
+    
+    justify-content: space-between;
+    width: 100%;
+    display: flex;
+}
+
+.infoSelect{
+}
+
+.infoRowInterno{
+    width: 70%;
+    background: hotpink;
+    display: flex;
+}
+
+.info{
+    word-break: break-all;
+}
+.info_texto{
+    word-break: break-all;
+    width: 100%;
+}
+.info_basica_selector{
+}
+
+
+.colInfo1{
+    width: 70%;
+}
+.colInfo2{
+    width: 30%;
+}
+
+.colMarcados{
+    display: flex;
+    width: 80%;
+}
+
+.buttonRiesgos{
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 100%;
+}
+
+
+.rowPrueba1{
+    background: black;
+    color: white;
+}
+
+.rowPrueba2{
+    background: blue;
+}
+
+.selectPequeño{
+    width: 10%;
+}
+
+
+
+
+
+
+
+
+
+
+.container_info_registro{
+    font: 100% sans-serif;
+    padding-top:5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.generar_nuevo_reporte{
+    border-radius: 10px;
+    background: #dfdfdf;
+    padding: 10px 10px;
+    margin-bottom: 5px;
+}
+
+.riesgos{
+    border-radius: 10px;
+    background: #dfdfdf;
+    margin-top: 10px;
+    padding:10px 10px;
+}
