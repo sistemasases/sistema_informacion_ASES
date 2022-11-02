@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('modulo_base.urls')),
     path('carga_masiva/', include('modulo_carga_masiva.urls')),
+    path('wizard/', include('modulo_instancia.urls')),
     path('usuario_rol/', include('modulo_usuario_rol.urls')),
 ]

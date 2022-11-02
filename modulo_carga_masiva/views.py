@@ -16,7 +16,6 @@ def carga_test(request):
     return render(request, "prueba_carga.html")
 
 class Validador_carga(APIView):
-    serializer_class =serializers.Validador_carga
     def post(self,request):
             tipo = request.data.get('tipo_de_carga')
             file = request.data.get('FILES')
@@ -26,14 +25,14 @@ class Validador_carga(APIView):
             elif(tipo == "Usuario"):
                 print("entro al if")
                 return carga_usuarios(file)
+            elif(tipo == "Programa"):
+                return carga_programas(file)
             elif(tipo == "Materia"):
                 return carga_materias(file)
             elif(tipo == "Nota"):
                 return carga_notas(file)
             elif(tipo == "Resolución"):
                 return carga_resoluciones(file)
-            elif(tipo == "Programa"):
-                return carga_programas(file)
             elif(tipo == "Retiro"):
                 return carga_retiros(file)
             else:

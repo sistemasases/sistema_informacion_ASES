@@ -37,7 +37,7 @@ import React, {useState} from 'react';
 
 import {Row, Col} from "react-bootstrap";
 import "@fontsource/manrope";
-import NavBar from "./components/componentes_generales/navbar";
+import NavBar from "./components/componentes_generales/NavBar";
 
 import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -65,6 +65,8 @@ import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
 import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
+import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia";
+import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas";
 
 /*
 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
@@ -106,6 +108,8 @@ const App = () => {
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
                         <Route path="/asignaciones" element={<Asignaciones/>}/>
+                        <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
+                        <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
                     </Routes>
                 </SideBar>
             </Row>

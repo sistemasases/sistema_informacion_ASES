@@ -4,7 +4,7 @@ import {Container, Row, Col, Dropdown} from "react-bootstrap";
 import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
-import NavBar from './navbar';
+import NavBar from './NavBar';
 import Menu from './socioeducativa.json';
 import SidebarItem from './sidebarItem';
 import Footer from './footer';

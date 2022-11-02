@@ -4,7 +4,7 @@ import {Row, Col} from "react-bootstrap";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SideBar from "../../components/componentes_generales/sideBar";
-import Navbar from"../../components/componentes_generales/navbar";
+import Navbar from"../../components/componentes_generales/NavBar"; 
 
 
 
