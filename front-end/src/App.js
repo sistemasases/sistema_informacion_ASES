@@ -36,7 +36,7 @@ export default App
 import React, {useState} from 'react';
 
 import {Row, Col} from "react-bootstrap";
-import NavBar from "./components/componentes_generales/navbar";
+import NavBar from "./components/componentes_generales/NavBar";
 
 import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -54,7 +54,7 @@ import "./Scss/footer/footer.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import SideBar from "./components/componentes_generales/sideBar";
+import SideBar from "./components/componentes_generales/SideBar";
 import Login from "./modulos/login/login.jsx";
 //import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
 import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
