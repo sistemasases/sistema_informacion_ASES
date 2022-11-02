@@ -102,10 +102,10 @@ WSGI_APPLICATION = 'modulo_ases.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mszacasn',
-        'USER' : 'mszacasn',
-        'PASSWORD' : 'BGCLKJM0p4fPlpbziUER8eupqcCM0HxJ',
-        'HOST' : 'jelani.db.elephantsql.com',
+        'NAME': 'ases',
+        'USER' : 'postgres',
+        'PASSWORD' : 'Rodriguez11',
+        'HOST' : '127.0.0.1',
         'DATABASE_PORT' : '5432',
     }
 }

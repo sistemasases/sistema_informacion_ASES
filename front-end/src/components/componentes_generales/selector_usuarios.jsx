@@ -112,7 +112,7 @@ const selector_usuarios = () =>{
 
       axios({
         // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/",
+        url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/3",
         method: "GET",
       })
       .then((respuesta)=>{
