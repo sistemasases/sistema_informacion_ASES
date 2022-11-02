@@ -11,15 +11,20 @@ import  {useEffect} from 'react';
 import axios from 'axios';
 import Selector from "../../components/ficha_estudiante/selector";
 import Ficha_footer from "./ficha_footer";
+import Form from 'react-bootstrap/Form';
 
 
 
-
-const Info_basica = () =>{
+const Info_basica = (props) =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
-
+    
+    const options = [
+      { value: 'chocolate', label: 'Chocolate' },
+      { value: 'strawberry', label: 'Strawberry' },
+      { value: 'vanilla', label: 'Vanilla' }
+        ]
    
 
     const datos_option_user = []
@@ -38,10 +43,13 @@ const Info_basica = () =>{
       id_usuario:'',
       nombres:'',
       apellidos: '',
+      codigo:'',
+      tipo_doc:'',
       cedula:'',
       correo:'',
       telefono:'',
 
+      nueva_cedula:'',
     })
   
     useEffect(()=>{
@@ -62,10 +70,7 @@ const Info_basica = () =>{
       
     },[]);
   
-    const estaEditando = () => set_state({
-      ...state,
-      editar : (!state.editar)
-    });
+
 
   
    
@@ -80,7 +85,9 @@ const Info_basica = () =>{
         id_usuario:state.data_user[e.id]['id'],
         nombres : state.data_user[e.id]['nombre'],
         apellidos : state.data_user[e.id]['apellido'],
+        codigo : state.data_user[e.id]['cod_univalle'],
         correo : state.data_user[e.id]['email'],
+        tipo_doc : state.data_user[e.id]['tipo_doc'],
         cedula : state.data_user[e.id]['num_doc'],
         telefono : state.data_user[e.id]['telefono_res'],
       })
@@ -91,7 +98,7 @@ const Info_basica = () =>{
       if(bandera_option_user==true){
   
         for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], label: state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
+          const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
           datos_option_user.push(dato)
         }
         console.log([datos_option_user]);
@@ -113,13 +120,82 @@ const Info_basica = () =>{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const esta_editando = (e) => set_state({
+      ...state,
+      editar : (!state.editar)
+    });
+    const esta_editando_aceptar = (e) => {
+      set_state({
+        ...state,
+        cedula : state.nueva_cedula,
+        editar : (!state.editar),
+      })
+      console.log(state.cedula)
+    }
+
+
+
+    const handle_change_info_cedula = (e) => {
+      console.log(e.value)
+      set_state({
+        ...state,
+        nueva_cedula : [e.value],
+      })
+    }
+
+
+
+    const handle_upload_info_estudiante = (e) => {
+      // Getting the files from the input
+      console.log([state.nueva_cedula])
+      console.log([state.id_usuario])
+      let formData = new FormData();
+    
+      //Adding files to the formdata
+      formData.append('num_doc', state.nueva_cedula);
+      formData.append('id', state.id_usuario);
+      axios({
+        // Endpoint to send files
+        url:  "http://127.0.0.1:8000/usuario_rol/estudiante_actualizacion/",
+        method: "POST",
+        data: formData,
+      })
+      .then(res=>{set_state({
+        ...state,
+        info_modal: "El rol se asignó correctamente"
+        
+      })})
+      .catch(err=>{
+        set_state({
+          ...state,
+          info_modal: "ocurrio un error"
+      })})
+    }
+
+
     return (
       <Container>
         <Row className="info_basica_borde">
-                  <Col className="col1" xs={"12"} md={"8"}>
+                  <Col className="col1" xs={"12"} md={"9"}>
                         <Row>
-                          <Col xs={"12"}>
-                            <Select  
+
+                          <Col xs={"12"} >
+                            <Select  className="bold"
                                         options={datos_option_user} onMenuOpen={handle_users} 
                                         onChange={handle_option_user}  />
                           </Col>
@@ -127,61 +203,116 @@ const Info_basica = () =>{
                         </Row>
 
                         <Row className="rowJustFlex" >
-                            <Col className="colInfo1" xs={"12"} md={"10"}>
+                            <Col className="colInfo1" xs={"12"}>
                                 <Row className="infoRow1">
-                                    <Col className="info_basica_selector" md={"4"}>
-                                        <Select options={datos_option_user} onMouseEnter={handle_users} 
-                                        onChange={handle_option_user}  className="justMargin1" />
-                                    </Col>
-                                    <Col md={"8"}>
+                                  {
+                                    (state.seleccionado) === '' ?
+                                    (
+                                      <Col className="info_basica_selector" md={"1"}>
+                                        <label className="texto_mas_pequeño">
+                                          {state.tipo_doc}
+                                        </label>
+                                      </Col>
+                                    )
+                                    :
+                                    (
+                                      <Col className="info_basica_selector" md={"1"}>
+                                        <label className="texto_mas_pequeño">
+                                          {state.tipo_doc}
+                                        </label>
+                                      </Col>
+                                    )
+                                  }
+                                    
+                                    <Col md={"11"}>
                                         {
-                                          state.editar?
+                                          (state.seleccionado) === '' ?
                                           (
                                             <Row className="info"> 
-                                                <Col className="info_texto" xs={"12"} md={"6"}>
-                                                    <input
-                                                    type="text"
-                                                    className="form-control mt-1"
-                                                    placeholder={state.cedula}
-                                                    ></input>
+                                                <Col className="info_texto" xs={"12"} md={"2"}>
+                                                  <h4 className="texto_mas_pequeño">cedula</h4>
                                                 </Col>
                                                 <Col className="info_texto" xs={"12"} md={"6"}>
-                                                <input
-                                                    type="text"
-                                                    className="form-control mt-1"
-                                                    placeholder={state.telefono}
-                                                    ></input>
+                                                  <h4 className="texto_mas_pequeño">correo</h4>
+                                                </Col>
+                                                <Col className="info_texto" xs={"12"} md={"2"}>
+                                                  <h4 className="texto_mas_pequeño">edad</h4>
+                                                </Col>
+                                                <Col className="info_texto" xs={"12"} md={"2"}>
+                                                  <h4 className="texto_mas_pequeño">ICETEX</h4>
                                                 </Col>
                                             </Row>
                                           )
                                           :
                                           (
                                             <Row className="info"> 
-                                                <Col className="info_texto" xs={"12"} md={"6"}>
-                                                    <h4 className="texto_pequeño">{state.cedula}</h4>
-                                                </Col>
-                                                <Col className="info_texto" xs={"12"} md={"6"}>
-                                                    <h4 className="texto_pequeño">{state.telefono}</h4>
-                                                </Col>
-                                            </Row>
-                                          )
-                                        } 
-                                        {
-                                          state.editar?
-                                          (
-                                            <Row className="info">
-                                                <Col className="info_texto" xs={"12"}>
-                                                    <h4 className="texto_pequeño">{state.correo}</h4>
-                                                </Col>
+                                            {
+                                              state.editar ?
+                                              (
+                                                    <Col className="info_texto" xs={"12"} md={"2"}>
+                                                        <input 
+                                                        className="texto_mas_pequeño"
+                                                        
+                                                        placeholder={state.cedula}
+                                                        />
+                                                    </Col>
+                                              )
+                                              :
+                                              (
+                                                    <Col className="info_texto" xs={"12"} md={"2"}>
+                                                        <h4 className="texto_mas_pequeño">{state.cedula}</h4>
+                                                    </Col>
+                                                    
+                                              )
 
-                                            </Row>
-                                          )
-                                          :
-                                          (
-                                            <Row className="info">
-                                                <Col className="info_texto" xs={"12"}>
-                                                    <h4 className="texto_pequeño">{state.correo}{state.editar}</h4>
-                                                </Col>
+                                            }
+                                            {
+                                              state.editar ?
+                                              (
+                                                <Col className="info_texto" xs={"12"} md={"6"}>
+                                                        <input placeholder={state.correo}/>
+                                                    </Col>
+                                                    
+                                              )
+                                              :
+                                              (
+                                                <Col className="info_texto" xs={"12"} md={"6"}>
+                                                        <h4 className="texto_mas_pequeño">{state.correo}</h4>
+                                                    </Col>
+                                                    
+                                              )
+                                            }
+                                            {
+                                              state.editar ?
+                                              ( 
+                                                <Col className="info_texto" xs={"12"} md={"2"}>
+                                                      <input placeholder={state.telefono}/>
+                                                    </Col>
+                                                    
+                                              )
+                                              :
+                                              (
+                                                <Col className="info_texto" xs={"12"} md={"2"}>
+                                                      <h4 className="texto_mas_pequeño">{state.telefono}</h4>
+                                                    </Col>
+                                                    
+
+                                              )
+                                            }
+                                            {
+                                              state.editar ?
+                                              (
+                                                <Col className="info_texto" xs={"12"} md={"2"}>
+                                                      <h4 className="texto_mas_pequeño">ICETEX</h4>
+                                                    </Col>
+                                              )
+                                              :
+                                              (
+                                                <Col className="info_texto" xs={"12"} md={"2"}>
+                                                      <h4 className="texto_mas_pequeño">ICETEX</h4>
+                                                    </Col>
+                                              )
+                                            }
                                             </Row>
                                           )
                                         } 
@@ -191,81 +322,225 @@ const Info_basica = () =>{
                                     </Col>
                                 </Row>
 
-                                <Row className="infoRow2">
-                                  <Row>
-                                    <h4 className="texto_pequeño">Programas academicos </h4>
-                                  </Row>
-                                  <Row className="infoRow23"> 
-                                        <Col xs={"12"} md={"7"}>
-                                          <h4 className="texto_pequeño">van los cuadros verdes </h4>
-                                        </Col>
-                                        <Col xs={"12"} md={"4"}> 
-                                          <Select  />
-                                        </Col>
-                                        <Col xs={"12"} md={"1"}>
-                                          <Switch onClick={handleChange}/>
-                                        </Col>
-                                  </Row>
-                                </Row>
+                                {
+                                  (state.seleccionado) === '' ?
+                                  (
+                                    <Row className="infoRow2">
+                                      <Col xs={"12"} md={"9"}>
+                                        <Row>
+                                          <h4 className="bold">Programas academicos </h4>
+                                        </Row>
+                                        <Row className="infoRow23_activo"> 
+                                              <Col xs={"12"} md={"6"}>
+                                                <h4 className="texto_pequeño">{state.codigo} </h4>
+                                              </Col>
+                                              {
+                                                props.rolUsuario==='superSistemas' ?
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                    <Switch checked={true} />
+                                                  </Col>
+                                                )
+                                                :
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                  </Col>
+                                                )
+                                              }
+                                              <Col xs={"12"} md={"4"}> 
+                                                <Form.Select size="sm" className="bold_pequeño"/>
+                                              </Col>
+                                        </Row>
+                                        <Row className="infoRow23_inactivo"> 
+                                              <Col xs={"12"} md={"6"}>
+                                                <h4 className="texto_pequeño">{state.codigo} </h4>
+                                              </Col>
+                                              {
+                                                props.rolUsuario==='superSistemas' ?
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                    <Switch onClick={handleChange}/>
+                                                  </Col>
+                                                )
+                                                :
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                  </Col>
+                                                )
+                                              }
+                                              <Col xs={"12"} md={"4"}> 
+                                                <Form.Select  size="sm" className="bold_pequeño"/>
+                                              </Col>
+                                              
+                                        </Row>
+                                        <Row className="infoRow23_finalizado"> 
+                                              <Col xs={"12"} md={"6"}>
+                                                <h4 className="texto_pequeño">{state.codigo} </h4>
+                                              </Col>
+                                              {
+                                                props.rolUsuario==='superSistemas' ?
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                    <Switch disabled={true}/>
+                                                  </Col>
+                                                )
+                                                :
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                  </Col>
+                                                )
+                                              }
+                                              <Col xs={"12"} md={"4"}> 
+                                                <Form.Select  size="sm" className="bold_pequeño"/>
+                                              </Col>
+                                              
+                                        </Row>
+                                      </Col>
+
+                                      <Col xs={"12"} md={"3"} className="texto_estatico_ficha">
+                                        <Row className="texto_estatico">
+                                          <h4 className="texto_mas_pequeño">Condicion de excepcion</h4>
+                                        </Row>
+                                        <Row className="texto_estatico">
+                                          <h4 className="texto_mas_pequeño">2017-C.A</h4>
+                                        </Row>
+                                      </Col>
+                                      
+                                    </Row>
+                                  )
+                                  :
+                                  (
+                                    <Row className="infoRow2">
+                                      <Col xs={"12"} md={"9"}>
+                                        <Row>
+                                          <h4 className="texto_pequeño">Programas academicos </h4>
+                                        </Row>
+                                        <Row className="infoRow23_activo"> 
+                                              <Col xs={"12"} md={"6"}>
+                                                <h4 className="texto_pequeño">{state.codigo} </h4>
+                                              </Col>
+                                              {
+                                                props.rolUsuario==='superSistemas' ?
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                    <Switch checked={true} />
+                                                  </Col>
+                                                )
+                                                :
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                  </Col>
+                                                )
+                                              }
+                                              <Col xs={"12"} md={"4"}> 
+                                                <Form.Select  size="sm" className="bold_pequeño"/>
+                                              </Col>
+                                              
+                                        </Row>
+                                        <Row className="infoRow23_inactivo"> 
+                                              <Col xs={"12"} md={"6"}>
+                                                <h4 className="texto_pequeño">{state.codigo} </h4>
+                                              </Col>
+                                              {
+                                                props.rolUsuario==='superSistemas' ?
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                    <Switch checked={true} />
+                                                  </Col>
+                                                )
+                                                :
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                  </Col>
+                                                )
+                                              }
+                                              <Col xs={"12"} md={"4"}> 
+                                                <Form.Select  size="sm" className="bold_pequeño"/>
+                                              </Col>
+                                              
+                                        </Row>
+                                        <Row className="infoRow23_finalizado"> 
+                                              <Col xs={"12"} md={"6"}>
+                                                <h4 className="texto_pequeño">{state.codigo} </h4>
+                                              </Col>
+                                              {
+                                                props.rolUsuario==='superSistemas' ?
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                    <Switch disabled={true} />
+                                                  </Col>
+                                                )
+                                                :
+                                                (
+                                                  <Col xs={"12"} md={"2"}>
+                                                  </Col>
+                                                )
+                                              }
+                                              <Col xs={"12"} md={"4"}> 
+                                                <Form.Select  size="sm" className="bold_pequeño"/>
+                                              </Col>
+                                              
+                                        </Row>
+                                      </Col>
+
+                                      <Col xs={"12"} md={"3"}>
+                                        <Row>
+                                        <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                        </Row>
+                                        <Row className="texto_estatico">
+                                          <h4 className="texto_mas_pequeño">Condicion de excepcion</h4>
+                                        </Row>
+                                        <Row className="texto_estatico">
+                                          <h4 className="texto_mas_pequeño">2017-C.A</h4>
+                                        </Row>
+                                      </Col>
+                                      
+                                    </Row>
+                                  )
+
+                                }
+
+                                
                             </Col>
 
-
-
-
-                            <Col className="colInfo2" xs={"12"} md={"2"}>
-                                <Row className="infoRow3">
-                                    <h4 className="texto_subtitulo">ICETEX </h4>
-                                    <Select  />
-                                </Row>
-                                <Row className="infoRow3">
-                                    <h4 className="texto_pequeño">Cohortes </h4>
-                                    <h4 className="texto_pequeño">Cohortes </h4>
-                                </Row>
-                            </Col>
                         </Row>
                   </Col>
 
 
+                  {
+                    (state.seleccionado) === '' ?
+                    (
+                      <Col  xs={"12"} md={"3"}>
+                        <Row className="col3">
+                          <i class="bi bi-person-fill"></i>
+                        </Row>
+                        <Row>
+                        <Col xs={"12"} sm={"12"}>
+                          <Button className="boton_editar_info_basica" >
+                            EDITAR INFORMACIÓN
+                          </Button>
+                          </Col>
+                        </Row>
+                      </Col>
+                    )
+                    :
+                    (
+                      <Col  xs={"12"} md={"3"}>
+                        <Row className="col3">
+                        <i class="bi bi-person-fill"></i>
 
-
-                  <Col xs={"12"} md={"4"}>
+                          <img src={"./imag1.jpg"}></img>
+                        </Row>
+                        
+                      </Col>
+                    )
+                  }
                   
-                    <Row>
-                      <Col className="col2" md={"3"}>
-                        {
-                          state.editar ?
-                          (<Row>
-                            <Col>
-                              <Button onClick={estaEditando}>Cancelar</Button>
-                            </Col>
-                            <Col>
-                              <Button onClick={estaEditando}>Aceptar</Button>
-                            </Col>
-                          </Row>)
-                          :
-                          (
-                            <Row>
-                            <Col>
-                              <h4 className="texto_pequeño">ASES</h4>
-                            </Col>
-                            <Col>
-                              <Button onClick={estaEditando}>editar</Button>
-                            </Col>
-                          </Row>
-                          )
-                        }
-                          
-                      </Col>
-
-                      <Col className="col3" md={"9"}>
-                          <img src={"./imag12.jpg"}></img>
-                          <h1>COL DE FOTO</h1>
-                      </Col>
-                    </Row>
-                  </Col>
+                    
+                   
         </Row>
         <Row>
-          <Selector id={state.id_usuario} seleccionado={state.seleccionado} editar={state.editar}/>
+          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} seleccionado={state.seleccionado} editar={state.editar}/>
         </Row>
 
         

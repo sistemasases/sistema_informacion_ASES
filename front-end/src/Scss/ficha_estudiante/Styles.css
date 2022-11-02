@@ -1,8 +1,10 @@
 * {
     box-sizing: border-box;
-    
+    font-family: 'Manrope';
 }
-
+.z_index_2{
+    z-index: 1;
+}
 body {
     margin: 0;    
 }
@@ -12,8 +14,8 @@ body {
 
 
 
+
 .row1{
-    border: 10px;
 }
 .col1{
     width: 70%;
@@ -21,16 +23,22 @@ body {
 .infoRow1{
 }
 .infoRow2{
-    padding: 10px 10px;
+    margin-top: 20px;
 }
 .col2{    
     word-break: break-all;
 }
 .col3{
-    word-break: break-all;
+    color: rgba(218, 218, 218, 255);
+    text-align: center;
+    justify-content: center;
+    font-size: 20vh;
     background: white;
 }
-
+.foto{
+    color: rgba(151,234,242,255);
+    width: 100%;
+}
 
 
 .row2{
@@ -55,16 +63,16 @@ body {
     display: flex;
     flex-direction: column;
 }
-.justMargin1{
+.select_tipo_doc{
+    width: 100%;
+    background: rgb(99, 99, 99);
 }
 .justMargin2{
 }
 
 .info_basica_borde{
-    padding: 5px 5px;
-    background: #dfdfdf;
-    border: 3px solid lightgrey;
-    border-radius: 20px;
+    padding: 20px 20px;
+    background: rgb(218, 218, 218);
 }
 
 
@@ -76,13 +84,29 @@ body {
 
 
 
-.infoRow23{
-    border-radius: 10px;
-    width: 100%;
-    display: flex;
-    background: gray;
-    justify-content: space-between;
-
+.infoRow23_activo{
+    font-size: 8pt;
+    margin-top: 5px;
+    padding-top: 2px;
+    height: 30px;
+    color: white;
+    background: green;
+}
+.infoRow23_inactivo{
+    font-size: 8pt;
+    margin-top: 5px;
+    padding-top: 2px;
+    height: 30px;
+    color: white;
+    background: #504f4f;
+}
+.infoRow23_finalizado{
+    font-size: 8pt;
+    margin-top: 5px;
+    padding-top: 2px;
+    height: 30px;
+    color: white;
+    background: blue;
 }
 .infoRow3{
     
@@ -101,13 +125,18 @@ body {
 }
 
 .info{
+    margin-top: 40px;
     word-break: break-all;
 }
 .info_texto{
     word-break: break-all;
-    
+    text-align: center;
+    border-left: 2px solid #878787;
 }
 .info_basica_selector{
+    margin-top: 40px;
+    color: white;
+    background: #878787;
 }
 
 
@@ -144,6 +173,29 @@ body {
     width: 10%;
 }
 
+.texto_estatico{
+    text-align: center;
+    text-justify: center;
+    align-content: center;
+    justify-content: center;
+}
+
+.texto_estatico_ficha{
+    padding-left: 20px;
+    padding-top: 90px;
+}
+
+.boton_editar_info_basica{
+    border-radius: 18px;
+    background: #eeeeee;
+    color: rgb(135, 135, 135);
+    font-size: 9pt;
+    margin-top: 10px;
+    font-weight: bold;
+    border: 2px solid rgb(135, 135, 135);;
+    width: 100%;
+    height: 36px;
+}
 
 
 
@@ -153,56 +205,230 @@ body {
 
 
 
-.container_info_registro{
-    padding-top:5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
+.container_info_registro{ 
+    width: 100%;
 }
 
 .generar_nuevo_reporte{
-    border-radius: 10px;
-    background: #dfdfdf;
-    padding: 10px 10px;
-    margin-bottom: 5px;
+    height: 60px;
+}
+.boton_nuevo_registro{
+    height: 50px;
+    width: 100%;
+    border: 2px solid rgba(229,41,67,255);
+    background: white;
+    color: rgba(229,41,67,255);
+    font-size: 13pt;
+    border-radius: 25px;
+    font-weight: bold;
 }
 
+.borde_redondo{
+    background: rgba(30,195,196,255);
+    border-radius: 100%;
+}
+
+.titulo_riesgos{
+    border: 2px solid rgba(30,195,196,255);
+    text-justify: center;
+    text-align: center;
+    color: rgba(30,195,196,255);
+    background: white;
+}
+.text_center{
+    text-align: center;
+}
+
+.tipos_riesgos{
+    background: rgba(30,195,196,255);
+    padding: 10px 5px;
+    color:white;
+}
+.center_tipos_riesgos{
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.button_tipo_riesgo_alto{
+    background: rgba(229,41,67,255);
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_medio{
+    background: rgba(249,182,27,255);
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_bajo{
+    background: rgba(65,174,27,255);
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_alto_2{
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 20pt;
+    background: rgba(247,94,120,255);
+    color: rgba(235,44,74,255);
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_medio_2{
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 20pt;
+    background: rgba(255,205,80,255);
+    color: rgba(255, 183, 0, 1);
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_bajo_2{
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 20pt;
+    background: rgba(116,206,76,255);
+    color: rgba(56,172,6,255);
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+}
+
+.button_tipo_riesgo_alto_texto{
+    background: rgba(247,94,120,255);
+    color: white;
+    margin-top: 17px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+}
+.button_tipo_riesgo_medio_texto{
+    background: rgba(255,205,80,255);
+    color: white;
+    margin-top: 17px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+}
+.button_tipo_riesgo_bajo_texto{
+    z-index: 1;
+    background: rgba(116,206,76,255);
+    color: white;
+    margin-top: 17px;
+    padding-left: 10px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+}
+.borde_riesgos_alto{
+    padding: 2px 2px;
+    border: 1px solid rgba(232,36,70,255);
+    border-radius: 100%;
+}
+.borde_riesgos_medio{
+    padding: 2px 2px;
+    border: 1px solid rgba(255,205,80,255);
+    border-radius: 100%;
+}
+.borde_riesgos_bajo{
+    padding: 2px 2px;
+    border: 1px solid rgba(56,172,6,255);
+    border-radius: 100%;
+}
+
+
 .riesgos{
-    border-radius: 10px;
-    background: #dfdfdf;
     margin-top: 10px;
+}
+.riesgos_fondo_claro{
+    background: rgba(151,234,242,255);
+    padding-bottom: 30px;
 }
 
 .row_riesgo{
+
     margin-top: 20px;
     margin-left: 20px;
 }
 
 .columna_boton_riesgo{
+    width: 25px;
+    height: 25px;
     background: yellowgreen;
+}
+
+.texto_alto{
+    font-size: 8pt;
+    margin-top: 6px;
+    margin-left: 4px;
+}
+
+.texto_medio{
+    font-size: 8pt;
+    margin-top: 6px;
+    margin-left: 4px;
+}
+
+.texto_bajo{
+    font-size: 8pt;
+    margin-top: 6px;
+    margin-left: 4px;
 }
 
 
 
 
 
+
+.texto_mas_pequeño{
+    font-size: 8pt;
+}
+
 .texto_pequeño{
     font-size: 14pt;
-    font-family: "Manrope";
 }
 
 
 .texto_subtitulo{
-    font-size: 20pt;
-    font-family: "Manrope";
+    color: rgba(229,41,67,255);
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 18pt;
 }
 
 .texto_titulo{
     font-size: 36pt;
-    font-family: "Manrope";
 }
 
-
+.bold{
+    font-size: 14pt;
+    font-weight: bold;
+}
+.bold_pequeño{
+    font-size: 8pt;
+    font-weight: bold;
+}
 
 .container_ficha_footer{
 
@@ -210,5 +436,5 @@ body {
 
 .ficha_footer{
     background: #dfdfdf;
-    border-radius: 10px;
 }
+

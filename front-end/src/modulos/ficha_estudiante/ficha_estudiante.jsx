@@ -26,21 +26,17 @@ const Ficha_estudiante = (props) =>{
     ]
 
     return (
-        <Container>
-                <Row>
+        <Row>
                     <Col xs={"12"} lg={"9"}>
-                        <Info_basica/>
+                        <Info_basica usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>
                     </Col>
                     <Col xs={"12"} lg={"3"}>
-                        <Info_registros/>
+                        <Info_registros usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>
                     </Col>
-                </Row>
-                <Row>
                     <Col xs={"12"}>
-                        <Ficha_footer/>
+                        <Ficha_footer usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>
                     </Col>
-                </Row>
-        </Container>
+        </Row>
     )
 }
 

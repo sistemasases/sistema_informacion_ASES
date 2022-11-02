@@ -188,3 +188,43 @@ class All_semestres(APIView):
         print(request)
         list_semestre =semestre.objects.all()
         return Response (list(list_semestre.values()))
+
+
+
+class Estudiante_actualizacion(APIView):
+
+    serializer_class =serializers.Estudiante_actualizacion
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if (serializer.is_valid()):
+
+            id_estudiante_request = serializer.validated_data.get('id')
+            var_usuario = get_object_or_404(estudiante, id = id_estudiante_request)
+
+            try:
+                var_old_usuario = get_object_or_404(estudiante, id = var_usuario)
+            except:
+                var_old_usuario = Empty
+            # print(var_semestre.id)
+            # print(var_old_usuario.id_semestre)
+            # print(var_semestre.id)
+            # print(var_old_usuario.estado)
+            if(var_old_usuario != Empty ):
+                print("entre a 1")
+                var_usuario= var_old_usuario
+                var_usuario.num_doc = id_estudiante_request
+                var_usuario.save()
+            else:
+                Response(
+                    serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+
+            return Response({'Respuesta': 'True'})
+
+        return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+

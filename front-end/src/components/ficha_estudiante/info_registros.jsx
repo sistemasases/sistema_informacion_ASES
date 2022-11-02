@@ -16,73 +16,137 @@ import Footer from '../../components/componentes_generales/footer';
 const Info_registros = () =>{
 
     return (
-        <Container>
-            <Col className="container_info_registro">
+        <Container className="container_info_registro">
+            <Col>
                 <Row className="generar_nuevo_reporte">
-                    <Button >Generar Nuevo Reporte</Button>
+                    <Button className="boton_nuevo_registro">NUEVO SEGUIMIENTO</Button>
                 </Row>
+
+                
+
+
                 <Row className="riesgos">
-                        <Row xs={"12"} sm={"12"}>
-                            <Col>
-                                <h3 className="texto_subtitulo">Riesgos</h3>
+                    <Col>
+                        <Row xs={"12"} className="titulo_riesgos">
+                            <Col xs={"12"}>
+                                <h3 className="texto_subtitulo" activeClassName="text_center">RIESGOS</h3>
                             </Col>
                         </Row>
 
-                        <Row xs={"12"} ms={"12"}>
-                            <Col xs={"0"} sm={"1"} ></Col>
-                            <Col xs={"11"} sm={"10"}>
+
+                        <Row xs={"12"} className="tipos_riesgos">
+                            <Col xs={"12"} sm={"4"} className="center_tipos_riesgos">
+                                <Row className="center_tipos_riesgos">
+                                    <label className="button_tipo_riesgo_alto">A</label>
+                                    <h1 className="texto_alto">ALTO</h1>
+                                </Row> 
+                            </Col>
+                            <Col xs={"12"} sm={"4"} className="center_tipos_riesgos">
+                                <Row className="center_tipos_riesgos">
+                                    <label className="button_tipo_riesgo_medio">M</label>
+                                    <h3 className="texto_medio">MEDIO</h3>
+                                </Row>
+                            </Col>
+                            <Col xs={"12"} sm={"4"} className="center_tipos_riesgos">
+                                <Row className="center_tipos_riesgos"> 
+                                    <label className="button_tipo_riesgo_bajo">B</label>
+                                    <h3 className="texto_bajo">BAJO</h3>
+                                </Row>
+                            </Col>
+                        </Row>
+
+
+
+
+                        <Row className="riesgos_fondo_claro">
+                            <Col>
 
                                 <Row className="row_riesgo">
-                                    <Col xs={"3"} sm={"3"} className="columna_boton_riesgo">
-                                    <Button className="buttonRiesgos"></Button>
+                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_bajo">
+                                            <label className="button_tipo_riesgo_bajo_2">B</label>
+                                        </label>
                                     </Col>
-                                    <Col  xs={"9"}  sm={"9"}>
-                                        individual
+                                    <Col  xs={"10"}  sm={"10"} className="center_tipos_riesgos">
+                                        <label  className="button_tipo_riesgo_bajo_texto">INDIVIDUAL</label> 
                                     </Col>
                                 </Row>
                                 
+
+
+
+
+
+
                                 <Row  className="row_riesgo">
-                                    <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
-                                        <Button className="buttonRiesgos"></Button>
+                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_medio">
+                                            <label className="button_tipo_riesgo_medio_2">M</label>
+                                        </label>
                                     </Col>
-                                    <Col  xs={"9"}  sm={"9"}>
-                                        familiar
+                                    <Col  xs={"10"}  sm={"10"} className="center_tipos_riesgos">
+                                        <label  className="button_tipo_riesgo_medio_texto">FAMILIAR</label>
                                     </Col>
                                 </Row>
                                 
+
+
+
+
+
                                 <Row  className="row_riesgo">
-                                        <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
-                                            <Button className="buttonRiesgos"></Button>
+                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_alto">
+                                            <label className="button_tipo_riesgo_alto_2">A</label>
+                                        </label>
                                         </Col>
-                                        <Col  xs={"9"} sm={"9"}>
-                                        academico
+                                        <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                            <label  className="button_tipo_riesgo_alto_texto">ACADEMICO</label>
                                         </Col>
                                 </Row>
                                 
+
+
+
+
                                 <Row className="row_riesgo">
-                                        <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
-                                            <Button className="buttonRiesgos"></Button>
-                                        </Col>
-                                        <Col  xs={"9"} sm={"9"}>
-                                        econocmico
-                                        </Col>
-                                    </Row>
+                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+                                            <label className="borde_riesgos_bajo">
+                                                <label className="button_tipo_riesgo_bajo_2">B</label>
+                                            </label>                             
+                                    </Col>
+                                    <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                            <label  className="button_tipo_riesgo_bajo_texto">ECONOMICO</label> 
+                                    </Col>
+                                </Row>
                                 
+
+
+
+
                                 <Row className="row_riesgo">
-                                        <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
-                                            <Button className="buttonRiesgos"></Button>
-                                        </Col>
-                                        <Col  xs={"9"} sm={"9"}>
-                                        vida Univ.
-                                        </Col>
-                                    </Row>
+                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_medio">
+                                            <label className="button_tipo_riesgo_medio_2">M</label>
+                                        </label>
+                                    </Col>
+                                    <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label  className="button_tipo_riesgo_medio_texto">VIDA UNIV..</label>
+                                    </Col>
+                                </Row>
                                 
+
+
+
+
+
                                     <Row className="row_riesgo" >
-                                        <Col xs={"3"} sm={"3"}  className="columna_boton_riesgo">
-                                            <Button className="buttonRiesgos"></Button>
-                                        </Col>
-                                        <Col  xs={"9"} sm={"9"}>
-                                            Geografico
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                            <label className="borde_riesgos_alto">
+                                                <label className="button_tipo_riesgo_alto_2">A</label>
+                                            </label>                                        </Col>
+                                        <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                            <label  className="button_tipo_riesgo_alto_texto">GEOGRAFICO</label>
                                         </Col>
                                     </Row>
 
@@ -90,6 +154,10 @@ const Info_registros = () =>{
                             
 
                         </Row>
+                    </Col>
+                        
+
+                        
                             
                 </Row>
             </Col>

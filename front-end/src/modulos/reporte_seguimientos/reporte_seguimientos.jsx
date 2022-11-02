@@ -25,7 +25,7 @@ const Reporte_seguimientos = (props) =>{
         
         <Container className="container_reportes_seguimientos">
             <Row className="containerRow">
-                <Cabecera usuario={props.usuario} area={props.area}></Cabecera>
+                <Cabecera usuario={props.usuario} area={props.area} periodo={props.periodo}></Cabecera>
                 <Informacion_rol></Informacion_rol>
             </Row>
 

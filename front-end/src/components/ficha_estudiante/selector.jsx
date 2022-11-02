@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import {Container, Row, Col, Dropdown} from "react-bootstrap";
+import {Container, Row, Col} from "react-bootstrap";
 import Info_general from "./tabs/info_general"
 import Academico from "./tabs/academico"
+import Modal from 'react-bootstrap/Modal';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import DropdownItem from 'react-bootstrap/esm/DropdownItem';
+import {Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 
@@ -11,6 +12,10 @@ const Selector = (props) =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
 
     const datos_option_user = []
@@ -82,29 +87,30 @@ const Selector = (props) =>{
     const tabs=[
         {
             id:1,
-            name:"General",
-            contnido:"2siiiiiii",
-            component:<Info_general id={props.id} seleccionado={props.seleccionado} editar={props.editar}/>,
+            name:"GENERAL",
+            contenido:"2siiiiiii",
+            component:<Info_general id={props.id} seleccionado={props.seleccionado} rolUsuario={props.rolUsuario} editar={props.editar}/>,
         },
         {
             id:2,
-            name:"Socieducativo",
-            contnido:"hola",
+            name:"SOCIEDUCATIVO",
+            contenido:"hola",
             component:<Info_general />,
         },
         {
             id:3,
-            name:"Academico",
-            contnido:"hola",
+            name:"ACADEMICO",
+            contenido:"hola",
 
             component:<Academico />,
         },
         {
             id:4,
-            name:"Geografico",
-            contnido:"hola",
+            name:"GEOGRAFICO",
+            contenido:"hola",
             component:<Info_general />,
-        }
+        },
+
     ]
 
 
@@ -112,39 +118,71 @@ const Selector = (props) =>{
     return (
         <Container className="containerSelector">
 
-                {Object.keys(tabs).length === 0 ? (
-                    <Row>no tabs</Row>
-                ) : (
+                {
+                    props.seleccionado ==='' ?
+                    (
                         <Row className="tabs" >
-                            {tabs.map((tab, index)=>(
-                                <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab"} >
-                                    <Row onClick={() => activeTab(tab.id)}>
-                                        <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
-                                            {tab.name}{props.editar}
-                                        </label>
-                                    </Row>
-                                    
                                     {
-                                        (tab.id === activeTabIndex)?
-                                        (
+                                    tabs.map((tab, index)=>(
+                                        <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
+                                            <Row onClick={handleShow}>
+                                                <label key={index} classNmae="tab_bloqueado">
+                                                    {tab.name}{props.editar}
+                                                </label>
+                                            </Row>
+                                        </Row>
                                         
-                                        <Row>
-                                            <Col xs={"0"} md={"1"}></Col>
-                                            <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
-                                            <Col xs={"0"} md={"1"}></Col>
-
-                                        </Row>)
-                                        :
-                                        (<Row></Row>)
+                                        ))
                                     }
-                                
                                 </Row>
-                                
-                                ))
-                            }
-                        </Row>
+                    )
+                    :
+                    (
+                        <Row className="tabs" >
+                                    {
+                                    tabs.map((tab, index)=>(
+                                        <Row className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
+                                            <Row onClick={() => activeTab(tab.id)}>
+                                                <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
+                                                    {tab.name}{props.editar}
+                                                </label>
+                                            </Row>
+                                            
+                                            {
+                                                (tab.id === activeTabIndex)?
+                                                (
+                                                
+                                                <Row>
+                                                    <Col xs={"0"} md={"1"}></Col>
+                                                    <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
+                                                    <Col xs={"0"} md={"1"}></Col>
+        
+                                                </Row>)
+                                                :
+                                                (<Row></Row>)
+                                            }
+                                        
+                                        </Row>
+                                        
+                                        ))
+                                    }
+                                </Row>
+                    )
 
-                )}
+
+                }
+
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                    <Modal.Title>Importante</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Seleccione un estudiante.</Modal.Body>
+                    <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    </Modal.Footer>
+                </Modal>
                 
         </Container>
     )

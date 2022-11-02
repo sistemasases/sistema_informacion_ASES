@@ -9,7 +9,7 @@ body {
 .nav {
     z-index: 2;
     height: 4rem;
-    background: rgb(200, 0, 0);
+    background: rgba(235,30,0,255);
     color: white;
     padding-right:  100px;
     width: 100%;
@@ -36,6 +36,18 @@ body {
     color: inherit;
 }
 
+.logo{
+    margin-top: 0.1rem;
+    height: 3.8rem;
+}
+
+.row_modulo_activo{
+    margin-top: 1.5rem;
+    background: white;
+    color: rgba(235,30,0,255);
+    font-weight: bold;
+}
+
 .itemsNav{
     margin-right: 10%;
     align-content: flex-end;
@@ -49,9 +61,6 @@ body {
 }
 
 .dropdown{
-    margin-right: 0%;
-    width: 10%;
-    height: 30%;
     cursor: pointer;
 }
 
@@ -60,24 +69,56 @@ body {
     list-style: none;
 }
 
-
-
 .boton_perfil{
-    background: #dfdfdf;
-    color:rgb(200, 0, 0);
+    color:rgba(235,30,0,255);
     font-size: 14pt;
-    font-family: "Manrope";
     margin: 0.5rem 0px;
     height: 3rem;
 }
 .info_perfil{
     height: 3rem;
+    padding-top: 1rem;
+    font-size:9pt;
+    color: white;
+}
+.toggle_perfil_usuario{
+    display: flex;
 }
 .desplegable_usuario{
-    background: rgb(100, 0, 0);
     padding-top: 0.25rem;
 }
+
 .boton_usuario{
-    background: rgb(200, 0, 0);
+    cursor: pointer;
+    color: white;
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+    font-size: 30px;
+    width: 3rem;
+    height: 3rem;
+    background: #dfdfdf;
     border-radius: 100%;
 }
+.flecha_usuario{
+    cursor: pointer;
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+    font-size: 25px;
+    color: white;
+    font-weight: bold;
+
+}
+
+.opciones_usuario{
+    padding: 10px 0px;
+    cursor: pointer;
+    color: white;
+    margin-top: 10px;
+    border-radius: 10px;
+    background: rgba(235,30,0,255);
+}
+

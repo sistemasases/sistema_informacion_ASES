@@ -61,7 +61,7 @@ const SideBar = (props) =>{
                 <Row className="top_selection">
                     <FaBars onClick={toggle}/>
                 </Row>
-                <Row style={{width: isOpen ? "300px" : "70px"}} className="sideBar">
+                <Row style={{width: isOpen ? "250px" : "70px"}} className="sideBar">
                     
                     <Scrollbars className="scrollbar_sidebar">
                         {
@@ -83,12 +83,14 @@ const SideBar = (props) =>{
                     <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
                 </Row>
                 <Col className="inf_der">
-                    <main style={{marginLeft: isOpen ? "300px" : "70px"}}>
+                    <main style={{marginLeft: isOpen ? "280px" : "100px"}}>
                         {props.children}
-                        
                     </main>
-                    <Footer></Footer>
                 </Col>
+                <Row>
+                    <Footer style={{marginLeft: isOpen ? "300px" : "70px"}}></Footer>
+                </Row>
+
                     
         </Container>
     )

@@ -24,6 +24,12 @@
     border-bottom: 1px solid black;
     display: flex;
 }
+.col_label_reportes_seguimientos{
+    justify-content: center;
+    padding: 10px 10px; 
+    border-bottom: 1px solid black;
+    font-size: 32pt;
+}
 
 .row_contenido_reportes_seguimientos{
     margin: 20px 0px;
