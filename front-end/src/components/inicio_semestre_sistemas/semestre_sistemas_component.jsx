@@ -9,7 +9,6 @@ var datos_option_rol = [];
 
 const semestre_sistemas_component = () =>{
 
-    
     var bandera_option_rol = true;
 
     const [state,set_state] = useState({
@@ -37,30 +36,7 @@ const semestre_sistemas_component = () =>{
             }
         })
     }
-
-    const columnas =[
-        {
-          name: 'USERNAME',
-          selector: row => row.username
-        },
-        {
-          name: 'NOMBRES',
-          selector: row => row.first_name
-        },
-        {
-          name: 'APELLIDOS',
-          selector: row => row.last_name
-        },
-        {
-          name: 'EMAIL',
-          selector: row => row.email
-        },
-        {
-          name: 'ROL',
-          selector: row => row.nombre
-        },
-      ]
-
+    
     const insertar = () =>{
         var nuevo={...state.form};
         var lista=state.data;
@@ -108,7 +84,10 @@ const semestre_sistemas_component = () =>{
                 ...state,
                 rol: res.data
             })
+            console.log(res.data)
+            console.log(state.rol)
         })
+        console.log(state.rol)
         datos_option_rol = [];
           for (var i = 0; i < state.rol['length'] ; i++) {
             const dato = { value: state.rol[i]['nombre'], label: state.rol[i]['nombre'], id: state.rol[i]['id'] }
@@ -117,10 +96,6 @@ const semestre_sistemas_component = () =>{
           bandera_option_rol = false;
         }
         return datos_option_rol;
-      }
-
-      const handle_option_rol = (e) => {
-        
       }
 
     return (
@@ -184,13 +159,6 @@ const semestre_sistemas_component = () =>{
                     ))}
                 </tbody>
             </Table>
-            <DataTable
-                title='Usuarios que continuan'
-                columns={columnas}
-                data={state.data}
-                noDataComponent="Cargando Información."
-                pagination
-            />
         </Row>
         </Container>
     )

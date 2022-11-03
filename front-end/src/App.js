@@ -54,7 +54,7 @@ import "./Scss/footer/footer.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import SideBar from "./components/componentes_generales/SideBar";
+import SideBar from "./components/componentes_generales/sideBar";
 import Login from "./modulos/login/login.jsx";
 //import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
 import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
