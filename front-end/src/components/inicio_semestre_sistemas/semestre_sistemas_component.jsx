@@ -86,7 +86,7 @@ const semestre_sistemas_component = () =>{
 
     useEffect(()=>{
         axios({
-            url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/3",
+            url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/",
             method: "GET",
         })
         .then((respuesta)=>{
