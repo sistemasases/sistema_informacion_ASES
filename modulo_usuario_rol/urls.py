@@ -10,6 +10,6 @@ urlpatterns = [
     path('user_rol_manage/', views.User_rol_manage.as_view()),
     path('all_estudiante/', views.All_estudiante.as_view()),
     path('estudiante_manage/', views.Estudiante_manage.as_view()),
-    path('all_user_rol/<int:pk>/', views.All_user_with_rol.as_view()),
+    path('all_user_rol/', views.All_user_with_rol.as_view()),
 ]
 
