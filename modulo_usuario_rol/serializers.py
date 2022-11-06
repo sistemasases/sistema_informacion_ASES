@@ -17,3 +17,6 @@ class User_rol_manage(serializers.Serializer):
 
 class Estudiante_manage(serializers.Serializer):
 	id = serializers.IntegerField()
+
+class Estudiante_actualizacion(serializers.Serializer):
+    id = serializers.IntegerField()
