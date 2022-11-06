@@ -49,9 +49,8 @@ const Informacion_rol = () =>{
                     </Row>
                 </Row>
             </Row>
-            <Row className="row_desplegable">
+
                 <Desplegable></Desplegable>
-            </Row>
         </Container>
     )
 }

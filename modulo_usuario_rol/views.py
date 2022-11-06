@@ -1,3 +1,5 @@
+from ast import And
+from operator import and_
 from queue import Empty
 from django.contrib.auth.models import User
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante
@@ -114,6 +116,30 @@ class User_rol_manage(APIView):
             status=status.HTTP_400_BAD_REQUEST
             )
 
+class delete_user_rol(APIView):
+    serializer_class =serializers.User_rol
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if (serializer.is_valid()):
+            id_user_request = serializer.validated_data.get('id_user')
+            id_rol_request = serializer.validated_data.get('id_rol')
+            var_usuario = get_object_or_404(User, id = id_user_request)
+            var_rol = get_object_or_404(rol, id = id_rol_request)
+            var_semestre = get_object_or_404(semestre, semestre_actual = True)
+            try:
+                var_old_user_rol = get_object_or_404(usuario_rol, var_usuario,  id_semestre = var_semestre)
+            except:
+                return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+                )
+
+            var_user_rol= var_old_user_rol
+            var_user_rol.estado = "INACTIVO"
+            var_user_rol.save()
+
+            return Response({'Respuesta': 'True'})
+
 class User_rol(APIView):
 
     serializer_class =serializers.User_rol
@@ -127,7 +153,7 @@ class User_rol(APIView):
             var_rol = get_object_or_404(rol, id = id_rol_request)
             var_semestre = get_object_or_404(semestre, semestre_actual = True)
             try:
-                var_old_user_rol = get_object_or_404(usuario_rol, id_usuario = var_usuario)
+                var_old_user_rol = get_object_or_404(usuario_rol, id_usuario = var_usuario,  id_semestre = var_semestre)
             except:
                 var_old_user_rol = Empty
             # print(var_semestre.id)
@@ -176,3 +202,55 @@ class User_rol(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+
+
+
+
+class All_semestres(APIView):
+
+    def get(self, request):
+        print(request)
+        list_semestre =semestre.objects.all()
+        return Response (list(list_semestre.values()))
+
+
+
+class Estudiante_actualizacion(APIView):
+
+    serializer_class =serializers.Estudiante_actualizacion
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if (serializer.is_valid()):
+
+            id_estudiante_request = serializer.validated_data.get('id')
+            var_usuario = get_object_or_404(estudiante, id = id_estudiante_request)
+
+            try:
+                var_old_usuario = get_object_or_404(estudiante, id = var_usuario)
+            except:
+                var_old_usuario = Empty
+            # print(var_semestre.id)
+            # print(var_old_usuario.id_semestre)
+            # print(var_semestre.id)
+            # print(var_old_usuario.estado)
+            if(var_old_usuario != Empty ):
+                print("entre a 1")
+                var_usuario= var_old_usuario
+                var_usuario.num_doc = id_estudiante_request
+                var_usuario.save()
+            else:
+                Response(
+                    serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+
+            return Response({'Respuesta': 'True'})
+
+        return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+

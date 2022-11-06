@@ -49,6 +49,9 @@ const login_component = () =>{
             <button onClick={handleSendNewData} className="btn btn-primary">
               Submit
             </button>
+            <a href={"/ficha_estudiante"}  className="sidebar-item">
+                <span className="tamaño_icon">aqui</span>
+            </a>
           </div>
           <p className="forgot-password text-right mt-2">
             Forgot <a href="#">password?</a>

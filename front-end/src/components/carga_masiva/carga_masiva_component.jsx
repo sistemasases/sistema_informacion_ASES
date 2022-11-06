@@ -22,11 +22,13 @@ const carga_masiva_component = () =>{
   const columnas =[
     {
       name: 'DATO',
-      selector: row => row.dato
+      selector: row => row.dato,
+      sortable: true,
     },
     {
       name: 'MENSAJE',
       selector: row => row.mensaje,
+      sortable: true,
       grow : 2,
     },
   ]

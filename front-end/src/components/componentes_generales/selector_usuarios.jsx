@@ -30,28 +30,34 @@ const selector_usuarios = () =>{
     data_user_rol : [],
     data_rol : [],
     info_modal : " cargando...",
+    select_rows : []
   })
   const [show, setShow] = useState(false);
   const columnas =[
     {
       name: 'USERNAME',
-      selector: row => row.username
+      selector: row => row.username,
+      sortable: true,
     },
     {
       name: 'NOMBRES',
-      selector: row => row.first_name
+      selector: row => row.first_name,
+      sortable: true,
     },
     {
       name: 'APELLIDOS',
-      selector: row => row.last_name
+      selector: row => row.last_name,
+      sortable: true,
     },
     {
       name: 'EMAIL',
-      selector: row => row.email
+      selector: row => row.email,
+      sortable: true,
     },
     {
       name: 'ROL',
-      selector: row => row.nombre
+      selector: row => row.nombre,
+      sortable: true,
     },
   ]
   /*
@@ -106,7 +112,7 @@ const selector_usuarios = () =>{
 
       axios({
         // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/",
+        url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/3",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -254,6 +260,17 @@ const selector_usuarios = () =>{
 
   }
   const handleClose = () => setShow(false);
+  const handleChange = ({ selectedRows }) => {
+    // You can set state or dispatch with something like Redux so we can use the retrieved data
+    console.log('Selected Rows: ', selectedRows);
+    set_state({
+      ...state,
+      select_rows : selectedRows
+    })
+    console.log('Selected Rows: ', state.select_rows);
+  };
+  const delete_user_rol = () => console.log('entre');
+  
   return (
         <Container>
         <Accordion>
@@ -275,13 +292,13 @@ const selector_usuarios = () =>{
                 <Form.Control as="textarea" value={state.usuario}  rows={1} readOnly/>
             </Row>
             <Row className="g-2">
-                <h6>Rol actual:</h6>
+                <h6>Rol actual(Periodo):</h6>
             </Row>
             <Row className="g-2">
                 <Form.Control as="textarea" value={state.rol_actual}  rows={1} readOnly/>
             </Row>
             <Row className="g-2">
-                <h3>Selecciona un Rol</h3>
+                <h3>Selecciona un Rol (Periodo):</h3>
             </Row>
 
             <Row className="g-2" >
@@ -308,6 +325,10 @@ const selector_usuarios = () =>{
               data={state.data_user_rol}
               noDataComponent="Cargando Información."
               pagination
+              striped
+              selectableRows
+              onSelectedRowsChange={handleChange}
+              actions={delete_user_rol}
               />
             </Accordion.Body>
           </Accordion.Item>
