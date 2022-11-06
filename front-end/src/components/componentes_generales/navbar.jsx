@@ -31,7 +31,6 @@ import Logos from './LOGO BLANCORecurso 1.png';
                                                 <i class="bi bi-chevron-down"></i>
                                             )
                                         }
-
                                     </Row>
                                     <ul className="ulDropdown">
                                         <li>

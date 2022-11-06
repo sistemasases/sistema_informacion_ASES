@@ -106,7 +106,6 @@ const SideBar = (props) =>{
                 
                 
                 
-                
                 <Row className="row_navbar">
                     <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
                 </Row>
