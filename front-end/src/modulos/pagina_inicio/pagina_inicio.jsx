@@ -4,13 +4,14 @@ import {Row, Col} from "react-bootstrap";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SideBar from "../../components/componentes_generales/sideBar";
-import Navbar from"../../components/componentes_generales/NavBar";
+import Navbar from"../../components/componentes_generales/navbar"; 
+
 
 
 
 const Pagina_inicio = () => {
-  const[nombreUsuario] = useState("usuario1");
-  const[rolUsuario] = useState("monitor");
+  const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / 2022 - 2");
+  const[rolUsuario] = useState("");
   const[area] = useState('1');
 
     return (

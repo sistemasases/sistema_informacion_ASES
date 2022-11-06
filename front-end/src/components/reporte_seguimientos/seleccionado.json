@@ -1,20 +1,5 @@
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 [
     {
         "nombre":"Analitics",
@@ -32,6 +17,12 @@
             }
         ]
     },
+
+
+
+
+
+    
     {
         "nombre":"fichaDeEstudiante",
         "practicante":[

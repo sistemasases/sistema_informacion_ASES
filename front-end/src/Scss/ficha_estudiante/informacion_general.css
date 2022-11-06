@@ -10,7 +10,9 @@
     width: 50%;
 }
 
-.row_flex{
+.row_flex_general{
+    margin-top: 20px;
+    border-bottom: 1px solid gainsboro;
     display: flex;
     width: 100%;
 } 
