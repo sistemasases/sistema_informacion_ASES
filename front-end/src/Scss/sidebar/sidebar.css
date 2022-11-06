@@ -34,14 +34,15 @@ main{
 }
 
 .top_selection{
+    z-index: 2;
     height: 4rem;
-    width: 70px;
+    width: 50px;
     background: rgba(235,30,0,255);
     color: #F1F1F1;
     display: flex;
     align-items: center;
-    padding: 20px 15px;
-    margin-bottom:30px;
+    padding-top: 5px;
+    padding-left: 10px;
     position: fixed;
 }
 

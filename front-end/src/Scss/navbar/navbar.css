@@ -11,14 +11,12 @@ body {
     height: 4rem;
     background: rgba(235,30,0,255);
     color: white;
-    padding-right:  100px;
     width: 100%;
-
 }
 .row_navbar{
     z-index: 2;
     position: fixed;
-    left: 70px;
+    left: 50px;
     background: blue;
     width: 100%;
 
@@ -37,11 +35,19 @@ body {
 }
 
 .logo{
-    margin-top: 0.1rem;
-    height: 3.8rem;
+    margin-top: 0.5rem;
+    height: 3rem;
+    width: 15vh;
 }
 
 .row_modulo_activo{
+    margin-top: 1.5rem;
+    background: white;
+    color: rgba(235,30,0,255);
+    font-weight: bold;
+}
+.row_modulo_activo_pequeño{
+    font-size: 9pt;
     margin-top: 1.5rem;
     background: white;
     color: rgba(235,30,0,255);
@@ -95,9 +101,9 @@ body {
     text-justify: center;
     justify-content: center;
     align-content: center;
-    font-size: 30px;
-    width: 3rem;
-    height: 3rem;
+    font-size: 4vh;
+    width: 6vh;
+    height: 6vh;
     background: #dfdfdf;
     border-radius: 100%;
 }
@@ -107,10 +113,9 @@ body {
     text-justify: center;
     justify-content: center;
     align-content: center;
-    font-size: 25px;
+    font-size: 3vh;
     color: white;
     font-weight: bold;
-
 }
 
 .opciones_usuario{

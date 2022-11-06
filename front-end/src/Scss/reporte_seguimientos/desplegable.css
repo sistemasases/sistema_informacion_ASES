@@ -1,46 +1,34 @@
 
   
   .fichas{
-    font: sans-serif;
     border: 1px solid #D8D8D8;
-    border-radius: 10px;
     background: #F5F5F5;
-
-    flex-shrink: 0;
-    height: 100%;
+    padding: 3vh 4vh;
     overflow: auto;
   }
   
   
   
   .fichas-item{
-    border-left: 1px solid #D8D8D8;
-    border-right: 1px solid #D8D8D8;
-
-    background: #F5F5F5;
-
-    padding: .75em 1em;
-    display: block;
+    border: 1px solid #D8D8D8;
+    background: white;
+    margin-bottom: 3vh;
+    padding-bottom: 30px;
   }
   .fichas-item2{
     background: white;
-    padding-top: 20px;
+    border: 1px solid #D8D8D8;
     padding-bottom: 30px;
-    padding-left: 30px;
-    padding-right: 30px;
     display: block;
   }
   .fichas-item3{
     background: white;
-    padding-top: 20px;
+    border: 1px solid #D8D8D8;
     padding-bottom: 30px;
-    padding-left: 30px;
-    padding-right: 30px;
     display: block;
   }
   .fichas-reportes{
     border: 1px solid #D8D8D8;
-    border-radius: 10px;
     background: #F5F5F5;
     
     padding-top: 20px;
@@ -57,7 +45,6 @@
   }
   .fichas-title span i{
     display: inline-block;
-    width: 1.5em;
   }
   .fichas-title .toggle-btn-fichas{
     cursor: pointer;
@@ -67,8 +54,8 @@
     transform: rotate(180deg);
   }
   .fichas-content{
-    background: white;
-    height: 0;
+    height: 0px;
+    margin: 0vh 3vh;
     overflow: hidden;
   }
   .fichas-item.open > .fichas-content{
@@ -76,9 +63,8 @@
   }
 
   .contenido_fichas{
-    border: 2px solid #D8D8D8;
-    border-radius: 6px;
-    background: white;
+    padding-top: 2vh;
+    justify-content: center;
   }
   
   .fichas-item.plain{
@@ -89,7 +75,6 @@
   }
   .fichas-item.plain i{
     display: inline-block;
-    width: 1.7em;
   }
 
   .fichas-item2.open > .fichas-title .toggle-btn-fichas{
@@ -108,7 +93,6 @@
   }
   .fichas-item2.plain i{
     display: inline-block;
-    width: 1.7em;
   }
 
   .fichas-item3.open > .fichas-title .toggle-btn-fichas{
@@ -138,5 +122,4 @@
   }
   .fichas-reportes.plain i{
     display: inline-block;
-    width: 1.7em;
   }

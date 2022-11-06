@@ -7,6 +7,8 @@ import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import  {useEffect} from 'react';
 import axios from 'axios';
+import Informacion_rol from "../../components/reporte_seguimientos/informacion_rol";
+
 
 const options = [
     { value: 'chocolate', label: 'Chocolate' },
@@ -194,6 +196,11 @@ const Cabecera = (props) =>{
                          />
                     </Col>
                 </Row>
+            </Row>
+
+            <Row>
+            <Informacion_rol></Informacion_rol>
+
             </Row>
         </Container>
     )

@@ -44,6 +44,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
 import "./Scss/ficha_estudiante/Styles.css";
+import "./Scss/ficha_estudiante/info_registro.css";
 import "./Scss/ficha_estudiante/selector.css";
 import "./Scss/ficha_estudiante/informacion_general.css";
 import "./Scss/ficha_estudiante/academico.css";
