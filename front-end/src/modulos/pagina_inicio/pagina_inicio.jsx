@@ -7,7 +7,6 @@ import SideBar from "../../components/componentes_generales/sideBar";
 import Navbar from"../../components/componentes_generales/navbar"; 
 
 
-
 const Pagina_inicio = () => {
   const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / 2022 - 2");
   const[rolUsuario] = useState("");
