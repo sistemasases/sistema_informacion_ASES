@@ -37,7 +37,6 @@ import React, {useState} from 'react';
 
 import {Row, Col} from "react-bootstrap";
 import "@fontsource/manrope";
-import NavBar from "./components/componentes_generales/NavBar";
 
 import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
