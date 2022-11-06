@@ -4,7 +4,7 @@ import {Container, Row, Col, Dropdown} from "react-bootstrap";
 import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
-import NavBar from './NavBar';
+import NavBar from './navbar';
 import Menu from './socioeducativa.json';
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
@@ -61,34 +61,76 @@ const SideBar = (props) =>{
                 <Row className="top_selection">
                     <FaBars onClick={toggle}/>
                 </Row>
-                <Row style={{width: isOpen ? "300px" : "70px"}} className="sideBar">
-                    
-                    <Scrollbars className="scrollbar_sidebar">
-                        {
-                            isOpen ?
-                            (<div className="sidebar_item">
-                                { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
-                            </div>)
-                            :
-                            (<div className="sidebar_item">
-                            { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
-                            </div>)
-                        }
-                    </Scrollbars>
+                {
+                    isOpen ?
+                    (
+                        <Row style={{width: isOpen ? "250px" : "70px"}} className="sideBar">
+                            
+                            <Scrollbars className="scrollbar_sidebar">
+                                {
+                                    isOpen ?
+                                    (<div className="sidebar_item">
+                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
+                                    </div>)
+                                    :
+                                    (<div className="sidebar_item">
+                                    { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
+                                    </div>)
+                                }
+                            </Scrollbars>
 
-                </Row>
+                        </Row>
+                    )
+                    :
+                    (
+                    <div  class="d-none d-md-block">
+                        <Row style={{width: isOpen ? "250px" : "70px"}} className="sideBar">
+                            
+                            <Scrollbars className="scrollbar_sidebar">
+                                {
+                                    isOpen ?
+                                    (<div className="sidebar_item">
+                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
+                                    </div>)
+                                    :
+                                    (<div className="sidebar_item">
+                                    { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
+                                    </div>)
+                                }
+                            </Scrollbars>
+
+                        </Row>
+                    </div>
+                    )
+                }
+                
                 
                 
                 <Row className="row_navbar">
                     <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
                 </Row>
-                <Col className="inf_der">
-                    <main style={{marginLeft: isOpen ? "300px" : "70px"}}>
-                        {props.children}
-                        
-                    </main>
-                    <Footer></Footer>
-                </Col>
+                <div  class="d-none d-md-block">
+                    <Col className="inf_der">
+                        <main style={{marginLeft: isOpen ? "280px" : "50px"}}>
+                            {props.children}
+                        </main>
+                    </Col>
+                    <Row>
+                        <Footer style={{marginLeft: isOpen ? "300px" : "70px"}}></Footer>
+                    </Row>
+                </div>
+
+                <div  class="d-block d-md-none">
+                    <Col className="inf_der">
+                        <main style={{marginLeft: isOpen ? "0px" : "0px"}}>
+                            {props.children}
+                        </main>
+                    </Col>
+                    <Row>
+                        <Footer style={{marginLeft: isOpen ? "300px" : "70px"}}></Footer>
+                    </Row>
+                </div>
+
                     
         </Container>
     )
