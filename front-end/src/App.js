@@ -36,12 +36,14 @@ export default App
 import React, {useState} from 'react';
 
 import {Row, Col} from "react-bootstrap";
+import "@fontsource/manrope";
 
 import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
 import "./Scss/ficha_estudiante/Styles.css";
+import "./Scss/ficha_estudiante/info_registro.css";
 import "./Scss/ficha_estudiante/selector.css";
 import "./Scss/ficha_estudiante/informacion_general.css";
 import "./Scss/ficha_estudiante/academico.css";
@@ -89,18 +91,19 @@ import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestr
 
 
 const App = () => {
-  const[nombreUsuario] = useState("usuario1");
-  const[rolUsuario] = useState("monitor");
+  const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / ");
+  const[rolUsuario] = useState("superSistemas");
+  const[periodo] = useState("2022-2");
   const[area] = useState('1');
 
     return (
         <BrowserRouter>
             <Row> 
-            <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
+            <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo}>
                     <Routes>
-                    <Route path="/"element={<Login/>}/>
-                        <Route path="/ficha_estudiante"element={<Ficha_estudiante usuario={nombreUsuario}/>}/>
-                        <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} area={area}/>}/>
+                        <Route path="/"element={<Login/>}/>
+                        <Route path="/ficha_estudiante"element={<Ficha_estudiante usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
+                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos usuario={nombreUsuario}/>}/>
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
@@ -115,3 +118,24 @@ const App = () => {
 }
 
 export default App
+
+
+/*
+
+.texto_pequeño{
+    font-size: 14pt;
+    font-family: "Manrope";
+}
+
+
+.texto_subtitulo{
+    font-size: 20pt;
+    font-family: "Manrope";
+}
+
+.texto_titulo{
+    font-size: 36pt;
+    font-family: "Manrope";
+}
+
+*/

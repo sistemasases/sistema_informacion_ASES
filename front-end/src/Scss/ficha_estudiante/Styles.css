@@ -1,10 +1,12 @@
 * {
     box-sizing: border-box;
-    
+    font-family: 'Manrope';
 }
-
+.z_index_2{
+    z-index: 1;
+}
 body {
-    margin: 0;
+    margin: 0;    
 }
 
 .containerRow{
@@ -12,11 +14,8 @@ body {
 
 
 
+
 .row1{
-    border: 10px;
-    font: 100% sans-serif;
-
-
 }
 .col1{
     width: 70%;
@@ -24,20 +23,39 @@ body {
 .infoRow1{
 }
 .infoRow2{
-    padding: 10px 10px;
+}
+.infoRow2_pequeño{
+    margin: 5px 0px;
+    padding: 0px 5px;
+    background: white;
 }
 .col2{    
     word-break: break-all;
 }
 .col3{
-    word-break: break-all;
+    color: rgba(218, 218, 218, 255);
+    text-align: center;
+    justify-content: center;
+    font-size: 20vh;
+    height: 35vh;
     background: white;
+}
+.foto{
+    color: rgba(151,234,242,255);
+    width: 100%;
+}
+.col3_pequeño{
+    color: rgba(218, 218, 218, 255);
+    text-align: center;
+    justify-content: center;
+    font-size: 10vh;
+    background: white;
+    height: 20vh;
+    margin-bottom: 10px;
 }
 
 
-
 .row2{
-    font: 100% sans-serif;
     width: 100%;
     display: flex;
 }
@@ -59,17 +77,25 @@ body {
     display: flex;
     flex-direction: column;
 }
-.justMargin1{
+.select_tipo_doc{
+    width: 100%;
+    background: rgb(99, 99, 99);
 }
 .justMargin2{
 }
 
 .info_basica_borde{
-    font: 100% sans-serif;
-    padding: 5px 5px;
-    background: #dfdfdf;
-    border: 3px solid lightgrey;
-    border-radius: 20px;
+    padding: 20px 20px;
+    background: rgb(218, 218, 218);
+}
+.info_basica_borde_pequeño{
+    padding-top: 20px;
+    background: rgb(218, 218, 218);
+}
+
+.primera_row_pequeña{
+    padding: 0px 5px;
+    margin: 20px 0px;
 }
 
 
@@ -78,16 +104,32 @@ body {
 
 
 
-
-
-
-.infoRow23{
-    border-radius: 10px;
-    width: 100%;
-    display: flex;
-    background: gray;
-    justify-content: space-between;
-
+.fondo_blanco{
+    background: white;
+}
+.infoRow23_activo{
+    font-size: 8pt;
+    margin-top: 5px;
+    padding-top: 2px;
+    height: 30px;
+    color: white;
+    background: green;
+}
+.infoRow23_inactivo{
+    font-size: 8pt;
+    margin-top: 5px;
+    padding-top: 2px;
+    height: 30px;
+    color: white;
+    background: #504f4f;
+}
+.infoRow23_finalizado{
+    font-size: 8pt;
+    margin-top: 5px;
+    padding-top: 2px;
+    height: 30px;
+    color: white;
+    background: blue;
 }
 .infoRow3{
     
@@ -106,13 +148,23 @@ body {
 }
 
 .info{
+    margin-top: 40px;
     word-break: break-all;
 }
 .info_texto{
     word-break: break-all;
-    width: 100%;
+    text-align: center;
+    height: 20px;
+    border-left: 2px solid #878787;
 }
+.info_texto_pequeño{
+    word-break: break-all;
+    text-align: center;
+}
+
 .info_basica_selector{
+    color: white;
+    background: #878787;
 }
 
 
@@ -149,33 +201,80 @@ body {
     width: 10%;
 }
 
+.texto_estatico{
+    text-align: center;
+    text-justify: center;
+    align-content: center;
+    justify-content: center;
+}
+.texto_estatico_pequeño{
 
-
-
-
-
-
-
-
-
-.container_info_registro{
-    font: 100% sans-serif;
-    padding-top:5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
 }
 
-.generar_nuevo_reporte{
-    border-radius: 10px;
-    background: #dfdfdf;
-    padding: 10px 10px;
-    margin-bottom: 5px;
+.texto_estatico_ficha{
+    padding-left: 20px;
+    padding-top: 90px;
+}
+.botones_info_basica_pequeña{
+    padding: 0px 10px;
 }
 
-.riesgos{
-    border-radius: 10px;
-    background: #dfdfdf;
+.boton_editar_info_basica{
+    border-radius: 18px;
+    background: rgba(218, 218, 218, 255);
+    color: rgb(135, 135, 135);
+    font-size: 7pt;
     margin-top: 10px;
-    padding:10px 10px;
+    font-weight: bold;
+    border: 1px solid rgb(135, 135, 135);;
+    width: 100%;
+    height: 30px;
+}
+
+
+
+
+
+
+
+
+.texto_mas_pequeño{
+    font-size: 8pt;
+}
+
+.texto_pequeño{
+    font-size: 14pt;
+}
+
+
+.texto_subtitulo{
+    color: rgba(229,41,67,255);
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 18pt;
+}
+
+.texto_titulo{
+    font-size: 36pt;
+}
+
+.bold{
+    font-size: 14pt;
+    font-weight: bold;
+}
+.bold_pequeño{
+    font-size: 8pt;
+    font-weight: bold;
+}
+
+.container_ficha_footer{
+
+}
+
+.ficha_footer{
+    background: #dfdfdf;
+}
+.ficha_footer_pequeña{
+    margin-top: 20px;
+    background: white;
 }
