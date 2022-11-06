@@ -20,7 +20,7 @@ const semestre_sistemas_component = () =>{
             documento: undefined, 
             correo: undefined,
         },
-        rol: []
+        rol: [],
     })
 
     const [show, setShow] = useState(false);
@@ -62,13 +62,28 @@ const semestre_sistemas_component = () =>{
 
     useEffect(()=>{
         axios({
-            url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/",
+            url:  'http://127.0.0.1:8000/usuario_rol/allrol/',
             method: "GET",
         })
         .then((respuesta)=>{
+            if(bandera_option_rol){
+                for (var i = 0; i < respuesta.data['length'] ; i++) {
+                    //nombre = state.rol[i]['nombre']
+                    const dato = { value: respuesta.data[i]['nombre'], label: respuesta.data[i]['nombre'], id: respuesta.data[i]['id'] }
+                    datos_option_rol.push(dato);
+                }
+                bandera_option_rol = false;
+            }
             set_state({
-              ...state,
-              data: respuesta.data
+                ...state,
+                rol: respuesta.data
+            })
+            axios.get('http://127.0.0.1:8000/usuario_rol/all_user_rol/')
+            .then((res)=>{
+                set_state({
+                    ...state,
+                    data: res.data
+                })
             })
         })
         .catch(err=>{
@@ -76,26 +91,10 @@ const semestre_sistemas_component = () =>{
         })
     },[]);
 
-    const handle_rol_selector = () =>{
-        if(bandera_option_rol){
-        axios.get('http://127.0.0.1:8000/usuario_rol/allrol/')
-        .then((res)=>{
-            set_state({
-                ...state,
-                rol: res.data
-            })
-            console.log(res.data)
-            console.log(state.rol)
-        })
-        console.log(state.rol)
-        datos_option_rol = [];
-          for (var i = 0; i < state.rol['length'] ; i++) {
-            const dato = { value: state.rol[i]['nombre'], label: state.rol[i]['nombre'], id: state.rol[i]['id'] }
-            datos_option_rol.push(dato);
-          }
-          bandera_option_rol = false;
-        }
-        return datos_option_rol;
+    const handle_rol_selector = (e) =>{
+        console.log(e)
+        if(datos_option_rol[e])
+        return datos_option_rol[e]['value']
       }
 
     return (
@@ -152,7 +151,7 @@ const semestre_sistemas_component = () =>{
                             <td>{e.last_name}</td>
                             <td>{e.email}</td>
                             <td>
-                                <Select class="option"  options={datos_option_rol} onMenuOpen={handle_rol_selector} className="option" placeholder="Selecione un rol"/>
+                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)}/>
                             </td>
                             <td align='center'><input class="form-check-input" type="checkbox" defaultChecked/></td>
                         </tr>
