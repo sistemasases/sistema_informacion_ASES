@@ -20,7 +20,6 @@ const semestre_sistemas_component = () =>{
             documento: undefined, 
             correo: undefined,
         },
-        rol: [],
     })
 
     const [show, setShow] = useState(false);
@@ -74,10 +73,6 @@ const semestre_sistemas_component = () =>{
                 }
                 bandera_option_rol = false;
             }
-            set_state({
-                ...state,
-                rol: respuesta.data
-            })
             axios.get('http://127.0.0.1:8000/usuario_rol/all_user_rol/')
             .then((res)=>{
                 set_state({
@@ -92,9 +87,13 @@ const semestre_sistemas_component = () =>{
     },[]);
 
     const handle_rol_selector = (e) =>{
-        console.log(e)
-        if(datos_option_rol[e])
-        return datos_option_rol[e]['value']
+        var nombrerol;
+        for(var i = 0; i<datos_option_rol['length']; i++){
+            if(datos_option_rol[i] && datos_option_rol[i]['id'] === e){
+                nombrerol = datos_option_rol[i]['value']
+            }
+        }
+        return nombrerol;
       }
 
     return (
@@ -131,7 +130,7 @@ const semestre_sistemas_component = () =>{
             </Modal.Footer>
         </Modal>
         <Row className="rowJustFlex" align='left'>
-            <Table responsive size="sm" class="table">
+            <Table responsive hover size="sm" class="table">
                 <thead>
                     <Button variant="primary" onClick={handleShow}>Insertar Usuario</Button>
                     <tr class="table-info">
@@ -151,7 +150,7 @@ const semestre_sistemas_component = () =>{
                             <td>{e.last_name}</td>
                             <td>{e.email}</td>
                             <td>
-                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)}/>
+                                <Select class="form-control" options={state.rol} defaultInputValue={handle_rol_selector(e.id_rol)}/>
                             </td>
                             <td align='center'><input class="form-check-input" type="checkbox" defaultChecked/></td>
                         </tr>
