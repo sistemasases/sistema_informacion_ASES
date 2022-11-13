@@ -4,7 +4,7 @@ import axios from 'axios';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
-import "bootstrap/dist/css/bootstrap.min.css";
+import All_instancias_service from '../../service/all_instancias';
 
 const url_instancias = 'http://127.0.0.1:8000/wizard/all'
 
@@ -45,18 +45,11 @@ const inicio_semestre_component = () =>{
 
     //Conexion con el back para extraer todas las instancias
     useEffect(()=>{
-        axios({
-            url:  url_instancias,
-            method: "GET",
-        })
-        .then((respuesta)=>{
+        All_instancias_service.all_instancias().then((res) => {
             set_state({
-            ...state,
-            tabs : respuesta.data
+                ...state,
+                tabs : res
             })
-        })
-        .catch(err=>{
-            return (err)
         })
     },[]);
 

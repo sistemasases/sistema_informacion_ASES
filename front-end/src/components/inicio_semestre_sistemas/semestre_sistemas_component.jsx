@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Modal, Table, FormGroup, Form, Col} from "react-bootstrap";
-import axios from 'axios';
 import Select from 'react-select';
-import DataTable, {createTheme} from 'react-data-table-component';
-//import Inicio_semestre from '../../service/inicio_semestre';
+import All_Rols from '../../service/all_rols';
+import All_Users_Rols from '../../service/all_users_rol';
 
 var datos_option_rol = [];
 
@@ -60,29 +59,20 @@ const semestre_sistemas_component = () =>{
     }
 
     useEffect(()=>{
-        axios({
-            url:  'http://127.0.0.1:8000/usuario_rol/allrol/',
-            method: "GET",
-        })
-        .then((respuesta)=>{
+        All_Rols.all_rols().then((res) => {
             if(bandera_option_rol){
-                for (var i = 0; i < respuesta.data['length'] ; i++) {
-                    //nombre = state.rol[i]['nombre']
-                    const dato = { value: respuesta.data[i]['nombre'], label: respuesta.data[i]['nombre'], id: respuesta.data[i]['id'] }
+                for (var i = 0; i < res.length ; i++) {
+                    const dato = { value: res[i]['nombre'], label: res[i]['nombre'], id: res[i]['id'] }
                     datos_option_rol.push(dato);
                 }
-                bandera_option_rol = false;
             }
-            axios.get('http://127.0.0.1:8000/usuario_rol/all_user_rol/')
-            .then((res)=>{
-                set_state({
-                    ...state,
-                    data: res.data
-                })
-            })
+            bandera_option_rol = false;
         })
-        .catch(err=>{
-            return (err)
+        All_Users_Rols.all_users_rols().then((res) => {
+            set_state({
+                ...state,
+                data: res
+            })
         })
     },[]);
 
@@ -150,7 +140,7 @@ const semestre_sistemas_component = () =>{
                             <td>{e.last_name}</td>
                             <td>{e.email}</td>
                             <td>
-                                <Select class="form-control" options={state.rol} defaultInputValue={handle_rol_selector(e.id_rol)}/>
+                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)}/>
                             </td>
                             <td align='center'><input class="form-check-input" type="checkbox" defaultChecked/></td>
                         </tr>
