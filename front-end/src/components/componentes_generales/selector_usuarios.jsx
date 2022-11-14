@@ -6,6 +6,10 @@ import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import all_user_service from '../../service/all_users'
+import all_rols from '../../service/all_rols';
+import all_users_rols from '../../service/all_users_rol';
+import user_rol from '../../service/user_rol';
+import user_rol_manage from '../../service/user_rol_manage';
 import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
 import DataTable, {createTheme} from 'react-data-table-component';
@@ -65,21 +69,12 @@ const selector_usuarios = () =>{
     necesaria para el selector de usuarios.
   */
   useEffect(()=>{
-    axios({
-      // Endpoint to send files
-      url:  "http://127.0.0.1:8000/usuario_rol/alluser/",
-      method: "GET",
-    })
-    .then((respuesta)=>{
+    all_user_service.all_users().then((res) => {
       set_state({
         ...state,
-        data_user : respuesta.data
+        data_user : res
       })
     })
-    .catch(err=>{
-        return (err)
-    })
-    
   },[]);
   /*
     UseEffect: se ejecuta al iniciar la pestaña. En el está alojada la función de traer todos los usuarios
@@ -87,42 +82,25 @@ const selector_usuarios = () =>{
   */
   const consulta_all_rol = (e)=>{
     if(bandera_consulta_rol<=0){
-      axios({
-        // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/allrol/",
-        method: "GET",
-      })
-      .then((respuesta)=>{
+      all_rols.all_rols().then((res) => {
         set_state({
           ...state,
-          data_rol : respuesta.data
+          data_rol : res
         })
-      })
-      .catch(err=>{
-          return (err)
       })
       bandera_consulta_rol++;
       console.log(bandera_consulta_rol)
-
     }
 
     
   }
   const consulta_all_user_rol = (e)=>{
 
-      axios({
-        // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/",
-        method: "GET",
-      })
-      .then((respuesta)=>{
+      all_users_rols.all_users_rols().then((res) => {
         set_state({
           ...state,
-          data_user_rol : respuesta.data
+          data_user_rol : res
         })
-      })
-      .catch(err=>{
-          return (err)
       })
 
   }
@@ -211,22 +189,18 @@ const selector_usuarios = () =>{
     //Adding files to the formdata
     formData.append('id_rol', state.id_rol[0]);
     formData.append('id_user', state.id_usuario[0]);
-    axios({
-      // Endpoint to send files
-      url:  "http://127.0.0.1:8000/usuario_rol/user_rol/",
-      method: "POST",
-      data: formData,
-    })
-    .then(res=>{set_state({
-      ...state,
-      info_modal: "El rol se asignó correctamente"
-      
-    })})
-    .catch(err=>{
+    try {
+      user_rol.user_rol(formData);
+      set_state({
+        ...state,
+        info_modal: "El rol se asignó correctamente"
+      })
+    } catch (error) {
       set_state({
         ...state,
         info_modal: "ocurrio un error"
-    })})
+      })
+    }
     setShow(true);
   }
   const set_info = (e) => {
@@ -243,19 +217,11 @@ const selector_usuarios = () =>{
       id_usuario : '',
       info_modal : "cargando..",
     })
-    axios({
-      // Endpoint to send files
-      url:  "http://127.0.0.1:8000/usuario_rol/allrol/",
-      method: "GET",
-    })
-    .then((respuesta)=>{
+    all_rols.all_rols().then((res) => {
       set_state({
         ...state,
-        data_rol : respuesta.data
+        data_rol : res
       })
-    })
-    .catch(err=>{
-        return (err)
     })
 
   }

@@ -6,6 +6,7 @@ import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import all_user_service from '../../service/all_users'
+import all_rols from '../../service/all_rols';
 import Accordion from 'react-bootstrap/Accordion';
 const selector_usuarios = () =>{
 
@@ -22,44 +23,24 @@ const selector_usuarios = () =>{
   })
 
   useEffect(()=>{
-    axios({
-      // Endpoint to send files
-      url:  "http://127.0.0.1:8000/usuario_rol/alluser/",
-      method: "GET",
-    })
-    .then((respuesta)=>{
+    all_user_service.all_users().then((res)=>{
       set_state({
         ...state,
-        data_user : respuesta.data
+        data_user : res
       })
     })
-    .catch(err=>{
-        return (err)
-    })
-    
   },[]);
 
   const aja = (e)=>{
     if(bandera=true){
       bandera = false
-      axios({
-        // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/allrol/",
-        method: "GET",
-      })
-      .then((respuesta)=>{
+      all_rols.all_rols().then((res) => {
         set_state({
           ...state,
-          data_rol : respuesta.data
+          data_rol : res
         })
       })
-      .catch(err=>{
-          return (err)
-      })
-
     }
-
-    
   }
   const handle_all_rol = (e)=>{
     if(bandera_option_rol==true){
