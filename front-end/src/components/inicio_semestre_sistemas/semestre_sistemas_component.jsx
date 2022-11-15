@@ -1,27 +1,26 @@
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Modal, Table, FormGroup, Form, Col} from "react-bootstrap";
-import axios from 'axios';
 import Select from 'react-select';
-import DataTable, {createTheme} from 'react-data-table-component';
-//import Inicio_semestre from '../../service/inicio_semestre';
+import All_Rols from '../../service/all_rols';
+import All_Users_Rols from '../../service/all_users_rol';
 
 var datos_option_rol = [];
 
 const semestre_sistemas_component = () =>{
 
-    
     var bandera_option_rol = true;
 
     const [state,set_state] = useState({
         data: [],
         form: {
             id: undefined,
+            username: undefined,
+            password: undefined,
             first_name: undefined, 
             last_name: undefined, 
             documento: undefined, 
-            correo: undefined,
+            email: undefined,
         },
-        rol: []
     })
 
     const [show, setShow] = useState(false);
@@ -37,91 +36,67 @@ const semestre_sistemas_component = () =>{
             }
         })
     }
-
-    const columnas =[
-        {
-          name: 'USERNAME',
-          selector: row => row.username
-        },
-        {
-          name: 'NOMBRES',
-          selector: row => row.first_name
-        },
-        {
-          name: 'APELLIDOS',
-          selector: row => row.last_name
-        },
-        {
-          name: 'EMAIL',
-          selector: row => row.email
-        },
-        {
-          name: 'ROL',
-          selector: row => row.nombre
-        },
-      ]
-
+    
     const insertar = () =>{
         var nuevo={...state.form};
         var lista=state.data;
-        if(!(!nuevo.first_name || nuevo.first_name === '')){
-            if(!(!nuevo.last_name || nuevo.last_name === '')){
-                if(!(!nuevo.documento || nuevo.documento === '')){
-                    if(!(!nuevo.correo || nuevo.correo === '')){
-                        nuevo.id=state.data.length+1;
-                        lista.push(nuevo);
+        if(!(!nuevo.username || nuevo.username === '')){
+            if(!(!nuevo.first_name || nuevo.first_name === '')){
+                if(!(!nuevo.last_name || nuevo.last_name === '')){
+                    if(!(!nuevo.documento || nuevo.documento === '')){
+                        if(!(!nuevo.email || nuevo.email === '')){
+                            nuevo.id=state.data.length+1;
+                            nuevo.password=nuevo.documento;
+                            lista.push(nuevo);
+                            console.log(nuevo.username)
+                        }
                     }
                 }
             }
         }
         set_state({...state, data: lista, form: {
             id: undefined,
+            username: undefined,
+            password: undefined,
             first_name: undefined, 
             last_name: undefined, 
             documento: undefined, 
-            correo: undefined,
+            email: undefined,
         }});
         setShow(false);
     }
 
     useEffect(()=>{
-        axios({
-            url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/",
-            method: "GET",
+        All_Rols.all_rols().then((res) => {
+            if(bandera_option_rol){
+                for (var i = 0; i < res.length ; i++) {
+                    const dato = { value: res[i]['nombre'], label: res[i]['nombre'], id: res[i]['id'] }
+                    datos_option_rol.push(dato);
+                }
+            }
+            bandera_option_rol = false;
         })
-        .then((respuesta)=>{
+        All_Users_Rols.all_users_rols().then((res) => {
             set_state({
-              ...state,
-              data: respuesta.data
+                ...state,
+                data: res
             })
-        })
-        .catch(err=>{
-            return (err)
         })
     },[]);
 
-    const handle_rol_selector = () =>{
-        if(bandera_option_rol){
-        axios.get('http://127.0.0.1:8000/usuario_rol/allrol/')
-        .then((res)=>{
-            set_state({
-                ...state,
-                rol: res.data
-            })
-        })
-        datos_option_rol = [];
-          for (var i = 0; i < state.rol['length'] ; i++) {
-            const dato = { value: state.rol[i]['nombre'], label: state.rol[i]['nombre'], id: state.rol[i]['id'] }
-            datos_option_rol.push(dato);
-          }
-          bandera_option_rol = false;
+    const handle_rol_selector = (e) =>{
+        var nombrerol;
+        for(var i = 0; i<datos_option_rol['length']; i++){
+            if(datos_option_rol[i] && datos_option_rol[i]['id'] === e){
+                nombrerol = datos_option_rol[i]['value']
+            }
         }
-        return datos_option_rol;
+        return nombrerol;
       }
 
-      const handle_option_rol = (e) => {
-        
-      }
+    const handleSelect = (e) => {
+        console.log(e.id)
+    }
 
     return (
         <Container>
@@ -131,8 +106,8 @@ const semestre_sistemas_component = () =>{
             </Modal.Header>
             <Modal.Body>
                 <FormGroup>
-                    <label>Id:</label>
-                    <input className='form-control' readOnly name='id' type='text' value={state.data.length+1}/>
+                    <label>Nombre de usuario:</label>
+                    <input className='form-control' name='username' type='text' onChange={handleChange}/>
                 </FormGroup>
                 <FormGroup>
                     <label>Nombres:</label>
@@ -148,7 +123,7 @@ const semestre_sistemas_component = () =>{
                 </FormGroup>
                 <FormGroup>
                     <label>Correo:</label>
-                    <input className='form-control' name='correo' type='text' onChange={handleChange}/>
+                    <input className='form-control' name='email' type='text' onChange={handleChange}/>
                 </FormGroup>
             </Modal.Body>
             <Modal.Footer>
@@ -157,10 +132,12 @@ const semestre_sistemas_component = () =>{
             </Modal.Footer>
         </Modal>
         <Row className="rowJustFlex" align='left'>
-            <Table responsive size="sm" class="table">
+            <Table responsive hover size="sm" class="table">
                 <thead>
                     <Button variant="primary" onClick={handleShow}>Insertar Usuario</Button>
                     <tr class="table-info">
+                        <th align='center'>ID</th>
+                        <th align='center'>ID Rol</th>
                         <th align='center'>Username</th>
                         <th align='center'>Nombre</th>
                         <th align='center'>Apellido</th>
@@ -172,25 +149,20 @@ const semestre_sistemas_component = () =>{
                 <tbody>
                     {state.data.map((e)=>(
                         <tr>
+                            <td>{e.id}</td>
+                            <td>{e.id_rol}</td>
                             <td>{e.username}</td>
                             <td>{e.first_name}</td>
                             <td>{e.last_name}</td>
                             <td>{e.email}</td>
                             <td>
-                                <Select class="option"  options={datos_option_rol} onMenuOpen={handle_rol_selector} className="option" placeholder="Selecione un rol"/>
+                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)} onChange={handleSelect}/>
                             </td>
                             <td align='center'><input class="form-check-input" type="checkbox" defaultChecked/></td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
-            <DataTable
-                title='Usuarios que continuan'
-                columns={columnas}
-                data={state.data}
-                noDataComponent="Cargando Información."
-                pagination
-            />
         </Row>
         </Container>
     )
