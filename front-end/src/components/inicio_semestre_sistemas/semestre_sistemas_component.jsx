@@ -14,10 +14,12 @@ const semestre_sistemas_component = () =>{
         data: [],
         form: {
             id: undefined,
+            username: undefined,
+            password: undefined,
             first_name: undefined, 
             last_name: undefined, 
             documento: undefined, 
-            correo: undefined,
+            email: undefined,
         },
     })
 
@@ -38,22 +40,28 @@ const semestre_sistemas_component = () =>{
     const insertar = () =>{
         var nuevo={...state.form};
         var lista=state.data;
-        if(!(!nuevo.first_name || nuevo.first_name === '')){
-            if(!(!nuevo.last_name || nuevo.last_name === '')){
-                if(!(!nuevo.documento || nuevo.documento === '')){
-                    if(!(!nuevo.correo || nuevo.correo === '')){
-                        nuevo.id=state.data.length+1;
-                        lista.push(nuevo);
+        if(!(!nuevo.username || nuevo.username === '')){
+            if(!(!nuevo.first_name || nuevo.first_name === '')){
+                if(!(!nuevo.last_name || nuevo.last_name === '')){
+                    if(!(!nuevo.documento || nuevo.documento === '')){
+                        if(!(!nuevo.email || nuevo.email === '')){
+                            nuevo.id=state.data.length+1;
+                            nuevo.password=nuevo.documento;
+                            lista.push(nuevo);
+                            console.log(nuevo.username)
+                        }
                     }
                 }
             }
         }
         set_state({...state, data: lista, form: {
             id: undefined,
+            username: undefined,
+            password: undefined,
             first_name: undefined, 
             last_name: undefined, 
             documento: undefined, 
-            correo: undefined,
+            email: undefined,
         }});
         setShow(false);
     }
@@ -86,6 +94,10 @@ const semestre_sistemas_component = () =>{
         return nombrerol;
       }
 
+    const handleSelect = (e) => {
+        console.log(e.id)
+    }
+
     return (
         <Container>
         <Modal show={show} onHide={handleClose} centered={true} fullscreen={'md-down'} >
@@ -94,8 +106,8 @@ const semestre_sistemas_component = () =>{
             </Modal.Header>
             <Modal.Body>
                 <FormGroup>
-                    <label>Id:</label>
-                    <input className='form-control' readOnly name='id' type='text' value={state.data.length+1}/>
+                    <label>Nombre de usuario:</label>
+                    <input className='form-control' name='username' type='text' onChange={handleChange}/>
                 </FormGroup>
                 <FormGroup>
                     <label>Nombres:</label>
@@ -111,7 +123,7 @@ const semestre_sistemas_component = () =>{
                 </FormGroup>
                 <FormGroup>
                     <label>Correo:</label>
-                    <input className='form-control' name='correo' type='text' onChange={handleChange}/>
+                    <input className='form-control' name='email' type='text' onChange={handleChange}/>
                 </FormGroup>
             </Modal.Body>
             <Modal.Footer>
@@ -124,6 +136,8 @@ const semestre_sistemas_component = () =>{
                 <thead>
                     <Button variant="primary" onClick={handleShow}>Insertar Usuario</Button>
                     <tr class="table-info">
+                        <th align='center'>ID</th>
+                        <th align='center'>ID Rol</th>
                         <th align='center'>Username</th>
                         <th align='center'>Nombre</th>
                         <th align='center'>Apellido</th>
@@ -135,12 +149,14 @@ const semestre_sistemas_component = () =>{
                 <tbody>
                     {state.data.map((e)=>(
                         <tr>
+                            <td>{e.id}</td>
+                            <td>{e.id_rol}</td>
                             <td>{e.username}</td>
                             <td>{e.first_name}</td>
                             <td>{e.last_name}</td>
                             <td>{e.email}</td>
                             <td>
-                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)}/>
+                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)} onChange={handleSelect}/>
                             </td>
                             <td align='center'><input class="form-check-input" type="checkbox" defaultChecked/></td>
                         </tr>
