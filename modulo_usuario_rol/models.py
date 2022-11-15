@@ -35,6 +35,8 @@ class estudiante (models.Model):
 
     class Meta:
         db_table = "estudiante"
+    def __str__(self):
+        return self.cod_univalle
 
 class rol (models.Model):
 
@@ -43,6 +45,8 @@ class rol (models.Model):
 
     class Meta:
         db_table = "rol"
+    def __str__(self):
+        return self.nombre
 
 class usuario_rol (models.Model):
 
@@ -54,6 +58,8 @@ class usuario_rol (models.Model):
 
     class Meta:
         db_table = "usuario_rol"
+    def __str__(self):
+        return str(self.id_usuario)
 
 class permiso (models.Model):
 
