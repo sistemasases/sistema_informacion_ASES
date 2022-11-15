@@ -103,7 +103,6 @@ const carga_masiva_component = () =>{
                   <option value="Usuario">Usuario</option>
                   <option value="Materia">Materia</option>
                   <option value="Nota">Nota</option>
-                  <option value="Resolución">Resolución</option>
                   <option value="Programa">Programa</option>
                   <option value="Retiro">Retiro</option>
                 </Form.Select>

@@ -112,7 +112,7 @@ const selector_usuarios = () =>{
 
       axios({
         // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/3",
+        url:  "http://127.0.0.1:8000/usuario_rol/all_user_rol/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -129,17 +129,12 @@ const selector_usuarios = () =>{
 
   const handle_user_selector = (e) => {
 
-    if(bandera_option_user==true){
       for (var i = 0; i < state.data_user['length'] ; i++) {
         const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
         datos_option_user.push(dato)
       }
       console.log([datos_option_user]);
       bandera_option_user = false;
-    }
-    else{
-      console.log([datos_option_user]);
-    }
   }
 
   const handle_rol_selector = (e)=>{
@@ -267,9 +262,25 @@ const selector_usuarios = () =>{
       ...state,
       select_rows : selectedRows
     })
-    console.log('Selected Rows: ', state.select_rows);
   };
-  const delete_user_rol = () => console.log('entre');
+  const delete_user_rol = () => {
+    console.log('Selected Rows 2: ', state.select_rows[0], 'total: ', state.select_rows.length);
+    for(var i = 0; i < state.select_rows.length ; i++) {
+      const id_user = state.select_rows[i].id
+      let formData = new FormData();
+      formData.append('id', id_user);
+
+      
+      
+      axios({
+        // Endpoint to send files
+        url:  "http://127.0.0.1:8000/usuario_rol/delete_rol/",
+        method: "POST",
+        data: formData,
+      })
+    }
+    
+  }
   
   return (
         <Container>
@@ -321,6 +332,7 @@ const selector_usuarios = () =>{
           <Accordion.Header onClick={consulta_all_user_rol}>Lista de Usuarios</Accordion.Header>
             <Accordion.Body>
               <DataTable 
+              title="Usuarios"
               columns={columnas}
               data={state.data_user_rol}
               noDataComponent="Cargando Información."
@@ -328,8 +340,8 @@ const selector_usuarios = () =>{
               striped
               selectableRows
               onSelectedRowsChange={handleChange}
-              actions={delete_user_rol}
               />
+              <Button onClick={delete_user_rol}>Eliminar Rol</Button> 
             </Accordion.Body>
           </Accordion.Item>
 
