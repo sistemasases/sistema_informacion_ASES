@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer
 from modulo_instancia.serializers import semestre_serializer
-
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
 
