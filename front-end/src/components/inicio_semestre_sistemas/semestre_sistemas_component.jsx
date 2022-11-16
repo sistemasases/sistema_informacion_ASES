@@ -4,6 +4,7 @@ import Select from 'react-select';
 import All_Rols from '../../service/all_rols';
 import All_Users_Rols from '../../service/all_users_rol';
 import Create_User from '../../service/create_user';
+import user_rol from '../../service/user_rol';
 
 var datos_option_rol = [];
 
@@ -96,8 +97,23 @@ const semestre_sistemas_component = () =>{
         return nombrerol;
       }
 
-    const handleSelect = (e) => {
-        console.log(e.id)
+    const handleSelect = (rolId, userId) => {
+        console.log(rolId)
+        console.log(userId)
+        for(var i = 0; i < state.data['length']; i++){
+            if(state.data[i].id == userId){
+                state.data[i].id_rol = rolId;
+            }
+        }
+    }
+
+    const handleCreate = () => {
+        for(var i = 0; i < state.data['length']; i++){
+            let formData = new FormData();
+            formData.append('id_rol', state.data[i].id_rol);
+            formData.append('id_usuario', state.data[i].id);
+            user_rol.user_rol(formData);
+        }
     }
 
     return (
@@ -138,8 +154,6 @@ const semestre_sistemas_component = () =>{
                 <thead>
                     <Button variant="primary" onClick={handleShow}>Insertar Usuario</Button>
                     <tr class="table-info">
-                        <th align='center'>ID</th>
-                        <th align='center'>ID Rol</th>
                         <th align='center'>Username</th>
                         <th align='center'>Nombre</th>
                         <th align='center'>Apellido</th>
@@ -151,20 +165,19 @@ const semestre_sistemas_component = () =>{
                 <tbody>
                     {state.data.map((e)=>(
                         <tr>
-                            <td>{e.id}</td>
-                            <td>{e.id_rol}</td>
                             <td>{e.username}</td>
                             <td>{e.first_name}</td>
                             <td>{e.last_name}</td>
                             <td>{e.email}</td>
                             <td>
-                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)} onChange={handleSelect}/>
+                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)} onChange={(c) => {handleSelect(c.id, e.id)}}/>
                             </td>
                             <td align='center'><input class="form-check-input" type="checkbox" defaultChecked/></td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
+            <Button onClick={handleCreate}>Crear usuarios</Button>
         </Row>
         </Container>
     )
