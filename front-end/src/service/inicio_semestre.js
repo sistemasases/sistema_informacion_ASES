@@ -3,7 +3,8 @@ import axios from 'axios';
 const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_nuevo) => {
 
   //URL para el axios
-  const url_semestre = 'http://127.0.0.1:8000/wizard/semestre_actual/' + instancia.toString()+"/";
+  const url_post = 'http://localhost:8000/wizard/semestre/';
+  const url_semestre = 'http://localhost:8000/wizard/semestre/' + instancia.toString()+"/";
 
   //variables para la creacion y finalizacion del semestre
   var semestreActual = {
@@ -56,7 +57,7 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
       id_instancia: instancia
     }
     axios.put(url_semestre, semestreActual);
-    axios.post(url_semestre, semestreNuevo);
+    axios.post(url_post, semestreNuevo);
   })
   .catch((err)=>{console.log(err)})
 }

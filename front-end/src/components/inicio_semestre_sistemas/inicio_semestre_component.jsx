@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Col, Alert, Form} from "react-bootstrap";
-import axios from 'axios';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
 import All_instancias_service from '../../service/all_instancias';
 
-const url_instancias = 'http://127.0.0.1:8000/wizard/all'
 
 const inicio_semestre_component = () =>{
 

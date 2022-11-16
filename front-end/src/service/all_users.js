@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const all_users = async () => {
   try {
-    const url_axios = 'http://127.0.0.1:8000/usuario_rol/alluser/';
+    const url_axios = 'http://localhost:8000/usuario_rol/user/';
     const resUserRol = await axios(url_axios)
     return resUserRol.data;
     

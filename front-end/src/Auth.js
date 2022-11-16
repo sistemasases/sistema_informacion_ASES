@@ -4,13 +4,13 @@ import axios from 'axios';
 
 export default function (props) {
 
-  const url = "http://127.0.0.1:8000/login"
+  const url = "http://localhost:8000/login"
   const data = {
-    'nombre_ingreso' : 'rhazek',
-    'password' : 'rhazekmaster12'
+    'username' : 'admin',
+    'password' : 'admin'
   }
   const handleSendNewData = () => {
-    axios.get(url, data)
+    axios.post(url, data)
     .then(res=>{
       console.log(res.data)
     })

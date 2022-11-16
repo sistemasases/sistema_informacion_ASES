@@ -148,8 +148,9 @@ const selector_usuarios = () =>{
     formData.append('id', e.id);
     axios({
       // Endpoint to send files
-      url:  "http://127.0.0.1:8000/usuario_rol/user_rol_manage/",
-      method: "POST",
+      //FALTA ORGANIZAR PK
+      url:  "http://localhost:8000/usuario_rol/usuario_rol/1/",
+      method: "GET",
       data: formData,
     })
     .then(res=>{set_state({

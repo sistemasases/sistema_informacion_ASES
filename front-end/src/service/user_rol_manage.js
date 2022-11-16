@@ -2,10 +2,10 @@ import axios from 'axios';
 
 const user_rol_manage = async(formData) => {
     try {
-    const url_axios = 'http://127.0.0.1:8000/usuario_rol/user_rol_manage/';
+    const url_axios = 'http://localhost:8000/usuario_rol/usuario_rol/1/';
     await axios({
         url:  url_axios,
-        method: "POST",
+        method: "GET",
         data: formData,
     })
     .then((res => {
