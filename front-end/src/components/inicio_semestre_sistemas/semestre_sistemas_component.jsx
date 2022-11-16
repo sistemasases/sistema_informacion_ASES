@@ -3,6 +3,7 @@ import {Container, Row, Button, Modal, Table, FormGroup, Form, Col} from "react-
 import Select from 'react-select';
 import All_Rols from '../../service/all_rols';
 import All_Users_Rols from '../../service/all_users_rol';
+import Create_User from '../../service/create_user';
 
 var datos_option_rol = [];
 
@@ -48,6 +49,7 @@ const semestre_sistemas_component = () =>{
                             nuevo.id=state.data.length+1;
                             nuevo.password=nuevo.documento;
                             lista.push(nuevo);
+                            Create_User.user_rol(nuevo)
                             console.log(nuevo.username)
                         }
                     }
