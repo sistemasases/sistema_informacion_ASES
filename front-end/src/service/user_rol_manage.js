@@ -2,7 +2,8 @@ import axios from 'axios';
 
 const user_rol_manage = async(formData) => {
     try {
-    const url_axios = 'http://localhost:8000/usuario_rol/usuario_rol/1/';
+        // FALTA ORGANIZAR EL PK
+    const url_axios = 'http://localhost:8000/usuario_rol/usuario_rol/1';
     await axios({
         url:  url_axios,
         method: "GET",

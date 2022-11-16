@@ -17,6 +17,7 @@ class semestre (models.Model):
     fecha_inicio= models.DateTimeField(auto_now_add=False)
     fecha_fin= models.DateTimeField(auto_now_add=False)
     semestre_actual= models.BooleanField(default= False)
+    estado = models.SmallIntegerField(default=0)
     id_instancia= models.ForeignKey(instancia ,on_delete=models.CASCADE,default=0)
 
 

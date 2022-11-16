@@ -4,6 +4,9 @@ from django.http import JsonResponse
 import pandas as pd
 from modulo_usuario_rol.models import estudiante
 from django.contrib.auth.models import User
+from modulo_programa.models import programa
+from modulo_carga_masiva.models import retiro
+from modulo_academico.models import historial_academico, materia
 from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -31,8 +34,6 @@ class Validador_carga(APIView):
                 return carga_materias(file)
             elif(tipo == "Nota"):
                 return carga_notas(file)
-            elif(tipo == "Resolución"):
-                return carga_resoluciones(file)
             elif(tipo == "Retiro"):
                 return carga_retiros(file)
             else:
@@ -137,36 +138,136 @@ def carga_usuarios(file):
     return Response(list_dict_result)
 
 def carga_programas(file):
+    print("entro a la carga de programas")
+    list_dict_result = []
+    lista_programas =[]
     datos = pd.read_csv(file,header=0)
-    print(datos.iloc[[2],[0,1]])
-    print("filas:"+ str(datos.shape[0]))
-    print("columnas:"+ str(datos.shape[1]))
+    print("estos son los datos: "+str(datos))
+    for i in range(datos.shape[0]):
+        
+        try:
+            Programa = programa(
+            codigo_snies = int(datos.iat[i,0]),
+            codigo_univalle = int(datos.iat[i,1]),
+            nombre = str(datos.iat[i,2]),
+            jornada = str(datos.iat[i,3]),
+            facultad = int(datos.iat[i,4]),
+            sede = int(datos.iat[i,5]),
+            )
+            lista_programas.append(Programa)
+        
+            dict_result = {
+                'dato' : datos.iat[i,2],
+                'mensaje' : 'Se cargó correctamente este programa.'
+            }
+            list_dict_result.append(dict_result)
+        except:
+            dict_result = {
+                'dato' : datos.iat[i,2],
+                'mensaje' : 'Error al cargar este programa.'
+            }
+            list_dict_result.append(dict_result)
+
+    User.objects.bulk_create(lista_programas)
+    return Response(list_dict_result)
     
 def carga_materias(file):
-    lista_permiso =[]
+    print("entro al carga_materias")
+    list_dict_result = []
+    lista_materias =[]
     datos = pd.read_csv(file,header=0)
+    print("estos son los datos: "+str(datos))
     for i in range(datos.shape[0]):
-        Permiso = permiso(
-        nombre = str(datos.iat[i,0]),
-        descripcion = str(datos.iat[i,1])
-        )
-        lista_permiso.append(Permiso)
-    permiso.objects.bulk_create(lista_permiso)
+        if (materia.objects.filter(cod_materia = datos.iat[i,0]).values()):
+            dict_result = {
+                'dato' : datos.iat[i,1],
+                'mensaje' : 'Ya existe una materia con el codigo ' + str(datos.iat[i,0])
+            }
+            list_dict_result.append(dict_result)
+        else:
+            try:
+                Materia = materia(
+                cod_materia = str(datos.iat[i,0]),
+                nombre = str(datos.iat[i,1]),
+
+                )
+                lista_materias.append(Materia)
+        
+                dict_result = {
+                    'dato' : datos.iat[i,1],
+                    'mensaje' : 'Se cargó correctamente esta materia'
+                }
+                list_dict_result.append(dict_result)
+            except:
+                dict_result = {
+                    'dato' : datos.iat[i,1],
+                    'mensaje' : 'Error al cargar esta materia.'
+                }
+                list_dict_result.append(dict_result)
+
+    User.objects.bulk_create(lista_materias)
+    return Response(list_dict_result)
 
 def carga_notas(file):
+    print("entro al carga_notas")
+    list_dict_result = []
+    lista_notas =[]
     datos = pd.read_csv(file,header=0)
-    print(datos.iloc[[2],[0,1]])
-    print("filas:"+ str(datos.shape[0]))
-    print("columnas:"+ str(datos.shape[1]))
+    print("estos son los datos: "+str(datos))
+    for i in range(datos.shape[0]):
+        try:
+            Nota = historial_academico(
+            id_programa_estudiante= int(datos.iat[i,0]),
+            id_semestre= int(datos.iat[i,1]),
+            promedio_semestral = float(datos.iat[i,2]),
+            promedio_acumulado= float(datos.iat[i,3]),
+            json_materias = str(datos.iat[i,4]),
 
-def carga_resoluciones(file):
-    datos = pd.read_csv(file,header=0)
-    print(datos.iloc[[2],[0,1]])
-    print("filas:"+ str(datos.shape[0]))
-    print("columnas:"+ str(datos.shape[1]))
+            )
+            lista_notas.append(Nota)
+        
+            dict_result = {
+                'dato' : datos.iat[i,1],
+                'mensaje' : 'Se cargó correctamente este registro de notas'
+            }
+            list_dict_result.append(dict_result)
+        except:
+            dict_result = {
+                'dato' : datos.iat[i,1],
+                'mensaje' : 'Error al cargar este registro de notas.'
+            }
+            list_dict_result.append(dict_result)
+
+    User.objects.bulk_create(lista_notas)
+    return Response(list_dict_result)
 
 def carga_retiros(file):
+    print("entro al carga_retiros")
+    list_dict_result = []
+    lista_retiros =[]
     datos = pd.read_csv(file,header=0)
-    print(datos.iloc[[2],[0,1]])
-    print("filas:"+ str(datos.shape[0]))
-    print("columnas:"+ str(datos.shape[1]))
+    print("estos son los datos: "+str(datos))
+    for i in range(datos.shape[0]):
+        try:
+            Retiro = retiro(
+            id_estudiante= int(datos.iat[i,0]),
+            id_motivo= int(datos.iat[i,1]),
+            detalle = str(datos.iat[i,2]),
+
+            )
+            lista_retiros.append(Retiro)
+        
+            dict_result = {
+                'dato' : datos.iat[i,1],
+                'mensaje' : 'Se cargó correctamente este retiro.'
+            }
+            list_dict_result.append(dict_result)
+        except:
+            dict_result = {
+                'dato' : datos.iat[i,1],
+                'mensaje' : 'Error al cargar este retiro.'
+            }
+            list_dict_result.append(dict_result)
+
+    User.objects.bulk_create(lista_retiros)
+    return Response(list_dict_result)
