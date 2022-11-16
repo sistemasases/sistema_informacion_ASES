@@ -240,8 +240,9 @@ const selector_usuarios = () =>{
       
       axios({
         // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/delete_rol/",
-        method: "POST",
+        //FALTA ORGANIZAR EL PK
+        url:  "http://localhost:8000/usuario_rol/usuario_rol/1/",
+        method: "PUT",
         data: formData,
       })
     }
