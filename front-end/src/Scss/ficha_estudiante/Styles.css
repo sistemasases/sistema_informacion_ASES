@@ -18,7 +18,6 @@ body {
 .row1{
 }
 .col1{
-    width: 70%;
 }
 .infoRow1{
 }
@@ -52,6 +51,13 @@ body {
     background: white;
     height: 20vh;
     margin-bottom: 10px;
+}
+
+.col_2017{
+height:100%;
+text-align:bottom;
+align-content:bottom;
+padding-top:45%;
 }
 
 
@@ -94,11 +100,9 @@ body {
 }
 
 .primera_row_pequeña{
-    padding: 0px 5px;
+    padding: 0px 20px;
     margin: 20px 0px;
 }
-
-
 
 
 
@@ -148,7 +152,11 @@ body {
 }
 
 .info{
-    margin-top: 40px;
+    padding-top: 40px;
+    word-break: break-all;
+}
+.info_pequeño{
+    padding: 0px 20px;
     word-break: break-all;
 }
 .info_texto{
@@ -169,7 +177,6 @@ body {
 
 
 .colInfo1{
-    width: 70%;
 }
 .colInfo2{
     width: 30%;
@@ -208,7 +215,10 @@ body {
     justify-content: center;
 }
 .texto_estatico_pequeño{
-
+    text-align: center;
+    text-justify: center;
+    align-content: center;
+    justify-content: center;
 }
 
 .texto_estatico_ficha{
@@ -237,7 +247,9 @@ body {
 
 
 
-
+.el_texto_mas_pequeño{
+    font-size: 3pt;
+}
 .texto_mas_pequeño{
     font-size: 8pt;
 }
@@ -265,6 +277,17 @@ body {
 .bold_pequeño{
     font-size: 8pt;
     font-weight: bold;
+}
+.bold_select{
+    font-size:14pt;
+    font-weight: bold;
+    width: 100%;
+}
+.bold_select_pequeño{
+    font-size:14pt;
+    font-weight:bold;
+    width:100%;
+    padding:0px 20px;
 }
 
 .container_ficha_footer{

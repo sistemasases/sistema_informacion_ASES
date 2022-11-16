@@ -61,7 +61,7 @@
     align-content: center;
 }
 .subrow_card_content_flex{
-    align-content: center;
+    tab-size: 4;
 }
 
 .row_fondo_gris{

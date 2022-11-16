@@ -9,7 +9,7 @@ import items from "./seleccionado.json";
 const Desplegable2 = () =>{
 
     return (
-        <Container className="fichas">
+        <Container className="fichas_no_aplicado">
           { items.map((item, index) => <Desplegable_item key={index} item={item} />) }
         </Container>
     )

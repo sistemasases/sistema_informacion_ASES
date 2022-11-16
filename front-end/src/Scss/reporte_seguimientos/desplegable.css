@@ -55,7 +55,6 @@
   }
   .fichas-content{
     height: 0px;
-    margin: 0vh 3vh;
     overflow: hidden;
   }
   .fichas-item.open > .fichas-content{

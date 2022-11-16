@@ -66,11 +66,12 @@ const Desplegable_item = ({item}) => {
                                             </Row>
                             </Col>
                     </Row>
-                        <div className="fichas-content">
-                            <Row className="contenido_fichas">
+                        <Row className="fichas-content">
+                            <Col xs={"12"} md={"1"}></Col>
+                            <Col className="contenido_fichas" xs={"12"} md={"11"}>
                                 { item.practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
-                            </Row>
-                        </div>
+                            </Col>
+                        </Row>
                 </Col>
             </Row>
         )
@@ -130,11 +131,12 @@ const Desplegable_item = ({item}) => {
                                             </Row>
                             </Col>
                     </Row>
-                    <div className="fichas-content">
-                        <Row className="contenido_fichas">
-                            { item.monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                    <Row className="fichas-content">
+                            <Col xs={"12"} md={"1"}></Col>
+                            <Col className="contenido_fichas" xs={"12"} md={"11"}>
+                                { item.monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                            </Col>
                         </Row>
-                    </div>
                 </Col>
             </Row>
         )

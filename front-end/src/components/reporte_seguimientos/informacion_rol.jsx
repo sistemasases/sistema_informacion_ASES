@@ -36,12 +36,11 @@ const Informacion_rol = () =>{
 
                     <Row>Informacion: Rol</Row>
                     <Row className="row_card_content_flex">
-                        <Col className="subrow_card_content_flex">
-                            <Row>Profesional</Row>
-                            <Row>Fichas: Revisado 0 - No revisado : 1 - Total : 1</Row>
-                            <Row>Inasistencias: Revisado : 0 - No revisado : 0 - Total : 0</Row>
+                        <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
+                            <p className="subrow_card_content_flex">Fichas:      Revisado : 0    No revisado : 1     Total : 1</p>
+                            <Row>Inasistencias: Revisado : 0    No revisado : 0     Total : 0</Row>
                         </Col>
-                        <Col className="subrow_card_content_flex">
+                        <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
                             <Row>Practicante</Row>
                             <Row>Fichas: Revisado : 0 - No revisado : 1 - Total : 1</Row>
                             <Row>Inasistencias: Revisado : 0 - No revisado : 0 - Total : 0</Row>

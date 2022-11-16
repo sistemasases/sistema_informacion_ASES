@@ -111,7 +111,7 @@ const SideBar = (props) =>{
                 </Row>
                 <div  class="d-none d-md-block">
                     <Col className="inf_der">
-                        <main style={{marginLeft: isOpen ? "280px" : "50px"}}>
+                        <main style={{marginLeft: isOpen ? "280px" : "50px"}, {marginTop: "5rem"}}>
                             {props.children}
                         </main>
                     </Col>
@@ -122,7 +122,7 @@ const SideBar = (props) =>{
 
                 <div  class="d-block d-md-none">
                     <Col className="inf_der">
-                        <main style={{marginLeft: isOpen ? "0px" : "0px"}}>
+                        <main style={{marginLeft: isOpen ? "0px" : "0px"}, {marginTop: "4rem"}}>
                             {props.children}
                         </main>
                     </Col>
