@@ -3,6 +3,7 @@ from modulo_base import views
 
 
 urlpatterns = [
-    path('login/', views.Api_login.as_view()),
-    path('', views.carga_test),
+    path('login', views.Login.as_view()),
+    path('logout', views.Logout.as_view()),
+
 ]

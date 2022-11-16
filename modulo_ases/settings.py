@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,7 @@ SECRET_KEY = 'django-insecure-1w5uon7br&w89d60u7v^=0#(*p@fo81_^^x-o9m^2q=1(5v(x0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 
 # Application definition
@@ -45,9 +46,13 @@ INSTALLED_APPS = [
     'modulo_carga_masiva',
     'modulo_instancia',
     'modulo_seguimiento',
+    'modulo_programa',
+    'modulo_academico',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -100,27 +105,39 @@ WSGI_APPLICATION = 'modulo_ases.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'mszacasn',
-#         'USER' : 'mszacasn',
-#         'PASSWORD' : 'BGCLKJM0p4fPlpbziUER8eupqcCM0HxJ',
-#         'HOST' : 'jelani.db.elephantsql.com',
-#         'DATABASE_PORT' : '5432',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ases',
-        'USER' : 'postgres',
-        'PASSWORD' : 'postgres',
-        'HOST' : '127.0.0.1',
+        'NAME': 'mszacasn',
+        'USER' : 'mszacasn',
+        'PASSWORD' : 'BGCLKJM0p4fPlpbziUER8eupqcCM0HxJ',
+        'HOST' : 'jelani.db.elephantsql.com',
         'DATABASE_PORT' : '5432',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ases',
+#         'USER' : 'postgres',
+#         'PASSWORD' : 'postgres',
+#         'HOST' : '127.0.0.1',
+#         'DATABASE_PORT' : '5432',
+#     }
+# }
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS' : True,
+    'BLACK_LIST_AFTER_ROTATION': True
+}
 
 
 # Password validation

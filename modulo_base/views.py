@@ -1,44 +1,57 @@
-from django.views import View
-from django.contrib.auth.models import User
-from django.http import JsonResponse
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.contrib.auth import authenticate
+
 from rest_framework import status
-from modulo_base import serializers
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.hashers import check_password
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-# Create your views here.
+from modulo_base.serializers import (
+    CustomTokenObtainPairSerializer, user_token, group_serializer
+)
+from django.contrib.auth.models import User
 
-class Api_login(APIView):
 
-    serializer_class =serializers.Api_login
 
-    def post(self,request):
-        serializer = self.serializer_class(data=request.data)
-        if (serializer.is_valid()):
+class Login(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
-            username_request = serializer.validated_data.get('username')
-            var_usuario =get_object_or_404(User, username = username_request)
-            contrasena_request =check_password( serializer.validated_data.get('password') ,var_usuario.password)
-            if (contrasena_request == True):
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username', '')
+        password = request.data.get('password', '')
+        user = authenticate(
+            username=username,
+            password=password
+        )
 
-                return Response({'Respuesta': 'True'})
+        if user:
+            login_serializer = self.serializer_class(data=request.data)
+            if user.is_active:
+                if login_serializer.is_valid():
+                    user_serializer = user_token(user)
+                    rol = user.groups.all().first()
+                    rol_data = group_serializer(rol).data
+                    
+                    extra_info = {'nombre_completo' : user_serializer.data.get('first_name') +" "+ user_serializer.data.get('last_name'),'rol' : rol_data }
+                    data = dict(user_serializer.data, **extra_info)
+                    print(data)
+                    return Response({
+                        'token': login_serializer.validated_data.get('access'),
+                        'refresh-token': login_serializer.validated_data.get('refresh'),
+                        'user': data,
+                        'message': 'Inicio de Sesion Existoso'
+                    }, status=status.HTTP_200_OK)
+                return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'El usuario no está activo'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
+
+class Logout(GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        user = User.objects.filter(id=request.data.get('user', 0))
+        if user.exists():
+            RefreshToken.for_user(user.first())
+            return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
+        return Response({'error': 'No existe este usuario.'}, status=status.HTTP_400_BAD_REQUEST)
         
-            return Response({'Respuesta': 'False'})
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-            )
-
-
-class user_manage (View):
-
-    def get(self, request):
-        print(request)
-        list_user =User.objects.all()
-        return JsonResponse (list(list_user.values()), safe=False)
-
-def carga_test(request):
-    return render(request, "prueba_login.html")

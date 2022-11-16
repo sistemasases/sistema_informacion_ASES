@@ -56,7 +56,7 @@ const Info_basica = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/all_estudiante/",
+        url:  "http://localhost:8000/usuario_rol/estudiante/",
         method: "GET",
       })
       .then((respuesta)=>{
