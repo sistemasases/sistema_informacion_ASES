@@ -98,8 +98,6 @@ const semestre_sistemas_component = () =>{
       }
 
     const handleSelect = (rolId, userId) => {
-        console.log(rolId)
-        console.log(userId)
         for(var i = 0; i < state.data['length']; i++){
             if(state.data[i].id == userId){
                 state.data[i].id_rol = rolId;
