@@ -15,7 +15,6 @@ const semestre_sistemas_component = () =>{
     const [state,set_state] = useState({
         data: [],
         form: {
-            id: undefined,
             username: undefined,
             password: undefined,
             first_name: undefined, 
@@ -47,11 +46,17 @@ const semestre_sistemas_component = () =>{
                 if(!(!nuevo.last_name || nuevo.last_name === '')){
                     if(!(!nuevo.documento || nuevo.documento === '')){
                         if(!(!nuevo.email || nuevo.email === '')){
-                            nuevo.id=state.data.length+1;
                             nuevo.password=nuevo.documento;
-                            lista.push(nuevo);
-                            Create_User.user_rol(nuevo)
-                            console.log(nuevo.username)
+                            try  {
+                                Create_User.user_rol(nuevo)
+                            }
+                            catch {
+                                console.log('Error, cambie el username a: ' + nuevo.username)
+                            }
+                            finally {
+                                lista.push(nuevo);
+                                console.log('Se creó al ususario: ' + nuevo.username)
+                            }
                         }
                     }
                 }
@@ -87,22 +92,16 @@ const semestre_sistemas_component = () =>{
         })
     },[]);
 
-    const handle_rol_selector = (e) =>{
-        var nombrerol;
-        for(var i = 0; i<datos_option_rol['length']; i++){
-            if(datos_option_rol[i] && datos_option_rol[i]['id'] === e){
-                nombrerol = datos_option_rol[i]['value']
-            }
-        }
-        return nombrerol;
-      }
-
     const handleSelect = (rolId, userId) => {
         for(var i = 0; i < state.data['length']; i++){
             if(state.data[i].id == userId){
                 state.data[i].id_rol = rolId;
             }
         }
+    }
+
+    const handleCheck = (e) => {
+        console.log(e);
     }
 
     const handleCreate = () => {
@@ -168,9 +167,9 @@ const semestre_sistemas_component = () =>{
                             <td>{e.last_name}</td>
                             <td>{e.email}</td>
                             <td>
-                                <Select class="form-control" options={datos_option_rol} defaultInputValue={handle_rol_selector(e.id_rol)} onChange={(c) => {handleSelect(c.id, e.id)}}/>
+                                <Select class="form-control" options={datos_option_rol} defaultInputValue={e.nombre} onChange={(c) => {handleSelect(c.id, e.id)}}/>
                             </td>
-                            <td align='center'><input class="form-check-input" type="checkbox" defaultChecked/></td>
+                            <td align='center'><input class="form-check-input" type="checkbox" onChange={handleCheck} defaultChecked/></td>
                         </tr>
                     ))}
                 </tbody>
