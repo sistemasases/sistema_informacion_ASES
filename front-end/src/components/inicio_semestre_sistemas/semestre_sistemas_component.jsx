@@ -49,24 +49,36 @@ const semestre_sistemas_component = () =>{
                     if(!(!nuevo.documento || nuevo.documento === '')){
                         if(!(!nuevo.email || nuevo.email === '')){
                             nuevo.password=nuevo.documento;
-                            await Create_User.user_rol(nuevo);
+                            await Create_User.user_rol(nuevo).then((res)=>{
+                                console.log(res);
+                            });
                             lista.push(nuevo);
                             console.log('Se creó al ususario: ' + nuevo.username);
+                            setShow(false);
+                            set_state({...state, data: lista, form: {
+                                id: undefined,
+                                username: undefined,
+                                password: undefined,
+                                first_name: undefined, 
+                                last_name: undefined, 
+                                documento: undefined, 
+                                email: undefined,
+                            }});
+                        } else{
+                            window.confirm("Error: Inserte un email valido");
                         }
+                    } else{
+                        window.confirm("Error: Inserte un documento valido");
                     }
+                } else{
+                    window.confirm("Error: Inserte un apellido valido");
                 }
+            } else{
+                window.confirm("Error: Inserte un nombre valido");
             }
+        } else{
+            window.confirm("Error: Inserte un nombre de usuario valido");
         }
-        set_state({...state, data: lista, form: {
-            id: undefined,
-            username: undefined,
-            password: undefined,
-            first_name: undefined, 
-            last_name: undefined, 
-            documento: undefined, 
-            email: undefined,
-        }});
-        setShow(false);
     }
 
     useEffect(()=>{
