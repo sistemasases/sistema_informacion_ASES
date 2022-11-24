@@ -1,6 +1,6 @@
 from django.db import models
 from modulo_geografico.models import barrio, municipio
-from modulo_instancia.models import semestre,cohorte
+from modulo_instancia.models import semestre,cohorte,instancia
 from django.contrib.auth.models import User
 
 
@@ -85,3 +85,12 @@ class cohorte_estudiante(models.Model):
     
     class Meta:
         db_table = "cohorte_estudiante"
+
+class instancia_usuario(models.Model):
+
+    id_instancia= models.ForeignKey(instancia,on_delete=models.CASCADE,default=0)
+    id_usuario= models.ForeignKey(User,on_delete=models.CASCADE,default=0)
+    tiempo_creacion= models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = "instancia_usuario"

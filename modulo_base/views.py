@@ -10,7 +10,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from modulo_base.serializers import (
     CustomTokenObtainPairSerializer, user_token, group_serializer
 )
+from modulo_instancia.serializers import semestre_serializer, instancia_serializer
+from modulo_usuario_rol.serializers import usuario_rol_serializer, rol_serializer
 from django.contrib.auth.models import User
+
+from modulo_instancia.models import semestre, instancia
+from modulo_usuario_rol.models import rol, usuario_rol
 
 
 
@@ -27,13 +32,28 @@ class Login(TokenObtainPairView):
 
         if user:
             login_serializer = self.serializer_class(data=request.data)
+            print('1')
             if user.is_active:
+                print('2')
                 if login_serializer.is_valid():
+                    print('3')
                     user_serializer = user_token(user)
-                    rol = user.groups.all().first()
-                    rol_data = group_serializer(rol).data
-                    
-                    extra_info = {'nombre_completo' : user_serializer.data.get('first_name') +" "+ user_serializer.data.get('last_name'),'rol' : rol_data }
+                    print(user.id)
+                    dato_usuario_rol = usuario_rol.objects.get(id_usuario = user.id,estado = "ACTIVO")
+                    serializer_usuario_rol = usuario_rol_serializer(dato_usuario_rol)
+                    dato_rol = rol.objects.get(id =serializer_usuario_rol.data['id_rol'] )
+                    serializer_rol = rol_serializer(dato_rol)
+                    dato_semestre = semestre.objects.get(semestre_actual = True, id =serializer_usuario_rol.data['id_semestre'])
+                    serializer_semestre =semestre_serializer(dato_semestre)
+                    dato_instancia = instancia.objects.get(id = serializer_semestre.data['id_instancia'])
+                    serializer_instancia = instancia_serializer(dato_instancia)
+    
+                    extra_info = {'nombre_completo' : user_serializer.data.get('first_name') +" "+ user_serializer.data.get('last_name'),
+                                'rol' : serializer_rol.data['nombre'],
+                                'semestre_actual': serializer_semestre.data['nombre'],
+                                'instancia':serializer_instancia.data['nombre'],
+                                'instancia_id':serializer_instancia.data['id'],
+                                }
                     data = dict(user_serializer.data, **extra_info)
                     print(data)
                     return Response({
