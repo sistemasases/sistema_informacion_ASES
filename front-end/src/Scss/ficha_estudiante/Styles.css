@@ -24,7 +24,7 @@ body {
 .infoRow2{
 }
 .infoRow2_pequeño{
-    margin: 5px 0px;
+    margin: 0px 0px;
     padding: 0px 5px;
     background: white;
 }
@@ -113,27 +113,24 @@ padding-top:45%;
 }
 .infoRow23_activo{
     font-size: 8pt;
-    margin-top: 5px;
     padding-top: 2px;
     height: 30px;
     color: white;
-    background: green;
+    background: rgba(65,174,27,255);
 }
 .infoRow23_inactivo{
     font-size: 8pt;
-    margin-top: 5px;
     padding-top: 2px;
     height: 30px;
     color: white;
-    background: #504f4f;
+    background: gray;
 }
 .infoRow23_finalizado{
     font-size: 8pt;
-    margin-top: 5px;
     padding-top: 2px;
     height: 30px;
     color: white;
-    background: blue;
+    background: rgba(30,195,196,255);
 }
 .infoRow3{
     
@@ -215,6 +212,7 @@ padding-top:45%;
     justify-content: center;
 }
 .texto_estatico_pequeño{
+    font.size:14pt;
     text-align: center;
     text-justify: center;
     align-content: center;
@@ -234,11 +232,11 @@ padding-top:45%;
     background: rgba(218, 218, 218, 255);
     color: rgb(135, 135, 135);
     font-size: 7pt;
-    margin-top: 10px;
     font-weight: bold;
     border: 1px solid rgb(135, 135, 135);;
     width: 100%;
     height: 30px;
+    margin-bottom:10px;
 }
 
 
@@ -257,7 +255,10 @@ padding-top:45%;
 .texto_pequeño{
     font-size: 14pt;
 }
-
+.texto_pequeño_gris{
+    font-size: 14pt;
+    color:gray;
+}
 
 .texto_subtitulo{
     color: rgba(229,41,67,255);

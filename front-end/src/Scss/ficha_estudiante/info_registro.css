@@ -127,6 +127,48 @@
     height: 60px;
     border-radius: 100%;
 }
+.button_tipo_riesgo_alto_2_pequeño{
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 15pt;
+    background: rgba(247,94,120,255);
+    color: rgba(235,44,74,255);
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_medio_2_pequeño{
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 15pt;
+    background: rgba(255,205,80,255);
+    color: rgba(255, 183, 0, 1);
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_bajo_2_pequeño{
+    text-align: center;
+    text-justify: center;
+    justify-content: center;
+    align-content: center;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 15pt;
+    background: rgba(116,206,76,255);
+    color: rgba(56,172,6,255);
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
 
 .button_tipo_riesgo_alto_texto{
     background: rgba(247,94,120,255);
@@ -154,6 +196,45 @@
     height: 30px;
     border-radius: 15px;
 }
+.button_tipo_riesgo_alto_texto_pequeño{
+    font-size: 8pt;
+    background: rgba(247,94,120,255);
+    color: white;
+    padding-left: 20%;
+    padding-top: 6px;
+    margin-top: 13px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+    font-weight: bold;
+
+}
+.button_tipo_riesgo_medio_texto_pequeño{
+    font-size: 8pt;
+    background: rgba(255,205,80,255);
+    color: white;
+    padding-left: 20%;
+    padding-top: 6px;
+    margin-top: 13px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+    font-weight: bold;
+
+}
+.button_tipo_riesgo_bajo_texto_pequeño{
+    font-size: 8pt;
+    z-index: 1;
+    background: rgba(116,206,76,255);
+    color: white;
+    padding-left: 20%;
+    padding-top: 6px;
+    margin-top: 13px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+    font-weight: bold;
+}
 .borde_riesgos_alto{
     padding: 2px 2px;
     border: 1px solid rgba(232,36,70,255);
@@ -169,7 +250,21 @@
     border: 1px solid rgba(56,172,6,255);
     border-radius: 100%;
 }
-
+.borde_riesgos_alto_pequeño{
+    padding: 2px 2px;
+    border: 1px solid rgba(232,36,70,255);
+    border-radius: 100%;
+}
+.borde_riesgos_medio_pequeño{
+    padding: 2px 2px;
+    border: 1px solid rgba(255,205,80,255);
+    border-radius: 100%;
+}
+.borde_riesgos_bajo_pequeño{
+    padding: 2px 2px;
+    border: 1px solid rgba(56,172,6,255);
+    border-radius: 100%;
+}
 
 .riesgos{
     margin-top: 10px;
@@ -180,7 +275,7 @@
     padding-bottom: 30px;
 }
 .riesgos_pequeño{
-    margin-top: 100px;
+    margin-top: 50px;
     background: rgba(151,234,242,255);
 }
 

@@ -111,16 +111,19 @@ const navbar = (props) =>{
                                 {
                                     isOpen ?
                                     (
-                                    <Col  xs={"2"}  md={"3"} className="flecha_usuario">
-                                        <i class="bi bi-chevron-up"></i>
-                                    </Col>
-
+                                        <div class="d-none d-md-inline col-md-3"> 
+                                            <Col className="flecha_usuario">
+                                                <i class="bi bi-chevron-up"></i>
+                                            </Col>
+                                        </div>
                                     )
                                     :
                                     (
-                                    <Col  xs={"2"}  md={"3"} className="flecha_usuario">
-                                        <i class="bi bi-chevron-down"></i>
-                                    </Col>
+                                        <div class="d-none d-md-inline col-md-3"> 
+                                            <Col  xs={"2"}  md={"3"} className="flecha_usuario">
+                                                <i class="bi bi-chevron-down"></i>
+                                            </Col>
+                                        </div>
                                     )
                                 }  
                         </Row>  

@@ -22,6 +22,7 @@
 }
 
 .sideBar{
+    left:0px;
     z-index: 2;
     position: fixed;
     background: #F1F1F1;
@@ -33,7 +34,8 @@
 }
 
 .top_selection{
-    z-index: 2;
+    left:0px;
+    z-index: 3;
     height: 4rem;
     width: 50px;
     background: rgba(235,30,0,255);

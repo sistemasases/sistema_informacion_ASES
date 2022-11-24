@@ -5,16 +5,16 @@ from rest_framework import serializers
 from .models import instancia, semestre
 
 # create a serializer class
-class InstanciaSerializer(serializers.ModelSerializer):
+class instancia_serializer(serializers.ModelSerializer):
 
 	# create a meta class
 	class Meta:
 		model = instancia
-		fields = ('codigo', 'nombre', 'descripcion')
+		fields = '__all__'
 
-class SemestreSerializer(serializers.ModelSerializer):
+class semestre_serializer(serializers.ModelSerializer):
 
 	# create a meta class
 	class Meta:
 		model = semestre
-		fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'semestre_actual', 'id_instancia')
+		fields = '__all__'

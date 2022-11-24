@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import Select from 'react-select'  ;
 import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";

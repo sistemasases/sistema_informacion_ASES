@@ -62,6 +62,11 @@
   }
 
   .contenido_fichas{
+    margin-left: 30px;
+    padding-top: 2vh;
+    justify-content: center;
+  }
+  .contenido_fichas_pequeño{
     padding-top: 2vh;
     justify-content: center;
   }

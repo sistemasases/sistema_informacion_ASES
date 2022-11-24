@@ -76,8 +76,9 @@ const Info_general = (props) =>{
     var bandera_option_user = true;
     var bandera_option_rol = true;
     var bandera = true;
+    const temporal = false;
+
     const [state,set_state] = useState({
-      
       show : false,
 
       editar : false,
@@ -94,7 +95,6 @@ const Info_general = (props) =>{
 
       cedula:'',
       correo:'',
-      telefono:'',
       sexo:'',
       telefono_res:'',
       dir_res:'',
@@ -102,29 +102,26 @@ const Info_general = (props) =>{
       hijos:'',
 
 
-
-
-      puntaje_icfes:'',
-      año_ingreso_univalle:'',
-      estrato:'',
-      telefono_residencia:'',
-      celular:'',
-      email_alternativo:'',
-      direccion_residencia:'',
-      barrio:'',
-      municipio_actual:'',
-      pais_de_origen:'',
-      grupo_etnico:'',
-      actividad_simultánea:'',
-      identidad_de_genero:'',
-      sexo:'',
-      estado_civil:'',
-      cantidad_hijo:'',     
-      actividades_tiempo_libre:'',
-      deportes_que_practica:'',
-      condicion_de_excepcion:'',
-      otros_acompañamientos:'',
-      ultima_actualizacion:'',
+      puntaje_icfes:'sin dato',
+      año_ingreso_univalle:'sin dato',
+      estrato:'sin dato',
+      celular:'sin dato',
+      email_alternativo:'sin dato',
+      direccion_residencia:'sin dato',
+      barrio:'sin dato',
+      municipio_actual:'sin dato',
+      pais_de_origen:'sin dato',
+      grupo_etnico:'sin dato',
+      actividad_simultánea:'sin dato',
+      identidad_de_genero:'sin dato',
+      sexo:'sin dato',
+      estado_civil:'sin dato',
+      cantidad_hijo:'sin dato',     
+      actividades_tiempo_libre:'sin dato',
+      deportes_que_practica:'sin dato',
+      condicion_de_excepcion:'sin dato',
+      otros_acompañamientos:'sin dato',
+      ultima_actualizacion:'sin dato',
 
 
       nuevo_puntaje_icfes:'',
@@ -152,7 +149,7 @@ const Info_general = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/all_estudiante/",
+        url:  "http://localhost:8000/usuario_rol/estudiante/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -203,9 +200,29 @@ const Info_general = (props) =>{
           telefono : state.data_user[props.seleccionado]['telefono_res'],
           sexo : state.data_user[props.seleccionado]['sexo'],
           telefono_res : state.data_user[props.seleccionado]['telefono_res'],
-          dir_res : state.data_user[props.seleccionado]['dir_res'],
+          celular : state.data_user[props.seleccionado]['celular'],
+          dir_res : state.data_user[props.seleccionado]['dir_ini'],
           barrio_res : state.data_user[props.seleccionado]['barrio_res'],
           hijos : state.data_user[props.seleccionado]['hijos'],
+          email_alternativo : state.data_user[props.seleccionado]['email'],
+          direccion_residencia : state.data_user[props.seleccionado]['dir_res'],
+          barrio : state.data_user[props.seleccionado]['barrio_res'],
+
+          puntaje_icfes:'sin dato',
+      año_ingreso_univalle:'sin dato',
+      estrato:'sin dato',
+      municipio_actual:'sin dato',
+      pais_de_origen:'sin dato',
+      grupo_etnico:'sin dato',
+      actividad_simultánea:'sin dato',
+      identidad_de_genero:'sin dato',
+      estado_civil:'sin dato',
+      actividades_tiempo_libre:'sin dato',
+      deportes_que_practica:'sin dato',
+      condicion_de_excepcion:'sin dato',
+      otros_acompañamientos:'sin dato',
+      ultima_actualizacion:'sin dato',
+
 
           nuevo_puntaje_icfes:state.puntaje_icfes,
           nuevo_año_ingreso_univalle:state.año_ingreso_univalle,
@@ -356,7 +373,7 @@ const Info_general = (props) =>{
 
     return (
       
-        (props.seleccionado) === '' ?
+        temporal?
         (<Row></Row>)
         :
         (
@@ -413,7 +430,7 @@ const Info_general = (props) =>{
                               <h1 className="texto_subtitulo">INFORMACIÓN DEL ESTUDIANTE : {state.nombres}</h1>
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Nombres</h4>
+                                          <h4 className="texto_pequeño_gris">Nombres</h4>
                                           </Col>
                                           <Col xs={"12"} md={"6"}>
                                                 <h4 className="texto_pequeño" >{state.nombres}</h4>
@@ -422,7 +439,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Apellidos</h4>
+                                          <h4 className="texto_pequeño_gris">Apellidos</h4>
                                           </Col>
                                           <Col xs={"12"} md={"6"}>
                                           <h4 className="texto_pequeño" >{state.apellidos}</h4>
@@ -431,7 +448,7 @@ const Info_general = (props) =>{
                                     
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Puntaje Icfes</h4>
+                                          <h4 className="texto_pequeño_gris">Puntaje Icfes</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -450,7 +467,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Año ingreso Univalle</h4>
+                                          <h4 className="texto_pequeño_gris">Año ingreso Univalle</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -470,7 +487,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Estrato</h4>
+                                          <h4 className="texto_pequeño_gris">Estrato</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -490,7 +507,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Teléfono residencia</h4>
+                                          <h4 className="texto_pequeño_gris">Teléfono residencia</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -511,7 +528,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Celular</h4>
+                                          <h4 className="texto_pequeño_gris">Celular</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -534,7 +551,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Email alternativo</h4>
+                                          <h4 className="texto_pequeño_gris">Email alternativo</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -554,7 +571,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Dirección residencia</h4>
+                                          <h4 className="texto_pequeño_gris">Dirección residencia</h4>
                                           </Col>
                                           <Col xs={"12"} md={"6"}>
                                           <h4 className="texto_pequeño" >{state.dir_res}</h4>
@@ -564,7 +581,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Barrio</h4>
+                                          <h4 className="texto_pequeño_gris">Barrio</h4>
                                           </Col>
                                           <Col xs={"12"} md={"6"}>
                                           <h4 className="texto_pequeño" >{state.barrio_res}</h4>
@@ -574,7 +591,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Municipio actual</h4>
+                                          <h4 className="texto_pequeño_gris">Municipio actual</h4>
                                           </Col>
                                           <Col xs={"12"} md={"6"}>
                                           <h4 className="texto_pequeño" >{state.municipio_actual}</h4>
@@ -584,7 +601,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general"> 
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">País de origen</h4>
+                                          <h4 className="texto_pequeño_gris">País de origen</h4>
                                           </Col>
                                           {
                                                       state.editar ?
@@ -606,7 +623,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general"> 
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Grupo étnico</h4>
+                                          <h4 className="texto_pequeño_gris">Grupo étnico</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -626,7 +643,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Actividad simultánea</h4>
+                                          <h4 className="texto_pequeño_gris">Actividad simultánea</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -648,7 +665,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Identidad de género</h4>
+                                          <h4 className="texto_pequeño_gris">Identidad de género</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -668,7 +685,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Sexo</h4>
+                                          <h4 className="texto_pequeño_gris">Sexo</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -688,7 +705,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Estado civil</h4>
+                                          <h4 className="texto_pequeño_gris">Estado civil</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -708,7 +725,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Cantidad hijo/s</h4>
+                                          <h4 className="texto_pequeño_gris">Cantidad hijo/s</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -728,7 +745,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Actividades que realiza en su tiempo libre</h4>
+                                          <h4 className="texto_pequeño_gris">Actividades que realiza en su tiempo libre</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -748,7 +765,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Deportes que practica</h4>
+                                          <h4 className="texto_pequeño_gris">Deportes que practica</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -768,7 +785,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Condiciòn de excepciòn</h4>
+                                          <h4 className="texto_pequeño_gris">Condiciòn de excepciòn</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -788,7 +805,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño">Otros acompañamientos</h4>
+                                          <h4 className="texto_pequeño_gris">Otros acompañamientos</h4>
                                           </Col>
                                           {
                                                 state.editar ?

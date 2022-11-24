@@ -228,12 +228,12 @@ const Info_registros = () =>{
                                     <Col xs={"6"}>
                                         <Row  className="row_riesgo">
                                             <Col xs={"2"} sm={"2"} className="z_index_2">
-                                                <label className="borde_riesgos_alto">
-                                                    <label className="button_tipo_riesgo_alto_2">A</label>
+                                                <label className="borde_riesgos_alto_pequeño">
+                                                    <label className="button_tipo_riesgo_alto_2_pequeño">A</label>
                                                 </label>
                                                 </Col>
-                                                <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                                                    <label  className="button_tipo_riesgo_alto_texto">ACADEMICO</label>
+                                                <Col  xs={"9"} sm={"10"} className="center_tipos_riesgos">
+                                                    <label  className="button_tipo_riesgo_alto_texto_pequeño">ACADEMICO</label>
                                                 </Col>
                                         </Row>
                                     </Col>
@@ -241,11 +241,11 @@ const Info_registros = () =>{
                                     <Col xs={"6"}>
                                         <Row className="row_riesgo" >
                                             <Col xs={"2"} sm={"2"} className="z_index_2">
-                                                <label className="borde_riesgos_alto">
-                                                    <label className="button_tipo_riesgo_alto_2">A</label>
+                                                <label className="borde_riesgos_alto_pequeño">
+                                                    <label className="button_tipo_riesgo_alto_2_pequeño">A</label>
                                                 </label>                                        </Col>
-                                            <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                                                <label  className="button_tipo_riesgo_alto_texto">GEOGRAFICO</label>
+                                            <Col  xs={"9"} sm={"10"} className="center_tipos_riesgos">
+                                                <label  className="button_tipo_riesgo_alto_texto_pequeño">GEOGRAFICO</label>
                                             </Col>
                                         </Row>
                                     </Col>
@@ -260,11 +260,11 @@ const Info_registros = () =>{
                                         <Row className="row_riesgo">
                                             <Col xs={"2"} sm={"2"} className="z_index_2">
                                                 <label className="borde_riesgos_medio">
-                                                    <label className="button_tipo_riesgo_medio_2">M</label>
+                                                    <label className="button_tipo_riesgo_medio_2_pequeño">M</label>
                                                 </label>
                                             </Col>
-                                            <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                                                <label  className="button_tipo_riesgo_medio_texto">VIDA UNIV..</label>
+                                            <Col  xs={"9"} sm={"10"} className="center_tipos_riesgos">
+                                                <label  className="button_tipo_riesgo_medio_texto_pequeño">VIDA UNIV..</label>
                                             </Col>
                                         </Row>
                                     </Col>
@@ -272,11 +272,11 @@ const Info_registros = () =>{
                                         <Row  className="row_riesgo">
                                             <Col xs={"2"} sm={"2"} className="z_index_2">
                                                 <label className="borde_riesgos_medio">
-                                                    <label className="button_tipo_riesgo_medio_2">M</label>
+                                                    <label className="button_tipo_riesgo_medio_2_pequeño">M</label>
                                                 </label>
                                             </Col>
-                                            <Col  xs={"10"}  sm={"10"} className="center_tipos_riesgos">
-                                                <label  className="button_tipo_riesgo_medio_texto">FAMILIAR</label>
+                                            <Col  xs={"9"}  sm={"10"} className="center_tipos_riesgos">
+                                                <label  className="button_tipo_riesgo_medio_texto_pequeño">FAMILIAR</label>
                                             </Col>
                                         </Row>
                                     </Col>
@@ -291,11 +291,11 @@ const Info_registros = () =>{
                                         <Row className="row_riesgo">
                                             <Col xs={"2"} sm={"2"} className="z_index_2">
                                                 <label className="borde_riesgos_bajo">
-                                                    <label className="button_tipo_riesgo_bajo_2">B</label>
+                                                    <label className="button_tipo_riesgo_bajo_2_pequeño">B</label>
                                                 </label>
                                             </Col>
-                                            <Col  xs={"10"}  sm={"10"} className="center_tipos_riesgos">
-                                                <label  className="button_tipo_riesgo_bajo_texto">INDIVIDUAL</label> 
+                                            <Col  xs={"9"}  sm={"10"} className="center_tipos_riesgos">
+                                                <label  className="button_tipo_riesgo_bajo_texto_pequeño">INDIVIDUAL</label> 
                                             </Col>
                                         </Row>
                                     </Col>
@@ -303,11 +303,11 @@ const Info_registros = () =>{
                                         <Row className="row_riesgo">
                                             <Col xs={"2"} sm={"2"} className="z_index_2">
                                                     <label className="borde_riesgos_bajo">
-                                                        <label className="button_tipo_riesgo_bajo_2">B</label>
+                                                        <label className="button_tipo_riesgo_bajo_2_pequeño">B</label>
                                                     </label>                             
                                             </Col>
-                                            <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                                                    <label  className="button_tipo_riesgo_bajo_texto">ECONOMICO</label> 
+                                            <Col  xs={"9"} sm={"10"} className="center_tipos_riesgos">
+                                                    <label  className="button_tipo_riesgo_bajo_texto_pequeño">ECONOMICO</label> 
                                             </Col>
                                         </Row>
                                     </Col>

@@ -34,10 +34,10 @@
 
 .row_contenido_reportes_seguimientos{
     margin: 20px 0px;
+    padding: 20px 20px;
     background: lightgray;
     justify-content: center;
-    display: flex;
-    flex-direction: column;
+
 }
 
 .row_align_rigth{
@@ -90,7 +90,6 @@
 
 
 .link_text_reporte_seguimientos1{
-    height: 100px;
     border: 1px solid lightgray;
     background: white;
 }
@@ -110,12 +109,28 @@
     border: 1px solid lightgray;
     background: white;
 }
-.link_text_reporte_seguimientos_hover{
-    background: #DEDEDE;
+.link_text_reporte_seguimientos_hover1{
+    background:  rgb(224,224,224);
     display: flex;
     height: 100%;
 }
-.link_text_reporte_seguimientos_hover:hover{
+.link_text_reporte_seguimientos_hover1:hover{
+    background: red;
+}
+.link_text_reporte_seguimientos_hover2{
+    background: rgb(192,192,192);
+    display: flex;
+    height: 100%;
+}
+.link_text_reporte_seguimientos_hover2:hover{
+    background: red;
+}
+.link_text_reporte_seguimientos_hover3{
+    background: rgb(160,160,160);
+    display: flex;
+    height: 100%;
+}
+.link_text_reporte_seguimientos_hover3:hover{
     background: red;
 }
 .col_link_text_reporte_seguimientos_nombre{

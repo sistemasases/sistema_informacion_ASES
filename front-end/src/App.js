@@ -37,7 +37,6 @@ import React, {useState} from 'react';
 
 import {Row, Col} from "react-bootstrap";
 import "@fontsource/manrope";
-import NavBar from "./components/componentes_generales/navbar";
 
 import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -102,7 +101,6 @@ const App = () => {
             <Row> 
             <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo}>
                     <Routes>
-                        <Route path="/"element={<Login/>}/>
                         <Route path="/ficha_estudiante"element={<Ficha_estudiante usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                          <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos usuario={nombreUsuario}/>}/>

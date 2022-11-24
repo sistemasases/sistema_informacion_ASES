@@ -57,7 +57,7 @@ const Info_basica = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/all_estudiante/",
+        url:  "http://localhost:8000/usuario_rol/estudiante/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -439,25 +439,16 @@ const Info_basica = (props) =>{
                                   <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                 </button>
                               </Row>
-                              <Row>
-                                <Col>
+                              
                                   <Row className="texto_estatico_pequeño">
-                                    <h4 className="texto_mas_pequeño">Condicion de excepcion</h4>
+                                    <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
                                   </Row>
                                   <Row className="texto_estatico_pequeño">
                                       <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                   </Row>
-                                </Col>
-                              </Row>
                               </Col>
 
-
-                              
-
-
-                              <Col className="generar_nuevo_reporte" xs={"12"}>
                                   <Button className="boton_nuevo_registro_pequeño">NUEVO SEGUIMIENTO</Button>
-                              </Col>
                             </Row>
                             
                           </Col>
@@ -584,7 +575,7 @@ const Info_basica = (props) =>{
                                   (
                                     <Row className="infoRow2_pequeño">
                                       <Col xs={"12"} md={"9"}>
-                                        <Row>
+                                        <Row className="texto_estatico">
                                           <h4 className="bold">Programas academicos </h4>
                                         </Row>
                                         <Row className="infoRow23_activo"> 
@@ -660,7 +651,7 @@ const Info_basica = (props) =>{
                                   (
                                     <Row className="infoRow2">
                                       <Col xs={"12"} md={"9"}>
-                                        <Row>
+                                        <Row className="texto_estatico">
                                           <h4 className="texto_pequeño">Programas academicos </h4>
                                         </Row>
                                         <Row className="infoRow23_activo"> 
