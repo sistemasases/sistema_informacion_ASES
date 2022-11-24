@@ -13,7 +13,7 @@ const carga_masiva_component = () =>{
   
 
   const [state,set_state] = useState({
-    option : 'Estudiante',
+    option : 'Usuario',
     mensaje : [],
     respuesta : 'Cargando...',
   })
@@ -92,21 +92,7 @@ const carga_masiva_component = () =>{
         <Container>
 
             <Row >
-                  <h4>Tipo de Carga</h4>
-            </Row>
-
-            <Row className='mt-2' >
-
-              <Col sm={9}>
-                <Form.Select name= "option" onChange={handle_options} >
-                  <option value="Estudiante">Estudiante</option>
-                  <option value="Usuario">Usuario</option>
-                  <option value="Materia">Materia</option>
-                  <option value="Nota">Nota</option>
-                  <option value="Programa">Programa</option>
-                  <option value="Retiro">Retiro</option>
-                </Form.Select>
-              </Col>
+                  <h4>Suba el archivo csv para los monitores.</h4>
             </Row>
             <Row className='mt-2'>
               <Col sm={9}>

@@ -49,24 +49,36 @@ const semestre_sistemas_component = () =>{
                     if(!(!nuevo.documento || nuevo.documento === '')){
                         if(!(!nuevo.email || nuevo.email === '')){
                             nuevo.password=nuevo.documento;
-                            await Create_User.user_rol(nuevo)
+                            await Create_User.user_rol(nuevo).then((res)=>{
+                                console.log(res);
+                            });
                             lista.push(nuevo);
-                            console.log('Se creó al ususario: ' + nuevo.username)
+                            console.log('Se creó al ususario: ' + nuevo.username);
+                            setShow(false);
+                            set_state({...state, data: lista, form: {
+                                id: undefined,
+                                username: undefined,
+                                password: undefined,
+                                first_name: undefined, 
+                                last_name: undefined, 
+                                documento: undefined, 
+                                email: undefined,
+                            }});
+                        } else{
+                            window.confirm("Error: Inserte un email valido");
                         }
+                    } else{
+                        window.confirm("Error: Inserte un documento valido");
                     }
+                } else{
+                    window.confirm("Error: Inserte un apellido valido");
                 }
+            } else{
+                window.confirm("Error: Inserte un nombre valido");
             }
+        } else{
+            window.confirm("Error: Inserte un nombre de usuario valido");
         }
-        set_state({...state, data: lista, form: {
-            id: undefined,
-            username: undefined,
-            password: undefined,
-            first_name: undefined, 
-            last_name: undefined, 
-            documento: undefined, 
-            email: undefined,
-        }});
-        setShow(false);
     }
 
     useEffect(()=>{
@@ -95,7 +107,19 @@ const semestre_sistemas_component = () =>{
         }
     }
 
-    const handleCheck = (e) => {
+    const handleClick = (e) => {
+        var opcion = window.confirm("Se eliminará el usuario: "+e.username);
+        if(opcion){
+            var contador=0;
+            var lista = state.data;
+            lista.map((element)=>{
+                if(element.id==e.id){
+                    lista.splice(contador, 1);
+                }
+                contador++;
+            });
+            set_state({...state, data: lista,});
+        }
         console.log(e);
     }
 
@@ -165,7 +189,7 @@ const semestre_sistemas_component = () =>{
                         <th align='center'>Apellido</th>
                         <th align='center'>Correo</th>
                         <td align='center'><b>Rol</b></td>
-                        <td align='center'><b>Continua</b></td>
+                        <td align='center'><b>Eliminar</b></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -178,7 +202,9 @@ const semestre_sistemas_component = () =>{
                             <td>
                                 <Select class="form-control" options={datos_option_rol} defaultInputValue={e.nombre} onChange={(c) => {handleSelect(c.id, e.id)}}/>
                             </td>
-                            <td align='center'><input class="form-check-input" type="checkbox" onChange={(c)=>{handleCheck(c.target)}} defaultChecked/></td>
+                            <td>
+                                <Button variant="danger" onClick={() => handleClick(e)}>Eliminar</Button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
