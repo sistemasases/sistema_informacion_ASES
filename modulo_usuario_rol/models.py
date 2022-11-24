@@ -1,6 +1,6 @@
 from django.db import models
 from modulo_geografico.models import barrio, municipio
-from modulo_instancia.models import semestre,cohorte
+from modulo_instancia.models import semestre,cohorte,instancia
 from django.contrib.auth.models import User
 
 
