@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Modal, Table, FormGroup, Form, Col} from "react-bootstrap";
 import Select from 'react-select';
@@ -15,6 +16,7 @@ const semestre_sistemas_component = () =>{
     const [state,set_state] = useState({
         data: [],
         form: {
+            id: undefined,
             username: undefined,
             password: undefined,
             first_name: undefined, 
@@ -38,7 +40,7 @@ const semestre_sistemas_component = () =>{
         })
     }
     
-    const insertar = () =>{
+    const insertar = async () =>{
         var nuevo={...state.form};
         var lista=state.data;
         if(!(!nuevo.username || nuevo.username === '')){
@@ -47,16 +49,9 @@ const semestre_sistemas_component = () =>{
                     if(!(!nuevo.documento || nuevo.documento === '')){
                         if(!(!nuevo.email || nuevo.email === '')){
                             nuevo.password=nuevo.documento;
-                            try  {
-                                Create_User.user_rol(nuevo)
-                            }
-                            catch {
-                                console.log('Error, cambie el username a: ' + nuevo.username)
-                            }
-                            finally {
-                                lista.push(nuevo);
-                                console.log('Se creó al ususario: ' + nuevo.username)
-                            }
+                            await Create_User.user_rol(nuevo)
+                            lista.push(nuevo);
+                            console.log('Se creó al ususario: ' + nuevo.username)
                         }
                     }
                 }
@@ -104,8 +99,22 @@ const semestre_sistemas_component = () =>{
         console.log(e);
     }
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         for(var i = 0; i < state.data['length']; i++){
+            if(state.data[i].id == undefined){
+                await axios({
+                    url:  'http://localhost:8000/usuario_rol/user/',
+                    method: "GET"
+                })
+                .then(res=>{
+                    for(var j=0; j<res.data['length']; j++){
+                        if(state.data[i] && res.data[j] && res.data[j]['username'] == state.data[i]['username']){
+                            state.data[i].id=res.data[j]['id'];
+                            console.log(state.data[i] + ': ' + res.data[j]['id'])
+                        }
+                    }
+                })
+            }
             let formData = new FormData();
             formData.append('id_rol', state.data[i].id_rol);
             formData.append('id_usuario', state.data[i].id);
@@ -169,7 +178,7 @@ const semestre_sistemas_component = () =>{
                             <td>
                                 <Select class="form-control" options={datos_option_rol} defaultInputValue={e.nombre} onChange={(c) => {handleSelect(c.id, e.id)}}/>
                             </td>
-                            <td align='center'><input class="form-check-input" type="checkbox" onChange={handleCheck} defaultChecked/></td>
+                            <td align='center'><input class="form-check-input" type="checkbox" onChange={(c)=>{handleCheck(c.target)}} defaultChecked/></td>
                         </tr>
                     ))}
                 </tbody>
