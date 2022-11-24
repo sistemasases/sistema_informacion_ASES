@@ -34,46 +34,21 @@ const login_component = () =>{
     axios.post(url, data)
     .then(res=>{
       console.log(res.data)
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('refresh-token', res.data['refresh-token'])
+      localStorage.setItem('email', res.data.user.email)
+      localStorage.setItem('first_name', res.data.user.first_name)
+      localStorage.setItem('instancia', res.data.user.instancia)
+      localStorage.setItem('last_name', res.data.user.last_name)
+      localStorage.setItem('nombre_completo', res.data.user.nombre_completo)
+      localStorage.setItem('instancia_id', res.data.user.instancia_id)
+      localStorage.setItem('rol', res.data.user.rol)
+      localStorage.setItem('semestre_actual', res.data.user.semestre_actual)
+      localStorage.setItem('username', res.data.user.username)
+      localStorage.setItem('message', res.data.user.message)
     })
     .catch(err=>console.log(err))
   }
-
-  // return (
-  //   <div className="Auth-form-container">
-  //     <form className="Auth-form">
-  //       <div className="Auth-form-content">
-  //         <h3 className="Auth-form-title">Sign In</h3>
-  //         <div className="form-group mt-3">
-  //           <label>Usuario</label>
-  //           <input
-  //             type="text"
-  //             className="form-control mt-1"
-  //             placeholder="Escribe tu usuario"
-  //           />
-  //         </div>
-  //         <div className="form-group mt-3">
-  //           <label>Password</label>
-  //           <input
-  //             type="password"
-  //             className="form-control mt-1"
-  //             placeholder="Escribe tu contraseña"
-  //           />
-  //         </div>
-  //         <div className="d-grid gap-2 mt-3">
-  //           <button onClick={handleSendNewData} className="btn btn-primary">
-  //             Submit
-  //           </button>
-  //           <a href={"/ficha_estudiante"}  className="sidebar-item">
-  //               <span className="tamaño_icon">aqui</span>
-  //           </a>
-  //         </div>
-  //         <p className="forgot-password text-right mt-2">
-  //           Forgot <a href="#">password?</a>
-  //         </p>
-  //       </div>
-  //     </form>
-  //   </div>
-  // )
 
   return (
     <Container>
