@@ -21,7 +21,7 @@
         "id":4,
         "path":"/ficha_estudiante",
         "name":"gestion de asignaciones",
-        "icon":"FaThList"
+        "icon":"bi bi-graph-up-arrow"
     },
     {
         "id":5,
@@ -33,7 +33,7 @@
         "id":6,
         "path":"/ficha_estudiante",
         "name":"reporte formularios",
-        "icon":"FaThList"
+        "icon":"bi bi-graph-up-arrow"
     },
     {
         "id":7,
@@ -45,7 +45,7 @@
         "id":8,
         "path":"/ficha_estudiante",
         "name":"reporte general",
-        "icon":"bi-peple-fill"
+        "icon":"bi bi-graph-up-arrow"
     },
     {
         "id":9,

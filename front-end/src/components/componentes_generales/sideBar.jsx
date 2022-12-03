@@ -112,28 +112,19 @@ const SideBar = (props) =>{
                     <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
                 </Row>
                 <div  class="d-none d-md-block">
-                    <Col className="inf_der">
-                        <main style={{marginLeft: isOpen ? "280px" : "50px"}, {marginTop: "5rem"}}>
+                        <main style={{marginLeft: isOpen ? "0px" : "0px"}, {marginTop: "5rem"}}>
                             {props.children}
                         </main>
-                    </Col>
-                    <Row>
-                        <Footer style={{marginLeft: isOpen ? "300px" : "70px"}}></Footer>
-                    </Row>
                 </div>
 
                 <div  class="d-block d-md-none">
-                    <Col className="inf_der">
-                        <main style={{marginLeft: isOpen ? "0px" : "0px"}, {marginTop: "4rem"}}>
+                        <main style={ {marginTop: "4rem"}}>
                             {props.children}
                         </main>
-                    </Col>
-                    <Row>
-                        <Footer style={{marginLeft: isOpen ? "300px" : "70px"}}></Footer>
-                    </Row>
                 </div>
-
-                    
+                <Col className="row_footer">
+                    <Footer></Footer>
+                </Col>
         </Container>
     )
 }

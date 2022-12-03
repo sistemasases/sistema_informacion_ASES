@@ -20,15 +20,10 @@ Tabla Conteo de Seguimientos:
 - Profesional
 - Practicante
 - Monitor
-*/
 
 
 
-const Informacion_rol = () =>{
-    return (
-        <Container className="container_reportes_seguimientos">
-
-            <Row className="row_contenido_reportes_seguimientos">
+<Row className="row_contenido_reportes_seguimientos">
                 <Col className="row_card_reportes_seguimientos">
                     <Row className="row_card_content_flex">
                         <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
@@ -46,90 +41,103 @@ const Informacion_rol = () =>{
                     </Row>
                 </Col>
             </Row>
+*/
+
+
+
+const Informacion_rol = () =>{
+    return (
+        <Container className="container_reportes_seguimientos">
+
+            
 
             <Row className="row_contenido_reportes_seguimientos">
                         <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
                             <Row>
-                                <Col  xs={"6"} md={"3"}>
-                                Informacion:
+                                <Col  xs={"12"} md={"3"}>
+                                <b>Informacion:</b>
                                 </Col>
-                                <Col xs={"6"} md={"3"}>
+                                <Col xs={"12"} md={"3"}>
                                 Rol
                                 </Col>
                             </Row>
                             <Row>
-                                <Col xs={"6"} md={"3"}>
-                                Fichas:
+                                <Col xs={"12"} md={"3"}>
+                                <b>Fichas:</b>
                                 </Col>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-6"></div>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 No revisado : 1
                                 </Col>
-                                <div class="d-block d-md-none col-6"></div>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 Total : 1
                                 </Col>
                                                
                             </Row>
                             <Row>
-                                <Col xs={"6"} md={"3"}>
-                                Inasistencias:
+                                <Col xs={"12"} md={"3"}>
+                                <b>Inasistencias:</b>
                                 </Col>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-6"></div>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 No revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-6"></div>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 Total : 0
                                 </Col>          
                             </Row>
                         </Col>
                         <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
                             <Row>
-                                <Col xs={"6"} md={"3"}>
-                                Practicante:
+                                <Col xs={"12"} md={"3"}>
+                                <b>Practicante:</b>
                                 </Col>
-                                <Col xs={"6"} md={"3"}>
+                                <Col xs={"12"} md={"3"}>
                                 nombre
                                 </Col>
                             </Row>
                             <Row>
-                                <Col xs={"6"} md={"3"}>
-                                Fichas:
+                                <Col xs={"12"} md={"3"}>
+                                <b>Fichas:</b>
                                 </Col>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-6"></div>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 No revisado : 1
                                 </Col>
-                                <div class="d-block d-md-none col-6"></div>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 Total : 1
                                 </Col>
                                                
                             </Row>
                             <Row>
-                            <Col xs={"6"} md={"3"}>
-                                Inasistencias:
+                            <Col xs={"12"} md={"3"}>
+                                <b>Inasistencias:</b>
                                 </Col>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-6"></div>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 No revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-6"></div>
-                                <Col xs={"6"} md={"3"}>
+                                <div class="d-block d-md-none col-4"></div>
+                                <Col xs={"8"} md={"3"}>
                                 Total : 0
                                 </Col>           
                             </Row>

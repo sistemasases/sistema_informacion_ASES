@@ -221,10 +221,8 @@ const Info_registros = () =>{
 
 
                         <Row className="riesgos_fondo_claro">
-                            <Col>
 
 
-                                <Row>
                                     <Col xs={"6"}>
                                         <Row  className="row_riesgo">
                                             <Col xs={"2"} sm={"2"} className="z_index_2">
@@ -249,13 +247,11 @@ const Info_registros = () =>{
                                             </Col>
                                         </Row>
                                     </Col>
-                                </Row>
 
 
 
 
 
-                                <Row>
                                     <Col xs={"6"}>
                                         <Row className="row_riesgo">
                                             <Col xs={"2"} sm={"2"} className="z_index_2">
@@ -280,12 +276,10 @@ const Info_registros = () =>{
                                             </Col>
                                         </Row>
                                     </Col>
-                                </Row>
 
 
 
 
-                                <Row>
                                     <Col xs={"6"}>
                                         
                                         <Row className="row_riesgo">
@@ -311,7 +305,6 @@ const Info_registros = () =>{
                                             </Col>
                                         </Row>
                                     </Col>
-                                </Row>
                             
 
 
@@ -353,7 +346,6 @@ const Info_registros = () =>{
 
                                     
 
-                            </Col>
                             
 
                         </Row>

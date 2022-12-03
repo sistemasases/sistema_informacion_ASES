@@ -67,6 +67,8 @@ import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
 import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
 import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia";
 import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas";
+import Footer from './components/componentes_generales/footer.jsx';
+
 
 /*
 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
@@ -111,7 +113,10 @@ const App = () => {
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
                     </Routes>
                 </SideBar>
+                <Footer></Footer>
+
             </Row>
+
         </BrowserRouter>
     )
 }

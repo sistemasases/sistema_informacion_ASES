@@ -6,10 +6,10 @@ import App from '../../App.js'
 
 const login_component = () =>{
 
-  const logged = false
   const [state,set_state] = useState({
     usuario: '',
     contrasena: '',
+    logged:true,
   })
   const url = "http://127.0.0.1:8000/login" 
   const data = {
@@ -50,12 +50,16 @@ const login_component = () =>{
       localStorage.setItem('message', res.data.user.message)
     })
     .catch(err=>console.log(err))
+    set_state({
+      ...state,
+      logged:false,
+    })
   }
 
   return (
     <Container>
       {
-        localStorage.length===0 ?
+        state.logged ?
         (
           <Container>
             <Row className="g-2">

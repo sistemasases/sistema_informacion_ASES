@@ -1,7 +1,9 @@
 .container_footer{
-    margin-top: 50px;
-    display: flex;
-    flex-direction: column;
+    left:0px;
+    width: 150%;
+}
+.row_footer{
+
 }
 
 .footer_icons{
@@ -49,6 +51,11 @@
 }
 .footer_links{
     color: white;
-    padding-left: 20px;
-    background: rgb(200, 0, 0);
+    padding: 20px 20px;
+    background: grey;
+}
+.footer_links_bajo{
+    color:grey;
+    padding: 10px 20px;
+    background: lightgrey;
 }

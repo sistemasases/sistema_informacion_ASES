@@ -142,13 +142,9 @@ const Info_basica = (props) =>{
                                           (state.seleccionado) === '' ?
                                           (
                                             <Row className="info"> 
-                                                <Col className="info_basica_selector" xs={"1"} sm={"1"}>
-                                                  <label className="texto_mas_pequeño">
-                                                    {state.tipo_doc}
-                                                  </label>
-                                                </Col>
-                                                <Col className="info_texto" xs={"4"} md={"2"}>
-                                                  <h4 className="texto_mas_pequeño">cedula</h4>
+                                                <Col className="info_texto" xs={"5"} md={"3"}>
+                                                  <h4 className="texto_mas_pequeño">{state.tipo_doc}
+                                                  cedula</h4>
                                                 </Col>
                                                   <Col className="info_texto" md={"5"}>
                                                     <h4 className="texto_mas_pequeño">correo</h4>
@@ -167,11 +163,9 @@ const Info_basica = (props) =>{
                                           :
                                           (
                                             <Row className="info"> 
-                                                    <Col className="info_texto" xs={"12"} md={"2"}>
-                                                        <h4 className="texto_mas_pequeño">{state.cedula}</h4>
-                                                    </Col>
 
                                                   <Col className="info_texto" xs={"12"} md={"6"}>
+                                                        <h4 className="texto_mas_pequeño">{state.tipo_doc}</h4>
                                                         <h4 className="texto_mas_pequeño">{state.correo}</h4>
                                                   </Col>
 
@@ -504,13 +498,9 @@ const Info_basica = (props) =>{
                                                     <h4 className="texto_mas_pequeño">correo</h4>
                                                   </Col>
 
-                                                <Col className="info_basica_selector" xs={"1"} sm={"1"}>
-                                                  <label className="texto_mas_pequeño">
-                                                    {state.tipo_doc}
-                                                  </label>
-                                                </Col>
-                                                <Col className="info_texto_pequeño" xs={"4"} md={"2"}>
-                                                  <h4 className="texto_mas_pequeño">cedula</h4>
+                                                <Col className="info_texto_pequeño" xs={"5"} md={"2"}>
+                                                <h4 className="texto_mas_pequeño">{state.tipo_doc}
+                                                  cedula</h4>
                                                 </Col>
 
                                                   <Col className="info_texto" xs={"3"} md={"12"}>
@@ -531,19 +521,10 @@ const Info_basica = (props) =>{
                                                     <h4 className="texto_mas_pequeño">{state.correo}</h4>
                                                   </Col>
                                                   <Col  xs={"5"} sm={"1"}>
-                                                    <Row>
-                                                      <Col className="info_basica_selector" xs={"3"}>
-                                                      <h4 className="texto_mas_pequeño">
-                                                      {state.tipo_doc}
-                                                      </h4 >
-                                                      </Col>
                                                       
-                                                      <Col xs={"9"}>
-                                                      <h4  className="texto_mas_pequeño" >{state.cedula}
-                                                      </h4>
-                                                      </Col>
-                                                    </Row>
-                                                    
+                                                      <h4 className="texto_mas_pequeño">{state.tipo_doc}
+                                                      {state.cedula}
+                                                      </h4>                                                    
                                                     
                                                     </Col>
                                                 <Col className="info_texto" xs={"3"} md={"2"}>
@@ -563,7 +544,7 @@ const Info_basica = (props) =>{
                                         <h4 className="texto_mas_pequeño">Monitor</h4>
                                     </Col>
                                     <Col xs={"6"} className="texto_estatico">
-                                        <h4 className="texto_mas_pequeño">Profecional</h4>
+                                        <h4 className="texto_mas_pequeño">Profesional</h4>
                                     </Col>
                                     <Col xs={"6"} className="texto_estatico">
                                         <h4 className="texto_mas_pequeño">Practicante</h4>

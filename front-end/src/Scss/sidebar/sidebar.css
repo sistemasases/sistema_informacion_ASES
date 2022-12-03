@@ -1,7 +1,6 @@
 
 
 .containerSidebar{
-    word-break: break-all;
 }
 
 
@@ -139,6 +138,7 @@
     margin-left: 20px;
     margin-right: 10px;
     font: 18px sans-serif;
+    text-decoration:none;
 }
 .tamaño_icon{
     color: rgba(100, 100, 100,255);
@@ -148,6 +148,7 @@
     margin-left: 5px;
     font-size: 15px;
     color: rgba(100, 100, 100,255);
+    text-decoration: none;
 }
 
 .sidebar-title_varios{

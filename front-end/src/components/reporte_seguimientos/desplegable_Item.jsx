@@ -22,7 +22,7 @@ const Desplegable_item = ({item}) => {
                                                         Apellidos
                                                     </Row>
                                                 </Col>
-                                                <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} ms={"1"}> 
+                                                <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"1"}> 
                                                     <Row className="row_spans_card_content_flex">
                                                         <FaUser></FaUser> 
                                                     </Row>
