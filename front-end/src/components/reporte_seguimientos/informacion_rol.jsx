@@ -60,44 +60,39 @@ const Informacion_rol = () =>{
                                 <Col xs={"12"} md={"3"}>
                                 Rol
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={"12"} md={"3"}>
+                            </Row> 
+                            <Row lassName="margin_top_info_rol"> 
+                                <Col xs={"12"} md={"3"} c>
                                 <b>Fichas:</b>
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 No revisado : 1
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 1
                                 </Col>
                                                
                             </Row>
-                            <Row>
-                                <Col xs={"12"} md={"3"}>
+                            <Row className="margin_top_info_rol">
+                                <Col xs={"12"} md={"3"} >
                                 <b>Inasistencias:</b>
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 No revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 0
                                 </Col>          
                             </Row>
                         </Col>
                         <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
+ 
                             <Row>
                                 <Col xs={"12"} md={"3"}>
                                 <b>Practicante:</b>
@@ -106,37 +101,32 @@ const Informacion_rol = () =>{
                                 nombre
                                 </Col>
                             </Row>
-                            <Row>
-                                <Col xs={"12"} md={"3"}>
+                            <Row className="margin_top_info_rol">
+
+                                <Col  xs={"12"} md={"3"}>
                                 <b>Fichas:</b>
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 No revisado : 1
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 1
                                 </Col>
                                                
                             </Row>
-                            <Row>
-                            <Col xs={"12"} md={"3"}>
+                            <Row className="margin_top_info_rol">
+                            <Col xs={"12"} md={"3"} >
                                 <b>Inasistencias:</b>
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 No revisado : 0
                                 </Col>
-                                <div class="d-block d-md-none col-4"></div>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 0
                                 </Col>           

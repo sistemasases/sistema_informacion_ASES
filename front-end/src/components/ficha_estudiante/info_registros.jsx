@@ -283,24 +283,24 @@ const Info_registros = () =>{
                                     <Col xs={"6"}>
                                         
                                         <Row className="row_riesgo">
-                                            <Col xs={"2"} sm={"2"} className="z_index_2">
+                                            <Col xs={"12"} sm={"2"} className="center_tipos_riesgos">
                                                 <label className="borde_riesgos_bajo">
                                                     <label className="button_tipo_riesgo_bajo_2_pequeño">B</label>
                                                 </label>
                                             </Col>
-                                            <Col  xs={"9"}  sm={"10"} className="center_tipos_riesgos">
+                                            <Col  xs={"12"}  sm={"10"} className="center_tipos_riesgos">
                                                 <label  className="button_tipo_riesgo_bajo_texto_pequeño">INDIVIDUAL</label> 
                                             </Col>
                                         </Row>
                                     </Col>
                                     <Col xs={"6"}>
                                         <Row className="row_riesgo">
-                                            <Col xs={"2"} sm={"2"} className="z_index_2">
+                                            <Col xs={"12"} sm={"2"} className="center_tipos_riesgos">
                                                     <label className="borde_riesgos_bajo">
                                                         <label className="button_tipo_riesgo_bajo_2_pequeño">B</label>
                                                     </label>                             
                                             </Col>
-                                            <Col  xs={"9"} sm={"10"} className="center_tipos_riesgos">
+                                            <Col  xs={"12"} sm={"10"} className="center_tipos_riesgos">
                                                     <label  className="button_tipo_riesgo_bajo_texto_pequeño">ECONOMICO</label> 
                                             </Col>
                                         </Row>

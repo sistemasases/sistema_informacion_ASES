@@ -1,27 +1,43 @@
 export const Columnas = [
     {
-        Header: 'Id',
+        Header: 'Codigo',
         accessor: 'id'
     },
     {
-        Header: 'First Name',
+        Header: 'Cedula',        
+        accessor: 'phone'
+    },
+    {
+        Header: 'Nombre',
         accessor: 'first_name'
     },    
     {
-        Header: 'Last Name',        
+        Header: 'Apellido',        
         accessor: 'last_name'
     },    
     {
-        Header: 'Date of birht',        
-        accessor: 'date_of_birht'
+        Header: 'Cantidad fichas',        
+        accessor: 'age'
     },
     {
-        Header: 'Country',        
+        Header: 'Cantidad inasistencias',        
+        accessor: 'age2'
+    },
+    {
+        Header: 'Total de fichas',        
+        accessor: 'age3'
+    },
+    {
+        Header: 'Monitor',        
         accessor: 'country'
     },
     {
-        Header: 'Phone',        
-        accessor: 'phone'
+        Header: 'Practicante',        
+        accessor: 'country2'
+    },
+    {
+        Header: 'Profesional',        
+        accessor: 'phone2'
     }
     
 ]

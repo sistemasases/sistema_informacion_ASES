@@ -22,10 +22,12 @@ body {
 .infoRow1{
 }
 .infoRow2{
+    margin-top:20px;
 }
+
 .infoRow2_pequeño{
     margin: 0px 0px;
-    padding: 0px 5px;
+    padding: 0px 20px;
     background: white;
 }
 .col2{    
@@ -149,22 +151,30 @@ padding-top:45%;
 }
 
 .info{
-    padding-top: 40px;
+    padding-top: 20px;
     word-break: break-all;
 }
 .info_pequeño{
-    padding: 0px 20px;
+    padding: 0px 0px;
     word-break: break-all;
 }
 .info_texto{
     word-break: break-all;
     text-align: center;
     height: 20px;
+    width: 100%;
     border-left: 2px solid #878787;
 }
 .info_texto_pequeño{
     word-break: break-all;
     text-align: center;
+    height: 20px;
+    width: 100%;
+}.info_texto_cedula_pequeño{
+    word-break: break-all;
+    text-align: center;
+    height: 20px;
+    width: 100%;
 }
 
 .info_basica_selector{
@@ -192,7 +202,6 @@ padding-top:45%;
 }
 
 .prueba1{
-    background: red;
 }
 
 .rowPrueba1{

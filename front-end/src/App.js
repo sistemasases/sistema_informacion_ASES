@@ -52,6 +52,9 @@ import "./Scss/reporte_seguimientos/desplegable.css"
 import "./Scss/gestion_usuarios_rol/selector_usuarios.css"
 import "./Scss/gestion_usuarios_rol/gestion_usuario_rol.css"
 import "./Scss/footer/footer.css";
+import "./Scss/asignaciones/asignaciones.css";
+
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
@@ -113,7 +116,6 @@ const App = () => {
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
                     </Routes>
                 </SideBar>
-                <Footer></Footer>
 
             </Row>
 

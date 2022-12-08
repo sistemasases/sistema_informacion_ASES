@@ -11,22 +11,53 @@ const Footer = () =>{
 
     return (
         <Col className="container_footer">
+            <div class="d-none d-md-inline">
+                <Row className="footer_links">
+                    Información de contacto
+                </Row>
+                <Row className="footer_links_bajo">
+                    <h4>Estrategias ASES</h4>
+                    <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
+                    estrategia.ases@correounivalle.edu.co</a>
+                    <h4>Tel : +57 (2) 3212100 Ext:3319</h4>
+                    <h4> Bajos de Biblioteca Mario Carvajal</h4>
+                    <h4> Universidad del Valle</h4>
+                    <h4> Cali, Colombia 2016-2017</h4>
+                </Row>
+                <Row className="footer_links_bajo">
+                    <i class="bi-instagram"></i>
+                </Row>
+            </div>
 
-            <Row className="footer_links">
-                Información de contacto
-            </Row>
-            <Row className="footer_links_bajo">
-                <h4>Estrategias ASES</h4>
-                <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
-                   estrategia.ases@correounivalle.edu.co</a>
-                <h4>Tel : +57 (2) 3212100 Ext:3319</h4>
-                <h4> Bajos de Biblioteca Mario Carvajal</h4>
-                <h4> Universidad del Valle</h4>
-                <h4> Cali, Colombia 2016-2017</h4>
-            </Row>
-            <Row className="footer_links_bajo">
-                <i class="bi-instagram"></i>
-            </Row>
+
+
+
+
+
+
+
+
+            <div class="d-inline d-md-none">
+                <Row className="footer_links_pequeño">
+                    <Col>
+                    Información de contacto
+
+                    </Col>
+                </Row>
+                <Row className="footer_links_bajo_pequeño">
+                    <h4 className="texto_footer_pequeño">Estrategias ASES</h4>
+                    <a className="texto_footer_pequeño" href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
+                    estrategia.ases@correounivalle.edu.co</a>
+                    <h4 className="texto_footer_pequeño">Tel : +57 (2) 3212100 Ext:3319</h4>
+                    <h4 className="texto_footer_pequeño"> Bajos de Biblioteca Mario Carvajal</h4>
+                    <h4 className="texto_footer_pequeño"> Universidad del Valle</h4>
+                    <h4 className="texto_footer_pequeño"> Cali, Colombia 2016-2017</h4>
+                </Row>
+                <Row className="footer_links_bajo_pequeño">
+                    <i class="bi-instagram"></i>
+                </Row>
+            </div>
+            
         </Col>
     )
 }

@@ -52,6 +52,7 @@ const Info_basica = (props) =>{
       telefono:'',
 
       nueva_cedula:'',
+      edad:'',
     })
   
     useEffect(()=>{
@@ -92,6 +93,7 @@ const Info_basica = (props) =>{
         tipo_doc : state.data_user[e.id]['tipo_doc'],
         cedula : state.data_user[e.id]['num_doc'],
         telefono : state.data_user[e.id]['telefono_res'],
+        edad : '1',
       })
     }
 
@@ -155,7 +157,7 @@ const Info_basica = (props) =>{
                                                   </Col>
                                                 
                                                 <Col className="info_texto" xs={"3"} md={"2"}>
-                                                  <h4 className="texto_mas_pequeño">ICETEX</h4>
+                                                  <h4 className="texto_mas_pequeño">Telefono</h4>
                                                 </Col>
                                                 
                                             </Row>
@@ -170,10 +172,10 @@ const Info_basica = (props) =>{
                                                   </Col>
 
                                                 <Col className="info_texto" xs={"12"} md={"2"}>
-                                                      <h4 className="texto_mas_pequeño">{state.telefono}</h4>
+                                                      <h4 className="texto_mas_pequeño">{state.edad}</h4>
                                                     </Col>
                                                 <Col className="info_texto" xs={"12"} md={"2"}>
-                                                      <h4 className="texto_mas_pequeño">ICETEX</h4>
+                                                      <h4 className="texto_mas_pequeño">{state.telefono}</h4>
                                                     </Col>
                                             </Row>
                                           )
@@ -498,9 +500,8 @@ const Info_basica = (props) =>{
                                                     <h4 className="texto_mas_pequeño">correo</h4>
                                                   </Col>
 
-                                                <Col className="info_texto_pequeño" xs={"5"} md={"2"}>
-                                                <h4 className="texto_mas_pequeño">{state.tipo_doc}
-                                                  cedula</h4>
+                                                <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño" xs={"5"} md={"2"}>
+                                                <h4 className="texto_mas_pequeño"> cedula</h4>
                                                 </Col>
 
                                                   <Col className="info_texto" xs={"3"} md={"12"}>
@@ -508,7 +509,7 @@ const Info_basica = (props) =>{
                                                   </Col>
                                                 
                                                 <Col className="info_texto" xs={"3"} md={"2"}>
-                                                  <h4 className="texto_mas_pequeño">ICETEX</h4>
+                                                  <h4 className="texto_mas_pequeño">telefono</h4>
                                                 </Col>
                                                 
                                             </Row>
@@ -520,7 +521,7 @@ const Info_basica = (props) =>{
                                                   <Col className="info_texto_pequeño" xs={"12"} md={"12"}>
                                                     <h4 className="texto_mas_pequeño">{state.correo}</h4>
                                                   </Col>
-                                                  <Col  xs={"5"} sm={"1"}>
+                                                  <Col  xs={"5"} sm={"1"} className="info_texto_cedula_pequeño">
                                                       
                                                       <h4 className="texto_mas_pequeño">{state.tipo_doc}
                                                       {state.cedula}
@@ -528,10 +529,10 @@ const Info_basica = (props) =>{
                                                     
                                                     </Col>
                                                 <Col className="info_texto" xs={"3"} md={"2"}>
-                                                      <h4 className="texto_mas_pequeño">{state.telefono}</h4>
+                                                      <h4 className="texto_mas_pequeño">{state.edad}</h4>
                                                     </Col>
                                                 <Col className="info_texto" xs={"3"} md={"2"}>
-                                                      <h4 className="texto_mas_pequeño">ICETEX</h4>
+                                                      <h4 className="texto_mas_pequeño">{state.telefono}</h4>
                                                     </Col>
                                             </Row>
                                           )
@@ -630,7 +631,7 @@ const Info_basica = (props) =>{
                                   )
                                   :
                                   (
-                                    <Row className="infoRow2">
+                                    <Row className="infoRow2_pequeño">
                                       <Col xs={"12"} md={"9"}>
                                         <Row className="texto_estatico">
                                           <h4 className="texto_pequeño">Programas academicos </h4>

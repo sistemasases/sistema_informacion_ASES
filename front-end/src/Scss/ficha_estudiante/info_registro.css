@@ -27,7 +27,7 @@
     font-size: 10pt;
     font-weight: bold;
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .borde_redondo{
@@ -123,7 +123,7 @@
 }
 .button_tipo_riesgo_alto_2_pequeño{
     text-align: center;
-    padding-top: 7px;
+    padding-top: 6px;
     z-index: 2;
     border:1px solid white;
     font-size: 15pt;
@@ -135,7 +135,7 @@
 }
 .button_tipo_riesgo_medio_2_pequeño{
     text-align: center;
-    padding-top: 7px;
+    padding-top: 6px;
     z-index: 2;
     border:1px solid white;
     font-size: 15pt;
@@ -147,7 +147,7 @@
 }
 .button_tipo_riesgo_bajo_2_pequeño{
     text-align: center;
-    padding-top: 7px;
+    padding-top: 6px;
     z-index: 2;
     border:1px solid white;
     font-size: 15pt;
@@ -211,11 +211,10 @@
 
 }
 .button_tipo_riesgo_bajo_texto_pequeño{
-    font-size: 7pt;
+    font-size: 9pt;
     z-index: 1;
     background: rgba(116,206,76,255);
     color: white;
-    padding-left: 20%;
     padding-top: 6px;
     margin-top: 11px;
     width: 100%;

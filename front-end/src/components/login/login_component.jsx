@@ -3,6 +3,7 @@ import axios from 'axios';
 import {Container, Row, Col, Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
+import Footer from '../componentes_generales/footer.jsx';
 
 const login_component = () =>{
 
@@ -57,7 +58,7 @@ const login_component = () =>{
   }
 
   return (
-    <Container>
+    <Row>
       {
         state.logged ?
         (
@@ -87,7 +88,7 @@ const login_component = () =>{
           <App/>
         )
       } 
-    </Container>
+    </Row>
   )
 }
 
