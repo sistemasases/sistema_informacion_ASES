@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Col, Alert, Form} from "react-bootstrap";
-import axios from 'axios';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
 import All_instancias_service from '../../service/all_instancias';
 
-const url_instancias = 'http://127.0.0.1:8000/wizard/all'
 
 const inicio_semestre_component = () =>{
 
@@ -128,7 +126,7 @@ const inicio_semestre_component = () =>{
         //codigo para la obtencion del nombre del semestre y la fecha de finalizacion del semestre anterior
         var nombre_nuevo = '';
         var fecha = '';
-        await fetch('http://127.0.0.1:8000/wizard/semestre_actual/' + (e.id).toString() +"/")
+        await fetch('http://localhost:8000/wizard/semestre/' + (e.id).toString() +"/")
         .then((res) => res.json())
         .then((res)=>{
             nombre_nuevo = res['nombre']

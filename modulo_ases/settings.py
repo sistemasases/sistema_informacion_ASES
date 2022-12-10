@@ -120,7 +120,7 @@ DATABASES = {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 #         'NAME': 'ases',
 #         'USER' : 'postgres',
-#         'PASSWORD' : 'postgres',
+#         'PASSWORD' : 'Rodriguez11',
 #         'HOST' : '127.0.0.1',
 #         'DATABASE_PORT' : '5432',
 #     }
@@ -133,7 +133,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS' : True,
     'BLACK_LIST_AFTER_ROTATION': True

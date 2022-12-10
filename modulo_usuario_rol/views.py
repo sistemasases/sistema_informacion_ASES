@@ -3,6 +3,7 @@ from operator import and_
 from queue import Empty
 from django.contrib.auth.models import User
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante
+from modulo_programa.models import programa_estudiante, programa
 from modulo_instancia.models import semestre
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,8 +13,9 @@ from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer
+from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer
 from modulo_instancia.serializers import semestre_serializer
-
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
 
@@ -27,6 +29,23 @@ class estudiante_viewsets (viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
     # permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
+
+    def retrieve(self, request, pk=None):
+        lista_programas = []
+        var_estudiante =estudiante.objects.get(id=pk)
+        serializer_estudiante = estudiante_serializer(var_estudiante)
+        programas = programa_estudiante.objects.filter(id_estudiante = serializer_estudiante.data['id']).values()
+        for i in programas:
+            var_programa = programa.objects.filter(id = i['id_programa_id']).values()
+            dic_programa = {'nombre_programa':var_programa[0]['nombre']}
+            dic = i
+            dic.update(dic_programa)
+            lista_programas.append(dic)
+
+        diccionario_estudiante=serializer_estudiante.data
+        diccionario_programas = {'programas':lista_programas}
+        diccionario_estudiante.update(diccionario_programas)
+        return Response ( diccionario_estudiante)
 
 class rol_viewsets (viewsets.ModelViewSet):
     serializer_class = rol_serializer

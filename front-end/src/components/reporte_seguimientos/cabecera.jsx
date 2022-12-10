@@ -51,7 +51,7 @@ const Cabecera = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/all_semestres/",
+        url:  "http://localhost:8000/wizard/semestre/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -76,7 +76,7 @@ const Cabecera = (props) =>{
         bandera = false
         axios({
           // Endpoint to send files
-          url:  "http://127.0.0.1:8000/usuario_rol/alluser/",
+          url:  "http://localhost:8000/usuario_rol/user/",
           method: "GET",
         })
         .then((respuesta)=>{

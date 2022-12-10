@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const user_rol = (formData) => {
-    const url_axios = 'http://127.0.0.1:8000/usuario_rol/user_rol/';
+    const url_axios = 'http://localhost:8000/usuario_rol/usuario_rol/';
     axios({
         url:  url_axios,
         method: "POST",

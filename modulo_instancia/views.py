@@ -19,12 +19,12 @@ from django.contrib.auth.hashers import check_password
 
 class instancia_viewsets (viewsets.ModelViewSet):
     serializer_class = instancia_serializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = instancia_serializer.Meta.model.objects.all()
 
 class semestre_viewsets (viewsets.ModelViewSet):
     serializer_class = semestre_serializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = semestre_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
