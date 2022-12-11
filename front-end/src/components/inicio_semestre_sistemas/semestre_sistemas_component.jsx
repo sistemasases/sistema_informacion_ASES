@@ -49,9 +49,7 @@ const semestre_sistemas_component = () =>{
                     if(!(!nuevo.documento || nuevo.documento === '')){
                         if(!(!nuevo.email || nuevo.email === '')){
                             nuevo.password=nuevo.documento;
-                            await Create_User.user_rol(nuevo).then((res)=>{
-                                console.log(res);
-                            });
+                            await Create_User.user_rol(nuevo);
                             lista.push(nuevo);
                             console.log('Se creó al ususario: ' + nuevo.username);
                             setShow(false);
