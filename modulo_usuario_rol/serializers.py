@@ -56,4 +56,5 @@ class Estudiante_manage(serializers.Serializer):
 	id = serializers.IntegerField()
 
 class Estudiante_actualizacion(serializers.Serializer):
-    id = serializers.IntegerField()
+    id_nuevo_num_doc = serializers.IntegerField()    
+    id_nuevo_telefono_res = serializers.IntegerField()

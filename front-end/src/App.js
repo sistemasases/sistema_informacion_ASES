@@ -52,6 +52,9 @@ import "./Scss/reporte_seguimientos/desplegable.css"
 import "./Scss/gestion_usuarios_rol/selector_usuarios.css"
 import "./Scss/gestion_usuarios_rol/gestion_usuario_rol.css"
 import "./Scss/footer/footer.css";
+import "./Scss/asignaciones/asignaciones.css";
+
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
@@ -67,6 +70,8 @@ import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
 import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
 import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia";
 import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas";
+import Footer from './components/componentes_generales/footer.jsx';
+
 
 /*
 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
@@ -101,7 +106,6 @@ const App = () => {
             <Row> 
             <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo}>
                     <Routes>
-                        <Route path="/"element={<Login/>}/>
                         <Route path="/ficha_estudiante"element={<Ficha_estudiante usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                          <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos usuario={nombreUsuario}/>}/>
@@ -112,7 +116,9 @@ const App = () => {
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
                     </Routes>
                 </SideBar>
+
             </Row>
+
         </BrowserRouter>
     )
 }

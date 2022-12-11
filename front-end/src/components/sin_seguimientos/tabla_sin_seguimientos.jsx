@@ -3,6 +3,7 @@ import {useTable, Table} from 'react-table';
 import MOCK_DATA from './MOCK_DATA.json';
 import Columnas from './columnas' ;
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import Cabecera from "./cabecera.jsx";
 
 const Tabla_sin_Seguimientos = () =>{
 
@@ -25,38 +26,46 @@ const Tabla_sin_Seguimientos = () =>{
     return (
         
         <Container >
-          <table {...getTableProps()}>
-            <thead>
-              {headerGroups.map((headerGroup) =>
-              (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {
-                    headerGroup.headers.map(column => (
-                      <th {...column.getHeaderProps()}>
-                        {column.render('Header')}
-                      </th>
-                    ))
-                  }
-                </tr>
-              )
-              )}
-
-            </thead>
+          <Row>
+            <Cabecera/>
+          </Row>
 
 
-            <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
-                prepareRow(row)
-                return(
-                  <tr {...row.getRowProps()}>
-                    {row.cells.map((cell) => {
-                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                    })}
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          <Row>
+              <table {...getTableProps()}>
+                <thead>
+                  {headerGroups.map((headerGroup) =>
+                  (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                      {
+                        headerGroup.headers.map(column => (
+                          <th {...column.getHeaderProps()}>
+                            {column.render('Header')}
+                          </th>
+                        ))
+                      }
+                    </tr>
+                  )
+                  )}
+
+                </thead>
+
+
+                <tbody {...getTableBodyProps()}>
+                  {rows.map((row) => {
+                    prepareRow(row)
+                    return(
+                      <tr {...row.getRowProps()}>
+                        {row.cells.map((cell) => {
+                          return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        })}
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+          </Row>
+          
         </Container>
     )
 }

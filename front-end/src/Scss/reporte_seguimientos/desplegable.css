@@ -55,7 +55,6 @@
   }
   .fichas-content{
     height: 0px;
-    margin: 0vh 3vh;
     overflow: hidden;
   }
   .fichas-item.open > .fichas-content{
@@ -63,6 +62,11 @@
   }
 
   .contenido_fichas{
+    margin-left: 30px;
+    padding-top: 2vh;
+    justify-content: center;
+  }
+  .contenido_fichas_pequeño{
     padding-top: 2vh;
     justify-content: center;
   }

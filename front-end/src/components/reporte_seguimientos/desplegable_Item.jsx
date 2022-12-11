@@ -13,8 +13,8 @@ const Desplegable_item = ({item}) => {
                     <Col className={open ? "fichas-item open" : "fichas-item"}>
                     <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
                         <Col className="link_text_reporte_seguimientos1" >
-                                            <Row className="link_text_reporte_seguimientos_hover">
-                                                <Col  xs={"4"}> 
+                                            <Row className="link_text_reporte_seguimientos_hover1">
+                                                <Col  xs={"10"} md={"4"}> 
                                                     <Row className="col_link_text_reporte_seguimientos_nombre">
                                                         Nombres
                                                     </Row>
@@ -22,7 +22,7 @@ const Desplegable_item = ({item}) => {
                                                         Apellidos
                                                     </Row>
                                                 </Col>
-                                                <Col className="col_link_text_reporte_seguimientos_spans" xs={"1"}> 
+                                                <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"1"}> 
                                                     <Row className="row_spans_card_content_flex">
                                                         <FaUser></FaUser> 
                                                     </Row>
@@ -30,47 +30,54 @@ const Desplegable_item = ({item}) => {
                                                         <FaGraduationCap></FaGraduationCap> 
                                                     </Row>
                                                 </Col>
-                                                <Col className="col_link_text_reporte_seguimientos_info" xs={"6"}> 
-                                                    <Row>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">Fichas</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">Inasistencias</Row>
-                                                        </Col>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
-                                                        </Col>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
-                                                        </Col>
-                                                    </Row>
-                                                                                                
+                                                <Col className="col_link_text_reporte_seguimientos_info" xs={"12"}md={"6"}> 
+                                                        <Row>
+                                                            <Col className="sub_col_link_text_reporte_seguimientos_info" xs={"5"} md={"4"}>Fichas</Col>
+                                                            <Col className="sub_col_link_text_reporte_seguimientos_info" xs={"7"} md={"4"}>pendientes prof</Col>
+                                                            <div class="d-inline d-md-none col-5"></div>
+                                                            <Col className="sub_col_link_text_reporte_seguimientos_info" xs={"7"} md={"4"}>pendientes pract</Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col className="sub_col_link_text_reporte_seguimientos_info"xs={"5"} md={"4"}>Inasistencias</Col>
+                                                            <Col className="sub_col_link_text_reporte_seguimientos_info"xs={"7"} md={"4"}>pendientes prof</Col>
+                                                            <div class="d-inline d-md-none col-5"></div>
+                                                            <Col className="sub_col_link_text_reporte_seguimientos_info"xs={"7"} md={"4"}>pendientes pract</Col>
+                                                        </Row>
                                                 </Col>
-                                                <Col className="col_flecha_reportes" xs={"1"}>
-                                                    {
-                                                        open ?
-                                                        (
-                                                            <Row>
-                                                                <i class="bi bi-chevron-up"></i>
-                                                            </Row>
-                                                        )   
-                                                        :
-                                                        (
-                                                            <Row>
-                                                                <i class="bi bi-chevron-down"></i>
-                                                            </Row>
-                                                        )
-                                                    }
-                                                </Col>
+                                                <div class="d-none d-md-inline col-1">
+                                                    <Col className="col_flecha_reportes">
+                                                        {
+                                                            open ?
+                                                            (
+                                                                <Row>
+                                                                    <i class="bi bi-chevron-up"></i>
+                                                                </Row>
+                                                            )   
+                                                            :
+                                                            (
+                                                                <Row>
+                                                                    <i class="bi bi-chevron-down"></i>
+                                                                </Row>
+                                                            )
+                                                        }
+                                                    </Col>
+                                                </div>
+                                                
                                             </Row>
                             </Col>
                     </Row>
-                        <div className="fichas-content">
-                            <Row className="contenido_fichas">
-                                { item.practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
-                            </Row>
-                        </div>
+                        <Row className="fichas-content">
+                            <div class="d-none d-md-inline col-12">
+                                <Col className="contenido_fichas">
+                                    { item.practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                </Col>
+                            </div>
+                            <div class="d-inline d-md-none col-12">
+                                <Col className="contenido_fichas_pequeño">
+                                    { item.practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                </Col>
+                            </div>
+                        </Row>
                 </Col>
             </Row>
         )
@@ -80,8 +87,8 @@ const Desplegable_item = ({item}) => {
                     <Col className={open ? "fichas-item2 open" : "fichas-item2"}>
                     <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
                     <Col className="link_text_reporte_seguimientos1" >
-                                            <Row className="link_text_reporte_seguimientos_hover">
-                                                <Col  xs={"4"}> 
+                                            <Row className="link_text_reporte_seguimientos_hover2">
+                                                <Col  xs={"10"}md={"4"}> 
                                                     <Row className="col_link_text_reporte_seguimientos_nombre">
                                                         Nombres
                                                     </Row>
@@ -89,12 +96,12 @@ const Desplegable_item = ({item}) => {
                                                         Apellidos
                                                     </Row>
                                                 </Col>
-                                                <Col className="col_link_text_reporte_seguimientos_spans" xs={"1"}> 
+                                                <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"1"}> 
                                                     <Row className="row_spans_card_content_flex">
                                                         <FaUser></FaUser> 
                                                     </Row>
                                                 </Col>
-                                                <Col className="col_link_text_reporte_seguimientos_info" xs={"6"}> 
+                                                <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
                                                     <Row>
                                                         <Col xs={"4"}>
                                                             <Row className="sub_col_link_text_reporte_seguimientos_info">Fichas</Row>
@@ -111,30 +118,39 @@ const Desplegable_item = ({item}) => {
                                                     </Row>
                                                                                                 
                                                 </Col>
-                                                <Col className="col_flecha_reportes" xs={"1"}>
-                                                    {
-                                                        open ?
-                                                        (
-                                                            <Row>
-                                                                <i class="bi bi-chevron-up"></i>
-                                                            </Row>
-                                                        )   
-                                                        :
-                                                        (
-                                                            <Row>
-                                                                <i class="bi bi-chevron-down"></i>
-                                                            </Row>
-                                                        )
-                                                    }
-                                                </Col>
+                                                <div class="d-none d-md-inline col-1">
+                                                    <Col className="col_flecha_reportes">
+                                                        {
+                                                            open ?
+                                                            (
+                                                                <Row>
+                                                                    <i class="bi bi-chevron-up"></i>
+                                                                </Row>
+                                                            )   
+                                                            :
+                                                            (
+                                                                <Row>
+                                                                    <i class="bi bi-chevron-down"></i>
+                                                                </Row>
+                                                            )
+                                                        }
+                                                    </Col>
+                                                </div>
                                             </Row>
                             </Col>
                     </Row>
-                    <div className="fichas-content">
-                        <Row className="contenido_fichas">
-                            { item.monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                    <Row className="fichas-content">
+                            <div class="d-none d-md-inline col-12">
+                                <Col className="contenido_fichas">
+                                    { item.monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                </Col>
+                            </div>
+                            <div class="d-inline d-md-none col-12">
+                                <Col className="contenido_fichas_pequeño">
+                                    { item.monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                </Col>
+                            </div>
                         </Row>
-                    </div>
                 </Col>
             </Row>
         )
@@ -145,8 +161,8 @@ const Desplegable_item = ({item}) => {
         <Col className={open ? "fichas-item3 open" : "fichas-item3"}>
         <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
         <Col className="link_text_reporte_seguimientos1" >
-                                <Row className="link_text_reporte_seguimientos_hover">
-                                    <Col  xs={"4"}> 
+                                <Row className="link_text_reporte_seguimientos_hover3">
+                                    <Col  xs={"12"} md={"4"}> 
                                         <Row className="col_link_text_reporte_seguimientos_nombre">
                                             Nombres
                                         </Row>
@@ -154,39 +170,41 @@ const Desplegable_item = ({item}) => {
                                             Apellidos
                                         </Row>
                                     </Col>
-                                    <Col className="col_link_text_reporte_seguimientos_info" xs={"6"}> 
-                                        <Row>
-                                            <Col xs={"4"}>
-                                                <Row className="sub_col_link_text_reporte_seguimientos_info">Fichas</Row>
-                                                <Row className="sub_col_link_text_reporte_seguimientos_info">Inasistencias</Row>
-                                            </Col>
-                                            <Col xs={"4"}>
-                                                <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
-                                                <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
-                                            </Col>
-                                            <Col xs={"4"}>
-                                                <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
-                                                <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
-                                            </Col>
-                                        </Row>
+                                    <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
+                                    <Row>
+                                                        <Col xs={"4"}>
+                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">Fichas</Row>
+                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">Inasistencias</Row>
+                                                        </Col>
+                                                        <Col xs={"4"}>
+                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
+                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
+                                                        </Col>
+                                                        <Col xs={"4"}>
+                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
+                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
+                                                        </Col>
+                                                    </Row>
                                                                                     
                                     </Col>
-                                    <Col className="col_flecha_reportes" xs={"1"}>
-                                                    {
-                                                        open ?
-                                                        (
-                                                            <Row>
-                                                                <i class="bi bi-chevron-up"></i>
-                                                            </Row>
-                                                        )   
-                                                        :
-                                                        (
-                                                            <Row>
-                                                                <i class="bi bi-chevron-down"></i>
-                                                            </Row>
-                                                        )
-                                                    }
-                                                </Col>
+                                    <div class="d-none d-md-inline col-1">
+                                                    <Col className="col_flecha_reportes">
+                                                        {
+                                                            open ?
+                                                            (
+                                                                <Row>
+                                                                    <i class="bi bi-chevron-up"></i>
+                                                                </Row>
+                                                            )   
+                                                            :
+                                                            (
+                                                                <Row>
+                                                                    <i class="bi bi-chevron-down"></i>
+                                                                </Row>
+                                                            )
+                                                        }
+                                                    </Col>
+                                                </div>
                                 </Row>
                 </Col>
         </Row>

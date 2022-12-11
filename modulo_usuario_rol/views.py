@@ -12,7 +12,7 @@ from modulo_usuario_rol import serializers
 from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer
+from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer, Estudiante_actualizacion
 from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer
 from modulo_instancia.serializers import semestre_serializer
 from django.contrib.auth.hashers import make_password
@@ -164,6 +164,48 @@ class usuario_rol_viewsets (viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
+    serializer_class = Estudiante_actualizacion
+    queryset = estudiante_serializer.Meta.model.objects.all()
+
+
+    def update(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if (serializer.is_valid()):
+            print("entre a serializ")
+            num_doc_request = serializer.validated_data.get('id_nuevo_num_doc')
+            telefono_res_request = serializer.validated_data.get('id_nuevo_telefono_res')
+            # var_num_doc = get_object_or_404(estudiante, num_doc = num_doc_request)
+            # var_telefono_res = get_object_or_404(estudiante, telefono_res = telefono_res_request)
+            
+            try:
+                var_old_usuario = get_object_or_404(estudiante, num_doc = num_doc_request)
+                print("entra aqui")
+            except:
+                print("entra aqui 2")
+                var_old_usuario = Empty
+            # print(var_semestre.id)
+            # print(var_old_usuario.id_semestre)
+            # print(var_semestre.id)
+            # print(var_old_usuario.estado)
+            if(var_old_usuario != Empty ):
+                print("entre a 1")
+                var_usuario= var_old_usuario
+                var_usuario.telefono_res = telefono_res_request
+                var_usuario.save()
+            else:
+                print("entre a 2")
+                Response(
+                    serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            return Response({'Respuesta': 'True'})
+
+        return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 # class All_user(APIView):
 
@@ -372,13 +414,17 @@ class Estudiante_actualizacion(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if (serializer.is_valid()):
-
-            id_estudiante_request = serializer.validated_data.get('id')
-            var_usuario = get_object_or_404(estudiante, id = id_estudiante_request)
-
+            print("entre a serializ")
+            num_doc_request = serializer.validated_data.get('id_nuevo_num_doc')
+            telefono_res_request = serializer.validated_data.get('id_nuevo_telefono_res')
+            # var_num_doc = get_object_or_404(estudiante, num_doc = num_doc_request)
+            # var_telefono_res = get_object_or_404(estudiante, telefono_res = telefono_res_request)
+            
             try:
-                var_old_usuario = get_object_or_404(estudiante, id = var_usuario)
+                var_old_usuario = get_object_or_404(estudiante, num_doc = num_doc_request)
+                print("entra aqui")
             except:
+                print("entra aqui 2")
                 var_old_usuario = Empty
             # print(var_semestre.id)
             # print(var_old_usuario.id_semestre)
@@ -387,14 +433,14 @@ class Estudiante_actualizacion(APIView):
             if(var_old_usuario != Empty ):
                 print("entre a 1")
                 var_usuario= var_old_usuario
-                var_usuario.num_doc = id_estudiante_request
+                var_usuario.telefono_res = telefono_res_request
                 var_usuario.save()
             else:
+                print("entre a 2")
                 Response(
                     serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
 
             return Response({'Respuesta': 'True'})
 

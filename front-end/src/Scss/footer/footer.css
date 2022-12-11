@@ -1,7 +1,9 @@
 .container_footer{
-    margin-top: 50px;
-    display: flex;
-    flex-direction: column;
+    width: 101%;
+    background:red;
+    word-break: break-all;
+}
+.row_footer{
 }
 
 .footer_icons{
@@ -9,7 +11,6 @@
     display: flex;
     width: 100%;
     justify-content: right;
-    padding-right: 20px;
 }
 .footer_facebook{
     margin: 5px;
@@ -49,6 +50,34 @@
 }
 .footer_links{
     color: white;
-    padding-left: 20px;
-    background: rgb(200, 0, 0);
+    padding-left: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: grey;
+}
+.footer_links_bajo{
+    color:grey;
+    padding-left: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: lightgrey;
+}
+
+.footer_links_pequeño{
+    color: white;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: grey;
+}
+.footer_links_bajo_pequeño{
+    color:grey;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: lightgrey;
+}
+.texto_footer_pequeño{
+    font-size: 11bpt;
+
 }

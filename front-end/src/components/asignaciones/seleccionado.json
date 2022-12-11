@@ -1,0 +1,41 @@
+
+
+[
+    {
+        "nombre":"practicante1",
+        "cedula":"cedula",
+        "rol":"practicante",
+        "superior" : "profecional1"
+    },
+    {
+        "nombre":"practicante2",
+        "cedula":"cedula",
+        "rol":"practicante",
+        "superior" : "profecional2"
+    },
+    {
+        "nombre":"monitor1",
+        "cedula":"cedula",
+        "rol":"monitor",
+        "superior" : "practicante1"
+    },
+    {
+        "nombre":"monitor2",
+        "cedula":"cedula",
+        "rol":"monitor",
+        "superior" : "practicante2"
+    },
+    {
+        "nombre":"estudiante1",
+        "cedula":"cedula",
+        "rol":"estudiante",
+        "superior" : "monitor1"
+    },
+    {
+        "nombre":"estudiante2",
+        "cedula":"cedula",
+        "rol":"estudiante",
+        "superior" : "monitor2"
+    }
+    
+]

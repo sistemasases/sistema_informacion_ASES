@@ -2,14 +2,17 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import {Container, Row, Col, Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
+import App from '../../App.js'
+import Footer from '../componentes_generales/footer.jsx';
 
 const login_component = () =>{
 
   const [state,set_state] = useState({
     usuario: '',
     contrasena: '',
+    logged:true,
   })
-  const url = "http://127.0.0.1:8000/login"
+  const url = "http://127.0.0.1:8000/login" 
   const data = {
     'username' : state.usuario[0],
     'password' : state.contrasena[0]
@@ -48,29 +51,44 @@ const login_component = () =>{
       localStorage.setItem('message', res.data.user.message)
     })
     .catch(err=>console.log(err))
+    set_state({
+      ...state,
+      logged:false,
+    })
   }
 
   return (
-    <Container>
-      <Row className="g-2">
-        <h3>Sing In</h3>
-      </Row>
-      <Row className="g-2">
-        <h6>Usuario:</h6>
-      </Row>
-      <Row className="g-2">
-        <Form.Control type="text" onChange={handle_user} />
-      </Row>
-      <Row className="g-2">
-        <h6>Contraseña:</h6>
-      </Row>
-      <Row className="g-2">
-        <Form.Control type="password" onChange={handle_password}  />
-      </Row>
-      <Row className='mt-2'> 
-        <Button onClick={handleSendNewData}>Ingresar</Button> 
-      </Row>    
-    </Container>
+    <Row>
+      {
+        state.logged ?
+        (
+          <Container>
+            <Row className="g-2">
+              <h3>Sing In</h3>
+            </Row>
+            <Row className="g-2">
+              <h6>Usuario:</h6>
+            </Row>
+            <Row className="g-2">
+              <Form.Control type="text" onChange={handle_user} />
+            </Row>
+            <Row className="g-2">
+              <h6>Contraseña:</h6>
+            </Row>
+            <Row className="g-2">
+              <Form.Control type="password" onChange={handle_password}  />
+            </Row>
+            <Row className='mt-2'> 
+              <Button onClick={handleSendNewData}>Ingresar</Button> 
+            </Row>   
+          </Container>
+        )
+        :
+        (
+          <App/>
+        )
+      } 
+    </Row>
   )
 }
 

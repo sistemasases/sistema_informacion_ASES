@@ -141,7 +141,7 @@ const Selector = (props) =>{
                         <Row className="tabs" >
                                     {
                                     tabs.map((tab, index)=>(
-                                        <Row className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
+                                        <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
                                             <Row onClick={() => activeTab(tab.id)}>
                                                 <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
                                                     {tab.name}{props.editar}
@@ -153,16 +153,20 @@ const Selector = (props) =>{
                                                 (
                                                 
                                                 <Row>
-                                                    <Col xs={"0"} md={"1"}></Col>
+                                                    <div class="d-none d-md-block col-md-1">
+                                                        <Col md={"1"}></Col>
+                                                    </div>
                                                     <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
-                                                    <Col xs={"0"} md={"1"}></Col>
+                                                    <div class="d-none d-md-block col-md-1">
+                                                        <Col md={"1"}></Col>
+                                                    </div>
         
                                                 </Row>)
                                                 :
                                                 (<Row></Row>)
                                             }
                                         
-                                        </Row>
+                                        </Col>
                                         
                                         ))
                                     }

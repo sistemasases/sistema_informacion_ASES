@@ -18,15 +18,16 @@ body {
 .row1{
 }
 .col1{
-    width: 70%;
 }
 .infoRow1{
 }
 .infoRow2{
+    margin-top:20px;
 }
+
 .infoRow2_pequeño{
-    margin: 5px 0px;
-    padding: 0px 5px;
+    margin: 0px 0px;
+    padding: 0px 20px;
     background: white;
 }
 .col2{    
@@ -52,6 +53,13 @@ body {
     background: white;
     height: 20vh;
     margin-bottom: 10px;
+}
+
+.col_2017{
+height:100%;
+text-align:bottom;
+align-content:bottom;
+padding-top:45%;
 }
 
 
@@ -94,11 +102,9 @@ body {
 }
 
 .primera_row_pequeña{
-    padding: 0px 5px;
+    padding: 0px 20px;
     margin: 20px 0px;
 }
-
-
 
 
 
@@ -109,27 +115,24 @@ body {
 }
 .infoRow23_activo{
     font-size: 8pt;
-    margin-top: 5px;
     padding-top: 2px;
     height: 30px;
     color: white;
-    background: green;
+    background: rgba(65,174,27,255);
 }
 .infoRow23_inactivo{
     font-size: 8pt;
-    margin-top: 5px;
     padding-top: 2px;
     height: 30px;
     color: white;
-    background: #504f4f;
+    background: gray;
 }
 .infoRow23_finalizado{
     font-size: 8pt;
-    margin-top: 5px;
     padding-top: 2px;
     height: 30px;
     color: white;
-    background: blue;
+    background: rgba(30,195,196,255);
 }
 .infoRow3{
     
@@ -148,18 +151,30 @@ body {
 }
 
 .info{
-    margin-top: 40px;
+    padding-top: 20px;
+    word-break: break-all;
+}
+.info_pequeño{
+    padding: 0px 0px;
     word-break: break-all;
 }
 .info_texto{
     word-break: break-all;
     text-align: center;
     height: 20px;
+    width: 100%;
     border-left: 2px solid #878787;
 }
 .info_texto_pequeño{
     word-break: break-all;
     text-align: center;
+    height: 20px;
+    width: 100%;
+}.info_texto_cedula_pequeño{
+    word-break: break-all;
+    text-align: center;
+    height: 20px;
+    width: 100%;
 }
 
 .info_basica_selector{
@@ -169,7 +184,6 @@ body {
 
 
 .colInfo1{
-    width: 70%;
 }
 .colInfo2{
     width: 30%;
@@ -187,6 +201,8 @@ body {
     border-radius: 100%;
 }
 
+.prueba1{
+}
 
 .rowPrueba1{
     background: black;
@@ -208,7 +224,11 @@ body {
     justify-content: center;
 }
 .texto_estatico_pequeño{
-
+    font-size:14pt;
+    text-align: center;
+    text-justify: center;
+    align-content: center;
+    justify-content: center;
 }
 
 .texto_estatico_ficha{
@@ -224,11 +244,11 @@ body {
     background: rgba(218, 218, 218, 255);
     color: rgb(135, 135, 135);
     font-size: 7pt;
-    margin-top: 10px;
     font-weight: bold;
     border: 1px solid rgb(135, 135, 135);;
     width: 100%;
     height: 30px;
+    margin-bottom:10px;
 }
 
 
@@ -237,7 +257,9 @@ body {
 
 
 
-
+.el_texto_mas_pequeño{
+    font-size: 3pt;
+}
 .texto_mas_pequeño{
     font-size: 8pt;
 }
@@ -245,7 +267,10 @@ body {
 .texto_pequeño{
     font-size: 14pt;
 }
-
+.texto_pequeño_gris{
+    font-size: 14pt;
+    color:gray;
+}
 
 .texto_subtitulo{
     color: rgba(229,41,67,255);
@@ -265,6 +290,18 @@ body {
 .bold_pequeño{
     font-size: 8pt;
     font-weight: bold;
+}
+.bold_select{
+    font-size:14pt;
+    font-weight: bold;
+    width: 100%;
+    padding-right:20px;
+}
+.bold_select_pequeño{
+    font-size:14pt;
+    font-weight:bold;
+    width:100%;
+    padding:0px 20px;
 }
 
 .container_ficha_footer{

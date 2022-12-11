@@ -8,18 +8,16 @@ import SideBar from "../../components/componentes_generales/sideBar";
 
 
 
-const Pagina_inicio = () => {
+const Pagina_inicio = (props) => {
   const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / 2022 - 2");
   const[rolUsuario] = useState("");
   const[area] = useState('1');
 
     return (
-        <BrowserRouter>
-            <Row> 
-                <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
-                </SideBar>
-            </Row>
-        </BrowserRouter>
+        <Row> 
+            <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
+            </SideBar>
+        </Row>
     )
 }
 
