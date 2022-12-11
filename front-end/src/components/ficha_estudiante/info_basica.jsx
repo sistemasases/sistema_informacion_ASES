@@ -166,8 +166,11 @@ const Info_basica = (props) =>{
                                           (
                                             <Row className="info"> 
 
-                                                  <Col className="info_texto" xs={"12"} md={"6"}>
-                                                        <h4 className="texto_mas_pequeño">{state.tipo_doc}</h4>
+                                                  <Col className="info_texto" xs={"12"} md={"4"}>
+                                                        <h4 className="texto_mas_pequeño">{state.tipo_doc}   {state.cedula}</h4>
+                                                  </Col>
+
+                                                  <Col className="info_texto" xs={"12"} md={"4"}>
                                                         <h4 className="texto_mas_pequeño">{state.correo}</h4>
                                                   </Col>
 
