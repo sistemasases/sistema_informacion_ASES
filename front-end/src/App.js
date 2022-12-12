@@ -53,6 +53,7 @@ import "./Scss/gestion_usuarios_rol/selector_usuarios.css"
 import "./Scss/gestion_usuarios_rol/gestion_usuario_rol.css"
 import "./Scss/footer/footer.css";
 import "./Scss/asignaciones/asignaciones.css";
+import "./Scss/login/login_component.css";
 
 
 import "bootstrap/dist/css/bootstrap.min.css";
