@@ -2,11 +2,23 @@
     width:100vw;
     height:100vh;
     padding: 10%;
-    background-color: #EB1E00;
+    background-image: url("http://drive.google.com/uc?export=view&id=1wUCuqI487AgSaOOUzZFeEHxc87y30OH-");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    /* background-color: #EB1E00;
     opacity: 0.8;
     background-image:  linear-gradient(30deg, #ae1700 12%, transparent 12.5%, transparent 87%, #ae1700 87.5%, #ae1700), linear-gradient(150deg, #ae1700 12%, transparent 12.5%, transparent 87%, #ae1700 87.5%, #ae1700), linear-gradient(30deg, #ae1700 12%, transparent 12.5%, transparent 87%, #ae1700 87.5%, #ae1700), linear-gradient(150deg, #ae1700 12%, transparent 12.5%, transparent 87%, #ae1700 87.5%, #ae1700), linear-gradient(60deg, #ae170077 25%, transparent 25.5%, transparent 75%, #ae170077 75%, #ae170077), linear-gradient(60deg, #ae170077 25%, transparent 25.5%, transparent 75%, #ae170077 75%, #ae170077);
     background-size: 50px 88px;
-    background-position: 0 0, 0 0, 25px 44px, 25px 44px, 0 0, 25px 44px;
+    background-position: 0 0, 0 0, 25px 44px, 25px 44px, 0 0, 25px 44px; */
+}
+
+.imagen_logo{
+    padding-top: 16%;
+    opacity: 1;
+    filter: brightness(1000%);
+    border-radius: 10px;
+    background-clip: border-box;
 }
 
 .formularioLogin{
@@ -23,6 +35,18 @@
 .form_title{
     font-size: 2rem;
     margin-bottom: .5em;
+    color: #C20E1A;
+}
+
+.boton_login{
+    margin-top: 5px;
+    background-color: #C20E1A;
+    border: NONE;
+}
+
+.boton_login:hover{
+    background-color: #C20E1A;
+    border: NONE;
 }
 
 .form_login{
@@ -48,7 +72,7 @@
 
 .form_input_login:focus + .form_label_login,
 .form_input_login:not(:placeholder-shown) + .form_label_login{
-    transform: translateY(-12px) scale(.7);
+    transform: translateY(-4px) scale(.7);
     transform-origin: left top;
     color: #3866f2;
 }

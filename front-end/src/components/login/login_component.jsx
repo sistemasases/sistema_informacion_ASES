@@ -66,20 +66,13 @@ const login_component = () =>{
             <Row>
             <Col>
               <Row>
-                <h2 className='title_login'>
-                  <b>Universidad del Valle</b>
-                </h2>
-              </Row>
-              <Row>
-                <h3 className='title_login'>
-                  Sistema ASES
-                </h3>
+                <img src="https://asesinteractiva.univalle.edu.co/semaforoalertas/images/logoasesuv.svg" className='imagen_logo'/>
               </Row>
             </Col>
             <Col>
               <div className="formularioLogin">
                 <Row className="form_title">
-                  <h3><b>Sing In</b></h3>
+                  <b>Sistema de Información ASES</b>
                 </Row>
                 <div className="form_login">
                   <div className="form_group_login">
@@ -90,9 +83,12 @@ const login_component = () =>{
                     <Form.Control className='form_input_login' id='pass' type="password" onChange={handle_password} placeholder=" "/>
                     <label className='form_label_login' for="pass">Contraseña</label>
                   </div>
+                  <div>
+                    <label href="https://www.google.com">Olvidé mi contraseña</label>
+                  </div>
                 </div>
-                <Row className='mt-2'> 
-                  <Button onClick={handleSendNewData}>Ingresar</Button> 
+                <Row> 
+                  <Button className='boton_login' onClick={handleSendNewData}>Ingresar</Button> 
                 </Row>
               </div>
             </Col>
