@@ -89,7 +89,7 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} seleccionado={props.seleccionado} rolUsuario={props.rolUsuario} editar={props.editar}/>,
+            component:<Info_general id={props.id} seleccionado={props.seleccionado} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
         },
         {
             id:2,
@@ -144,7 +144,7 @@ const Selector = (props) =>{
                                         <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
                                             <Row onClick={() => activeTab(tab.id)}>
                                                 <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
-                                                    {tab.name}{props.editar}
+                                                    {tab.name}
                                                 </label>
                                             </Row>
                                             

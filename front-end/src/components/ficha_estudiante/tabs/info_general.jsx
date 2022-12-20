@@ -70,6 +70,7 @@ const Info_general = (props) =>{
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
+    const pk = props.codigo;
 
     const datos_option_user = []
     const datos_option_rol = []
@@ -87,7 +88,7 @@ const Info_general = (props) =>{
       data_user : [],
       data_rol : [],
 
-      seleccionado:props.seleccionado,
+      seleccionado:props.codigo,
 
       id_usuario:'',
       nombres:'',
@@ -146,10 +147,14 @@ const Info_general = (props) =>{
       nuevo_otros_acompañamientos:'',
     })
 
-    useEffect(()=>{
+    useEffect((pk)=>{
+          console.log("elpk es : "+pk);
+          console.log("elpk es : "+props.codigo);
+
+      const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+props.codigo+"/";
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/estudiante/",
+        url:  url_axios,
         method: "GET",
       })
       .then((respuesta)=>{

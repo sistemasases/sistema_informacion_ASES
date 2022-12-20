@@ -1,0 +1,11 @@
+.select_tabla_cantidad_seguimientos{
+    font-size:10pt;
+    font-weight: bold;
+    width: 60px;
+}
+
+.center_tabla_sin_seguimientos{
+    align-content: center;
+    text-align: center;
+    word-break: break-all;
+}

@@ -1,6 +1,6 @@
 
 .container_info_registro{ 
-    width: 111%;
+    width: 113%;
 }
 
 
@@ -26,8 +26,8 @@
     color: rgba(229,41,67,255);
     font-size: 10pt;
     font-weight: bold;
-    margin-top: 20px;
-    margin-bottom: 5px;
+    margin-top: 10px;
+    margin-bottom: 0px;
 }
 
 .borde_redondo{
@@ -185,10 +185,9 @@
     border-radius: 15px;
 }
 .button_tipo_riesgo_alto_texto_pequeño{
-    font-size: 7pt;
+    font-size: 9pt;
     background: rgba(247,94,120,255);
     color: white;
-    padding-left: 20%;
     padding-top: 6px;
     margin-top: 12px;
     width: 100%;
@@ -198,10 +197,9 @@
 
 }
 .button_tipo_riesgo_medio_texto_pequeño{
-    font-size: 7pt;
+    font-size: 9pt;
     background: rgba(255,205,80,255);
     color: white;
-    padding-left: 20%;
     padding-top: 6px;
     margin-top: 12px;
     width: 100%;
@@ -262,7 +260,7 @@
     padding-bottom: 30px;
 }
 .riesgos_pequeño{
-    margin-top: 50px;
+    margin-top: 20px;
     background: rgba(151,234,242,255);
 }
 

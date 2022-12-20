@@ -17,31 +17,42 @@ const Desplegable_item = ({item}) => {
                                                 <Col  xs={"10"} md={"4"}> 
                                                     <Row className="col_link_text_reporte_seguimientos_nombre">
                                                         Nombres
-                                                    </Row>
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                        <br></br>
                                                         Apellidos
                                                     </Row>
                                                 </Col>
                                                 <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"1"}> 
                                                     <Row className="row_spans_card_content_flex">
                                                         <FaUser></FaUser> 
-                                                    </Row>
-                                                    <Row className="row_spans_card_content_flex">
                                                         <FaGraduationCap></FaGraduationCap> 
                                                     </Row>
                                                 </Col>
                                                 <Col className="col_link_text_reporte_seguimientos_info" xs={"12"}md={"6"}> 
-                                                        <Row>
-                                                            <Col className="sub_col_link_text_reporte_seguimientos_info" xs={"5"} md={"4"}>Fichas</Col>
-                                                            <Col className="sub_col_link_text_reporte_seguimientos_info" xs={"7"} md={"4"}>pendientes prof</Col>
-                                                            <div class="d-inline d-md-none col-5"></div>
-                                                            <Col className="sub_col_link_text_reporte_seguimientos_info" xs={"7"} md={"4"}>pendientes pract</Col>
-                                                        </Row>
-                                                        <Row>
-                                                            <Col className="sub_col_link_text_reporte_seguimientos_info"xs={"5"} md={"4"}>Inasistencias</Col>
-                                                            <Col className="sub_col_link_text_reporte_seguimientos_info"xs={"7"} md={"4"}>pendientes prof</Col>
-                                                            <div class="d-inline d-md-none col-5"></div>
-                                                            <Col className="sub_col_link_text_reporte_seguimientos_info"xs={"7"} md={"4"}>pendientes pract</Col>
+                                                    <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                                            <Col xs={"4"}>
+                                                                <Row >Fichas</ Row>
+                                                                <Row >Inasistencias</Row>
+                                                            </Col>
+                                                            <Col xs={"4"}>
+                                                                <div class="d-none d-md-inline col-4">
+                                                                    <Row >Pendientes prof</Row>
+                                                                    <Row >Pendientes prof</Row>
+                                                                </div>
+                                                                <div class="d-inline d-md-none col-4">
+                                                                    <Row >P. prof</Row>
+                                                                    <Row >P. prof</Row>
+                                                                </div>
+                                                            </Col>
+                                                            <Col xs={"4"}>
+                                                                <div class="d-none d-md-inline col-4">
+                                                                    <Row >Pendientes pract</Row>
+                                                                    <Row >Pendientes pract</Row>
+                                                                </div>
+                                                                <div class="d-inline d-md-none col-4">
+                                                                    <Row >P. pract</Row>
+                                                                    <Row >P. pract</Row>
+                                                                </div>
+                                                            </Col>
                                                         </Row>
                                                 </Col>
                                                 <div class="d-none d-md-inline col-1">
@@ -91,8 +102,7 @@ const Desplegable_item = ({item}) => {
                                                 <Col  xs={"10"}md={"4"}> 
                                                     <Row className="col_link_text_reporte_seguimientos_nombre">
                                                         Nombres
-                                                    </Row>
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                        <br></br>
                                                         Apellidos
                                                     </Row>
                                                 </Col>
@@ -102,20 +112,32 @@ const Desplegable_item = ({item}) => {
                                                     </Row>
                                                 </Col>
                                                 <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
-                                                    <Row>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">Fichas</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">Inasistencias</Row>
-                                                        </Col>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
-                                                        </Col>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
-                                                        </Col>
-                                                    </Row>
+                                                <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                                            <Col xs={"4"}>
+                                                                <Row >Fichas</ Row>
+                                                                <Row >Inasistencias</Row>
+                                                            </Col>
+                                                            <Col xs={"4"}>
+                                                                <div class="d-none d-md-inline col-4">
+                                                                    <Row >Pendientes prof</Row>
+                                                                    <Row >Pendientes prof</Row>
+                                                                </div>
+                                                                <div class="d-inline d-md-none col-4">
+                                                                    <Row >P. prof</Row>
+                                                                    <Row >P. prof</Row>
+                                                                </div>
+                                                            </Col>
+                                                            <Col xs={"4"}>
+                                                                <div class="d-none d-md-inline col-4">
+                                                                    <Row >Pendientes pract</Row>
+                                                                    <Row >Pendientes pract</Row>
+                                                                </div>
+                                                                <div class="d-inline d-md-none col-4">
+                                                                    <Row >P. pract</Row>
+                                                                    <Row >P. pract</Row>
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
                                                                                                 
                                                 </Col>
                                                 <div class="d-none d-md-inline col-1">
@@ -165,26 +187,37 @@ const Desplegable_item = ({item}) => {
                                     <Col  xs={"12"} md={"4"}> 
                                         <Row className="col_link_text_reporte_seguimientos_nombre">
                                             Nombres
-                                        </Row>
-                                        <Row className="col_link_text_reporte_seguimientos_nombre">
+                                            <br></br>
                                             Apellidos
                                         </Row>
                                     </Col>
                                     <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
-                                    <Row>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">Fichas</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">Inasistencias</Row>
-                                                        </Col>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes prof</Row>
-                                                        </Col>
-                                                        <Col xs={"4"}>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
-                                                            <Row className="sub_col_link_text_reporte_seguimientos_info">pendientes pract</Row>
-                                                        </Col>
-                                                    </Row>
+                                    <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                                            <Col xs={"4"}>
+                                                                <Row >Fichas</ Row>
+                                                                <Row >Inasistencias</Row>
+                                                            </Col>
+                                                            <Col xs={"4"}>
+                                                                <div class="d-none d-md-inline col-4">
+                                                                    <Row >Pendientes prof</Row>
+                                                                    <Row >Pendientes prof</Row>
+                                                                </div>
+                                                                <div class="d-inline d-md-none col-4">
+                                                                    <Row >P. prof</Row>
+                                                                    <Row >P. prof</Row>
+                                                                </div>
+                                                            </Col>
+                                                            <Col xs={"4"}>
+                                                                <div class="d-none d-md-inline col-4">
+                                                                    <Row >Pendientes pract</Row>
+                                                                    <Row >Pendientes pract</Row>
+                                                                </div>
+                                                                <div class="d-inline d-md-none col-4">
+                                                                    <Row >P. pract</Row>
+                                                                    <Row >P. pract</Row>
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
                                                                                     
                                     </Col>
                                     <div class="d-none d-md-inline col-1">

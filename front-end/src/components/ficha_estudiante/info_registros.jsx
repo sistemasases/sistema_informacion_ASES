@@ -193,29 +193,9 @@ const Info_registros = () =>{
                             <Col xs={"12"}>
                                 <h3 className="texto_subtitulo" activeClassName="text_center">RIESGOS</h3>
                             </Col>
+
                         </Row>
 
-
-                        <Row xs={"12"} className="tipos_riesgos">
-                            <Col xs={"4"} sm={"4"} className="center_tipos_riesgos">
-                                <Row className="center_tipos_riesgos">
-                                    <label className="button_tipo_riesgo_alto">A</label>
-                                    <h1 className="texto_alto">ALTO</h1>
-                                </Row> 
-                            </Col>
-                            <Col xs={"4"} sm={"4"} className="center_tipos_riesgos">
-                                <Row className="center_tipos_riesgos">
-                                    <label className="button_tipo_riesgo_medio">M</label>
-                                    <h3 className="texto_medio">MEDIO</h3>
-                                </Row>
-                            </Col>
-                            <Col xs={"4"} sm={"4"} className="center_tipos_riesgos">
-                                <Row className="center_tipos_riesgos"> 
-                                    <label className="button_tipo_riesgo_bajo">B</label>
-                                    <h3 className="texto_bajo">BAJO</h3>
-                                </Row>
-                            </Col>
-                        </Row>
 
 
 
@@ -223,88 +203,45 @@ const Info_registros = () =>{
                         <Row className="riesgos_fondo_claro">
 
 
-                                    <Col xs={"6"}>
-                                        <Row  className="row_riesgo">
-                                            <Col xs={"2"} sm={"2"} className="z_index_2">
-                                                <label className="borde_riesgos_alto_pequeño">
-                                                    <label className="button_tipo_riesgo_alto_2_pequeño">A</label>
-                                                </label>
-                                                </Col>
-                                                <Col  xs={"9"} sm={"10"} className="center_tipos_riesgos">
+
+                                                <Col   xs={"6"}  className="center_tipos_riesgos">
                                                     <label  className="button_tipo_riesgo_alto_texto_pequeño">ACADEMICO</label>
                                                 </Col>
-                                        </Row>
-                                    </Col>
 
-                                    <Col xs={"6"}>
-                                        <Row className="row_riesgo" >
-                                            <Col xs={"2"} sm={"2"} className="z_index_2">
-                                                <label className="borde_riesgos_alto_pequeño">
-                                                    <label className="button_tipo_riesgo_alto_2_pequeño">A</label>
-                                                </label>                                        </Col>
-                                            <Col  xs={"9"} sm={"10"} className="center_tipos_riesgos">
+
+
+                                            <Col   xs={"6"}  className="center_tipos_riesgos">
                                                 <label  className="button_tipo_riesgo_alto_texto_pequeño">GEOGRAFICO</label>
                                             </Col>
-                                        </Row>
-                                    </Col>
 
 
 
 
 
-                                    <Col xs={"6"}>
-                                        <Row className="row_riesgo">
-                                            <Col xs={"2"} sm={"2"} className="z_index_2">
-                                                <label className="borde_riesgos_medio">
-                                                    <label className="button_tipo_riesgo_medio_2_pequeño">M</label>
-                                                </label>
-                                            </Col>
-                                            <Col  xs={"9"} sm={"10"} className="center_tipos_riesgos">
+
+
+                                            <Col  xs={"6"} className="center_tipos_riesgos">
                                                 <label  className="button_tipo_riesgo_medio_texto_pequeño">VIDA UNIV..</label>
                                             </Col>
-                                        </Row>
-                                    </Col>
-                                    <Col xs={"6"}>
-                                        <Row  className="row_riesgo">
-                                            <Col xs={"2"} sm={"2"} className="z_index_2">
-                                                <label className="borde_riesgos_medio">
-                                                    <label className="button_tipo_riesgo_medio_2_pequeño">M</label>
-                                                </label>
-                                            </Col>
-                                            <Col  xs={"9"}  sm={"10"} className="center_tipos_riesgos">
+
+                                            <Col  xs={"6"}  className="center_tipos_riesgos">
                                                 <label  className="button_tipo_riesgo_medio_texto_pequeño">FAMILIAR</label>
                                             </Col>
-                                        </Row>
-                                    </Col>
 
 
 
 
-                                    <Col xs={"6"}>
+
                                         
-                                        <Row className="row_riesgo">
-                                            <Col xs={"12"} sm={"2"} className="center_tipos_riesgos">
-                                                <label className="borde_riesgos_bajo">
-                                                    <label className="button_tipo_riesgo_bajo_2_pequeño">B</label>
-                                                </label>
-                                            </Col>
-                                            <Col  xs={"12"}  sm={"10"} className="center_tipos_riesgos">
+                                            <Col  xs={"6"}  sm={"6"} className="center_tipos_riesgos">
                                                 <label  className="button_tipo_riesgo_bajo_texto_pequeño">INDIVIDUAL</label> 
                                             </Col>
-                                        </Row>
-                                    </Col>
-                                    <Col xs={"6"}>
-                                        <Row className="row_riesgo">
-                                            <Col xs={"12"} sm={"2"} className="center_tipos_riesgos">
-                                                    <label className="borde_riesgos_bajo">
-                                                        <label className="button_tipo_riesgo_bajo_2_pequeño">B</label>
-                                                    </label>                             
-                                            </Col>
-                                            <Col  xs={"12"} sm={"10"} className="center_tipos_riesgos">
+
+
+                                            <Col  xs={"6"} sm={"6"} className="center_tipos_riesgos">
                                                     <label  className="button_tipo_riesgo_bajo_texto_pequeño">ECONOMICO</label> 
                                             </Col>
-                                        </Row>
-                                    </Col>
+
                             
 
 

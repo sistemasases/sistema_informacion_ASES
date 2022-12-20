@@ -16,13 +16,13 @@ const Footer = () =>{
                     Información de contacto
                 </Row>
                 <Row className="footer_links_bajo">
-                    <h4>Estrategias ASES</h4>
+                    <h4 className="texto_pequeño">Estrategias ASES</h4>
                     <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
                     estrategia.ases@correounivalle.edu.co</a>
-                    <h4>Tel : +57 (2) 3212100 Ext:3319</h4>
-                    <h4> Bajos de Biblioteca Mario Carvajal</h4>
-                    <h4> Universidad del Valle</h4>
-                    <h4> Cali, Colombia 2016-2017</h4>
+                    <h4 className="texto_pequeño">Tel : +57 (2) 3212100 Ext:3319</h4>
+                    <h4 className="texto_pequeño"> Bajos de Biblioteca Mario Carvajal</h4>
+                    <h4 className="texto_pequeño"> Universidad del Valle</h4>
+                    <h4 className="texto_pequeño"> Cali, Colombia 2016-2017</h4>
                 </Row>
                 <Row className="footer_links_bajo">
                     <i class="bi-instagram"></i>

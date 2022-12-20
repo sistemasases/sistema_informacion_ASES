@@ -78,8 +78,17 @@ const Info_basica = (props) =>{
   
    
   
+    useEffect(()=>{
+          
+      /*window.addEventListener('mousemove', handle_option_user)*/
+      
+    },[]
+    );
   
     const handle_option_user = (e) => {
+
+      
+      
       // Getting the files from the input
       console.log(e)
       set_state({
@@ -166,16 +175,16 @@ const Info_basica = (props) =>{
                                           (
                                             <Row className="info"> 
 
-                                                  <Col className="info_texto" xs={"12"} md={"4"}>
+                                                  <Col className="info_texto" xs={"12"} md={"3"}>
                                                         <h4 className="texto_mas_pequeño">{state.tipo_doc}   {state.cedula}</h4>
                                                   </Col>
 
-                                                  <Col className="info_texto" xs={"12"} md={"4"}>
+                                                  <Col className="info_texto" xs={"12"} md={"5"}>
                                                         <h4 className="texto_mas_pequeño">{state.correo}</h4>
                                                   </Col>
 
                                                 <Col className="info_texto" xs={"12"} md={"2"}>
-                                                      <h4 className="texto_mas_pequeño">{state.edad}</h4>
+                                                      <h4 className="texto_mas_pequeño">{state.edad} años</h4>
                                                     </Col>
                                                 <Col className="info_texto" xs={"12"} md={"2"}>
                                                       <h4 className="texto_mas_pequeño">{state.telefono}</h4>
@@ -214,7 +223,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"3"} md={"4"}> 
-                                                <label>label1</label>
+                                                <select></select>
                                               </Col>
                                         </Row>
                                         <Row className="infoRow23_inactivo"> 
@@ -235,7 +244,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"3"} md={"4"}> 
-                                              <label>label1</label>
+                                              <select></select>
                                               </Col>
                                               
                                         </Row>
@@ -257,21 +266,24 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"3"} md={"4"}> 
-                                              <label>label1</label>
+                                              <select></select>
                                               </Col>
                                               
                                         </Row>
                                       </Col>
 
                                       <div class="d-none d-md-block col-md-3">
-                                        <Col xs={"12"} md={"12"} className="col_2017">
+                                      <Col xs={"12"} md={"12"} className="col_2017">
+                                          <button className="boton_editar_info_basica">
+                                              <i>TRAYECTORIA</i>
+                                          </button> 
+                                          <button className="boton_editar_info_basica">
+                                              <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                          </button>
                                           <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">Condicion de excepcion</h4>
+                                            <h4 className="texto_mas_pequeño">Condicion de excepcion <br/>2017-C.A</h4>
                                           </Row>
-                                          <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">2017-C.A</h4>
-                                          </Row>
-                                        </Col>
+                                        </Col> 
                                       </div>
                                       
                                       
@@ -302,7 +314,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"3"} md={"4"}> 
-                                              <label>label1</label>
+                                              <select></select>
                                               </Col>
                                               
                                         </Row>
@@ -324,7 +336,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"6"} md={"4"}> 
-                                              <label>label1</label>
+                                              <select/>
                                               </Col>
                                               
                                         </Row>
@@ -346,7 +358,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"6"} md={"4"}> 
-                                                <label>label1</label>
+                                                <select/>
                                               </Col>
                                               
                                         </Row>
@@ -354,14 +366,14 @@ const Info_basica = (props) =>{
 
                                         <div class="d-none d-md-block col-md-3">
                                         <Col xs={"12"} md={"12"} className="col_2017">
-                                          <Row>
-                                          <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
-                                          </Row>
+                                          <button className="boton_editar_info_basica">
+                                              <i>TRAYECTORIA</i>
+                                          </button> 
+                                          <button className="boton_editar_info_basica">
+                                              <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                          </button>
                                           <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">Condicion de excepcion</h4>
-                                          </Row>
-                                          <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">2017-C.A</h4>
+                                            <h4 className="texto_mas_pequeño">Condicion de excepcion <br/>2017-C.A</h4>
                                           </Row>
                                         </Col>  
                                         </div>                                    
@@ -374,6 +386,16 @@ const Info_basica = (props) =>{
                                 
                             </Col>
 
+                        </Row>
+                        <Row> 
+                              <h4 className="texto_mas_pequeño">
+                                  Profecional: Practicante: Monitor: 
+                              <br/> Ultima astualización:
+                              <br/> 
+                                  <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
+                                  Documento de Autorización de Tratamiento de Datos
+                                  </a>
+                              </h4>
                         </Row>
                   </Col>
 
@@ -430,20 +452,22 @@ const Info_basica = (props) =>{
 
                             
                             <Col xs={"7"} sm={"4"}>
-                              <Row className="botones_info_basica_pequeña">
-                                <button className="boton_editar_info_basica">
-                                  <i>TRAYECTORIA</i>
-                                </button>
-                                <button className="boton_editar_info_basica">
-                                  <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
-                                </button>
-                              </Row>
-                              
+                                  <Row className="botones_info_basica_pequeña">
+
+                                    <button className="boton_editar_info_basica">
+                                      <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                    </button>
+                                  </Row>
+                                  
                                   <Row className="texto_estatico_pequeño">
                                     <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
-                                  </Row>
-                                  <Row className="texto_estatico_pequeño">
                                       <h4 className="texto_mas_pequeño">2017-C.A</h4>
+                                  </Row>
+
+                                      <Row className="botones_info_basica_pequeña">
+                                    <button className="boton_editar_info_basica">
+                                      <i>TRAYECTORIA</i>
+                                    </button>
                                   </Row>
                               </Col>
 
@@ -468,27 +492,29 @@ const Info_basica = (props) =>{
 
                             
                             <Col xs={"7"} sm={"4"}>
-                              <Row className="botones_info_basica_pequeña">
-                                <button className="boton_editar_info_basica">
-                                  <i>TRAYECTORIA</i>
-                                </button>
+                            <Row className="botones_info_basica_pequeña">
+
                                 <button className="boton_editar_info_basica">
                                   <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                 </button>
-                              </Row>
-                              <Row className="texto_estatico_pequeño">
-                                 <h4 className="texto_mas_pequeño">Condicion de excepcion</h4>
-                              </Row>
-                              <Row className="texto_estatico_pequeño">
+                                </Row>
+
+                                <Row className="texto_estatico_pequeño">
+                                <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
                                   <h4 className="texto_mas_pequeño">2017-C.A</h4>
-                              </Row>
+                                </Row>
+
+                                  <Row className="botones_info_basica_pequeña">
+                                <button className="boton_editar_info_basica">
+                                  <i>TRAYECTORIA</i>
+                                </button>
+                                </Row>
                             </Col>
 
-                              <Col className="generar_nuevo_reporte" xs={"12"}>
                                   <Button className="boton_nuevo_registro_pequeño">NUEVO SEGUIMIENTO</Button>
-                              </Col>
+
                             </Row>
-                            
+                          
                           </Col>
                       )
                   }
@@ -532,7 +558,7 @@ const Info_basica = (props) =>{
                                                     
                                                     </Col>
                                                 <Col className="info_texto" xs={"3"} md={"2"}>
-                                                      <h4 className="texto_mas_pequeño">{state.edad}</h4>
+                                                      <h4 className="texto_mas_pequeño">{state.edad} años</h4>
                                                     </Col>
                                                 <Col className="info_texto" xs={"3"} md={"2"}>
                                                       <h4 className="texto_mas_pequeño">{state.telefono}</h4>
@@ -581,7 +607,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"3"} md={"4"}> 
-                                                <label>label1</label>
+                                                <select/>
                                               </Col>
                                         </Row>
                                         <Row className="infoRow23_inactivo"> 
@@ -602,7 +628,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"3"} md={"4"}> 
-                                              <label>label1</label>
+                                              <select/>
                                               </Col>
                                               
                                         </Row>
@@ -624,7 +650,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"3"} md={"4"}> 
-                                              <label>label1</label>
+                                              <select/>
                                               </Col>
                                               
                                         </Row>
@@ -657,7 +683,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"3"} md={"4"}> 
-                                              <label>label1</label>
+                                              <select/>
                                               </Col>
                                               
                                         </Row>
@@ -679,7 +705,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"6"} md={"4"}> 
-                                              <label>label1</label>
+                                              <select/>
                                               </Col>
                                               
                                         </Row>
@@ -701,7 +727,7 @@ const Info_basica = (props) =>{
                                                 )
                                               }
                                               <Col xs={"6"} md={"4"}> 
-                                                <label>label1</label>
+                                                <select/>
                                               </Col>
                                               
                                         </Row>
@@ -774,9 +800,12 @@ const Info_basica = (props) =>{
 
 
 
-          <div class="d-none d-md-block col-12">
+        <div class="d-none d-md-block col-12">
           <Row>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} seleccionado={state.seleccionado} editar={state.editar}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} seleccionado={state.seleccionado} editar={state.editar} codigo={state.codigo}/>
+          </Row>
+          <Row>
+            <Ficha_footer></Ficha_footer>
           </Row>
         </div>
 
@@ -792,18 +821,12 @@ const Info_basica = (props) =>{
         </Col>
         
 
+
         <div class="d-block d-md-none col-12">
           <Col>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} seleccionado={state.seleccionado} editar={state.editar}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolbeUsuario} seleccionado={state.seleccionado} editar={state.editar} codigo={state.codigo}/>
           </Col>
         </div>
-
-        <div class="d-none d-md-block col-12">
-          <Col xs={"12"}>
-            <Ficha_footer></Ficha_footer>
-          </Col>
-        </div>
-        
 
 
 

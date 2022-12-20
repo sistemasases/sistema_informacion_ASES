@@ -1,5 +1,5 @@
 .container_footer{
-    width: 101%;
+    width: 102%;
     background:red;
     word-break: break-all;
 }
@@ -78,6 +78,6 @@
     background: lightgrey;
 }
 .texto_footer_pequeño{
-    font-size: 11bpt;
+    font-size: 11pt;
 
 }

@@ -24,20 +24,16 @@ const Ficha_footer = () =>{
   
 
     return (
-        <Container className="container_ficha_footer">
-            <Row >
-                <Col >
-                    <Button onClick={handle_time}>tiempo</Button>
-                </Col>
-            </Row>
-
-                
+        <Container>
             <Row className="ficha_footer">
-                <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
-                    Links
-                    </a>
-                <h4> ultima actualizacion : {state.ultima_actualizacion}</h4>
-                <h4> aqui va el monitor</h4>
+                    <h4 className="texto_pequeño">
+                            Profecional: Practicante: Monitor: 
+                        <br/> Ultima astualización:
+                        <br/> 
+                        <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
+                            Documento de Autorización de Tratamiento de Datos
+                        </a>
+                    </h4>
             </Row>
         </Container>
     )
