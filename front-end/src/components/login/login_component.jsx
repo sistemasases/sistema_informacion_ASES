@@ -62,25 +62,37 @@ const login_component = () =>{
       {
         state.logged ?
         (
-          <Container>
-            <Row className="g-2">
-              <h3>Sing In</h3>
+          <Container className="containerLogin">
+            <Row>
+            <Col>
+              <Row>
+                <img src="https://asesinteractiva.univalle.edu.co/semaforoalertas/images/logoasesuv.svg" className='imagen_logo'/>
+              </Row>
+            </Col>
+            <Col>
+              <div className="formularioLogin">
+                <Row className="form_title">
+                  <b>Sistema de Información ASES</b>
+                </Row>
+                <div className="form_login">
+                  <div className="form_group_login">
+                    <Form.Control className='form_input_login' id='user' type="text" onChange={handle_user} placeholder=" "/>
+                    <label className='form_label_login' for="user">Usuario</label>
+                  </div>
+                  <div className="form_group_login">
+                    <Form.Control className='form_input_login' id='pass' type="password" onChange={handle_password} placeholder=" "/>
+                    <label className='form_label_login' for="pass">Contraseña</label>
+                  </div>
+                  <div>
+                    <label href="https://www.google.com">Olvidé mi contraseña</label>
+                  </div>
+                </div>
+                <Row> 
+                  <Button className='boton_login' onClick={handleSendNewData}>Ingresar</Button> 
+                </Row>
+              </div>
+            </Col>
             </Row>
-            <Row className="g-2">
-              <h6>Usuario:</h6>
-            </Row>
-            <Row className="g-2">
-              <Form.Control type="text" onChange={handle_user} />
-            </Row>
-            <Row className="g-2">
-              <h6>Contraseña:</h6>
-            </Row>
-            <Row className="g-2">
-              <Form.Control type="password" onChange={handle_password}  />
-            </Row>
-            <Row className='mt-2'> 
-              <Button onClick={handleSendNewData}>Ingresar</Button> 
-            </Row>   
           </Container>
         )
         :

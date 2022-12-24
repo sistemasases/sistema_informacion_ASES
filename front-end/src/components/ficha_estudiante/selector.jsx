@@ -7,6 +7,8 @@ import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
+import  {useEffect, componentDidUpdate} from 'react';
+import axios from 'axios';
 
 const Selector = (props) =>{
 
@@ -37,41 +39,6 @@ const Selector = (props) =>{
 
     })
 
-/*
-    useEffect (() => {
-        // Getting the files from the input
-        console.log(e)
-        let formData = new FormData();
-      
-        //Adding files to the formdata
-        formData.append('id', e.id);
-        axios({
-          // Endpoint to send files
-          url:  "http://127.0.0.1:8000/usuario_rol/estudiante_manage/",
-          method: "POST",
-          data: formData,
-        })
-        .then(res=>{set_state({
-          ...state,
-          usuario : [e.value],
-          id_usuario : [e.id],
-          rol_actual: res.data
-          
-        })})
-        .catch(err=>{
-          set_state({
-            ...state,
-            usuario : [e.value],
-            id_usuario : [e.id],
-            rol_actual: "" 
-          })}
-        )
-        console.log(state.usuario)
-        console.log(state.rol_actual)
-    
-      },[]);
-*/
-
 
 
     const[activeTabIndex, setActiveTabIndex] = useState(0);
@@ -81,6 +48,8 @@ const Selector = (props) =>{
         (setActiveTabIndex(0))
         :
         setActiveTabIndex(index)
+        console.log("estos son los datos generales2")
+                    console.log(props.datos)
     }
 
 
@@ -89,7 +58,7 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} seleccionado={props.seleccionado} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
+            component:<Info_general id={props.id} seleccionado={state.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
         },
         {
             id:2,
@@ -127,7 +96,7 @@ const Selector = (props) =>{
                                         <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
                                             <Row onClick={handleShow}>
                                                 <label key={index} classNmae="tab_bloqueado">
-                                                    {tab.name}{props.editar}
+                                                    {tab.name}{props.editar}{state.seleccionado}
                                                 </label>
                                             </Row>
                                         </Row>
@@ -170,9 +139,10 @@ const Selector = (props) =>{
                                         
                                         ))
                                     }
+                                    
                                 </Row>
                     )
-
+                    
 
                 }
 

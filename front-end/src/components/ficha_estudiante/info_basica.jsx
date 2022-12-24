@@ -13,6 +13,7 @@ import Selector from "../../components/ficha_estudiante/selector";
 import Ficha_footer from "./ficha_footer";
 import Form from 'react-bootstrap/Form';
 import Info_registros from './info_registros';
+import Programas_academicos from './programas_academicos'
 import Modal from 'react-bootstrap/Modal';
 
 
@@ -30,15 +31,20 @@ const Info_basica = (props) =>{
    
 
     const datos_option_user = []
+    const total_datos_estudiantes = []
+
     const datos_option_rol = []
     var bandera_option_user = true;
     var bandera_option_rol = true;
     var bandera = true;
     const [state,set_state] = useState({
+
+      total_datos_estudiante_seleccionado:[],
       editar : false,
       usuario : '',
       data_user : [],
       data_rol : [],
+
 
       seleccionado:'',
 
@@ -50,6 +56,7 @@ const Info_basica = (props) =>{
       cedula:'',
       correo:'',
       telefono:'',
+      ptogramas:[],
 
       nueva_cedula:'',
       edad:'',
@@ -66,29 +73,90 @@ const Info_basica = (props) =>{
           ...state,
           data_user : respuesta.data
         })
+
+        
+
+        for (var i = 0; i < state.data_user['length'] ; i++) {
+          const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
+          datos_option_user.push(dato)
+
+          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
+            axios({
+              // Endpoint to send files
+              url:  url_axios,
+              method: "GET",
+            })
+            .then((respuesta)=>{
+              total_datos_estudiantes.push(respuesta.dato)
+            })
+            .catch(err=>{
+                return (err)
+            })
+
+        }
+
+
+
+
+        
       })
       .catch(err=>{
           return (err)
       })
       
     },[]);
-  
-
-
-  
    
-  
-    useEffect(()=>{
-          
-      /*window.addEventListener('mousemove', handle_option_user)*/
-      
-    },[]
-    );
-  
-    const handle_option_user = (e) => {
 
-      
-      
+
+    const handle_upload = (e) => {
+      // Getting the files from the input
+      console.log([state.rol])
+      console.log([state.usuario])
+    }
+
+
+    const handle_users = (e) => {
+      console.log("opciones2");
+      console.log([datos_option_user]);
+      console.log("datos totales2");
+      console.log(total_datos_estudiantes);
+      // Getting the files from the input
+      if(bandera_option_user==true){
+  
+        for (var i = 0; i < state.data_user['length'] ; i++) {
+          const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
+          datos_option_user.push(dato)
+
+          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
+            axios({
+              // Endpoint to send files
+              url:  url_axios,
+              method: "GET",
+            })
+            .then((respuesta)=>{
+              total_datos_estudiantes.push(respuesta.data)
+            })
+            .catch(err=>{
+                return (err)
+            })
+
+        }
+        console.log("opciones");
+        console.log([datos_option_user]);
+        console.log("datos totales finales siiiiiiiu");
+        console.log(total_datos_estudiantes);
+        bandera_option_user = false;
+      }
+      else{
+        console.log([datos_option_user]);
+      }
+    }
+
+
+
+
+
+    const handle_option_user = (e) => {
       // Getting the files from the input
       console.log(e)
       set_state({
@@ -103,29 +171,46 @@ const Info_basica = (props) =>{
         cedula : state.data_user[e.id]['num_doc'],
         telefono : state.data_user[e.id]['telefono_res'],
         edad : '1',
+        programas : total_datos_estudiantes[e.id]['programas'],
+        total_datos_estudiante_seleccionado : total_datos_estudiantes[e.id]
       })
+      console.log("estos son los programas")
+      console.log(state.programas)
     }
 
-    const handle_users = (e) => {
-      // Getting the files from the input
-      if(bandera_option_user==true){
-  
-        for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
-          datos_option_user.push(dato)
-        }
-        console.log([datos_option_user]);
-        bandera_option_user = false;
-      }
-      else{
-        console.log([datos_option_user]);
-      }
-    }
-    const handle_upload = (e) => {
-      // Getting the files from the input
-      console.log([state.rol])
-      console.log([state.usuario])
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -141,7 +226,8 @@ const Info_basica = (props) =>{
                   <Col className="col1" xs={"12"} md={"9"}>
                         <Row>
                             <Select  className="bold_select"
-                                        options={datos_option_user} onMenuOpen={handle_users} 
+                                        options={datos_option_user} 
+                                        onMenuOpen={handle_users} 
                                         onChange={handle_option_user}  />
                         </Row>
 
@@ -205,70 +291,25 @@ const Info_basica = (props) =>{
                                         <Row>
                                           <h4 className="bold">Programas academicos </h4>
                                         </Row>
-                                        <Row className="infoRow23_activo"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch checked={true} />
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"1"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"3"} md={"4"}> 
-                                                <select></select>
-                                              </Col>
-                                        </Row>
                                         <Row className="infoRow23_inactivo"> 
                                               <Col xs={"6"} md={"6"}>
                                                 <h4 className="texto_pequeño">{state.codigo} </h4>
                                               </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch onClick={handleChange}/>
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"1"}>
-                                                  </Col>
-                                                )
-                                              }
                                               <Col xs={"3"} md={"4"}> 
                                               <select></select>
                                               </Col>
                                               
                                         </Row>
-                                        <Row className="infoRow23_finalizado"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch disabled={true}/>
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"1"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"3"} md={"4"}> 
-                                              <select></select>
-                                              </Col>
-                                              
+                                        <Row> 
+                                              <h4 className="texto_mas_pequeño">
+                                              <br/>
+                                                  Profecional: Practicante: Monitor: 
+                                              <br/> Ultima astualización:
+                                              <br/> 
+                                                  <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
+                                                  Documento de Autorización de Tratamiento de Datos
+                                                  </a>
+                                              </h4>
                                         </Row>
                                       </Col>
 
@@ -291,76 +332,27 @@ const Info_basica = (props) =>{
                                   )
                                   :
                                   (
+                                    
+
                                     <Row className="infoRow2">
-                                      <Col xs={"12"} md={"9"}>
+                                      <Col md={"9"}>
                                         <Row>
                                           <h4 className="texto_pequeño">Programas academicos </h4>
                                         </Row>
-                                        <Row className="infoRow23_activo"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch checked={true} />
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"2"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"3"} md={"4"}> 
-                                              <select></select>
-                                              </Col>
-                                              
-                                        </Row>
-                                        <Row className="infoRow23_inactivo"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch checked={true} />
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"2"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"6"} md={"4"}> 
-                                              <select/>
-                                              </Col>
-                                              
-                                        </Row>
-                                        <Row className="infoRow23_finalizado"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch disabled={true} />
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"1"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"6"} md={"4"}> 
-                                                <select/>
-                                              </Col>
-                                              
+                                        
+                                          { state.programas.map((item, index) => <Programas_academicos 
+                                            rolUsuario={props.rolUsuario}
+                                            item={item}/>) }
+                                        <Row> 
+                                              <h4 className="texto_mas_pequeño">
+                                              <br/>
+                                                  Profecional: Practicante: Monitor: 
+                                              <br/> Ultima astualización:
+                                              <br/> 
+                                                  <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
+                                                  Documento de Autorización de Tratamiento de Datos
+                                                  </a>
+                                              </h4>
                                         </Row>
                                       </Col>
 
@@ -387,16 +379,7 @@ const Info_basica = (props) =>{
                             </Col>
 
                         </Row>
-                        <Row> 
-                              <h4 className="texto_mas_pequeño">
-                                  Profecional: Practicante: Monitor: 
-                              <br/> Ultima astualización:
-                              <br/> 
-                                  <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
-                                  Documento de Autorización de Tratamiento de Datos
-                                  </a>
-                              </h4>
-                        </Row>
+
                   </Col>
 
 
@@ -802,7 +785,7 @@ const Info_basica = (props) =>{
 
         <div class="d-none d-md-block col-12">
           <Row>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} seleccionado={state.seleccionado} editar={state.editar} codigo={state.codigo}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Row>
           <Row>
             <Ficha_footer></Ficha_footer>
@@ -824,7 +807,7 @@ const Info_basica = (props) =>{
 
         <div class="d-block d-md-none col-12">
           <Col>
-            <Selector id={state.id_usuario} rolUsuario={props.rolbeUsuario} seleccionado={state.seleccionado} editar={state.editar} codigo={state.codigo}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Col>
         </div>
 

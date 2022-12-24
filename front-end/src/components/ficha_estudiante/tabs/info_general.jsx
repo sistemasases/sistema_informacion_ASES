@@ -12,50 +12,6 @@ import Modal from 'react-bootstrap/Modal';
 
 
 
-/*
-
-                                          <h4 className="texto_pequeño">Puntaje Icfes</h4>
-
-                                          <h4 className="texto_pequeño">Año ingreso Univalle</h4>
-
-                                          <h4 className="texto_pequeño">Estrato</h4>
-
-                                          <h4 className="texto_pequeño">Teléfono residencia</h4>
-
-                                          <h4 className="texto_pequeño">Celular</h4>
-                              
-                                          <h4 className="texto_pequeño">Email alternativo</h4>
-                                                
-                                          <h4 className="texto_pequeño">Dirección residencia</h4>
-
-                                          <h4 className="texto_pequeño">Barrio</h4>
-            
-                                          <h4 className="texto_pequeño">Municipio actual</h4>
-            
-                                          <h4 className="texto_pequeño">País de origen</h4>
-
-                                          <h4 className="texto_pequeño">Grupo étnico</h4>
-
-                                          <h4 className="texto_pequeño">Actividad simultánea</h4>
-            
-                                          <h4 className="texto_pequeño">Identidad de género</h4>
-                                          
-                                          <h4 className="texto_pequeño">Sexo</h4>
-      
-                                          <h4 className="texto_pequeño">Estado civil</h4>
-                                          
-                                          <h4 className="texto_pequeño">Cantidad hijo/s</h4>
-                                                
-                                          <h4 className="texto_pequeño">Actividades que realiza en su tiempo libre</h4>
-                                          
-                                          <h4 className="texto_pequeño">Deportes que practica</h4>
-            
-                                          <h4 className="texto_pequeño">Condiciòn de excepciòn</h4>
-    
-                                          <h4 className="texto_pequeño">Otros acompañamientos</h4>
-                                          
-*/
-
 var today = new Date();
 var now = today.toLocaleString();
 
@@ -148,33 +104,34 @@ const Info_general = (props) =>{
     })
 
     useEffect((pk)=>{
-          console.log("elpk es : "+pk);
-          console.log("elpk es : "+props.codigo);
-
-      const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+props.codigo+"/";
-      axios({
-        // Endpoint to send files
-        url:  url_axios,
-        method: "GET",
-      })
-      .then((respuesta)=>{
-        set_state({
-          ...state,
-          data_user : respuesta.data
-        })
-      })
-      .catch(err=>{
-          return (err)
-      })
-      console.log(state.data_user)
-
-      /*window.addEventListener('mousemove', handle_option_user)*/
+      
+      set_state({
+             ...state,
+            id_usuario:props.datos['id'],
+            nombres : props.datos['nombre'],
+            apellidos : props.datos['apellido'],
+            correo : props.datos['email'],
+            cedula : props.datos['num_doc'],
+            telefono : props.datos['telefono_res'],
+            sexo : props.datos['sexo'],
+            telefono_res : props.datos['telefono_res'],
+            celular : props.datos['celular'],
+            dir_res : props.datos['dir_ini'],
+            barrio_res : props.datos['barrio_res'],
+            hijos : props.datos['hijos'],
+            email_alternativo : props.datos['email'],
+            direccion_residencia : props.datos['dir_res'],
+            barrio : props.datos['barrio_res']
+          })
+          console.log("estos son los datos generales")
+          console.log(props.datos)
       
     },[]
     );
     
 
     const handle_option_user = () => {
+      console.log("este es data user")
       console.log(state.data_user)
 
       if(state.data_user['length'] === 0)
@@ -197,21 +154,7 @@ const Info_general = (props) =>{
       else{
         set_state({
           ...state,
-          id_usuario:state.data_user[props.seleccionado]['id'],
-          nombres : state.data_user[props.seleccionado]['nombre'],
-          apellidos : state.data_user[props.seleccionado]['apellido'],
-          correo : state.data_user[props.seleccionado]['email'],
-          cedula : state.data_user[props.seleccionado]['num_doc'],
-          telefono : state.data_user[props.seleccionado]['telefono_res'],
-          sexo : state.data_user[props.seleccionado]['sexo'],
-          telefono_res : state.data_user[props.seleccionado]['telefono_res'],
-          celular : state.data_user[props.seleccionado]['celular'],
-          dir_res : state.data_user[props.seleccionado]['dir_ini'],
-          barrio_res : state.data_user[props.seleccionado]['barrio_res'],
-          hijos : state.data_user[props.seleccionado]['hijos'],
-          email_alternativo : state.data_user[props.seleccionado]['email'],
-          direccion_residencia : state.data_user[props.seleccionado]['dir_res'],
-          barrio : state.data_user[props.seleccionado]['barrio_res'],
+
 
           puntaje_icfes:'sin dato',
       año_ingreso_univalle:'sin dato',
