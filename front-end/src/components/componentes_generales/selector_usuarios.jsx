@@ -10,6 +10,7 @@ import all_rols from '../../service/all_rols';
 import all_users_rols from '../../service/all_users_rol';
 import user_rol from '../../service/user_rol';
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
+import Inasistencia from '../seguimiento_forms/form_inasistencia';
 import user_rol_manage from '../../service/user_rol_manage';
 import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
@@ -333,6 +334,7 @@ const selector_usuarios = () =>{
           </Modal.Footer>
         </Modal>
         <Seguimiento_individual />
+        <Inasistencia />
             
         </Container>
   )

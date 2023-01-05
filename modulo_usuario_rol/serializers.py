@@ -58,3 +58,8 @@ class Estudiante_manage(serializers.Serializer):
 class Estudiante_actualizacion(serializers.Serializer):
     id_nuevo_num_doc = serializers.IntegerField()    
     id_nuevo_telefono_res = serializers.IntegerField()
+
+class user_selected (serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = ('id','username', 'first_name', 'last_name')
