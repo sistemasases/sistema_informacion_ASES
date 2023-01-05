@@ -1,0 +1,14 @@
+[
+    {
+        "id":1,
+        "path":"/ficha_estudiante",
+        "name":"reporte MEN",
+        "icon":"bi-people-fill"
+    },
+    {
+        "id":2,
+        "path":"/ficha_estudiante",
+        "name":"reportes ICETEX",
+        "icon":"bi-people-fill"
+    }
+]

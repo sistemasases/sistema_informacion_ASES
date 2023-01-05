@@ -107,13 +107,13 @@ const App = () => {
     return (
         <BrowserRouter>
             <Row> 
-            <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo}>
+            <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
                     <Routes>
-                        <Route path="/ficha_estudiante"element={<Ficha_estudiante usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/sin_seguimientos"element={<Sin_seguimientos usuario={nombreUsuario}/>}/>
-                        <Route path="/desercion"element={<Desercion usuario={nombreUsuario}/>}/>
-                        <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol usuario={nombreUsuario}/>}/>
+                        <Route path="/ficha_estudiante" element={<Ficha_estudiante path_actual={"path_actual"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
+                        <Route path="/reporte_seguimientos"element={<Reporte_seguimientos path_actual={"Reporte seguimientos"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
+                        <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
+                        <Route path="/desercion"element={<Desercion path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
+                        <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol path_actual={"Gestion usuarios"} usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
                         <Route path="/asignaciones" element={<Asignaciones/>}/>
                         <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>

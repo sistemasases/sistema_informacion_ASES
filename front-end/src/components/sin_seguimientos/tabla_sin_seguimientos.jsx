@@ -6,7 +6,7 @@ import Columnas from './columnas' ;
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import Cabecera from "./cabecera.jsx";
 import DataTable, {selectFilter} from'react-data-table-component';
-
+import DataTableExtensions from 'react-data-table-component-extensions';
 import Select from 'react-select'  ;
 
 const Tabla_sin_Seguimientos = () =>{
@@ -154,21 +154,23 @@ const Tabla_sin_Seguimientos = () =>{
             <Cabecera/>
           </Row>
           <Row>
-            <DataTable
-            noHeader
-            paginationComponentOptions={paginacionOpciones}
+            <DataTableExtensions
             columns={columnas2}
             data={MOCK_DATA}
-            pagination
-            filter={true}
-            highlightOnHover
+            filter={false}
+            exportHeaders={true}
+            >
+              
+            <DataTable
+            columns={columnas2}
+            data={MOCK_DATA}
+            pagination 
+            paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+            paginationComponentOptions={paginacionOpciones}            
             />
-          </Row>
-
-          <Row>
-
-          </Row>
+            </DataTableExtensions>
             
+          </Row>
         </Container>
     )
 }

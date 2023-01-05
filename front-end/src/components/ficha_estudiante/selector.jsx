@@ -58,7 +58,7 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} seleccionado={state.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
+            component:<Info_general id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
         },
         {
             id:2,
@@ -96,7 +96,7 @@ const Selector = (props) =>{
                                         <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
                                             <Row onClick={handleShow}>
                                                 <label key={index} classNmae="tab_bloqueado">
-                                                    {tab.name}{props.editar}{state.seleccionado}
+                                                    {tab.name}
                                                 </label>
                                             </Row>
                                         </Row>

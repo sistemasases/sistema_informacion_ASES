@@ -572,27 +572,7 @@ const Info_basica = (props) =>{
                                         <Row className="texto_estatico">
                                           <h4 className="bold">Programas academicos </h4>
                                         </Row>
-                                        <Row className="infoRow23_activo"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch checked={true} />
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"1"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"3"} md={"4"}> 
-                                                <select/>
-                                              </Col>
-                                        </Row>
+                                        
                                         <Row className="infoRow23_inactivo"> 
                                               <Col xs={"6"} md={"6"}>
                                                 <h4 className="texto_pequeño">{state.codigo} </h4>
@@ -602,28 +582,6 @@ const Info_basica = (props) =>{
                                                 (
                                                   <Col xs={"3"} md={"2"}>
                                                     <Switch onClick={handleChange}/>
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"1"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"3"} md={"4"}> 
-                                              <select/>
-                                              </Col>
-                                              
-                                        </Row>
-                                        <Row className="infoRow23_finalizado"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch disabled={true}/>
                                                   </Col>
                                                 )
                                                 :
@@ -648,72 +606,9 @@ const Info_basica = (props) =>{
                                         <Row className="texto_estatico">
                                           <h4 className="texto_pequeño">Programas academicos </h4>
                                         </Row>
-                                        <Row className="infoRow23_activo"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch checked={true} />
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"2"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"3"} md={"4"}> 
-                                              <select/>
-                                              </Col>
-                                              
-                                        </Row>
-                                        <Row className="infoRow23_inactivo"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch checked={true} />
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"2"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"6"} md={"4"}> 
-                                              <select/>
-                                              </Col>
-                                              
-                                        </Row>
-                                        <Row className="infoRow23_finalizado"> 
-                                              <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{state.codigo} </h4>
-                                              </Col>
-                                              {
-                                                props.rolUsuario==='superSistemas' ?
-                                                (
-                                                  <Col xs={"3"} md={"2"}>
-                                                    <Switch disabled={true} />
-                                                  </Col>
-                                                )
-                                                :
-                                                (
-                                                  <Col xs={"1"} md={"1"}>
-                                                  </Col>
-                                                )
-                                              }
-                                              <Col xs={"6"} md={"4"}> 
-                                                <select/>
-                                              </Col>
-                                              
-                                        </Row>
+                                        { state.programas.map((item, index) => <Programas_academicos 
+                                            rolUsuario={props.rolUsuario}
+                                            item={item}/>) }
                                       </Col>      
                                       
                                     </Row>
