@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Container, Row, Col} from "react-bootstrap";
 import Info_general from "./tabs/info_general"
 import Academico from "./tabs/academico"
+import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {Dropdown, Button} from "react-bootstrap";
@@ -64,7 +65,7 @@ const Selector = (props) =>{
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
-            component:<Info_general />,
+            component:<Socieducativa id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
         },
         {
             id:3,
@@ -88,7 +89,7 @@ const Selector = (props) =>{
         <Container className="containerSelector">
 
                 {
-                    props.seleccionado ==='' ?
+                    props.seleccionado ==='e' ?
                     (
                         <Row className="tabs" >
                                     {
