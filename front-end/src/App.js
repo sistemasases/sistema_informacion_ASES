@@ -53,6 +53,7 @@ import "./Scss/gestion_usuarios_rol/selector_usuarios.css"
 import "./Scss/gestion_usuarios_rol/gestion_usuario_rol.css"
 import "./Scss/footer/footer.css";
 import "./Scss/asignaciones/asignaciones.css";
+import "./Scss/sin_seguimientos/sin_seguimientos.css"
 import "./Scss/login/login_component.css";
 
 
@@ -65,6 +66,7 @@ import Login from "./modulos/login/login.jsx";
 import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
 import Reporte_seguimientos from "./modulos/reporte_seguimientos/reporte_seguimientos.jsx";
 import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
+import Desercion from "./modulos/desercion/desercion.jsx";
 import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
@@ -105,12 +107,13 @@ const App = () => {
     return (
         <BrowserRouter>
             <Row> 
-            <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo}>
+            <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
                     <Routes>
-                        <Route path="/ficha_estudiante"element={<Ficha_estudiante usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/sin_seguimientos"element={<Sin_seguimientos usuario={nombreUsuario}/>}/>
-                        <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol usuario={nombreUsuario}/>}/>
+                        <Route path="/ficha_estudiante" element={<Ficha_estudiante path_actual={"path_actual"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
+                        <Route path="/reporte_seguimientos"element={<Reporte_seguimientos path_actual={"Reporte seguimientos"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
+                        <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
+                        <Route path="/desercion"element={<Desercion path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
+                        <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol path_actual={"Gestion usuarios"} usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
                         <Route path="/asignaciones" element={<Asignaciones/>}/>
                         <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>

@@ -7,19 +7,23 @@ const Listas_no_seleccion = (props) => {
 
     const{childClicked} = props
 
-    if(props.rol === "practicante" && props.item.rol === "practicante" ){
+    if(props.rol === "practicante"){
         return (
             <Row>
-                    <Col className="fichas-item" onClick={()=>childClicked(props.item.nombre)}>
+                {
+                props.profecional_seleccionado === '' ?
+                (
+                <Col className="fichas-item" onClick={()=>childClicked(props.item.nombre)}>
                     <Row className="link_reporte_seguimientos1" >
                         <Col className="link_text_reporte_seguimientos1" >
                                             <Row className="link_text_reporte_seguimientos_hover1">
                                                 <Col  xs={"10"} md={"4"}> 
                                                     <Row className="col_link_text_reporte_seguimientos_nombre">
-                                                        {props.item.nombre}
+                                                        {props.item.username}
                                                     </Row>
                                                     <Row className="col_link_text_reporte_seguimientos_nombre">
-                                                        {props.item.cedula}
+                                                        {props.item.first_name}
+                                                        {props.item.last_name}
                                                     </Row>
                                                 </Col>
                                                 
@@ -29,13 +33,44 @@ const Listas_no_seleccion = (props) => {
                     </Row>
                         
                 </Col>
+                    
+                )
+                :
+                (
+                   <Col className="fichas-item" onClick={()=>childClicked(props.item.nombre)}>
+                    <Row className="link_reporte_seguimientos1" >
+                        <Col className="link_text_reporte_seguimientos1" >
+                                            <Row className="link_text_reporte_seguimientos_hover1">
+                                            <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"2"}> 
+                                                    <Row className="row_spans_card_content_flex">
+                                                        <FaUser></FaUser> 
+                                                    </Row>
+                                                </Col>
+                                                <Col  xs={"10"} md={"4"}> 
+                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                        {props.item.username}
+                                                    </Row>
+                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                        {props.item.first_name}
+                                                        {props.item.last_name}
+                                                    </Row>
+                                                </Col>
+                                                
+                                                
+                                            </Row>
+                            </Col>
+                    </Row>
+                        
+                </Col>
+                )
+            }
             </Row>
         )
-    }else if(props.rol === "monitor" && props.item.rol === "monitor") {
+    }else if(props.rol === "monitor" ) {
         return (
             <Row>
             {
-                props.practicante_seleccionado === props.item.superior ?
+                props.practicante_seleccionado === '' ?
                 (
                     <Col></Col>
                 )
@@ -45,17 +80,23 @@ const Listas_no_seleccion = (props) => {
                     <Row className="link_reporte_seguimientos1">
                     <Col className="link_text_reporte_seguimientos1" >
                                             <Row className="link_text_reporte_seguimientos_hover2">
-                                                <Col  xs={"10"} md={"4"}> 
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
-                                                        {props.item.nombre}
-                                                    </Row>
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
-                                                        {props.item.cedula}
+                                                <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"2"}> 
+                                                    <Row className="row_spans_card_content_flex">
+                                                        <FaUser></FaUser> 
                                                     </Row>
                                                 </Col>
-                                            
-                                                
-                                                
+
+
+                                                <Col  xs={"10"} md={"4"}> 
+                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                        {props.item.username}
+                                                    </Row>
+                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                        {props.item.first_name}
+                                                        {props.item.last_name}
+                                                    </Row>
+                                                </Col>
+
                                             </Row>
                             </Col>
                     </Row>
@@ -67,11 +108,11 @@ const Listas_no_seleccion = (props) => {
             </Row>
         )
     }
-    else if (props.rol === "estudiante" && props.item.rol === "estudiante"){
+    else if (props.rol === "estudiante"){
         return (
         <Row>
         {
-                props.monitor_seleccionado === props.item.superior ?
+                props.monitor_seleccionado === '' ?
                 (
                     <Col></Col>
                 )
@@ -81,16 +122,22 @@ const Listas_no_seleccion = (props) => {
         <Row className="link_reporte_seguimientos1" >
         <Col className="link_text_reporte_seguimientos1" >
                                 <Row className="link_text_reporte_seguimientos_hover3">
-                                    <Col  xs={"10"} md={"4"}> 
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
-                                                        {props.item.nombre}
-                                                    </Row>
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
-                                                        {props.item.cedula}
+                                    <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"2"}> 
+                                                    <Row className="row_spans_card_content_flex">
+                                                        <FaUser></FaUser> 
                                                     </Row>
                                                 </Col>
-                                    
-                                    
+
+
+                                                <Col  xs={"10"} md={"8"}> 
+                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                        {props.item.cod_univalle}
+                                                    </Row>
+                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                        {props.item.nombre}
+                                                        {props.item.apellido}
+                                                    </Row>
+                                                </Col>
                                 </Row>
                 </Col>
         </Row>

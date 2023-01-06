@@ -5,7 +5,12 @@ import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink, useLocation } from 'react-router-dom';
 import NavBar from './navbar';
-import Menu from './socioeducativa.json';
+import Menu from './sistemas.json';
+import Menu2 from './socioeducativa.json';
+import Menu3 from './academico.json';
+import Menu4 from './icetex.json';
+import Menu5 from './discapacidad.json';
+
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
 import Sidebar_item_closed from './sidebar_item_closed';
@@ -58,6 +63,18 @@ const SideBar = (props) =>{
     console.log("childre : ")
     console.log(props.children)
 
+    const [state,set_state] = useState({
+
+        path_actual : 'Inicio'
+      })
+
+    function path_actual(name){
+        set_state({
+          ...state,
+          path_actual : name
+        })
+      }
+
     return (
         <Container className="containerSidebar">
                 <Row className="top_selection">
@@ -72,11 +89,13 @@ const SideBar = (props) =>{
                                 {
                                     isOpen ?
                                     (<div className="sidebar_item">
-                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
+                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}
+                                        childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                     :
                                     (<div className="sidebar_item">
-                                    { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
+                                        { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} 
+                                        childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                 }
                             </Scrollbars>
@@ -92,11 +111,13 @@ const SideBar = (props) =>{
                                 {
                                     isOpen ?
                                     (<div className="sidebar_item">
-                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
+                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}
+                                        childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                     :
                                     (<div className="sidebar_item">
-                                    { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
+                                    { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item}
+                                    childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                 }
                             </Scrollbars>
@@ -109,7 +130,7 @@ const SideBar = (props) =>{
                 
                 
                 <Row className="row_navbar">
-                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
+                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}  path_actual={state.path_actual}></NavBar>
                 </Row>
                 <div  class="d-none d-md-block">
                     <Row className="inf_der">

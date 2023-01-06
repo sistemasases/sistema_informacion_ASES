@@ -47,29 +47,30 @@ Tabla Conteo de Seguimientos:
 
 const Informacion_rol = () =>{
     return (
-        <Container className="container_reportes_seguimientos">
+        <Container className="container_reportes_seguimientos2">
 
-            
-
+        
             <Row className="row_contenido_reportes_seguimientos">
+            <div class="d-none d-md-inline"> <br/></div>
+
                         <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
                             <Row>
                                 <Col  xs={"12"} md={"3"}>
                                 <b>Informacion:</b>
                                 </Col>
                                 <Col xs={"12"} md={"3"}>
-                                Rol
+                                Profecional
                                 </Col>
                             </Row> 
                             <Row lassName="margin_top_info_rol"> 
                                 <Col xs={"12"} md={"3"} c>
                                 <b>Fichas:</b>
                                 </Col>
-                                <Col xs={"8"} md={"3"}>
-                                Revisado : 0
+                                <Col xs={"5"} md={"3"}>
+                                Revisado: 0
                                 </Col>
-                                <Col xs={"8"} md={"3"}>
-                                No revisado : 1
+                                <Col xs={"6"} md={"3"}>
+                                No revisado: 1
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 1
@@ -80,17 +81,22 @@ const Informacion_rol = () =>{
                                 <Col xs={"12"} md={"3"} >
                                 <b>Inasistencias:</b>
                                 </Col>
-                                <Col xs={"8"} md={"3"}>
-                                Revisado : 0
+                                <Col xs={"5"} md={"3"}>
+                                Revisado: 0
                                 </Col>
-                                <Col xs={"8"} md={"3"}>
-                                No revisado : 0
+                                <Col xs={"6"} md={"3"}>
+                                No revisado: 0
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 0
                                 </Col>          
                             </Row>
                         </Col>
+
+
+
+
+
                         <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
  
                             <Row>
@@ -106,10 +112,10 @@ const Informacion_rol = () =>{
                                 <Col  xs={"12"} md={"3"}>
                                 <b>Fichas:</b>
                                 </Col>
-                                <Col xs={"8"} md={"3"}>
+                                <Col xs={"5"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <Col xs={"8"} md={"3"}>
+                                <Col xs={"6"} md={"3"}>
                                 No revisado : 1
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
@@ -121,10 +127,10 @@ const Informacion_rol = () =>{
                             <Col xs={"12"} md={"3"} >
                                 <b>Inasistencias:</b>
                                 </Col>
-                                <Col xs={"8"} md={"3"}>
+                                <Col xs={"5"} md={"3"}>
                                 Revisado : 0
                                 </Col>
-                                <Col xs={"8"} md={"3"}>
+                                <Col xs={"6"} md={"3"}>
                                 No revisado : 0
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
@@ -132,6 +138,7 @@ const Informacion_rol = () =>{
                                 </Col>           
                             </Row>
                         </Col>
+                        <div class="d-none d-md-inline"> <br/></div>
 
             </Row>
                 <Desplegable></Desplegable>

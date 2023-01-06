@@ -1,7 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {useTable, Table} from 'react-table';
 import MOCK_DATA from './MOCK_DATA.json';
-import Columnas from './columnas' ;
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import Select from 'react-select'  ;
 
@@ -11,8 +10,14 @@ const Cabecera = () =>{
     return (
         
         <Container >
-            <Row className="texto_titulo_bold">
-                Reporte cantidad de seguimientos
+            <Row >
+                <Col xs={"12"} md={"8"} className="texto_titulo_bold">
+                    Reporte de estudiantes activos en SRA por semestre
+                </Col>
+                <Col xs={"12"} md={"4"} className="texto_pequeño">
+                    Seleccione la cohorte
+                    <Select></Select>
+                </Col>
             </Row>
 
 

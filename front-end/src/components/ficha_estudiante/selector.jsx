@@ -2,11 +2,14 @@ import React, {useState} from 'react';
 import {Container, Row, Col} from "react-bootstrap";
 import Info_general from "./tabs/info_general"
 import Academico from "./tabs/academico"
+import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
+import  {useEffect, componentDidUpdate} from 'react';
+import axios from 'axios';
 
 const Selector = (props) =>{
 
@@ -37,41 +40,6 @@ const Selector = (props) =>{
 
     })
 
-/*
-    useEffect (() => {
-        // Getting the files from the input
-        console.log(e)
-        let formData = new FormData();
-      
-        //Adding files to the formdata
-        formData.append('id', e.id);
-        axios({
-          // Endpoint to send files
-          url:  "http://127.0.0.1:8000/usuario_rol/estudiante_manage/",
-          method: "POST",
-          data: formData,
-        })
-        .then(res=>{set_state({
-          ...state,
-          usuario : [e.value],
-          id_usuario : [e.id],
-          rol_actual: res.data
-          
-        })})
-        .catch(err=>{
-          set_state({
-            ...state,
-            usuario : [e.value],
-            id_usuario : [e.id],
-            rol_actual: "" 
-          })}
-        )
-        console.log(state.usuario)
-        console.log(state.rol_actual)
-    
-      },[]);
-*/
-
 
 
     const[activeTabIndex, setActiveTabIndex] = useState(0);
@@ -81,6 +49,8 @@ const Selector = (props) =>{
         (setActiveTabIndex(0))
         :
         setActiveTabIndex(index)
+        console.log("estos son los datos generales2")
+                    console.log(props.datos)
     }
 
 
@@ -89,13 +59,13 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} seleccionado={props.seleccionado} rolUsuario={props.rolUsuario} editar={props.editar}/>,
+            component:<Info_general id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
         },
         {
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
-            component:<Info_general />,
+            component:<Socieducativa id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
         },
         {
             id:3,
@@ -119,7 +89,7 @@ const Selector = (props) =>{
         <Container className="containerSelector">
 
                 {
-                    props.seleccionado ==='' ?
+                    props.seleccionado ==='e' ?
                     (
                         <Row className="tabs" >
                                     {
@@ -127,7 +97,7 @@ const Selector = (props) =>{
                                         <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
                                             <Row onClick={handleShow}>
                                                 <label key={index} classNmae="tab_bloqueado">
-                                                    {tab.name}{props.editar}
+                                                    {tab.name}
                                                 </label>
                                             </Row>
                                         </Row>
@@ -144,7 +114,7 @@ const Selector = (props) =>{
                                         <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
                                             <Row onClick={() => activeTab(tab.id)}>
                                                 <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
-                                                    {tab.name}{props.editar}
+                                                    {tab.name}
                                                 </label>
                                             </Row>
                                             
@@ -170,9 +140,10 @@ const Selector = (props) =>{
                                         
                                         ))
                                     }
+                                    
                                 </Row>
                     )
-
+                    
 
                 }
 

@@ -27,7 +27,6 @@ body {
 
 .infoRow2_pequeño{
     margin: 0px 0px;
-    padding: 0px 20px;
     background: white;
 }
 .col2{    
@@ -56,10 +55,10 @@ body {
 }
 
 .col_2017{
-height:100%;
-text-align:bottom;
-align-content:bottom;
-padding-top:45%;
+    height:100%;
+    text-align:bottom;
+    align-content:bottom;
+    padding-top: 30px;
 }
 
 
@@ -162,7 +161,6 @@ padding-top:45%;
     word-break: break-all;
     text-align: center;
     height: 20px;
-    width: 100%;
     border-left: 2px solid #878787;
 }
 .info_texto_pequeño{
@@ -278,9 +276,16 @@ padding-top:45%;
     font-weight: bold;
     font-size: 18pt;
 }
+.texto_subtitulo2{
+    font-size: 18pt;
+}
 
 .texto_titulo{
     font-size: 36pt;
+}
+.texto_titulo_bold{
+    font-size: 36pt;
+    font-weight: bold;
 }
 
 .bold{
@@ -304,12 +309,10 @@ padding-top:45%;
     padding:0px 20px;
 }
 
-.container_ficha_footer{
 
-}
 
 .ficha_footer{
-    background: #dfdfdf;
+    margin-bottom: 30px;
 }
 .ficha_footer_pequeña{
     margin-top: 20px;

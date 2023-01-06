@@ -77,14 +77,14 @@ const navbar = (props) =>{
             <Col className="ulDropdown" xs={"5"} md={"4"}>            
                 <Row >
                     <div class="d-none d-md-inline">
-                    <Col xs={"12"} md={"7"} className="row_modulo_activo">
-                        <label>Ficha estudiante</label>
-                    </Col>
+                        <Col xs={"12"} md={"7"} className="row_modulo_activo">
+                            <label>{props.path_actual}</label>
+                        </Col>
                     </div>
                     <div class="d-inline d-md-none">
-                    <Col xs={"12"} md={"5"} className="row_modulo_activo_pequeño">
-                        <label>Ficha estudiante</label>
-                    </Col>
+                        <Col xs={"12"} md={"5"} className="row_modulo_activo_pequeño">
+                            {props.path_actual}
+                        </Col>
                     </div>
                 </Row>
             </Col>
