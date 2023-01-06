@@ -87,13 +87,13 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
 
 
 class usuario_rol_asignacion_viewsets (viewsets.ModelViewSet):
-    serializer_class = asignacion_user_serializer
+    serializer_class = usuario_rol_serializer
     # permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
 
     def create(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = asignacion_user_serializer(data=request.data)
         if (serializer.is_valid()):
             if (serializer.data['llamada']=="asignar"):
 
