@@ -27,6 +27,9 @@ urlpatterns = [
     path('carga_masiva/', include('modulo_carga_masiva.urls')),
     path('wizard/', include('modulo_instancia.routers')),
     path('usuario_rol/', include('modulo_usuario_rol.routers')),
+    path('seguimiento/', include('modulo_seguimiento.routers')),
+    path('asignacion/', include('modulo_asignacion.routers')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
 ]

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante
 from modulo_programa.models import programa_estudiante, programa
 from modulo_instancia.models import semestre
+from modulo_asignacion.models import asignacion
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,9 +13,10 @@ from modulo_usuario_rol import serializers
 from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer, Estudiante_actualizacion
+from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer, Estudiante_actualizacion,user_selected
 from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer
 from modulo_instancia.serializers import semestre_serializer
+from modulo_asignacion.serializers import asignacion_serializer
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
@@ -52,11 +54,173 @@ class rol_viewsets (viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = rol_serializer.Meta.model.objects.all()
 
-class usuario_rol_viewsets (viewsets.ModelViewSet):
+
+
+class profesional_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
     # permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
+    def list(self, request):
+        list_profesional = []
+
+        val_rol = rol.objects.get(nombre = 'Profesional')
+        serializer_rol= rol_serializer(val_rol)
+        id_rol_profesional = serializer_rol.data['id']
+
+        consulta_id_profesional = list(usuario_rol.objects.filter(id_rol = id_rol_profesional,estado = 'ACTIVO'))
+        for i in consulta_id_profesional:
+            serializer_usuario_rol =usuario_rol_serializer(i)
+            consulta_profesional= User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
+            serializer_profesional= user_selected(consulta_profesional)
+            list_profesional.append(serializer_profesional.data)
+
+        return Response(list_profesional,status=status.HTTP_200_OK)
+
+class practicante_viewsets (viewsets.ModelViewSet):
+    serializer_class = usuario_rol_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = usuario_rol_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+        list_practicante = []
+
+        val_rol = rol.objects.get(nombre = 'Practicante')
+        id_rol_practicante = (rol_serializer(val_rol)).data['id']
+
+        consulta_id_practicante = list(usuario_rol.objects.filter(id_rol = id_rol_practicante,estado = 'ACTIVO'))
+        for i in consulta_id_practicante:
+            serializer_usuario_rol =usuario_rol_serializer(i)
+            consulta_practicante = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
+            serializer_practicante= user_selected(consulta_practicante)
+            list_practicante.append(serializer_practicante.data)
+
+        return Response(list_practicante,status=status.HTTP_200_OK)
+
+
+    def retrieve(self, request, pk):
+        list_practicante = []
+        list_practicante_selected = []
+
+        val_rol = rol.objects.get(nombre = 'Practicante')
+        id_rol_practicante = (rol_serializer(val_rol)).data['id']
+
+        consulta_id_practicante = list(usuario_rol.objects.filter(id_rol = id_rol_practicante,estado = 'ACTIVO'))
+        for i in consulta_id_practicante:
+            serializer_usuario_rol =usuario_rol_serializer(i)
+            consulta_practicante = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
+            serializer_practicante = user_selected(consulta_practicante)
+            list_practicante.append(serializer_practicante.data)
+
+        consulta_id_practicante_selected = list(usuario_rol.objects.filter(id_jefe = pk, id_rol = id_rol_practicante))
+
+        for i in consulta_id_practicante_selected:
+            serializer_usuario_rol_selected =usuario_rol_serializer(i)
+            consulta_practicante_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
+            serializer_practicante_selected  = user_selected(consulta_practicante_selected )
+            list_practicante_selected.append(serializer_practicante_selected.data)
+            for i in list_practicante:
+                if i['id'] == serializer_practicante_selected.data['id']:
+                    list_practicante.remove(i)
+
+        datos = [list_practicante_selected,list_practicante]
+        return Response(datos,status=status.HTTP_200_OK)
+
+class monitor_viewsets (viewsets.ModelViewSet):
+    serializer_class = usuario_rol_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = usuario_rol_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+        print("hola")
+        list_monitores = []
+
+        val_rol = rol.objects.get(nombre = 'monitor')
+        id_rol_monitor = (rol_serializer(val_rol)).data['id']
+        consulta_id_monitores = list(usuario_rol.objects.filter(id_rol = id_rol_monitor,estado = 'ACTIVO'))
+        print(consulta_id_monitores)
+        for i in consulta_id_monitores:
+            serializer_usuario_rol =usuario_rol_serializer(i)
+            consulta_monitor = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
+            serializer_monitor = user_selected(consulta_monitor)
+            list_monitores.append(serializer_monitor.data)
+
+        return Response(list_monitores,status=status.HTTP_200_OK)
+
+
+    def retrieve(self, request, pk):
+        list_monitores = []
+        list_monitores_selected = []
+        
+        val_rol = rol.objects.get(nombre = 'monitor')
+        id_rol_monitor = (rol_serializer(val_rol)).data['id']
+
+        consulta_id_monitores = list(usuario_rol.objects.filter(id_rol = id_rol_monitor,estado = 'ACTIVO'))
+        for i in consulta_id_monitores:
+            serializer_usuario_rol =usuario_rol_serializer(i)
+            consulta_monitor = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
+            serializer_monitor = user_selected(consulta_monitor)
+            list_monitores.append(serializer_monitor.data)
+
+        consulta_id_monitores_selected = list(usuario_rol.objects.filter(id_jefe = pk, id_rol = id_rol_monitor))
+
+        for i in consulta_id_monitores_selected:
+            serializer_usuario_rol_selected =usuario_rol_serializer(i)
+            consulta_monitor_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
+            serializer_monitor_selected  = user_selected(consulta_monitor_selected )
+            list_monitores_selected.append(serializer_monitor_selected.data)
+            for i in list_monitores:
+                if i['id'] == serializer_monitor_selected.data['id']:
+                    list_monitores.remove(i)
+        datos = [list_monitores_selected,list_monitores]
+        return Response(datos,status=status.HTTP_200_OK)
+
+class estudiante_selected_viewsets (viewsets.ModelViewSet):
+    serializer_class = usuario_rol_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = usuario_rol_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+        list_estudiantes = []
+
+
+        list_all_estudiantes = list(estudiante.objects.all())
+        for i in list_all_estudiantes: 
+            serializer_estudiante =estudiante_serializer(i)
+            list_estudiantes.append(serializer_estudiante.data)
+
+        return Response(list_estudiantes,status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk):
+        list_estudiantes = []
+        list_estudiantes_selected = []
+
+        consulta_estudiantes = list(estudiante.objects.all())
+        for i in consulta_estudiantes: 
+            serializer_estudiante =estudiante_serializer(i)
+            list_estudiantes.append(serializer_estudiante.data)
+
+        lista_asignacion = list(asignacion.objects.filter(id_usuario = pk))
+
+        for i in lista_asignacion:
+            serializer_asignacion =asignacion_serializer(i)
+            estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
+            serializer_estudiante =estudiante_serializer(estudiante_selected)
+            list_estudiantes_selected.append(serializer_estudiante.data)
+            for i in list_estudiantes:
+                if i['id'] == serializer_estudiante.data['id']:
+                    list_estudiantes.remove(i)
+
+        datos = [list_estudiantes_selected,list_estudiantes]
+        return Response(datos,status=status.HTTP_200_OK)
+
+
+
+class usuario_rol_viewsets (viewsets.ModelViewSet):
+    serializer_class = usuario_rol_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = usuario_rol_serializer.Meta.model.objects.all()
+    
 
     def list(self, request):
         list_user_rol = list()
