@@ -89,12 +89,12 @@ const SideBar = (props) =>{
                                 {
                                     isOpen ?
                                     (<div className="sidebar_item">
-                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}
+                                        { Menu2.map((item, index) => <SidebarItem key={index} item={item}
                                         childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                     :
                                     (<div className="sidebar_item">
-                                        { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} 
+                                        { Menu2.map((item, index) => <Sidebar_item_closed key={index} item={item} 
                                         childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                 }
@@ -111,12 +111,12 @@ const SideBar = (props) =>{
                                 {
                                     isOpen ?
                                     (<div className="sidebar_item">
-                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}
+                                        { Menu2.map((item, index) => <SidebarItem key={index} item={item}
                                         childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                     :
                                     (<div className="sidebar_item">
-                                    { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item}
+                                    { Menu2.map((item, index) => <Sidebar_item_closed key={index} item={item}
                                     childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                 }

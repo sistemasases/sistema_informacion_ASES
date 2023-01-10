@@ -1,9 +1,11 @@
 import React, {useMemo, useState} from 'react';
+import ReactDOM from "react-dom";
 import {useTable, Table} from 'react-table';
 import MOCK_DATA from './MOCK_DATA.json';
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import Cabecera from "./cabecera.jsx";
 import DataTable, {selectFilter} from'react-data-table-component';
+import DataTableExtensions from 'react-data-table-component-extensions';
 import Select from 'react-select'  ;
 
 const Tabla_desercion = () =>{
@@ -101,12 +103,21 @@ const Tabla_desercion = () =>{
             <Cabecera/>
           </Row>
           <Row>
-            <DataTable
-            paginationComponentOptions={paginacionOpciones}
+          <DataTableExtensions
             columns={columnas2}
             data={MOCK_DATA}
-            pagination
+            filter={false}
+            exportHeaders={true}
+            >
+              
+            <DataTable
+            columns={columnas2}
+            data={MOCK_DATA}
+            pagination 
+            paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+            paginationComponentOptions={paginacionOpciones}            
             />
+            </DataTableExtensions>
           </Row>
           
         </Container>

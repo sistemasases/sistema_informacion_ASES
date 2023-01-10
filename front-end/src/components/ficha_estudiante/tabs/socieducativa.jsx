@@ -20,26 +20,6 @@ const Socieducativa = (props) =>{
     const handleShow = () => setShow(true);
 
 
-    const datos_option_user = []
-    const datos_option_rol = []
-    var bandera_option_user = true;
-    var bandera_option_rol = true;
-    var bandera = true;
-    const [state,set_state] = useState({
-      usuario : '',
-      data_user : [],
-      data_rol : [],
-
-      id_usuario:'',
-      nombres:'',
-      apellidos: '',
-      cedula:'',
-      correo:'',
-      telefono:'',
-
-    })
-
-
 
 
     const tabs=[

@@ -702,7 +702,7 @@ const Info_basica = (props) =>{
 
         <div class="d-block d-md-none col-12">
           <Col>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
+          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Col>
         </div>
 

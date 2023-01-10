@@ -143,7 +143,7 @@ const asignaciones_component = (props) =>{
                       item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                     }).map((item, index) => <Listas 
                   key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
-                  childClicked={(name)=>monitor_seleccion(name)}/>) }
+                  childClicked={(name)=>practicante_seleccion(name)}/>) }
                     </Col>
                   )
                   :
@@ -157,7 +157,7 @@ const asignaciones_component = (props) =>{
                       item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                     }).map((item, index) => <Listas 
                   key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
-                  childClicked={(name)=>monitor_seleccion(name)}/>) }
+                  childClicked={(name)=>practicante_seleccion(name)}/>) }
 
                     { practicantes_seleccionados['1'].filter((item)=>{
                       return state.practicante_filtro.toLowerCase() === '' ? item 
