@@ -89,7 +89,7 @@ const Selector = (props) =>{
         <Container className="containerSelector">
 
                 {
-                    props.seleccionado ==='e' ?
+                    props.seleccionado ==='' ?
                     (
                         <Row className="tabs" >
                                     {

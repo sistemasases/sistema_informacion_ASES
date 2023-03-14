@@ -60,7 +60,7 @@ class Login(TokenObtainPairView):
                         'token': login_serializer.validated_data.get('access'),
                         'refresh-token': login_serializer.validated_data.get('refresh'),
                         'user': data,
-                        'message': 'Inicio de Sesion Existoso'
+                        'message': 'Inicio de Sesion Exitoso'
                     }, status=status.HTTP_200_OK)
                 return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({'error': 'El usuario no está activo'}, status=status.HTTP_400_BAD_REQUEST)
