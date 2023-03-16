@@ -16,12 +16,10 @@ const semestre_sistemas_component = () =>{
     const [state,set_state] = useState({
         data: [],
         form: {
-            id: undefined,
             username: undefined,
             password: undefined,
             first_name: undefined, 
-            last_name: undefined, 
-            documento: undefined, 
+            last_name: undefined,
             email: undefined,
         },
     })
@@ -46,20 +44,17 @@ const semestre_sistemas_component = () =>{
         if(!(!nuevo.username || nuevo.username === '')){
             if(!(!nuevo.first_name || nuevo.first_name === '')){
                 if(!(!nuevo.last_name || nuevo.last_name === '')){
-                    if(!(!nuevo.documento || nuevo.documento === '')){
+                    if(!(!nuevo.password || nuevo.password === '')){
                         if(!(!nuevo.email || nuevo.email === '')){
-                            nuevo.password=nuevo.documento;
                             await Create_User.user_rol(nuevo);
                             lista.push(nuevo);
                             console.log('Se creó al ususario: ' + nuevo.username);
                             setShow(false);
                             set_state({...state, data: lista, form: {
-                                id: undefined,
                                 username: undefined,
                                 password: undefined,
                                 first_name: undefined, 
                                 last_name: undefined, 
-                                documento: undefined, 
                                 email: undefined,
                             }});
                         } else{
@@ -165,7 +160,7 @@ const semestre_sistemas_component = () =>{
                 </FormGroup>
                 <FormGroup>
                     <label>Documento:</label>
-                    <input className='form-control' name='documento' type='text' onChange={handleChange}/>
+                    <input className='form-control' name='password' type='text' onChange={handleChange}/>
                 </FormGroup>
                 <FormGroup>
                     <label>Correo:</label>
