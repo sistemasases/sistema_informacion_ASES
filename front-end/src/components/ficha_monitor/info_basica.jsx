@@ -9,7 +9,7 @@ import { NavLink } from 'react-router-dom';
 import Selector_estudiantes from "../componentes_generales/selector_estudiantes";
 import  {useEffect} from 'react';
 import axios from 'axios';
-import Selector from "../../components/ficha_estudiante/selector";
+import Selector from "./selector";
 import Ficha_footer from "./ficha_footer";
 import Form from 'react-bootstrap/Form';
 import Info_registros from './info_registros';
@@ -18,7 +18,7 @@ import Modal from 'react-bootstrap/Modal';
 
 
 
-const Info_basica = (props) =>{
+const Info_basica_monitor = (props) =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -218,7 +218,7 @@ const Info_basica = (props) =>{
 
     return (
       <Row>
-        <Col xs={"12"} lg={"9"} >
+        <Col xs={"12"} >
 
 
           <div class="d-none d-md-block">
@@ -643,76 +643,17 @@ const Info_basica = (props) =>{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <div class="d-none d-md-block col-12">
+        <div class="col-12">
           <Row>
             <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Row>
-          <Row>
-            <Ficha_footer></Ficha_footer>
-          </Row>
         </div>
 
 
         </Col>
-
-
-        
-
-
-        <Col xs={"12"} lg={"3"} className="prueba1">
-          <Info_registros></Info_registros>
-        </Col>
-        
-
-
-        <div class="d-block d-md-none col-12">
-          <Col>
-          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
-          </Col>
-        </div>
-
-
-
-        
-        
-
 
       </Row>
     )
 }
 
-export default Info_basica 
+export default Info_basica_monitor

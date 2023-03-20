@@ -44,6 +44,7 @@ import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
 import "./Scss/ficha_estudiante/Styles.css";
 import "./Scss/ficha_estudiante/info_registro.css";
+import "./Scss/ficha_estudiante/socieducativa.css";
 import "./Scss/ficha_estudiante/selector.css";
 import "./Scss/ficha_estudiante/informacion_general.css";
 import "./Scss/ficha_estudiante/academico.css";
@@ -64,6 +65,7 @@ import SideBar from "./components/componentes_generales/sideBar";
 import Login from "./modulos/login/login.jsx";
 //import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
 import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
+import Ficha_monitor from "./modulos/ficha_monitor/ficha_monitor.jsx";
 import Reporte_seguimientos from "./modulos/reporte_seguimientos/reporte_seguimientos.jsx";
 import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
 import Desercion from "./modulos/desercion/desercion.jsx";
@@ -110,6 +112,7 @@ const App = () => {
             <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
                     <Routes>
                         <Route path="/ficha_estudiante" element={<Ficha_estudiante path_actual={"path_actual"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
+                        <Route path="/ficha_monitor" element={<Ficha_monitor path_actual={"path_actual"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos path_actual={"Reporte seguimientos"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
                         <Route path="/desercion"element={<Desercion path_actual={"Deserción"} usuario={nombreUsuario}/>}/>

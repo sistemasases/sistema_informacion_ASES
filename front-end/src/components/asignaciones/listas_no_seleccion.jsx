@@ -36,11 +36,12 @@ const Listas_no_seleccion = (props) => {
                    <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.nombre)}>
 
                                             <Row className="asignaciones_hover1">
-                                            <Col  xs={"2"} md={"2"}> 
-                                                <button className="asignaciones_icons_añadir">
-                                                    <i class="bi bi-chevron-left"></i>                                                    
+                                                <Col  xs={"2"} md={"2"} className="center_asignacion"> 
+                                                    <button className="asignaciones_icons_añadir">
+                                                        <i class="bi bi-chevron-left"></i>                                                    
                                                     </button>
                                                 </Col>
+
                                                 <Col  xs={"10"} md={"4"}> 
                                                     <Row className="nombres_asignacion">
                                                         {props.item.username}
@@ -71,7 +72,7 @@ const Listas_no_seleccion = (props) => {
                 (
                     <Col className= "listas_cuerpo">
                                             <Row className="asignaciones_hover1">
-                                                <Col  xs={"2"} md={"2"}> 
+                                                <Col  xs={"2"} md={"2"} className="center_asignacion"> 
                                                 <button className="asignaciones_icons_añadir">
                                                     <i class="bi bi-chevron-left"></i>                                                    
                                                     </button>
@@ -108,7 +109,7 @@ const Listas_no_seleccion = (props) => {
                 (
         <Col className="listas_cuerpo">
                                 <Row className="asignaciones_hover1">
-                                    <Col xs={"2"} md={"2"}> 
+                                                <Col xs={"2"} md={"2"} className="center_asignacion"> 
                                                     <button className="asignaciones_icons_añadir">
                                                     <i class="bi bi-chevron-left"></i>                                                    
                                                     </button>

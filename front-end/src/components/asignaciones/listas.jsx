@@ -31,7 +31,7 @@ const Listas = (props) => {
                 (
                    <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
                                             <Row className="asignaciones_hover1">
-                                                <Col  xs={"2"} md={"2"}> 
+                                                <Col  xs={"2"} md={"2"}  className="center_asignacion"> 
                                                 <button className="asignaciones_icons_quitar">
                                                 <i class="bi bi-x"></i>                                                    
                                                 </button>
@@ -47,7 +47,7 @@ const Listas = (props) => {
                                                     </Row>
                                                 </Col>
 
-                                                <Col  xs={"2"} md={"2"}> 
+                                                <Col  xs={"2"} md={"2"}  className="center_asignacion"> 
                                                     <button className="asignaciones_icons">
                                                     <i class="bi bi-arrow-left-right"></i>
                                                     </button>
@@ -88,7 +88,7 @@ const Listas = (props) => {
                 (
                     <Col className= "listas_cuerpo" onClick={()=>childClicked2(props.item.id)}>
                                             <Row className="asignaciones_hover1">
-                                                <Col  xs={"2"} md={"2"}> 
+                                                <Col  xs={"2"} md={"2"}  className="center_asignacion"> 
                                                 <button className="asignaciones_icons_quitar">
                                                 <i class="bi bi-x"></i>                                                    
                                                 </button>
@@ -106,7 +106,7 @@ const Listas = (props) => {
                                                 </Col>
 
 
-                                                <Col  xs={"2"} md={"2"}> 
+                                                <Col  xs={"2"} md={"2"} className="center_asignacion"> 
                                                 <button className="asignaciones_icons">
                                                     <i class="bi bi-arrow-left-right"></i>
                                                 </button>
@@ -143,7 +143,7 @@ const Listas = (props) => {
             (
                 <Col className="listas_cuerpo" onClick={()=>childClicked3(props.item.id)}>
                                             <Row className="asignaciones_hover1">
-                                                <Col  xs={"2"} md={"2"}> 
+                                                <Col  xs={"2"} md={"2"} className="center_asignacion"> 
                                                 <button className="asignaciones_icons_quitar">
                                                 <i class="bi bi-x"></i>                                                    
                                                 </button>
@@ -161,7 +161,7 @@ const Listas = (props) => {
                                                 </Col>
 
                                                 
-                                                <Col  xs={"2"} md={"2"}> 
+                                                <Col  xs={"2"} md={"2"} className="center_asignacion"> 
                                                 <button className="asignaciones_icons">
                                                     <i class="bi bi-arrow-left-right"></i>
                                                 </button>

@@ -160,7 +160,9 @@ const asignaciones_component = (props) =>{
                     :
                     (
                     <Col className="scroll_listas">
-                      
+                      <Row className="asignaciones_seleccion_profecional">
+                        profecional: {state.profecional_seleccionado}
+                        </Row>
                       { practicantes_seleccionados['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
@@ -225,6 +227,9 @@ const asignaciones_component = (props) =>{
                   :
                   (
                   <Col className="scroll_listas">
+                    <Row className="asignaciones_seleccion">
+                      Practicante seleccionado : {state.monitor_seleccionado }
+                    </Row>
                     <Scrollbars>
                     { monitores_seleccionados['0'].filter((item)=>{
                       return state.monitor_filtro.toLowerCase() === '' ? item 
@@ -294,6 +299,9 @@ const asignaciones_component = (props) =>{
                   :
                   (
                   <Col className="scroll_listas">
+                    <Row className="asignaciones_seleccion">
+                      Monitor seleccionado : {state.monitor_seleccionado }
+                    </Row>
                   <Scrollbars>
                   { estudiantes_seleccionados['0'].filter((item)=>{
                       return state.estudiante_filtro.toLowerCase() === '' ? item 

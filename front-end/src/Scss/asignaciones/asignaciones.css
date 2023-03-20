@@ -8,6 +8,18 @@
     background: #f5f5f5;
     border: 1px solid #D8D8D8;
 }
+.asignaciones_seleccion{
+  margin: 20px 20px;
+  padding: 10px 10px;
+  background: #f5f5f5;
+  border: 1px solid #D8D8D8;
+}
+.asignaciones_seleccion_profecional{
+  margin: 20px 20px;
+  padding: 10px 10px;
+  background: #f5f5f5;
+  border: 1px solid #D8D8D8;
+}
 
   
 .fichas{
@@ -138,7 +150,9 @@
 }
 .row_presentacion_reportes_seguimientos{
 }
-
+.center_asignacion{
+  padding-top: 1vh;
+}
 .container_reportes_seguimientos{
     font: 1em sans-serif;
 }
@@ -199,18 +213,21 @@
     background: blue;
     color: white;
     align-content: center;
+    border:none;
 }
 .asignaciones_icons_añadir{
     font-size: 2vh;
     background: green;
     color: white;
     align-content: center;
+    border:none;
 }
 .asignaciones_icons_quitar{
     font-size: 2vh;
     background: red;
     color: white;
     align-content: center;
+    border:none;
 }
 .subrow_card_content_flex{
     font-size: 11pt;

@@ -11,55 +11,42 @@ import Select from 'react-select'  ;
 
 const Tabla_sin_Seguimientos = () =>{
 
-  const columns = useMemo(()=> Columnas,[]);
   const data = useMemo(()=> MOCK_DATA, []);
-
-  const instancias = useTable({
-    columns,
-    data
-  })
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  }=instancias
-
-
-
-  const tablaCampeones =[
-    {id:1, año:"222", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:2, año:"233", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:3, año:"244", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:4, año:"255", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-  ]
-  
-
 
 
   const columnas2 = [
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Codigo</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos">
+      <h4 className="texto_mas_pequeño">Codigo</h4>
+      </Row>
             </div>),
       selector:'id',
       sortable:true
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Cedula</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos">
+      <h4 className="texto_mas_pequeño">Cedula</h4>
+      </Row>
 </div>),
       selector:'phone',
       sortable:true
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Nombres</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos">
+      <h4 className="texto_mas_pequeño">Nombres</h4>
+      </Row>
 </div>),
       selector:'first_name',
       sortable:true,
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Apellidos</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos">
+      <h4 className="texto_mas_pequeño">Apellidos</h4>
+      </Row>
 </div>),
       selector:'last_name',
       sortable:true,
@@ -83,25 +70,34 @@ const Tabla_sin_Seguimientos = () =>{
       sortable:true,
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Monitor</h4></Row>
-        <Row><select /></Row>
-  </div>),
+      name:(<div className="div_tabla_filtro">
+                <Row className="center_tabla_sin_seguimientos">
+                <h4 className="texto_mas_pequeño">Monitor</h4></Row>
+                <Row><select /></Row>
+            </div>),
       selector:'phone',
       sortable:true
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Practicante</h4></Row>
-        <Row className="center_tabla_sin_seguimientos"><select /></Row>
-  </div>),
+      name:(
+      <div className="div_tabla_filtro">
+                <Row className="center_tabla_sin_seguimientos">
+                <h4 className="texto_mas_pequeño">Practicante</h4></Row>
+                <Row><input /></Row>
+            </div>),
       selector:'age',
       sortable:true,
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Profecional</h4></Row>
-        <Row><select /></Row>
-  </div>),
+      name:(
+      <div className="div_tabla_filtro">
+                <Row className="center_tabla_sin_seguimientos">
+                <h4 className="texto_mas_pequeño">Profecional</h4></Row>
+            </div>),
       selector:'age',
-      sortable:true,
+      sortable:false,
+      filterable:true,
+      filter:true,
     },
 
   ]
@@ -114,21 +110,6 @@ const Tabla_sin_Seguimientos = () =>{
     selectAllRowsItemtEXT:'TODO',
 
   }
-
-  const tableData = {
-    columnas2,
-    data,
-  }; 
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -157,9 +138,21 @@ const Tabla_sin_Seguimientos = () =>{
             <DataTableExtensions
             columns={columnas2}
             data={MOCK_DATA}
-            filter={false}
+            filter={true}
+            filterDigit={0}
             exportHeaders={true}
             >
+              
+            <DataTable
+            pagination 
+            paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+            paginationComponentOptions={paginacionOpciones}            
+            />
+            </DataTableExtensions>
+            
+          </Row>
+
+          <Row>
               
             <DataTable
             columns={columnas2}
@@ -168,8 +161,7 @@ const Tabla_sin_Seguimientos = () =>{
             paginationRowsPerPageOptions={[10,20,30,40,50,100]}
             paginationComponentOptions={paginacionOpciones}            
             />
-            </DataTableExtensions>
-            
+
           </Row>
         </Container>
     )
