@@ -14,6 +14,7 @@ import Ficha_footer from '../../components/ficha_monitor/ficha_footer';
 
 
 
+
 const Ficha_monitor = (props) =>{
 
     const[switchChecked, setChecked] = useState(false);

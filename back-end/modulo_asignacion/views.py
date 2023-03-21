@@ -21,7 +21,7 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = asignacion_serializer.Meta.model.objects.all()
 
-    def update(self, request, pk=None):
+    def retrieve(self, request, pk):
         # serializer = self.serializer_class(data=request.data)
         # print('esta es la info: '+ str(request.data))
         # if (serializer.is_valid()):
@@ -30,7 +30,7 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
             var_semestre =semestre.objects.get(semestre_actual = True)
             serializer_semestre= semestre_serializer(var_semestre)
             try:
-                var_old_asignacion = asignacion.objects.get(id_estudiante = serializer_estudiante.data['id'],  id_semestre = serializer_semestre.data['id'],estado = 'ACTIVO')
+                var_old_asignacion = asignacion.objects.get(id_estudiante = serializer_estudiante.data['id'],  id_semestre = serializer_semestre.data['id'],estado = True)
 
             except:
                 return Response(
@@ -38,7 +38,7 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
                 )
 
             var_asignacion = var_old_asignacion
-            var_asignacion.estado = "INACTIVO"
+            var_asignacion.estado = False
             var_asignacion.save()
 
             return Response({'Respuesta': 'Asignación eliminada'},status=status.HTTP_200_OK)
@@ -58,13 +58,13 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
             except:
                 var_old_asignacion = Empty
 
-            if(var_old_asignacion != Empty and var_old_asignacion.estado == "ACTIVO"):
+            if(var_old_asignacion != Empty and var_old_asignacion.estado == True):
                 print("entre a 1")
                 Response(
                     {'Respuesta': 'El estudiante ya está asignado a alguien este semestre.'},
                     status=status.HTTP_406_NOT_ACCEPTABLE
                 )
-            elif(var_old_asignacion == Empty or(var_old_asignacion != Empty and var_old_asignacion.estado == "INACTIVO") ) :
+            elif(var_old_asignacion == Empty or(var_old_asignacion != Empty and var_old_asignacion.estado == False) ) :
                 print("entre a 2")
                 var_asignacion= asignacion()
                 var_asignacion.id_usuario= var_usuario
