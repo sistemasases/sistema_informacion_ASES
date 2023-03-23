@@ -17,9 +17,7 @@ const user_rol = (formData) => {
         "email": formData.email,
         "is_staff": false,
         "is_active": false,
-        "date_joined": fecha_actual_string,
-        "groups": [],
-        "user_permissions": []
+        "date_joined": fecha_actual_string
     }
 
     console.log(fecha_actual)
