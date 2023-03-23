@@ -3,7 +3,7 @@ import Semestre_sistemas_component from "../../components/inicio_semestre_sistem
 import Tabla_sistemas_component from "../../components/inicio_semestre_sistemas/tabla_semestre"
 import Carga_estudiantes_component from "../../components/inicio_semestre_sistemas/carga_estudiantes"
 import Carga_monitores_component from "../../components/inicio_semestre_sistemas/carga_monitores"
-import {Container, Row, Accordion, Button, useAccordionButton} from "react-bootstrap";
+import {Container, Row, Accordion, Button, useAccordionButton, Col} from "react-bootstrap";
 
 const Inicio_semestre_sistemas = () =>{
 
@@ -14,9 +14,11 @@ const Inicio_semestre_sistemas = () =>{
           setShow(false);
         });
       
-        return (
-          <Button variant="primary" onClick={handle_upload}>{children}</Button>
-        );
+        return (<>
+          <Row><p></p></Row><Row>
+          <Col><Button variant="primary" onClick={handle_upload}>{children}</Button></Col>
+          <Col/><Col/><Col/><Col/><Col/></Row>
+          </>);
     }
     return (
         <Container>
@@ -31,11 +33,11 @@ const Inicio_semestre_sistemas = () =>{
                             <div hidden={!show}>
                                 <Semestre_sistemas_component/>
                                 <Row>
-                                    <CustomToggle eventKey="1">Guardar y continuar</CustomToggle>
+                                    <CustomToggle eventKey="1">Continuar</CustomToggle>
                                 </Row>
                             </div>
                             <div hidden={show}>
-                                Usuarios guardados exitosamente.
+                                <h2>Usuarios guardados exitosamente.</h2>
                                 <Row>
                                     <Tabla_sistemas_component/>
                                 </Row>
@@ -47,7 +49,7 @@ const Inicio_semestre_sistemas = () =>{
                         <Accordion.Body>
                             <Carga_estudiantes_component/>
                             <Row>
-                                <CustomToggle eventKey="2">Guardar y continuar</CustomToggle>
+                                <CustomToggle eventKey="2">Continuar</CustomToggle>
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>

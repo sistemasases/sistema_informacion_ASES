@@ -29,6 +29,7 @@
     "react-i18next": "^11.18.3",
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
+    "react-script": "^2.0.5",
     "react-scripts": "^2.1.8",
     "react-select": "^5.4.0",
     "react-switch": "^7.0.0",
@@ -42,7 +43,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

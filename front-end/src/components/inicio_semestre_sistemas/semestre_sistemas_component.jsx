@@ -5,13 +5,13 @@ import Select from 'react-select';
 import All_Rols from '../../service/all_rols';
 import All_Users_Rols from '../../service/all_users_rol';
 import Create_User from '../../service/create_user';
+import Delete_User from '../../service/delete_user';
 import user_rol from '../../service/user_rol';
 
 var datos_option_rol = [];
+var bandera_option_rol = true;
 
 const semestre_sistemas_component = () =>{
-
-    var bandera_option_rol = true;
 
     const [state,set_state] = useState({
         data: [],
@@ -48,7 +48,6 @@ const semestre_sistemas_component = () =>{
                         if(!(!nuevo.email || nuevo.email === '')){
                             await Create_User.user_rol(nuevo);
                             lista.push(nuevo);
-                            console.log('Se creó al ususario: ' + nuevo.username);
                             setShow(false);
                             set_state({...state, data: lista, form: {
                                 username: undefined,
@@ -107,6 +106,7 @@ const semestre_sistemas_component = () =>{
             var lista = state.data;
             lista.map((element)=>{
                 if(element.id==e.id){
+                    Delete_User.delete_user_rol(e.id);
                     lista.splice(contador, 1);
                 }
                 contador++;
@@ -159,8 +159,8 @@ const semestre_sistemas_component = () =>{
                     <input className='form-control' name='last_name' type='text' onChange={handleChange}/>
                 </FormGroup>
                 <FormGroup>
-                    <label>Documento:</label>
-                    <input className='form-control' name='password' type='text' onChange={handleChange}/>
+                    <label>Contraseña:</label>
+                    <input className='form-control' name='password' type='password' onChange={handleChange}/>
                 </FormGroup>
                 <FormGroup>
                     <label>Correo:</label>
@@ -176,6 +176,7 @@ const semestre_sistemas_component = () =>{
             <Table responsive hover size="sm" class="table">
                 <thead>
                     <Button variant="primary" onClick={handleShow}>Insertar Usuario</Button>
+                    <p/>
                     <tr class="table-info">
                         <th align='center'>Username</th>
                         <th align='center'>Nombre</th>
@@ -202,7 +203,7 @@ const semestre_sistemas_component = () =>{
                     ))}
                 </tbody>
             </Table>
-            <Button onClick={handleCreate}>Crear usuarios</Button>
+            <Button variant="primary" onClick={handleCreate}>Crear usuarios</Button>
         </Row>
         </Container>
     )
