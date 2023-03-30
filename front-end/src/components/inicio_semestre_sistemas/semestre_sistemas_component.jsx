@@ -1,3 +1,12 @@
+/**
+  * @file semestre_sistemas_component.jsx
+  * @version 1.0.0
+  * @description Componente para crear un nuevo semestre. Utiliza un select para elegir la instancia a la que pertenecerá el semestre, además de otros campos como el nombre del semestre, fecha de inicio y fecha de fin.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
+
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Modal, Table, FormGroup, Form, Col} from "react-bootstrap";
