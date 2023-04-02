@@ -105,7 +105,7 @@ const inicio_semestre_component = () =>{
     }
 
     /**
-        * Manejador de eventos del input form para obtener los cambios a las variables.
+        * Manejador de eventos del input form para obtener los cambios de las variables.
         * @param {Event} e Evento del formulario.
     */
     const handleChange = (e) => {

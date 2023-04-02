@@ -1,3 +1,12 @@
+/**
+  * @file inicio_semestre_sistemas.jsx
+  * @version 1.0.0
+  * @description modulo para la inicialización del semestre. Donde se traen diferentes componentes para este fin.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
+
 import React, {useState} from 'react';
 import Semestre_sistemas_component from "../../components/inicio_semestre_sistemas/semestre_sistemas_component"
 import Tabla_sistemas_component from "../../components/inicio_semestre_sistemas/tabla_semestre"
@@ -7,8 +16,15 @@ import {Container, Row, Accordion, Button, useAccordionButton, Col} from "react-
 
 const Inicio_semestre_sistemas = () =>{
 
+    // Constante para cerrar el acordión.
     const [show, setShow] = useState(true);
 
+    /**
+        * Función para cerrar el acordión.
+        * @param {Event} children Información del texto del botón.
+        * @param {String} eventKey Indica a cuál evento hace referencia.
+        * @returns {Props} - Botón que cierra la sección del evente que hace referencia.
+    */
     const CustomToggle = ({ children, eventKey }) => {
         const handle_upload = useAccordionButton(eventKey, () =>{
           setShow(false);
@@ -20,6 +36,7 @@ const Inicio_semestre_sistemas = () =>{
           <Col/><Col/><Col/><Col/><Col/></Row>
           </>);
     }
+
     return (
         <Container>
             <Row className="rowJustFlex">

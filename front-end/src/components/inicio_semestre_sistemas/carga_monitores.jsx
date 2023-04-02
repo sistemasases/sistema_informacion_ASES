@@ -57,7 +57,6 @@ const carga_masiva_component = () =>{
   const handle_upload=(e)=> {
     let option = [state.option];
     let formData = new FormData();
-    console.log(archivo)
   
     // Agregando el archivo a FormData
     formData.append("tipo_de_carga", option);
@@ -69,7 +68,6 @@ const carga_masiva_component = () =>{
       data: formData,
     })
     .then((res)=>{
-      console.log(res)
       set_state({
         ...state,
         mensaje : res.data,
@@ -82,8 +80,6 @@ const carga_masiva_component = () =>{
         respuesta: "ocurrio un error"
     })})
     setShow(true)
-    console.log(state.mensaje)
-    console.log(state.respuesta)
   }
 
   /**

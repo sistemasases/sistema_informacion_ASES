@@ -1,15 +1,25 @@
+/**
+  * @file tabla_semestre.jsx
+  * @version 1.0.0
+  * @description Componente para mostrar una tabla con todos los usuarios.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
+
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Table} from "react-bootstrap";
-import All_Rols from '../../service/all_rols';
 import All_Users_Rols from '../../service/all_users_rol';
 
 const semestre_sistemas_component = () =>{
 
+    // Constante para guardar el estado de la tabla
     const [state,set_state] = useState({
         data: [],
     })
 
     useEffect(()=>{
+        //Trae todos los usuarios con rol del semestre
         All_Users_Rols.all_users_rols().then((res) => {
             set_state({
                 ...state,

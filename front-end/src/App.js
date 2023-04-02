@@ -118,6 +118,7 @@ const App = () => {
                         <Route path="/asignaciones" element={<Asignaciones/>}/>
                         <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
+                        <Route path="/"element={<Inicio/>}/>
                     </Routes>
                 </SideBar>
 
