@@ -42,6 +42,8 @@ import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
+import "./Scss/academico/academico.css";
+import "./Scss/academico/academico_listas.css";
 import "./Scss/ficha_estudiante/Styles.css";
 import "./Scss/ficha_estudiante/info_registro.css";
 import "./Scss/ficha_estudiante/socieducativa.css";
@@ -69,6 +71,7 @@ import Ficha_monitor from "./modulos/ficha_monitor/ficha_monitor.jsx";
 import Reporte_seguimientos from "./modulos/reporte_seguimientos/reporte_seguimientos.jsx";
 import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
 import Desercion from "./modulos/desercion/desercion.jsx";
+import Academico_pestaña from "./modulos/academico_pestaña/academico_pestaña.jsx";
 import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
@@ -116,6 +119,7 @@ const App = () => {
                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos path_actual={"Reporte seguimientos"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
                         <Route path="/desercion"element={<Desercion path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
+                        <Route path="/academico"element={<Academico_pestaña path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol path_actual={"Gestion usuarios"} usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
                         <Route path="/asignaciones" element={<Asignaciones/>}/>

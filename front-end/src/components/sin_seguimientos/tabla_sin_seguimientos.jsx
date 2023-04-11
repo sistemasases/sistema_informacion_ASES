@@ -9,20 +9,25 @@ import DataTable, {selectFilter} from'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
 import Select from 'react-select'  ;
 
+
 const Tabla_sin_Seguimientos = () =>{
 
   const data = useMemo(()=> MOCK_DATA, []);
 
 
+
+
+
+
+
+
+
+
   const columnas2 = [
     {
-      name:(<div>
-      <Row className="center_tabla_sin_seguimientos">
-      <h4 className="texto_mas_pequeño">Codigo</h4>
-      </Row>
-            </div>),
+      name:'ID',
       selector:'id',
-      sortable:true
+      filter: true,
     },
     {
       name:(<div>
@@ -31,7 +36,7 @@ const Tabla_sin_Seguimientos = () =>{
       </Row>
 </div>),
       selector:'phone',
-      sortable:true
+      sortable:true,
     },
     {
       name:(<div>
@@ -103,6 +108,8 @@ const Tabla_sin_Seguimientos = () =>{
   ]
     
 
+
+
   const paginacionOpciones={
     rowsPerPageText:'textooooo',
     rangeSeparratorText:'de',
@@ -110,8 +117,6 @@ const Tabla_sin_Seguimientos = () =>{
     selectAllRowsItemtEXT:'TODO',
 
   }
-
-
 
 
 
@@ -159,7 +164,12 @@ const Tabla_sin_Seguimientos = () =>{
             data={MOCK_DATA}
             pagination 
             paginationRowsPerPageOptions={[10,20,30,40,50,100]}
-            paginationComponentOptions={paginacionOpciones}            
+            paginationComponentOptions={paginacionOpciones}    
+            highlightOnHover={true}
+            striped={true}        
+            onFilter={(column, value) => {
+              console.log(column, value);
+            }}
             />
 
           </Row>
