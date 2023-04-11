@@ -21,88 +21,124 @@ const Tabla_sin_Seguimientos = () =>{
 
 
 
-
-
   const columnas2 = [
     {
       name:'ID',
       selector:'id',
-      filter: true,
+      sortable: true,
     },
+
+    
+
     {
       name:(<div>
       <Row className="center_tabla_sin_seguimientos">
       <h4 className="texto_mas_pequeño">Cedula</h4>
       </Row>
+      <Row><input onChange={handleFilter_cedula}/></Row>
+
 </div>),
       selector:'phone',
-      sortable:true,
+      sortable:false,
     },
+
+
+
     {
       name:(<div>
       <Row className="center_tabla_sin_seguimientos">
       <h4 className="texto_mas_pequeño">Nombres</h4>
       </Row>
+      <Row><input onChange={handleFilter_nombre}/></Row>
+
 </div>),
       selector:'first_name',
       sortable:true,
     },
+
+
+
     {
       name:(<div>
       <Row className="center_tabla_sin_seguimientos">
       <h4 className="texto_mas_pequeño">Apellidos</h4>
       </Row>
+      <Row><input onChange={handleFilter_apellido}/></Row>
 </div>),
       selector:'last_name',
       sortable:true,
     },
+
+
+
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Cantidad de fichas</h4></Row>
+      name:(<div>
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Cantidad de fichas</h4>
+        </Row>
 </div>),
       selector:'phone',
       sortable:true
     },
+
+
+
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Cantidad de inasistencias</h4></Row>
+      name:(<div>
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Cantidad de inasistencias</h4>
+        </Row>
 </div>),
       selector:'age',
       sortable:true,
     },
+
+
+
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Total de fichas</h4></Row>
+      name:(<div>
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Total de fichas</h4>
+        </Row>
 </div>),
       selector:'age',
       sortable:true,
     },
+
+
+
     {
       name:(<div className="div_tabla_filtro">
                 <Row className="center_tabla_sin_seguimientos">
                 <h4 className="texto_mas_pequeño">Monitor</h4></Row>
-                <Row><select /></Row>
+                <Row><input onChange={handleFilter_monitor}/></Row>
             </div>),
-      selector:'phone',
-      sortable:true
+      selector:'last_name',
+      sortable: false
     },
+
+
+
     {
       name:(
       <div className="div_tabla_filtro">
                 <Row className="center_tabla_sin_seguimientos">
                 <h4 className="texto_mas_pequeño">Practicante</h4></Row>
-                <Row><input /></Row>
+                <Row><input onChange={handleFilter_practicante}/></Row>
             </div>),
-      selector:'age',
-      sortable:true,
+      selector:'first_name',
+      sortable:false,
     },
     {
       name:(
       <div className="div_tabla_filtro">
                 <Row className="center_tabla_sin_seguimientos">
-                <h4 className="texto_mas_pequeño">Profecional</h4></Row>
+                <h4 className="texto_mas_pequeño">Profecional</h4>
+                </Row>
+                <Row><input onChange={handleFilter_profecional}/></Row>
             </div>),
-      selector:'age',
+      selector:'last_name',
       sortable:false,
-      filterable:true,
-      filter:true,
     },
 
   ]
@@ -119,9 +155,59 @@ const Tabla_sin_Seguimientos = () =>{
   }
 
 
+  const [records, setRecords] = useState(MOCK_DATA);
 
 
 
+
+  function handleFilter_cedula(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.phone.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+
+  function handleFilter_nombre(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.first_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+  
+  function handleFilter_apellido(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+  function handleFilter_monitor(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+  function handleFilter_practicante(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.first_name.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+  function handleFilter_profecional(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
 
 
 
@@ -142,9 +228,10 @@ const Tabla_sin_Seguimientos = () =>{
           <Row>
             <DataTableExtensions
             columns={columnas2}
-            data={MOCK_DATA}
+            data={records}
             filter={true}
-            filterDigit={0}
+            filterPlaceHolder={2}
+            filterDigit={'1'}
             exportHeaders={true}
             >
               
@@ -166,10 +253,6 @@ const Tabla_sin_Seguimientos = () =>{
             paginationRowsPerPageOptions={[10,20,30,40,50,100]}
             paginationComponentOptions={paginacionOpciones}    
             highlightOnHover={true}
-            striped={true}        
-            onFilter={(column, value) => {
-              console.log(column, value);
-            }}
             />
 
           </Row>
