@@ -1,10 +1,13 @@
-
+.prueba_seguimintos{
+}
+.row_presentacion_reportes_seguimientos{
+}
 
 .container_reportes_seguimientos{
     font: 1em sans-serif;
-
-    display: flex;
-    flex-direction: column;
+}
+.container_reportes_seguimientos2{
+    font: 1em sans-serif;
 }
 
 .row_titulo_reportes_seguimientos{
@@ -14,30 +17,30 @@
 }
 
 .row_selectores_reportes_seguimientos{
-    display: flex;
 }
 
 .col_selectores_reportes_seguimientos{
-    display: flex;
-    flex-direction: column;
-    justify-content: right;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
     padding: 10px 10px; 
     border-bottom: 1px solid black;
-    display: flex;
 }
 .col_label_reportes_seguimientos{
     justify-content: center;
+    align-content: center;
+    text-align: center;
     padding: 10px 10px; 
     border-bottom: 1px solid black;
     font-size: 32pt;
 }
 
 .row_contenido_reportes_seguimientos{
-    margin: 20px 0px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     background: lightgray;
     justify-content: center;
-    display: flex;
-    flex-direction: column;
+
 }
 
 .row_align_rigth{
@@ -56,12 +59,11 @@
     display: flex;
 }
 .row_spans_card_content_flex{
-    padding-top: 2.5vh;
     font-size: 3vh;
     align-content: center;
 }
 .subrow_card_content_flex{
-    align-content: center;
+    font-size: 11pt;
 }
 
 .row_fondo_gris{
@@ -90,7 +92,6 @@
 
 
 .link_text_reporte_seguimientos1{
-    height: 100px;
     border: 1px solid lightgray;
     background: white;
 }
@@ -110,21 +111,38 @@
     border: 1px solid lightgray;
     background: white;
 }
-.link_text_reporte_seguimientos_hover{
-    background: #DEDEDE;
+.link_text_reporte_seguimientos_hover1{
+    background:  lightgray;
     display: flex;
     height: 100%;
 }
-.link_text_reporte_seguimientos_hover:hover{
+.link_text_reporte_seguimientos_hover1:hover{
+    background: red;
+}
+.link_text_reporte_seguimientos_hover2{
+    background: rgb(175,175,175);
+    display: flex;
+    height: 100%;
+}
+.link_text_reporte_seguimientos_hover2:hover{
+    background: red;
+}
+.link_text_reporte_seguimientos_hover3{
+    background: rgb(140, 140, 140);
+    display: flex;
+    height: 100%;
+}
+.link_text_reporte_seguimientos_hover3:hover{
     background: red;
 }
 .col_link_text_reporte_seguimientos_nombre{
-    padding: 8px 8px;
+    padding-left: 10px;
     font-size: 3vh;
 }
 
 
 .col_link_text_reporte_seguimientos_spans{
+    padding-top: 2vh;
 }
 
 .col_flecha_reportes{
@@ -136,7 +154,8 @@
 .col_link_text_reporte_seguimientos_info{
 }
 .sub_col_link_text_reporte_seguimientos_info{
-    padding-top: 2.5vh;
+    padding-top: 1.5vh;
+    margin-bottom: 1.5vh;
     font-size: 2vh;
 }
 
@@ -185,4 +204,8 @@
     margin-top: 3px;
     margin-left: 10%;
     margin-right: 7%;
+}
+
+.margin_top_info_rol{
+
 }

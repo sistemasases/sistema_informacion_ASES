@@ -1,3 +1,12 @@
+/**
+  * @file inicio_semestre_component.jsx
+  * @version 1.0.0
+  * @description Componente para crear un nuevo semestre. Utiliza un select para elegir la instancia a la que pertenecerá el semestre, además de otros campos como el nombre del semestre, fecha de inicio y fecha de fin.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
+
 import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Col, Alert, Form} from "react-bootstrap";
 import Select from 'react-select';
@@ -5,20 +14,19 @@ import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
 import All_instancias_service from '../../service/all_instancias';
 
-
 const inicio_semestre_component = () =>{
 
     //Constante y variable que se usaran para el select
     const opciones = [];
     var bandera_option = true;
 
-    //Constante que se usara para el redirecionamiento
+    //Hook que se usara para el redirecionamiento
     const navigate = useNavigate();
 
-    //Constante que se usara para extraer todas las instancias
+    //Estado que se usara para extraer todas las instancias
     const [state,set_state] = useState({tabs: [],})
 
-    //Constante que se usara para activar o desactivar parte de la vista
+    //Estados que se usaran para activar o desactivar parte de la vista
     const [isSelected, setIsSelected] = useState(false);
     const [activated, setActivated] = useState({
         isDisabled: false,
@@ -27,7 +35,7 @@ const inicio_semestre_component = () =>{
         mensaje: "",
     });
 
-    //Constantes que se usaran para los diferentes atributos del semestre
+    //Estado que se usara para los diferentes atributos del semestre
     const [semestre, setSemestre] = useState({
         idInstancia: 0,
         nombreInstancia: '',
@@ -51,7 +59,9 @@ const inicio_semestre_component = () =>{
         })
     },[]);
 
-    //Prop que toma las instancias y las transforma en opciones para el select
+    /**
+        * Prop que toma las instancias y las transforma en opciones para el select
+    */
     const handle_instancias = () => {
         if(bandera_option===true){
             for (var i = 0; i < state.tabs['length'] ; i++) {
@@ -62,7 +72,9 @@ const inicio_semestre_component = () =>{
         }
     }
 
-    //Manejador de los diferentes inputs
+    /**
+        * Manejador de los diferentes inputs
+    */
     const handleButton = () =>{
         if(!(!semestre.nombreSemestre || semestre.nombreSemestre === '') && (semestre.nombreSemestre.includes('-A') || semestre.nombreSemestre.includes('-B')) && (semestre.nombreSemestre.length === 6)){
             if(!(!semestre.fecha_inicio || semestre.fecha_inicio === '') && (dateToInt(formatDate(date_inicio)) <= dateToInt(semestre.fecha_inicio))){
@@ -91,6 +103,11 @@ const inicio_semestre_component = () =>{
             })
         }
     }
+
+    /**
+        * Manejador de eventos del input form para obtener los cambios de las variables.
+        * @param {Event} e Evento del formulario.
+    */
     const handleChange = (e) => {
         setSemestre({
             ...semestre,
@@ -98,7 +115,11 @@ const inicio_semestre_component = () =>{
         });
     }
 
-    //funciones para dar formato a las fechas
+    /**
+        * Función para agregar un cero delante de un número si es menor que 10.
+        * @param {number} int - Número a formatear.
+        * @returns {string} - Número formateado con cero delante si es menor que 10.
+    */
     function digitos(int){
         var result = int.toString();
         if(int < 10) {
@@ -106,6 +127,12 @@ const inicio_semestre_component = () =>{
         }
         return result
     }
+
+    /**
+        * Función que formatea una fecha en el formato 'AAAA-MM-DD'.
+        * @param {Date} date Fecha a formatear.
+        * @returns {String} Fecha formateada en el formato 'AAAA-MM-DD'.
+    */
     function formatDate(date) {
         return [
             (date.getFullYear()).toString(),
@@ -114,13 +141,21 @@ const inicio_semestre_component = () =>{
         ].join('-');
       }
 
+    /**
+        * Función que convierte una fecha en formato de cadena 'AAAA-MM-DD' a un entero.
+        * @param {String} date Fecha en formato de cadena 'AAAA-MM-DD'.
+        * @returns {Number} Fecha como un número entero.
+    */
     function dateToInt(date) {
         const fecha = date.split('-');
         const fechaint = parseInt(fecha[0] + fecha[1] + fecha[2])
         return fechaint;
     }
 
-    //Activa las vistas una vez se haya seleccionado algo en el select y actualiza los valores a mostrar
+    /**
+        * Activa las vistas una vez se haya seleccionado algo en el select y actualiza los valores a mostrar.
+        * @param {Number} e Id de la instancia selecionada.
+    */
     const handleActivateButton = async (e) =>{
 
         //codigo para la obtencion del nombre del semestre y la fecha de finalizacion del semestre anterior
@@ -209,15 +244,15 @@ const inicio_semestre_component = () =>{
                     <Alert variant='danger' show={activated.isWarning}>
                         <Alert.Heading>Error</Alert.Heading>
                         <p>{activated.mensaje}</p>
-                </Alert>
+                    </Alert>
                 </Col>
             </Row>
             <Row className="rowJustFlex" hidden={!activated.isDisabled}>
                 <Col><Row>
-                <Button variant="secondary" onClick={() => {setActivated({...activated, isDisabled: false,}); setIsSelected(false);}}>Cancelar</Button>
+                    <Button variant="secondary" onClick={() => {setActivated({...activated, isDisabled: false,}); setIsSelected(false);}}>Cancelar</Button>
                 </Row></Col>
                 <Col><Row>
-                <Button variant="primary" onClick={handleButton}>Crear Semestre</Button>
+                    <Button variant="primary" onClick={handleButton}>Crear Semestre</Button>
                 </Row></Col>
             </Row>
         </Container>

@@ -1,24 +1,33 @@
+/**
+  * @file carga_estudiantes.jsx
+  * @version 1.0.0
+  * @description Componente utilizado en el inicio del semestre para subir archivos CSV con información de estudiantes a través de una API.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
+
 import React, {useState} from 'react';
 import axios from 'axios';
-import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
+import {Container, Row, Col, Button, Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
-import carga_masiva_service from '../../service/carga_masiva';
-import DataTable, {createTheme} from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
+
 const carga_masiva_component = () =>{
 
-  const[switchChecked, setChecked] = useState(false);
+  // Constante que guarda la dirección url utilizada por el axios
   const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
-  
-
+  // Estado que permite guardar la respuesta del axios
   const [state,set_state] = useState({
     option : 'Estudiante',
     mensaje : [],
     respuesta : 'Cargando...',
   })
+  // Variable que permite guardar el archivo
   const [archivo,set_archivo] = useState(null);
+  // Variable que activa la vista modal
   const [show, setShow] = useState(false);
+  // Columnas de la tabla
   const columnas =[
     {
       name: 'DATO',
@@ -33,36 +42,32 @@ const carga_masiva_component = () =>{
     },
   ]
 
+  /**
+    * Manejador de eventos del input file para obtener el archivo seleccionado.
+    * @param {Event} e Evento del input.
+  */
   const handle_file = (e) => {
-
-    console.log(e.target.files)
     set_archivo(e.target.files[0])
   }
-  const handle_options = (e) => {
-    // Getting the files from the input
-    console.log(e.target.value)
-    set_state({
-      ...state,
-      [e.target.name] : [e.target.value]
-    })
-  }
+
+  /**
+    * Función para subir el archivo CSV a través de una API.
+    * @param {Event} e Evento del botón subir.
+  */
   const handle_upload=(e)=> {
     let option = [state.option];
     let formData = new FormData();
-    console.log(archivo)
-  
-    //Adding files to the formdata
+
+    // Agregando el archivo a FormData
     formData.append("tipo_de_carga", option);
     formData.append("FILES", archivo);
 
     axios({
-      // Endpoint to send files
       url: url_carga,
       method: "POST",
       data: formData,
     })
     .then((res)=>{
-      console.log(res)
       set_state({
         ...state,
         mensaje : res.data,
@@ -75,10 +80,11 @@ const carga_masiva_component = () =>{
         respuesta: "ocurrio un error"
     })})
     setShow(true)
-    console.log(state.mensaje)
-    console.log(state.respuesta)
-
   }
+
+  /**
+    * Función para cerrar el modal y reiniciar el estado.
+  */
   const set_info = (e) => {
     setShow(false)
     set_state({
@@ -86,52 +92,49 @@ const carga_masiva_component = () =>{
       respuesta : 'Cargando...',
     })
   }
+
+  /**
+    *Función para cerrar el modal.
+  */
   const handleClose = () => setShow(false);
 
   return (
-        <Container>
-
-            <Row >
-                  <h4>Suba el archivo csv para los estudiantes.</h4>
-            </Row>
-            <Row className='mt-2'>
-              <Col sm={9}>
-                <Form.Control type="file" name='file' onChange={handle_file}/>   
-              </Col>
-              <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0">Plantillas de Carga</a>
-    
-            </Row>
-            <Row className='mt-2'>
-              <Col lg={{ span: 0, offset: 0}} >
-                  <Button onClick={handle_upload}>Subir</Button>
-              </Col>
-            </Row>
-            <Row className='mt-2' >
-                <DataTable 
-                  columns={columnas}
-                  data={state.mensaje}
-                  noDataComponent=""
-                  pagination
-                />
-            </Row>
-            <Modal show={show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>ESTADO CARGA</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>{state.respuesta}</Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={set_info}>
-                  OK
-                </Button>
-              </Modal.Footer>
-            </Modal>
-        </Container>
+    <Container>
+      <Row >
+        <h4>Suba el archivo csv para los estudiantes.</h4>
+      </Row>
+      <Row className='mt-2'>
+        <Col sm={9}>
+          <Form.Control type="file" name='file' onChange={handle_file}/>   
+        </Col>
+        <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0">Plantillas de Carga</a>
+      </Row>
+      <Row className='mt-2'>
+        <Col lg={{ span: 0, offset: 0}} >
+            <Button onClick={handle_upload}>Subir</Button>
+        </Col>
+      </Row>
+      <Row className='mt-2' >
+        <DataTable 
+          columns={columnas}
+          data={state.mensaje}
+          noDataComponent=""
+          pagination
+        />
+      </Row>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>ESTADO CARGA</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{state.respuesta}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={set_info}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   )
 }
 
 export default carga_masiva_component
-
-
-  
-  
-  

@@ -3,14 +3,19 @@ import Select from 'react-select';
 import {Container, Row, Col, Dropdown} from "react-bootstrap";
 import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import NavBar from './navbar';
-import Menu from './socioeducativa.json';
+import Menu from './sistemas.json';
+import Menu2 from './socioeducativa.json';
+import Menu3 from './academico.json';
+import Menu4 from './icetex.json';
+import Menu5 from './discapacidad.json';
+
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
 import Sidebar_item_closed from './sidebar_item_closed';
-
 import {Scrollbars} from 'react-custom-scrollbars'; 
+
 
 /*
 <Row style={{width: isOpen ? "300px" : "70px"}} className="sideBar">
@@ -53,43 +58,97 @@ const SideBar = (props) =>{
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
 
-    
+    let location = useLocation();
 
+    console.log("childre : ")
+    console.log(props.children)
+
+    const [state,set_state] = useState({
+
+        path_actual : 'Inicio'
+      })
+
+    function path_actual(name){
+        set_state({
+          ...state,
+          path_actual : name
+        })
+      }
 
     return (
         <Container className="containerSidebar">
                 <Row className="top_selection">
                     <FaBars onClick={toggle}/>
                 </Row>
-                <Row style={{width: isOpen ? "300px" : "70px"}} className="sideBar">
-                    
-                    <Scrollbars className="scrollbar_sidebar">
-                        {
-                            isOpen ?
-                            (<div className="sidebar_item">
-                                { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
-                            </div>)
-                            :
-                            (<div className="sidebar_item">
-                            { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
-                            </div>)
-                        }
-                    </Scrollbars>
+                {
+                    isOpen ?
+                    (
+                        <Row style={{width: isOpen ? "250px" : "70px"}} className="sideBar">
+                            
+                            <Scrollbars className="scrollbar_sidebar">
+                                {
+                                    isOpen ?
+                                    (<div className="sidebar_item">
+                                        { Menu2.map((item, index) => <SidebarItem key={index} item={item}
+                                        childClicked2={(name)=>path_actual(name)}/>) }
+                                    </div>)
+                                    :
+                                    (<div className="sidebar_item">
+                                        { Menu2.map((item, index) => <Sidebar_item_closed key={index} item={item} 
+                                        childClicked2={(name)=>path_actual(name)}/>) }
+                                    </div>)
+                                }
+                            </Scrollbars>
 
-                </Row>
+                        </Row>
+                    )
+                    :
+                    (
+                    <div  class="d-none d-md-block">
+                        <Row style={{width: isOpen ? "250px" : "70px"}} className="sideBar">
+                            
+                            <Scrollbars className="scrollbar_sidebar">
+                                {
+                                    isOpen ?
+                                    (<div className="sidebar_item">
+                                        { Menu2.map((item, index) => <SidebarItem key={index} item={item}
+                                        childClicked2={(name)=>path_actual(name)}/>) }
+                                    </div>)
+                                    :
+                                    (<div className="sidebar_item">
+                                    { Menu2.map((item, index) => <Sidebar_item_closed key={index} item={item}
+                                    childClicked2={(name)=>path_actual(name)}/>) }
+                                    </div>)
+                                }
+                            </Scrollbars>
+
+                        </Row>
+                    </div>
+                    )
+                }
+                
                 
                 
                 <Row className="row_navbar">
-                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
+                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}  path_actual={state.path_actual}></NavBar>
                 </Row>
-                <Col className="inf_der">
-                    <main style={{marginLeft: isOpen ? "300px" : "70px"}}>
-                        {props.children}
-                        
-                    </main>
-                    <Footer></Footer>
-                </Col>
-                    
+                <div  class="d-none d-md-block">
+                    <Row className="inf_der">
+                        <main style={{marginLeft: isOpen ? "280px" : "50px"}, {marginTop: "5rem"}}>
+                            {props.children}
+                        </main>
+                    </Row>
+                </div>
+
+                <div  class="d-block d-md-none">
+                    <Row className="inf_der">
+                        <main style={ {marginTop: "4rem"}}>
+                            {props.children}
+                        </main>
+                    </Row>
+                </div>
+                
+                <Footer></Footer>
         </Container>
     )
 }

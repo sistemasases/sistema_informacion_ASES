@@ -1,6 +1,6 @@
 
 .container_info_registro{ 
-    width: 109%;
+    width: 113%;
 }
 
 
@@ -26,8 +26,8 @@
     color: rgba(229,41,67,255);
     font-size: 10pt;
     font-weight: bold;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 0px;
 }
 
 .borde_redondo{
@@ -87,9 +87,7 @@
 }
 .button_tipo_riesgo_alto_2{
     text-align: center;
-    text-justify: center;
-    justify-content: center;
-    align-content: center;
+    padding-top: 5px;
     z-index: 2;
     border:1px solid white;
     font-size: 20pt;
@@ -101,9 +99,7 @@
 }
 .button_tipo_riesgo_medio_2{
     text-align: center;
-    text-justify: center;
-    justify-content: center;
-    align-content: center;
+    padding-top: 5px;
     z-index: 2;
     border:1px solid white;
     font-size: 20pt;
@@ -115,16 +111,50 @@
 }
 .button_tipo_riesgo_bajo_2{
     text-align: center;
-    text-justify: center;
-    justify-content: center;
-    align-content: center;
     z-index: 2;
     border:1px solid white;
     font-size: 20pt;
     background: rgba(116,206,76,255);
     color: rgba(56,172,6,255);
+    padding-top: 5px;
     width: 60px;
     height: 60px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_alto_2_pequeño{
+    text-align: center;
+    padding-top: 6px;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 15pt;
+    background: rgba(247,94,120,255);
+    color: rgba(235,44,74,255);
+    width: 45px;
+    height: 45px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_medio_2_pequeño{
+    text-align: center;
+    padding-top: 6px;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 15pt;
+    background: rgba(255,205,80,255);
+    color: rgba(255, 183, 0, 1);
+    width: 45px;
+    height: 45px;
+    border-radius: 100%;
+}
+.button_tipo_riesgo_bajo_2_pequeño{
+    text-align: center;
+    padding-top: 6px;
+    z-index: 2;
+    border:1px solid white;
+    font-size: 15pt;
+    background: rgba(116,206,76,255);
+    color: rgba(56,172,6,255);
+    width: 45px;
+    height: 45px;
     border-radius: 100%;
 }
 
@@ -154,6 +184,42 @@
     height: 30px;
     border-radius: 15px;
 }
+.button_tipo_riesgo_alto_texto_pequeño{
+    font-size: 9pt;
+    background: rgba(247,94,120,255);
+    color: white;
+    padding-top: 6px;
+    margin-top: 12px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+    font-weight: bold;
+
+}
+.button_tipo_riesgo_medio_texto_pequeño{
+    font-size: 9pt;
+    background: rgba(255,205,80,255);
+    color: white;
+    padding-top: 6px;
+    margin-top: 12px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+    font-weight: bold;
+
+}
+.button_tipo_riesgo_bajo_texto_pequeño{
+    font-size: 9pt;
+    z-index: 1;
+    background: rgba(116,206,76,255);
+    color: white;
+    padding-top: 6px;
+    margin-top: 11px;
+    width: 100%;
+    height: 30px;
+    border-radius: 15px;
+    font-weight: bold;
+}
 .borde_riesgos_alto{
     padding: 2px 2px;
     border: 1px solid rgba(232,36,70,255);
@@ -169,7 +235,21 @@
     border: 1px solid rgba(56,172,6,255);
     border-radius: 100%;
 }
-
+.borde_riesgos_alto_pequeño{
+    padding: 2px 2px;
+    border: 1px solid rgba(232,36,70,255);
+    border-radius: 100%;
+}
+.borde_riesgos_medio_pequeño{
+    padding: 2px 2px;
+    border: 1px solid rgba(255,205,80,255);
+    border-radius: 100%;
+}
+.borde_riesgos_bajo_pequeño{
+    padding: 2px 2px;
+    border: 1px solid rgba(56,172,6,255);
+    border-radius: 100%;
+}
 
 .riesgos{
     margin-top: 10px;
@@ -180,7 +260,7 @@
     padding-bottom: 30px;
 }
 .riesgos_pequeño{
-    margin-top: 100px;
+    margin-top: 20px;
     background: rgba(151,234,242,255);
 }
 

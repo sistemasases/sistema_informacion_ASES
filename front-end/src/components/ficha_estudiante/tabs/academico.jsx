@@ -5,6 +5,8 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import Desplegable_item_academico from "./desplegable_Item_Academico";
+import Modal from 'react-bootstrap/Modal';
 
 /*
 Tabla Conteo de Seguimientos:
@@ -24,277 +26,147 @@ Tabla Conteo de Seguimientos:
 
 const Academico = () =>{
 
-    const[activeTabIndex, setActiveTabIndex] = useState(0);
-    const activeTab = (index)=> setActiveTabIndex(index);
-
+    
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
-
-    const menuItem=[
+  
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+  
+  
+  
+  
+    const tabs=[
+    [
         {
-            id:1,
-            path:"/",
-            name:"Analitics",
-            icon:<FaRegChartBar />,
-            cursos:false,
-            subNav:[
-                {
-                    path:"/ficha_estudiante",
-                    name:"fichaDeEstudiante",
-                    icon:<FaThList />,
-                }
-            ]
+            "nombre": "20231",
+            "Actual": true
+        }
+    ],
+    [
+        {
+            "nombre": "2022-2",
+            "Actual": false
         },
         {
-            id:2,
-            path:"/ficha_estudiante",
-            name:"fichaDeEstudiante",
-            icon:<FaThList />,
-            cursos:true,
-            subNav:[
-                {   
-                    path:"/",
-                    name:"Analitics",
-                    icon:<FaRegChartBar />,
-                },
-                {
-                    path:"/ficha_estudiante",
-                    name:"fichaDeEstudiante siiiiiiiiiiiiiii",
-                    icon:<FaThList />,
-                },
-                {   
-                    path:"/",
-                    name:"Analitics",
-                    icon:<FaRegChartBar />,
-                },
-                {
-                    path:"/ficha_estudiante",
-                    name:"fichaDeEstudiante",
-                    icon:<FaThList />,
-                }
-            ]
+            "id": 1,
+            "fecha": "2023-01-04",
+            "observaciones": "esto es una prueba",
+            "revisado_profesional": false,
+            "revisado_practicante": false,
+            "creacion": "2023-01-04T15:49:28.811996Z",
+            "modificacion": "2023-01-04T00:00:00Z",
+            "id_creador": 2,
+            "id_modificador": 2,
+            "id_estudiante": 18
+        },
+        {
+            "id": 4,
+            "fecha": "2023-01-04",
+            "observaciones": "esto es una prueba",
+            "revisado_profesional": false,
+            "revisado_practicante": false,
+            "creacion": "2023-01-04T15:59:36.300078Z",
+            "modificacion": "2023-01-04T15:59:36.300078Z",
+            "id_creador": 2,
+            "id_modificador": 2,
+            "id_estudiante": 18
+        },
+        {
+            "id": 6,
+            "fecha": "2023-01-04",
+            "observaciones": "esto es una prueba",
+            "revisado_profesional": false,
+            "revisado_practicante": false,
+            "creacion": "2023-01-04T16:00:54.873222Z",
+            "modificacion": "2023-01-04T16:00:54.873222Z",
+            "id_creador": 2,
+            "id_modificador": 2,
+            "id_estudiante": 18
+        },
+        {
+            "id": 8,
+            "fecha": "2023-01-04",
+            "observaciones": "esto es una prueba",
+            "revisado_profesional": false,
+            "revisado_practicante": false,
+            "creacion": "2023-01-04T16:03:04.979050Z",
+            "modificacion": "2023-01-04T16:03:04.979050Z",
+            "id_creador": 2,
+            "id_modificador": 2,
+            "id_estudiante": 18
+        },
+    ],
+    [
+        {
+            "nombre": "2022-1",
+            "Actual": false
         }
     ]
+  ]
+  
+  const[activeTabIndex, setActiveTabIndex] = useState(tabs[0][0]['nombre']);
+  const activeTab = (index)=> 
+  {
+    index === activeTabIndex ?
+    (setActiveTabIndex(0))
+    :
+    setActiveTabIndex(index)
+  }
 
 
-    const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-    ]
 
     return (
-        <Container className="container_academico">
+        <Container className="socioeducativa_container">
+            <Row className="socioeducativa_seguimientos_pares">Academico</Row>
 
-                <Row className="row_flex_full_line">
-                    <Row className="row_titulo">
-                        Resumen
-                    </Row>
-                    <Row className="row_flex">
-                        <Col className="width_col">
-                            Elemento cualificable
-                        </Col>
-                        <Col>
-                            Cantidad
-                        </Col>
-                    </Row>
-                    <Row className="row_flex">
-                        <Col className="width_col">
-                            Estud. con uno o más items perdidos
-                        </Col>
-                        <Col>
-                            0
-                        </Col >
-                    </Row>
-                    <Row className="row_flex"> 
-                        <Col className="width_col">
-                            Estud. con más items perdidos que ganados
-                        </Col>
-                        <Col>
-                            0
-                        </Col>
-                    </Row>
-                    <Row className="row_flex">
-                        <Col className="width_col">
-                            Total estudiantes ASES matriculados en cursos con calificaciones
-                        </Col>
-                        <Col>
-                            0
-                        </Col>
-                    </Row>                   
-                </Row>
+                        <Row className="socioeducativa_fondo" >
 
-
-
-
-
-
-
-
-
-
-
-
-                <Row className="row_flex_full_line">
-                        <Row className="row_flex">
-                            <Col className="row_flex_academico">
-                                mostar
-                                <Select>
-                                    10
-                                </Select> 
-                                Registros
-                            </Col>
-                            <Col className="width_col">
-                                Buscar
-                            </Col>
-                        </Row>
-                      					
-                        <Row className="row_flex_academico2" >
-                            <Col className="width_col2">
-                                Número de documento
-                            </Col>
-                            <Col className="width_col2">
-                                Código
-                            </Col >
-                            <Col className="width_col2">
-                                Apellidos
-                            </Col>
-                            <Col className="width_col2">
-                                Nombres
-                            </Col >
-                            <Col className="width_col2">
-                                # Items perdidos
-                            </Col>
-                            <Col className="width_col2" > 
-                                # Items ganados
-                            </Col >
-                        </Row>
-                        
-                        <Row className="row_flex_academico2" > 
-                            <Col className="width_col">
-                                otro mapeo
-                            </Col>
-                            <Col>
-                            </Col>
-                        </Row>
-                    </Row>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <Row className="row_flex" activeClassName="row_academico_card">
-                    <Col className="col_contenido_Academico">
-                        <h4>
-                            Promedio Ponderado: 
-                        </h4>
-                        <h4>
-                            Cantidad
-                        </h4>
-                    </Col>
-                    <Col className="col_contenido_Academico">
-                        <h4>
-                            Estimulos academicos: 
-                        </h4>
-                        <h4>
-                            Cantidad
-                        </h4>
-                    </Col>
-                    <Col className="col_contenido_Academico">
-                        <h4>
-                            Bajos rendimientos: 
-                        </h4>
-                        <h4>
-                            Cantidad
-                        </h4>
-                    </Col>
-                </Row>
-
-                <Row className="row_contenido_periodos_Academico">
-                {
-                        menuItem.map((item, index)=>(
-                    <Row className="separador_academico">
-                        <DropdownMenu  key={index} className="link_academico" activeclassName="active_academico" 
-                                    onMouseLeave ={() => activeTab(0)} onMouseEnter ={() => activeTab(item.id)}>
-                            <Row className="link_text_academico" >{item.name}</Row>
-                            <Row className="row_contenido_periodos_Academico"  activeclassName="active_academico">
-                                {!(item.cursos) ?
-                                    (<Row className="row_academico_card">EL ESTUDIANTE NO REGISTRA CURSOS EN EL SEMESTRE ACTUAL</Row>)
-                                : (
-                                    (item.id === activeTabIndex) ?
-                                    
-                                        (
-                                        <Row className="row_academico_card" activeclassName="active_academico">
-                                            <Row>
-                                                <Row className="row_flex_academico">
-                                                    <Col className="col_contenido_Academico2">tecto 1</Col>
-                                                    <Col className="col_contenido_Academico2">texto 2</Col>
-                                                    <Col className="col_contenido_Academico2">texto 3</Col>
-                                                </Row>
-                                                <Row className="border_box">
-                                                    <Row className="col_contenido_Academico3">
-                                                        Texto de abajo
+                            { tabs.map((item, index) => 
+                            <Row>
+                            <Col className={item[0]['nombre'] === activeTabIndex ? "periodo_asignaciones open" : "periodo_asignaciones"}>
+                            <Row className="periodo_asignaciones_seleccionar" onClick={() => activeTab(item[0]['nombre'])}>
+                                <Col className="periodo_asignaciones_seleccionar_text" >
+                                                    <Row className="periodo_asignaciones_seleccionar_hover">
+                                                        <Col  className="col_periodo_asignaciones_seleccionar_text" > 
+                                                                {item[0]['nombre']}
+                                                                {
+                                                                    item[0]['nombre'] === activeTabIndex ?
+                                                                    (
+                                                                            <i class="bi bi-chevron-up"></i>
+                                                                    )   
+                                                                    :
+                                                                    (
+                                                                            <i class="bi bi-chevron-down"></i>
+                                                                    )
+                                                                }
+                                                        </Col>
                                                     </Row>
-                                                </Row>
-
-                                            </Row>
-
-
-                                            <Row>
-                                                <Row className="row_flex_academico">
-                                                    <Col className="col_contenido_Academico4">Materia</Col>
-                                                    <Col className="col_contenido_Academico4">Codigo</Col>
-                                                    <Col className="col_contenido_Academico4">Nota</Col>
-                                                    <Col className="col_contenido_Academico4">Creditos</Col>
-                                                    <Col className="col_contenido_Academico4">Cancela</Col>
-                                                </Row>
-                                                { item.subNav.map((item, index)=>(
-                                                <Row className="row_flex_academico">
-                                                    <Col className="col_contenido_Academico5">{item.icon}</Col>
-                                                    <Col className="col_contenido_Academico5">{item.icon}</Col>
-                                                    <Col className="col_contenido_Academico5">{item.icon}</Col>
-                                                    <Col className="col_contenido_Academico5">{item.icon}</Col>
-                                                    <Col className="col_contenido_Academico5">{item.icon}</Col>
-                                                </Row>
-                                                ))
-                                                }
-                                            </Row>
-                                        </Row>
-                                    
-                                        )
-
-                                        : (<Row></Row>)
-                                            
-                                
-                                )
-                                }
+                                    </Col>
                             </Row>
-                        </DropdownMenu>
+                                <Row className="periodo_asignaciones_contenido">
+                                    {item.map((item, index) => <Desplegable_item_academico key={index} item={item} /> )}
+                                </Row>
+                        </Col>
                     </Row>
 
-                            
-
-                        ))
-                    }
+                            ) }
                 </Row>
-           
+
+
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                    <Modal.Title>Importante</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Seleccione un estudiante.</Modal.Body>
+                    <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    </Modal.Footer>
+                </Modal>
+                
         </Container>
     )
 }

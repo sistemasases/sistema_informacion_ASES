@@ -1,12 +1,10 @@
 
 
 .containerSidebar{
-    word-break: break-all;
 }
 
-main{
-    margin-top: 100px;
-}
+
+
 
 .sup_izq{
     background: darkcyan;
@@ -20,9 +18,11 @@ main{
     background: darkolivegreen;
 }
 .inf_der{
+    margin-left:12px;
 }
 
 .sideBar{
+    left:0px;
     z-index: 2;
     position: fixed;
     background: #F1F1F1;
@@ -34,7 +34,8 @@ main{
 }
 
 .top_selection{
-    z-index: 2;
+    left:0px;
+    z-index: 3;
     height: 4rem;
     width: 50px;
     background: rgba(235,30,0,255);
@@ -138,6 +139,7 @@ main{
     margin-left: 20px;
     margin-right: 10px;
     font: 18px sans-serif;
+    text-decoration:none;
 }
 .tamaño_icon{
     color: rgba(100, 100, 100,255);
@@ -147,6 +149,7 @@ main{
     margin-left: 5px;
     font-size: 15px;
     color: rgba(100, 100, 100,255);
+    text-decoration: none;
 }
 
 .sidebar-title_varios{

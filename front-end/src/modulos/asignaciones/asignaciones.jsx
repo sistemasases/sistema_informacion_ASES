@@ -18,9 +18,7 @@ const Carga_masiva = () =>{
             <Row className="containerRow">
                 <Asignaciones_component/>
             </Row>
-            <Row>
 
-            </Row>
         </Container>
     )
 }
