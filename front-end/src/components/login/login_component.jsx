@@ -10,7 +10,7 @@ const login_component = () =>{
   const [state,set_state] = useState({
     usuario: '',
     contrasena: '',
-    logged:true,
+    logged:'',
   })
   const url = "http://127.0.0.1:8000/login" 
   const data = {
@@ -49,18 +49,19 @@ const login_component = () =>{
       localStorage.setItem('semestre_actual', res.data.user.semestre_actual)
       localStorage.setItem('username', res.data.user.username)
       localStorage.setItem('message', res.data.user.message)
+      set_state({
+        ...state,
+        logged:localStorage.token,
+      })
     })
     .catch(err=>console.log(err))
-    set_state({
-      ...state,
-      logged:false,
-    })
+    
   }
 
   return (
     <Row>
       {
-        state.logged ?
+        localStorage.token == undefined?
         (
           <Container className="containerLogin">
             <Row>
