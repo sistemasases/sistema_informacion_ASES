@@ -16,7 +16,7 @@
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/carga_masiva",
                 "name":"carga masiva",
                 "icon":"bi-people-fill"
             },
@@ -46,13 +46,13 @@
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/gestion_usuario_rol",
                 "name":"gestion de usuarios",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
-                "name":"reporte backup",
+                "path":"/inicio_semestre_sistemas",
+                "name":"inicio_semestre_sistema",
                 "icon":"bi-people-fill"
             }
         ]
@@ -79,7 +79,7 @@
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/asignaciones",
                 "name":"gestion de asignaciones",
                 "icon":"bi-people-fill"
             },

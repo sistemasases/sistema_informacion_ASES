@@ -511,7 +511,7 @@ const Info_basica = (props) =>{
                                                     <h4 className="texto_mas_pequeño">correo</h4>
                                                   </Col>
 
-                                                <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño" xs={"5"} md={"2"}>
+                                                <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño"  md={"2"}>
                                                 <h4 className="texto_mas_pequeño"> cedula</h4>
                                                 </Col>
 

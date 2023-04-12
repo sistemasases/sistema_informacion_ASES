@@ -50,6 +50,22 @@ const navbar = (props) =>{
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
 
+    const handleSalir = () =>{
+        localStorage.removeItem('token')
+        localStorage.removeItem('refresh-token')
+        localStorage.removeItem('email')
+        localStorage.removeItem('first_name')
+        localStorage.removeItem('instancia')
+        localStorage.removeItem('last_name')
+        localStorage.removeItem('nombre_completo')
+        localStorage.removeItem('instancia_id')
+        localStorage.removeItem('rol')
+        localStorage.removeItem('semestre_actual')
+        localStorage.removeItem('username')
+        localStorage.removeItem('message')
+        window.location.replace('');
+    }    
+
     const menuOptions=[
         {
             id:1,
@@ -135,7 +151,7 @@ const navbar = (props) =>{
                                     <Col xs={"12"}>
                                         PERFIL
                                     </Col>
-                                    <Col xs={"12"}>
+                                    <Col xs={"12"} onClick={handleSalir}>
                                         SALIR
                                     </Col>
                                 </Row>
