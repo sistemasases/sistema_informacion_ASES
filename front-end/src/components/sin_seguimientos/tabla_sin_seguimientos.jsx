@@ -9,103 +9,142 @@ import DataTable, {selectFilter} from'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
 import Select from 'react-select'  ;
 
+
 const Tabla_sin_Seguimientos = () =>{
 
-  const columns = useMemo(()=> Columnas,[]);
   const data = useMemo(()=> MOCK_DATA, []);
 
-  const instancias = useTable({
-    columns,
-    data
-  })
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  }=instancias
 
 
 
-  const tablaCampeones =[
-    {id:1, año:"222", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:2, año:"233", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:3, año:"244", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:4, año:"255", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-  ]
-  
+
 
 
 
   const columnas2 = [
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Codigo</h4></Row>
-            </div>),
+      name:'ID',
       selector:'id',
-      sortable:true
+      sortable: true,
     },
+
+    
+
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Cedula</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos">
+      <h4 className="texto_mas_pequeño">Cedula</h4>
+      </Row>
+      <Row><input onChange={handleFilter_cedula}/></Row>
+
 </div>),
       selector:'phone',
-      sortable:true
+      sortable:false,
     },
+
+
+
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Nombres</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos">
+      <h4 className="texto_mas_pequeño">Nombres</h4>
+      </Row>
+      <Row><input onChange={handleFilter_nombre}/></Row>
+
 </div>),
       selector:'first_name',
       sortable:true,
     },
+
+
+
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Apellidos</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos">
+      <h4 className="texto_mas_pequeño">Apellidos</h4>
+      </Row>
+      <Row><input onChange={handleFilter_apellido}/></Row>
 </div>),
       selector:'last_name',
       sortable:true,
     },
+
+
+
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Cantidad de fichas</h4></Row>
+      name:(<div>
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Cantidad de fichas</h4>
+        </Row>
 </div>),
       selector:'phone',
       sortable:true
     },
+
+
+
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Cantidad de inasistencias</h4></Row>
+      name:(<div>
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Cantidad de inasistencias</h4>
+        </Row>
 </div>),
-      selector:'age',
-      sortable:true,
-    },
-    {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Total de fichas</h4></Row>
-</div>),
-      selector:'age',
-      sortable:true,
-    },
-    {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Monitor</h4></Row>
-        <Row><select /></Row>
-  </div>),
-      selector:'phone',
-      sortable:true
-    },
-    {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Practicante</h4></Row>
-        <Row className="center_tabla_sin_seguimientos"><select /></Row>
-  </div>),
-      selector:'age',
-      sortable:true,
-    },
-    {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Profecional</h4></Row>
-        <Row><select /></Row>
-  </div>),
       selector:'age',
       sortable:true,
     },
 
+
+
+    {
+      name:(<div>
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Total de fichas</h4>
+        </Row>
+</div>),
+      selector:'age',
+      sortable:true,
+    },
+
+
+
+    {
+      name:(<div className="div_tabla_filtro">
+                <Row className="center_tabla_sin_seguimientos">
+                <h4 className="texto_mas_pequeño">Monitor</h4></Row>
+                <Row><input onChange={handleFilter_monitor}/></Row>
+            </div>),
+      selector:'last_name',
+      sortable: false
+    },
+
+
+
+    {
+      name:(
+      <div className="div_tabla_filtro">
+                <Row className="center_tabla_sin_seguimientos">
+                <h4 className="texto_mas_pequeño">Practicante</h4></Row>
+                <Row><input onChange={handleFilter_practicante}/></Row>
+            </div>),
+      selector:'first_name',
+      sortable:false,
+    },
+    {
+      name:(
+      <div className="div_tabla_filtro">
+                <Row className="center_tabla_sin_seguimientos">
+                <h4 className="texto_mas_pequeño">Profecional</h4>
+                </Row>
+                <Row><input onChange={handleFilter_profecional}/></Row>
+            </div>),
+      selector:'last_name',
+      sortable:false,
+    },
+
   ]
     
+
+
 
   const paginacionOpciones={
     rowsPerPageText:'textooooo',
@@ -115,27 +154,60 @@ const Tabla_sin_Seguimientos = () =>{
 
   }
 
-  const tableData = {
-    columnas2,
-    data,
-  }; 
+
+  const [records, setRecords] = useState(MOCK_DATA);
 
 
 
 
+  function handleFilter_cedula(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.phone.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
 
 
+  function handleFilter_nombre(event) {
 
+    const newData = MOCK_DATA.filter(row => {
+      return row.first_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+  
+  function handleFilter_apellido(event) {
 
+    const newData = MOCK_DATA.filter(row => {
+      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
 
+  function handleFilter_monitor(event) {
 
+    const newData = MOCK_DATA.filter(row => {
+      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
 
+  function handleFilter_practicante(event) {
 
+    const newData = MOCK_DATA.filter(row => {
+      return row.first_name.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
 
+  function handleFilter_profecional(event) {
 
-
-
-
+    const newData = MOCK_DATA.filter(row => {
+      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
 
 
 
@@ -156,20 +228,33 @@ const Tabla_sin_Seguimientos = () =>{
           <Row>
             <DataTableExtensions
             columns={columnas2}
-            data={MOCK_DATA}
-            filter={false}
+            data={records}
+            filter={true}
+            filterPlaceHolder={2}
+            filterDigit={'1'}
             exportHeaders={true}
             >
               
             <DataTable
-            columns={columnas2}
-            data={MOCK_DATA}
             pagination 
             paginationRowsPerPageOptions={[10,20,30,40,50,100]}
             paginationComponentOptions={paginacionOpciones}            
             />
             </DataTableExtensions>
             
+          </Row>
+
+          <Row>
+              
+            <DataTable
+            columns={columnas2}
+            data={MOCK_DATA}
+            pagination 
+            paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+            paginationComponentOptions={paginacionOpciones}    
+            highlightOnHover={true}
+            />
+
           </Row>
         </Container>
     )

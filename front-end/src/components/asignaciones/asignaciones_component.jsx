@@ -16,6 +16,8 @@ import monitores_json from "./monitores_json.json";
 import monitores_seleccionados from "./monitores_seleccionados";
 import estudiantes_json from "./estudiantes_json.json";
 import estudiantes_seleccionados from "./estudiantes_seleccionados";
+import {Scrollbars} from 'react-custom-scrollbars'; 
+
 
 const asignaciones_component = (props) =>{
 
@@ -119,76 +121,79 @@ const asignaciones_component = (props) =>{
           <Row className="row_listas">
 
             <Col xs={"12"} md={"4"}>
-              <Row>      
-                Practicantes          
-              </Row>
+
+              <Row  className="row_asignaciones_titulos">     
+                <Col xs={"12"} className="col_asignaciones_titulos">
+                Practicantes
+                </Col> 
+                <Col xs={"12"} className="col_asignaciones_titulos">
                 Total estudiantes acompañados 
-              <Row>
-              </Row>
-              <Row>
+                </Col> 
+                <Col xs={"12"} className="col_asignaciones_titulos">
                 Profecional
+                </Col>   
                 <Select options={opciones_profecionales} onChange={cambiar_dato_select} ></Select>
               </Row>
-              <Row>
+              <Row >
 
-              {
-                  state.profecional_seleccionado === '' ?
-                  (
-                    <Col>Practicante no seleccionado 
-                      { todos_practicantes.filter((item)=>{
-                      return state.practicante_filtro.toLowerCase() === '' ? item 
-                      : 
-                      item.username.toLowerCase().includes(state.practicante_filtro) ||
-                      item.first_name.toLowerCase().includes(state.practicante_filtro) ||
-                      item.last_name.toLowerCase().includes(state.practicante_filtro);                      
-                    }).map((item, index) => <Listas 
-                  key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
-                  childClicked={(name)=>monitor_seleccion(name)}/>) }
+                {
+                    state.profecional_seleccionado === '' ?
+                    (
+                      <Col className="scroll_listas">
+                        <Row className="asignaciones_no_seleccion">
+                          Profecional no seleccionado 
+                        </Row>
+                      <Scrollbars>
+                          { todos_practicantes.filter((item)=>{
+                          return state.practicante_filtro.toLowerCase() === '' ? item 
+                          : 
+                          item.username.toLowerCase().includes(state.practicante_filtro) ||
+                          item.first_name.toLowerCase().includes(state.practicante_filtro) ||
+                          item.last_name.toLowerCase().includes(state.practicante_filtro);                      
+                        }).map((item, index) => <Listas 
+                        key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
+                        childClicked={(name)=>practicante_seleccion(name)}/>) }
+                      </Scrollbars>
+
+                      </Col>
+                    )
+                    :
+                    (
+                    <Col className="scroll_listas">
+                      <Row className="asignaciones_seleccion_profecional">
+                        profecional: {state.profecional_seleccionado}
+                        </Row>
+                      { practicantes_seleccionados['0'].filter((item)=>{
+                        return state.practicante_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.username.toLowerCase().includes(state.practicante_filtro) ||
+                        item.first_name.toLowerCase().includes(state.practicante_filtro) ||
+                        item.last_name.toLowerCase().includes(state.practicante_filtro);                      
+                      }).map((item, index) => <Listas 
+                    key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
+                    childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    <Row className="separador_asignaciones"></Row>
+                      { practicantes_seleccionados['1'].filter((item)=>{
+                        return state.practicante_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.username.toLowerCase().includes(state.practicante_filtro) ||
+                        item.first_name.toLowerCase().includes(state.practicante_filtro) ||
+                        item.last_name.toLowerCase().includes(state.practicante_filtro);                      
+                      }).map((item, index) => <Listas_no_seleccion 
+                    key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}/>) }
                     </Col>
-                  )
-                  :
-                  (
-                  <Col>
-                    { practicantes_seleccionados['0'].filter((item)=>{
-                      return state.practicante_filtro.toLowerCase() === '' ? item 
-                      : 
-                      item.username.toLowerCase().includes(state.practicante_filtro) ||
-                      item.first_name.toLowerCase().includes(state.practicante_filtro) ||
-                      item.last_name.toLowerCase().includes(state.practicante_filtro);                      
-                    }).map((item, index) => <Listas 
-                  key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
-                  childClicked={(name)=>monitor_seleccion(name)}/>) }
-
-                    { practicantes_seleccionados['1'].filter((item)=>{
-                      return state.practicante_filtro.toLowerCase() === '' ? item 
-                      : 
-                      item.username.toLowerCase().includes(state.practicante_filtro) ||
-                      item.first_name.toLowerCase().includes(state.practicante_filtro) ||
-                      item.last_name.toLowerCase().includes(state.practicante_filtro);                      
-                    }).map((item, index) => <Listas_no_seleccion 
-                  key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}/>) }
-                  </Col>
-                  )
-                }
+                    )
+                  }
 
               </Row>
+
             </Col>
 
             <Col xs={"12"} md={"4"}>
-              <Row>       
+              <Row  className="row_asignaciones_titulos">  
+                <Col xs={"12"} className="col_asignaciones_titulos">
                 Monitores         
-              </Row>
-              <Row>
-                <Col xs={"6"}>
-                  Facultad
-                  <Select></Select>
-                </Col>
-                <Col xs={"6"}>
-                  Programa
-                  <Select></Select>
-                </Col>
-              </Row>
-              <Row>
+                </Col>     
                 <Col xs={"12"} md={"9"}>
                   <input name="monitor_filtro" onChange={cambiar_dato}></input>
                 </Col>
@@ -201,21 +206,31 @@ const asignaciones_component = (props) =>{
                 {
                   state.practicante_seleccionado === '' ?
                   (
-                    <Col>Practicante no seleccionado 
-                      { monitores_json.filter((item)=>{
-                      return state.monitor_filtro.toLowerCase() === '' ? item 
-                      : 
-                      item.username.toLowerCase().includes(state.monitor_filtro) ||
-                      item.first_name.toLowerCase().includes(state.monitor_filtro) ||
-                      item.last_name.toLowerCase().includes(state.monitor_filtro);                      
-                    }).map((item, index) => <Listas 
-                  key={index} item={item} rol={rol2} practicante_seleccionado={state.practicante_seleccionado}
-                  childClicked2={(name)=>monitor_seleccion(name)}/>) }
+                    <Col className="scroll_listas">
+                      <Row className="asignaciones_no_seleccion">
+                        Practicante no seleccionado 
+                        </Row>
+                    <Scrollbars>
+
+                        { monitores_json.filter((item)=>{
+                        return state.monitor_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.username.toLowerCase().includes(state.monitor_filtro) ||
+                        item.first_name.toLowerCase().includes(state.monitor_filtro) ||
+                        item.last_name.toLowerCase().includes(state.monitor_filtro);                      
+                      }).map((item, index) => <Listas 
+                      key={index} item={item} rol={rol2} practicante_seleccionado={state.practicante_seleccionado}
+                      childClicked2={(name)=>monitor_seleccion(name)}/>) }
+                     </Scrollbars>
                     </Col>
                   )
                   :
                   (
-                  <Col>
+                  <Col className="scroll_listas">
+                    <Row className="asignaciones_seleccion">
+                      Practicante seleccionado : {state.monitor_seleccionado }
+                    </Row>
+                    <Scrollbars>
                     { monitores_seleccionados['0'].filter((item)=>{
                       return state.monitor_filtro.toLowerCase() === '' ? item 
                       : 
@@ -225,6 +240,7 @@ const asignaciones_component = (props) =>{
                     }).map((item, index) => <Listas 
                   key={index} item={item} rol={rol2} practicante_seleccionado={state.practicante_seleccionado}
                   childClicked2={(name)=>monitor_seleccion(name)}/>) }
+                    <Row className="separador_asignaciones"></Row>
 
                     { monitores_seleccionados['1'].filter((item)=>{
                       return state.monitor_filtro.toLowerCase() === '' ? item 
@@ -234,6 +250,7 @@ const asignaciones_component = (props) =>{
                       item.last_name.toLowerCase().includes(state.monitor_filtro);                      
                     }).map((item, index) => <Listas_no_seleccion 
                   key={index} item={item} rol={rol2} practicante_seleccionado={state.practicante_seleccionado}/>) }
+                  </Scrollbars>
                   </Col>
                   )
                 }
@@ -243,20 +260,10 @@ const asignaciones_component = (props) =>{
             </Col>
 
             <Col xs={"12"} md={"4"}>
-              <Row>   
-                Estudiantes             
-              </Row> 
-              <Row>
-                <Col xs={"6"}>
-                  Facultad
-                  <Select></Select>
+              <Row className="row_asignaciones_titulos">
+                <Col xs={"12"} className="col_asignaciones_titulos">
+                Estudiantes
                 </Col>
-                <Col xs={"6"}>
-                  Programa
-                  <Select></Select>
-                </Col>
-              </Row>
-              <Row>
                 <Col xs={"12"} md={"9"}>
                   <input name="estudiante_filtro" onChange={cambiar_dato}></input>
                 </Col>
@@ -268,25 +275,34 @@ const asignaciones_component = (props) =>{
                 {
                   state.monitor_seleccionado === '' ?
                   (
-                    <Col>Monitor no seleccionado 
-                    { estudiantes_json.filter((item)=>{
-                      return state.estudiante_filtro.toLowerCase() === '' ? item 
-                      : 
-                      item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
-                      item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
-                      item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
-                    }).map((item, index) => 
-                    
-                    <Listas 
-                    key={index} item={item} rol={rol3} 
-                    monitor_seleccionado={state.monitor_seleccionado}
-                    filtro={state.estudiante_filtro}
-                    childClicked3={(name)=>estudiante_seleccion(name)}/>) }
+                    <Col className="scroll_listas">
+                      <Row className="asignaciones_no_seleccion">
+                        Monitor no seleccionado 
+                      </Row>
+                    <Scrollbars>
+                      { estudiantes_json.filter((item)=>{
+                        return state.estudiante_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
+                        item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
+                        item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
+                      }).map((item, index) => 
+                      
+                      <Listas 
+                      key={index} item={item} rol={rol3} 
+                      monitor_seleccionado={state.monitor_seleccionado}
+                      filtro={state.estudiante_filtro}
+                      childClicked3={(name)=>estudiante_seleccion(name)}/>) }
+                    </Scrollbars>
                     </Col>
                   )
                   :
                   (
-                  <Col>
+                  <Col className="scroll_listas">
+                    <Row className="asignaciones_seleccion">
+                      Monitor seleccionado : {state.monitor_seleccionado }
+                    </Row>
+                  <Scrollbars>
                   { estudiantes_seleccionados['0'].filter((item)=>{
                       return state.estudiante_filtro.toLowerCase() === '' ? item 
                       : 
@@ -298,6 +314,7 @@ const asignaciones_component = (props) =>{
                   filtro={state.estudiante_filtro}
                   monitor_seleccionado={state.monitor_seleccionado}
                   childClicked3={(name)=>estudiante_seleccion(name)}/>) }
+                    <Row className="separador_asignaciones"></Row>
 
                     { estudiantes_seleccionados['1'].filter((item)=>{
                       return state.estudiante_filtro.toLowerCase() === '' ? item 
@@ -309,6 +326,7 @@ const asignaciones_component = (props) =>{
                   key={index} item={item} rol={rol3} 
                   filtro={state.estudiante_filtro}
                   monitor_seleccionado={state.monitor_seleccionado}/>) }
+                  </Scrollbars>
                   </Col>
                   )
                 }

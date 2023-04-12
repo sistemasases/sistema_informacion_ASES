@@ -303,12 +303,14 @@ const Info_basica = (props) =>{
                                         <Row> 
                                               <h4 className="texto_mas_pequeño">
                                               <br/>
-                                                  Profecional: Practicante: Monitor: 
-                                              <br/> Ultima astualización:
+                                                  Profecional: 
+                                                  <br/>
+                                                  Practicante: 
+                                                  <br/>
+                                                  Monitor: 
                                               <br/> 
-                                                  <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
-                                                  Documento de Autorización de Tratamiento de Datos
-                                                  </a>
+                                              Ultima astualización:
+                                              <br/> 
                                               </h4>
                                         </Row>
                                       </Col>
@@ -345,9 +347,6 @@ const Info_basica = (props) =>{
                                             item={item}/>) }
                                         <Row> 
                                               <h4 className="texto_mas_pequeño">
-                                              <br/>
-                                                  Profecional: Practicante: Monitor: 
-                                              <br/> Ultima astualización:
                                               <br/> 
                                                   <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
                                                   Documento de Autorización de Tratamiento de Datos
@@ -702,7 +701,7 @@ const Info_basica = (props) =>{
 
         <div class="d-block d-md-none col-12">
           <Col>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
+          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Col>
         </div>
 

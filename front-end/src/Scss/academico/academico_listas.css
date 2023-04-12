@@ -1,0 +1,198 @@
+  .fichas_academico{
+    background: white;
+    margin-top: 1.5vh;
+    margin-bottom: 1.5vh;
+  }
+  .fichas_academico2{
+    background: white;
+    margin-left: 60px;
+    display: block;
+  }
+  .fichas_academico3{
+    background: white;
+    display: block;
+    margin-left: 60px;
+  }
+  .fichas_academico4{
+      border: #D8D8D8 solid 0.5px;
+    background: white;
+    display: block;
+  }
+
+
+  
+  .fichas_academico.open > .fichas-title .toggle-btn-fichas{
+    transform: rotate(180deg);
+  }
+  .content_academico{
+    height: 0px;
+    overflow: hidden;
+  }
+  .fichas_academico.open > .content_academico{
+    height: auto;
+  }
+  
+  .fichas_academico.plain{
+    text-decoration: none;
+  }
+  .fichas_academico.plain:hover{
+    text-decoration: underline;
+  }
+  .fichas_academico.plain i{
+    display: inline-block;
+  }
+
+
+
+  .fichas_academico2.open > .fichas-title .toggle-btn-fichas{
+    transform: rotate(180deg);
+  }
+
+  .fichas_academico2.open > .content_academico{
+    height: auto;
+  }
+
+  .fichas_academico2.plain{
+    text-decoration: none;
+  }
+  .fichas_academico2.plain:hover{
+    text-decoration: underline;
+  }
+  .fichas_academico2.plain i{
+    display: inline-block;
+  }
+
+
+
+  .fichas_academico3.open > .fichas-title .toggle-btn-fichas{
+    transform: rotate(180deg);
+  }
+
+  .fichas_academico3.open > .content_academico{
+    height: auto;
+  }
+
+  .fichas_academico3.plain{
+    text-decoration: none;
+  }
+  .fichas_academico3.plain:hover{
+    text-decoration: underline;
+  }
+  .fichas_academico3.plain i{
+    display: inline-block;
+    width: 1.7em;
+  }
+
+  
+
+  .fichas_academico4.open > .fichas-title .toggle-btn-fichas{
+    transform: rotate(180deg);
+  }
+
+  .fichas_academico4.open > .content_academico{
+    height: auto;
+  }
+
+  .fichas_academico4.plain{
+    text-decoration: none;
+  }
+  .fichas_academico4.plain:hover{
+    text-decoration: underline;
+  }
+  .fichas_academico4.plain i{
+    display: inline-block;
+    width: 1.7em;
+  }
+
+
+
+  .content_academico{
+    height: 0px;
+    overflow: hidden;
+  }
+  .fichas_academico.open > .content_academico{
+    height: auto;
+  }
+  .fichas_academico2.open > .content_academico{
+    height: auto;
+  }
+  .fichas_academico3.open > .content_academico{
+    height: auto;
+  }
+  .fichas_academico4.open > .content_academico{
+    height: auto;
+  }
+
+
+  .contenido_fichas_academico{
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    justify-content: center;
+  }
+  .contenido_fichas_academico2{
+    justify-content: center;
+  }
+  .contenido_fichas_academico3{
+    padding-bottom: 2vh;
+    justify-content: center;
+  }
+
+
+
+  .link_academico1{
+    border-top: 2px solid #D8D8D8;
+    border-left: 2px solid #D8D8D8;
+    border-right: 2px solid #D8D8D8;
+    background: white;
+    color: black;  
+    transition: all 1.5s;
+}
+
+.link_text_academico1{
+    border: 1px solid lightgray;
+    background: white;
+}
+
+.link_academico1_sin_borde{
+    background: white;
+    color: black;
+    transition: all 1.5s;
+}
+.link_text_academico1_sin_borde{
+    background: white;
+}
+
+
+
+.link_text_academico_hover1{
+    background:  lightgray;
+    display: flex;
+    height: 100%;
+}
+.link_text_academico_hover1:hover{
+    background: red;
+}
+
+.link_text_academico_hover2{
+    background: rgb(175,175,175);
+    display: flex;
+    height: 100%;
+}
+.link_text_academico_hover2:hover{
+    background: red;
+}
+.link_text_academico_hover3{
+    background: rgb(140, 140, 140);
+    display: flex;
+    height: 100%;
+}
+.link_text_academico_hover3:hover{
+    background: red;
+}
+.link_text_academico_hover4{
+    display: flex;
+    height: 100%;
+}
+.link_text_academico_hover4:hover{
+    background: red;
+}

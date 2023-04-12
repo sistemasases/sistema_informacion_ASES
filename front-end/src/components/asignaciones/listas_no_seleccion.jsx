@@ -9,19 +9,17 @@ const Listas_no_seleccion = (props) => {
 
     if(props.rol === "practicante"){
         return (
-            <Row>
+            <Row className="row_opcion">
                 {
                 props.profecional_seleccionado === '' ?
                 (
-                <Col className="fichas-item" onClick={()=>childClicked(props.item.nombre)}>
-                    <Row className="link_reporte_seguimientos1" >
-                        <Col className="link_text_reporte_seguimientos1" >
-                                            <Row className="link_text_reporte_seguimientos_hover1">
+                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.nombre)}>
+                                            <Row className="asignaciones_hover1">
                                                 <Col  xs={"10"} md={"4"}> 
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                    <Row className="nombres_asignacion">
                                                         {props.item.username}
                                                     </Row>
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                    <Row className="nombres_asignacion">
                                                         {props.item.first_name}
                                                         {props.item.last_name}
                                                     </Row>
@@ -29,28 +27,26 @@ const Listas_no_seleccion = (props) => {
                                                 
                                                 
                                             </Row>
-                            </Col>
-                    </Row>
                         
                 </Col>
                     
                 )
                 :
                 (
-                   <Col className="fichas-item" onClick={()=>childClicked(props.item.nombre)}>
-                    <Row className="link_reporte_seguimientos1" >
-                        <Col className="link_text_reporte_seguimientos1" >
-                                            <Row className="link_text_reporte_seguimientos_hover1">
-                                            <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"2"}> 
-                                                    <Row className="row_spans_card_content_flex">
-                                                        <FaUser></FaUser> 
-                                                    </Row>
+                   <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.nombre)}>
+
+                                            <Row className="asignaciones_hover1">
+                                                <Col  xs={"2"} md={"2"} className="center_asignacion"> 
+                                                    <button className="asignaciones_icons_añadir">
+                                                        <i class="bi bi-chevron-left"></i>                                                    
+                                                    </button>
                                                 </Col>
+
                                                 <Col  xs={"10"} md={"4"}> 
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                    <Row className="nombres_asignacion">
                                                         {props.item.username}
                                                     </Row>
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                    <Row className="nombres_asignacion">
                                                         {props.item.first_name}
                                                         {props.item.last_name}
                                                     </Row>
@@ -58,8 +54,6 @@ const Listas_no_seleccion = (props) => {
                                                 
                                                 
                                             </Row>
-                            </Col>
-                    </Row>
                         
                 </Col>
                 )
@@ -68,7 +62,7 @@ const Listas_no_seleccion = (props) => {
         )
     }else if(props.rol === "monitor" ) {
         return (
-            <Row>
+            <Row className="row_opcion">
             {
                 props.practicante_seleccionado === '' ?
                 (
@@ -76,30 +70,25 @@ const Listas_no_seleccion = (props) => {
                 )
                 :
                 (
-                    <Col className= "fichas-item2">
-                    <Row className="link_reporte_seguimientos1">
-                    <Col className="link_text_reporte_seguimientos1" >
-                                            <Row className="link_text_reporte_seguimientos_hover2">
-                                                <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"2"}> 
-                                                    <Row className="row_spans_card_content_flex">
-                                                        <FaUser></FaUser> 
-                                                    </Row>
+                    <Col className= "listas_cuerpo">
+                                            <Row className="asignaciones_hover1">
+                                                <Col  xs={"2"} md={"2"} className="center_asignacion"> 
+                                                <button className="asignaciones_icons_añadir">
+                                                    <i class="bi bi-chevron-left"></i>                                                    
+                                                    </button>
                                                 </Col>
 
-
                                                 <Col  xs={"10"} md={"4"}> 
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                    <Row className="nombres_asignacion">
                                                         {props.item.username}
                                                     </Row>
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                    <Row className="nombres_asignacion">
                                                         {props.item.first_name}
                                                         {props.item.last_name}
                                                     </Row>
                                                 </Col>
 
                                             </Row>
-                            </Col>
-                    </Row>
                     
                 </Col>
                 )
@@ -110,7 +99,7 @@ const Listas_no_seleccion = (props) => {
     }
     else if (props.rol === "estudiante"){
         return (
-        <Row>
+        <Row className="row_opcion">
         {
                 props.monitor_seleccionado === '' ?
                 (
@@ -118,29 +107,24 @@ const Listas_no_seleccion = (props) => {
                 )
                 :
                 (
-        <Col className="fichas-item3">
-        <Row className="link_reporte_seguimientos1" >
-        <Col className="link_text_reporte_seguimientos1" >
-                                <Row className="link_text_reporte_seguimientos_hover3">
-                                    <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"2"}> 
-                                                    <Row className="row_spans_card_content_flex">
-                                                        <FaUser></FaUser> 
-                                                    </Row>
+        <Col className="listas_cuerpo">
+                                <Row className="asignaciones_hover1">
+                                                <Col xs={"2"} md={"2"} className="center_asignacion"> 
+                                                    <button className="asignaciones_icons_añadir">
+                                                    <i class="bi bi-chevron-left"></i>                                                    
+                                                    </button>
                                                 </Col>
 
-
                                                 <Col  xs={"10"} md={"8"}> 
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                    <Row className="nombres_asignacion">
                                                         {props.item.cod_univalle}
                                                     </Row>
-                                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                                    <Row className="nombres_asignacion">
                                                         {props.item.nombre}
                                                         {props.item.apellido}
                                                     </Row>
                                                 </Col>
                                 </Row>
-                </Col>
-        </Row>
             
                 </Col>
             )
