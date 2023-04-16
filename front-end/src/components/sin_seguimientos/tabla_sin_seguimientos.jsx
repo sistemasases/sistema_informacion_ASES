@@ -15,12 +15,6 @@ const Tabla_sin_Seguimientos = () =>{
   const data = useMemo(()=> MOCK_DATA, []);
 
 
-
-
-
-
-
-
   const columnas2 = [
     {
       name:'ID',
@@ -31,27 +25,23 @@ const Tabla_sin_Seguimientos = () =>{
     
 
     {
-      name:(<div>
+      name:
       <Row className="center_tabla_sin_seguimientos">
       <h4 className="texto_mas_pequeño">Cedula</h4>
-      </Row>
-      <Row><input onChange={handleFilter_cedula}/></Row>
-
-</div>),
+      <input onChange={handleFilter_cedula}/>
+      </Row>,
       selector:'phone',
-      sortable:false,
+      sortable:true,
     },
 
 
 
     {
-      name:(<div>
+      name:
       <Row className="center_tabla_sin_seguimientos">
       <h4 className="texto_mas_pequeño">Nombres</h4>
-      </Row>
-      <Row><input onChange={handleFilter_nombre}/></Row>
-
-</div>),
+      <input onChange={handleFilter_nombre}/>
+      </Row>,
       selector:'first_name',
       sortable:true,
     },
@@ -59,12 +49,10 @@ const Tabla_sin_Seguimientos = () =>{
 
 
     {
-      name:(<div>
+      name:
       <Row className="center_tabla_sin_seguimientos">
       <h4 className="texto_mas_pequeño">Apellidos</h4>
-      </Row>
-      <Row><input onChange={handleFilter_apellido}/></Row>
-</div>),
+      <input onChange={handleFilter_apellido}/></Row>,
       selector:'last_name',
       sortable:true,
     },
@@ -108,37 +96,34 @@ const Tabla_sin_Seguimientos = () =>{
 
 
     {
-      name:(<div className="div_tabla_filtro">
-                <Row className="center_tabla_sin_seguimientos">
-                <h4 className="texto_mas_pequeño">Monitor</h4></Row>
-                <Row><input onChange={handleFilter_monitor}/></Row>
-            </div>),
+      name:
+          <Row className="center_tabla_sin_seguimientos">
+            <h4 className="texto_mas_pequeño">Monitor</h4>
+            <input onChange={handleFilter_monitor}/>
+            </Row>,
       selector:'last_name',
-      sortable: false
+      sortable: true
     },
 
 
 
     {
-      name:(
-      <div className="div_tabla_filtro">
-                <Row className="center_tabla_sin_seguimientos">
-                <h4 className="texto_mas_pequeño">Practicante</h4></Row>
-                <Row><input onChange={handleFilter_practicante}/></Row>
-            </div>),
+      name:
+          <Row className="center_tabla_sin_seguimientos">
+            <h4 className="texto_mas_pequeño">Practicante</h4>
+            <input onChange={handleFilter_practicante}/>
+          </Row>,
       selector:'first_name',
-      sortable:false,
+      sortable:true,
     },
     {
-      name:(
-      <div className="div_tabla_filtro">
-                <Row className="center_tabla_sin_seguimientos">
-                <h4 className="texto_mas_pequeño">Profecional</h4>
-                </Row>
-                <Row><input onChange={handleFilter_profecional}/></Row>
-            </div>),
+      name:
+          <Row className="center_tabla_sin_seguimientos">
+            <h4 className="texto_mas_pequeño">Profecional</h4>
+            <input onChange={handleFilter_profecional}/>
+          </Row>,
       selector:'last_name',
-      sortable:false,
+      sortable:true,
     },
 
   ]
@@ -244,18 +229,6 @@ const Tabla_sin_Seguimientos = () =>{
             
           </Row>
 
-          <Row>
-              
-            <DataTable
-            columns={columnas2}
-            data={MOCK_DATA}
-            pagination 
-            paginationRowsPerPageOptions={[10,20,30,40,50,100]}
-            paginationComponentOptions={paginacionOpciones}    
-            highlightOnHover={true}
-            />
-
-          </Row>
         </Container>
     )
 }

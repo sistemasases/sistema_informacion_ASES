@@ -51,17 +51,13 @@ import {Scrollbars} from 'react-custom-scrollbars';
 
 const SideBar = (props) =>{
 
-
-
-
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
 
 
 
     const [state,set_state] = useState({
-        path_actual : 'Inicio',
-        desplegable : Menu3
+        desplegable : localStorage.rol === 'superAses' ? Menu : Menu2
       })
 
     function path_actual(name){
@@ -70,20 +66,24 @@ const SideBar = (props) =>{
           path_actual : name,
         })
       }
+      
     
-      function set_menu(){
+
+ 
+
         if(localStorage.rol == 'superAses'){
             set_state({
                 ...state,
-                desplegable : Menu,
+                desplegable : Menu2,
               })
         }else if(localStorage.rol == 'socioeducativa'){
             set_state({
                 ...state,
                 desplegable : Menu2,
               })
-        }
-      }
+
+            }
+        
 
 
     return (
@@ -100,12 +100,12 @@ const SideBar = (props) =>{
                                 {
                                     isOpen ?
                                     (<div className="sidebar_item">
-                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}
+                                        { state.desplegable.map((item, index) => <SidebarItem key={index} item={item}
                                         childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                     :
                                     (<div className="sidebar_item">
-                                        { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} 
+                                        { state.desplegable.map((item, index) => <Sidebar_item_closed key={index} item={item} 
                                         childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                 }
@@ -122,12 +122,12 @@ const SideBar = (props) =>{
                                 {
                                     isOpen ?
                                     (<div className="sidebar_item">
-                                        { Menu.map((item, index) => <SidebarItem key={index} item={item}
+                                        { state.desplegable.map((item, index) => <SidebarItem key={index} item={item}
                                         childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                     :
                                     (<div className="sidebar_item">
-                                    { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item}
+                                    { state.desplegable.map((item, index) => <Sidebar_item_closed key={index} item={item}
                                     childClicked2={(name)=>path_actual(name)}/>) }
                                     </div>)
                                 }

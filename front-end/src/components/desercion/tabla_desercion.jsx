@@ -25,61 +25,84 @@ const Tabla_desercion = () =>{
 
   const columnas2 = [
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Codigo</h4></Row>
-            </div>),
+      name:
+      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Codigo</h4>
+      <input onChange={handleFilter_codigo}/>
+      </Row>,
       selector:'id',
       sortable:true
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Cedula</h4></Row>
-</div>),
+      name:
+      <Row className="center_tabla_sin_seguimientos">
+        <h4 className="texto_mas_pequeño">Cedula</h4>
+        <input onChange={handleFilter_cedula}/>
+      </Row>,
       selector:'phone',
       sortable:true
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Nombres</h4></Row>
-</div>),
+      name:
+      <Row className="center_tabla_sin_seguimientos">
+        <h4 className="texto_mas_pequeño">Nombres</h4>
+        <input onChange={handleFilter_nombre}/>
+      </Row>,
       selector:'first_name',
       sortable:true,
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Número de documento</h4></Row>
-</div>),
+      name:
+      <Row className="center_tabla_sin_seguimientos">
+        <h4 className="texto_mas_pequeño">Número de documento</h4>
+        <input onChange={handleFilter_cedula}/>
+      </Row>,
       selector:'last_name',
       sortable:true,
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Número de carreras</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Número de carreras</h4>
+      </Row>
 </div>),
       selector:'phone',
       sortable:true
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2020A</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2020A</h4>
+      </Row>
 </div>),
       selector:'age',
       sortable:true,
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2020B</h4></Row>
+      name:(<div
+      ><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2020B</h4>
+      </Row>
 </div>),
       selector:'age',
       sortable:true,
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2021A</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2021A</h4>
+      </Row>
   </div>),
       selector:'phone',
       sortable:true
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2021B</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2021B</h4>
+      </Row>
   </div>),
       selector:'age',
       sortable:true,
     },
     {
-      name:(<div><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2022A</h4></Row>
+      name:(<div>
+      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2022A</h4>
+      </Row>
   </div>),
       selector:'age',
       sortable:true,
@@ -95,6 +118,68 @@ const Tabla_desercion = () =>{
     selectAllRowsItemtEXT:'TODO',
 
   }
+
+
+
+
+  const [records, setRecords] = useState(MOCK_DATA);
+
+
+
+  
+  function handleFilter_cedula(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.phone.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+
+  function handleFilter_nombre(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.first_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+  
+  function handleFilter_apellido(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+  function handleFilter_codigo(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.id.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+  function handleFilter_practicante(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.first_name.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+  function handleFilter_profecional(event) {
+
+    const newData = MOCK_DATA.filter(row => {
+      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+    })
+    setRecords(newData)
+  }
+
+
+
+
+
 
     return (
         
