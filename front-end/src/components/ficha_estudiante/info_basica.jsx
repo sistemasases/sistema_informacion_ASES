@@ -7,6 +7,7 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Selector_estudiantes from "../componentes_generales/selector_estudiantes";
+import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Selector from "../../components/ficha_estudiante/selector";
@@ -15,6 +16,7 @@ import Form from 'react-bootstrap/Form';
 import Info_registros from './info_registros';
 import Programas_academicos from './programas_academicos'
 import Modal from 'react-bootstrap/Modal';
+import Inasistencia from '../seguimiento_forms/form_inasistencia';
 
 
 
@@ -22,6 +24,14 @@ const Info_basica = (props) =>{
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
+
+    const [show, setShow] = useState(false);
+    const handleModal = () => setShow(true);
+    const handleClose = () => setShow(false);
+
+    const [showIn, setShowIn] = useState(false);
+    const handleModalIn = () => setShowIn(true);
+    const handleCloseIn = () => setShowIn(false);
     
     const options = [
       { value: 'chocolate', label: 'Chocolate' },
@@ -218,6 +228,8 @@ const Info_basica = (props) =>{
 
     return (
       <Row>
+        <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
+        <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
         <Col xs={"12"} lg={"9"} >
 
 
@@ -453,7 +465,7 @@ const Info_basica = (props) =>{
                                   </Row>
                               </Col>
 
-                                  <Button className="boton_nuevo_registro_pequeño">NUEVO SEGUIMIENTO</Button>
+                                  <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
                             </Row>
                             
                           </Col>
@@ -493,7 +505,7 @@ const Info_basica = (props) =>{
                                 </Row>
                             </Col>
 
-                                  <Button className="boton_nuevo_registro_pequeño">NUEVO SEGUIMIENTO</Button>
+                                  <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
 
                             </Row>
                           

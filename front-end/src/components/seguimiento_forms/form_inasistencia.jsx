@@ -5,18 +5,20 @@ import Form from 'react-bootstrap/Form';
 
 const Inasistencia = (props) =>{
 
-    const [show, setShow] = useState(true);
-    const handleClose = () => setShow(false);
-
     const set_info = (e) => {
-        setShow(false)   
-      }
+    }
+
+    const handleChange = () => {
+        props.handleCloseIn()
+        props.handleModal()
+    }
 
     return (
         
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal {...props}>
             <Modal.Header closeButton>
                 <Modal.Title>Inasistencia</Modal.Title>
+                <Button onClick={handleChange}>Registrar Seguimiento</Button>
             </Modal.Header>
             <Modal.Body>
                 <h1><b>Inasistencia</b></h1>
@@ -52,7 +54,7 @@ const Inasistencia = (props) =>{
             <Button variant="secondary" onClick={set_info}>
               Registrar
             </Button>
-            <Button variant="secondary" onClick={set_info}>
+            <Button variant="secondary" onClick={()=>props.handleCloseIn()}>
               Cerrar
             </Button>
           </Modal.Footer>

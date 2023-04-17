@@ -5,18 +5,20 @@ import Form from 'react-bootstrap/Form';
 
 const Seguimiento_individual = (props) =>{
 
-    const [show, setShow] = useState(true);
-    const handleClose = () => setShow(false);
-
     const set_info = (e) => {
-        setShow(false)   
-      }
+    }
+
+    const handleChange = () => {
+        props.handleClose()
+        props.handleModalIn()
+    }
 
     return (
         
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal {...props}>
             <Modal.Header closeButton>
                 <Modal.Title>Seguimiento Individual</Modal.Title>
+                <Button onClick={handleChange}>Registrar Inasistencia</Button>
             </Modal.Header>
             <Modal.Body>
                 <h1><b>Seguimiento de Pares</b></h1>
@@ -370,7 +372,7 @@ const Seguimiento_individual = (props) =>{
             <Button variant="secondary" onClick={set_info}>
               Registrar
             </Button>
-            <Button variant="secondary" onClick={set_info}>
+            <Button variant="secondary" onClick={()=>props.handleClose()}>
               Cerrar
             </Button>
           </Modal.Footer>
