@@ -48,7 +48,7 @@ const Inicio_semestre_sistemas = () =>{
                         <Accordion.Header>Paso uno: Roles que continúan</Accordion.Header>
                         <Accordion.Body>
                             <div hidden={!show}>
-                                <Semestre_sistemas_component/>
+                                <Semestre_sistemas_component />
                                 <Row>
                                     <CustomToggle eventKey="1">Continuar</CustomToggle>
                                 </Row>

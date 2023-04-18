@@ -11,22 +11,32 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Footer from '../../components/componentes_generales/footer';
+import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
+import Inasistencia from '../seguimiento_forms/form_inasistencia';
 
 
 const Info_registros = () =>{
 
+    const [show, setShow] = useState(false);
+    const handleModal = () => setShow(true);
+    const handleClose = () => setShow(false);
+
+    const [showIn, setShowIn] = useState(false);
+    const handleModalIn = () => setShowIn(true);
+    const handleCloseIn = () => setShowIn(false);
+
     return (
         <Row className="container_info_registro">
-
+            <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
+            <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
             <div class="d-none d-md-block col-md-1">
                 <Col></Col>
             </div>
-
             <Col md={"11"}>
 
                 <div class="d-none d-md-block l-20px">
                 <Row className="generar_nuevo_reporte">
-                    <Button className="boton_nuevo_registro">NUEVO SEGUIMIENTO</Button>
+                    <Button className="boton_nuevo_registro" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
                 </Row>
                 <Row className="riesgos">
                     <Col>
