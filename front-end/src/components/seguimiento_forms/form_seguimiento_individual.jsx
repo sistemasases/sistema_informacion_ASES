@@ -15,7 +15,8 @@ const Seguimiento_individual = (props) =>{
 
     return (
         
-        <Modal {...props}>
+        <Modal {...props}
+        size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Seguimiento Individual</Modal.Title>
                 <Button onClick={handleChange}>Registrar Inasistencia</Button>

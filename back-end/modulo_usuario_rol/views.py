@@ -39,7 +39,7 @@ class estudiante_viewsets (viewsets.ModelViewSet):
         programas = programa_estudiante.objects.filter(id_estudiante = serializer_estudiante.data['id']).values()
         for i in programas:
             var_programa = programa.objects.filter(id = i['id_programa_id']).values()
-            dic_programa = {'nombre_programa':var_programa[0]['nombre']}
+            dic_programa = {'nombre_programa':var_programa[0]['nombre'],'cod_programa':var_programa[0]['codigo_univalle']}
             dic = i
             dic.update(dic_programa)
             lista_programas.append(dic)
