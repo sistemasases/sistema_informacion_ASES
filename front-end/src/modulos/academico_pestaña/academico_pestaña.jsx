@@ -7,11 +7,11 @@ const Academico_pestaña = () =>{
 
     return (
         
-        <Container >
+        <Col className="contenido_children">
             <Row className="containerRow">
                 <Academico_desplegables/>
             </Row>
-        </Container>
+        </Col>
     )
 }
 

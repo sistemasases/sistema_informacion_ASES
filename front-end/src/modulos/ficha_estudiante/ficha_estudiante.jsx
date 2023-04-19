@@ -16,19 +16,12 @@ import Ficha_footer from '../../components/ficha_estudiante/ficha_footer';
 
 const Ficha_estudiante = (props) =>{
 
-    const[switchChecked, setChecked] = useState(false);
-    const handleChange = () => setChecked(!switchChecked);
-
-    const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-    ]
-
     return (
-        <Container>
-            <Info_basica usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>
-        </Container>
+        <Row>
+            <Col className="contenido_children">
+                <Info_basica usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>
+            </Col>
+        </Row>
     )
 }
 

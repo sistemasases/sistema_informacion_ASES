@@ -11,7 +11,7 @@ import { NavLink } from 'react-router-dom';
 const Carga_masiva = () =>{
 
     return (
-        <Container >
+        <Col className="contenido_children">
             <Row className="justify-content-md-center">
                 <h1>CARGA MASIVA</h1>
             </Row>
@@ -21,7 +21,7 @@ const Carga_masiva = () =>{
             <Row>
 
             </Row>
-        </Container>
+        </Col>
     )
 }
 

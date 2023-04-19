@@ -15,20 +15,14 @@ const Desercion = () =>{
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
-    const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-    ]
-
     return (
         
-        <Container >
+        <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_desercion/>
             </Row>
 
-        </Container>
+        </Col>
     )
 }
 

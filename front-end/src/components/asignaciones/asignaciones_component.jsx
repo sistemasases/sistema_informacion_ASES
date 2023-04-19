@@ -1,13 +1,9 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
-import Form from 'react-bootstrap/Form';
-import carga_masiva_service from '../../service/carga_masiva';
-import DataTable, {createTheme} from 'react-data-table-component';
+import {Container, Row, Col, Button} from "react-bootstrap";
 import Listas from './listas'
 import Listas_no_seleccion from './listas_no_seleccion';
+import axios from 'axios';
 
 import profecionales from "./profecionales";
 import todos_practicantes from "./practicantes_json.json";
@@ -31,8 +27,6 @@ const asignaciones_component = (props) =>{
   const[rol] = useState("practicante");
   const[rol2] = useState("monitor");
   const[rol3] = useState("estudiante");
-
-
   
 
   const [state,set_state] = useState({
@@ -49,7 +43,25 @@ const asignaciones_component = (props) =>{
     option : '',
     mensaje : [],
     respuesta : 'Cargando...',
+
+    data_profesionales : props.dataProfesionales,
+    data_practicantes : props.dataPracticantes,
+    data_monitores : props.dataMonitores,
+    data_estudiantes: props.dataEstudiantes,
+
+    separacion_practicantes : [],
+    separacion_monitores : [],
+    separacion_estudiantes : [],
   })
+
+
+  console.log("primero : "+ state.data_profesionales)
+  console.log("segundo : "+ state.data_profesionales[0])
+  console.log("tercero : "+ state.data_profesionales[0]['username'])
+
+  console.log("primero : "+ state.data_profesionales)
+
+
 
   const cambiar_dato_select = (e) =>{
           set_state({
@@ -71,20 +83,38 @@ const asignaciones_component = (props) =>{
 
 
   function practicante_seleccion(name){
+
+    axios.get('http://localhost:8000/usuario_rol/monitor/'+name+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_monitores : response.data
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
     set_state({
       ...state,
       practicante_seleccionado : name
     })
+
     alert(name)
   }
+
+
+
   function monitor_seleccion(name){
     set_state({
       ...state,
       monitor_seleccionado : name
     })
         alert(name)
-
   }
+
+
+  
   function estudiante_seleccion(name){
     set_state({
       ...state,
@@ -144,7 +174,7 @@ const asignaciones_component = (props) =>{
                           Profecional no seleccionado 
                         </Row>
                       <Scrollbars>
-                          { todos_practicantes.filter((item)=>{
+                          { state.data_practicantes.filter((item)=>{
                           return state.practicante_filtro.toLowerCase() === '' ? item 
                           : 
                           item.username.toLowerCase().includes(state.practicante_filtro) ||
@@ -163,7 +193,7 @@ const asignaciones_component = (props) =>{
                       <Row className="asignaciones_seleccion_profecional">
                         profecional: {state.profecional_seleccionado}
                         </Row>
-                      { practicantes_seleccionados['0'].filter((item)=>{
+                      { state.separacion_monitores['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.practicante_filtro) ||
@@ -172,8 +202,10 @@ const asignaciones_component = (props) =>{
                       }).map((item, index) => <Listas 
                     key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
                     childClicked={(name)=>practicante_seleccion(name)}/>) }
+
+
                     <Row className="separador_asignaciones"></Row>
-                      { practicantes_seleccionados['1'].filter((item)=>{
+                      { state.separacion_monitores['1'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.practicante_filtro) ||
@@ -188,6 +220,12 @@ const asignaciones_component = (props) =>{
               </Row>
 
             </Col>
+
+
+
+
+
+
 
             <Col xs={"12"} md={"4"}>
               <Row  className="row_asignaciones_titulos">  
@@ -212,7 +250,7 @@ const asignaciones_component = (props) =>{
                         </Row>
                     <Scrollbars>
 
-                        { monitores_json.filter((item)=>{
+                        { state.data_monitores.filter((item)=>{
                         return state.monitor_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.monitor_filtro) ||
@@ -231,7 +269,7 @@ const asignaciones_component = (props) =>{
                       Practicante seleccionado : {state.monitor_seleccionado }
                     </Row>
                     <Scrollbars>
-                    { monitores_seleccionados['0'].filter((item)=>{
+                    { state.separacion_monitores['0'].filter((item)=>{
                       return state.monitor_filtro.toLowerCase() === '' ? item 
                       : 
                       item.username.toLowerCase().includes(state.monitor_filtro) ||
@@ -242,7 +280,7 @@ const asignaciones_component = (props) =>{
                   childClicked2={(name)=>monitor_seleccion(name)}/>) }
                     <Row className="separador_asignaciones"></Row>
 
-                    { monitores_seleccionados['1'].filter((item)=>{
+                    { state.separacion_monitores['1'].filter((item)=>{
                       return state.monitor_filtro.toLowerCase() === '' ? item 
                       : 
                       item.username.toLowerCase().includes(state.monitor_filtro) ||
@@ -258,6 +296,14 @@ const asignaciones_component = (props) =>{
                 
               </Row>
             </Col>
+
+
+
+
+
+
+
+            
 
             <Col xs={"12"} md={"4"}>
               <Row className="row_asignaciones_titulos">

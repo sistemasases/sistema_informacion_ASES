@@ -9,6 +9,7 @@ import Menu2 from './socioeducativa.json';
 import Menu3 from './academico.json';
 import Menu4 from './icetex.json';
 import Menu5 from './discapacidad.json';
+import Ficha_estudiante from "../../modulos/ficha_estudiante/ficha_estudiante.jsx";
 
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
@@ -67,22 +68,7 @@ const SideBar = (props) =>{
         })
       }
       
-    
 
- 
-
-        if(localStorage.rol == 'superAses'){
-            set_state({
-                ...state,
-                desplegable : Menu2,
-              })
-        }else if(localStorage.rol == 'socioeducativa'){
-            set_state({
-                ...state,
-                desplegable : Menu2,
-              })
-
-            }
         
 
 
@@ -145,7 +131,7 @@ const SideBar = (props) =>{
                 </Row>
                 <div  class="d-none d-md-block">
                     <Row className="inf_der">
-                        <main style={{marginLeft: isOpen ? "280px" : "50px", marginTop: "5rem"}}>
+                        <main style={{marginLeft: isOpen ? "230px" : "50px", marginTop: "5rem",}}>
                             {props.children}
                         </main>
                     </Row>
