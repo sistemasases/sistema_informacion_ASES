@@ -29,11 +29,13 @@ const Info_registros = () =>{
         <Row className="container_info_registro">
             <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
             <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
-            <div class="d-none d-md-block col-md-1">
-                <Col></Col>
+            {}
+            <div class="d-none d-lg-block col-1">
+                <Col>
+                </Col>
             </div>
-            <Col md={"11"}>
-
+            <Col xs={12} lg={11}>
+                
                 <div class="d-none d-md-block l-20px">
                 <Row className="generar_nuevo_reporte">
                     <Button className="boton_nuevo_registro" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>

@@ -11,17 +11,17 @@ const SidebarItem = (props) => {
     
     if(props.item.childrens){
         return (
-            <div className={open ? "sidebar-item open" : "sidebar-item"}>
-                <div className="sidebar-title_varios">
+            <Row className={open ? "sidebar-item open" : "sidebar-item"}>
+                <Col  xs={12} className="sidebar-title_varios">
                     <span  onClick={() => setOpen(!open)} className="tamaño_icon">
                         { props.item.icon && <i className={props.item.icon}></i> }
-                    </span> 
+                    </span>
                     <span onClick={() => setOpen(!open)}>{props.item.name}</span>
-                </div>
-                <div className="sidebar-content">
+                </Col>
+                <Col xs={12} className="sidebar-content">
                     { props.item.childrens.map((child, index) => <SidebarItem key={index} item={child} />) }
-                </div>
-            </div>
+                </Col>
+            </Row>
         )
     }else{
         return (

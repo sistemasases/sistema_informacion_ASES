@@ -27,9 +27,9 @@ const Ficha_monitor = (props) =>{
     ]
 
     return (
-        <Container>
+        <Col className="contenido_children">
             <Info_basica usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>
-        </Container>
+        </Col>
     )
 }
 

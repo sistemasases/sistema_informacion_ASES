@@ -168,8 +168,7 @@
     transform: rotate(180deg);
   }
   .sidebar-content{
-    display: flex;
-    flex-direction:column;
+    word-break: break-all;
     height: 0;
     overflow: hidden;
   }

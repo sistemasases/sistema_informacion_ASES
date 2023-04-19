@@ -1,52 +1,21 @@
 import React, {useState} from 'react';
 import {Container, Row, Col, Dropdown} from "react-bootstrap";
-
+import  {useEffect} from 'react';
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
-import { NavLink } from 'react-router-dom';
 
 import Logos from './LOGO BLANCORecurso 1.png';
-/*
-<Row className="toggle_perfil_usuario">
-                                        <Col xs={"2"} sm={"2"} className="z_index_2">
-                                            <label className="borde_riesgos_bajo">
-                                                <label className="button_tipo_riesgo_bajo_2">B</label>
-                                            </label>
-                                        </Col>
-                                        <Col  xs={"10"}  sm={"10"} className="center_tipos_riesgos">
-                                            <label  className="button_tipo_riesgo_bajo_texto">INDIVIDUAL</label> 
-                                        </Col>
-                                        
-                                        <label className="boton_usuario">
-                                            <i class="bi bi-person-fill"/>
-                                        </label>
-                                        
-                                        {
-                                            isOpen ? 
-                                            (
-                                                <i class="bi bi-chevron-down"></i>
-                                            )
-                                            :
-                                            (
-                                                <i class="bi bi-chevron-down"></i>
-                                            )
-                                        }
-                                    </Row>
-                                    <ul className="ulDropdown">
-                                        <li>
-                                            { isOpen && menuOptions.map((item, index)=>(
-                                            <NavLink className="linkDropdown" activeclassName="active" to={item.path} key={index}>
-                                                {item.name}
-                                            </NavLink>
-                                            ) )
-                                            }
-                                        </li>
-                                    </ul>
-*/
-
 
 
 const navbar = (props) =>{
+
+    const [url, setUrl] = useState('');
+
+    useEffect(() => {
+        const currentUrl = window.location.href;
+        const subUrl = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
+        setUrl(subUrl);
+    }, []);
+
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
 
@@ -94,7 +63,7 @@ const navbar = (props) =>{
                 <Row >
                     <div class="d-none d-md-inline">
                         <Col xs={"12"} md={"7"} className="row_modulo_activo">
-                            <label>{props.path_actual}</label>
+                            <label>{url}</label>
                         </Col>
                     </div>
                     <div class="d-inline d-md-none">
@@ -111,7 +80,7 @@ const navbar = (props) =>{
                         <div class="d-none d-md-inline col-md-9" >
 
                             <Col xs={"1"} sm={"1"} md={"9"} className="info_perfil">
-                                <Row>{props.nombre} </Row>
+                                <Row>{localStorage.nombre_completo} </Row>
                                 <Row>Enlace del documento de aceptación t.d.p</Row>
                             </Col>
                         </div>
@@ -127,7 +96,7 @@ const navbar = (props) =>{
                                 {
                                     isOpen ?
                                     (
-                                        <div class="d-none d-md-inline col-md-3"> 
+                                        <div class="d-none d-lg-inline col-md-3"> 
                                             <Col className="flecha_usuario">
                                                 <i class="bi bi-chevron-up"></i>
                                             </Col>
@@ -135,7 +104,7 @@ const navbar = (props) =>{
                                     )
                                     :
                                     (
-                                        <div class="d-none d-md-inline col-md-3"> 
+                                        <div class="d-none d-lg-inline col-md-3"> 
                                             <Col  xs={"2"}  md={"3"} className="flecha_usuario">
                                                 <i class="bi bi-chevron-down"></i>
                                             </Col>
