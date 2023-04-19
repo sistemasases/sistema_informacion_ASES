@@ -69,7 +69,9 @@ const Info_basica = (props) =>{
         })
 
         for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
+          const dato = { value: state.data_user[i]['id'], 
+          label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
+          id:[i] }
           datos_option_user.push(dato)
 
           const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";

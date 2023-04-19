@@ -6,23 +6,10 @@ import Listas_no_seleccion from './listas_no_seleccion';
 import axios from 'axios';
 
 import profecionales from "./profecionales";
-import todos_practicantes from "./practicantes_json.json";
-import practicantes_seleccionados from "./practicante_seleccionado";
-import monitores_json from "./monitores_json.json";
-import monitores_seleccionados from "./monitores_seleccionados";
-import estudiantes_json from "./estudiantes_json.json";
-import estudiantes_seleccionados from "./estudiantes_seleccionados";
 import {Scrollbars} from 'react-custom-scrollbars'; 
 
 
 const asignaciones_component = (props) =>{
-
-  const opciones_profecionales =[
-    {value : profecionales['0']['id'], label : profecionales['0']['username']},
-    {value : profecionales['1']['id'], label : profecionales['1']['username']},
-    {value : profecionales['2']['id'], label : profecionales['2']['username']}
-
-  ]
 
   const[rol] = useState("practicante");
   const[rol2] = useState("monitor");
@@ -52,13 +39,39 @@ const asignaciones_component = (props) =>{
     separacion_practicantes : [],
     separacion_monitores : [],
     separacion_estudiantes : [],
+
+    opciones_profecionales : [],
   })
 
 
-  console.log("primero : "+ state.data_profesionales)
-  console.log("segundo : "+ state.data_profesionales[0])
-  console.log("tercero : "+ state.data_profesionales[0]['username'])
-  console.log("primero : "+ state.data_profesionales)
+//  console.log("primero : "+ state.data_profesionales)
+//  console.log("segundo : "+ state.data_profesionales[0])
+//  console.log("tercero : "+ state.data_profesionales[0]['username'])
+//  console.log("primero : "+ state.data_profesionales)
+
+    const opciones_profecionales2 =[
+    {value : state.data_profesionales['0']['id'], label : state.data_profesionales['0']['username']},
+    {value : state.data_profesionales['1']['id'], label : state.data_profesionales['1']['username']},
+    {value : state.data_profesionales['2']['id'], label : state.data_profesionales['2']['username']}
+    ]
+
+    
+  useEffect(()=>{
+
+        for (var i = 0; i < state.data_profesionales.length ; i++) {
+          const dato = 
+          { value: state.data_profesionales[i]['id'], 
+          //label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
+          label:state.data_profesionales[i]['username'],
+          id:state.data_profesionales[i]['id'] }
+
+          state.opciones_profecionales.push(dato)
+          console.log("entra 1")
+          console.log(state.opciones_profecionales[i])
+        }
+        console.log("entra2")
+        console.log(state.opciones_profecionales)
+    },[]);
 
 
   const [isLoading_practicantes_separados, setIsLoading_practicantes_separados] = useState(true);
@@ -91,10 +104,22 @@ const asignaciones_component = (props) =>{
 
 
   const cambiar_dato_select = (e) =>{
-          set_state({
-                ...state,
-                 profecional_seleccionado: e.value
-          })
+
+      axios.get('http://localhost:8000/usuario_rol/practicante/'+e.id+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_practicantes : response.data
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+      set_state({
+            ...state,
+              profecional_seleccionado: e.value
+      })
     }
 
 
@@ -207,12 +232,12 @@ const asignaciones_component = (props) =>{
                 <Col xs={"12"} className="col_asignaciones_titulos">
                 Profecional
                 </Col>   
-                <Select options={opciones_profecionales} onChange={cambiar_dato_select} ></Select>
+                <Select options={state.opciones_profecionales} onChange={cambiar_dato_select} ></Select>
               </Row>
               <Row >
 
                 {
-                    state.profecional_seleccionado === '' && isLoading_practicantes_separados ?
+                    isLoading_practicantes_separados ?
                     (
                       <Col className="scroll_listas">
                         <Row className="asignaciones_no_seleccion">
@@ -238,7 +263,7 @@ const asignaciones_component = (props) =>{
                       <Row className="asignaciones_seleccion_profecional">
                         profecional: {state.profecional_seleccionado}
                         </Row>
-                      { state.separacion_monitores['0'].filter((item)=>{
+                      { state.separacion_practicantes['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.practicante_filtro) ||
@@ -250,7 +275,7 @@ const asignaciones_component = (props) =>{
 
 
                     <Row className="separador_asignaciones"></Row>
-                      { state.separacion_monitores['1'].filter((item)=>{
+                      { state.separacion_practicantes['1'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.practicante_filtro) ||
@@ -371,7 +396,7 @@ const asignaciones_component = (props) =>{
                         Monitor no seleccionado 
                       </Row>
                     <Scrollbars>
-                      { estudiantes_json.filter((item)=>{
+                      { state.data_estudiantes.filter((item)=>{
                         return state.estudiante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
