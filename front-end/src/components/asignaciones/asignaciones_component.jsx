@@ -58,7 +58,10 @@ const asignaciones_component = (props) =>{
     
   useEffect(()=>{
 
-        for (var i = 0; i < state.data_profesionales.length ; i++) {
+    if(state.data_profesionales.length > state.opciones_profecionales.length)
+    {
+      console.log("entra una vez")
+      for (var i = 0; i < state.data_profesionales.length ; i++) {
           const dato = 
           { value: state.data_profesionales[i]['id'], 
           //label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
@@ -71,6 +74,12 @@ const asignaciones_component = (props) =>{
         }
         console.log("entra2")
         console.log(state.opciones_profecionales)
+    }
+    {
+      console.log("entra dos veces")
+    }
+
+        
     },[]);
 
 
