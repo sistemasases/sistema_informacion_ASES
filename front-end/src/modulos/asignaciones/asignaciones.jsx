@@ -53,7 +53,7 @@ const Carga_masiva = () => {
       });
 
 
-      axios.get('http://localhost:8000/usuario_rol/estudiante/')
+      axios.get('http://localhost:8000/usuario_rol/estudiante_selected/')
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -68,10 +68,10 @@ const Carga_masiva = () => {
   }, []);
 
   useEffect(() => {
-    if (state.data1.length > 0 && state.data2.length > 0 && state.data3.length > 0 && isLoading) {
+    if (state.data1.length > 0 && state.data2.length > 0 && state.data3.length > 0 && state.data4.length > 0 && isLoading) {
       setIsLoading(false);
     }
-  }, [state.data1, state.data2, state.data3]);
+  }, [state.data1, state.data2, state.data3, state.data4]);
 
   return (
     <Col className="contenido_children">

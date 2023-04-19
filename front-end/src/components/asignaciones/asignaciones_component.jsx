@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Select from 'react-select'  ;
 import {Container, Row, Col, Button} from "react-bootstrap";
 import Listas from './listas'
@@ -27,7 +27,7 @@ const asignaciones_component = (props) =>{
   const[rol] = useState("practicante");
   const[rol2] = useState("monitor");
   const[rol3] = useState("estudiante");
-  
+
 
   const [state,set_state] = useState({
 
@@ -58,8 +58,35 @@ const asignaciones_component = (props) =>{
   console.log("primero : "+ state.data_profesionales)
   console.log("segundo : "+ state.data_profesionales[0])
   console.log("tercero : "+ state.data_profesionales[0]['username'])
-
   console.log("primero : "+ state.data_profesionales)
+
+
+  const [isLoading_practicantes_separados, setIsLoading_practicantes_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_practicantes.length > 0 && isLoading_practicantes_separados) {
+      setIsLoading_practicantes_separados(false);
+    }
+  }, [state.separacion_practicantes]);
+
+
+
+  const [isLoading_monitores_separados, setIsLoading_monitores_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_monitores.length > 0 && isLoading_monitores_separados) {
+      setIsLoading_monitores_separados(false);
+    }
+  }, [state.separacion_monitores]);
+
+
+
+  const [isLoading_estudiantes_separados, setIsLoading_estudiantes_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_estudiantes.length > 0 && isLoading_estudiantes_separados) {
+      setIsLoading_estudiantes_separados(false);
+    }
+  }, [state.separacion_estudiantes]);
+
+
 
 
 
@@ -101,16 +128,34 @@ const asignaciones_component = (props) =>{
     })
 
     alert(name)
+
+    console.log("estos son los monitores separados : " + state.separacion_monitores)
   }
 
 
 
   function monitor_seleccion(name){
+
+    //poner el de los estudiantes
+
+    axios.get('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_estudiantes : response.data
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
     set_state({
       ...state,
       monitor_seleccionado : name
     })
         alert(name)
+
+    console.log("estos son los monitores separados : " + state.separacion_estudiantes)
   }
 
 
@@ -167,7 +212,7 @@ const asignaciones_component = (props) =>{
               <Row >
 
                 {
-                    state.profecional_seleccionado === '' ?
+                    state.profecional_seleccionado === '' && isLoading_practicantes_separados ?
                     (
                       <Col className="scroll_listas">
                         <Row className="asignaciones_no_seleccion">
@@ -242,7 +287,7 @@ const asignaciones_component = (props) =>{
               <Row>
 
                 {
-                  state.practicante_seleccionado === '' ?
+                   isLoading_monitores_separados ?
                   (
                     <Col className="scroll_listas">
                       <Row className="asignaciones_no_seleccion">
@@ -319,7 +364,7 @@ const asignaciones_component = (props) =>{
               </Row>
               <Row>
                 {
-                  state.monitor_seleccionado === '' ?
+                   isLoading_estudiantes_separados ?
                   (
                     <Col className="scroll_listas">
                       <Row className="asignaciones_no_seleccion">
@@ -349,7 +394,7 @@ const asignaciones_component = (props) =>{
                       Monitor seleccionado : {state.monitor_seleccionado }
                     </Row>
                   <Scrollbars>
-                  { estudiantes_seleccionados['0'].filter((item)=>{
+                  { state.separacion_estudiantes['0'].filter((item)=>{
                       return state.estudiante_filtro.toLowerCase() === '' ? item 
                       : 
                       item.nombre.toLowerCase().includes(state.estudiante_filtro) || 
@@ -362,7 +407,7 @@ const asignaciones_component = (props) =>{
                   childClicked3={(name)=>estudiante_seleccion(name)}/>) }
                     <Row className="separador_asignaciones"></Row>
 
-                    { estudiantes_seleccionados['1'].filter((item)=>{
+                    { state.separacion_estudiantes['1'].filter((item)=>{
                       return state.estudiante_filtro.toLowerCase() === '' ? item 
                       : 
                       item.nombre.toLowerCase().includes(state.estudiante_filtro), 
