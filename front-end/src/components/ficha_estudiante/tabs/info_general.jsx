@@ -17,6 +17,11 @@ import actualizar_estudiante from '../../../service/actualizar_estudiante';
 var today = new Date();
 var now = today.toLocaleString();
 
+
+
+
+
+
 const Info_general = (props) =>{
 
     const options = [
@@ -251,6 +256,13 @@ const Info_general = (props) =>{
 
 
 
+      const cambiarDatos1 = (e) => {
+
+      set_state({
+            ...state,
+            nuevo_email_alternativo : e
+      })
+      }
 
 
 
@@ -259,19 +271,30 @@ const Info_general = (props) =>{
   const [show, setShow] = useState(false);
   const handleClose2 = () => setShow(false);
 
-
-
-
-
-
   const handle_upload_estudiante = (e) => {
     // Getting the files from the input
 
     let formData = new FormData();
   
     //Adding files to the formdata
-    formData.append('id_nuevo_celular', state.nuevo_celular);
-    formData.append('id_nuevo_telefono_res', state.nuevo_telefono_res);
+    //usuario_rol/estudiante/id/
+
+      formData.append('email', state.nuevo_email_alternativo)
+
+      axios.patch({
+      // Endpoint to send files
+      url: 'http://localhost:8000/usuario_rol/estudiante/'+props.datos.id+'/',
+      method: "patch",
+      data: formData,
+        })
+        .then((res)=>{
+        console.log(res)
+            alert("estudiante fue asignado correctamente a :")
+        })
+        .catch(err=>{
+            alert("error al asignar el estudiante : ");
+        })
+
     try {
       actualizar_estudiante.actualizar_estudiante(formData);
       set_state({
@@ -510,7 +533,7 @@ const Info_general = (props) =>{
                                                 state.editar ?
                                                 (
                                                 <Col xs={"12"} md={"6"}>
-                                                      <input defaultValue={state.puntaje_icfes}></input>
+                                                      <input onChange={cambiarDatos1} defaultValue={state.puntaje_icfes}></input>
                                                 </Col>
                                                 ):
                                                 (
@@ -613,7 +636,7 @@ const Info_general = (props) =>{
                                                 state.editar ?
                                                 (
                                                 <Col xs={"12"} md={"6"}>
-                                                      <input defaultValue={state.email_alternativo}></input>
+                                                      <input onChange={cambiarDatos1} defaultValue={state.email_alternativo}></input>
                                                 </Col>
                                                 ):
                                                 (

@@ -75,7 +75,6 @@ const Selector = (props) =>{
               })
 
       }
-  
 
 
     const tabs=[
@@ -83,7 +82,12 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
+            component:<Info_general id={props.id} 
+                        seleccionado={props.seleccionado} 
+                        datos={props.datos} 
+                        rolUsuario={props.rolUsuario} 
+                        editar={props.editar} 
+                        codigo={props.codigo}/>,
         },
         {
             id:2,

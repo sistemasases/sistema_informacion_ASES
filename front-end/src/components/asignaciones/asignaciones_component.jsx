@@ -458,10 +458,6 @@ const asignaciones_component = (props) =>{
           </Row>
 
 
-
-
-
-
             
         </Container>
   )
