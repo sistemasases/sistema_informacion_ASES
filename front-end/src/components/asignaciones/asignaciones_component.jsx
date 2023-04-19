@@ -49,12 +49,6 @@ const asignaciones_component = (props) =>{
 //  console.log("tercero : "+ state.data_profesionales[0]['username'])
 //  console.log("primero : "+ state.data_profesionales)
 
-    const opciones_profecionales2 =[
-    {value : state.data_profesionales['0']['id'], label : state.data_profesionales['0']['username']},
-    {value : state.data_profesionales['1']['id'], label : state.data_profesionales['1']['username']},
-    {value : state.data_profesionales['2']['id'], label : state.data_profesionales['2']['username']}
-    ]
-
     
   useEffect(()=>{
 
@@ -65,7 +59,7 @@ const asignaciones_component = (props) =>{
           const dato = 
           { value: state.data_profesionales[i]['id'], 
           //label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
-          label:state.data_profesionales[i]['username'],
+          label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
           id:state.data_profesionales[i]['id'] }
 
           state.opciones_profecionales.push(dato)
@@ -461,11 +455,6 @@ const asignaciones_component = (props) =>{
               </Row>
             </Col>
 
-          </Row>
-
-
-          <Row>
-            <Button>abajo</Button>
           </Row>
 
 

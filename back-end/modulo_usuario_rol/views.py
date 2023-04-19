@@ -200,7 +200,7 @@ class estudiante_selected_viewsets (viewsets.ModelViewSet):
             serializer_estudiante =estudiante_serializer(i)
             list_estudiantes.append(serializer_estudiante.data)
 
-        lista_asignacion = list(asignacion.objects.filter(id_usuario = pk))
+        lista_asignacion = list(asignacion.objects.filter(id_usuario = pk, estado=True))
 
         for i in lista_asignacion:
             serializer_asignacion =asignacion_serializer(i)
