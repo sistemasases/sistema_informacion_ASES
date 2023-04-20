@@ -343,9 +343,7 @@ class usuario_rol_old_viewsets (viewsets.ModelViewSet):
             usuarios= User.objects.filter(id =user_rol['id_usuario_id']).values('id','username','first_name','last_name', 'email')[0]
             usuarios.update(rols)
             list_user_rol.append(usuarios)
-
-        
-        return Response (list_user_rol)
+        return Response(list_user_rol)
         
 class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
     serializer_class = Estudiante_actualizacion
