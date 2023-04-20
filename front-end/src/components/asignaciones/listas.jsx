@@ -13,6 +13,7 @@ const Listas = (props) => {
 
       axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/')
       .then(response => {
+        childClicked2(props.monitor_seleccionado)
         alert("estudiante "+props.item.id+" eliminado correctamente")
       })
       .catch(error => {
@@ -35,6 +36,7 @@ const Listas = (props) => {
         })
         .then((res)=>{
         console.log(res)
+        childClicked(props.practicante_seleccionado)
             alert("el monitor "+props.item.id+" fue eliminado correctamente de :"+props.practicante_seleccionado)
         })
         .catch(err=>{
