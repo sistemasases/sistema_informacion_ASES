@@ -602,12 +602,7 @@ const Info_basica = (props) =>{
 
         <div class="d-none d-md-block col-12">
           <Row>
-            <Selector id={state.id_usuario} 
-                      rolUsuario={props.rolUsuario} 
-                      datos={state.total_datos_estudiante_seleccionado} 
-                      seleccionado={state.seleccionado} 
-                      editar={state.editar}   
-                      codigo={state.id_usuario}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Row>
           <Row>
             <Ficha_footer></Ficha_footer>
