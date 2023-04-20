@@ -115,16 +115,6 @@ DATABASES = {
         'DATABASE_PORT' : '5432',
     }
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'ases',
-#         'USER' : 'postgres',
-#         'PASSWORD' : 'Rodriguez11',
-#         'HOST' : '127.0.0.1',
-#         'DATABASE_PORT' : '5432',
-#     }
-# }
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
