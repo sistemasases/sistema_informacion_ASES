@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const Listas_no_seleccion = (props) => {
 
-    const{childClicked} = props
+    const{childClicked, childClicked2, childClicked3} = props
 
     const añadir_usuario_monitor = (e) =>{
         let formData = new FormData();
@@ -15,7 +15,6 @@ const Listas_no_seleccion = (props) => {
         formData.append("id_jefe", props.practicante_seleccionado)
         formData.append("id_usuario", props.item.id)
 
-
         axios({
       // Endpoint to send files
       url: 'http://localhost:8000/asignacion/asignacion_usuario/',
@@ -23,7 +22,8 @@ const Listas_no_seleccion = (props) => {
       data: formData,
         })
         .then((res)=>{
-        console.log(res)
+            console.log(res)
+            childClicked(props.practicante_seleccionado)
             alert("estudiante "+props.item.id+" fue asignado correctamente a :"+props.practicante_seleccionado)
         })
         .catch(err=>{
@@ -68,6 +68,7 @@ const Listas_no_seleccion = (props) => {
         })
         .then((res)=>{
         console.log(res)
+            childClicked2(props.monitor_seleccionado)
             alert("estudiante "+props.item.id+" fue asignado correctamente a :"+props.monitor_seleccionado)
         })
         .catch(err=>{

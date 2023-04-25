@@ -7,18 +7,16 @@ import axios from 'axios';
 const Listas = (props) => {
 
     const{childClicked, childClicked2, childClicked3} = props
-
     
     const quitar_estudiante = (e) =>{
-
       axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/')
       .then(response => {
+        childClicked2(props.monitor_seleccionado)
         alert("estudiante "+props.item.id+" eliminado correctamente")
       })
       .catch(error => {
         alert("error al eliminar el estudiante : "+props.item.id);
       });
-
     }
 
     const quitar_usuario_monitor = (e) =>{
@@ -35,6 +33,7 @@ const Listas = (props) => {
         })
         .then((res)=>{
         console.log(res)
+            childClicked(props.practicante_seleccionado)
             alert("el monitor "+props.item.id+" fue eliminado correctamente de :"+props.practicante_seleccionado)
         })
         .catch(err=>{

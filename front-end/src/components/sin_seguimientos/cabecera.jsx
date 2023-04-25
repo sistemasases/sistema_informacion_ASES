@@ -19,9 +19,6 @@ const Cabecera = () =>{
             <Row>
                 <Col>
                     <Row>
-                        <h4>Mostrar <select className="select_tabla_cantidad_seguimientos"/> estudiantes</h4>
-                    </Row>
-                    <Row>
                         <Col xs={"12"} md={"6"}>
                             mostrando el registro del 1 al 10 de un total de # registros
                         </Col>

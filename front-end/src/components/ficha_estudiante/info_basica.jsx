@@ -67,32 +67,14 @@ const Info_basica = (props) =>{
           ...state,
           data_user : respuesta.data
         })
+        console.log("estos son los primeros datos :"+state.data_user)
 
-        for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], 
-          label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
-          id:[i] }
-          datos_option_user.push(dato)
-
-          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
-            axios({
-              // Endpoint to send files
-              url:  url_axios,
-              method: "GET",
-            })
-            .then((respuesta)=>{
-              total_datos_estudiantes.push(respuesta.dato)
-            })
-            .catch(err=>{
-                return (err)
-            })
-
-        }
-        
       })
       .catch(err=>{
-          return (err)
+        console.log("estos son los primeros datos :"+state.data_user)
       })
+      console.log("estos son los primeros datos :"+state.data_user)
+
       
     },[]);
    
@@ -105,17 +87,36 @@ const Info_basica = (props) =>{
     }
 
 
+
+
+
+    const fetchData = async (index)=>{
+      try{
+        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
+        total_datos_estudiantes.push(response.data)
+        console.log("entra aqui ssisisisiisj")
+      }
+      catch (error){
+        console.log("no capto el dato")
+        fetchData(index);
+      }
+    }
+
+
     const handle_users = (e) => {
-      console.log("opciones2");
-      console.log([datos_option_user]);
-      console.log("datos totales2");
-      console.log(total_datos_estudiantes);
+      console.log("estos son los segundos datos :"+state.data_user)
+
+
       // Getting the files from the input
       if(bandera_option_user==true){
   
         for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
+          const dato = { value: state.data_user[i]['id'], 
+          label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
+          id:i }
           datos_option_user.push(dato)
+          
+          
 
           const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
             axios({
@@ -127,19 +128,16 @@ const Info_basica = (props) =>{
               total_datos_estudiantes.push(respuesta.data)
             })
             .catch(err=>{
-                return (err)
+                console.log("no tomo el dato")
             })
 
         }
-        console.log("opciones");
-        console.log([datos_option_user]);
-        console.log("datos totales finales siiiiiiiu");
-        console.log(total_datos_estudiantes);
         bandera_option_user = false;
       }
       else{
-        console.log([datos_option_user]);
+        console.log("bandera off");
       }
+
     }
 
 
@@ -148,6 +146,7 @@ const Info_basica = (props) =>{
 
     const handle_option_user = (e) => {
       // Getting the files from the input
+
       console.log(e)
       set_state({
         ...state,
@@ -164,8 +163,12 @@ const Info_basica = (props) =>{
         programas : total_datos_estudiantes[e.id]['programas'],
         total_datos_estudiante_seleccionado : total_datos_estudiantes[e.id]
       })
-      console.log("estos son los programas")
-      console.log(state.programas)
+      console.log("este es el")
+      console.log(datos_option_user)
+      console.log("este es el id seleccionado")
+      console.log(e.id)
+      console.log("total datos estudiantes seleccionado")
+      console.log(total_datos_estudiantes)
     }
 
 

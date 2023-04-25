@@ -14,15 +14,6 @@ const Tabla_desercion = () =>{
 
 
 
-  const tablaCampeones =[
-    {id:1, año:"222", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:2, año:"233", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:3, año:"244", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-    {id:4, año:"255", campeon:"siiiii", subcampeon:"siiiiiiiii"},
-  ]
-
-
-
   const columnas2 = [
     {
       name:
@@ -137,9 +128,8 @@ const Tabla_desercion = () =>{
 
 
   function handleFilter_nombre(event) {
-
     const newData = MOCK_DATA.filter(row => {
-      return row.first_name.toLowerCase.includes(event.target.value.toLowerCase())
+      return row.first_name.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setRecords(newData)
   }
@@ -147,7 +137,7 @@ const Tabla_desercion = () =>{
   function handleFilter_apellido(event) {
 
     const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setRecords(newData)
   }
@@ -155,7 +145,7 @@ const Tabla_desercion = () =>{
   function handleFilter_codigo(event) {
 
     const newData = MOCK_DATA.filter(row => {
-      return row.id.toLowerCase().includes(event.target.value.toLowerCase())
+      return row.id.includes(event.target.value.toLowerCase())
     })
     setRecords(newData)
   }
@@ -171,7 +161,7 @@ const Tabla_desercion = () =>{
   function handleFilter_profecional(event) {
 
     const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setRecords(newData)
   }
@@ -190,8 +180,8 @@ const Tabla_desercion = () =>{
           <Row>
           <DataTableExtensions
             columns={columnas2}
-            data={MOCK_DATA}
-            filter={false}
+            data={records}
+            filter={true}
             exportHeaders={true}
             >
               
