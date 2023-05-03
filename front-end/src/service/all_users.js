@@ -6,10 +6,10 @@ const all_users = async () => {
     const resUserRol = await axios(url_axios)
     return resUserRol.data;
     
-} catch (error) {
-    console.log(error);
-}
+  } catch (error) {
+      console.log(error);
   }
+}
 
   export default {
     all_users

@@ -1,0 +1,108 @@
+.socioeducativa_container{
+    border: 1px solid #f5f5f5;
+    background: white;
+}
+
+.socioeducativa_seguimientos_pares{
+    background: #f5f5f5;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+.socioeducativa_fondo{
+    padding-top: 30px;
+    padding-bottom: 30px;
+    justify-content: center;
+}
+
+  .periodo_asignaciones{
+    padding-bottom: 5px;
+    border-left: 1px solid #D8D8D8;
+    border-right: 1px solid #D8D8D8;
+    border-bottom: 1px solid #D8D8D8;
+  }
+  .periodo_asignaciones.plain{
+    text-decoration: none;
+  }
+  .periodo_asignaciones.plain:hover{
+    text-decoration: underline;
+  }
+  .periodo_asignaciones.plain i{
+    display: inline-block;
+  }
+  .periodo_asignaciones.open > .fichas-title .toggle-btn-fichas{
+    transform: rotate(180deg);
+  }
+  .periodo_asignaciones.open > .periodo_asignaciones_contenido{
+    height: auto;
+  }
+
+
+  .periodo_asignaciones_seleccionar{
+    border-top: 2px solid #D8D8D8;
+    border-left: 2px solid #D8D8D8;
+    border-right: 2px solid #D8D8D8;
+    background: white;
+    color: black;
+    transition: all 1.5s;
+}
+
+.periodo_asignaciones_seleccionar_text{
+    border: 1px solid lightgray;
+    background: white;
+}
+
+.periodo_asignaciones_seleccionar_hover{
+    background:  lightgray;
+    display: flex;
+    height: 5vh;
+}
+.periodo_asignaciones_seleccionar_hover:hover{
+    background: red;
+}
+
+.col_periodo_asignaciones_seleccionar_text{
+    padding-left: 10px;
+    font-size: 3vh;
+    font-weight: bold;
+}
+
+
+.col_flecha_socieducativa{
+    font-size: 3vh;
+    font-weight: bold;
+}
+
+.periodo_asignaciones_contenido{
+    height: 0px;
+    overflow: hidden;
+    justify-content: center;
+  }
+
+  .col_reportes{
+    border: 1px solid lightgray;
+    margin-bottom: 5px;
+  }
+
+  .col_reportes_hover{
+    background:  #f5f5f5;
+    display: flex;
+    height: 5vh;
+  }
+  .col_reportes_hover:hover{
+    background: red;
+  }
+
+
+  .periodo_activo_o_no{
+    border-right: 1px solid #D8D8D8;
+    border-bottom: 1px solid #D8D8D8;
+    border-left: 1px solid #D8D8D8;
+    background: #f5f5f5;
+    margin-bottom: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+

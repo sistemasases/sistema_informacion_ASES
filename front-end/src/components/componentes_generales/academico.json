@@ -1,0 +1,45 @@
+[
+    {
+        "id":1,
+        "path":"/ficha_estudiante",
+        "name":"carga de notas",
+        "icon":"bi-people-fill"
+    },
+    {
+        "id":2,
+        "path":"/ficha_estudiante",
+        "name":"inscripcion a monitorias academicas",
+        "icon":"bi-people-fill"
+    },
+    {
+        "id":3,
+        "path":"/ficha_estudiante",
+        "name":"monitorias academicas",
+        "icon":"bi-people-fill"
+    },
+    {
+        "id":4,
+        "path":"/ficha_estudiante",
+        "name":"registro de notas",
+        "icon":"bi-people-fill"
+    },
+    {
+        "id":5,
+        "path":"/ficha_estudiante",
+        "name":"reportes historicos academicos",
+        "icon":"bi-people-fill"
+    },
+    {
+        "id":6,
+        "path":"/ficha_estudiante",
+        "name":"reportes notas por items",
+        "icon":"bi-people-fill"
+    },
+    {
+        "id":7,
+        "path":"/ficha_estudiante",
+        "name":"reportes por docentes",
+        "icon":"bi-people-fill"
+    }
+
+]

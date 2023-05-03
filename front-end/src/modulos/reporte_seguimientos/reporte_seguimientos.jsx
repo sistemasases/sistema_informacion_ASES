@@ -15,19 +15,13 @@ const Reporte_seguimientos = (props) =>{
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
-    const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-    ]
-
     return (
         
-        <Container className="container_reportes_seguimientos">
+        <Col className="contenido_children">
             <Row className="containerRow">
                 <Cabecera usuario={props.usuario} area={props.area} periodo={props.periodo}></Cabecera>
             </Row>
-        </Container>
+        </Col>
     )
 }
 

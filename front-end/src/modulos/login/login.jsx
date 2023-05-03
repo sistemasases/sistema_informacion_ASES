@@ -22,16 +22,7 @@ const Login = () =>{
     ]
 
     return (
-        <Container>
-            <Row className="containerRow">
-
-                <Login_component/>
-
-            </Row>
-            <Row>
-
-            </Row>
-        </Container>
+            <Login_component/>
     )
 }
 

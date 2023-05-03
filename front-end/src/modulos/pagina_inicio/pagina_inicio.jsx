@@ -1,26 +1,40 @@
-import React, {useState} from 'react';
+/**
+  * @file pagina_inicio.jsx
+  * @version 1.0.0
+  * @description página de inicio con un banner informativo.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
 
-import {Row, Col} from "react-bootstrap";
-
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import SideBar from "../../components/componentes_generales/sideBar";
-
-
-
+import React from 'react';
+import Carousel from 'react-bootstrap/Carousel';
 
 const Pagina_inicio = () => {
-  const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / 2022 - 2");
-  const[rolUsuario] = useState("");
-  const[area] = useState('1');
-
-    return (
-        <BrowserRouter>
-            <Row> 
-                <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario}>
-                </SideBar>
-            </Row>
-        </BrowserRouter>
-    )
+  return (
+    <div className='banner' style={{marginTop: 20, marginBottom: 20, marginLeft: 22}}>
+      <Carousel>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={'https://ases.univalle.edu.co/images/banners/1.png'}
+          />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={'https://ases.univalle.edu.co/images/banners/1.png'}
+          />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={'https://ases.univalle.edu.co/images/banners/1.png'}
+          />
+        </Carousel.Item>
+      </Carousel>
+    </div>
+  );
 }
 
 export default Pagina_inicio

@@ -2,11 +2,14 @@ import React, {useState} from 'react';
 import {Container, Row, Col} from "react-bootstrap";
 import Info_general from "./tabs/info_general"
 import Academico from "./tabs/academico"
+import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
+import  {useEffect, componentDidUpdate} from 'react';
+import axios from 'axios';
 
 const Selector = (props) =>{
 
@@ -26,6 +29,7 @@ const Selector = (props) =>{
     const [state,set_state] = useState({
       usuario : '',
       data_user : [],
+      data_user_socioedu : [],
       data_rol : [],
 
       id_usuario:'',
@@ -37,51 +41,40 @@ const Selector = (props) =>{
 
     })
 
-/*
-    useEffect (() => {
-        // Getting the files from the input
-        console.log(e)
-        let formData = new FormData();
-      
-        //Adding files to the formdata
-        formData.append('id', e.id);
-        axios({
-          // Endpoint to send files
-          url:  "http://127.0.0.1:8000/usuario_rol/estudiante_manage/",
-          method: "POST",
-          data: formData,
-        })
-        .then(res=>{set_state({
-          ...state,
-          usuario : [e.value],
-          id_usuario : [e.id],
-          rol_actual: res.data
-          
-        })})
-        .catch(err=>{
-          set_state({
-            ...state,
-            usuario : [e.value],
-            id_usuario : [e.id],
-            rol_actual: "" 
-          })}
-        )
-        console.log(state.usuario)
-        console.log(state.rol_actual)
-    
-      },[]);
-*/
-
 
 
     const[activeTabIndex, setActiveTabIndex] = useState(0);
     const activeTab = (index)=> 
     {
         index === activeTabIndex ?
-        (setActiveTabIndex(0))
+        (
+            setActiveTabIndex(0)
+        )
         :
-        setActiveTabIndex(index)
+        (
+            setActiveTabIndex(index)
+        )
+        
     }
+
+
+
+      const loadInfo = (e) => {
+  
+            const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
+              axios({
+                // Endpoint to send files
+                url:  url_axios,
+                method: "GET",
+              })
+              .then((respuesta)=>{
+                state.data_user_socioedu.push(respuesta.data)
+              })
+              .catch(err=>{
+                  return (err)
+              })
+
+      }
 
 
     const tabs=[
@@ -89,13 +82,18 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} seleccionado={props.seleccionado} rolUsuario={props.rolUsuario} editar={props.editar}/>,
+            component:<Info_general id={props.id} 
+                        seleccionado={props.seleccionado} 
+                        datos={props.datos} 
+                        rolUsuario={props.rolUsuario} 
+                        editar={props.editar} 
+                        codigo={props.codigo}/>,
         },
         {
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
-            component:<Info_general />,
+            component:<Socieducativa id={props.id} data_user_socioedu={state.data_user_socioedu} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
         },
         {
             id:3,
@@ -127,7 +125,7 @@ const Selector = (props) =>{
                                         <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
                                             <Row onClick={handleShow}>
                                                 <label key={index} classNmae="tab_bloqueado">
-                                                    {tab.name}{props.editar}
+                                                    {tab.name}
                                                 </label>
                                             </Row>
                                         </Row>
@@ -141,10 +139,10 @@ const Selector = (props) =>{
                         <Row className="tabs" >
                                     {
                                     tabs.map((tab, index)=>(
-                                        <Row className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
-                                            <Row onClick={() => activeTab(tab.id)}>
+                                        <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
+                                            <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
                                                 <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
-                                                    {tab.name}{props.editar}
+                                                    {tab.name}
                                                 </label>
                                             </Row>
                                             
@@ -153,22 +151,27 @@ const Selector = (props) =>{
                                                 (
                                                 
                                                 <Row>
-                                                    <Col xs={"0"} md={"1"}></Col>
+                                                    <div class="d-none d-md-block col-md-1">
+                                                        <Col md={"1"}></Col>
+                                                    </div>
                                                     <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
-                                                    <Col xs={"0"} md={"1"}></Col>
+                                                    <div class="d-none d-md-block col-md-1">
+                                                        <Col md={"1"}></Col>
+                                                    </div>
         
                                                 </Row>)
                                                 :
                                                 (<Row></Row>)
                                             }
                                         
-                                        </Row>
+                                        </Col>
                                         
                                         ))
                                     }
+                                    
                                 </Row>
                     )
-
+                    
 
                 }
 

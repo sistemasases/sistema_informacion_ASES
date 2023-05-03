@@ -1,21 +1,42 @@
+/**
+  * @file inicio_semestre_sistemas.jsx
+  * @version 1.0.0
+  * @description modulo para la inicialización del semestre. Donde se traen diferentes componentes para este fin.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
+
 import React, {useState} from 'react';
-import Semestre__sistemas_component from "../../components/inicio_semestre_sistemas/semestre_sistemas_component"
-import {Container, Row, Accordion, Button, useAccordionButton} from "react-bootstrap";
+import Semestre_sistemas_component from "../../components/inicio_semestre_sistemas/semestre_sistemas_component"
+import Tabla_sistemas_component from "../../components/inicio_semestre_sistemas/tabla_semestre"
+import Carga_estudiantes_component from "../../components/inicio_semestre_sistemas/carga_estudiantes"
+import Carga_monitores_component from "../../components/inicio_semestre_sistemas/carga_monitores"
+import {Container, Row, Accordion, Button, useAccordionButton, Col} from "react-bootstrap";
 
 const Inicio_semestre_sistemas = () =>{
 
+    // Constante para cerrar el acordión.
     const [show, setShow] = useState(true);
 
+    /**
+        * Función para cerrar el acordión.
+        * @param {Event} children Información del texto del botón.
+        * @param {String} eventKey Indica a cuál evento hace referencia.
+        * @returns {Props} - Botón que cierra la sección del evente que hace referencia.
+    */
     const CustomToggle = ({ children, eventKey }) => {
         const handle_upload = useAccordionButton(eventKey, () =>{
-          console.log('totally custom!');
           setShow(false);
         });
       
-        return (
-          <Button variant="primary" onClick={handle_upload}>{children}</Button>
-        );
+        return (<>
+          <Row><p></p></Row><Row>
+          <Col><Button variant="primary" onClick={handle_upload}>{children}</Button></Col>
+          <Col/><Col/><Col/><Col/><Col/></Row>
+          </>);
     }
+
     return (
         <Container>
             <Row className="rowJustFlex">
@@ -24,32 +45,35 @@ const Inicio_semestre_sistemas = () =>{
             <Row className="containerRow">
                 <Accordion defaultActiveKey="0" flush>
                     <Accordion.Item eventKey="0">
-                        <Accordion.Header>Paso uno</Accordion.Header>
+                        <Accordion.Header>Paso uno: Roles que continúan</Accordion.Header>
                         <Accordion.Body>
                             <div hidden={!show}>
-                            <Semestre__sistemas_component/>
-                            <Row>
-                                <CustomToggle eventKey="1">Guardar y continuar</CustomToggle>
-                            </Row>
+                                <Semestre_sistemas_component />
+                                <Row>
+                                    <CustomToggle eventKey="1">Continuar</CustomToggle>
+                                </Row>
                             </div>
                             <div hidden={show}>
-                                Usuarios guardados exitosamente.
+                                <h2>Usuarios guardados exitosamente.</h2>
+                                <Row>
+                                    <Tabla_sistemas_component/>
+                                </Row>
                             </div>
                         </Accordion.Body>                        
                     </Accordion.Item>
                     <Accordion.Item eventKey="1">
                         <Accordion.Header>Paso dos: Carga masiva de los estudiantes nuevos</Accordion.Header>
                         <Accordion.Body>
-                            Hola!
+                            <Carga_estudiantes_component/>
                             <Row>
-                                <CustomToggle eventKey="2">Guardar y continuar</CustomToggle>
+                                <CustomToggle eventKey="2">Continuar</CustomToggle>
                             </Row>
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="2">
                         <Accordion.Header>Paso tres: Carga masiva de los monitores y practicantes nuevos</Accordion.Header>
                         <Accordion.Body>
-                            Hola!
+                            <Carga_monitores_component/>
                             <Row>
                                 <CustomToggle eventKey="0">Finalizar</CustomToggle>
                             </Row>

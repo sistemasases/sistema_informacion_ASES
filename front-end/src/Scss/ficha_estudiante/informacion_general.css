@@ -16,3 +16,15 @@
     display: flex;
     width: 100%;
 } 
+
+.col_adicionar_parentesco{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.adicionar_parentesco{
+    background: none;
+    border: none;
+    font-size: 25pt;
+}

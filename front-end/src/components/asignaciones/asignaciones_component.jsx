@@ -1,150 +1,475 @@
-import React, {useState} from 'react';
-import axios from 'axios';
+import React, {useState, useEffect} from 'react';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
-import Form from 'react-bootstrap/Form';
-import carga_masiva_service from '../../service/carga_masiva';
-import DataTable, {createTheme} from 'react-data-table-component';
-const asignaciones_component = () =>{
+import {Container, Row, Col, Button} from "react-bootstrap";
+import Listas from './listas'
+import Listas_no_seleccion from './listas_no_seleccion';
+import axios from 'axios';
 
-  const[switchChecked, setChecked] = useState(false);
-  const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
-  
+import profecionales from "./profecionales";
+import {Scrollbars} from 'react-custom-scrollbars'; 
+
+
+const asignaciones_component = (props) =>{
+
+  const[rol] = useState("practicante");
+  const[rol2] = useState("monitor");
+  const[rol3] = useState("estudiante");
+
 
   const [state,set_state] = useState({
+
+    profecional_seleccionado : '',
+    practicante_seleccionado : '',
+    monitor_seleccionado : '',
+    estudiante_seleccion : '',
+
+    practicante_filtro : '',
+    monitor_filtro : '',
+    estudiante_filtro : '',
+
     option : '',
     mensaje : [],
     respuesta : 'Cargando...',
+
+    data_profesionales : props.dataProfesionales,
+    data_practicantes : props.dataPracticantes,
+    data_monitores : props.dataMonitores,
+    data_estudiantes: props.dataEstudiantes,
+
+    separacion_practicantes : [],
+    separacion_monitores : [],
+    separacion_estudiantes : [],
+
+    opciones_profecionales : [],
   })
-  const [archivo,set_archivo] = useState(null);
-  const [show, setShow] = useState(false);
-  const columnas =[
+
+
+//  console.log("primero : "+ state.data_profesionales)
+//  console.log("segundo : "+ state.data_profesionales[0])
+//  console.log("tercero : "+ state.data_profesionales[0]['username'])
+//  console.log("primero : "+ state.data_profesionales)
+
+    
+  useEffect(()=>{
+
+    if(state.data_profesionales.length > state.opciones_profecionales.length)
     {
-      name: 'DATO',
-      selector: row => row.dato
-    },
+      console.log("entra una vez")
+      for (var i = 0; i < state.data_profesionales.length ; i++) {
+          const dato = 
+          { value: state.data_profesionales[i]['id'], 
+          //label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
+          label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
+          id:state.data_profesionales[i]['id'] }
+
+          state.opciones_profecionales.push(dato)
+          console.log("entra 1")
+          console.log(state.opciones_profecionales[i])
+        }
+        console.log("entra2")
+        console.log(state.opciones_profecionales)
+    }
     {
-      name: 'MENSAJE',
-      selector: row => row.mensaje,
-      grow : 2,
-    },
-  ]
+      console.log("entra dos veces")
+    }
 
-  const handle_file = (e) => {
+        
+    },[]);
 
-    console.log(e.target.files)
-    set_archivo(e.target.files[0])
-  }
-  const handle_options = (e) => {
-    // Getting the files from the input
-    console.log(e.target.value)
-    set_state({
-      ...state,
-      [e.target.name] : [e.target.value]
-    })
-  }
-  const handle_upload=(e)=> {
-    let option = [state.option];
-    let formData = new FormData();
-    console.log(archivo)
-  
-    //Adding files to the formdata
-    formData.append("tipo_de_carga", option);
-    formData.append("FILES", archivo);
 
-    axios({
-      // Endpoint to send files
-      url: url_carga,
-      method: "POST",
-      data: formData,
-    })
-    .then((res)=>{
-      console.log(res)
-      set_state({
-        ...state,
-        mensaje : res.data,
-        respuesta: "Carga finalizada."
+  const [isLoading_practicantes_separados, setIsLoading_practicantes_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_practicantes.length > 0 && isLoading_practicantes_separados) {
+      setIsLoading_practicantes_separados(false);
+    }
+  }, [state.separacion_practicantes]);
+
+
+
+  const [isLoading_monitores_separados, setIsLoading_monitores_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_monitores.length > 0 && isLoading_monitores_separados) {
+      setIsLoading_monitores_separados(false);
+    }
+  }, [state.separacion_monitores]);
+
+
+
+  const [isLoading_estudiantes_separados, setIsLoading_estudiantes_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_estudiantes.length > 0 && isLoading_estudiantes_separados) {
+      setIsLoading_estudiantes_separados(false);
+    }
+  }, [state.separacion_estudiantes]);
+
+
+
+
+
+  const cambiar_dato_select = (e) =>{
+
+      axios.get('http://localhost:8000/usuario_rol/practicante/'+e.id+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_practicantes : response.data
+        }));
       })
-    })
-    .catch(err=>{
-      set_state({
-        ...state,
-        respuesta: "ocurrio un error"
-    })})
-    setShow(true)
-    console.log(state.mensaje)
-    console.log(state.respuesta)
+      .catch(error => {
+        console.log(error);
+      });
 
-  }
-  const set_info = (e) => {
-    setShow(false)
+      set_state({
+            ...state,
+              profecional_seleccionado: e.value
+      })
+    }
+
+
+   const cambiar_dato = (e) =>{
+          set_state({
+                ...state,
+                [e.target.name] : e.target.value
+          })
+          console.log(e.target.value)
+    }
+
+
+
+
+  function practicante_seleccion(name){
+
+    axios.get('http://localhost:8000/usuario_rol/monitor/'+name+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_monitores : response.data
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
     set_state({
       ...state,
-      respuesta : 'Cargando...',
+      practicante_seleccionado : name
     })
+
+    alert(name)
+
+    console.log("estos son los monitores separados : " + state.separacion_monitores)
   }
-  const handleClose = () => setShow(false);
+
+
+
+  function monitor_seleccion(name){
+
+    //poner el de los estudiantes
+
+    axios.get('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_estudiantes : response.data
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    set_state({
+      ...state,
+      monitor_seleccionado : name
+    })
+        alert(name)
+
+    console.log("estos son los monitores separados : " + state.separacion_estudiantes)
+  }
+
+
+  
+  function estudiante_seleccion(name){
+    set_state({
+      ...state,
+      estudiante_seleccionado : name
+    })
+        alert(name)
+
+  }
+
+
+  const limpiar_practicantes = () => {
+    set_state({
+                ...state,
+                practicante_filtro : ''
+          })
+  }
+  const limpiar_monitores = () => {
+    set_state({
+                ...state,
+                monitor_filtro : ''
+          })
+  }
+  const limpiar_estudiantes = () => {
+    set_state({
+                ...state,
+                estudiante_filtro : ''
+          })
+  }
+
 
   return (
-        <Container>
+        <Container className="container_asignaciones">
 
-            <Row >
-                  <h4>Tipo de Carga</h4>
-            </Row>
+          <Row className="row_listas">
 
-            <Row className='mt-2' >
+            <Col xs={"12"} md={"4"}>
 
-              <Col sm={9}>
-                <Form.Select name= "option" onChange={handle_options} >
-                  <option value="Estudiante">Estudiante</option>
-                  <option value="Usuario">Usuario</option>
-                  <option value="Materia">Materia</option>
-                  <option value="Nota">Nota</option>
-                  <option value="Resolución">Resolución</option>
-                  <option value="Programa">Programa</option>
-                  <option value="Retiro">Retiro</option>
-                </Form.Select>
-              </Col>
-            </Row>
-            <Row className='mt-2'>
-              <Col sm={9}>
-                <Form.Control type="file" name='file' onChange={handle_file}/>   
-              </Col>
-              <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0">Plantillas de Carga</a>
-    
-            </Row>
-            <Row className='mt-2'>
-              <Col lg={{ span: 0, offset: 0}} >
-                  <Button onClick={handle_upload}>Subir</Button>
-              </Col>
-            </Row>
-            <Row className='mt-2' >
-                <DataTable 
-                  columns={columnas}
-                  data={state.mensaje}
-                  noDataComponent=""
-                  pagination
-                />
-            </Row>
-            <Modal show={show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>ESTADO CARGA</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>{state.respuesta}</Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={set_info}>
-                  OK
-                </Button>
-              </Modal.Footer>
-            </Modal>
+              <Row  className="row_asignaciones_titulos">     
+                <Col xs={"12"} className="col_asignaciones_titulos">
+                Practicantes
+                </Col> 
+                <Col xs={"12"} className="col_asignaciones_titulos">
+                Total estudiantes acompañados 
+                </Col> 
+                <Col xs={"12"} className="col_asignaciones_titulos">
+                Profecional
+                </Col>   
+                <Select options={state.opciones_profecionales} onChange={cambiar_dato_select} ></Select>
+              </Row>
+              <Row >
+
+                {
+                    isLoading_practicantes_separados ?
+                    (
+                      <Col className="scroll_listas">
+                        <Row className="asignaciones_no_seleccion">
+                          Profecional no seleccionado 
+                        </Row>
+                      <Scrollbars>
+                          { state.data_practicantes.filter((item)=>{
+                          return state.practicante_filtro.toLowerCase() === '' ? item 
+                          : 
+                          item.username.toLowerCase().includes(state.practicante_filtro) ||
+                          item.first_name.toLowerCase().includes(state.practicante_filtro) ||
+                          item.last_name.toLowerCase().includes(state.practicante_filtro);                      
+                        }).map((item, index) => <Listas 
+                        key={index} item={item} rol={rol} 
+                        profecional_seleccionado={state.profecional_seleccionado}
+                        childClicked={(name)=>practicante_seleccion(name)}/>) }
+                      </Scrollbars>
+
+                      </Col>
+                    )
+                    :
+                    (
+                    <Col className="scroll_listas">
+                      <Row className="asignaciones_seleccion_profecional">
+                        profecional: {state.profecional_seleccionado}
+                        </Row>
+                      { state.separacion_practicantes['0'].filter((item)=>{
+                        return state.practicante_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.username.toLowerCase().includes(state.practicante_filtro) ||
+                        item.first_name.toLowerCase().includes(state.practicante_filtro) ||
+                        item.last_name.toLowerCase().includes(state.practicante_filtro);                      
+                      }).map((item, index) => <Listas 
+                    key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
+                    childClicked={(name)=>practicante_seleccion(name)}/>) }
+
+
+                    <Row className="separador_asignaciones"></Row>
+                      { state.separacion_practicantes['1'].filter((item)=>{
+                        return state.practicante_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.username.toLowerCase().includes(state.practicante_filtro) ||
+                        item.first_name.toLowerCase().includes(state.practicante_filtro) ||
+                        item.last_name.toLowerCase().includes(state.practicante_filtro);                      
+                      }).map((item, index) => <Listas_no_seleccion 
+                    key={index} item={item} rol={rol} 
+                    profecional_seleccionado={state.profecional_seleccionado}
+                    childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    </Col>
+                    )
+                  }
+
+              </Row>
+
+            </Col>
+
+
+
+
+
+
+
+            <Col xs={"12"} md={"4"}>
+              <Row  className="row_asignaciones_titulos">  
+                <Col xs={"12"} className="col_asignaciones_titulos">
+                Monitores         
+                </Col>     
+                <Col xs={"12"} md={"9"}>
+                  <input name="monitor_filtro" onChange={cambiar_dato}></input>
+                </Col>
+                <Col  xs={"12"} md={"3"}>
+                  <Button onClick={limpiar_monitores}>Limpiar</Button>
+                </Col>
+              </Row>
+              <Row>
+
+                {
+                   isLoading_monitores_separados ?
+                  (
+                    <Col className="scroll_listas">
+                      <Row className="asignaciones_no_seleccion">
+                        Practicante no seleccionado 
+                        </Row>
+                    <Scrollbars>
+
+                        { state.data_monitores.filter((item)=>{
+                        return state.monitor_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.username.toLowerCase().includes(state.monitor_filtro) ||
+                        item.first_name.toLowerCase().includes(state.monitor_filtro) ||
+                        item.last_name.toLowerCase().includes(state.monitor_filtro);                      
+                      }).map((item, index) => <Listas 
+                      key={index} item={item} rol={rol2} practicante_seleccionado={state.practicante_seleccionado}
+                      childClicked2={(name)=>monitor_seleccion(name)}/>) }
+                     </Scrollbars>
+                    </Col>
+                  )
+                  :
+                  (
+                  <Col className="scroll_listas">
+                    <Row className="asignaciones_seleccion">
+                      Practicante seleccionado : {state.monitor_seleccionado }
+                    </Row>
+                    <Scrollbars>
+                    { state.separacion_monitores['0'].filter((item)=>{
+                      return state.monitor_filtro.toLowerCase() === '' ? item 
+                      : 
+                      item.username.toLowerCase().includes(state.monitor_filtro) ||
+                      item.first_name.toLowerCase().includes(state.monitor_filtro) ||
+                      item.last_name.toLowerCase().includes(state.monitor_filtro);                      
+                    }).map((item, index) => <Listas 
+                  key={index} item={item} rol={rol2} 
+                  practicante_seleccionado={state.practicante_seleccionado}
+                  childClicked2={(name)=>monitor_seleccion(name)}
+                  childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    <Row className="separador_asignaciones"></Row>
+
+                    { state.separacion_monitores['1'].filter((item)=>{
+                      return state.monitor_filtro.toLowerCase() === '' ? item 
+                      : 
+                      item.username.toLowerCase().includes(state.monitor_filtro) ||
+                      item.first_name.toLowerCase().includes(state.monitor_filtro) ||
+                      item.last_name.toLowerCase().includes(state.monitor_filtro);                      
+                    }).map((item, index) => <Listas_no_seleccion 
+                  key={index} item={item} rol={rol2}
+                  practicante_seleccionado={state.practicante_seleccionado}
+                  childClicked={(name)=>practicante_seleccion(name)}/>) }
+                  </Scrollbars>
+                  </Col>
+                  )
+                }
+
+                
+              </Row>
+            </Col>
+
+
+
+
+
+
+
+            
+
+            <Col xs={"12"} md={"4"}>
+              <Row className="row_asignaciones_titulos">
+                <Col xs={"12"} className="col_asignaciones_titulos">
+                Estudiantes
+                </Col>
+                <Col xs={"12"} md={"9"}>
+                  <input name="estudiante_filtro" onChange={cambiar_dato}></input>
+                </Col>
+                <Col  xs={"12"} md={"3"}>
+                  <Button  onClick={limpiar_estudiantes}>Limpiar</Button>
+                </Col>
+              </Row>
+              <Row>
+                {
+                   isLoading_estudiantes_separados ?
+                  (
+                    <Col className="scroll_listas">
+                      <Row className="asignaciones_no_seleccion">
+                        Monitor no seleccionado 
+                      </Row>
+                    <Scrollbars>
+                      { state.data_estudiantes.filter((item)=>{
+                        return state.estudiante_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
+                        item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
+                        item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
+                      }).map((item, index) => 
+                      
+                      <Listas 
+                      key={index} item={item} rol={rol3} 
+                      monitor_seleccionado={state.monitor_seleccionado}
+                      filtro={state.estudiante_filtro}
+                      childClicked3={(name)=>estudiante_seleccion(name)}/>) }
+                    </Scrollbars>
+                    </Col>
+                  )
+                  :
+                  (
+                  <Col className="scroll_listas">
+                    <Row className="asignaciones_seleccion">
+                      Monitor seleccionado : {state.monitor_seleccionado }
+                    </Row>
+                  <Scrollbars>
+                  { state.separacion_estudiantes['0'].filter((item)=>{
+                      return state.estudiante_filtro.toLowerCase() === '' ? item 
+                      : 
+                      item.nombre.toLowerCase().includes(state.estudiante_filtro) || 
+                      item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
+                      item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
+                    }).map((item, index) => <Listas 
+                  key={index} item={item} rol={rol3} 
+                  filtro={state.estudiante_filtro}
+                  monitor_seleccionado={state.monitor_seleccionado}
+                  childClicked3={(name)=>estudiante_seleccion(name)}
+                  childClicked2={(name)=>monitor_seleccion(name)}/>) }
+                    <Row className="separador_asignaciones"></Row>
+
+                    { state.separacion_estudiantes['1'].filter((item)=>{
+                      return state.estudiante_filtro.toLowerCase() === '' ? item 
+                      : 
+                      item.nombre.toLowerCase().includes(state.estudiante_filtro), 
+                      item.apellido.toLowerCase().includes(state.estudiante_filtro),
+                      item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
+                    }).map((item, index) => <Listas_no_seleccion 
+                  key={index} item={item} rol={rol3} 
+                  filtro={state.estudiante_filtro}
+                  monitor_seleccionado={state.monitor_seleccionado}
+                  childClicked2={(name)=>monitor_seleccion(name)}/>) }
+                  </Scrollbars>
+                  </Col>
+                  )
+                }
+
+                
+                
+              </Row>
+            </Col>
+
+          </Row>
+
+
+            
         </Container>
   )
 }
 
 export default asignaciones_component
-
-
-  
-  
-  

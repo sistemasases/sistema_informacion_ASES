@@ -9,6 +9,8 @@ import all_user_service from '../../service/all_users'
 import all_rols from '../../service/all_rols';
 import all_users_rols from '../../service/all_users_rol';
 import user_rol from '../../service/user_rol';
+import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
+import Inasistencia from '../seguimiento_forms/form_inasistencia';
 import user_rol_manage from '../../service/user_rol_manage';
 import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
@@ -16,13 +18,13 @@ import DataTable, {createTheme} from 'react-data-table-component';
 var bandera_consulta_rol = 0;
 var bandera_option_user = true;
 var bandera_option_rol = true;
+const datos_option_user = []
+const datos_option_rol = []
 const selector_usuarios = () =>{
 
   /*
     constantes
   */
-  const datos_option_user = []
-  const datos_option_rol = []
 
   const [state,set_state] = useState({
     rol: '',
@@ -106,6 +108,7 @@ const selector_usuarios = () =>{
   }
 
   const handle_user_selector = (e) => {
+    if(bandera_option_user==true){
 
       for (var i = 0; i < state.data_user['length'] ; i++) {
         const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
@@ -113,7 +116,12 @@ const selector_usuarios = () =>{
       }
       console.log([datos_option_user]);
       bandera_option_user = false;
+    }
+    else{
+        console.log([datos_option_user]);
+    }
   }
+  
 
   const handle_rol_selector = (e)=>{
     if(bandera_option_rol==true){
@@ -144,7 +152,7 @@ const selector_usuarios = () =>{
     axios({
       // Endpoint to send files
       //FALTA ORGANIZAR PK
-      url:  "http://localhost:8000/usuario_rol/usuario_rol/1/",
+      url:  "http://localhost:8000/usuario_rol/usuario_rol/"+e.id+"/",
       method: "GET",
       data: formData,
     })
@@ -184,7 +192,7 @@ const selector_usuarios = () =>{
   
     //Adding files to the formdata
     formData.append('id_rol', state.id_rol[0]);
-    formData.append('id_user', state.id_usuario[0]);
+    formData.append('id_usuario', state.id_usuario[0]);
     try {
       user_rol.user_rol(formData);
       set_state({
@@ -324,8 +332,7 @@ const selector_usuarios = () =>{
               OK
             </Button>
           </Modal.Footer>
-        </Modal>
-            
+        </Modal>  
         </Container>
   )
 }

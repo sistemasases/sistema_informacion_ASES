@@ -166,13 +166,12 @@ const Cabecera = (props) =>{
     return (
         <Container>
             <Row className="row_presentacion_reportes_seguimientos">
-                <Row className="row_selectores_reportes_seguimientos">
-                    <Col className="col_selectores_reportes_seguimientos">
+                    <Col className="col_selectores_reportes_seguimientos" xs={"12"} md={"4"}>
                         <h1>Seguimientos</h1>
                     </Col>
                     {
                         props.rolUsuario === 'superSistemas' ?
-                        (<Col className="col_selectores_reportes_seguimientos">
+                        (<Col className="col_selectores_reportes_seguimientos"  xs={"12"} md={"4"}>
                             periodo actual
                             <Select  
                                         options={datos_option_periodo} onMenuOpen={handle_periodo} 
@@ -183,24 +182,27 @@ const Cabecera = (props) =>{
                         </Col>
                         )
                         :
-                        (<Col className="col_label_reportes_seguimientos"> 
+                        (<Col className="col_label_reportes_seguimientos"  xs={"12"} md={"4"}> 
                             <label>{props.periodo}</label>
                         </Col>
                         )
                     }
                     
-                    <Col className="col_selectores_reportes_seguimientos">
-                        Selector persona
+                    <Col className="col_selectores_reportes_seguimientos"  xs={"12"} md={"4"}>
+                      <Row>
+                        <h4 className="texto_subtitulo2">Selector persona</h4>
+                      </Row>
+                      <Row>
                         <Select options={datos_option_user} onMenuOpen={handle_users} 
                         onChange={handle_option_user} 
                          />
+                      </Row>
+                        
                     </Col>
-                </Row>
             </Row>
 
-            <Row>
-            <Informacion_rol></Informacion_rol>
-
+            <Row className="prueba_seguimintos">
+              <Informacion_rol></Informacion_rol>
             </Row>
         </Container>
     )
