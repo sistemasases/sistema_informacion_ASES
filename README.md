@@ -33,7 +33,6 @@ Los siguientes requerimientos deben se todos instalados sobre la ruta C:\"ruta h
 	3. Se require la instalación de djangorestframework con el comando "pip install djangorestframework"
 	4. Se require la instalación de psycopg2  o  psycopg2-binary con el comando "pip install psycopg2"
 	5. Se require la instalación de pandas con el comando "pip install pandas"
-	6. "falta 1 que no recuerdo cual es xd"
 
 
 # INICIO DEL SISTEMA
