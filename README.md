@@ -6,7 +6,7 @@ Este es un proyecto modular basado en Python, Djando y React. Se ha realizado pa
 
 
 Estructura del proyecto
-El proyecto está estructurado en módulos. Cada módulo es independiente y tiene su propio repositorio en /GitHub.
+El proyecto está estructurado en módulos y separado entre su parte logica con su parte estetica.
 
 	backend: Este módulo contiene el código fuente de la aplicación Django.
 	frontend: Este módulo contiene el código fuente de la aplicación React.
