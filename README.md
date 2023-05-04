@@ -45,7 +45,7 @@ Para la inicialización del sistema en un host local se requiere :
 
 # COLABOLADORES :
 
-	Cesar Alberto Becerra - Rhazeck12
+	Cesar Alberto Becerra - Rhazek12
 	Deiby Rodriguez - Dalex11
 	José David Erazo - JoseD32
 
