@@ -16,15 +16,18 @@ El proyecto está estructurado en módulos. Cada módulo es independiente y tien
 El proceso de instalacion se divide en 2 partes, una para realizar el set-up de los archivos en un repositorio local y otra para tener el ambiente correcto para el funcionamiento del front-end y back-end.
 
 INSTALACION : Repositorio
+
 	1. Realizar un git git clone al repositorio "https://github.com/Rhazek12/modulo_ases.git" 
 	2. Se require la instalación de Python con version 3.9.5 o superior
 
 INSTALACIÓN : Front-end
+
 	1. Se requiere la instalacion de Node.js con los comandos ____ sobre la ruta C:\"ruta hacia el proyecto"\modulo_ases
 	2. Se requiere la instalacion de NPM con el comando "NPM INSTALL --force" sobre la ruta C:\"ruta hacia el proyecto"\modulo_ases\front-end
 
 INSTALACIÓN : back-end
 Los siguientes requerimientos deben se todos instalados sobre la ruta C:\"ruta hacia el proyecto"\modulo_ases\back-end
+
 	1. Se require la instalación de Django con el comando "pip install Django"
 	2. Se require la instalación de django-cors-headers con el comando "pip install django-cors-headers"
 	3. Se require la instalación de djangorestframework con el comando "pip install djangorestframework"
@@ -41,9 +44,10 @@ Para la inicialización del sistema en un host local se requiere :
 
 
 # COLABOLADORES :
-Cesar Alberto Becerra - Rhazeck12
-Deiby Rodriguez - Dalex11
-José David Erazo - JoseD32
+
+	Cesar Alberto Becerra - Rhazeck12
+	Deiby Rodriguez - Dalex11
+	José David Erazo - JoseD32
 
 
 # CONCLUSIONES
