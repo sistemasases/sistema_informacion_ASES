@@ -68,13 +68,11 @@ const Info_basica = (props) =>{
           data_user : respuesta.data
         })
         console.log("estos son los primeros datos :"+state.data_user)
-
       })
       .catch(err=>{
         console.log("estos son los primeros datos :"+state.data_user)
       })
       console.log("estos son los primeros datos :"+state.data_user)
-
       
     },[]);
    
@@ -105,8 +103,6 @@ const Info_basica = (props) =>{
 
     const handle_users = (e) => {
       console.log("estos son los segundos datos :"+state.data_user)
-
-
       // Getting the files from the input
       if(bandera_option_user==true){
   
@@ -115,8 +111,6 @@ const Info_basica = (props) =>{
           label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
           id:i }
           datos_option_user.push(dato)
-          
-          
 
           const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
             axios({
@@ -130,7 +124,6 @@ const Info_basica = (props) =>{
             .catch(err=>{
                 console.log("no tomo el dato")
             })
-
         }
         bandera_option_user = false;
       }
