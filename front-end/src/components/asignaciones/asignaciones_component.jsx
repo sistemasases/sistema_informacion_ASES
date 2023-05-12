@@ -473,8 +473,3 @@ const asignaciones_component = (props) =>{
 }
 
 export default asignaciones_component
-
-
-  
-  
-  

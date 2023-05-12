@@ -28,7 +28,7 @@ const Info_basica = (props) =>{
     const handleCloseIn = () => setShowIn(false);
 
     const datos_option_user = []
-    const total_datos_estudiantes = []
+    const [isLoading, setIsLoading] = useState(true);
 
     var bandera_option_user = true;
     const [state,set_state] = useState({
@@ -38,7 +38,7 @@ const Info_basica = (props) =>{
       usuario : '',
       data_user : [],
       data_rol : [],
-
+      total_datos_estudiantes : [],
 
       seleccionado:'',
 
@@ -91,7 +91,7 @@ const Info_basica = (props) =>{
     const fetchData = async (index)=>{
       try{
         const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
-        total_datos_estudiantes.push(response.data)
+        state.total_datos_estudiantes.push(response.data)
         console.log("entra aqui ssisisisiisj")
       }
       catch (error){
@@ -111,19 +111,6 @@ const Info_basica = (props) =>{
           label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
           id:i }
           datos_option_user.push(dato)
-
-          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
-            axios({
-              // Endpoint to send files
-              url:  url_axios,
-              method: "GET",
-            })
-            .then((respuesta)=>{
-              total_datos_estudiantes.push(respuesta.data)
-            })
-            .catch(err=>{
-                console.log("no tomo el dato")
-            })
         }
         bandera_option_user = false;
       }
@@ -135,33 +122,61 @@ const Info_basica = (props) =>{
 
 
 
+    useEffect(() => {
+      console.log('entra al useeffct xd')
+      if (state.total_datos_estudiantes['nombre'] && isLoading) {
+        set_state({
+          ...state,
+          seleccionado:state.total_datos_estudiantes['id'],
+          id_usuario:state.total_datos_estudiantes['id'],
+          nombres : state.total_datos_estudiantes['nombre'],
+          apellidos : state.total_datos_estudiantes['apellido'],
+          codigo :state.total_datos_estudiantes['cod_univalle'],
+          correo :state.total_datos_estudiantes['email'],
+          tipo_doc : state.total_datos_estudiantes['tipo_doc'],
+          cedula :state.total_datos_estudiantes['num_doc'],
+          telefono :state.total_datos_estudiantes['telefono_res'],
+          edad : '1',
+          programas : state.total_datos_estudiantes['programas'],
+          total_datos_estudiante_seleccionado : state.total_datos_estudiantes
+        })
+      }
+      else{
+      console.log(state.total_datos_estudiantes.length)
+    }
+    }, [state.total_datos_estudiantes]);
+
 
 
     const handle_option_user = (e) => {
       // Getting the files from the input
 
-      console.log(e)
-      set_state({
-        ...state,
-        seleccionado:e.id,
-        id_usuario:state.data_user[e.id]['id'],
-        nombres : state.data_user[e.id]['nombre'],
-        apellidos : state.data_user[e.id]['apellido'],
-        codigo : state.data_user[e.id]['cod_univalle'],
-        correo : state.data_user[e.id]['email'],
-        tipo_doc : state.data_user[e.id]['tipo_doc'],
-        cedula : state.data_user[e.id]['num_doc'],
-        telefono : state.data_user[e.id]['telefono_res'],
-        edad : '1',
-        programas : total_datos_estudiantes[e.id]['programas'],
-        total_datos_estudiante_seleccionado : total_datos_estudiantes[e.id]
+      const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+e.value+"/";
+      axios({
+        // Endpoint to send files
+        url:  url_axios,
+        method: "GET",
       })
+      .then((respuesta)=>{
+        set_state({
+          ...state,
+          total_datos_estudiantes : respuesta.data
+        })
+      })
+      .catch(err=>{
+          console.log("no tomo el dato")
+        })
+
+      console.log(e)
+      
       console.log("este es el")
       console.log(datos_option_user)
       console.log("este es el id seleccionado")
       console.log(e.id)
       console.log("total datos estudiantes seleccionado")
-      console.log(total_datos_estudiantes)
+      console.log(state.total_datos_estudiantes)
+      console.log(state.total_datos_estudiantes['nombre'])
+
     }
 
 
@@ -598,12 +613,7 @@ const Info_basica = (props) =>{
 
         <div class="d-none d-md-block col-12">
           <Row>
-            <Selector id={state.id_usuario} 
-                      rolUsuario={props.rolUsuario} 
-                      datos={state.total_datos_estudiante_seleccionado} 
-                      seleccionado={state.seleccionado} 
-                      editar={state.editar}   
-                      codigo={state.id_usuario}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Row>
           <Row>
             <Ficha_footer></Ficha_footer>

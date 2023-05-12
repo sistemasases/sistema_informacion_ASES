@@ -33,7 +33,7 @@ const Listas = (props) => {
         })
         .then((res)=>{
         console.log(res)
-            childClicked(props.practicante_seleccionado)
+        childClicked(props.practicante_seleccionado)
             alert("el monitor "+props.item.id+" fue eliminado correctamente de :"+props.practicante_seleccionado)
         })
         .catch(err=>{

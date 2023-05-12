@@ -8,18 +8,12 @@ const Seguimiento_individual = (props) =>{
     const set_info = (e) => {
     }
 
-    const handleChange = () => {
-        props.handleClose()
-        props.handleModalIn()
-    }
-
     return (
         
         <Modal {...props}
         size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Seguimiento Individual</Modal.Title>
-                <Button onClick={handleChange}>Registrar Inasistencia</Button>
             </Modal.Header>
             <Modal.Body>
                 <h1><b>Seguimiento de Pares</b></h1>

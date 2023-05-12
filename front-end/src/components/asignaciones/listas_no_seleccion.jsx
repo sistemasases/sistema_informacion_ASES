@@ -208,34 +208,3 @@ const Listas_no_seleccion = (props) => {
 }
 
 export default Listas_no_seleccion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

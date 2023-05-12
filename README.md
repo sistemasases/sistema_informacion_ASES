@@ -6,7 +6,7 @@ Este es un proyecto modular basado en Python, Djando y React. Se ha realizado pa
 
 
 Estructura del proyecto
-El proyecto está estructurado en módulos. Cada módulo es independiente y tiene su propio repositorio en /GitHub.
+El proyecto está estructurado en módulos y separado entre su parte logica con su parte estetica.
 
 	backend: Este módulo contiene el código fuente de la aplicación Django.
 	frontend: Este módulo contiene el código fuente de la aplicación React.
@@ -16,21 +16,24 @@ El proyecto está estructurado en módulos. Cada módulo es independiente y tien
 El proceso de instalacion se divide en 2 partes, una para realizar el set-up de los archivos en un repositorio local y otra para tener el ambiente correcto para el funcionamiento del front-end y back-end.
 
 INSTALACION : Repositorio
+
 	1. Realizar un git git clone al repositorio "https://github.com/Rhazek12/modulo_ases.git" 
 	2. Se require la instalación de Python con version 3.9.5 o superior
 
 INSTALACIÓN : Front-end
+
 	1. Se requiere la instalacion de Node.js con los comandos ____ sobre la ruta C:\"ruta hacia el proyecto"\modulo_ases
 	2. Se requiere la instalacion de NPM con el comando "NPM INSTALL --force" sobre la ruta C:\"ruta hacia el proyecto"\modulo_ases\front-end
 
 INSTALACIÓN : back-end
 Los siguientes requerimientos deben se todos instalados sobre la ruta C:\"ruta hacia el proyecto"\modulo_ases\back-end
+
 	1. Se require la instalación de Django con el comando "pip install Django"
 	2. Se require la instalación de django-cors-headers con el comando "pip install django-cors-headers"
 	3. Se require la instalación de djangorestframework con el comando "pip install djangorestframework"
-	4. Se require la instalación de psycopg2  o  psycopg2-binary con el comando "pip install psycopg2"
-	5. Se require la instalación de pandas con el comando "pip install pandas"
-	6. "falta 1 que no recuerdo cual es xd"
+	4. Se require la instalación de djangorestframework con el comando "pip install djangorestframework-simplejwt"
+	5. Se require la instalación de psycopg2  o  psycopg2-binary con el comando "pip install psycopg2"
+	6. Se require la instalación de pandas con el comando "pip install pandas"
 
 
 # INICIO DEL SISTEMA
@@ -41,9 +44,10 @@ Para la inicialización del sistema en un host local se requiere :
 
 
 # COLABOLADORES :
-Cesar Alberto Becerra - Rhazeck12
-Deiby Rodriguez - Dalex11
-José David Erazo - JoseD32
+
+	Cesar Alberto Becerra - Rhazeck12
+	Deiby Rodriguez - Dalex11
+	José David Erazo - JoseD32
 
 
 # CONCLUSIONES

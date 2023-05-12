@@ -252,7 +252,7 @@ const inicio_semestre_component = () =>{
                     <Button variant="secondary" onClick={() => {setActivated({...activated, isDisabled: false,}); setIsSelected(false);}}>Cancelar</Button>
                 </Row></Col>
                 <Col><Row>
-                    <Button variant="primary" onClick={handleButton}>Crear Semestre</Button>
+                    <Button variant="primary" onClick={handleButton}>Continuar creación del semestre</Button>
                 </Row></Col>
             </Row>
         </Container>
