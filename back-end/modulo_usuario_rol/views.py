@@ -39,7 +39,7 @@ class estudiante_viewsets (viewsets.ModelViewSet):
         programas = programa_estudiante.objects.filter(id_estudiante = serializer_estudiante.data['id']).values()
         for i in programas:
             var_programa = programa.objects.filter(id = i['id_programa_id']).values()
-            dic_programa = {'nombre_programa':var_programa[0]['nombre']}
+            dic_programa = {'nombre_programa':var_programa[0]['nombre'],'cod_univalle':var_programa[0]['codigo_univalle']}
             dic = i
             dic.update(dic_programa)
             lista_programas.append(dic)
@@ -200,7 +200,7 @@ class estudiante_selected_viewsets (viewsets.ModelViewSet):
             serializer_estudiante =estudiante_serializer(i)
             list_estudiantes.append(serializer_estudiante.data)
 
-        lista_asignacion = list(asignacion.objects.filter(id_usuario = pk))
+        lista_asignacion = list(asignacion.objects.filter(id_usuario = pk, estado=True))
 
         for i in lista_asignacion:
             serializer_asignacion =asignacion_serializer(i)
@@ -328,6 +328,23 @@ class usuario_rol_viewsets (viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+class usuario_rol_old_viewsets (viewsets.ModelViewSet):
+    serializer_class = usuario_rol_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = usuario_rol_serializer.Meta.model.objects.all()
+    
+
+    def list(self, request):
+        list_user_rol = list()
+        var_semestre = semestre.objects.filter(semestre_actual = False).order_by('-fecha_inicio').first()
+        print(var_semestre.nombre)
+        for user_rol in usuario_rol.objects.filter(id_semestre =var_semestre.id, estado = "ACTIVO").values():
+            rols= rol.objects.filter(id =user_rol['id_rol_id']).annotate(id_rol=F('id')).values('id_rol','nombre')[0]
+            usuarios= User.objects.filter(id =user_rol['id_usuario_id']).values('id','username','first_name','last_name', 'email')[0]
+            usuarios.update(rols)
+            list_user_rol.append(usuarios)
+        return Response(list_user_rol)
+        
 class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
     serializer_class = Estudiante_actualizacion
     queryset = estudiante_serializer.Meta.model.objects.all()

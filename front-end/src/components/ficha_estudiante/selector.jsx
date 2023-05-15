@@ -29,6 +29,7 @@ const Selector = (props) =>{
     const [state,set_state] = useState({
       usuario : '',
       data_user : [],
+      data_user_socioedu : [],
       data_rol : [],
 
       id_usuario:'',
@@ -46,12 +47,34 @@ const Selector = (props) =>{
     const activeTab = (index)=> 
     {
         index === activeTabIndex ?
-        (setActiveTabIndex(0))
+        (
+            setActiveTabIndex(0)
+        )
         :
-        setActiveTabIndex(index)
-        console.log("estos son los datos generales2")
-                    console.log(props.datos)
+        (
+            setActiveTabIndex(index)
+        )
+        
     }
+
+
+
+      const loadInfo = (e) => {
+  
+            const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
+              axios({
+                // Endpoint to send files
+                url:  url_axios,
+                method: "GET",
+              })
+              .then((respuesta)=>{
+                state.data_user_socioedu.push(respuesta.data)
+              })
+              .catch(err=>{
+                  return (err)
+              })
+
+      }
 
 
     const tabs=[
@@ -59,13 +82,18 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
+            component:<Info_general id={props.id} 
+                        seleccionado={props.seleccionado} 
+                        datos={props.datos} 
+                        rolUsuario={props.rolUsuario} 
+                        editar={props.editar} 
+                        codigo={props.codigo}/>,
         },
         {
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
-            component:<Socieducativa id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
+            component:<Socieducativa id={props.id} data_user_socioedu={state.data_user_socioedu} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
         },
         {
             id:3,
@@ -112,7 +140,7 @@ const Selector = (props) =>{
                                     {
                                     tabs.map((tab, index)=>(
                                         <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
-                                            <Row onClick={() => activeTab(tab.id)}>
+                                            <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
                                                 <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
                                                     {tab.name}
                                                 </label>

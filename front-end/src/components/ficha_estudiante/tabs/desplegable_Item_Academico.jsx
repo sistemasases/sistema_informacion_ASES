@@ -3,6 +3,7 @@ import {useState } from "react";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import Modal from 'react-bootstrap/Modal';
+import Seguimiento_individual from '../../seguimiento_forms/form_seguimiento_individual_sin_boton';
 
 const Desplegable_item_academico = ({item}) => {
 
@@ -33,18 +34,7 @@ const Desplegable_item_academico = ({item}) => {
                                             </Row>
                 </Col>
                 
-
-                <Modal show={show} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                    <Modal.Title>Importante</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Seleccione un estudiante.</Modal.Body>
-                    <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    </Modal.Footer>
-                </Modal>
+                <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} size="lg"/>
             </Row>
         )
     }

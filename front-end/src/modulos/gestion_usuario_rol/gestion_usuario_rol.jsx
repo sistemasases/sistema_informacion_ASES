@@ -15,14 +15,8 @@ const Gestion_usuario_rol = () =>{
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
-    const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-    ]
-
     return (
-        <Container className="containerRow">
+        <Col className="contenido_children">
             <Row className="rowJustFlex_usuario_rol">
                 <h1>Usuario Rol</h1>
             </Row>
@@ -33,7 +27,7 @@ const Gestion_usuario_rol = () =>{
             <Row>
 
             </Row>
-        </Container>
+        </Col>
     )
 }
 

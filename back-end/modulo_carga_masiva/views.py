@@ -4,9 +4,10 @@ from django.http import JsonResponse
 import pandas as pd
 from modulo_usuario_rol.models import estudiante
 from django.contrib.auth.models import User
-from modulo_programa.models import programa
-from modulo_carga_masiva.models import retiro
+from modulo_programa.models import programa, programa_estudiante
+from modulo_carga_masiva.models import retiro, motivo
 from modulo_academico.models import historial_academico, materia
+from modulo_instancia.models import semestre
 from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -205,7 +206,7 @@ def carga_materias(file):
                 }
                 list_dict_result.append(dict_result)
 
-    User.objects.bulk_create(lista_materias)
+    materia.objects.bulk_create(lista_materias)
     return Response(list_dict_result)
 
 def carga_notas(file):
@@ -213,19 +214,20 @@ def carga_notas(file):
     list_dict_result = []
     lista_notas =[]
     datos = pd.read_csv(file,header=0)
-    print("estos son los datos: "+str(datos))
     for i in range(datos.shape[0]):
         try:
+            consulta_programa_estudiante= programa_estudiante.objects.get(id =datos.iat[i,0])
+            consulta_semestre= semestre.objects.get(id =datos.iat[i,1])
             Nota = historial_academico(
-            id_programa_estudiante= int(datos.iat[i,0]),
-            id_semestre= int(datos.iat[i,1]),
+            id_programa_estudiante= consulta_programa_estudiante,
+            id_semestre= consulta_semestre,
             promedio_semestral = float(datos.iat[i,2]),
             promedio_acumulado= float(datos.iat[i,3]),
             json_materias = str(datos.iat[i,4]),
 
             )
             lista_notas.append(Nota)
-        
+
             dict_result = {
                 'dato' : datos.iat[i,1],
                 'mensaje' : 'Se cargó correctamente este registro de notas'
@@ -238,7 +240,7 @@ def carga_notas(file):
             }
             list_dict_result.append(dict_result)
 
-    User.objects.bulk_create(lista_notas)
+    historial_academico.objects.bulk_create(lista_notas)
     return Response(list_dict_result)
 
 def carga_retiros(file):
@@ -248,10 +250,13 @@ def carga_retiros(file):
     datos = pd.read_csv(file,header=0)
     print("estos son los datos: "+str(datos))
     for i in range(datos.shape[0]):
-        try:
+        # try:
+            print("holaaaaaaa:"+str(datos.iat[i,0]))
+            consulta_estudiante= estudiante.objects.get(id =datos.iat[i,0])
+            consulta_motivo= motivo.objects.get(id =datos.iat[i,1])
             Retiro = retiro(
-            id_estudiante= int(datos.iat[i,0]),
-            id_motivo= int(datos.iat[i,1]),
+            id_estudiante= consulta_estudiante,
+            id_motivo= consulta_motivo,
             detalle = str(datos.iat[i,2]),
 
             )
@@ -262,12 +267,12 @@ def carga_retiros(file):
                 'mensaje' : 'Se cargó correctamente este retiro.'
             }
             list_dict_result.append(dict_result)
-        except:
-            dict_result = {
-                'dato' : datos.iat[i,1],
-                'mensaje' : 'Error al cargar este retiro.'
-            }
-            list_dict_result.append(dict_result)
+        # except:
+        #     dict_result = {
+        #         'dato' : datos.iat[i,1],
+        #         'mensaje' : 'Error al cargar este retiro.'
+        #     }
+        #     list_dict_result.append(dict_result)
 
-    User.objects.bulk_create(lista_retiros)
+    retiro.objects.bulk_create(lista_retiros)
     return Response(list_dict_result)

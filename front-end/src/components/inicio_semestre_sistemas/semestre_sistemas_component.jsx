@@ -12,7 +12,7 @@ import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Modal, Table, FormGroup} from "react-bootstrap";
 import Select from 'react-select';
 import All_Rols from '../../service/all_rols';
-import All_Users_Rols from '../../service/all_users_rol';
+import All_Users_Rols from '../../service/all_users_rol_old';
 import Create_User from '../../service/create_user';
 import Delete_User from '../../service/delete_user';
 import user_rol from '../../service/user_rol';

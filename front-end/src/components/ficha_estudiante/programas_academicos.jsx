@@ -89,7 +89,7 @@ const Programas_academicos = (props) => {
         return (
             <Row className="infoRow23_activo"> 
                                               <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{props.item.id_programa_id}{props.item.nombre_programa} </h4>
+                                                <h4 className="texto_pequeño">{props.item.cod_univalle} - {props.item.nombre_programa} </h4>
                                               </Col>
                                               {
                                                 props.rolUsuario==='superSistemas' ?
@@ -114,7 +114,7 @@ const Programas_academicos = (props) => {
         return (
             <Row className="infoRow23_inactivo"> 
                                               <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{props.item.id_programa_id}{props.item.nombre_programa} </h4>
+                                                <h4 className="texto_pequeño">{props.item.cod_univalle} - {props.item.nombre_programa} </h4>
                                               </Col>
                                               {
                                                 props.rolUsuario==='superSistemas' ?
@@ -140,7 +140,7 @@ const Programas_academicos = (props) => {
         return (
             <Row className="infoRow23_finalizado"> 
                                               <Col xs={"6"} md={"6"}>
-                                                <h4 className="texto_pequeño">{props.item.id_programa_id}{props.item.nombre_programa} </h4>
+                                                <h4 className="texto_pequeño">{props.item.cod_univalle} - {props.item.nombre_programa} </h4>
                                               </Col>
                                               {
                                                 props.rolUsuario==='superSistemas' ?

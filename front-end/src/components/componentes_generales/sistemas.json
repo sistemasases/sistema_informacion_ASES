@@ -5,34 +5,15 @@
         "name":"sistemas",
         "icon":"bi-people-fill",
         "childrens":[
+
             {
-                "path":"/ficha_estudiante",
-                "name":"carga de archivos",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante",
-                "name":"carga de historicos",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante",
+                "path":"/carga_masiva",
                 "name":"carga masiva",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
-                "name":"carga masiva database",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante",
+                "path":"/",
                 "name":"gestion de incidencias",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante",
-                "name":"gistion de instancia",
                 "icon":"bi-people-fill"
             },
             {
@@ -40,19 +21,15 @@
                 "name":"gestion de permiso",
                 "icon":"bi-people-fill"
             },
+
             {
-                "path":"/ficha_estudiante",
-                "name":"gestion de periodos",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante",
+                "path":"/gestion_usuario_rol",
                 "name":"gestion de usuarios",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
-                "name":"reporte backup",
+                "path":"/inicio_semestre_sistemas",
+                "name":"inicio_semestre_sistema",
                 "icon":"bi-people-fill"
             }
         ]
@@ -74,18 +51,13 @@
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_monitor",
                 "name":"ficha de monitores",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/asignaciones",
                 "name":"gestion de asignaciones",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante",
-                "name":"reporte geogradico Ases",
                 "icon":"bi-people-fill"
             },
             {
@@ -111,12 +83,6 @@
             {
                 "path":"/reporte_seguimientos",
                 "name":"reporte de seguimientos",
-                "icon":"bi-people-fill"
-            }
-            ,
-            {
-                "path":"/ficha_estudiante",
-                "name":"reporte grupal",
                 "icon":"bi-people-fill"
             }
         ]

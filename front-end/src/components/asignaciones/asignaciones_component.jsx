@@ -1,39 +1,20 @@
-import React, {useState} from 'react';
-import axios from 'axios';
+import React, {useState, useEffect} from 'react';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
-import Form from 'react-bootstrap/Form';
-import carga_masiva_service from '../../service/carga_masiva';
-import DataTable, {createTheme} from 'react-data-table-component';
+import {Container, Row, Col, Button} from "react-bootstrap";
 import Listas from './listas'
 import Listas_no_seleccion from './listas_no_seleccion';
+import axios from 'axios';
 
 import profecionales from "./profecionales";
-import todos_practicantes from "./practicantes_json.json";
-import practicantes_seleccionados from "./practicante_seleccionado";
-import monitores_json from "./monitores_json.json";
-import monitores_seleccionados from "./monitores_seleccionados";
-import estudiantes_json from "./estudiantes_json.json";
-import estudiantes_seleccionados from "./estudiantes_seleccionados";
 import {Scrollbars} from 'react-custom-scrollbars'; 
 
 
 const asignaciones_component = (props) =>{
 
-  const opciones_profecionales =[
-    {value : profecionales['0']['id'], label : profecionales['0']['username']},
-    {value : profecionales['1']['id'], label : profecionales['1']['username']},
-    {value : profecionales['2']['id'], label : profecionales['2']['username']}
-
-  ]
-
   const[rol] = useState("practicante");
   const[rol2] = useState("monitor");
   const[rol3] = useState("estudiante");
 
-
-  
 
   const [state,set_state] = useState({
 
@@ -49,13 +30,99 @@ const asignaciones_component = (props) =>{
     option : '',
     mensaje : [],
     respuesta : 'Cargando...',
+
+    data_profesionales : props.dataProfesionales,
+    data_practicantes : props.dataPracticantes,
+    data_monitores : props.dataMonitores,
+    data_estudiantes: props.dataEstudiantes,
+
+    separacion_practicantes : [],
+    separacion_monitores : [],
+    separacion_estudiantes : [],
+
+    opciones_profecionales : [],
   })
 
+
+//  console.log("primero : "+ state.data_profesionales)
+//  console.log("segundo : "+ state.data_profesionales[0])
+//  console.log("tercero : "+ state.data_profesionales[0]['username'])
+//  console.log("primero : "+ state.data_profesionales)
+
+    
+  useEffect(()=>{
+
+    if(state.data_profesionales.length > state.opciones_profecionales.length)
+    {
+      console.log("entra una vez")
+      for (var i = 0; i < state.data_profesionales.length ; i++) {
+          const dato = 
+          { value: state.data_profesionales[i]['id'], 
+          //label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
+          label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
+          id:state.data_profesionales[i]['id'] }
+
+          state.opciones_profecionales.push(dato)
+          console.log("entra 1")
+          console.log(state.opciones_profecionales[i])
+        }
+        console.log("entra2")
+        console.log(state.opciones_profecionales)
+    }
+    {
+      console.log("entra dos veces")
+    }
+
+        
+    },[]);
+
+
+  const [isLoading_practicantes_separados, setIsLoading_practicantes_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_practicantes.length > 0 && isLoading_practicantes_separados) {
+      setIsLoading_practicantes_separados(false);
+    }
+  }, [state.separacion_practicantes]);
+
+
+
+  const [isLoading_monitores_separados, setIsLoading_monitores_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_monitores.length > 0 && isLoading_monitores_separados) {
+      setIsLoading_monitores_separados(false);
+    }
+  }, [state.separacion_monitores]);
+
+
+
+  const [isLoading_estudiantes_separados, setIsLoading_estudiantes_separados] = useState(true);
+  useEffect(() => {
+    if (state.separacion_estudiantes.length > 0 && isLoading_estudiantes_separados) {
+      setIsLoading_estudiantes_separados(false);
+    }
+  }, [state.separacion_estudiantes]);
+
+
+
+
+
   const cambiar_dato_select = (e) =>{
-          set_state({
-                ...state,
-                 profecional_seleccionado: e.value
-          })
+
+      axios.get('http://localhost:8000/usuario_rol/practicante/'+e.id+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_practicantes : response.data
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+      set_state({
+            ...state,
+              profecional_seleccionado: e.value
+      })
     }
 
 
@@ -71,20 +138,56 @@ const asignaciones_component = (props) =>{
 
 
   function practicante_seleccion(name){
+
+    axios.get('http://localhost:8000/usuario_rol/monitor/'+name+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_monitores : response.data
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
     set_state({
       ...state,
       practicante_seleccionado : name
     })
+
     alert(name)
+
+    console.log("estos son los monitores separados : " + state.separacion_monitores)
   }
+
+
+
   function monitor_seleccion(name){
+
+    //poner el de los estudiantes
+
+    axios.get('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/')
+      .then(response => {
+        set_state(prevState => ({
+          ...prevState,
+          separacion_estudiantes : response.data
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
     set_state({
       ...state,
       monitor_seleccionado : name
     })
         alert(name)
 
+    console.log("estos son los monitores separados : " + state.separacion_estudiantes)
   }
+
+
+  
   function estudiante_seleccion(name){
     set_state({
       ...state,
@@ -132,26 +235,27 @@ const asignaciones_component = (props) =>{
                 <Col xs={"12"} className="col_asignaciones_titulos">
                 Profecional
                 </Col>   
-                <Select options={opciones_profecionales} onChange={cambiar_dato_select} ></Select>
+                <Select options={state.opciones_profecionales} onChange={cambiar_dato_select} ></Select>
               </Row>
               <Row >
 
                 {
-                    state.profecional_seleccionado === '' ?
+                    isLoading_practicantes_separados ?
                     (
                       <Col className="scroll_listas">
                         <Row className="asignaciones_no_seleccion">
                           Profecional no seleccionado 
                         </Row>
                       <Scrollbars>
-                          { todos_practicantes.filter((item)=>{
+                          { state.data_practicantes.filter((item)=>{
                           return state.practicante_filtro.toLowerCase() === '' ? item 
                           : 
                           item.username.toLowerCase().includes(state.practicante_filtro) ||
                           item.first_name.toLowerCase().includes(state.practicante_filtro) ||
                           item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                         }).map((item, index) => <Listas 
-                        key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
+                        key={index} item={item} rol={rol} 
+                        profecional_seleccionado={state.profecional_seleccionado}
                         childClicked={(name)=>practicante_seleccion(name)}/>) }
                       </Scrollbars>
 
@@ -163,7 +267,7 @@ const asignaciones_component = (props) =>{
                       <Row className="asignaciones_seleccion_profecional">
                         profecional: {state.profecional_seleccionado}
                         </Row>
-                      { practicantes_seleccionados['0'].filter((item)=>{
+                      { state.separacion_practicantes['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.practicante_filtro) ||
@@ -172,15 +276,19 @@ const asignaciones_component = (props) =>{
                       }).map((item, index) => <Listas 
                     key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
                     childClicked={(name)=>practicante_seleccion(name)}/>) }
+
+
                     <Row className="separador_asignaciones"></Row>
-                      { practicantes_seleccionados['1'].filter((item)=>{
+                      { state.separacion_practicantes['1'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.practicante_filtro) ||
                         item.first_name.toLowerCase().includes(state.practicante_filtro) ||
                         item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                       }).map((item, index) => <Listas_no_seleccion 
-                    key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}/>) }
+                    key={index} item={item} rol={rol} 
+                    profecional_seleccionado={state.profecional_seleccionado}
+                    childClicked={(name)=>practicante_seleccion(name)}/>) }
                     </Col>
                     )
                   }
@@ -188,6 +296,12 @@ const asignaciones_component = (props) =>{
               </Row>
 
             </Col>
+
+
+
+
+
+
 
             <Col xs={"12"} md={"4"}>
               <Row  className="row_asignaciones_titulos">  
@@ -204,7 +318,7 @@ const asignaciones_component = (props) =>{
               <Row>
 
                 {
-                  state.practicante_seleccionado === '' ?
+                   isLoading_monitores_separados ?
                   (
                     <Col className="scroll_listas">
                       <Row className="asignaciones_no_seleccion">
@@ -212,7 +326,7 @@ const asignaciones_component = (props) =>{
                         </Row>
                     <Scrollbars>
 
-                        { monitores_json.filter((item)=>{
+                        { state.data_monitores.filter((item)=>{
                         return state.monitor_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.monitor_filtro) ||
@@ -231,25 +345,29 @@ const asignaciones_component = (props) =>{
                       Practicante seleccionado : {state.monitor_seleccionado }
                     </Row>
                     <Scrollbars>
-                    { monitores_seleccionados['0'].filter((item)=>{
+                    { state.separacion_monitores['0'].filter((item)=>{
                       return state.monitor_filtro.toLowerCase() === '' ? item 
                       : 
                       item.username.toLowerCase().includes(state.monitor_filtro) ||
                       item.first_name.toLowerCase().includes(state.monitor_filtro) ||
                       item.last_name.toLowerCase().includes(state.monitor_filtro);                      
                     }).map((item, index) => <Listas 
-                  key={index} item={item} rol={rol2} practicante_seleccionado={state.practicante_seleccionado}
-                  childClicked2={(name)=>monitor_seleccion(name)}/>) }
+                  key={index} item={item} rol={rol2} 
+                  practicante_seleccionado={state.practicante_seleccionado}
+                  childClicked2={(name)=>monitor_seleccion(name)}
+                  childClicked={(name)=>practicante_seleccion(name)}/>) }
                     <Row className="separador_asignaciones"></Row>
 
-                    { monitores_seleccionados['1'].filter((item)=>{
+                    { state.separacion_monitores['1'].filter((item)=>{
                       return state.monitor_filtro.toLowerCase() === '' ? item 
                       : 
                       item.username.toLowerCase().includes(state.monitor_filtro) ||
                       item.first_name.toLowerCase().includes(state.monitor_filtro) ||
                       item.last_name.toLowerCase().includes(state.monitor_filtro);                      
                     }).map((item, index) => <Listas_no_seleccion 
-                  key={index} item={item} rol={rol2} practicante_seleccionado={state.practicante_seleccionado}/>) }
+                  key={index} item={item} rol={rol2}
+                  practicante_seleccionado={state.practicante_seleccionado}
+                  childClicked={(name)=>practicante_seleccion(name)}/>) }
                   </Scrollbars>
                   </Col>
                   )
@@ -258,6 +376,14 @@ const asignaciones_component = (props) =>{
                 
               </Row>
             </Col>
+
+
+
+
+
+
+
+            
 
             <Col xs={"12"} md={"4"}>
               <Row className="row_asignaciones_titulos">
@@ -273,14 +399,14 @@ const asignaciones_component = (props) =>{
               </Row>
               <Row>
                 {
-                  state.monitor_seleccionado === '' ?
+                   isLoading_estudiantes_separados ?
                   (
                     <Col className="scroll_listas">
                       <Row className="asignaciones_no_seleccion">
                         Monitor no seleccionado 
                       </Row>
                     <Scrollbars>
-                      { estudiantes_json.filter((item)=>{
+                      { state.data_estudiantes.filter((item)=>{
                         return state.estudiante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
@@ -303,7 +429,7 @@ const asignaciones_component = (props) =>{
                       Monitor seleccionado : {state.monitor_seleccionado }
                     </Row>
                   <Scrollbars>
-                  { estudiantes_seleccionados['0'].filter((item)=>{
+                  { state.separacion_estudiantes['0'].filter((item)=>{
                       return state.estudiante_filtro.toLowerCase() === '' ? item 
                       : 
                       item.nombre.toLowerCase().includes(state.estudiante_filtro) || 
@@ -313,10 +439,11 @@ const asignaciones_component = (props) =>{
                   key={index} item={item} rol={rol3} 
                   filtro={state.estudiante_filtro}
                   monitor_seleccionado={state.monitor_seleccionado}
-                  childClicked3={(name)=>estudiante_seleccion(name)}/>) }
+                  childClicked3={(name)=>estudiante_seleccion(name)}
+                  childClicked2={(name)=>monitor_seleccion(name)}/>) }
                     <Row className="separador_asignaciones"></Row>
 
-                    { estudiantes_seleccionados['1'].filter((item)=>{
+                    { state.separacion_estudiantes['1'].filter((item)=>{
                       return state.estudiante_filtro.toLowerCase() === '' ? item 
                       : 
                       item.nombre.toLowerCase().includes(state.estudiante_filtro), 
@@ -325,7 +452,8 @@ const asignaciones_component = (props) =>{
                     }).map((item, index) => <Listas_no_seleccion 
                   key={index} item={item} rol={rol3} 
                   filtro={state.estudiante_filtro}
-                  monitor_seleccionado={state.monitor_seleccionado}/>) }
+                  monitor_seleccionado={state.monitor_seleccionado}
+                  childClicked2={(name)=>monitor_seleccion(name)}/>) }
                   </Scrollbars>
                   </Col>
                   )
@@ -339,23 +467,9 @@ const asignaciones_component = (props) =>{
           </Row>
 
 
-          <Row>
-            <Button>abajo</Button>
-          </Row>
-
-
-
-
-
-
             
         </Container>
   )
 }
 
 export default asignaciones_component
-
-
-  
-  
-  

@@ -332,10 +332,7 @@ const selector_usuarios = () =>{
               OK
             </Button>
           </Modal.Footer>
-        </Modal>
-        <Seguimiento_individual />
-        <Inasistencia />
-            
+        </Modal>  
         </Container>
   )
 }

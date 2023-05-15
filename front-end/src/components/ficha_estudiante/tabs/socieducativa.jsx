@@ -18,6 +18,9 @@ const Socieducativa = (props) =>{
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const [state,set_state] = useState({
+        data_user : props.data_user_socioedu[0],
+      })
 
 
 
@@ -243,7 +246,13 @@ const Socieducativa = (props) =>{
     ]
 ]
 
-const[activeTabIndex, setActiveTabIndex] = useState(tabs[0][0]['nombre']);
+console.log("primer nivel"+props.data_user_socioedu[0])
+console.log("segundo nivel"+props.data_user_socioedu[0][0])
+console.log("cada coso"+props.data_user_socioedu[0][0][0]['nombre'])
+
+
+
+const[activeTabIndex, setActiveTabIndex] = useState(state.data_user[0][0]['nombre']);
 const activeTab = (index)=> 
 {
     index === activeTabIndex ?
@@ -259,7 +268,7 @@ const activeTab = (index)=>
 
                         <Row className="socioeducativa_fondo" >
 
-                            { tabs.map((item, index) => 
+                            { state.data_user.map((item, index) => 
                             <Row>
                             <Col className={item[0]['nombre'] === activeTabIndex ? "periodo_asignaciones open" : "periodo_asignaciones"}>
                             <Row className="periodo_asignaciones_seleccionar" onClick={() => activeTab(item[0]['nombre'])}>
