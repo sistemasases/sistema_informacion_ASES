@@ -72,5 +72,10 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.40.0",
+    "eslint-config-react-app": "^7.0.1",
+    "workbox-webpack-plugin": "^6.5.4"
+  }
 }

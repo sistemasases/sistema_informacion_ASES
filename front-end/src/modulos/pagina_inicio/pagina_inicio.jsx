@@ -11,8 +11,13 @@ import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 
 const Pagina_inicio = () => {
+
+  const userRole = localStorage.getItem('rol');
+
   return (
-    <div className='banner' style={{marginTop: 20, marginBottom: 20, marginLeft: 22}}>
+    <>{userRole === 'superAses' || userRole === 'sistemas' ? <div className='banner' style={{marginTop: 20, marginBottom: 20, marginLeft: 22}}>
+      <h1>Ingresaste como admin.</h1>
+    </div> : <div className='banner' style={{marginTop: 20, marginBottom: 20, marginLeft: 22}}>
       <Carousel>
         <Carousel.Item>
           <img
@@ -33,7 +38,7 @@ const Pagina_inicio = () => {
           />
         </Carousel.Item>
       </Carousel>
-    </div>
+    </div>}</>
   );
 }
 

@@ -8,21 +8,22 @@ import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Cabecera from "../../components/reporte_seguimientos/cabecera";
 import Tabla_desercion from "../../components/desercion/tabla_desercion";
+import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 
 
 const Desercion = () =>{
+
+    const userRole = localStorage.getItem('rol');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
     return (
-        
-        <Col className="contenido_children">
+        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_desercion/>
             </Row>
-
-        </Col>
+        </Col> : <Acceso_denegado/>}</>
     )
 }
 
