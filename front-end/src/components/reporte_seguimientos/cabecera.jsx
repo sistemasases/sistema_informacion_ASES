@@ -186,12 +186,12 @@ const Cabecera = (props) =>{
         <Container>
             <Row className="row_presentacion_reportes_seguimientos">
               <Col className="col_selectores_reportes_seguimientos" xs={"12"} md={"4"}>
-                  <h1>Seguimientos</h1>
+                  <h1>Séguimientos</h1>
               </Col>
               {
                   props.rolUsuario === 'superSistemas' ?
                   (<Col className="col_selectores_reportes_seguimientos"  xs={"12"} md={"4"}>
-                      periodo actual
+                      período actual
                       <Select  
                         options={datos_option_periodo} onMenuOpen={handle_periodo} 
                         onChange={handle_option_periodo}  

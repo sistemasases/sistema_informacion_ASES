@@ -216,7 +216,7 @@ const Info_basica = (props) =>{
                                         <Row className="info"> 
                                             <Col className="info_texto" xs={"5"} md={"3"}>
                                               <h4 className="texto_mas_pequeño">{state.tipo_doc}
-                                                cedula
+                                                cédula
                                               </h4>
                                             </Col>
                                             <Col className="info_texto" md={"5"}>
@@ -231,7 +231,7 @@ const Info_basica = (props) =>{
                                             </Col>
                                             <Col className="info_texto" xs={"3"} md={"2"}>
                                               <h4 className="texto_mas_pequeño">
-                                                Telefono
+                                                Teléfono
                                               </h4>
                                             </Col>
                                         </Row>
@@ -272,7 +272,7 @@ const Info_basica = (props) =>{
                                       <Col xs={"12"} md={"9"}>
                                         <Row>
                                           <h4 className="bold">
-                                            Programas academicos 
+                                            Programas académicos 
                                           </h4>
                                         </Row>
                                         <Row className="infoRow23_inactivo"> 
@@ -288,13 +288,13 @@ const Info_basica = (props) =>{
                                         <Row> 
                                           <h4 className="texto_mas_pequeño">
                                             <br/>
-                                            Profecional: 
+                                            Profesional: 
                                             <br/>
                                             Practicante: 
                                             <br/>
                                             Monitor: 
                                             <br/> 
-                                            Ultima astualización:
+                                            Ultima actualización:
                                             <br/> 
                                           </h4>
                                         </Row>
@@ -309,7 +309,7 @@ const Info_basica = (props) =>{
                                             <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                           </button>
                                           <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">Condicion de excepcion <br/>2017-C.A</h4>
+                                            <h4 className="texto_mas_pequeño">Condición de excepcion <br/>2017-C.A</h4>
                                           </Row>
                                         </Col> 
                                       </div>
@@ -320,7 +320,7 @@ const Info_basica = (props) =>{
                                     <Row className="infoRow2">
                                       <Col md={"9"}>
                                         <Row>
-                                          <h4 className="texto_pequeño">Programas academicos </h4>
+                                          <h4 className="texto_pequeño">Programas académicos </h4>
                                         </Row>
                                           { state.programas.map((item, index) => <Programas_academicos 
                                             rolUsuario={props.rolUsuario}
@@ -346,7 +346,7 @@ const Info_basica = (props) =>{
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">
-                                              Condicion de excepcion 
+                                            Condición de excepcion 
                                               <br/>
                                               2017-C.A
                                             </h4>
@@ -423,7 +423,7 @@ const Info_basica = (props) =>{
                                   </Row>
                                   
                                   <Row className="texto_estatico_pequeño">
-                                    <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
+                                    <h4 className="texto_mas_pequeño">Condición de excepción</h4>
                                       <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                   </Row>
 
@@ -463,7 +463,7 @@ const Info_basica = (props) =>{
                                 </Row>
 
                                 <Row className="texto_estatico_pequeño">
-                                <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
+                                <h4 className="texto_mas_pequeño">Condición de excepción</h4>
                                   <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                 </Row>
 
@@ -492,13 +492,13 @@ const Info_basica = (props) =>{
                                       <h4 className="texto_mas_pequeño">correo</h4>
                                     </Col>
                                     <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño"  md={"2"}>
-                                      <h4 className="texto_mas_pequeño"> cedula</h4>
+                                      <h4 className="texto_mas_pequeño"> cédula</h4>
                                     </Col>
                                     <Col className="info_texto" xs={"3"} md={"12"}>
                                       <h4 className="texto_mas_pequeño">edad</h4>
                                     </Col>
                                     <Col className="info_texto" xs={"3"} md={"2"}>
-                                      <h4 className="texto_mas_pequeño">telefono</h4>
+                                      <h4 className="texto_mas_pequeño">teléfono</h4>
                                     </Col>
                                   </Row>
                                 )
@@ -522,7 +522,6 @@ const Info_basica = (props) =>{
                                   </Row>
                                 )
                               } 
-                                      
                               <Row className="ficha_footer_pequeña">
                                 <Col xs={"12"} className="texto_estatico">
                                   <h4 className="texto_mas_pequeño">Monitor</h4>
@@ -534,16 +533,14 @@ const Info_basica = (props) =>{
                                   <h4 className="texto_mas_pequeño">Practicante</h4>
                                 </Col>
                               </Row>
-
                                 {
                                   (state.seleccionado) === '' ?
                                   (
                                     <Row className="infoRow2_pequeño">
                                       <Col xs={"12"} md={"9"}>
                                         <Row className="texto_estatico">
-                                          <h4 className="bold">Programas academicos </h4>
+                                          <h4 className="bold">Programas académicos </h4>
                                         </Row>
-                                        
                                         <Row className="infoRow23_inactivo"> 
                                           <Col xs={"6"} md={"6"}>
                                             <h4 className="texto_pequeño">{state.codigo} </h4>
@@ -566,7 +563,6 @@ const Info_basica = (props) =>{
                                           </Col>
                                         </Row>
                                       </Col>
-                                      
                                     </Row>
                                   )
                                   :
@@ -574,24 +570,18 @@ const Info_basica = (props) =>{
                                     <Row className="infoRow2_pequeño">
                                       <Col xs={"12"} md={"9"}>
                                         <Row className="texto_estatico">
-                                          <h4 className="texto_pequeño">Programas academicos </h4>
+                                          <h4 className="texto_pequeño">Programas académicos </h4>
                                         </Row>
                                         { state.programas.map((item, index) => <Programas_academicos 
                                             rolUsuario={props.rolUsuario}
                                             item={item}/>) }
                                       </Col>      
-                                      
                                     </Row>
                                   )
-
                                 }
-
-                                
                             </Col>
-
                         </Row>
                   </Col>
-
           </Row>
           </div>
 
