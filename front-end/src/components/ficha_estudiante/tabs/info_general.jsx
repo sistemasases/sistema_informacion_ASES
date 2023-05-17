@@ -73,8 +73,6 @@ const Info_general = (props) =>{
 
     useEffect(()=>{
 
-      alert("estos son los dato que ahi : " + props.datos['estrato'])
-
     },[]
     );
 
@@ -136,8 +134,6 @@ const Info_general = (props) =>{
   const handle_upload_estudiante = (e) => {
 
     let formData = new FormData();
-
-      alert("primer"+ state.nuevo_email_alternativo)
 
       formData.append('email', state.nuevo_email_alternativo)
 
