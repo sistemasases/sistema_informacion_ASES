@@ -14,7 +14,7 @@ class programa (models.Model):
     nombre= models.CharField(max_length=50)
     jornada= models.CharField(max_length=50)
     id_facultad= models.ForeignKey(facultad,on_delete=models.CASCADE,default=0,related_name='id_facultad_in_programa')
-    id_sede= models.ForeignKey(sede,on_delete=models.CASCADE,default=0,related_name='id_sede_in_programa')
+    id_sede= models.ForeignKey(sede,on_delete=models.CASCADE,default=None,null=True,related_name='id_sede_in_programa')
 
 class programa_estudiante (models.Model):
     id_programa= models.ForeignKey(programa,on_delete=models.CASCADE,default=0,related_name='id_programa_in_programa_estudiante')

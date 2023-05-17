@@ -30,7 +30,7 @@ class semestre (models.Model):
     fecha_fin= models.DateTimeField(auto_now_add=False)
     semestre_actual= models.BooleanField(default= False)
     estado = models.SmallIntegerField(default=0)
-    id_sede= models.ForeignKey(sede ,on_delete=models.CASCADE,default=0)
+    id_sede= models.ForeignKey(sede ,on_delete=models.CASCADE,default=None,null=True)
 
     class Meta:
         db_table = "semestre"
