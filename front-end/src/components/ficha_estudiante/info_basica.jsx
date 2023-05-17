@@ -28,7 +28,7 @@ const Info_basica = (props) =>{
     const handleCloseIn = () => setShowIn(false);
 
     const datos_option_user = []
-    const total_datos_estudiantes = []
+    const [isLoading, setIsLoading] = useState(true);
 
     var bandera_option_user = true;
     const [state,set_state] = useState({
@@ -38,7 +38,7 @@ const Info_basica = (props) =>{
       usuario : '',
       data_user : [],
       data_rol : [],
-
+      total_datos_estudiantes : [],
 
       seleccionado:'',
 
@@ -67,32 +67,12 @@ const Info_basica = (props) =>{
           ...state,
           data_user : respuesta.data
         })
-
-        for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], 
-          label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
-          id:[i] }
-          datos_option_user.push(dato)
-
-          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
-            axios({
-              // Endpoint to send files
-              url:  url_axios,
-              method: "GET",
-            })
-            .then((respuesta)=>{
-              total_datos_estudiantes.push(respuesta.dato)
-            })
-            .catch(err=>{
-                return (err)
-            })
-
-        }
-        
+        console.log("estos son los primeros datos :"+state.data_user)
       })
       .catch(err=>{
-          return (err)
+        console.log("estos son los primeros datos :"+state.data_user)
       })
+      console.log("estos son los primeros datos :"+state.data_user)
       
     },[]);
    
@@ -105,67 +85,98 @@ const Info_basica = (props) =>{
     }
 
 
-    const handle_users = (e) => {
-      console.log("opciones2");
-      console.log([datos_option_user]);
-      console.log("datos totales2");
-      console.log(total_datos_estudiantes);
-      // Getting the files from the input
-      if(bandera_option_user==true){
-  
-        for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
-          datos_option_user.push(dato)
 
-          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
-            axios({
-              // Endpoint to send files
-              url:  url_axios,
-              method: "GET",
-            })
-            .then((respuesta)=>{
-              total_datos_estudiantes.push(respuesta.data)
-            })
-            .catch(err=>{
-                return (err)
-            })
 
-        }
-        console.log("opciones");
-        console.log([datos_option_user]);
-        console.log("datos totales finales siiiiiiiu");
-        console.log(total_datos_estudiantes);
-        bandera_option_user = false;
+
+    const fetchData = async (index)=>{
+      try{
+        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
+        state.total_datos_estudiantes.push(response.data)
+        console.log("entra aqui ssisisisiisj")
       }
-      else{
-        console.log([datos_option_user]);
+      catch (error){
+        console.log("no capto el dato")
+        fetchData(index);
       }
     }
 
 
+    const handle_users = (e) => {
+      console.log("estos son los segundos datos :"+state.data_user)
+      // Getting the files from the input
+      if(bandera_option_user==true){
+  
+        for (var i = 0; i < state.data_user['length'] ; i++) {
+          const dato = { value: state.data_user[i]['id'], 
+          label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
+          id:i }
+          datos_option_user.push(dato)
+        }
+        bandera_option_user = false;
+      }
+      else{
+        console.log("bandera off");
+      }
+
+    }
+
+
+
+    useEffect(() => {
+      console.log('entra al useeffct xd')
+      if (state.total_datos_estudiantes['nombre'] && isLoading) {
+        set_state({
+          ...state,
+          seleccionado:state.total_datos_estudiantes['id'],
+          id_usuario:state.total_datos_estudiantes['id'],
+          nombres : state.total_datos_estudiantes['nombre'],
+          apellidos : state.total_datos_estudiantes['apellido'],
+          codigo :state.total_datos_estudiantes['cod_univalle'],
+          correo :state.total_datos_estudiantes['email'],
+          tipo_doc : state.total_datos_estudiantes['tipo_doc'],
+          cedula :state.total_datos_estudiantes['num_doc'],
+          telefono :state.total_datos_estudiantes['telefono_res'],
+          edad : '1',
+          programas : state.total_datos_estudiantes['programas'],
+          total_datos_estudiante_seleccionado : state.total_datos_estudiantes
+        })
+      }
+      else{
+      console.log(state.total_datos_estudiantes.length)
+    }
+    }, [state.total_datos_estudiantes]);
 
 
 
     const handle_option_user = (e) => {
       // Getting the files from the input
-      console.log(e)
-      set_state({
-        ...state,
-        seleccionado:e.id,
-        id_usuario:state.data_user[e.id]['id'],
-        nombres : state.data_user[e.id]['nombre'],
-        apellidos : state.data_user[e.id]['apellido'],
-        codigo : state.data_user[e.id]['cod_univalle'],
-        correo : state.data_user[e.id]['email'],
-        tipo_doc : state.data_user[e.id]['tipo_doc'],
-        cedula : state.data_user[e.id]['num_doc'],
-        telefono : state.data_user[e.id]['telefono_res'],
-        edad : '1',
-        programas : total_datos_estudiantes[e.id]['programas'],
-        total_datos_estudiante_seleccionado : total_datos_estudiantes[e.id]
+
+      const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+e.value+"/";
+      axios({
+        // Endpoint to send files
+        url:  url_axios,
+        method: "GET",
       })
-      console.log("estos son los programas")
-      console.log(state.programas)
+      .then((respuesta)=>{
+        set_state({
+          ...state,
+          total_datos_estudiantes : respuesta.data
+        })
+      })
+      .catch(err=>{
+          console.log("no tomo el dato")
+        })
+
+      console.log(e)
+      
+      console.log("este es el")
+      console.log(datos_option_user)
+      console.log("este es el id seleccionado")
+      console.log(e.id)
+      console.log("total datos estudiantes seleccionado")
+      console.log(state.total_datos_estudiantes)
+      console.log(state.total_datos_estudiantes['nombre'])
+
     }
 
 
@@ -205,7 +216,7 @@ const Info_basica = (props) =>{
                                         <Row className="info"> 
                                             <Col className="info_texto" xs={"5"} md={"3"}>
                                               <h4 className="texto_mas_pequeño">{state.tipo_doc}
-                                                cedula
+                                                cédula
                                               </h4>
                                             </Col>
                                             <Col className="info_texto" md={"5"}>
@@ -220,7 +231,7 @@ const Info_basica = (props) =>{
                                             </Col>
                                             <Col className="info_texto" xs={"3"} md={"2"}>
                                               <h4 className="texto_mas_pequeño">
-                                                Telefono
+                                                Teléfono
                                               </h4>
                                             </Col>
                                         </Row>
@@ -261,7 +272,7 @@ const Info_basica = (props) =>{
                                       <Col xs={"12"} md={"9"}>
                                         <Row>
                                           <h4 className="bold">
-                                            Programas academicos 
+                                            Programas académicos 
                                           </h4>
                                         </Row>
                                         <Row className="infoRow23_inactivo"> 
@@ -277,13 +288,13 @@ const Info_basica = (props) =>{
                                         <Row> 
                                           <h4 className="texto_mas_pequeño">
                                             <br/>
-                                            Profecional: 
+                                            Profesional: 
                                             <br/>
                                             Practicante: 
                                             <br/>
                                             Monitor: 
                                             <br/> 
-                                            Ultima astualización:
+                                            Ultima actualización:
                                             <br/> 
                                           </h4>
                                         </Row>
@@ -298,7 +309,7 @@ const Info_basica = (props) =>{
                                             <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                           </button>
                                           <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">Condicion de excepcion <br/>2017-C.A</h4>
+                                            <h4 className="texto_mas_pequeño">Condición de excepcion <br/>2017-C.A</h4>
                                           </Row>
                                         </Col> 
                                       </div>
@@ -309,7 +320,7 @@ const Info_basica = (props) =>{
                                     <Row className="infoRow2">
                                       <Col md={"9"}>
                                         <Row>
-                                          <h4 className="texto_pequeño">Programas academicos </h4>
+                                          <h4 className="texto_pequeño">Programas académicos </h4>
                                         </Row>
                                           { state.programas.map((item, index) => <Programas_academicos 
                                             rolUsuario={props.rolUsuario}
@@ -335,7 +346,7 @@ const Info_basica = (props) =>{
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">
-                                              Condicion de excepcion 
+                                            Condición de excepcion 
                                               <br/>
                                               2017-C.A
                                             </h4>
@@ -412,7 +423,7 @@ const Info_basica = (props) =>{
                                   </Row>
                                   
                                   <Row className="texto_estatico_pequeño">
-                                    <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
+                                    <h4 className="texto_mas_pequeño">Condición de excepción</h4>
                                       <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                   </Row>
 
@@ -452,7 +463,7 @@ const Info_basica = (props) =>{
                                 </Row>
 
                                 <Row className="texto_estatico_pequeño">
-                                <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
+                                <h4 className="texto_mas_pequeño">Condición de excepción</h4>
                                   <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                 </Row>
 
@@ -481,13 +492,13 @@ const Info_basica = (props) =>{
                                       <h4 className="texto_mas_pequeño">correo</h4>
                                     </Col>
                                     <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño"  md={"2"}>
-                                      <h4 className="texto_mas_pequeño"> cedula</h4>
+                                      <h4 className="texto_mas_pequeño"> cédula</h4>
                                     </Col>
                                     <Col className="info_texto" xs={"3"} md={"12"}>
                                       <h4 className="texto_mas_pequeño">edad</h4>
                                     </Col>
                                     <Col className="info_texto" xs={"3"} md={"2"}>
-                                      <h4 className="texto_mas_pequeño">telefono</h4>
+                                      <h4 className="texto_mas_pequeño">teléfono</h4>
                                     </Col>
                                   </Row>
                                 )
@@ -511,7 +522,6 @@ const Info_basica = (props) =>{
                                   </Row>
                                 )
                               } 
-                                      
                               <Row className="ficha_footer_pequeña">
                                 <Col xs={"12"} className="texto_estatico">
                                   <h4 className="texto_mas_pequeño">Monitor</h4>
@@ -523,16 +533,14 @@ const Info_basica = (props) =>{
                                   <h4 className="texto_mas_pequeño">Practicante</h4>
                                 </Col>
                               </Row>
-
                                 {
                                   (state.seleccionado) === '' ?
                                   (
                                     <Row className="infoRow2_pequeño">
                                       <Col xs={"12"} md={"9"}>
                                         <Row className="texto_estatico">
-                                          <h4 className="bold">Programas academicos </h4>
+                                          <h4 className="bold">Programas académicos </h4>
                                         </Row>
-                                        
                                         <Row className="infoRow23_inactivo"> 
                                           <Col xs={"6"} md={"6"}>
                                             <h4 className="texto_pequeño">{state.codigo} </h4>
@@ -555,7 +563,6 @@ const Info_basica = (props) =>{
                                           </Col>
                                         </Row>
                                       </Col>
-                                      
                                     </Row>
                                   )
                                   :
@@ -563,24 +570,18 @@ const Info_basica = (props) =>{
                                     <Row className="infoRow2_pequeño">
                                       <Col xs={"12"} md={"9"}>
                                         <Row className="texto_estatico">
-                                          <h4 className="texto_pequeño">Programas academicos </h4>
+                                          <h4 className="texto_pequeño">Programas académicos </h4>
                                         </Row>
                                         { state.programas.map((item, index) => <Programas_academicos 
                                             rolUsuario={props.rolUsuario}
                                             item={item}/>) }
                                       </Col>      
-                                      
                                     </Row>
                                   )
-
                                 }
-
-                                
                             </Col>
-
                         </Row>
                   </Col>
-
           </Row>
           </div>
 

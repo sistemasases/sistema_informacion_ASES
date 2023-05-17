@@ -214,27 +214,27 @@ const activeTab = (index)=>
                             <Col className={"facultades" === activeTabIndex ? "academico_deplegable open" : "academico_deplegable"}>
                                 <Row className="academico_deplegable_seleccionar" onClick={() => activeTab("facultades")}>
                                     <Col className="academico_deplegable_seleccionar_text" >
-                                                        <Row className="academico_deplegable_seleccionar_hover">
-                                                            <Col  className="col_academico_deplegable_seleccionar_text" > 
-                                                                    Separación por asignaturas
-                                                                    {
-                                                                        "facultades" === activeTabIndex ?
-                                                                        (
-                                                                                <i class="bi bi-chevron-up"></i>
-                                                                        )   
-                                                                        :
-                                                                        (
-                                                                                <i class="bi bi-chevron-down"></i>
-                                                                        )
-                                                                    }
-                                                            </Col>
-                                                        </Row>
-                                        </Col>
+                                        <Row className="academico_deplegable_seleccionar_hover">
+                                            <Col  className="col_academico_deplegable_seleccionar_text" > 
+                                                    Separación por asignaturas
+                                                    {
+                                                        "facultades" === activeTabIndex ?
+                                                        (
+                                                                <i class="bi bi-chevron-up"></i>
+                                                        )   
+                                                        :
+                                                        (
+                                                                <i class="bi bi-chevron-down"></i>
+                                                        )
+                                                    }
+                                            </Col>
+                                        </Row>
+                                    </Col>
                                 </Row>
-                                    <Row className="academico_deplegable_contenido">
-                                        {tabs2.map((item, index) => <Desplegable_item_listas_materias key={index} item={item} /> )}
-                                    </Row>
-
+                                <Row className="academico_deplegable_contenido">
+                                    {tabs2.map((item, index) => 
+                                    <Desplegable_item_listas_materias key={index} item={item} /> )}
+                                </Row>
                             </Col>
                 </Row>
                 <Row className="academico_fondo">

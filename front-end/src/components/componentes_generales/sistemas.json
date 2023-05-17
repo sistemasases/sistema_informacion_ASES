@@ -42,7 +42,7 @@
         "childrens":[
             {
                 "path":"/sin_seguimientos",
-                "name":"estudiantes sin seguimeintos",
+                "name":"Cantidad de seguimientos",
                 "icon":"bi-people-fill"
             },
             {
@@ -66,7 +66,7 @@
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/desercion",
                 "name":"reporte de desercion",
                 "icon":"bi-people-fill"
             },
@@ -93,6 +93,11 @@
         "name":"academico",
         "icon":"bi-people-fill",
         "childrens":[
+            {
+                "path":"/academico",
+                "name":"ifno general",
+                "icon":"bi-people-fill"
+            },
             {
                 "path":"/ficha_estudiante",
                 "name":"carga de notas",

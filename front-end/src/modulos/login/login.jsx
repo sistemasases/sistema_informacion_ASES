@@ -9,7 +9,6 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
-
 const Login = () =>{
 
     const[switchChecked, setChecked] = useState(false);
@@ -22,7 +21,7 @@ const Login = () =>{
     ]
 
     return (
-            <Login_component/>
+      <Login_component/>
     )
 }
 

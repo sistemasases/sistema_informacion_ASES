@@ -21,26 +21,6 @@ Tabla Conteo de Seguimientos:
 - Practicante
 - Monitor
 
-
-
-<Row className="row_contenido_reportes_seguimientos">
-                <Col className="row_card_reportes_seguimientos">
-                    <Row className="row_card_content_flex">
-                        <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
-                            <Row>
-                                Informacion: Rol
-                            </Row>
-                            <p className="subrow_card_content_flex">Fichas:      Revisado : 0    No revisado : 1     Total : 1</p>
-                            <Row>Inasistencias: Revisado : 0    No revisado : 0     Total : 0</Row>
-                        </Col>
-                        <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
-                            <Row>Practicante</Row>
-                            <Row>Fichas: Revisado : 0 - No revisado : 1 - Total : 1</Row>
-                            <Row>Inasistencias: Revisado : 0 - No revisado : 0 - Total : 0</Row>
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
 */
 
 
@@ -59,18 +39,18 @@ const Informacion_rol = () =>{
                                 <b>Informacion:</b>
                                 </Col>
                                 <Col xs={"12"} md={"3"}>
-                                Profecional
+                                Profesional
                                 </Col>
                             </Row> 
                             <Row lassName="margin_top_info_rol"> 
                                 <Col xs={"12"} md={"3"} c>
-                                <b>Fichas:</b>
+                                <b>Fichás:</b>
                                 </Col>
                                 <Col xs={"5"} md={"3"}>
-                                Revisado: 0
+                                Révisado: 0
                                 </Col>
                                 <Col xs={"6"} md={"3"}>
-                                No revisado: 1
+                                No révisado: 1
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 1
@@ -79,13 +59,13 @@ const Informacion_rol = () =>{
                             </Row>
                             <Row className="margin_top_info_rol">
                                 <Col xs={"12"} md={"3"} >
-                                <b>Inasistencias:</b>
+                                <b>Inasistencías:</b>
                                 </Col>
                                 <Col xs={"5"} md={"3"}>
-                                Revisado: 0
+                                Révisado: 0
                                 </Col>
                                 <Col xs={"6"} md={"3"}>
-                                No revisado: 0
+                                No révisado: 0
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 0
@@ -110,13 +90,13 @@ const Informacion_rol = () =>{
                             <Row className="margin_top_info_rol">
 
                                 <Col  xs={"12"} md={"3"}>
-                                <b>Fichas:</b>
+                                <b>Fichás:</b>
                                 </Col>
                                 <Col xs={"5"} md={"3"}>
-                                Revisado : 0
+                                Révisado : 0
                                 </Col>
                                 <Col xs={"6"} md={"3"}>
-                                No revisado : 1
+                                No révisado : 1
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 1
@@ -125,13 +105,13 @@ const Informacion_rol = () =>{
                             </Row>
                             <Row className="margin_top_info_rol">
                             <Col xs={"12"} md={"3"} >
-                                <b>Inasistencias:</b>
+                                <b>Inasistencías:</b>
                                 </Col>
                                 <Col xs={"5"} md={"3"}>
-                                Revisado : 0
+                                Révisado : 0
                                 </Col>
                                 <Col xs={"6"} md={"3"}>
-                                No revisado : 0
+                                No révisado : 0
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : 0

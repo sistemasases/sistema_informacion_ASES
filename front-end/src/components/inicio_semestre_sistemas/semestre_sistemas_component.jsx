@@ -180,7 +180,6 @@ const semestre_sistemas_component = () =>{
             formData.append('id_rol', state.data[i].id_rol);
             formData.append('id_usuario', state.data[i].id);
             user_rol.user_rol(formData);
-            window.location.replace('');
         }
     }
 
