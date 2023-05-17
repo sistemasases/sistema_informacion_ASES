@@ -11,4 +11,4 @@ from django.contrib import admin
 from modulo_instancia.models import *
 
 admin.site.register(semestre)
-admin.site.register(instancia)
+admin.site.register(sede)

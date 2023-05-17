@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from modulo_usuario_rol.models import estudiante
-from django.utils import timezone
 
 # Create your models here.
 class seguimiento_individual (models.Model):
