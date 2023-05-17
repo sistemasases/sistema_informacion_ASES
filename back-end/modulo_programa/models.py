@@ -1,15 +1,10 @@
 from django.db import models
 from modulo_usuario_rol.models import estudiante
-from modulo_geografico.models import municipio
+from modulo_instancia.models import sede
 
 # Create your models here.
 
 class facultad (models.Model):
-    codigo_univalle = models.BigIntegerField()
-    nombre= models.CharField(max_length=50)
-
-class sede (models.Model):
-    id_municipio= models.ForeignKey(municipio,on_delete=models.CASCADE,default=0,related_name='id_municipio_in_sede')
     codigo_univalle = models.BigIntegerField()
     nombre= models.CharField(max_length=50)
 

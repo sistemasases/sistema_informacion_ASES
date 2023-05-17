@@ -10,11 +10,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from modulo_base.serializers import (
     CustomTokenObtainPairSerializer, user_token, group_serializer
 )
-from modulo_instancia.serializers import semestre_serializer, instancia_serializer
+from modulo_instancia.serializers import semestre_serializer, sede_serializer
 from modulo_usuario_rol.serializers import usuario_rol_serializer, rol_serializer
 from django.contrib.auth.models import User
 
-from modulo_instancia.models import semestre, instancia
+from modulo_instancia.models import semestre, sede
 from modulo_usuario_rol.models import rol, usuario_rol
 
 
@@ -45,14 +45,14 @@ class Login(TokenObtainPairView):
                     serializer_rol = rol_serializer(dato_rol)
                     dato_semestre = semestre.objects.get(semestre_actual = True, id =serializer_usuario_rol.data['id_semestre'])
                     serializer_semestre =semestre_serializer(dato_semestre)
-                    dato_instancia = instancia.objects.get(id = serializer_semestre.data['id_instancia'])
-                    serializer_instancia = instancia_serializer(dato_instancia)
+                    dato_sede = sede.objects.get(id = serializer_semestre.data['id_sede'])
+                    serializer_sede = sede_serializer(dato_sede)
     
                     extra_info = {'nombre_completo' : user_serializer.data.get('first_name') +" "+ user_serializer.data.get('last_name'),
                                 'rol' : serializer_rol.data['nombre'],
                                 'semestre_actual': serializer_semestre.data['nombre'],
-                                'instancia':serializer_instancia.data['nombre'],
-                                'instancia_id':serializer_instancia.data['id'],
+                                'sede':serializer_sede.data['nombre'],
+                                'sede_id':serializer_sede.data['id'],
                                 }
                     data = dict(user_serializer.data, **extra_info)
                     print(data)
