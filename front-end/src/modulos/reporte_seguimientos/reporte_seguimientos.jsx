@@ -8,20 +8,23 @@ import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Cabecera from "../../components/reporte_seguimientos/cabecera";
 import Informacion_rol from "../../components/reporte_seguimientos/informacion_rol";
+import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 
 
 const Reporte_seguimientos = (props) =>{
+
+    const userRole = localStorage.getItem('rol');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
     return (
         
-        <Col className="contenido_children">
+        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Cabecera usuario={props.usuario} area={props.area} periodo={props.periodo}></Cabecera>
             </Row>
-        </Col>
+        </Col> : <Acceso_denegado/>}</>
     )
 }
 

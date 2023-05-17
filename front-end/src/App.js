@@ -63,7 +63,7 @@ import "./Scss/login/login_component.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import SideBar from "./components/componentes_generales/sideBar";
+import SideBar from "./components/componentes_generales/sideBar.jsx";
 import Login from "./modulos/login/login.jsx";
 //import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
 import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
@@ -76,8 +76,8 @@ import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
 import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
-import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia";
-import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas";
+import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia.jsx";
+import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas.jsx";
 import Footer from './components/componentes_generales/footer.jsx';
 
 

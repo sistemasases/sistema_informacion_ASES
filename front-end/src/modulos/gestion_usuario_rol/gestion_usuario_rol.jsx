@@ -8,15 +8,18 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 
 
 const Gestion_usuario_rol = () =>{
+
+    const userRole = localStorage.getItem('rol');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
     return (
-        <Col className="contenido_children">
+        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
             <Row className="rowJustFlex_usuario_rol">
                 <h1>Usuario Rol</h1>
             </Row>
@@ -27,7 +30,7 @@ const Gestion_usuario_rol = () =>{
             <Row>
 
             </Row>
-        </Col>
+        </Col> : <Acceso_denegado/>}</>
     )
 }
 
