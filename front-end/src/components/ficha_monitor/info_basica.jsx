@@ -6,7 +6,6 @@ import {Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import Selector_estudiantes from "../componentes_generales/selector_estudiantes";
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Selector from "./selector";
@@ -31,7 +30,7 @@ const Info_basica_monitor = (props) =>{
    
 
     const datos_option_user = []
-    const total_datos_estudiantes = []
+    const total_datos_monitors = []
 
     const datos_option_rol = []
     var bandera_option_user = true;
@@ -39,7 +38,7 @@ const Info_basica_monitor = (props) =>{
     var bandera = true;
     const [state,set_state] = useState({
 
-      total_datos_estudiante_seleccionado:[],
+      total_datos_monitor_seleccionado:[],
       editar : false,
       usuario : '',
       data_user : [],
@@ -65,7 +64,7 @@ const Info_basica_monitor = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/estudiante/",
+        url:  "http://localhost:8000/usuario_rol/monitor/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -80,14 +79,14 @@ const Info_basica_monitor = (props) =>{
           const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
           datos_option_user.push(dato)
 
-          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
+          const url_axios = "http://localhost:8000/usuario_rol/monitor/"+state.data_user[i]['id']+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
             })
             .then((respuesta)=>{
-              total_datos_estudiantes.push(respuesta.dato)
+              total_datos_monitors.push(respuesta.dato)
             })
             .catch(err=>{
                 return (err)
@@ -119,7 +118,7 @@ const Info_basica_monitor = (props) =>{
       console.log("opciones2");
       console.log([datos_option_user]);
       console.log("datos totales2");
-      console.log(total_datos_estudiantes);
+      console.log(total_datos_monitors);
       // Getting the files from the input
       if(bandera_option_user==true){
   
@@ -127,14 +126,14 @@ const Info_basica_monitor = (props) =>{
           const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
           datos_option_user.push(dato)
 
-          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
+          const url_axios = "http://localhost:8000/usuario_rol/monitor/"+state.data_user[i]['id']+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
             })
             .then((respuesta)=>{
-              total_datos_estudiantes.push(respuesta.data)
+              total_datos_monitors.push(respuesta.data)
             })
             .catch(err=>{
                 return (err)
@@ -144,7 +143,7 @@ const Info_basica_monitor = (props) =>{
         console.log("opciones");
         console.log([datos_option_user]);
         console.log("datos totales finales siiiiiiiu");
-        console.log(total_datos_estudiantes);
+        console.log(total_datos_monitors);
         bandera_option_user = false;
       }
       else{
@@ -171,8 +170,8 @@ const Info_basica_monitor = (props) =>{
         cedula : state.data_user[e.id]['num_doc'],
         telefono : state.data_user[e.id]['telefono_res'],
         edad : '1',
-        programas : total_datos_estudiantes[e.id]['programas'],
-        total_datos_estudiante_seleccionado : total_datos_estudiantes[e.id]
+        programas : total_datos_monitors[e.id]['programas'],
+        total_datos_monitor_seleccionado : total_datos_monitors[e.id]
       })
       console.log("estos son los programas")
       console.log(state.programas)
@@ -645,7 +644,7 @@ const Info_basica_monitor = (props) =>{
 
         <div class="col-12">
           <Row>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_monitor_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Row>
         </div>
 

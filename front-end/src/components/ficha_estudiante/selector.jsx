@@ -4,11 +4,8 @@ import Info_general from "./tabs/info_general"
 import Academico from "./tabs/academico"
 import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import { NavLink } from 'react-router-dom';
-import  {useEffect, componentDidUpdate} from 'react';
+
 import axios from 'axios';
 
 const Selector = (props) =>{
@@ -20,12 +17,6 @@ const Selector = (props) =>{
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-
-    const datos_option_user = []
-    const datos_option_rol = []
-    var bandera_option_user = true;
-    var bandera_option_rol = true;
-    var bandera = true;
     const [state,set_state] = useState({
       usuario : '',
       data_user : [],
@@ -82,7 +73,8 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} 
+            component:<Info_general 
+                        id={props.id} 
                         seleccionado={props.seleccionado} 
                         datos={props.datos} 
                         rolUsuario={props.rolUsuario} 
@@ -115,7 +107,6 @@ const Selector = (props) =>{
 
     return (
         <Container className="containerSelector">
-
                 {
                     props.seleccionado ==='' ?
                     (
@@ -124,12 +115,11 @@ const Selector = (props) =>{
                                     tabs.map((tab, index)=>(
                                         <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
                                             <Row onClick={handleShow}>
-                                                <label key={index} classNmae="tab_bloqueado">
+                                                <label key={index}>
                                                     {tab.name}
                                                 </label>
                                             </Row>
                                         </Row>
-                                        
                                         ))
                                     }
                                 </Row>
@@ -145,11 +135,9 @@ const Selector = (props) =>{
                                                     {tab.name}
                                                 </label>
                                             </Row>
-                                            
                                             {
                                                 (tab.id === activeTabIndex)?
                                                 (
-                                                
                                                 <Row>
                                                     <div class="d-none d-md-block col-md-1">
                                                         <Col md={"1"}></Col>
@@ -163,16 +151,11 @@ const Selector = (props) =>{
                                                 :
                                                 (<Row></Row>)
                                             }
-                                        
                                         </Col>
-                                        
                                         ))
                                     }
-                                    
                                 </Row>
                     )
-                    
-
                 }
 
                 <Modal show={show} onHide={handleClose}>

@@ -56,8 +56,7 @@ class Estudiante_manage(serializers.Serializer):
 	id = serializers.IntegerField()
 
 class Estudiante_actualizacion(serializers.Serializer):
-    id_nuevo_num_doc = serializers.IntegerField()    
-    id_nuevo_telefono_res = serializers.IntegerField()
+    email = serializers.CharField()    
 
 class user_selected (serializers.ModelSerializer):
 	class Meta:
