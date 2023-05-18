@@ -12,6 +12,7 @@ const Desplegable_item = ({item}) => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    console.log("item datos : "+item.datos)
 
     if(item.nombre){
         return (

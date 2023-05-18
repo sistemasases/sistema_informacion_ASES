@@ -39,8 +39,8 @@ const Tabla_sin_Seguimientos = () =>{
     {
       name:
       <Row className="center_tabla_sin_seguimientos">
-      <h4 className="texto_mas_pequeño">Nombres</h4>
-      <input onChange={handleFilter_nombre}/>
+        <h4 className="texto_mas_pequeño">Nombres</h4>
+        <input onChange={handleFilter_nombre}/>
       </Row>,
       selector:'first_name',
       sortable:true,
@@ -155,9 +155,8 @@ const Tabla_sin_Seguimientos = () =>{
 
 
   function handleFilter_nombre(event) {
-
     const newData = MOCK_DATA.filter(row => {
-      return row.first_name.toLowerCase.includes(event.target.value.toLowerCase())
+      return row.first_name.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setRecords(newData)
   }
@@ -165,7 +164,7 @@ const Tabla_sin_Seguimientos = () =>{
   function handleFilter_apellido(event) {
 
     const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setRecords(newData)
   }
@@ -189,7 +188,7 @@ const Tabla_sin_Seguimientos = () =>{
   function handleFilter_profecional(event) {
 
     const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
+      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
     })
     setRecords(newData)
   }

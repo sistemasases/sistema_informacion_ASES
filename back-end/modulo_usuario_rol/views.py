@@ -349,6 +349,35 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
     serializer_class = Estudiante_actualizacion
     queryset = estudiante_serializer.Meta.model.objects.all()
 
+    def post(self, request, pk=None):
+        # serializer = self.serializer_class(data=request.data)
+        # print('esta es la info: '+ str(request.data))
+        # if (serializer.is_valid()):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+
+            email_request = serializer.data['email']
+
+            var_estudiante = estudiante.objects.get(id=pk)
+            serializer_estudiante = estudiante_serializer(var_estudiante)
+
+            try:
+                var_old_estudiante = estudiante.objects.get(email = serializer_estudiante.data['email'])
+                var_estudiante = var_old_estudiante
+                var_estudiante.email = email_request
+                var_estudiante.save()
+                return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
+                
+            except estudiante.DoesNotExist:
+                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # except:
+            #     return Response(
+            #     status=status.HTTP_404_NOT_FOUND
+            #     )
+
 
 # class All_user(APIView):
 

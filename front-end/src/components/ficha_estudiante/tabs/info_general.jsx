@@ -1,46 +1,20 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
-import { NavLink } from 'react-router-dom';
 import  {useEffect, componentDidUpdate} from 'react';
 import axios from 'axios';
-import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-
-import actualizar_estudiante from '../../../service/actualizar_estudiante';
-
 
 
 var today = new Date();
 var now = today.toLocaleString();
 
 
-
-
-
-
 const Info_general = (props) =>{
 
-    const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-    ]
-
-    const[switchChecked, setChecked] = useState(false);
-    const handleChange = () => setChecked(!switchChecked);
-
-    const pk = props.codigo;
-
-    const datos_option_user = []
-    const datos_option_rol = []
-    var bandera_option_user = true;
-    var bandera_option_rol = true;
-    var bandera = true;
     const temporal = false;
+
+    // Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ 
 
     const [state,set_state] = useState({
 
@@ -52,156 +26,62 @@ const Info_general = (props) =>{
 
       seleccionado:props.codigo,
 
-      id_usuario:'',
-      nombres:'',
-      apellidos: '',
+      id_usuario:props.datos['id'],
 
-      cedula:'',
-      correo:'',
-      sexo:'',
-      telefono_res:'',
-      dir_res:'',
-      barrio_res:'',
-      hijos:'',
+      nombres:props.datos['nombre'],
+      apellidos: props.datos['apellido'],
+            puntaje_icfes:props.datos['puntaje_icfes'],
+            año_ingreso_univalle:props.datos['año_ingreso'],
+      estrato:props.datos['estrato'],
+            telefono_res:props.datos['telefono_res'],
+            celular:props.datos['celular'],
+            email_alternativo:props.datos['email'],
+      direccion_residencia:props.datos['dir_res'],
+      barrio:props.datos['barrio_res'],
+      municipio_actual:props.datos['municipio_actual'],
+      pais_de_origen:props.datos['pais_origen'],
+            grupo_etnico:props.datos['grupo_etnico'],
+            actividad_simultánea:props.datos['actividad_simultanea'],
+            identidad_de_genero:props.datos['identidad_De_genero'],
+            sexo:props.datos['sexo'],
+            estado_civil:props.datos['estado_civil'],
+            cantidad_hijo:props.datos['hijos'],  
+            actividades_tiempo_libre:props.datos['actividades_tiempo_libre'],
+            deportes_que_practica:props.datos['deportes_que_practica'],
+            condicion_de_excepcion:props.datos['condicion_excepcion'],
+            otros_acompañamientos:props.datos['otros_acompañamientos'],
 
-
-      puntaje_icfes:'sin dato',
-      año_ingreso_univalle:'sin dato',
-      estrato:'sin dato',
-      celular:'sin dato',
-      email_alternativo:'sin dato',
-      direccion_residencia:'sin dato',
-      barrio:'sin dato',
-      municipio_actual:'sin dato',
-      pais_de_origen:'sin dato',
-      grupo_etnico:'sin dato',
-      actividad_simultánea:'sin dato',
-      identidad_de_genero:'sin dato',
-      sexo:'sin dato',
-      estado_civil:'sin dato',
-      cantidad_hijo:'sin dato',     
-      actividades_tiempo_libre:'sin dato',
-      deportes_que_practica:'sin dato',
-      condicion_de_excepcion:'sin dato',
-      otros_acompañamientos:'sin dato',
       ultima_actualizacion:'sin dato',
 
 
-      nuevo_puntaje_icfes:'',
-      nuevo_año_ingreso_univalle:'',
-      nuevo_estrato:'',
-      nuevo_telefono_res:'',
-      nuevo_celular:'',
-      nuevo_email_alternativo:'',
-      nuevo_direccion_residencia:'',
-      nuevo_barrio:'',
-      nuevo_municipio_actual:'',
-      nuevo_pais_de_origen:'',
-      nuevo_grupo_etnico:'',
-      nuevo_actividad_simultánea:'',
-      nuevo_identidad_de_genero:'',
-      nuevo_sexo:'',
-      nuevo_estado_civil:'',
-      nuevo_cantidad_hijo:'',     
-      nuevo_actividades_tiempo_libre:'',
-      nuevo_deportes_que_practica:'',
-      nuevo_condicion_de_excepcion:'',
-      nuevo_otros_acompañamientos:'',
+      nuevo_puntaje_icfes:props.datos['puntaje_icfes'],
+      nuevo_año_ingreso_univalle:props.datos['año_ingreso'],
+      nuevo_telefono_res:props.datos['telefono_res'],
+      nuevo_celular:props.datos['celular'],
+      nuevo_email_alternativo:props.datos['email'],
+      nuevo_nuevo_grupo_etnico:props.datos['grupo_etnico'],
+      nuevo_actividad_simultánea:props.datos['actividad_simultanea'],
+      nuevo_identidad_de_genero:props.datos['identidad_De_genero'],
+      nuevo_sexo:props.datos['sexo'],
+      nuevo_estado_civil:props.datos['estado_civil'],
+      nuevo_cantidad_hijo:props.datos['cantidad_hijos'],  
+      nuevo_actividades_tiempo_libre:props.datos['actividades_tiempo_libre'],
+      nuevo_deportes_que_practica:props.datos['deportes_que_practica'],
+      nuevo_condicion_de_excepcion:props.datos['condicion_excepcion'],
+      nuevo_otros_acompañamientos:props.datos['otros_acompañamientos'],
     })
 
-    useEffect((pk)=>{
-      
-      set_state({
-             ...state,
-            id_usuario:props.datos['id'],
-            nombres : props.datos['nombre'],
-            apellidos : props.datos['apellido'],
-            correo : props.datos['email'],
-            cedula : props.datos['num_doc'],
-            telefono : props.datos['telefono_res'],
-            sexo : props.datos['sexo'],
-            telefono_res : props.datos['telefono_res'],
-            celular : props.datos['celular'],
-            dir_res : props.datos['dir_ini'],
-            barrio_res : props.datos['barrio_res'],
-            hijos : props.datos['hijos'],
-            email_alternativo : props.datos['email'],
-            direccion_residencia : props.datos['dir_res'],
-            barrio : props.datos['barrio_res'] 
-          })
-          console.log("estos son los datos generales")
-          console.log(props.datos)
-      
+    useEffect(()=>{
+
     },[]
     );
+
+
+
+
+
+    // Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------ 
     
-
-    const handle_option_user = () => {
-      console.log("este es data user")
-      console.log(state.data_user)
-
-      if(state.data_user['length'] === 0)
-      {
-            set_state({
-                  ...state,
-                  id_usuario:state.id_usuario,
-                  nombres : state.nombres,
-                  apellidos : state.apellidos,
-                  correo : state.correo,
-                  cedula : state.cedula,
-                  telefono : state.telefono,
-                  sexo : state.sexo,
-                  telefono_res : state.telefono_res,
-                  dir_res : state.dir_res,
-                  barrio_res : state.barrio_res,
-                  hijos : state.hijos,
-                })
-      }
-      else{
-        set_state({
-          ...state,
-
-
-          puntaje_icfes:'sin dato',
-      año_ingreso_univalle:'sin dato',
-      estrato:'sin dato',
-      municipio_actual:'sin dato',
-      pais_de_origen:'sin dato',
-      grupo_etnico:'sin dato',
-      actividad_simultánea:'sin dato',
-      identidad_de_genero:'sin dato',
-      estado_civil:'sin dato',
-      actividades_tiempo_libre:'sin dato',
-      deportes_que_practica:'sin dato',
-      condicion_de_excepcion:'sin dato',
-      otros_acompañamientos:'sin dato',
-      ultima_actualizacion:'sin dato',
-
-
-          nuevo_puntaje_icfes:state.puntaje_icfes,
-          nuevo_año_ingreso_univalle:state.año_ingreso_univalle,
-          nuevo_estrato:state.estrato,
-          nuevo_telefono_res:state.telefono_res,
-          nuevo_celular:state.celular,
-          nuevo_email_alternativo:state.email_alternativo,
-          nuevo_direccion_residencia:state.direccion_residencia,
-          nuevo_barrio:state.nuevo_barrio,
-          nuevo_municipio_actual:state.municipio_actual,
-          nuevo_pais_de_origen:state.pais_de_origen,
-          nuevo_grupo_etnico:state.grupo_etnico,
-          nuevo_actividad_simultánea:state.actividad_simultánea,
-          nuevo_identidad_de_genero:state.identidad_de_genero,
-          nuevo_sexo:state.sexo,
-          nuevo_estado_civil:state.estado_civil,
-          nuevo_cantidad_hijo:state.cantidad_hijo,     
-          nuevo_actividades_tiempo_libre:state.actividades_tiempo_libre,
-          nuevo_deportes_que_practica:state.deportes_que_practica,
-          nuevo_condicion_de_excepcion:state.condicion_de_excepcion,
-          nuevo_otros_acompañamientos:state.otros_acompañamientos,
-        })
-      }
-    }
-
     const esta_editando = (e) => set_state({
       ...state,
       editar : true,
@@ -210,27 +90,21 @@ const Info_general = (props) =>{
     const esta_editando_cancelar = (e) => set_state({
       ...state,
       editar : false,
-
-      nuevo_puntaje_icfes:state.puntaje_icfes,
-          nuevo_año_ingreso_univalle:state.año_ingreso_univalle,
-          nuevo_estrato:state.estrato,
-          nuevo_telefono_res:state.telefono_res,
-          nuevo_celular:state.celular,
-          nuevo_email_alternativo:state.email_alternativo,
-          nuevo_direccion_residencia:state.direccion_residencia,
-          nuevo_barrio:state.nuevo_barrio,
-          nuevo_municipio_actual:state.municipio_actual,
-          nuevo_pais_de_origen:state.pais_de_origen,
-          nuevo_grupo_etnico:state.grupo_etnico,
-          nuevo_actividad_simultánea:state.actividad_simultánea,
-          nuevo_identidad_de_genero:state.identidad_de_genero,
-          nuevo_sexo:state.sexo,
-          nuevo_estado_civil:state.estado_civil,
-          nuevo_cantidad_hijo:state.cantidad_hijo,     
-          nuevo_actividades_tiempo_libre:state.actividades_tiempo_libre,
-          nuevo_deportes_que_practica:state.deportes_que_practica,
-          nuevo_condicion_de_excepcion:state.condicion_de_excepcion,
-          nuevo_otros_acompañamientos:state.otros_acompañamientos,
+      nuevo_puntaje_icfes:props.datos['puntaje_icfes'],
+      nuevo_año_ingreso_univalle:props.datos['año_ingreso'],
+      nuevo_telefono_res:props.datos['telefono_res'],
+      nuevo_celular:props.datos['celular'],
+      nuevo_email_alternativo:props.datos['email'],
+      nuevo_nuevo_grupo_etnico:props.datos['grupo_etnico'],
+      nuevo_actividad_simultánea:props.datos['actividad_simultanea'],
+      nuevo_identidad_de_genero:props.datos['identidad_De_genero'],
+      nuevo_sexo:props.datos['sexo'],
+      nuevo_estado_civil:props.datos['estado_civil'],
+      nuevo_cantidad_hijo:props.datos['cantidad_hijos'],  
+      nuevo_actividades_tiempo_libre:props.datos['actividades_tiempo_libre'],
+      nuevo_deportes_que_practica:props.datos['deportes_que_practica'],
+      nuevo_condicion_de_excepcion:props.datos['condicion_excepcion'],
+      nuevo_otros_acompañamientos:props.datos['otros_acompañamientos'],
     });
 
 
@@ -238,226 +112,74 @@ const Info_general = (props) =>{
 
 
 
+    // zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ 
 
+      const cambiarDatos = (e) => {
 
+            set_state({
+                  ...state,
+                  [e.target.name] : e.target.value
+            })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      const cambiarDatos1 = (e) => {
-
-      set_state({
-            ...state,
-            nuevo_email_alternativo : e
-      })
       }
+      
+      const [show, setShow] = useState(false);
+      const handleClose2 = () => setShow(false);
 
 
 
+    // llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ llamados ------------------ 
 
-
-  const [show, setShow] = useState(false);
-  const handleClose2 = () => setShow(false);
 
   const handle_upload_estudiante = (e) => {
-    // Getting the files from the input
 
     let formData = new FormData();
-  
-    //Adding files to the formdata
-    //usuario_rol/estudiante/id/
 
       formData.append('email', state.nuevo_email_alternativo)
 
-      axios.patch({
-      // Endpoint to send files
-      url: 'http://localhost:8000/usuario_rol/estudiante/'+props.datos.id+'/',
-      method: "patch",
+      axios({
+      url: 'http://localhost:8000/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
+      method: "POST",
       data: formData,
         })
         .then((res)=>{
         console.log(res)
-            alert("estudiante fue asignado correctamente a :")
+        set_state({
+             ...state,
+
+             puntaje_icfes:state.nuevo_puntaje_icfes,
+             año_ingreso_univalle:state.nuevo_año_ingreso_univalle,
+             telefono_res:state.nuevo_telefono_res,
+             celular:state.nuevo_celular,
+             email_alternativo:state.nuevo_email_alternativo,
+             grupo_etnico:state.nuevo_state.nuevo_grupo_etnico,
+             actividad_simultánea:state.nuevo_actividad_simultánea,
+             identidad_de_genero:state.nuevo_identidad_de_genero,
+             sexo:state.nuevo_sexo,
+             estado_civil:state.nuevo_estado_civil,
+             cantidad_hijo:state.nuevo_cantidad_hijo,  
+             actividades_tiempo_libre:state.nuevo_actividades_tiempo_libre,
+             deportes_que_practica:state.nuevo_deportes_que_practica,
+             condicion_de_excepcion:state.nuevo_condicion_de_excepcion,
+             otros_acompañamientos:state.nuevo_otros_acompañamientos,
+
+            editar : false,
+          })
+            alert("estudiante fue editado correctamente a :" + props.datos.id)
         })
         .catch(err=>{
-            alert("error al asignar el estudiante : ");
+            alert("error al editar el estudiante : " + props.datos.id);
         })
 
-    try {
-      actualizar_estudiante.actualizar_estudiante(formData);
-      set_state({
-        ...state,
-        info_modal: "El estudiante se asignó correctamente"
-      })
-    } catch (error) {
-      set_state({
-        ...state,
-        info_modal: "ocurrio un error"
-      })
-    }
-      setShow(true);
   }
 
 
 
 
-
-
-
-
-
-
-
-    const handle_upload_info_estudiante = (e) => {
-
-
-      set_state({
-            ...state,
-            editar : false,
-
-            puntaje_icfes:state.nuevo_puntaje_icfes,
-            año_ingreso_univalle:state.nuevo_año_ingreso_univalle,
-            estrato:state.nuevo_estrato,
-            telefono_res:state.nuevo_telefono_res, 
-            celular:state.nuevo_celular,
-            email_alternativo:state.nuevo_email_alternativo,
-            direccion_residencia:state.nuevo_direccion_residencia,
-            barrio:state.nuevo_nuevo_barrio,
-            municipio_actual:state.nuevo_municipio_actual,
-            pais_de_origen:state.nuevo_pais_de_origen,
-            grupo_etnico:state.nuevo_grupo_etnico,
-            actividad_simultánea:state.nuevo_actividad_simultánea,
-            identidad_de_genero:state.nuevo_identidad_de_genero,
-            sexo:state.nuevo_sexo,
-            estado_civil:state.nuevo_estado_civil,
-            cantidad_hijo:state.nuevo_cantidad_hijo,     
-            actividades_tiempo_libre:state.nuevo_actividades_tiempo_libre,
-            deportes_que_practica:state.nuevo_deportes_que_practica,
-            condicion_de_excepcion:state.nuevo_condicion_de_excepcion,
-            otros_acompañamientos:state.nuevo_otros_acompañamientos,
-            ultima_actualizacion:now,
-      })
-
-      console.log("tel residencia")
-      console.log(state.telefono_res)
-      console.log("nuevo tel res")
-      console.log(state.nuevo_telefono_res)
-
-      // Getting the files from the input
-      console.log(state.nuevo_telefono_res)
-      let formData = new FormData();
-    
-      //Adding files to the formdata
-      formData.append('id_nuevo_num_doc', state.cedula);
-      formData.append('id_nuevo_telefono_res', state.nuevo_telefono_res);
-
-      axios({
-        // Endpoint to send files
-        url:  "http://127.0.0.1:8000/usuario_rol/estudiante_actualizacion/",
-        method: "POST",
-        data: formData,
-      })
-      .then(res=>{set_state({
-        ...state,
-        info_modal: "El rol se asignó correctamente",
-
-      })})
-      .catch(err=>{
-        set_state({
-          ...state,
-          info_modal: "ocurrio un error",
-          editar : false,
-
-      })})
-
-      set_state({
-            ...state,
-            
-      })
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    const cambiar_dato = (e) =>{
-          set_state({
-                ...state,
-                [e.target.name] : e.target.value
-          })
-          console.log(e.target.value)
-    }
-
-    const handleClose = () => {
-          set_state({
-                ...state
-          })
-    }
-
-
     
 
     return (
-      
-        temporal?
-        (<Row></Row>)
-        :
-        (
-          <Container className="container_informacion_general" xs={"12"} sm={"6"} 
-                     onMouseEnter={handle_option_user}>
+          <Container className="container_informacion_general" xs={"12"} sm={"6"} >
             <Col xs={"12"}>
             {
                           state.editar ?
@@ -533,7 +255,7 @@ const Info_general = (props) =>{
                                                 state.editar ?
                                                 (
                                                 <Col xs={"12"} md={"6"}>
-                                                      <input onChange={cambiarDatos1} defaultValue={state.puntaje_icfes}></input>
+                                                      <input onChange={cambiarDatos} defaultValue={state.puntaje_icfes}></input>
                                                 </Col>
                                                 ):
                                                 (
@@ -592,8 +314,8 @@ const Info_general = (props) =>{
                                                 state.editar ?
                                                 (
                                                 <Col xs={"12"} md={"6"}>
-                                                      <input name="nuevo_telefono_res" defaultValue={state.nuevo_telefono_res}
-                                                            onChange={cambiar_dato}></input>
+                                                      <input name="nuevo_telefono_res" defaultValue={state.telefono_res}
+                                                            onChange={cambiarDatos}></input>
                                                 </Col>
                                                 ):
                                                 (
@@ -614,7 +336,7 @@ const Info_general = (props) =>{
                                                 (
                                                 <Col xs={"12"} md={"6"}>
                                                       <input name="nuevo_celular" defaultValue={state.celular}
-                                                      onChange={cambiar_dato}
+                                                      onChange={cambiarDatos}
                                                       ></input>
                                                       
                                                 </Col>
@@ -636,7 +358,7 @@ const Info_general = (props) =>{
                                                 state.editar ?
                                                 (
                                                 <Col xs={"12"} md={"6"}>
-                                                      <input onChange={cambiarDatos1} defaultValue={state.email_alternativo}></input>
+                                                      <input name="nuevo_email_alternativo" onChange={cambiarDatos} defaultValue={state.email_alternativo}></input>
                                                 </Col>
                                                 ):
                                                 (
@@ -650,20 +372,20 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño_gris">Dirección residencia</h4>
+                                                <h4 className="texto_pequeño_gris">Dirección residencia</h4>
                                           </Col>
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño" >{state.dir_res}</h4>
+                                                <h4 className="texto_pequeño" >{state.direccion_residencia}</h4>
                                           </Col>
                                     </Row>
 
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño_gris">Barrio</h4>
+                                                <h4 className="texto_pequeño_gris">Barrio</h4>
                                           </Col>
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño" >{state.barrio_res}</h4>
+                                                <h4 className="texto_pequeño" >{state.barrio}</h4>
                                           </Col>
                                     </Row>
 
@@ -802,7 +524,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño_gris">Cantidad hijo/s</h4>
+                                          <h4 className="texto_pequeño_gris">Cantidad hijo(s)</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -813,7 +535,7 @@ const Info_general = (props) =>{
                                                 ):
                                                 (
                                                 <Col xs={"12"} md={"6"}>
-                                                      <h4 className="texto_pequeño" >{state.hijos}</h4>
+                                                      <h4 className="texto_pequeño" >{state.cantidad_hijo}</h4>
                                                 </Col>
                                                 )
                                           }
@@ -862,7 +584,7 @@ const Info_general = (props) =>{
 
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"6"}>
-                                          <h4 className="texto_pequeño_gris">Condiciòn de excepciòn</h4>
+                                          <h4 className="texto_pequeño_gris">Condición de excepciòn</h4>
                                           </Col>
                                           {
                                                 state.editar ?
@@ -906,7 +628,7 @@ const Info_general = (props) =>{
 
 
                   <Row>
-                    <h1 className="texto_subtitulo">Personas con quien vive</h1>
+                    <h1 className="texto_subtitulo">Personas con quién vive</h1>
 
                     <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Nombre Completo</Col>
                     <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Parentesco</Col>
@@ -933,7 +655,7 @@ const Info_general = (props) =>{
                 <Row>
                         <h1 className="texto_subtitulo">Información general del acudiente de emergencia</h1>
                         <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Nombre Completo</Col>
-                        <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Parentesco y Telefono</Col>
+                        <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Parentesco y Teléfono</Col>
                         {state.editar ?
                               (
                               <Row className="row_flex_general">
@@ -975,10 +697,6 @@ const Info_general = (props) =>{
                 </Modal>
         </Container>
         )
-      
-      
-        
-    )
 }
 
 export default Info_general 
