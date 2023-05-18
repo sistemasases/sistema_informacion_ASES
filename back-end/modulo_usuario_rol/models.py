@@ -5,6 +5,54 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
+class cond_excepcion(models.Model):
+
+    cond_excepcion= models.CharField(max_length=100)
+    alias= models.CharField(max_length=20)
+    
+    class Meta:
+        db_table = "cond_excepcion"
+
+class estado_civil(models.Model):
+
+    estado_civil= models.CharField(max_length=30)
+
+    
+    class Meta:
+        db_table = "estado_civil"
+
+class identidad_gen(models.Model):
+
+    genero= models.CharField(max_length=50)
+    opcion_general= models.IntegerField(default=None,null=True)
+    
+    class Meta:
+        db_table = "identidad_gen"
+
+class act_simultanea(models.Model):
+
+    actividad= models.CharField(max_length=70)
+    opcion_general= models.IntegerField(default=None,null=True)
+    
+    class Meta:
+        db_table = "act_simultanea"
+
+class etnia(models.Model):
+
+    etnia= models.CharField(max_length=70)
+    opcion_general= models.IntegerField(default=None,null=True)
+    
+    class Meta:
+        db_table = "etnia"
+
+class discap_men(models.Model):
+
+    nombre= models.CharField(max_length=100)
+    codigo_men= models.IntegerField(default=None,null=True)
+    
+    class Meta:
+        db_table = "discap_men"
+
 
 class estudiante (models.Model):
 
@@ -35,17 +83,17 @@ class estudiante (models.Model):
     fecha_nac = models.DateTimeField(auto_now_add=False,null=True)
     ciudad_nac = models.ForeignKey(municipio ,on_delete=models.CASCADE,default=None,null=True,related_name='ciudad_nacimiento')
     observacion = models.CharField(max_length=500, default=None,null=True)
-    id_discapacidad =models.ForeignKey()
+    id_discapacidad =models.ForeignKey(discap_men,on_delete=models.CASCADE,default=None,null=True,related_name='discap_men_in_estudiante')
     vive_con = models.CharField(max_length=1000, default=None,null=True)
-    id_cond_excepcion=models.ForeignKey()
-    id_estado_civil=models.ForeignKey()
-    id_identidad_gen=models.ForeignKey()
-    id_act_simultanea=models.ForeignKey()
+    id_cond_excepcion=models.ForeignKey(cond_excepcion ,on_delete=models.CASCADE,default=None,null=True,related_name='cond_excepcion_in_estudiante')
+    id_estado_civil=models.ForeignKey(estado_civil ,on_delete=models.CASCADE,default=None,null=True,related_name='estado_civil_in_estudiante')
+    id_identidad_gen=models.ForeignKey(identidad_gen,on_delete=models.CASCADE,default=None,null=True,related_name='identidad_gen_in_estudiante')
+    id_act_simultanea=models.ForeignKey(act_simultanea,on_delete=models.CASCADE,default=None,null=True,related_name='act_simultanea_in_estudiante')
     anio_ingreso=models.DateTimeField(auto_now_add=False,null=True)
     actividades_ocio_deporte=models.CharField(max_length=200, default=None,null=True)
     json_detalle = models.CharField(max_length=1000, default=None,null=True)
     puntaje_icfes=models.IntegerField(default=None,null=True)
-    id_etnia=models.ForeignKey()
+    id_etnia=models.ForeignKey(etnia,on_delete=models.CASCADE,default=None,null=True,related_name='etnia_in_estudiante')
     ult_modificacion=models.DateTimeField(auto_now_add=False,null=True)
 
     class Meta:
@@ -100,3 +148,4 @@ class cohorte_estudiante(models.Model):
     
     class Meta:
         db_table = "cohorte_estudiante"
+
