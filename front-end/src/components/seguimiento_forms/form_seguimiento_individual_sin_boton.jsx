@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 const Seguimiento_individual = (props) =>{
 
     const set_info = (e) => {
+        seguimiento/seguimiento_individual
     }
 
     return (
