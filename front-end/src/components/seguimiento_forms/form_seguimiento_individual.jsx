@@ -69,7 +69,7 @@ const Seguimiento_individual = (props) =>{
             cierre: false,
             id_creador: null,
             id_modificador: null,
-            id_estudiante: 18
+            id_estudiante: parseInt(localStorage.getItem("id_estudiante_seleccionado"))
         }
     )
 
@@ -77,7 +77,9 @@ const Seguimiento_individual = (props) =>{
         console.log(state);
         Create_Seguimiento.create_seguimiento(state).then(res=>{
             if(res){
-                console.log("Creación exitosa")
+                props.handleClose()
+            } else {
+                window.confirm("Hubo un error al momento de crear el seguimiento, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.")
             }
         })
     }
@@ -88,10 +90,87 @@ const Seguimiento_individual = (props) =>{
     }
 
     const handleForm = (e) => {
-        set_state({
-            ...state,
-            [e.target.name]: e.target.value
-        })
+        if(e.target.name === "riesgo_individual_bajo" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_individual"]: 0
+            })
+        } else if(e.target.name === "riesgo_individual_medio" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_individual"]: 1
+            })
+        } else if(e.target.name === "riesgo_individual_alto" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_individual"]: 2
+            })
+        } else if(e.target.name === "riesgo_familiar_bajo" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_familiar"]: 0
+            })
+        } else if(e.target.name === "riesgo_familiar_medio" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_familiar"]: 1
+            })
+        } else if(e.target.name === "riesgo_familiar_alto" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_familiar"]: 2
+            })
+        } else if(e.target.name === "riesgo_academico_bajo" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_academico"]: 0
+            })
+        } else if(e.target.name === "riesgo_academico_medio" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_academico"]: 1
+            })
+        } else if(e.target.name === "riesgo_academico_alto" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_academico"]: 2
+            })
+        } else if(e.target.name === "riesgo_economico_bajo" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_economico"]: 0
+            })
+        } else if(e.target.name === "riesgo_economico_medio" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_economico"]: 1
+            })
+        } else if(e.target.name === "riesgo_economico_alto" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_economico"]: 2
+            })
+        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_bajo" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_vida_universitaria_ciudad"]: 0
+            })
+        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_medio" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_vida_universitaria_ciudad"]: 1
+            })
+        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_alto" && e.target.value){
+            set_state({
+                ...state,
+                ["riesgo_vida_universitaria_ciudad"]: 2
+            })
+        } else {
+            set_state({
+                ...state,
+                [e.target.name]: e.target.value
+            })
+        }
     }
 
     return (
@@ -156,13 +235,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" />
+                        <Form.Check type="checkbox" label="Bajo" name="riesgo_individual_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" />
+                        <Form.Check type="checkbox" label="Medio" name="riesgo_individual_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" />
+                        <Form.Check type="checkbox" label="Alto" name="riesgo_individual_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -220,13 +299,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" />
+                        <Form.Check type="checkbox" label="Bajo" name="riesgo_familiar_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" />
+                        <Form.Check type="checkbox" label="Medio" name="riesgo_familiar_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" />
+                        <Form.Check type="checkbox" label="Alto" name="riesgo_familiar_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -251,13 +330,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" />
+                        <Form.Check type="checkbox" label="Bajo" name="riesgo_academico_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" />
+                        <Form.Check type="checkbox" label="Medio" name="riesgo_academico_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" />
+                        <Form.Check type="checkbox" label="Alto" name="riesgo_academico_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -288,13 +367,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" />
+                        <Form.Check type="checkbox" label="Bajo" name="riesgo_economico_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" />
+                        <Form.Check type="checkbox" label="Medio" name="riesgo_economico_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" />
+                        <Form.Check type="checkbox" label="Alto" name="riesgo_economico_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -330,13 +409,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" />
+                        <Form.Check type="checkbox" label="Bajo" name="riesgo_vida_universitaria_ciudad_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" />
+                        <Form.Check type="checkbox" label="Medio" name="riesgo_vida_universitaria_ciudad_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" />
+                        <Form.Check type="checkbox" label="Alto" name="riesgo_vida_universitaria_ciudad_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
