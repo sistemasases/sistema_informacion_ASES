@@ -10,31 +10,31 @@ const Seguimiento_individual = (props) =>{
             fecha: null,
             lugar: "",
             hora_inicio: null,
-            hora_finalización: null, 
+            hora_finalización: null,
             objetivos: "",
             individual: "",
             riesgo_individual: null,
             autoconocimiento: false,
             rasgos_de_personalidad: false,
-            identificación: false, 
+            identificación: false,
             red_de_apoyo: false,
             proyecto_de_vida: false,
             salud: false,
             aspectos_motivacionales: false,
             historia_de_vida: false,
-            relación_eriótico_afectivas: false, 
+            relación_eriótico_afectivas: false,
             diversidad_sexual: false,
             familiar: "",
             riesgo_familiar: null,
             dinamica_familiar: false,
             academico: "",
-            riesgo_academico: null, 
+            riesgo_academico: null,
             desempeño_académico: false,
             elección_vocacional: false,
             manejo_del_tiempo: false,
             economico: "",
             riesgo_economico: null,
-            apoyos_económicos_institucionales: false, 
+            apoyos_económicos_institucionales: false,
             manejo_finanzas: false,
             apoyo_económico_familiar: false,
             situación_laboral_ocupacional: false,
@@ -67,7 +67,7 @@ const Seguimiento_individual = (props) =>{
             revisado_practicante: false,
             primer_acercamiento: false,
             cierre: false,
-            id_creador: 11,
+            id_creador: null,
             id_modificador: null,
             id_estudiante: 18
         }
@@ -156,22 +156,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_individual" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_individual: 0
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Bajo" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_individual" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_individual: 1
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Medio" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_individual" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_individual: 2
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Alto" />
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -217,7 +208,7 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Red de apoyo" name="red_de_apoyo" onChange={handleForm}/> 
+                        <Form.Check type="checkbox" label="Red de apoyo" name="red_de_apoyo" onChange={handleForm}/>
                     </Col>
                 </Row>
                 <hr></hr>
@@ -229,22 +220,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_familiar" onChange={set_state({
-                                                                                                    ...state,
-                                                                                                    riesgo_familiar: 0
-                                                                                                })}/>
+                        <Form.Check type="checkbox" label="Bajo" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_familiar" onChange={set_state({
-                                                                                                    ...state,
-                                                                                                    riesgo_familiar: 1
-                                                                                                })}/>
+                        <Form.Check type="checkbox" label="Medio" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_familiar" onChange={set_state({
-                                                                                                    ...state,
-                                                                                                    riesgo_familiar: 2
-                                                                                                })}/>
+                        <Form.Check type="checkbox" label="Alto" />
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -269,22 +251,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_academico" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_academico: 0
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Bajo" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_academico" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_academico: 1
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Medio" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_academico" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_academico: 2
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Alto" />
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -315,22 +288,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_economico" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_economico: 0
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Bajo" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_economico" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_economico: 1
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Medio" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_economico" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_economico: 2
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Alto" />
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -366,22 +330,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_vida_universitaria_ciudad" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_vida_universitaria_ciudad: 0
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Bajo" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_vida_universitaria_ciudad" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_vida_universitaria_ciudad: 1
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Medio" />
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_vida_universitaria_ciudad" onChange={set_state({
-                                                                                                        ...state,
-                                                                                                        riesgo_vida_universitaria_ciudad: 2
-                                                                                                    })}/>
+                        <Form.Check type="checkbox" label="Alto" />
                     </Col>
                     <Col>
                         <Button variant="secondary">

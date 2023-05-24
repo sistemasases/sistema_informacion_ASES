@@ -6,12 +6,12 @@ const create_seguimiento = async (formData) => {
         const url_axios = 'http://localhost:8000/seguimiento/seguimiento_individual/';
 
         const seguimiento = {
-            "fecha": "2023-01-04",
-            "lugar": "cali",
-            "hora_inicio": "04:04:04.148652",
-            "hora_finalización": "04:04:04.148652",
-            "objetivos": "hola",
-            "individual": "hola",
+            "fecha": formData.fecha,
+            "lugar": formData.lugar,
+            "hora_inicio": formData.hora_inicio,
+            "hora_finalización": formData.hora_finalización,
+            "objetivos": formData.objetivos,
+            "individual": formData.individual,
             "riesgo_individual": formData.riesgo_individual,
             "autoconocimiento": formData.autoconocimiento,
             "rasgos_de_personalidad": formData.rasgos_de_personalidad,
@@ -23,21 +23,21 @@ const create_seguimiento = async (formData) => {
             "historia_de_vida": formData.historia_de_vida,
             "relación_eriótico_afectivas": formData.relación_eriótico_afectivas,
             "diversidad_sexual": formData.diversidad_sexual,
-            "familiar": "hola",
+            "familiar": formData.familiar,
             "riesgo_familiar": formData.riesgo_familiar,
             "dinamica_familiar": formData.dinamica_familiar,
-            "academico": "hola",
+            "academico": formData.academico,
             "riesgo_academico": formData.riesgo_academico,
             "desempeño_académico": formData.desempeño_académico,
             "elección_vocacional": formData.elección_vocacional,
             "manejo_del_tiempo": formData.manejo_del_tiempo,
-            "economico": "hola",
+            "economico": formData.economico,
             "riesgo_economico": formData.riesgo_economico,
             "apoyos_económicos_institucionales": formData.apoyos_económicos_institucionales,
             "manejo_finanzas": formData.manejo_finanzas,
             "apoyo_económico_familiar": formData.apoyo_económico_familiar,
             "situación_laboral_ocupacional": formData.situación_laboral_ocupacional,
-            "vida_universitaria_ciudad": "hola",
+            "vida_universitaria_ciudad": formData.vida_universitaria_ciudad,
             "riesgo_vida_universitaria_ciudad": formData.riesgo_vida_universitaria_ciudad,
             "motivación_compañamiento": formData.motivación_compañamiento,
             "referencia_geográfica": formData.referencia_geográfica,
@@ -61,7 +61,7 @@ const create_seguimiento = async (formData) => {
             "rem_grupos_universidad": formData.rem_grupos_universidad,
             "rem_externa": formData.rem_externa,
             "Ninguna_acción_realizada": formData.Ninguna_acción_realizada,
-            "observaciones": "hola",
+            "observaciones": formData.observaciones,
             "revisado_profesional": formData.revisado_profesional,
             "revisado_practicante": formData.revisado_practicante,
             "primer_acercamiento": formData.primer_acercamiento,
@@ -84,7 +84,7 @@ const create_seguimiento = async (formData) => {
     }
     return respuesta;
 }
-  
+
 export default {
     create_seguimiento
 }
