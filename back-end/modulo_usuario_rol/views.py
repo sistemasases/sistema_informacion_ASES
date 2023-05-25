@@ -604,6 +604,27 @@ class Condicion_de_excepcion_viewsets(viewsets.ModelViewSet):
 
 
 
+
+
+
+class ids_estudiantes_del_monitor_viewsets(viewsets.ModelViewSet):
+    serializer_class = usuario_rol_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = usuario_rol_serializer.Meta.model.objects.all()
+
+    def retrieve(self, request, pk):
+        # Obtener el ID del monitor desde el front-end
+        id_monitor = pk
+
+        # Filtrar los registros de usuario_rol para obtener los estudiantes del monitor específico
+        estudiantes_monitor = usuario_rol.objects.filter(id_usuario=id_monitor).values_list('id_estudiante', flat=True)
+
+        # Convertir el resultado en una lista
+        lista_estudiantes = list(estudiantes_monitor)
+
+        return Response(lista_estudiantes, status=status.HTTP_200_OK)
+
+
 # class All_user(APIView):
 
 #     def get(self, request):

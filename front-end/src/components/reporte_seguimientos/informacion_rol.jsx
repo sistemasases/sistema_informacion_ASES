@@ -25,10 +25,24 @@ Tabla Conteo de Seguimientos:
 
 
 
-const Informacion_rol = () =>{
+const Informacion_rol = (props) =>{
+
+    const datos_option_user = []
+
+    const imprimirDatosEnConsola = (e) =>{
+        console.log('imprime : ' + props.reportes_estudiante)
+        console.log('imprime nivel 1 : ' + props.reportes_estudiante[0]['count_inasistencias'])
+        console.log('imprime nivel 1 : ' + props.reportes_estudiante[1]['count_seguimientos'])
+    }
+
+
     return (
         <Container className="container_reportes_seguimientos2">
-
+            <Row>
+              <Button onClick={imprimirDatosEnConsola}>
+                click para probar funciones
+              </Button>
+            </Row>
         
             <Row className="row_contenido_reportes_seguimientos">
             <div class="d-none d-md-inline"> <br/></div>

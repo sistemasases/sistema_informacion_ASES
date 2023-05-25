@@ -10,11 +10,6 @@ import axios from 'axios';
 import Informacion_rol from "../../components/reporte_seguimientos/informacion_rol";
 
 
-const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'y', label: 'x' }
-      ]
   
 
 const Cabecera = (props) =>{
@@ -47,7 +42,22 @@ const Cabecera = (props) =>{
       correo:'',
       telefono:'',
 
+      reportes_estudiante : [],
+
     })
+
+   
+
+
+
+
+
+
+
+
+
+
+
   
     useEffect(()=>{
       axios({
@@ -82,8 +92,47 @@ const Cabecera = (props) =>{
       .catch(err=>{
         console.log("estos son los primeros datos :"+state.data_user)
       })
+
+      //const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
+      const url_axios = "http://localhost:8000/seguimiento/conteo_seguimientos_estudiante/"+47+"/";
+
+      axios({
+        // Endpoint to send files
+        url:  url_axios,
+        method: "GET",
+      })
+      .then((respuesta)=>{
+        state.reportes_estudiante.push(respuesta.data)
+      })
+      .catch(err=>{
+          return (err)
+      })
+
+
+
+
+
+
+
+
       
     },[]);
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -159,6 +208,7 @@ const Cabecera = (props) =>{
 
 
     const handle_periodo = (e) => {
+      console.log("siiiii")
       // Getting the files from the input
       if(bandera_option_periodo==true){
         for (var i = 0; i < state.data_periodo['length'] ; i++) {
@@ -223,7 +273,7 @@ const Cabecera = (props) =>{
             </Row>
 
             <Row className="prueba_seguimintos">
-              <Informacion_rol></Informacion_rol>
+              <Informacion_rol reportes_estudiante={state.reportes_estudiante}></Informacion_rol>
             </Row>
         </Container>
     )

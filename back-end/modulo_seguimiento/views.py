@@ -89,3 +89,24 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
             list_final.append(lista_semestre)
         return Response(list_final,status=status.HTTP_200_OK)
         
+
+
+
+
+class conteo_seguimientos_estudiante_viewsets(viewsets.ModelViewSet):
+    serializer_class = seguimiento_individual_serializer
+    queryset = seguimiento_individual_serializer.Meta.model.objects.all()
+
+    def retrieve(self, request, pk=None):
+        list_inasistencia = list(inasistencia.objects.filter(id_estudiante=pk))
+        list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante=pk))
+
+        count_inasistencias = len(list_inasistencia)
+        count_seguimientos = len(list_seguimientos_individual)
+
+        counts = {
+            'count_inasistencias': count_inasistencias,
+            'count_seguimientos': count_seguimientos
+        }
+
+        return Response(counts, status=status.HTTP_200_OK)

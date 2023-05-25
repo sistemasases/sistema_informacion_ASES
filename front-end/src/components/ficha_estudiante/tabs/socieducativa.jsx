@@ -246,9 +246,7 @@ const Socieducativa = (props) =>{
     ]
 ]
 
-console.log("primer nivel"+props.data_user_socioedu[0])
-console.log("segundo nivel"+props.data_user_socioedu[0][0])
-console.log("cada coso"+props.data_user_socioedu[0][0][0]['nombre'])
+
 
 
 

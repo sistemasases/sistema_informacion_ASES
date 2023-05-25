@@ -10,22 +10,21 @@ const Sidebar_item_closed = ({item},{toggled}) => {
     
     if(item.childrens){
         return (
-            <div className={open ? "sidebar-item open" : "sidebar-item"}>
-                <div className="sidebar-title">
-                    <span onClick={() => setOpen(!open)} className="tamaño_icon">
-                        { item.icon && <i className={item.icon}></i> }
+            <Row className={open ? "sidebar-item open" : "sidebar-item"}>
+                <Col xs={12} className="sidebar-title">
+                    <span onClick={() => setOpen(!open)} className="tamaño_super_icon">
+                        { item.icon && <i className={item.icon} title={item.name}></i> }
                     </span> 
-                    
-                </div>
-                <div className="sidebar-content">
+                </Col>
+                <Col xs={12} className="sidebar-content">
                     { item.childrens.map((child, index) => <Sidebar_item_closed key={index} item={child} />) }
-                </div>
-            </div>
+                </Col>
+            </Row>
         )
     }else{
         return (
-            <a href={item.path || "#"} className="sidebar-item">
-                <span className="tamaño_icon">{ item.icon && <i className={item.icon}></i> }</span>
+            <a href={item.path || "#"} className="sidebar-item-closed-final">
+                <span className="tamaño_icon">{ item.icon && <i className={item.icon} title={item.name}></i> }</span>
             </a>
         )
     }

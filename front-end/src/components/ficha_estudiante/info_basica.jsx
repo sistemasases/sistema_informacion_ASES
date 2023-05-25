@@ -173,7 +173,7 @@ const Info_basica = (props) =>{
       console.log(datos_option_user)
       console.log("este es el id seleccionado")
       console.log(e.id)
-      localStorage.setItem("id_estudiante_seleccionado", e.id)
+      localStorage.setItem("id_estudiante_seleccionado", e.value)
       console.log("id estudiante seleccionado")
       console.log(localStorage.getItem("id_estudiante_seleccionado"))
       console.log("total datos estudiantes seleccionado")

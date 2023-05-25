@@ -18,5 +18,6 @@ router.register(r'actividad_simultanea',Actividad_simultanea_viewsets,basename =
 router.register(r'identidad_gen',Identidad_gen_viewsets,basename = 'identidad_gen')
 router.register(r'estado_civil',Estado_civil_viewsets,basename = 'estado_civil')
 router.register(r'condicion_de_excepcion',Condicion_de_excepcion_viewsets,basename = 'condicion_de_excepcion')
+router.register(r'ids_estudiantes_del_monitor',ids_estudiantes_del_monitor_viewsets,basename = 'ids_estudiantes_del_monitor')
 
 urlpatterns = router.urls

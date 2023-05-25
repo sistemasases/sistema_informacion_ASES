@@ -56,6 +56,11 @@ const SideBar = (props) =>{
     const toggle = ()=> setIsOpen(!isOpen);
 
 
+    const outSideClick=(e)=>{
+        if(isOpen==true){
+            setIsOpen(false)
+        }
+    }
 
     const [state,set_state] = useState({
         desplegable : localStorage.rol === 'superAses' ? Menu : Menu2
@@ -131,7 +136,7 @@ const SideBar = (props) =>{
                 </Row>
                 <div  class="d-none d-md-block">
                     <Row className="inf_der">
-                        <main style={{marginLeft: isOpen ? "230px" : "50px", marginTop: "5rem",}}>
+                        <main style={{marginLeft: isOpen ? "230px" : "50px", marginTop: "5rem",}} onClick={outSideClick}>
                             {props.children}
                         </main>
                     </Row>
