@@ -13,4 +13,10 @@ router.register(r'practicante',practicante_viewsets,basename = 'practicante')
 router.register(r'monitor',monitor_viewsets,basename = 'monitor')
 router.register(r'estudiante_selected',estudiante_selected_viewsets,basename = 'estudiante_selected')
 router.register(r'estudiante_actualizacion',estudiante_actualizacion_viewsets,basename = 'estudiante_actualizacion')
+router.register(r'grupos_etnicos',Grupo_etnico_viewsets,basename = 'grupos_etnicos')
+router.register(r'actividad_simultanea',Actividad_simultanea_viewsets,basename = 'actividad_simultanea')
+router.register(r'identidad_gen',Identidad_gen_viewsets,basename = 'identidad_gen')
+router.register(r'estado_civil',Estado_civil_viewsets,basename = 'estado_civil')
+router.register(r'condicion_de_excepcion',Condicion_de_excepcion_viewsets,basename = 'condicion_de_excepcion')
+
 urlpatterns = router.urls

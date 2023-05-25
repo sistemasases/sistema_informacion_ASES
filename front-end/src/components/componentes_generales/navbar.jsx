@@ -55,7 +55,7 @@ const navbar = (props) =>{
         <Row className="nav">
 
             <Col xs={"4"} md={"3"}>
-                <img src={Logos} className="logo"></img>
+                <img src={Logos} className="logo" alt='/'></img>
             </Col>
 
 

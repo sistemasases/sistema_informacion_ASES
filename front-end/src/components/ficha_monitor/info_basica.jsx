@@ -302,7 +302,7 @@ const Info_basica_monitor = (props) =>{
                                         <Row> 
                                               <h4 className="texto_mas_pequeño">
                                               <br/>
-                                                  Profecional: 
+                                                  profesional: 
                                                   <br/>
                                                   Practicante: 
                                                   <br/>

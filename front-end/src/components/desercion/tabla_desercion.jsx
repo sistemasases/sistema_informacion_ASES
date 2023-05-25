@@ -158,7 +158,7 @@ const Tabla_desercion = () =>{
     setRecords(newData)
   }
 
-  function handleFilter_profecional(event) {
+  function handleFilter_profesional(event) {
 
     const newData = MOCK_DATA.filter(row => {
       return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())

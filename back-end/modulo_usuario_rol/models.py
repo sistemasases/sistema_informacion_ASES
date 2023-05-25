@@ -17,7 +17,6 @@ class estado_civil(models.Model):
 
     estado_civil= models.CharField(max_length=30)
 
-    
     class Meta:
         db_table = "estado_civil"
 
@@ -148,4 +147,3 @@ class cohorte_estudiante(models.Model):
     
     class Meta:
         db_table = "cohorte_estudiante"
-
