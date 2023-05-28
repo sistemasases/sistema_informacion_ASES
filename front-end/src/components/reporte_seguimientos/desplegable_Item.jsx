@@ -7,7 +7,7 @@ const Desplegable_item = ({item}) => {
 
     const [open, setOpen] = useState(false)
 
-    if(item.practicante){
+    if(item.tipo_usuario === "practicante"){
         return (
             <Row>
                     <Col className={open ? "fichas-item open" : "fichas-item"}>
@@ -80,19 +80,19 @@ const Desplegable_item = ({item}) => {
                         <Row className="fichas-content">
                             <div class="d-none d-md-inline col-12">
                                 <Col className="contenido_fichas">
-                                    { item.practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                    { item.monitores.map((child, index) => <Desplegable_item key={index} item={child} />) }
                                 </Col>
                             </div>
                             <div class="d-inline d-md-none col-12">
                                 <Col className="contenido_fichas_pequeño">
-                                    { item.practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                    { item.monitores.map((child, index) => <Desplegable_item key={index} item={child} />) }
                                 </Col>
                             </div>
                         </Row>
                 </Col>
             </Row>
         )
-    }else if(item.monitor) {
+    }else if(item.tipo_usuario === "monitor") {
         return (
             <Row>
                     <Col className={open ? "fichas-item2 open" : "fichas-item2"}>
@@ -164,12 +164,12 @@ const Desplegable_item = ({item}) => {
                     <Row className="fichas-content">
                             <div class="d-none d-md-inline col-12">
                                 <Col className="contenido_fichas">
-                                    { item.monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                    { item.estudiantes.map((child, index) => <Desplegable_item key={index} item={child} />) }
                                 </Col>
                             </div>
                             <div class="d-inline d-md-none col-12">
                                 <Col className="contenido_fichas_pequeño">
-                                    { item.monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                    { item.estudiantes.map((child, index) => <Desplegable_item key={index} item={child} />) }
                                 </Col>
                             </div>
                         </Row>
@@ -177,7 +177,7 @@ const Desplegable_item = ({item}) => {
             </Row>
         )
     }
-    else if (item.reporte){
+    else if (item.cantidad_reportes){
         return (
         <Row>
         <Col className={open ? "fichas-item3 open" : "fichas-item3"}>
@@ -194,8 +194,8 @@ const Desplegable_item = ({item}) => {
                                     <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
                                     <Row className ="sub_col_link_text_reporte_seguimientos_info">
                                                             <Col xs={"4"}>
-                                                                <Row >Fichas</ Row>
-                                                                <Row >Inasistencias</Row>
+                                                                <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</ Row>
+                                                                <Row >Inasistencias : {item.cantidad_reportes.count_inasistencias}</Row>
                                                             </Col>
                                                             <Col xs={"4"}>
                                                                 <div class="d-none d-md-inline col-4">
@@ -243,8 +243,7 @@ const Desplegable_item = ({item}) => {
         </Row>
             <div className="fichas-content">
                 <a href={item.path || "#"} className="fichas-reportes plain">
-                    <h2>{item.reporte.datos}</h2>
-                    <h2>Hay reportes</h2>
+                    <h2>{item.num_doc_ini}</h2>
                 </a>
             </div>
     </Col>
@@ -254,7 +253,7 @@ const Desplegable_item = ({item}) => {
     else{
         return (
             <a href={item.path || "#"} className="fichas-item plain">
-                {item.datos}
+                {item.num_doc_ini}
             </a>
         )
     }
