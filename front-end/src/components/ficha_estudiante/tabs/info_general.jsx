@@ -540,19 +540,17 @@ const Info_general = (props) =>{
                               <Row>
                               <h1 className="texto_subtitulo">Información del estudiante :{props.datos['nombre']}</h1>
                                     <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                          <Col xs={"12"} md={"3"}>
                                           <h4 className="texto_pequeño_gris">Nombres</h4>
                                           </Col>
-                                          <Col xs={"12"} md={"6"}>
+                                          <Col xs={"12"} md={"3"}>
                                                 <h4 className="texto_pequeño" >{props.datos['nombre']}</h4>
                                           </Col>
-                                    </Row>
 
-                                    <Row className="row_flex_general">
-                                          <Col xs={"12"} md={"6"}>
+                                          <Col xs={"12"} md={"3"}>
                                           <h4 className="texto_pequeño_gris">Apellidos</h4>
                                           </Col>
-                                          <Col xs={"12"} md={"6"}>
+                                          <Col xs={"12"} md={"3"}>
                                           <h4 className="texto_pequeño" >{props.datos['apellido']}</h4>
                                           </Col>
                                     </Row>

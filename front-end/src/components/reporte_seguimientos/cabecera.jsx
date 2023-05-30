@@ -80,21 +80,22 @@ const Cabecera = (props) =>{
           ...state,
           data_user : respuesta.data
         })
-        console.log("estos son los primeros datos :"+state.data_user)
+        console.log("estos son los primeros datos :"+respuesta.data)
       })
       .catch(err=>{
-        console.log("estos son los primeros datos :"+state.data_user)
+        console.log("error" + err)
       })
 
 
 
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/practicante/"+49+"/",
+        url:  "http://localhost:8000/usuario_rol/practicante/"+19+"/",
         method: "GET",
       })
       .then((respuesta)=>{
         state.ids_practicantes_del_profesional.push(respuesta.data[0])
+        console.log("entra y trae el los practicantses del profesional :"+respuesta.data[0])
       })
       .catch(err=>{
           return (err)
@@ -246,11 +247,16 @@ const Cabecera = (props) =>{
 
             <Row className="prueba_seguimintos">
 
-              <Informacion_rol reportes_estudiante={state.reportes_estudiante} 
-                              ids_estudiantes_del_monitor={state.ids_estudiantes_del_monitor}
-                              ids_monitores_del_practicante={state.ids_monitores_del_practicante} 
-                              ids_practicantes_del_profesional={state.ids_practicantes_del_profesional}>
-              </Informacion_rol>
+              {state.ids_practicantes_del_profesional.length>0 ?
+                (<Informacion_rol reportes_estudiante={state.reportes_estudiante} 
+                                ids_estudiantes_del_monitor={state.ids_estudiantes_del_monitor}
+                                ids_monitores_del_practicante={state.ids_monitores_del_practicante} 
+                                ids_practicantes_del_profesional={state.ids_practicantes_del_profesional}>
+                </Informacion_rol>):
+                (
+                  <Row></Row>
+                )
+              }
             </Row>
         </Container>
     )

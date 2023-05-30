@@ -66,97 +66,139 @@ const Informacion_rol = (props) =>{
 
 
   
-    //   useEffect(async()=>{
+      useEffect(()=>{
+        const hacer_los_practicantes = async (e) =>{
+          //props.ids_practicantes_del_profesional.length       cantidad de practicantes a pintar
+          for(var i = 0; i < props.ids_practicantes_del_profesional[0].length; i++){
+              const temporal = state.ids_monitores_del_practicante[i]
+              const id_temporal = props.ids_practicantes_del_profesional[0][i]['id']
+              const nombres_temporal = props.ids_practicantes_del_profesional[0][i]['first_name']
+              const apellidos_temporal = props.ids_practicantes_del_profesional[0][i]['last_name']
+  
+              try {
+                  const respuesta = await axios.get("http://localhost:8000/usuario_rol/monitor/" + props.ids_practicantes_del_profesional[0][i]['id'] + "/");
+                  const monitor = {
+                    ...temporal,
+                    tipo_usuario: 'practicante',
+                    id_usuario: id_temporal,
+                    nombres_usuario: nombres_temporal,
+                    apellidos_usuario: apellidos_temporal,
+                    cantidad_estudiantes: 0,
+                    cantidad_reportes: {
+                      "count_inasistencias":0,"count_seguimientos":0,
+                      'count_inasistencias_pendientes_practicante': 0, 'count_inasistencias_pendientes_profesional': 0,
+                      'count_seguimientos_pendientes_practicante': 0, 'count_seguimientos_pendientes_profesional': 0,
+                    },
+                    monitores: respuesta.data[0],
+                  };
+                  state.ids_monitores_del_practicante.push(monitor)
+                } catch (err) {
+                  console.log('errrrrrrrrrrrooooooooorrrrrrrr');
+                  console.log(err);
+                }
+          }
+          state.ids_practicantes_del_profesional.push(state.ids_monitores_del_practicante)
+          
+          setTimeout(() => {
+              console.log('acabo practicantes, va a mostrar')
+              // set_state(prevState => ({
+              //   ...prevState,
+              //   lista: state.ids_monitores_del_practicante,
+              //   lista1: state.ids_monitores_del_practicante,
+              // }));
+  
+              mostrar();
+  
+            }, 1000);
+            
+      }
+          hacer_los_practicantes()
 
-    //     const temporal = state.ids_monitores_del_practicante[i]
-    //     const id_temporal = props.ids_practicantes_del_profesional[0][i]['id']
-    //     const nombres_temporal = props.ids_practicantes_del_profesional[0][i]['first_name']
-    //     const apellidos_temporal = props.ids_practicantes_del_profesional[0][i]['last_name']
+      },[]);
+  
+  
+  
+  
 
+
+    // const hacer_los_practicantes = async (e) =>{
+    //     //props.ids_practicantes_del_profesional.length       cantidad de practicantes a pintar
     //     for(var i = 0; i < props.ids_practicantes_del_profesional[0].length; i++){
+    //         const temporal = state.ids_monitores_del_practicante[i]
+    //         const id_temporal = props.ids_practicantes_del_profesional[0][i]['id']
+    //         const nombres_temporal = props.ids_practicantes_del_profesional[0][i]['first_name']
+    //         const apellidos_temporal = props.ids_practicantes_del_profesional[0][i]['last_name']
 
     //         try {
-    //             const respuesta = await axios.get("http://localhost:8000/usuario_rol/monitor/"+props.ids_practicantes_del_profesional[0][i]['id']+"/");
-        
+    //             const respuesta = await axios.get("http://localhost:8000/usuario_rol/monitor/" + props.ids_practicantes_del_profesional[0][i]['id'] + "/");
     //             const monitor = {
-    //                 ...temporal,
-    //                 tipo_usuario: 'practicante',
-    //                 id_usuario: id_temporal,
-    //                 nombres_usuario: nombres_temporal,
-    //                 apellidos_usuario: apellidos_temporal,
-    //                 monitores: respuesta.data[0],
-    //                 };
-    //                 state.ids_monitores_del_practicante.push(monitor)
-    
-    //             } catch (err) { 
-    //                 console.log('errrrrrrrrrrrooooooooorrrrrrrr');
-    //                 console.log(err);
-    //                 }
-
+    //               ...temporal,
+    //               tipo_usuario: 'practicante',
+    //               id_usuario: id_temporal,
+    //               nombres_usuario: nombres_temporal,
+    //               apellidos_usuario: apellidos_temporal,
+    //               cantidad_estudiantes: 0,
+    //               cantidad_reportes: {
+    //                 "count_inasistencias":0,"count_seguimientos":0,
+    //                 'count_inasistencias_pendientes_practicante': 0, 'count_inasistencias_pendientes_profesional': 0,
+    //                 'count_seguimientos_pendientes_practicante': 0, 'count_seguimientos_pendientes_profesional': 0,
+    //               },
+    //               monitores: respuesta.data[0],
+    //             };
+    //             state.ids_monitores_del_practicante.push(monitor)
+    //           } catch (err) {
+    //             console.log('errrrrrrrrrrrooooooooorrrrrrrr');
+    //             console.log(err);
+    //           }
     //     }
     //     state.ids_practicantes_del_profesional.push(state.ids_monitores_del_practicante)
-
-    //   },[props.ids_practicantes_del_profesional]);
-  
-  
-  
-  
-
-
-    const hacer_los_practicantes = async (e) =>{
-        //props.ids_practicantes_del_profesional.length       cantidad de practicantes a pintar
-        for(var i = 0; i < props.ids_practicantes_del_profesional[0].length; i++){
-            const temporal = state.ids_monitores_del_practicante[i]
-            const id_temporal = props.ids_practicantes_del_profesional[0][i]['id']
-            const nombres_temporal = props.ids_practicantes_del_profesional[0][i]['first_name']
-            const apellidos_temporal = props.ids_practicantes_del_profesional[0][i]['last_name']
-
-            try {
-                const respuesta = await axios.get("http://localhost:8000/usuario_rol/monitor/" + props.ids_practicantes_del_profesional[0][i]['id'] + "/");
-                const monitor = {
-                  ...temporal,
-                  tipo_usuario: 'practicante',
-                  id_usuario: id_temporal,
-                  nombres_usuario: nombres_temporal,
-                  apellidos_usuario: apellidos_temporal,
-                  cantidad_estudiantes: 0,
-                  cantidad_reportes: {
-                    "count_inasistencias":0,"count_seguimientos":0,
-                    'count_inasistencias_pendientes_practicante': 0, 'count_inasistencias_pendientes_profesional': 0,
-                    'count_seguimientos_pendientes_practicante': 0, 'count_seguimientos_pendientes_profesional': 0,
-                  },
-                  monitores: respuesta.data[0],
-                };
-                state.ids_monitores_del_practicante.push(monitor)
-              } catch (err) {
-                console.log('errrrrrrrrrrrooooooooorrrrrrrr');
-                console.log(err);
-              }
-        }
-        state.ids_practicantes_del_profesional.push(state.ids_monitores_del_practicante)
         
-        setTimeout(() => {
-            console.log('acabo practicantes, va a mostrar')
-            mostrar();
-          }, 3000);
+    //     setTimeout(() => {
+    //         console.log('acabo practicantes, va a mostrar')
+    //         // set_state(prevState => ({
+    //         //   ...prevState,
+    //         //   lista: state.ids_monitores_del_practicante,
+    //         //   lista1: state.ids_monitores_del_practicante,
+    //         // }));
+
+    //         mostrar();
+
+    //       }, 1000);
           
-    }
+    // }
 
 
     const  mostrar = (e) =>{
 
-        set_state(prevState => ({
-            ...prevState,
-            lista: state.ids_monitores_del_practicante,
-            lista1: state.ids_monitores_del_practicante,
-          }));
-        
-          // setTimeout(() => {
-          //   console.log('acabo mostrar, va a hacer_los_monitores');
-          //   hacer_los_monitores();
-          // }, 10000);
+        for(var i = 0; i < state.ids_monitores_del_practicante.length; i++) {
+          state.lista.push(state.ids_monitores_del_practicante[i])
+        }
+
+          setTimeout(() => {
+            console.log('acabo mostrar, va a hacer_los_monitores');
+            paso_para_asegurarme_que_actualizo();
+          }, 3000);
           
     }
+
+    const  paso_para_asegurarme_que_actualizo = (e) =>{
+      console.log('esta mondaaaaaaaaaa mide : ' + state.lista.length)
+      console.log('esta mide : ' + state.ids_monitores_del_practicante.length)
+      
+        setTimeout(() => {
+          console.log('acabo mostrar, va a hacer_los_monitores');
+          if(state.lista.length > 0)
+            {hacer_los_monitores();}
+          else   
+          {
+            console.log('esta mondaaaaaaaaaa mide22222 : ' + state.lista.length)
+            console.log('esta mide22222 : ' + state.ids_monitores_del_practicante.length)
+            mostrar()
+          }
+        }, 3000);
+        
+  }
+
 
 
 
@@ -199,22 +241,25 @@ const Informacion_rol = (props) =>{
             }
         }
 
-            console.log('acabo monitores, va a mostrar1');
-            mostrar1();
+        setTimeout(() => {
+          console.log('acabo monitores, va a mostrar1');
+          mostrar1();
+        }, 1000);
      }
+
+
 
 
     const  mostrar1 = (e) =>{
         set_state(prevState => ({
             ...prevState,
-            lista1: state.ids_practicantes_del_profesional,
             lista2: 'si lo pone sapo',
           }));
         
           setTimeout(() => {
             console.log('acabo mostrar1, va a hacer_reportes');
             hacer_reportes();
-          }, 7000);
+          }, 1000);
     }
 
 
@@ -292,24 +337,13 @@ const Informacion_rol = (props) =>{
     return (
         <Container className="container_reportes_seguimientos2">
             <Row>
-              <Button onClick={hacer_los_practicantes}>
+              {/* <Button onClick={hacer_los_practicantes}>
                 click para mostrar la lista ids_estudiantes_del_monitor
-              </Button>
+              </Button> */}
               <Button onClick={hacer_los_monitores}>
                 click para mostrar la lista ids_monitores_del_practicante
               </Button>
-              <Button onClick={hacer_reportes}>
-                boton final
-              </Button>
-              <Button onClick={mostrar}>
-                mostrar y llamar funcion
-              </Button>
-              <Button onClick={mostrar1}>
-                mostrar
-              </Button>
-              <Button onClick={mostrar2}>
-                mostrar final
-              </Button>
+
             </Row>
         
             <Row className="row_contenido_reportes_seguimientos">
@@ -317,13 +351,8 @@ const Informacion_rol = (props) =>{
 
                         <Col className="subrow_card_content_flex" xs={"12"} sm={"12"}>
                             {
-                            //   <li>{JSON.stringify(state.lista)}</li>
 
-                            // <li>{JSON.stringify(state.lista1)}</li>
-
-                            // <li>{JSON.stringify(state.lista2)}</li>
-                            
-                            // <li>{JSON.stringify(state.fin)}</li>
+                             //<li>{JSON.stringify(state.lista)}</li>
                             }
 
                             <Row>

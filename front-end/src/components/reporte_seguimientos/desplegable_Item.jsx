@@ -51,12 +51,12 @@ const Desplegable_item = ({item}) => {
                                                 </Col>
                                                 <Col xs={"4"}>
                                                     <div class="d-none d-md-inline col-4">
-                                                        <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
                                                         <Row >Pendientes prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
+                                                        <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional }</Row>
                                                     </div>
                                                     <div class="d-inline d-md-none col-4">
-                                                        <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
                                                         <Row >P. prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
+                                                        <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
                                                     </div>
                                                 </Col>
                                                 <Col xs={"4"}>
@@ -180,12 +180,12 @@ const Desplegable_item = ({item}) => {
                                                             </Col>
                                                             <Col xs={"4"}>
                                                                 <div class="d-none d-md-inline col-4">
-                                                                    <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
                                                                     <Row >Pendientes prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
+                                                                    <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional }</Row>
                                                                 </div>
                                                                 <div class="d-inline d-md-none col-4">
-                                                                    <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
                                                                     <Row >P. prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
+                                                                    <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional }</Row>
                                                                 </div>
                                                             </Col>
                                                             <Col xs={"4"}>
@@ -294,12 +294,12 @@ const Desplegable_item = ({item}) => {
                                                 </Col>
                                                 <Col xs={"4"}>
                                                     <div class="d-none d-md-inline col-4">
-                                                        <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
                                                         <Row >Pendientes prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
+                                                        <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional }</Row>
                                                     </div>
                                                     <div class="d-inline d-md-none col-4">
-                                                        <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
                                                         <Row >P. prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
+                                                        <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional }</Row>
                                                     </div>
                                                 </Col>
                                                 <Col xs={"4"}>
