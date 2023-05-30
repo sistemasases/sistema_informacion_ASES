@@ -51,78 +51,49 @@ const Cabecera = (props) =>{
    
 
 
-
-
-
-
-
-
-
-
-
   
     useEffect(()=>{
 
+      axios({
+        // Endpoint to send files
+        url:  "http://localhost:8000/wizard/semestre/",
+        method: "GET",
+      })
+      .then((respuesta)=>{
+        set_state({
+          ...state,
+          data_periodo : respuesta.data
+        })
+        console.log([datos_option_user]);
+      })
+      .catch(err=>{
+          return (err)
+      })
 
-
-
-
-      // axios({
-      //   // Endpoint to send files
-      //   url:  "http://localhost:8000/wizard/semestre/",
-      //   method: "GET",
-      // })
-      // .then((respuesta)=>{
-      //   set_state({
-      //     ...state,
-      //     data_periodo : respuesta.data
-      //   })
-      //   console.log([datos_option_user]);
-      // })
-      // .catch(err=>{
-      //     return (err)
-      // })
-
-      // axios({
-      //   // Endpoint to send files
-      //   url:  "http://localhost:8000/usuario_rol/profesional/",
-      //   method: "GET",
-      // })
-      // .then((respuesta)=>{
-      //   set_state({
-      //     ...state,
-      //     data_user : respuesta.data
-      //   })
-      //   console.log("estos son los primeros datos :"+state.data_user)
-      // })
-      // .catch(err=>{
-      //   console.log("estos son los primeros datos :"+state.data_user)
-      // })
-
-
-
-
-
-
-
-
-
-
-
+      axios({
+        // Endpoint to send files
+        url:  "http://localhost:8000/usuario_rol/profesional/",
+        method: "GET",
+      })
+      .then((respuesta)=>{
+        set_state({
+          ...state,
+          data_user : respuesta.data
+        })
+        console.log("estos son los primeros datos :"+state.data_user)
+      })
+      .catch(err=>{
+        console.log("estos son los primeros datos :"+state.data_user)
+      })
 
 
 
       axios({
         // Endpoint to send files
-        //const url_axios = "http://localhost:8000/seguimiento/conteo_seguimientos_estudiante/"+47+"/";
         url:  "http://localhost:8000/usuario_rol/practicante/"+49+"/",
         method: "GET",
       })
       .then((respuesta)=>{
-        // set_state({
-        //   ...state,
-        //   ids_monitores_del_practicante:respuesta.data,
-        // })
         state.ids_practicantes_del_profesional.push(respuesta.data[0])
       })
       .catch(err=>{
@@ -131,78 +102,7 @@ const Cabecera = (props) =>{
 
 
 
-      axios({
-        // Endpoint to send files
-        //const url_axios = "http://localhost:8000/seguimiento/conteo_seguimientos_estudiante/"+47+"/";
-        url:  "http://localhost:8000/usuario_rol/monitor/"+50+"/",
-        method: "GET",
-      })
-      .then((respuesta)=>{
-        // set_state({
-        //   ...state,
-        //   ids_monitores_del_practicante:respuesta.data,
-        // })
-        state.ids_monitores_del_practicante.push(respuesta.data)
-      })
-      .catch(err=>{
-          return (err)
-      })
-
-
-
-
-      // axios({
-      //   // Endpoint to send files
-      //   //const url_axios = "http://localhost:8000/seguimiento/conteo_seguimientos_estudiante/"+47+"/";
-      //   url:  "http://localhost:8000/usuario_rol/estudiante_selected/"+39+"/",
-      //   method: "GET",
-      // })
-      // .then((respuesta)=>{
-      //   // set_state({
-      //   //   ...state,
-      //   //   ids_estudiantes_del_monitor:respuesta.data,
-      //   // })
-      //   state.ids_estudiantes_del_monitor.push(respuesta.data)
-      // })
-      // .catch(err=>{
-      //     return (err)
-      // })
-      
-      
-      // axios({
-      //   // Endpoint to send files
-      //   //const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
-      //   url:  "http://localhost:8000/seguimiento/conteo_seguimientos_estudiante/"+24+"/",
-      //   method: "GET",
-      // })
-      // .then((respuesta)=>{
-      //   // set_state({
-      //   //   ...state,
-      //   //   reportes_estudiante:respuesta.data,
-      //   // })
-      //   state.reportes_estudiante.push(respuesta.data)
-      // })
-      // .catch(err=>{
-      //     return (err)
-      // })
-
-
-
     },[]);
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
 
 
 

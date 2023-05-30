@@ -22,26 +22,71 @@ const Desplegable_item = ({item}) => {
                                         </Row>
                                     </Col>
                                     <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"1"}> 
-                                        <Row className="row_spans_card_content_flex">
-                                            <FaUser></FaUser> 
-                                            <FaGraduationCap></FaGraduationCap> 
-                                        </Row>
+                                        {item.monitores ?
+                                            (
+                                                <Row className="row_spans_card_content_flex">
+                                                    <Col xs={12}>
+                                                        <FaUser></FaUser> : {item.monitores.length}
+                                                    </Col>
+                                                    <Col xs={12}>
+                                                        <FaGraduationCap></FaGraduationCap>  : {item.cantidad_estudiantes}
+                                                    </Col>
+                                                </Row>
+                                            ):
+                                            (
+                                                <Row className="row_spans_card_content_flex">
+                                                    <FaUser></FaUser> 
+                                                    <FaGraduationCap></FaGraduationCap> 
+                                                </Row>
+                                            )
+                                        }
                                     </Col>
                                     <Col className="col_link_text_reporte_seguimientos_info" xs={"12"}md={"6"}> 
-                                        <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                    {item.cantidad_reportes ?
+                                        (
+                                            <Row className ="sub_col_link_text_reporte_seguimientos_info">
                                                 <Col xs={"4"}>
-                                                    <Row >Fichas</ Row>
-                                                    <Row >Inasistencias</Row>
+                                                    <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</ Row>
+                                                    <Row >Inasistencias : {item.cantidad_reportes.count_inasistencias}</Row>
                                                 </Col>
                                                 <Col xs={"4"}>
                                                     <div class="d-none d-md-inline col-4">
-                                                        <Row >Pendientes prof</Row>
-                                                        <Row >Pendientes prof</Row>
+                                                        <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
+                                                        <Row >Pendientes prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
                                                     </div>
                                                     <div class="d-inline d-md-none col-4">
-                                                        <Row >P. prof</Row>
-                                                        <Row >P. prof</Row>
+                                                        <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
+                                                        <Row >P. prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
                                                     </div>
+                                                </Col>
+                                                <Col xs={"4"}>
+                                                    <div class="d-none d-md-inline col-4">
+                                                        <Row >Pendientes pract : {item.cantidad_reportes.count_seguimientos_pendientes_practicante}</Row>
+                                                        <Row >Pendientes pract : {item.cantidad_reportes.count_inasistencias_pendientes_practicante}</Row>
+                                                    </div>
+                                                    <div class="d-inline d-md-none col-4">
+                                                        <Row >P. pract : {item.cantidad_reportes.count_seguimientos_pendientes_practicante}</Row>
+                                                        <Row >P. pract : {item.cantidad_reportes.count_inasistencias_pendientes_practicante}</Row>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+
+                                        )  :
+                                        (
+                                            <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                                <Col xs={"4"}>
+                                                    <Row >Fichas : N/A</ Row>
+                                                    <Row >Inasistencias : N/A</Row>)
+                                                </Col>
+                                                <Col xs={"4"}>
+                                                <div class="d-none d-md-inline col-4">
+                                                    <Row >Pendientes prof</Row>
+                                                    <Row >Pendientes prof</Row>
+                                                </div>
+                                                <div class="d-inline d-md-none col-4">
+                                                    <Row >P. prof</Row>
+                                                    <Row >P. prof</Row>
+                                                </div>
                                                 </Col>
                                                 <Col xs={"4"}>
                                                     <div class="d-none d-md-inline col-4">
@@ -54,6 +99,8 @@ const Desplegable_item = ({item}) => {
                                                     </div>
                                                 </Col>
                                             </Row>
+                                        )
+                                    }
                                     </Col>
                                     <div class="d-none d-md-inline col-1">
                                         <Col className="col_flecha_reportes">
@@ -105,27 +152,70 @@ const Desplegable_item = ({item}) => {
                                                         <br></br>
                                                         Apellidos
                                                     </Row>
+
                                                 </Col>
                                                 <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"1"}> 
-                                                    <Row className="row_spans_card_content_flex">
-                                                        <FaUser></FaUser> 
-                                                    </Row>
+                                                    {item.estudiantes ?
+                                                        (
+                                                            <Row className="row_spans_card_content_flex">
+                                                                <Col xs={12}>
+                                                                    <FaUser></FaUser> : {item.estudiantes.length}
+                                                                </Col>
+                                                            </Row>
+                                                        ):
+                                                        (
+                                                            <Row className="row_spans_card_content_flex">
+                                                                <FaUser></FaUser> 
+                                                            </Row>
+                                                        )
+                                                    }
                                                 </Col>
                                                 <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
-                                                <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                                {item.cantidad_reportes ?
+                                                    (
+                                                        <Row className ="sub_col_link_text_reporte_seguimientos_info">
                                                             <Col xs={"4"}>
-                                                                <Row >Fichas</ Row>
-                                                                <Row >Inasistencias</Row>
+                                                                <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</ Row>
+                                                                <Row >Inasistencias : {item.cantidad_reportes.count_inasistencias}</Row>
                                                             </Col>
                                                             <Col xs={"4"}>
                                                                 <div class="d-none d-md-inline col-4">
-                                                                    <Row >Pendientes prof</Row>
-                                                                    <Row >Pendientes prof</Row>
+                                                                    <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
+                                                                    <Row >Pendientes prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
                                                                 </div>
                                                                 <div class="d-inline d-md-none col-4">
-                                                                    <Row >P. prof</Row>
-                                                                    <Row >P. prof</Row>
+                                                                    <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
+                                                                    <Row >P. prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
                                                                 </div>
+                                                            </Col>
+                                                            <Col xs={"4"}>
+                                                                <div class="d-none d-md-inline col-4">
+                                                                    <Row >Pendientes pract : {item.cantidad_reportes.count_seguimientos_pendientes_practicante}</Row>
+                                                                    <Row >Pendientes pract : {item.cantidad_reportes.count_inasistencias_pendientes_practicante}</Row>
+                                                                </div>
+                                                                <div class="d-inline d-md-none col-4">
+                                                                    <Row >P. pract : {item.cantidad_reportes.count_seguimientos_pendientes_practicante}</Row>
+                                                                    <Row >P. pract : {item.cantidad_reportes.count_inasistencias_pendientes_practicante}</Row>
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+
+                                                    )  :
+                                                    (
+                                                        <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                                            <Col xs={"4"}>
+                                                                <Row >Fichas : N/A</ Row>
+                                                                <Row >Inasistencias : N/A</Row>)
+                                                            </Col>
+                                                            <Col xs={"4"}>
+                                                            <div class="d-none d-md-inline col-4">
+                                                                <Row >Pendientes prof</Row>
+                                                                <Row >Pendientes prof</Row>
+                                                            </div>
+                                                            <div class="d-inline d-md-none col-4">
+                                                                <Row >P. prof</Row>
+                                                                <Row >P. prof</Row>
+                                                            </div>
                                                             </Col>
                                                             <Col xs={"4"}>
                                                                 <div class="d-none d-md-inline col-4">
@@ -138,6 +228,8 @@ const Desplegable_item = ({item}) => {
                                                                 </div>
                                                             </Col>
                                                         </Row>
+                                                    )
+                                                }
                                                                                                 
                                                 </Col>
                                                 <div class="d-none d-md-inline col-1">
@@ -177,77 +269,111 @@ const Desplegable_item = ({item}) => {
             </Row>
         )
     }
-    else if (item.cantidad_reportes){
+    else if (item.cod_univalle){
         return (
         <Row>
-        <Col className={open ? "fichas-item3 open" : "fichas-item3"}>
-        <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
-        <Col className="link_text_reporte_seguimientos1" >
-                                <Row className="link_text_reporte_seguimientos_hover3">
-                                    <Col  xs={"12"} md={"4"}> 
-                                        <Row className="col_link_text_reporte_seguimientos_nombre">
-                                            Nombres
-                                            <br></br>
-                                            Apellidos
-                                        </Row>
-                                    </Col>
-                                    <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
-                                    <Row className ="sub_col_link_text_reporte_seguimientos_info">
-                                                            <Col xs={"4"}>
-                                                                <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</ Row>
-                                                                <Row >Inasistencias : {item.cantidad_reportes.count_inasistencias}</Row>
-                                                            </Col>
-                                                            <Col xs={"4"}>
-                                                                <div class="d-none d-md-inline col-4">
-                                                                    <Row >Pendientes prof</Row>
-                                                                    <Row >Pendientes prof</Row>
-                                                                </div>
-                                                                <div class="d-inline d-md-none col-4">
-                                                                    <Row >P. prof</Row>
-                                                                    <Row >P. prof</Row>
-                                                                </div>
-                                                            </Col>
-                                                            <Col xs={"4"}>
-                                                                <div class="d-none d-md-inline col-4">
-                                                                    <Row >Pendientes pract</Row>
-                                                                    <Row >Pendientes pract</Row>
-                                                                </div>
-                                                                <div class="d-inline d-md-none col-4">
-                                                                    <Row >P. pract</Row>
-                                                                    <Row >P. pract</Row>
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
-                                                                                    
-                                    </Col>
-                                    <div class="d-none d-md-inline col-1">
-                                                    <Col className="col_flecha_reportes">
-                                                        {
-                                                            open ?
-                                                            (
-                                                                <Row>
-                                                                    <i class="bi bi-chevron-up"></i>
-                                                                </Row>
-                                                            )   
-                                                            :
-                                                            (
-                                                                <Row>
-                                                                    <i class="bi bi-chevron-down"></i>
-                                                                </Row>
-                                                            )
-                                                        }
-                                                    </Col>
+            <Col className={open ? "fichas-item3 open" : "fichas-item3"}>
+                <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
+
+                    <Col className="link_text_reporte_seguimientos1" >
+                            <Row className="link_text_reporte_seguimientos_hover3">
+                                <Col  xs={"12"} md={"4"}> 
+                                    <Row className="col_link_text_reporte_seguimientos_nombre">
+                                        Nombres
+                                        <br></br>
+                                        Apellidos
+                                    </Row>
+                                </Col>
+                                <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
+                                    {item.cantidad_reportes ?
+                                        (
+                                            <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                                <Col xs={"4"}>
+                                                    <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</ Row>
+                                                    <Row >Inasistencias : {item.cantidad_reportes.count_inasistencias}</Row>
+                                                </Col>
+                                                <Col xs={"4"}>
+                                                    <div class="d-none d-md-inline col-4">
+                                                        <Row >Pendientes prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
+                                                        <Row >Pendientes prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
+                                                    </div>
+                                                    <div class="d-inline d-md-none col-4">
+                                                        <Row >P. prof : {item.cantidad_reportes.count_inasistencias_pendientes_profesional}</Row>
+                                                        <Row >P. prof : {item.cantidad_reportes.count_seguimientos_pendientes_profesional}</Row>
+                                                    </div>
+                                                </Col>
+                                                <Col xs={"4"}>
+                                                    <div class="d-none d-md-inline col-4">
+                                                        <Row >Pendientes pract : {item.cantidad_reportes.count_seguimientos_pendientes_practicante}</Row>
+                                                        <Row >Pendientes pract : {item.cantidad_reportes.count_inasistencias_pendientes_practicante}</Row>
+                                                    </div>
+                                                    <div class="d-inline d-md-none col-4">
+                                                        <Row >P. pract : {item.cantidad_reportes.count_seguimientos_pendientes_practicante}</Row>
+                                                        <Row >P. pract : {item.cantidad_reportes.count_inasistencias_pendientes_practicante}</Row>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+
+                                        )  :
+                                        (
+                                            <Row className ="sub_col_link_text_reporte_seguimientos_info">
+                                                <Col xs={"4"}>
+                                                    <Row >Fichas : N/A</ Row>
+                                                    <Row >Inasistencias : N/A</Row>)
+                                                </Col>
+                                                <Col xs={"4"}>
+                                                <div class="d-none d-md-inline col-4">
+                                                    <Row >Pendientes prof</Row>
+                                                    <Row >Pendientes prof</Row>
                                                 </div>
-                                </Row>
-                </Col>
+                                                <div class="d-inline d-md-none col-4">
+                                                    <Row >P. prof</Row>
+                                                    <Row >P. prof</Row>
+                                                </div>
+                                                </Col>
+                                                <Col xs={"4"}>
+                                                    <div class="d-none d-md-inline col-4">
+                                                        <Row >Pendientes pract</Row>
+                                                        <Row >Pendientes pract</Row>
+                                                    </div>
+                                                    <div class="d-inline d-md-none col-4">
+                                                        <Row >P. pract</Row>
+                                                        <Row >P. pract</Row>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        )
+                                    }
+                                                                                
+                                </Col>
+                                <div class="d-none d-md-inline col-1">
+                                                <Col className="col_flecha_reportes">
+                                                    {
+                                                        open ?
+                                                        (
+                                                            <Row>
+                                                                <i class="bi bi-chevron-up"></i>
+                                                            </Row>
+                                                        )   
+                                                        :
+                                                        (
+                                                            <Row>
+                                                                <i class="bi bi-chevron-down"></i>
+                                                            </Row>
+                                                        )
+                                                    }
+                                                </Col>
+                                            </div>
+                        </Row>
+                    </Col>
+                </Row>
+                <div className="fichas-content">
+                    <a href={item.path || "#"} className="fichas-reportes plain">
+                        <h2>{item.num_doc_ini}</h2>
+                    </a>
+                </div>
+            </Col>
         </Row>
-            <div className="fichas-content">
-                <a href={item.path || "#"} className="fichas-reportes plain">
-                    <h2>{item.num_doc_ini}</h2>
-                </a>
-            </div>
-    </Col>
-</Row>
         )
     }
     else{

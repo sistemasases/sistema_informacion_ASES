@@ -119,6 +119,12 @@ const Informacion_rol = (props) =>{
                   id_usuario: id_temporal,
                   nombres_usuario: nombres_temporal,
                   apellidos_usuario: apellidos_temporal,
+                  cantidad_estudiantes: 0,
+                  cantidad_reportes: {
+                    "count_inasistencias":0,"count_seguimientos":0,
+                    'count_inasistencias_pendientes_practicante': 0, 'count_inasistencias_pendientes_profesional': 0,
+                    'count_seguimientos_pendientes_practicante': 0, 'count_seguimientos_pendientes_profesional': 0,
+                  },
                   monitores: respuesta.data[0],
                 };
                 state.ids_monitores_del_practicante.push(monitor)
@@ -132,7 +138,7 @@ const Informacion_rol = (props) =>{
         setTimeout(() => {
             console.log('acabo practicantes, va a mostrar')
             mostrar();
-          }, 7000);
+          }, 3000);
           
     }
 
@@ -145,10 +151,10 @@ const Informacion_rol = (props) =>{
             lista1: state.ids_monitores_del_practicante,
           }));
         
-        //   setTimeout(() => {
-        //     console.log('acabo mostrar, va a hacer_los_monitores');
-        //     hacer_los_monitores();
-        //   }, 7000);
+          // setTimeout(() => {
+          //   console.log('acabo mostrar, va a hacer_los_monitores');
+          //   hacer_los_monitores();
+          // }, 10000);
           
     }
 
@@ -160,17 +166,23 @@ const Informacion_rol = (props) =>{
         //props.ids_practicantes_del_profesional.length       cantidad de practicantes a pintar
 
         for(var i = 0; i < state.lista.length; i++){
+          console.log('entra a vaerav')
 
             for(var j = 0; j < state.lista[i]['monitores'].length; j++){
                 const temporal = state.lista[i]['monitores'][j]
                 const temporal2 = state.lista[i]['monitores'][j]['id']
+                console.log('entra a estudinates_selected')
 
                 try {
                     const respuesta = await axios.get("http://localhost:8000/usuario_rol/estudiante_selected/" + temporal2 + "/");
-            
                     const estudiante = {
                       ...temporal,
                       tipo_usuario: 'monitor',
+                      cantidad_reportes: {
+                        "count_inasistencias":0,"count_seguimientos":0,
+                        'count_inasistencias_pendientes_practicante': 0, 'count_inasistencias_pendientes_profesional': 0,
+                        'count_seguimientos_pendientes_practicante': 0, 'count_seguimientos_pendientes_profesional': 0,
+                      },
                       estudiantes: respuesta.data[0],
                     };
                     state.lista[i]['monitores'][j]=estudiante
@@ -187,10 +199,8 @@ const Informacion_rol = (props) =>{
             }
         }
 
-        setTimeout(() => {
             console.log('acabo monitores, va a mostrar1');
             mostrar1();
-          }, 7000);
      }
 
 
@@ -235,20 +245,37 @@ const Informacion_rol = (props) =>{
                                 ...prevState,
                                 lista: [...prevState.lista],
                               }));
+
+                              state.lista[i]['monitores'][j]['cantidad_reportes']['count_inasistencias'] += respuesta.data.count_inasistencias
+                              state.lista[i]['monitores'][j]['cantidad_reportes']['count_seguimientos'] += respuesta.data.count_seguimientos
+
+                              state.lista[i]['monitores'][j]['cantidad_reportes']['count_inasistencias_pendientes_practicante'] += respuesta.data.count_inasistencias_pendientes_practicante
+                              state.lista[i]['monitores'][j]['cantidad_reportes']['count_inasistencias_pendientes_profesional'] += respuesta.data.count_inasistencias_pendientes_profesional
+                              state.lista[i]['monitores'][j]['cantidad_reportes']['count_seguimientos_pendientes_practicante'] += respuesta.data.count_seguimientos_pendientes_practicante
+                              state.lista[i]['monitores'][j]['cantidad_reportes']['count_seguimientos_pendientes_profesional'] += respuesta.data.count_seguimientos_pendientes_profesional
                         }
                     catch (err) { 
                         console.log('errrrrrrrrrrrooooooooorrrrrrrr');
                         console.log(err);
                         }
                 }
-            }
+                state.lista[i]['cantidad_reportes']['count_inasistencias'] += state.lista[i]['monitores'][j]['cantidad_reportes']['count_inasistencias']
+                state.lista[i]['cantidad_reportes']['count_seguimientos'] += state.lista[i]['monitores'][j]['cantidad_reportes']['count_seguimientos']
+                
+                state.lista[i]['cantidad_reportes']['count_inasistencias_pendientes_practicante'] += state.lista[i]['monitores'][j]['cantidad_reportes']['count_inasistencias_pendientes_practicante']
+                state.lista[i]['cantidad_reportes']['count_inasistencias_pendientes_profesional'] += state.lista[i]['monitores'][j]['cantidad_reportes']['count_inasistencias_pendientes_profesional']
+                state.lista[i]['cantidad_reportes']['count_seguimientos_pendientes_practicante'] += state.lista[i]['monitores'][j]['cantidad_reportes']['count_seguimientos_pendientes_practicante']
+                state.lista[i]['cantidad_reportes']['count_seguimientos_pendientes_profesional'] += state.lista[i]['monitores'][j]['cantidad_reportes']['count_seguimientos_pendientes_profesional']
+                
+                state.lista[i]['cantidad_estudiantes'] += state.lista[i]['monitores'][j]['estudiantes'].length
+              }
         }
         console.log('acabo reportes, va a mostrar 2')
 
-        // setTimeout(() => {
-        //     console.log('acabo reportes, va a mostrar2');
-        //     mostrar2();
-        //   }, 5000);
+        setTimeout(() => {
+            console.log('acabo reportes, va a mostrar2');
+            mostrar2();
+          }, 1000);
     }
 
 
@@ -269,10 +296,10 @@ const Informacion_rol = (props) =>{
                 click para mostrar la lista ids_estudiantes_del_monitor
               </Button>
               <Button onClick={hacer_los_monitores}>
-              click para mostrar la lista ids_monitores_del_practicante
+                click para mostrar la lista ids_monitores_del_practicante
               </Button>
               <Button onClick={hacer_reportes}>
-              boton final
+                boton final
               </Button>
               <Button onClick={mostrar}>
                 mostrar y llamar funcion
@@ -289,13 +316,15 @@ const Informacion_rol = (props) =>{
             <div class="d-none d-md-inline"> <br/></div>
 
                         <Col className="subrow_card_content_flex" xs={"12"} sm={"12"}>
-                            <li>{JSON.stringify(state.lista)}</li>
+                            {
+                            //   <li>{JSON.stringify(state.lista)}</li>
 
-                            <li>{JSON.stringify(state.lista1)}</li>
+                            // <li>{JSON.stringify(state.lista1)}</li>
 
-                            <li>{JSON.stringify(state.lista2)}</li>
+                            // <li>{JSON.stringify(state.lista2)}</li>
                             
-                            <li>{JSON.stringify(state.fin)}</li>
+                            // <li>{JSON.stringify(state.fin)}</li>
+                            }
 
                             <Row>
                                 <Col  xs={"12"} md={"3"}>
