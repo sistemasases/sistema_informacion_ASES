@@ -2,11 +2,14 @@ from ast import And
 from operator import and_
 from queue import Empty
 from django.contrib.auth.models import User
+from rest_framework.serializers import ModelSerializer
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, act_simultanea, cond_excepcion, discap_men, estado_civil,  etnia, identidad_gen
 from modulo_geografico.models import barrio, departamento, municipio
 from modulo_programa.models import programa_estudiante, programa
 from modulo_instancia.models import semestre
 from modulo_asignacion.models import asignacion
+from modulo_seguimiento.models import inasistencia, seguimiento_individual
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,10 +21,12 @@ from .serializers import  user_serializer,estudiante_serializer,rol_serializer,u
 from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer
 from modulo_instancia.serializers import semestre_serializer
 from modulo_asignacion.serializers import asignacion_serializer
+from modulo_seguimiento.serializers import seguimiento_individual_serializer, inasistencia_serializer
+
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
-
+from rest_framework.decorators import action
 
 # Create your views here.
 class user_viewsets (viewsets.ModelViewSet):
@@ -623,6 +628,211 @@ class ids_estudiantes_del_monitor_viewsets(viewsets.ModelViewSet):
         lista_estudiantes = list(estudiantes_monitor)
 
         return Response(lista_estudiantes, status=status.HTTP_200_OK)
+
+
+class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
+    serializer_class = usuario_rol_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = usuario_rol_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+        list_total_datos = []
+
+        list_estudiantes = []
+
+        list_inasistencia = []
+        list_seguimientos = []
+
+
+        id = '',
+        cedula = '',
+        nombres = '',
+        apellidos = '',
+        cantidad_de_fichas = '',
+        cantidad_de_inasistencias = '',
+        total_fichas = '',
+        monitor = '',
+        practicante = '',
+        profesional = '',
+
+
+
+
+
+        list_semestre = list(semestre.objects.all().filter(semestre_actual = True))
+        # Realiza la lista de estudiantes y los serializa
+        consulta_estudiantes = list(estudiante.objects.all())
+        for i in consulta_estudiantes: 
+            serializer_estudiante =estudiante_serializer(i)
+            list_estudiantes.append(serializer_estudiante.data)
+
+        # Serializa el id del profesional
+        val_rol_profesional = rol.objects.get(nombre = 'Profesional')
+        serializer_rol= rol_serializer(val_rol_profesional)
+        id_rol_profesional = serializer_rol.data['id']
+
+        # Serializa el id del practicante
+        val_rol_practicante = rol.objects.get(nombre = 'Practicante')
+        id_rol_practicante = (rol_serializer(val_rol_practicante)).data['id']
+
+        # Serializa el id del monitor
+        val_rol_monitor = rol.objects.get(nombre = 'monitor')
+        id_rol_monitor = (rol_serializer(val_rol_monitor)).data['id']
+
+        consulta_id_profesional = list(usuario_rol.objects.filter(id_rol = id_rol_profesional,estado = 'ACTIVO'))
+        
+
+        for i in consulta_id_profesional:
+            serializer_usuario_rol = usuario_rol_serializer(i)
+            consulta_profesional = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
+            serializer_profesional = user_selected(consulta_profesional)
+            profesional = serializer_profesional.data['id']
+            print('11111111 datos profesional : ')
+            print(profesional)
+
+            consulta_id_practicante_selected = list(usuario_rol.objects.filter(id_jefe = serializer_profesional.data['id'], id_rol = id_rol_practicante, estado = 'ACTIVO'))
+
+            for j in consulta_id_practicante_selected:
+                serializer_usuario_rol_selected =usuario_rol_serializer(j)
+                consulta_practicante_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
+                serializer_practicante_selected  = user_selected(consulta_practicante_selected )
+                practicante = serializer_practicante_selected.data['id']
+                print('datos practicante : ')
+                print(practicante)
+                consulta_id_monitores_selected = list(usuario_rol.objects.filter(id_jefe = serializer_practicante_selected.data['id'], id_rol = id_rol_monitor, estado = 'ACTIVO'))
+
+                for k in consulta_id_monitores_selected:
+                    serializer_usuario_rol_selected =usuario_rol_serializer(k)
+                    consulta_monitor_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
+                    serializer_monitor_selected  = user_selected(consulta_monitor_selected )
+                    monitor = serializer_monitor_selected.data['id']
+
+                    lista_asignacion = list(asignacion.objects.filter(id_usuario = serializer_monitor_selected.data['id'], estado=True))
+                    print('datos monitor : ')
+                    print(monitor)
+
+                    for l in lista_asignacion:
+                        serializer_asignacion =asignacion_serializer(l)
+                        estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
+                        serializer_estudiante =estudiante_serializer(estudiante_selected)
+                        id = serializer_estudiante.data['id']
+                        cedula = serializer_estudiante.data['num_doc']
+                        nombres = serializer_estudiante.data['nombre']
+                        apellidos = serializer_estudiante.data['apellido']
+                        print('datos estudiante : ')
+                        print(id)
+
+                        list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = id))
+                        list_inasistencia_individual = list(inasistencia.objects.filter(id_estudiante = id))
+
+                        for i in list_inasistencia_individual: 
+                            serializer_inasistencia =inasistencia_serializer(i)
+                            list_inasistencia.append(serializer_inasistencia.data)
+                        for i in list_seguimientos_individual: 
+                            serializer_seguimiento_individual =seguimiento_individual_serializer(i)
+                            list_seguimientos.append(serializer_seguimiento_individual.data)
+
+                        for m in list_semestre:
+                            lista_inasistencia = []
+                            lista_seguimientos = []
+
+                            serializer_semestre =semestre_serializer(m)
+
+                            for j in list_inasistencia:
+                                if j['fecha'] > serializer_semestre.data['fecha_inicio'] and j['fecha'] < serializer_semestre.data['fecha_fin']:
+                                    lista_inasistencia.append(j)        
+
+                            for j in list_seguimientos:
+                                if j['fecha'] > serializer_semestre.data['fecha_inicio'] and j['fecha'] < serializer_semestre.data['fecha_fin']:
+                                    lista_seguimientos.append(j)
+
+                            count_inasistencias = len(lista_inasistencia)
+                            count_seguimientos = len(lista_seguimientos)
+                            count_total_fichas = count_inasistencias + count_seguimientos
+
+                            datos = {
+                                'id': id,
+                                'cedula': cedula,
+                                'nombres': nombres,
+                                'apellidos': apellidos,
+                                'cantidad_de_fichas': count_seguimientos,
+                                'cantidad_de_inasistencias': count_inasistencias,
+                                'total_fichas': count_total_fichas,
+                                'monitor': monitor,
+                                'practicante': practicante,
+                                'profesional': profesional,
+                                }
+
+                            list_total_datos.append(datos)
+
+        return Response(list_total_datos,status=status.HTTP_200_OK)
+
+
+
+
+class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
+    serializer_class = seguimiento_individual_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
+    print('que pasaaaaaa 1qqqe')
+
+    def list(self, request):
+        estudiante_id = request.query_params.get('estudiante_id')
+
+        try:
+            # Obtener el seguimiento más reciente del estudiante especificado
+            seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=estudiante_id).latest('fecha')
+
+            # Crear un diccionario con los datos de riesgo del seguimiento
+            riesgo = {
+                'riesgo_individual': seguimiento_reciente.riesgo_individual,
+                'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
+                'riesgo_academico': seguimiento_reciente.riesgo_academico,
+                'riesgo_economico': seguimiento_reciente.riesgo_economico,
+                'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+            }
+            print('que pasaaaaaa')
+            # Devolver el riesgo en la respuesta
+            return Response(riesgo)
+        except seguimiento_individual.DoesNotExist:
+            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+            return Response({})
+
+
+
+
+class ultimo_seguimiento_individual_ViewSet (viewsets.ModelViewSet):
+    serializer_class = seguimiento_individual_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = seguimiento_individual_serializer.Meta.model.objects.all()
+
+    def retrieve(self, request, pk=None):
+
+        seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk).latest('fecha')
+
+        list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = pk))
+    
+
+        riesgo = {
+            'riesgo_individual': seguimiento_reciente.riesgo_individual,
+            'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
+            'riesgo_academico': seguimiento_reciente.riesgo_academico,
+            'riesgo_economico': seguimiento_reciente.riesgo_economico,
+            'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+            }
+
+        return Response(riesgo,status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
 
 
 # class All_user(APIView):

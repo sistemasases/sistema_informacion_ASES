@@ -19,5 +19,7 @@ router.register(r'identidad_gen',Identidad_gen_viewsets,basename = 'identidad_ge
 router.register(r'estado_civil',Estado_civil_viewsets,basename = 'estado_civil')
 router.register(r'condicion_de_excepcion',Condicion_de_excepcion_viewsets,basename = 'condicion_de_excepcion')
 router.register(r'ids_estudiantes_del_monitor',ids_estudiantes_del_monitor_viewsets,basename = 'ids_estudiantes_del_monitor')
+router.register(r'info_estudiantes_sin_seguimientos',info_estudiantes_sin_seguimientos_viewsets,basename = 'info_estudiantes_sin_seguimientos')
+router.register(r'ultimo_seguimiento_individual',ultimo_seguimiento_individual_ViewSet,basename = 'ultimo_seguimiento_individual')
 
 urlpatterns = router.urls

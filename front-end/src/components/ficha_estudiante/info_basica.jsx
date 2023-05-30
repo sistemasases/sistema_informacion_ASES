@@ -617,7 +617,7 @@ const Info_basica = (props) =>{
 
 
         <Col xs={"12"} lg={"3"} className="prueba1">
-          <Info_registros></Info_registros>
+          <Info_registros id_estudiante={state.total_datos_estudiantes['id']}></Info_registros>
         </Col>
         
 

@@ -43,23 +43,17 @@ const Cabecera = (props) =>{
       telefono:'',
 
       reportes_estudiante : [],
-
+      ids_estudiantes_del_monitor : [],
+      ids_monitores_del_practicante : [],
+      ids_practicantes_del_profesional : [],
     })
 
    
 
 
-
-
-
-
-
-
-
-
-
   
     useEffect(()=>{
+
       axios({
         // Endpoint to send files
         url:  "http://localhost:8000/wizard/semestre/",
@@ -75,7 +69,6 @@ const Cabecera = (props) =>{
       .catch(err=>{
           return (err)
       })
-
 
       axios({
         // Endpoint to send files
@@ -93,16 +86,15 @@ const Cabecera = (props) =>{
         console.log("estos son los primeros datos :"+state.data_user)
       })
 
-      //const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
-      const url_axios = "http://localhost:8000/seguimiento/conteo_seguimientos_estudiante/"+47+"/";
+
 
       axios({
         // Endpoint to send files
-        url:  url_axios,
+        url:  "http://localhost:8000/usuario_rol/practicante/"+49+"/",
         method: "GET",
       })
       .then((respuesta)=>{
-        state.reportes_estudiante.push(respuesta.data)
+        state.ids_practicantes_del_profesional.push(respuesta.data[0])
       })
       .catch(err=>{
           return (err)
@@ -110,27 +102,7 @@ const Cabecera = (props) =>{
 
 
 
-
-
-
-
-
-      
     },[]);
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
 
 
 
@@ -273,7 +245,12 @@ const Cabecera = (props) =>{
             </Row>
 
             <Row className="prueba_seguimintos">
-              <Informacion_rol reportes_estudiante={state.reportes_estudiante}></Informacion_rol>
+
+              <Informacion_rol reportes_estudiante={state.reportes_estudiante} 
+                              ids_estudiantes_del_monitor={state.ids_estudiantes_del_monitor}
+                              ids_monitores_del_practicante={state.ids_monitores_del_practicante} 
+                              ids_practicantes_del_profesional={state.ids_practicantes_del_profesional}>
+              </Informacion_rol>
             </Row>
         </Container>
     )
