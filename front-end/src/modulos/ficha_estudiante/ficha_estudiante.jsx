@@ -17,7 +17,7 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Ficha_estudiante = (props) =>{
 
-    const userRole = localStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('rol');
 
     return (
         <>{userRole === 'superAses' || userRole === 'sistemas' ? <Row>

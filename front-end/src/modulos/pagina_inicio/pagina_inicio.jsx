@@ -12,7 +12,7 @@ import Carousel from 'react-bootstrap/Carousel';
 
 const Pagina_inicio = () => {
 
-  const userRole = localStorage.getItem('rol');
+  const userRole = sessionStorage.getItem('rol');
 
   return (
     <>{userRole === 'superAses' || userRole === 'sistemas' ? <div className='banner' style={{marginTop: 20, marginBottom: 20, marginLeft: 22}}>

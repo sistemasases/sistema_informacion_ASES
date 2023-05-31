@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Container, Row, Col, Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
@@ -17,6 +17,30 @@ const login_component = () =>{
     'username' : state.usuario[0],
     'password' : state.contrasena[0]
   }
+
+  useEffect(() => {
+    const tiempoEspera = 1 * 1 * 30 * 1000; // en milisegundos
+
+    // Programar la eliminación después del tiempo especificado
+    const timeoutId = setTimeout(() => {
+      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('refresh-token')
+      sessionStorage.removeItem('email')
+      sessionStorage.removeItem('first_name')
+      sessionStorage.removeItem('instancia')
+      sessionStorage.removeItem('last_name')
+      sessionStorage.removeItem('nombre_completo')
+      sessionStorage.removeItem('instancia_id')
+      sessionStorage.removeItem('rol')
+      sessionStorage.removeItem('semestre_actual')
+      sessionStorage.removeItem('username')
+      sessionStorage.removeItem('message')
+    }, tiempoEspera);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   const handle_user = (e) => {
     set_state({
@@ -37,21 +61,21 @@ const login_component = () =>{
     axios.post(url, data)
     .then(res=>{
       console.log(res.data)
-      localStorage.setItem('token', res.data.token)
-      localStorage.setItem('refresh-token', res.data['refresh-token'])
-      localStorage.setItem('email', res.data.user.email)
-      localStorage.setItem('first_name', res.data.user.first_name)
-      localStorage.setItem('instancia', res.data.user.instancia)
-      localStorage.setItem('last_name', res.data.user.last_name)
-      localStorage.setItem('nombre_completo', res.data.user.nombre_completo)
-      localStorage.setItem('instancia_id', res.data.user.instancia_id)
-      localStorage.setItem('rol', res.data.user.rol)
-      localStorage.setItem('semestre_actual', res.data.user.semestre_actual)
-      localStorage.setItem('username', res.data.user.username)
-      localStorage.setItem('message', res.data.user.message)
+      sessionStorage.setItem('token', res.data.token)
+      sessionStorage.setItem('refresh-token', res.data['refresh-token'])
+      sessionStorage.setItem('email', res.data.user.email)
+      sessionStorage.setItem('first_name', res.data.user.first_name)
+      sessionStorage.setItem('instancia', res.data.user.instancia)
+      sessionStorage.setItem('last_name', res.data.user.last_name)
+      sessionStorage.setItem('nombre_completo', res.data.user.nombre_completo)
+      sessionStorage.setItem('instancia_id', res.data.user.instancia_id)
+      sessionStorage.setItem('rol', res.data.user.rol)
+      sessionStorage.setItem('semestre_actual', res.data.user.semestre_actual)
+      sessionStorage.setItem('username', res.data.user.username)
+      sessionStorage.setItem('message', res.data.user.message)
       set_state({
         ...state,
-        logged:localStorage.token,
+        logged:sessionStorage.token,
       })
     })
     .catch(err=>console.log(err))
@@ -61,7 +85,7 @@ const login_component = () =>{
   return (
     <Row>
       {
-        localStorage.token == undefined?
+        sessionStorage.token == undefined?
         (
           <Container className="containerLogin">
             <Row>

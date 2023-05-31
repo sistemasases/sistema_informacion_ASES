@@ -58,7 +58,7 @@ const SideBar = (props) =>{
 
 
     const [state,set_state] = useState({
-        desplegable : localStorage.rol === 'superAses' ? Menu : Menu2
+        desplegable : sessionStorage.rol === 'superAses' ? Menu : Menu2
       })
 
     function path_actual(name){
