@@ -41,50 +41,73 @@
         "icon":"bi-people-fill",
         "childrens":[
             {
+                "id":1,
                 "path":"/sin_seguimientos",
-                "name":"Cantidad de seguimientos",
-                "icon":"bi-people-fill"
+                "name":"Cantidad de seguimeintos",
+                "icon":"bi-instagram"
             },
             {
+                "id":2,
                 "path":"/ficha_estudiante",
                 "name":"ficha de estudiantes",
-                "icon":"bi-people-fill"
+                "icon":"bi-file-earmark-person"
             },
             {
-                "path":"/ficha_monitor",
+                "id":3,
+                "path":"/ficha_estudiante",
                 "name":"ficha de monitores",
-                "icon":"bi-people-fill"
+                "icon":"bi-file-earmark-person-fill"
             },
             {
+                "id":4,
                 "path":"/asignaciones",
                 "name":"gestion de asignaciones",
-                "icon":"bi-people-fill"
+                "icon":"bi bi-graph-up-arrow"
             },
             {
+                "id":5,
+                "path":"/ficha_estudiante",
+                "name":"reporte geogradico Ases",
+                "icon":"bi-geo-alt-fill"
+            },
+            {
+                "id":6,
                 "path":"/ficha_estudiante",
                 "name":"reporte formularios",
-                "icon":"bi-people-fill"
+                "icon":"bi bi-graph-up-arrow"
             },
             {
+                "id":7,
                 "path":"/desercion",
                 "name":"reporte de desercion",
-                "icon":"bi-people-fill"
+                "icon":"bi-exclamation-circle-fill"
             },
             {
+                "id":8,
                 "path":"/ficha_estudiante",
                 "name":"reporte general",
-                "icon":"bi-people-fill"
+                "icon":"bi bi-graph-up-arrow"
             },
             {
+                "id":9,
                 "path":"/ficha_estudiante",
                 "name":"reporte grafico ASES",
-                "icon":"bi-people-fill"
+                "icon":"bi-clipboard2-data-fill"
             },
             {
+                "id":10,
                 "path":"/reporte_seguimientos",
-                "name":"reporte de seguimientos",
+                "name":"reporte de seguimientos", 
+                "icon":"bi-diagram-3-fill"
+            }
+            ,
+            {
+                "id":11,
+                "path":"/ficha_estudiante",
+                "name":"reporte grupal",
                 "icon":"bi-people-fill"
             }
+        
         ]
     },
     {

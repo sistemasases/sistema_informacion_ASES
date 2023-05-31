@@ -127,12 +127,12 @@ const Desplegable_item = ({item}) => {
                         <Row className="fichas-content">
                             <div class="d-none d-md-inline col-12">
                                 <Col className="contenido_fichas">
-                                    { item.monitores.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                    { item.monitores_del_practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
                                 </Col>
                             </div>
                             <div class="d-inline d-md-none col-12">
                                 <Col className="contenido_fichas_pequeño">
-                                    { item.monitores.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                    { item.monitores_del_practicante.map((child, index) => <Desplegable_item key={index} item={child} />) }
                                 </Col>
                             </div>
                         </Row>
@@ -253,18 +253,26 @@ const Desplegable_item = ({item}) => {
                                             </Row>
                             </Col>
                     </Row>
-                    <Row className="fichas-content">
+                    {item.estudiantes_del_monitor ? 
+                    (
+                        <Row className="fichas-content">
                             <div class="d-none d-md-inline col-12">
                                 <Col className="contenido_fichas">
-                                    { item.estudiantes.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                    { item.estudiantes_del_monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
                                 </Col>
                             </div>
                             <div class="d-inline d-md-none col-12">
                                 <Col className="contenido_fichas_pequeño">
-                                    { item.estudiantes.map((child, index) => <Desplegable_item key={index} item={child} />) }
+                                    { item.estudiantes_del_monitor.map((child, index) => <Desplegable_item key={index} item={child} />) }
                                 </Col>
                             </div>
                         </Row>
+                    ):(
+                        <Row className="fichas-content">
+
+                        </Row>
+                    )}
+                    
                 </Col>
             </Row>
         )

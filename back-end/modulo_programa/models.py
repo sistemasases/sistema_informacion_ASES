@@ -16,8 +16,12 @@ class programa (models.Model):
     id_facultad= models.ForeignKey(facultad,on_delete=models.CASCADE,default=0,related_name='id_facultad_in_programa')
     id_sede= models.ForeignKey(sede,on_delete=models.CASCADE,default=None,null=True,related_name='id_sede_in_programa')
 
+class estado_programa (models.Model):
+    nombre = models.CharField(max_length=50)
+    descripcion = models.CharField(max_length=500)
+
 class programa_estudiante (models.Model):
     id_programa= models.ForeignKey(programa,on_delete=models.CASCADE,default=0,related_name='id_programa_in_programa_estudiante')
     id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0,related_name='id_estudiante_in_programa_estudiante')
-    estado = models.BooleanField(default=True)
+    id_estado = models.ForeignKey(estado_programa,on_delete=models.CASCADE,default=None,null=True,related_name='id_estado_programa_in_programa_estudiante')
     traker = models.BooleanField(default=True)

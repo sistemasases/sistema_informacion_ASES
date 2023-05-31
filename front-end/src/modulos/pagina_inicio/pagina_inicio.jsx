@@ -17,7 +17,6 @@ const Pagina_inicio = () => {
   return (
     <>{userRole === 'superAses' || userRole === 'sistemas' ? 
     <div className='banner' style={{marginTop: 20, marginBottom: 20, marginLeft: 22}}>
-      <h1>Ingresaste como admin.</h1>
 
       <div className='banner' style={{marginTop: 20, marginBottom: 20, marginLeft: 22}}>
       <Carousel>

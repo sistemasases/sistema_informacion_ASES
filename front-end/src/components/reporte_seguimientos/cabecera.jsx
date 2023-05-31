@@ -88,19 +88,35 @@ const Cabecera = (props) =>{
 
 
 
+      // axios({
+      //   // Endpoint to send files
+      //   url:  "http://localhost:8000/usuario_rol/practicante/"+19+"/",
+      //   method: "GET",
+      // })
+      // .then((respuesta)=>{
+      //   state.ids_practicantes_del_profesional.push(respuesta.data[0])
+      //   console.log("entra y trae el los practicantses del profesional :"+respuesta.data[0])
+      // })
+      // .catch(err=>{
+      //     return (err)
+      // })
+
+
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/practicante/"+19+"/",
+        url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+19+"/",
         method: "GET",
       })
       .then((respuesta)=>{
-        state.ids_practicantes_del_profesional.push(respuesta.data[0])
+        set_state({
+          ids_practicantes_del_profesional: respuesta.data,
+        });
+        //state.ids_practicantes_del_profesional.push(respuesta.data)
         console.log("entra y trae el los practicantses del profesional :"+respuesta.data[0])
       })
       .catch(err=>{
           return (err)
       })
-
 
 
     },[]);
