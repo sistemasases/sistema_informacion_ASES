@@ -6,7 +6,7 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Academico_pestaña = () =>{
 
-    const userRole = localStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('rol');
 
     return (
         <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">

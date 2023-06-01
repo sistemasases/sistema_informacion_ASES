@@ -13,7 +13,7 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Desercion = () =>{
 
-    const userRole = localStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('rol');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
