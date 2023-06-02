@@ -104,7 +104,7 @@ const Cabecera = (props) =>{
 
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+19+"/",
+        url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+52+"/",
         method: "GET",
       })
       .then((respuesta)=>{
@@ -112,7 +112,7 @@ const Cabecera = (props) =>{
           ids_practicantes_del_profesional: respuesta.data,
         });
         //state.ids_practicantes_del_profesional.push(respuesta.data)
-        console.log("entra y trae el los practicantses del profesional :"+respuesta.data[0])
+        console.log("entra y trae el los practicantses del profesional :"+respuesta.data)
       })
       .catch(err=>{
           return (err)

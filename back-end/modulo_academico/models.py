@@ -1,6 +1,7 @@
 from django.db import models
-from modulo_instancia.models import semestre
+from modulo_instancia.models import semestre, sede
 from modulo_programa.models import programa_estudiante
+from modulo_usuario_rol.models import estudiante
 
 # Create your models here.
 
@@ -15,3 +16,6 @@ class historial_academico (models.Model):
 class materia (models.Model):
     cod_materia = models.CharField(max_length=20, default=None)
     nombre = models.CharField(max_length=50, default=None)
+
+
+
