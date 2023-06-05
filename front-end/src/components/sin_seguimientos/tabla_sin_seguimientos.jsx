@@ -246,19 +246,19 @@ const Tabla_sin_Seguimientos = (props) =>{
             (
               <Row>
                 <DataTableExtensions
-                columns={columnas2}
-                data={records}
-                filter={true}
-                filterPlaceHolder={2}
-                filterDigit={1}
-                exportHeaders={true}
-                >
-                  
-                <DataTable
-                pagination 
-                paginationRowsPerPageOptions={[10,20,30,40,50,100]}
-                paginationComponentOptions={paginacionOpciones}            
-                />
+                  columns={columnas2}
+                  data={records}
+                  filter={true}
+                  filterPlaceHolder={2}
+                  filterDigit={1}
+                  exportHeaders={true}
+                  >
+                    
+                  <DataTable
+                  pagination 
+                  paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+                  paginationComponentOptions={paginacionOpciones}            
+                  />
                 </DataTableExtensions>
                 
               </Row>

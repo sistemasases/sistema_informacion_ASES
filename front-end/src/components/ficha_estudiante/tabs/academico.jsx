@@ -1,12 +1,9 @@
 import React, {useState} from 'react';
-import Select from 'react-select'  ;
-import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
-import { NavLink } from 'react-router-dom';
 import Desplegable_item_academico from "./desplegable_Item_Academico";
 import Modal from 'react-bootstrap/Modal';
+import {useEffect} from 'react';
+import axios from 'axios';
 
 /*
 Tabla Conteo de Seguimientos:
@@ -24,7 +21,7 @@ Tabla Conteo de Seguimientos:
 */
 
 
-const Academico = () =>{
+const Academico = (props) =>{
 
     
     const[switchChecked, setChecked] = useState(false);
@@ -33,80 +30,44 @@ const Academico = () =>{
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-  
-  
-  
-  
-    const tabs=[
-    [
-        {
-            "nombre": "20231",
-            "Actual": true
+
+    const [state,set_state] = useState({
+        data_user_academico : [],
+        tiene_datos_cargados : false
+    })
+
+    useEffect(() => {
+        if(props.data_user_academico[0][0]){
+            setActiveTabIndex(props.data_user_academico[0][0]['nombre'])
         }
-    ],
-    [
-        {
-            "nombre": "2022-2",
-            "Actual": false
-        },
-        {
-            "id": 1,
-            "fecha": "2023-01-04",
-            "observaciones": "esto es una prueba",
-            "revisado_profesional": false,
-            "revisado_practicante": false,
-            "creacion": "2023-01-04T15:49:28.811996Z",
-            "modificacion": "2023-01-04T00:00:00Z",
-            "id_creador": 2,
-            "id_modificador": 2,
-            "id_estudiante": 18
-        },
-        {
-            "id": 4,
-            "fecha": "2023-01-04",
-            "observaciones": "esto es una prueba",
-            "revisado_profesional": false,
-            "revisado_practicante": false,
-            "creacion": "2023-01-04T15:59:36.300078Z",
-            "modificacion": "2023-01-04T15:59:36.300078Z",
-            "id_creador": 2,
-            "id_modificador": 2,
-            "id_estudiante": 18
-        },
-        {
-            "id": 6,
-            "fecha": "2023-01-04",
-            "observaciones": "esto es una prueba",
-            "revisado_profesional": false,
-            "revisado_practicante": false,
-            "creacion": "2023-01-04T16:00:54.873222Z",
-            "modificacion": "2023-01-04T16:00:54.873222Z",
-            "id_creador": 2,
-            "id_modificador": 2,
-            "id_estudiante": 18
-        },
-        {
-            "id": 8,
-            "fecha": "2023-01-04",
-            "observaciones": "esto es una prueba",
-            "revisado_profesional": false,
-            "revisado_practicante": false,
-            "creacion": "2023-01-04T16:03:04.979050Z",
-            "modificacion": "2023-01-04T16:03:04.979050Z",
-            "id_creador": 2,
-            "id_modificador": 2,
-            "id_estudiante": 18
-        },
-    ],
-    [
-        {
-            "nombre": "2022-1",
-            "Actual": false
-        }
-    ]
-  ]
+      }, [state.data_user_academico]);
+
+
+
+
+    useEffect(() => {
+        
+        const url_axios = "http://localhost:8000/academico/lista_historiales_academicos/"+props.id+"/";
+        axios({
+        // Endpoint to send files
+        url:  url_axios,
+        method: "GET",
+        })
+        .then((respuesta)=>{
+            set_state({
+                data_user_academico : respuesta.data,
+                tiene_datos_cargados : true
+            })
+            setActiveTabIndex(respuesta.data[0][0]['nombre'])
+            console.log('entra a la respuesta : ' + respuesta.data[0][0]['nombre'])
+        })
+        .catch(err=>{
+            return ('entra al error : ' + err)
+        })
+
+      }, []);
   
-  const[activeTabIndex, setActiveTabIndex] = useState(tabs[0][0]['nombre']);
+  const[activeTabIndex, setActiveTabIndex] = useState('');
   const activeTab = (index)=> 
   {
     index === activeTabIndex ?
@@ -120,39 +81,42 @@ const Academico = () =>{
     return (
         <Container className="socioeducativa_container">
             <Row className="socioeducativa_seguimientos_pares">Academico</Row>
-
+                {state.tiene_datos_cargados ? 
+                    (
                         <Row className="socioeducativa_fondo" >
-
-                            { tabs.map((item, index) => 
+                        { state.data_user_academico.map((item, index) => 
                             <Row>
-                            <Col className={item[0]['nombre'] === activeTabIndex ? "periodo_asignaciones open" : "periodo_asignaciones"}>
-                            <Row className="periodo_asignaciones_seleccionar" onClick={() => activeTab(item[0]['nombre'])}>
-                                <Col className="periodo_asignaciones_seleccionar_text" >
-                                                    <Row className="periodo_asignaciones_seleccionar_hover">
-                                                        <Col  className="col_periodo_asignaciones_seleccionar_text" > 
-                                                                {item[0]['nombre']}
-                                                                {
-                                                                    item[0]['nombre'] === activeTabIndex ?
-                                                                    (
-                                                                            <i class="bi bi-chevron-up"></i>
-                                                                    )   
-                                                                    :
-                                                                    (
-                                                                            <i class="bi bi-chevron-down"></i>
-                                                                    )
-                                                                }
-                                                        </Col>
-                                                    </Row>
-                                    </Col>
-                            </Row>
-                                <Row className="periodo_asignaciones_contenido">
-                                    {item.map((item, index) => <Desplegable_item_academico key={index} item={item} /> )}
-                                </Row>
-                        </Col>
+                                <Col className={item[0]['nombre'] === activeTabIndex ? "periodo_asignaciones open" : "periodo_asignaciones"}>
+                                    <Row className="periodo_asignaciones_seleccionar" onClick={() => activeTab(item[0]['nombre'])}>
+                                        <Col className="periodo_asignaciones_seleccionar_text" >
+                                            <Row className="periodo_asignaciones_seleccionar_hover">
+                                                <Col  className="col_periodo_asignaciones_seleccionar_text" > 
+                                                    {item[0]['nombre']}
+                                                    {
+                                                        item[0]['nombre'] === activeTabIndex ?
+                                                        (
+                                                                <i class="bi bi-chevron-up"></i>
+                                                        )   
+                                                        :
+                                                        (
+                                                                <i class="bi bi-chevron-down"></i>
+                                                        )
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <Row className="periodo_asignaciones_contenido">
+                                        {item.map((item, index) => <Desplegable_item_academico key={index} item={item} /> )}
+                                    </Row>
+                                </Col>
+                            </Row>) 
+                        }
                     </Row>
+                    ):
+                    (<Row>Cargando</Row>)
+                }
 
-                            ) }
-                </Row>
 
 
                 <Modal show={show} onHide={handleClose}>

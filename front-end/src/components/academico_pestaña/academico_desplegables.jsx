@@ -4,6 +4,9 @@ import Desplegable_item from "./desplegable_Item";
 import Desplegable_item_listas_materias from "./desplegable_Item_listas_materias";
 import Modal from 'react-bootstrap/Modal';
 import Estudiantes from './estudiantes';
+import MOCK_DATA from './MOCK_DATA.json';
+import {useEffect} from 'react';
+import axios from 'axios';
 
 const Academico_desplegable = () =>{
 
@@ -16,176 +19,6 @@ const Academico_desplegable = () =>{
   const handleShow = () => setShow(true);
 
 
-
-
-  const tabs=[
-  [
-      {
-          "nombre": "20231",
-          "Actual": true
-      }
-  ],
-  [
-      {
-          "nombre": "2022-2",
-          "Actual": false
-      },
-      {
-          "id": 1,
-          "fecha": "2023-01-04",
-          "observaciones": "esto es una prueba",
-          "revisado_profesional": false,
-          "revisado_practicante": false,
-          "creacion": "2023-01-04T15:49:28.811996Z",
-          "modificacion": "2023-01-04T00:00:00Z",
-          "id_creador": 2,
-          "id_modificador": 2,
-          "id_estudiante": 18
-      },
-      {
-          "id": 4,
-          "fecha": "2023-01-04",
-          "observaciones": "esto es una prueba",
-          "revisado_profesional": false,
-          "revisado_practicante": false,
-          "creacion": "2023-01-04T15:59:36.300078Z",
-          "modificacion": "2023-01-04T15:59:36.300078Z",
-          "id_creador": 2,
-          "id_modificador": 2,
-          "id_estudiante": 18
-      },
-  ],
-  [
-      {
-          "nombre": "2022-1",
-          "Actual": false
-      }
-  ]
-]
-
-const tabs2 = [
-    {
-        "facultad": "ciencias",
-        "materias":[
-                        {
-                            "asignatura": "ciencia 1",
-                            "profesores": [
-                                            {
-                                                "profesor" : "profesor 1",
-                                                "alumnos" : [
-                                                                {
-                                                                    "alumno": "alumno 1.1"
-                                                                },
-                                                                {
-                                                                    "alumno": "alumno 1.2"
-                                                                },
-                                                            ]
-                                            },
-                                            {
-                                                "profesor" : "profesor 2",
-                                                "alumnos" : [
-                                                                {
-                                                                    "alumno": "alumno 2.1"
-                                                                },
-                                                                {
-                                                                    "alumno": "alumno 2.2"
-                                                                },
-                                                            ]
-                                            }
-                                        ]
-                        },
-                        {
-                            "asignatura": "ciencia 2",
-                            "profesores": [
-                                {
-                                    "profesor" : "profesor 1",
-                                    "alumnos" : [
-                                                    {
-                                                        "alumno": "alumno 1.1"
-                                                    },
-                                                    {
-                                                        "alumno": "alumno 1.2"
-                                                    },
-                                                ]
-                                },
-                                {
-                                    "profesor" : "profesor 2",
-                                    "alumnos" : [
-                                                    {
-                                                        "alumno": "alumno 2.1"
-                                                    },
-                                                    {
-                                                        "alumno": "alumno 2.2"
-                                                    },
-                                                ]
-                                }
-                            ]
-                        }
-                    ]
-    },   
-    {
-        "facultad": "matematicas",
-        "materias":[
-                        {
-                            "asignatura": "calculo 1",
-                            "profesores": [
-                                            {
-                                                "profesor" : "profesor 1",
-                                                "alumnos" : [
-                                                                {
-                                                                    "alumno": "alumno 1.1"
-                                                                },
-                                                                {
-                                                                    "alumno": "alumno 1.2"
-                                                                },
-                                                            ]
-                                            },
-                                            {
-                                                "profesor" : "profesor 2",
-                                                "alumnos" : [
-                                                                {
-                                                                    "alumno": "alumno 2.1"
-                                                                },
-                                                                {
-                                                                    "alumno": "alumno 2.2"
-                                                                },
-                                                            ]
-                                            }
-                                        ]
-                        },
-                        {
-                            "asignatura": "calculo 2",
-                            "profesores": [
-                                {
-                                    "profesor" : "profesor 1",
-                                    "alumnos" : [
-                                                    {
-                                                        "alumno": "alumno 1.1"
-                                                    },
-                                                    {
-                                                        "alumno": "alumno 1.2"
-                                                    },
-                                                ]
-                                },
-                                {
-                                    "profesor" : "profesor 2",
-                                    "alumnos" : [
-                                                    {
-                                                        "alumno": "alumno 2.1"
-                                                    },
-                                                    {
-                                                        "alumno": "alumno 2.2"
-                                                    },
-                                                ]
-                                }
-                            ]
-                        }
-                    ]
-    },   
-]
-
-
-
 const estudiantes_prueba =
     [{'estudiantes':
             [{'nombre':'estudiante1'},
@@ -196,15 +29,45 @@ const estudiantes_prueba =
             ]
         }
     ]
+    const [state,set_state] = useState({
+        facultades : []
+      })
+    
+    const[activeTabIndex, setActiveTabIndex] = useState("0");
+    const activeTab = (index)=> 
+    {
+        index === activeTabIndex ?
+        (
+            setActiveTabIndex(0)
+        )
+        :
+        (
+            setActiveTabIndex(index)
+        )
+    }
 
-const[activeTabIndex, setActiveTabIndex] = useState("0");
-const activeTab = (index)=> 
-{
-  index === activeTabIndex ?
-  (setActiveTabIndex(0))
-  :
-  setActiveTabIndex(index)
-}
+
+
+    useEffect(()=>{
+        axios({
+          // Endpoint to send files
+          url:  "http://localhost:8000/academico/lista_de_facultades/",
+          method: "GET",
+        })
+        .then((respuesta)=>{
+          set_state({
+            ...state,
+            facultades : respuesta.data
+          })
+          console.log("estos son los primeros datos :"+respuesta.data)
+        })
+        .catch(err=>{
+            console.log("estos son los segundos datos :"+err.data)
+        })
+        
+      },[]);
+
+
 
     return (
         
@@ -232,7 +95,7 @@ const activeTab = (index)=>
                                     </Col>
                                 </Row>
                                 <Row className="academico_deplegable_contenido">
-                                    {tabs2.map((item, index) => 
+                                    {state.facultades.map((item, index) => 
                                     <Desplegable_item_listas_materias key={index} item={item} /> )}
                                 </Row>
                             </Col>
