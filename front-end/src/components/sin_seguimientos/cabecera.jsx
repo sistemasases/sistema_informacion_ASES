@@ -46,10 +46,9 @@ const Cabecera = () =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+state.data_user)
         })
         .catch(err=>{
-          console.log("estos son los primeros datos :"+state.data_user)
+          console.log("estos son los pr:"+state.data_user)
         })
         
       },[]);

@@ -17,7 +17,7 @@
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"gestion de permiso",
                 "icon":"bi-people-fill"
             },
@@ -36,7 +36,7 @@
     },
     {
         "id":"2",
-        "path":"/ficha_estudiante",
+        "path":"/ficha_estudiante/sin_seleccion",
         "name":"socieducativo",
         "icon":"bi-people-fill",
         "childrens":[
@@ -48,13 +48,13 @@
             },
             {
                 "id":2,
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"ficha de estudiantes",
                 "icon":"bi-file-earmark-person"
             },
             {
                 "id":3,
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"ficha de monitores",
                 "icon":"bi-file-earmark-person-fill"
             },
@@ -66,13 +66,13 @@
             },
             {
                 "id":5,
-                "path":"/ficha_estudiante",
-                "name":"reporte geográfico Ases",
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"reporte geogradico Ases",
                 "icon":"bi-geo-alt-fill"
             },
             {
                 "id":6,
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reporte formularios",
                 "icon":"bi bi-graph-up-arrow"
             },
@@ -84,14 +84,14 @@
             },
             {
                 "id":8,
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reporte general",
                 "icon":"bi bi-graph-up-arrow"
             },
             {
                 "id":9,
-                "path":"/ficha_estudiante",
-                "name":"reporte gráfico ASES",
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"reporte grafico ASES",
                 "icon":"bi-clipboard2-data-fill"
             },
             {
@@ -103,7 +103,7 @@
             ,
             {
                 "id":11,
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reporte grupal",
                 "icon":"bi-people-fill"
             }
@@ -121,37 +121,37 @@
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"carga de notas",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"inscripcion a monitorias academicas",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"monitorias academicas",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"registro de notas",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reportes historicos academicos",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reportes notas por items",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reportes por docentes",
                 "icon":"bi-people-fill"
             }
@@ -164,12 +164,12 @@
         "icon":"bi-people-fill",
         "childrens":[
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reporte MEN",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reportes ICETEX",
                 "icon":"bi-people-fill"
             }
@@ -182,12 +182,12 @@
         "icon":"bi-people-fill",
         "childrens":[
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"registrar nuevo estudiante",
                 "icon":"bi-people-fill"
             },
             {
-                "path":"/ficha_estudiante",
+                "path":"/ficha_estudiante/sin_seleccion",
                 "name":"reporte discapacidad e inclusion",
                 "icon":"bi-people-fill"
             }

@@ -11,11 +11,14 @@ import Ficha_footer from "./ficha_footer";
 import Info_registros from './info_registros';
 import Programas_academicos from './programas_academicos'
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
-
-
+import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 const Info_basica = (props) =>{
 
+
+    //ids de los tabs para cuando lo s requieran abrir apenas cargue la pestaña     General :1, Sociedu:2, Academico:3, Geografico:4
+       
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
@@ -39,8 +42,9 @@ const Info_basica = (props) =>{
       data_user : [],
       data_rol : [],
       total_datos_estudiantes : [],
-
+      tab_abierto : '',
       seleccionado:'',
+      ya_selecciono_automatico : true ,
 
       id_usuario:'',
       nombres:'',
@@ -55,72 +59,6 @@ const Info_basica = (props) =>{
       nueva_cedula:'',
       edad:'',
     })
-  
-    useEffect(()=>{
-      axios({
-        // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/estudiante/",
-        method: "GET",
-      })
-      .then((respuesta)=>{
-        set_state({
-          ...state,
-          data_user : respuesta.data
-        })
-        console.log("estos son los primeros datos :"+state.data_user)
-      })
-      .catch(err=>{
-        console.log("estos son los primeros datos :"+state.data_user)
-      })
-      console.log("estos son los primeros datos :"+state.data_user)
-      
-    },[]);
-   
-
-
-    const handle_upload = (e) => {
-      // Getting the files from the input
-      console.log([state.rol])
-      console.log([state.usuario])
-    }
-
-
-
-
-
-    const fetchData = async (index)=>{
-      try{
-        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
-        state.total_datos_estudiantes.push(response.data)
-        console.log("entra aqui ssisisisiisj")
-      }
-      catch (error){
-        console.log("no capto el dato")
-        fetchData(index);
-      }
-    }
-
-
-    const handle_users = (e) => {
-      console.log("estos son los segundos datos :"+state.data_user)
-      // Getting the files from the input
-      if(bandera_option_user==true){
-  
-        for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], 
-          label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
-          id:i }
-          datos_option_user.push(dato)
-        }
-        bandera_option_user = false;
-      }
-      else{
-        console.log("bandera off");
-      }
-
-    }
-
-
 
     useEffect(() => {
       console.log('entra al useeffct xd')
@@ -143,9 +81,88 @@ const Info_basica = (props) =>{
       }
       else{
       console.log(state.total_datos_estudiantes.length)
-    }
+      }
+
     }, [state.total_datos_estudiantes]);
 
+
+    const [selectedOption, setSelectedOption] = useState("");
+
+    const { id } = useParams();
+
+
+    useEffect(() => {
+      handle_users()
+    }, [props.data_user]);
+
+
+    const [url, setUrl] = useState('');
+
+
+    useEffect(() => {
+      const currentUrl = window.location.href;
+      const subUrl = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
+      setUrl(subUrl);
+    }, []);
+
+
+    const fetchData = async (index)=>{
+      try{
+        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
+        state.total_datos_estudiantes.push(response.data)
+        console.log("entra aqui ssisisisiisj")
+      }
+      catch (error){
+        console.log("no capto el dato")
+        fetchData(index);
+      }
+    }
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const id_parametros = searchParams.get('id');
+
+    const handle_users = (e) => {
+      // Getting the files from the input
+      if(bandera_option_user==true){
+  
+        for (var i = 0; i < props.data_user['length'] ; i++) {
+          const dato = 
+          { value: props.data_user[i]['id'], 
+          label:props.data_user[i]['cod_univalle']+" "+props.data_user[i]['nombre']+" "+props.data_user[i]['apellido'],
+          id:i }
+          datos_option_user.push(dato)
+
+          //este if lo pongo para que abra academico de una
+          if (url == dato.value && state.ya_selecciono_automatico){
+            setSelectedOption(dato)
+            
+            const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+dato.value+"/";
+            axios({
+              // Endpoint to send files
+              url:  url_axios,
+              method: "GET",
+            })
+            .then((respuesta)=>{
+              set_state({
+                ...state,
+                total_datos_estudiantes : respuesta.data,
+                tab_abierto : 3,
+                ya_selecciono_automatico : false
+              })
+            })
+            .catch(err=>{
+                console.log("no tomo el dato")
+              })
+          }
+        }
+        bandera_option_user = false;
+      }
+      else{
+        console.log("bandera off");
+      }
+
+    }
 
 
     const handle_option_user = (e) => {
@@ -164,21 +181,10 @@ const Info_basica = (props) =>{
         })
       })
       .catch(err=>{
-          console.log("no tomo el dato")
+          console.log("no tomo el dato 174 de basica" + err)
         })
 
-      console.log(e)
-      
-      console.log("este es el")
-      console.log(datos_option_user)
-      console.log("este es el id seleccionado")
-      console.log(e.id)
-      sessionStorage.setItem("id_estudiante_seleccionado", e.value)
-      console.log("id estudiante seleccionado")
-      console.log(sessionStorage.getItem("id_estudiante_seleccionado"))
-      console.log("total datos estudiantes seleccionado")
-      console.log(state.total_datos_estudiantes)
-      console.log(state.total_datos_estudiantes['nombre'])
+        setSelectedOption(e)
 
     }
 
@@ -206,7 +212,9 @@ const Info_basica = (props) =>{
                       <Select className="bold_select"
                               options={datos_option_user} 
                               onMenuOpen={handle_users} 
-                              onChange={handle_option_user}  />
+                              onChange={handle_option_user}  
+                              value={selectedOption}
+                              />
                     </Row>
 
                         <Row className="rowJustFlex" >
@@ -403,7 +411,9 @@ const Info_basica = (props) =>{
                             <Select  className="bold_select_pequeño"
                                         options={datos_option_user} 
                                         onMenuOpen={handle_users} 
-                                        onChange={handle_option_user}  />
+                                        onChange={handle_option_user}  
+                                        value={selectedOption}
+                                        />
           {
                       (state.seleccionado) === '' ?
                       (
@@ -606,7 +616,8 @@ const Info_basica = (props) =>{
 
         <div class="d-none d-md-block col-12">
           <Row>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
+                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}/>
           </Row>
           <Row>
             <Ficha_footer></Ficha_footer>
@@ -624,7 +635,8 @@ const Info_basica = (props) =>{
 
         <div class="d-block d-md-none col-12">
           <Col>
-          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
+          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
+                    seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}/>
           </Col>
         </div>
       

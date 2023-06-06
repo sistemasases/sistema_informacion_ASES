@@ -7,31 +7,31 @@
     },
     {
         "id":2,
-        "path":"/ficha_estudiante",
+        "path":"/ficha_estudiante/sin_seleccion",
         "name":"ficha de estudiantes",
         "icon":"bi-file-earmark-person"
     },
     {
         "id":3,
-        "path":"/ficha_estudiante",
+        "path":"/ficha_estudiante/sin_seleccion",
         "name":"ficha de monitores",
         "icon":"bi-file-earmark-person-fill"
     },
     {
         "id":4,
-        "path":"/ficha_estudiante",
-        "name":"gestión de asignaciones",
+        "path":"/ficha_estudiante/sin_seleccion",
+        "name":"gestion de asignaciones",
         "icon":"bi bi-graph-up-arrow"
     },
     {
         "id":5,
-        "path":"/ficha_estudiante",
-        "name":"reporte geográfico Ases",
+        "path":"/ficha_estudiante/sin_seleccion",
+        "name":"reporte geogradico Ases",
         "icon":"bi-geo-alt-fill"
     },
     {
         "id":6,
-        "path":"/ficha_estudiante",
+        "path":"/ficha_estudiante/sin_seleccion",
         "name":"reporte formularios",
         "icon":"bi bi-graph-up-arrow"
     },
@@ -43,14 +43,14 @@
     },
     {
         "id":8,
-        "path":"/ficha_estudiante",
+        "path":"/ficha_estudiante/sin_seleccion",
         "name":"reporte general",
         "icon":"bi bi-graph-up-arrow"
     },
     {
         "id":9,
-        "path":"/ficha_estudiante",
-        "name":"reporte gráfico ASES",
+        "path":"/ficha_estudiante/sin_seleccion",
+        "name":"reporte grafico ASES",
         "icon":"bi-clipboard2-data-fill"
     },
     {
@@ -62,7 +62,7 @@
     ,
     {
         "id":11,
-        "path":"/ficha_estudiante",
+        "path":"/ficha_estudiante/sin_seleccion",
         "name":"reporte grupal",
         "icon":"bi-people-fill"
     }

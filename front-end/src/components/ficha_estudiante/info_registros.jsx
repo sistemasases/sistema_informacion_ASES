@@ -35,12 +35,10 @@ const Info_registros = (props) =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+state.data_user)
         })
         .catch(err=>{
           console.log("estos son los primeros datos :"+state.data_user)
         })
-        console.log("estos son los primeros datos :"+state.data_user)
         
       },[props.id_estudiante]);
 

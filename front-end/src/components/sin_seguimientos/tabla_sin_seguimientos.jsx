@@ -9,35 +9,47 @@ import axios from 'axios';
 import MOCK_DATA from './MOCK_DATA.json';
 
 
-const Tabla_sin_Seguimientos = () =>{
+const Tabla_sin_Seguimientos = (props) =>{
 
-  const data_tabla = []
   const [state,set_state] = useState({
     semestre_Seleccionado : '',
+    la_info_de_la_tabla : [],
   })
 
-  // useEffect(async()=>{
+  useEffect(()=>{
     
-
-  //   try {
-  //     const respuesta = await axios.get("http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/");
-  //     data_tabla = respuesta.data
-  //     console.log("estos son los primeros datos :"+respuesta.data)
-  //   }catch (err) {
-  //     console.log("no llega :"+data_tabla)
-  //   }
+        axios({
+          // Endpoint to send files
+          url:  "http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/",
+          method: "GET",
+        })
+        .then((respuesta)=>{
+          set_state({
+            la_info_de_la_tabla : respuesta.data
+          })
+            setRecords(respuesta.data)
+          })
+        .catch(err=>{
+            console.log("no llega :"+err)
+        })
     
-    
-  // },[]);
+  },[]);
 
   const  mostrar = async (e) =>{
 
     try {
       const respuesta = await axios.get("http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/");
-      data_tabla = respuesta.data
-      console.log("estos son los primeros datos :"+respuesta.data)
+      state.la_info_de_la_tabla = respuesta.data
+      set_state({
+        la_info_de_la_tabla : respuesta.data
+      })
+      setRecords(respuesta.data)
+      console.log("estos son los primeros :"+respuesta.data)
+      console.log("estos son los segundos :"+state.la_info_de_la_tabla)
+
     }catch (err) {
-      console.log("no llega :"+data_tabla)
+      console.log("no llega :"+err)
+
     }
   }
 
@@ -160,49 +172,49 @@ const Tabla_sin_Seguimientos = () =>{
   }
 
 
-  const [records, setRecords] = useState(data_tabla);
+  const [records, setRecords] = useState(state.la_info_de_la_tabla);
   const [noResults, setNoResults] = useState(false);
 
 
 
   function handleFilter_cedula(event) {
-    const newData = data_tabla.filter(row => row.cedula.toString().includes(event.target.value));
-    const updatedData = newData.length > 0 ? newData : data_tabla;
+    const newData = state.la_info_de_la_tabla.filter(row => row.cedula.toString().includes(event.target.value));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
     setRecords(updatedData);
     setNoResults(newData.length === 0);
   }
 
   function handleFilter_nombre(event) {
-    const newData = data_tabla.filter(row => row.nombres.toLowerCase().includes(event.target.value.toLowerCase()));
-    const updatedData = newData.length > 0 ? newData : data_tabla;
+    const newData = state.la_info_de_la_tabla.filter(row => row.nombres.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
     setRecords(updatedData);
     setNoResults(newData.length === 0);
   }
   
   function handleFilter_apellido(event) {
-    const newData = data_tabla.filter(row => row.apellidos.toLowerCase().includes(event.target.value.toLowerCase()));
-    const updatedData = newData.length > 0 ? newData : data_tabla;
+    const newData = state.la_info_de_la_tabla.filter(row => row.apellidos.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
     setRecords(updatedData);
     setNoResults(newData.length === 0);
   }
   
   function handleFilter_monitor(event) {
-    const newData = data_tabla.filter(row => row.monitor.toLowerCase().includes(event.target.value.toLowerCase()));
-    const updatedData = newData.length > 0 ? newData : data_tabla;
+    const newData = state.la_info_de_la_tabla.filter(row => row.monitor.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
     setRecords(updatedData);
     setNoResults(newData.length === 0);
   }
   
   function handleFilter_practicante(event) {
-    const newData = data_tabla.filter(row => row.practicante.toLowerCase().includes(event.target.value.toLowerCase()));
-    const updatedData = newData.length > 0 ? newData : data_tabla;
+    const newData = state.la_info_de_la_tabla.filter(row => row.practicante.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
     setRecords(updatedData);
     setNoResults(newData.length === 0);
   }
   
   function handleFilter_profesional(event) {
-    const newData = data_tabla.filter(row => row.profesional.toLowerCase().includes(event.target.value.toLowerCase()));
-    const updatedData = newData.length > 0 ? newData : data_tabla;
+    const newData = state.la_info_de_la_tabla.filter(row => row.profesional.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
     setRecords(updatedData);
     setNoResults(newData.length === 0);
   }
@@ -222,6 +234,7 @@ const Tabla_sin_Seguimientos = () =>{
         <Container >
           <Row>
             <Cabecera/>
+            <li>{JSON.stringify(state.records)}</li>
           </Row>
           {noResults && (
             <div className="alert alert-warning" role="alert">
@@ -229,23 +242,23 @@ const Tabla_sin_Seguimientos = () =>{
             </div>
           )}
           {
-            data_tabla.length > 0 ?
+            records.length > 0 ?
             (
               <Row>
                 <DataTableExtensions
-                columns={columnas2}
-                data={records}
-                filter={true}
-                filterPlaceHolder={2}
-                filterDigit={'1'}
-                exportHeaders={true}
-                >
-                  
-                <DataTable
-                pagination 
-                paginationRowsPerPageOptions={[10,20,30,40,50,100]}
-                paginationComponentOptions={paginacionOpciones}            
-                />
+                  columns={columnas2}
+                  data={records}
+                  filter={true}
+                  filterPlaceHolder={2}
+                  filterDigit={1}
+                  exportHeaders={true}
+                  >
+                    
+                  <DataTable
+                  pagination 
+                  paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+                  paginationComponentOptions={paginacionOpciones}            
+                  />
                 </DataTableExtensions>
                 
               </Row>
