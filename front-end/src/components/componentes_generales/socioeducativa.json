@@ -2,7 +2,7 @@
     {
         "id":1,
         "path":"/sin_seguimientos",
-        "name":"Cantidad de seguimeintos",
+        "name":"Cantidad de seguimientos",
         "icon":"bi-instagram"
     },
     {
@@ -20,13 +20,13 @@
     {
         "id":4,
         "path":"/ficha_estudiante",
-        "name":"gestion de asignaciones",
+        "name":"gestión de asignaciones",
         "icon":"bi bi-graph-up-arrow"
     },
     {
         "id":5,
         "path":"/ficha_estudiante",
-        "name":"reporte geogradico Ases",
+        "name":"reporte geográfico Ases",
         "icon":"bi-geo-alt-fill"
     },
     {
@@ -38,7 +38,7 @@
     {
         "id":7,
         "path":"/desercion",
-        "name":"reporte de desercion",
+        "name":"reporte de deserción",
         "icon":"bi-exclamation-circle-fill"
     },
     {
@@ -50,7 +50,7 @@
     {
         "id":9,
         "path":"/ficha_estudiante",
-        "name":"reporte grafico ASES",
+        "name":"reporte gráfico ASES",
         "icon":"bi-clipboard2-data-fill"
     },
     {
