@@ -43,7 +43,7 @@
             {
                 "id":1,
                 "path":"/sin_seguimientos",
-                "name":"Cantidad de seguimeintos",
+                "name":"Cantidad de seguimientos",
                 "icon":"bi-instagram"
             },
             {
@@ -60,8 +60,8 @@
             },
             {
                 "id":4,
-                "path":"/asignaciones",
-                "name":"gestion de asignaciones",
+                "path":"/ficha_estudiante",
+                "name":"gestión de asignaciones",
                 "icon":"bi bi-graph-up-arrow"
             },
             {
@@ -79,7 +79,7 @@
             {
                 "id":7,
                 "path":"/desercion",
-                "name":"reporte de desercion",
+                "name":"reporte de deserción",
                 "icon":"bi-exclamation-circle-fill"
             },
             {
@@ -107,7 +107,6 @@
                 "name":"reporte grupal",
                 "icon":"bi-people-fill"
             }
-        
         ]
     },
     {

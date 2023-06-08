@@ -6,7 +6,7 @@ const all_estudiantes = async () => {
         const res = await axios.get(url_axios 
         //     {
         //         headers: {
-        //         Authorization: 'Bearer ' + localStorage.getItem('token')
+        //         Authorization: 'Bearer ' + sessionStorage.getItem('token')
         //         }
         //    }
         )

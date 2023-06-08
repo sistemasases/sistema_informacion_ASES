@@ -9,7 +9,7 @@ from modulo_programa.models import programa_estudiante, programa
 from modulo_instancia.models import semestre
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
-from modulo_academico.models import curso, profesores, matricula, historial_academico_del_estudiante
+from modulo_academico.models import profesor, matricula, historial_academico, materia
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,7 +18,7 @@ from modulo_usuario_rol import serializers
 from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from .serializers import historial_academico_serializer, materia_serializer, profesores_serializer, curso_serializer, matricula_serializer, matricula_serializer, items_historico_serializer, items_semestre_serializer, notas_historico_serializer, notas_semestre_serializer, historial_academico_estudiante_serializer
+from .serializers import historial_academico_serializer, materia_serializer, profesor_serializer, matricula_serializer, matricula_serializer, items_historico_serializer, items_semestre_serializer, notas_historico_serializer, notas_semestre_serializer
 
 from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer, facultad_serializer
 from modulo_instancia.serializers import semestre_serializer
@@ -48,15 +48,15 @@ class lista_de_facultades_viewsets(viewsets.ModelViewSet):
 
 
 class cursos_facultad_viewsets(viewsets.ModelViewSet):
-    serializer_class = curso_serializer
-    queryset = curso_serializer.Meta.model.objects.all()
+    serializer_class = materia_serializer
+    queryset = materia_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
         list_cursos = []
-        cursos_de_la_facultad = curso.objects.filter(facultad=pk).order_by('codigo').distinct('codigo')
+        cursos_de_la_facultad = materia.objects.filter(facultad=pk).order_by('codigo').distinct('codigo')
 
         for curso_obj in cursos_de_la_facultad:
-            serializer = curso_serializer(curso_obj)
+            serializer = materia_serializer(curso_obj)
             # serialized_curso = serializer.data
             diccionario_curso = {"tipo_dato":"curso",}
             data_curso = dict(serializer.data, **diccionario_curso)
@@ -68,15 +68,15 @@ class cursos_facultad_viewsets(viewsets.ModelViewSet):
 
 
 class franja_curso_viewsets(viewsets.ModelViewSet):
-    serializer_class = curso_serializer
-    queryset = curso_serializer.Meta.model.objects.all()
+    serializer_class = materia_serializer
+    queryset = materia_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
         list_cursos = []
-        cursos_de_la_facultad = curso.objects.filter(codigo = pk).distinct('franja')
+        cursos_de_la_facultad = materia.objects.filter(codigo = pk).distinct('franja')
 
         for curso_obj in cursos_de_la_facultad:
-            serializer = curso_serializer(curso_obj)
+            serializer = materia_serializer(curso_obj)
             # serialized_curso = serializer.data
             diccionario_franja = {"tipo_dato":"franja",}
             data_franja = dict(serializer.data, **diccionario_franja)
@@ -88,8 +88,8 @@ class franja_curso_viewsets(viewsets.ModelViewSet):
 
 
 class profesores_del_curso_viewsets(viewsets.ModelViewSet):
-    serializer_class = profesores_serializer
-    queryset = profesores.objects.all()
+    serializer_class = profesor_serializer
+    queryset = profesor.objects.all()
 
     def list(self, request):
         list_profesores = []
@@ -97,13 +97,13 @@ class profesores_del_curso_viewsets(viewsets.ModelViewSet):
         curso_param = request.GET.get('curso')
         franja_param = request.GET.get('franja')
 
-        profesores_ids = list(curso.objects.filter(codigo=curso_param, franja=franja_param).values('id_profesor', 'id'))
+        profesores_ids = list(materia.objects.filter(codigo=curso_param, franja=franja_param).values('id_profesor', 'id'))
 
         for i in profesores_ids:
             profesor_id = i['id_profesor']
             curso_del_profesor = i['id']
-            profesor = profesores.objects.get(id=profesor_id)
-            serializer = profesores_serializer(profesor)
+            profesor = profesor.objects.get(id=profesor_id)
+            serializer = profesor_serializer(profesor)
             diccionario_franja = {"tipo_dato" : "profesor",
                                     "curso_del_profesor" : curso_del_profesor}
             data_franja = dict(serializer.data, **diccionario_franja)
@@ -138,8 +138,8 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
 
 
 class lista_historiales_academicos_viewsets(viewsets.ModelViewSet):
-    serializer_class = historial_academico_estudiante_serializer
-    queryset = historial_academico_estudiante_serializer.Meta.model.objects.all()
+    serializer_class = historial_academico_serializer
+    queryset = historial_academico_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
         list_semestres_total = []
@@ -148,8 +148,8 @@ class lista_historiales_academicos_viewsets(viewsets.ModelViewSet):
         for i in semestres_ids:
             list_semestres = []
             serializer = semestre_serializer(i)
-            historial_academico_estudiante = historial_academico_del_estudiante.objects.filter(id_estudiante = pk, id_semestre = serializer.data['id'])
-            serializer_historial = historial_academico_estudiante_serializer(historial_academico_estudiante, many=True)
+            historial_academico_estudiante = historial_academico_serializer.objects.filter(id_estudiante = pk, id_semestre = serializer.data['id'])
+            serializer_historial = historial_academico_serializer(historial_academico_estudiante, many=True)
 
             semestre_data = serializer.data
 
@@ -161,8 +161,8 @@ class lista_historiales_academicos_viewsets(viewsets.ModelViewSet):
         return Response(list_semestres_total)
 
 class lista_historiales_academicos_viewsets(viewsets.ModelViewSet):
-    serializer_class = historial_academico_estudiante_serializer
-    queryset = historial_academico_estudiante_serializer.Meta.model.objects.all()
+    serializer_class = historial_academico_serializer
+    queryset = historial_academico_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
         list_semestres_total = []
@@ -171,8 +171,8 @@ class lista_historiales_academicos_viewsets(viewsets.ModelViewSet):
         for i in semestres_ids:
             list_semestres = []
             serializer = semestre_serializer(i)
-            historial_academico_estudiante = historial_academico_del_estudiante.objects.filter(id_estudiante=pk, id_semestre=serializer.data['id'])
-            serializer_historial = historial_academico_estudiante_serializer(historial_academico_estudiante, many=True)
+            historial_academico_estudiante = historial_academico_serializer.objects.filter(id_estudiante=pk, id_semestre=serializer.data['id'])
+            serializer_historial = historial_academico_serializer(historial_academico_estudiante, many=True)
 
             semestre_data = serializer.data
 

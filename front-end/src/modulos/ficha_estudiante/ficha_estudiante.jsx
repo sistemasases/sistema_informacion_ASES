@@ -14,7 +14,7 @@ const Ficha_estudiante = (props) =>{
         data_user : [],
       })
 
-    const userRole = localStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('rol');
 
 
     useEffect(() => {

@@ -2,7 +2,7 @@
     {
         "id":1,
         "path":"/sin_seguimientos",
-        "name":"Cantidad de seguimeintos",
+        "name":"Cantidad de seguimientos",
         "icon":"bi-instagram"
     },
     {
@@ -38,7 +38,7 @@
     {
         "id":7,
         "path":"/desercion",
-        "name":"reporte de desercion",
+        "name":"reporte de deserción",
         "icon":"bi-exclamation-circle-fill"
     },
     {
