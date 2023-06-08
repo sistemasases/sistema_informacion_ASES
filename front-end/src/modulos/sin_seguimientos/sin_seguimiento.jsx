@@ -14,7 +14,7 @@ import axios from 'axios';
 
 const Sin_seguimientos = () =>{
 
-    const userRole = localStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('rol');
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
         la_info_de_la_tabla : [],
