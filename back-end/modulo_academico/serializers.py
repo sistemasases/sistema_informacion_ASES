@@ -9,14 +9,13 @@ from modulo_usuario_rol.models import estudiante
 from .models import (
     historial_academico,
     materia,
-    profesores,
-    curso,
+    profesor,
+    materia,
     matricula,
     items_historico,
     items_semestre,
     notas_historico,
     notas_semestre,
-    historial_academico_del_estudiante
 )
 
 
@@ -36,20 +35,11 @@ class materia_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class profesores_serializer(serializers.ModelSerializer):
+class profesor_serializer(serializers.ModelSerializer):
     class Meta:
-        model = profesores
+        model = profesor
         fields = '__all__'
 
-
-class curso_serializer(serializers.ModelSerializer):
-    # semestre = semestre_serializer()
-    # sede = sede_serializer()
-    # id_profesor = profesores_serializer()
-
-    class Meta:
-        model = curso
-        fields = '__all__'
 
 
 class matricula_serializer(serializers.ModelSerializer):
@@ -97,11 +87,3 @@ class notas_semestre_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class historial_academico_estudiante_serializer(serializers.ModelSerializer):
-    # id_estudiante = estudiante_serializer()
-    # id_semestre = semestre_serializer()
-    # id_programa_estudiante = programa_estudiante_serializer()
-
-    class Meta:
-        model = historial_academico_del_estudiante
-        fields = '__all__'
