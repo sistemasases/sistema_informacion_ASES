@@ -147,12 +147,3 @@ class cohorte_estudiante(models.Model):
     
     class Meta:
         db_table = "cohorte_estudiante"
-
-
-class estudiante_cohorte (models.Model):
-
-    id_cohorte= models.ForeignKey(cohorte,on_delete=models.CASCADE,default=0)
-    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
-    
-    class Meta:
-        db_table = "estudiante_cohorte"

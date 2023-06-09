@@ -22,5 +22,6 @@ router.register(r'ids_estudiantes_del_monitor',ids_estudiantes_del_monitor_views
 router.register(r'info_estudiantes_sin_seguimientos',info_estudiantes_sin_seguimientos_viewsets,basename = 'info_estudiantes_sin_seguimientos')
 router.register(r'ultimo_seguimiento_individual',ultimo_seguimiento_individual_ViewSet,basename = 'ultimo_seguimiento_individual')
 router.register(r'reporte_seguimientos',reporte_seguimientos_viewsets,basename = 'reporte_seguimientos')
+router.register(r'cohorte_estudiante_info',cohorte_estudiante_info_viewsets,basename = 'cohorte_estudiante_info')
 
 urlpatterns = router.urls

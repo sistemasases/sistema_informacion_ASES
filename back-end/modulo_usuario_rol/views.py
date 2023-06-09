@@ -2,10 +2,10 @@ from ast import And
 from operator import and_
 from queue import Empty
 from django.contrib.auth.models import User
-from rest_framework.serializers import ModelSerializer
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, act_simultanea, cond_excepcion, discap_men, estado_civil,  etnia, identidad_gen
+from rest_framework.serializers import ModelSerializer, Serializer
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, act_simultanea, cond_excepcion, discap_men, estado_civil,  etnia, identidad_gen, cohorte_estudiante
 from modulo_geografico.models import barrio, departamento, municipio
-from modulo_programa.models import programa_estudiante, programa
+from modulo_programa.models import programa_estudiante, programa, historial_estado_programa_estudiante
 from modulo_instancia.models import semestre
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
@@ -17,8 +17,8 @@ from modulo_usuario_rol import serializers
 from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer, Estudiante_actualizacion,user_selected, Grupo_etnico_serializer, Actividad_simultanea_serializer, Identidad_de_genero_serializer, Estado_civil_serializer, Condicion_de_excepcion_serializer
-from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer
+from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer, Estudiante_actualizacion,user_selected, Grupo_etnico_serializer, Actividad_simultanea_serializer, Identidad_de_genero_serializer, Estado_civil_serializer, Condicion_de_excepcion_serializer, cohorte_estudiante_serializer
+from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer, historial_estado_programa_estudiante_serializer
 from modulo_instancia.serializers import semestre_serializer
 from modulo_asignacion.serializers import asignacion_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer, inasistencia_serializer
@@ -27,6 +27,9 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
 from rest_framework.decorators import action
+
+from rest_framework.viewsets import ModelViewSet
+import pandas as pd
 
 # Create your views here.
 class user_viewsets (viewsets.ModelViewSet):
@@ -795,51 +798,27 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
 
 
 
-class ultimo_seguimiento_individual_ViewSet (viewsets.ModelViewSet):
-    serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
-    queryset = seguimiento_individual_serializer.Meta.model.objects.all()
+# class ultimo_seguimiento_individual_ViewSet (viewsets.ModelViewSet):
+#     serializer_class = seguimiento_individual_serializer
+#     # permission_classes = (IsAuthenticated,)
+#     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
-    def retrieve(self, request, pk=None):
+#     def retrieve(self, request, pk=None):
 
-        seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk).latest('fecha')
+#         seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk).latest('fecha')
 
-        list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = pk))
+#         list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = pk))
     
 
-        riesgo = {
-            'riesgo_individual': seguimiento_reciente.riesgo_individual,
-            'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
-            'riesgo_academico': seguimiento_reciente.riesgo_academico,
-            'riesgo_economico': seguimiento_reciente.riesgo_economico,
-            'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
-            }
+#         riesgo = {
+#             'riesgo_individual': seguimiento_reciente.riesgo_individual,
+#             'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
+#             'riesgo_academico': seguimiento_reciente.riesgo_academico,
+#             'riesgo_economico': seguimiento_reciente.riesgo_economico,
+#             'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+#             }
 
-        return Response(riesgo,status=status.HTTP_200_OK)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#         return Response(riesgo,status=status.HTTP_200_OK)
 
 
 
@@ -995,6 +974,44 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
 
 
 
+class cohorte_estudiante_info_viewsets (viewsets.ModelViewSet):
+    serializer_class = cohorte_estudiante_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = cohorte_estudiante_serializer.Meta.model.objects.all()
+
+
+    def list(self, request):
+        list_final = []
+
+        list_estudiantes_de_la_cohorte = cohorte_estudiante.objects.all()
+        print(list_estudiantes_de_la_cohorte)
+        for i in list_estudiantes_de_la_cohorte:
+            serializer_usuario_rol =cohorte_estudiante_serializer(i)
+            list_final.append(serializer_usuario_rol.data)
+
+        return Response(list_final,status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        data_estudiante = []
+        data_periodos = []
+        result = []
+
+        list_estudiantes_de_la_cohorte = list(cohorte_estudiante.objects.filter(id_cohorte=pk))
+
+        for i in list_estudiantes_de_la_cohorte:
+            serializer_list = cohorte_estudiante_serializer(i)
+            data_estudiante.append(serializer_list.data)
+
+            estudiante_selected = historial_estado_programa_estudiante.objects.filter(id_estudiante=serializer_list.data['id_estudiante'])
+            for j in estudiante_selected:
+                serializer_estudiante = historial_estado_programa_estudiante_serializer(j)
+                data_periodos.append(serializer_estudiante.data)
+
+            data_estudiante[-1]['periodos'] = data_periodos
+            result.append(data_estudiante[-1])
+            data_periodos = []
+
+        return Response(result, status=status.HTTP_200_OK)
 
 
 

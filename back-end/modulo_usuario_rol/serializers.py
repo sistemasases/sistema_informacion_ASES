@@ -1,6 +1,6 @@
 # import serializers from the REST framework
 from rest_framework import serializers
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante
 from django.contrib.auth.models import User
 
 # create a serializer class
@@ -101,3 +101,9 @@ class user_selected (serializers.ModelSerializer):
 	class Meta:
 		model = User
 		fields = ('id','username', 'first_name', 'last_name')
+
+class cohorte_estudiante_serializer(serializers.ModelSerializer):
+	class Meta:
+		model = cohorte_estudiante
+		fields = '__all__'
+		

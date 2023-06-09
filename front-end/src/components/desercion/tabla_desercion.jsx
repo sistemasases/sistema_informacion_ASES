@@ -14,92 +14,11 @@ const Tabla_desercion = () =>{
 
 
 
-  const columnas2 = [
-    {
-      name:
-      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Codigo</h4>
-      <input onChange={handleFilter_codigo}/>
-      </Row>,
-      selector:'id',
-      sortable:true
-    },
-    {
-      name:
-      <Row className="center_tabla_sin_seguimientos">
-        <h4 className="texto_mas_pequeño">Cedula</h4>
-        <input onChange={handleFilter_cedula}/>
-      </Row>,
-      selector:'phone',
-      sortable:true
-    },
-    {
-      name:
-      <Row className="center_tabla_sin_seguimientos">
-        <h4 className="texto_mas_pequeño">Nombres</h4>
-        <input onChange={handleFilter_nombre}/>
-      </Row>,
-      selector:'first_name',
-      sortable:true,
-    },
-    {
-      name:
-      <Row className="center_tabla_sin_seguimientos">
-        <h4 className="texto_mas_pequeño">Número de documento</h4>
-        <input onChange={handleFilter_cedula}/>
-      </Row>,
-      selector:'last_name',
-      sortable:true,
-    },
-    {
-      name:(<div>
-      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">Número de carreras</h4>
-      </Row>
-</div>),
-      selector:'phone',
-      sortable:true
-    },
-    {
-      name:(<div>
-      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2020A</h4>
-      </Row>
-</div>),
-      selector:'age',
-      sortable:true,
-    },
-    {
-      name:(<div
-      ><Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2020B</h4>
-      </Row>
-</div>),
-      selector:'age',
-      sortable:true,
-    },
-    {
-      name:(<div>
-      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2021A</h4>
-      </Row>
-  </div>),
-      selector:'phone',
-      sortable:true
-    },
-    {
-      name:(<div>
-      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2021B</h4>
-      </Row>
-  </div>),
-      selector:'age',
-      sortable:true,
-    },
-    {
-      name:(<div>
-      <Row className="center_tabla_sin_seguimientos"><h4 className="texto_mas_pequeño">2022A</h4>
-      </Row>
-  </div>),
-      selector:'age',
-      sortable:true,
-    },
-
-  ]
+  const columns = [
+    { name: 'ID Estudiante', selector: 'id_estudiante', sortable: true },
+    { name: 'Tiempo Creación', selector: 'tiempo_creacion', sortable: true },
+    { name: 'Periodos', selector: 'periodos', cell: (row) => JSON.stringify(row.periodos) },
+  ];
     
 
   const paginacionOpciones={
@@ -179,14 +98,14 @@ const Tabla_desercion = () =>{
           </Row>
           <Row>
           <DataTableExtensions
-            columns={columnas2}
+            columns={columns}
             data={records}
             filter={true}
             exportHeaders={true}
             >
               
             <DataTable
-            columns={columnas2}
+            columns={columns}
             data={MOCK_DATA}
             pagination 
             paginationRowsPerPageOptions={[10,20,30,40,50,100]}
