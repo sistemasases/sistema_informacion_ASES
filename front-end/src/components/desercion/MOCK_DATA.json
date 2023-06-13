@@ -4,7 +4,32 @@
         "tiempo_creacion": "2023-06-09T04:07:04.577938Z",
         "id_cohorte": 3,
         "id_estudiante": 29,
-        "periodos": []
+        "periodos": [
+                {
+                "id": 1,
+                "id_programa": 3,
+                "id_estudiante": 30,
+                "id_estado": 2,
+                "id_sede": 14,
+                "id_Semestre": 1
+            },
+            {
+                "id": 2,
+                "id_programa": 3,
+                "id_estudiante": 30,
+                "id_estado": 2,
+                "id_sede": 14,
+                "id_Semestre": 2
+            },
+            {
+                "id": 5,
+                "id_programa": 3,
+                "id_estudiante": 30,
+                "id_estado": 1,
+                "id_sede": 14,
+                "id_Semestre": 6
+            }
+        ]
     },
     {
         "id": 6,
@@ -59,6 +84,23 @@
         "tiempo_creacion": "2023-06-09T04:07:26.918285Z",
         "id_cohorte": 3,
         "id_estudiante": 31,
-        "periodos": []
+        "periodos": [
+                {
+                "id": 1,
+                "id_programa": 3,
+                "id_estudiante": 30,
+                "id_estado": 2,
+                "id_sede": 14,
+                "id_Semestre": 1
+            },
+            {
+                "id": 2,
+                "id_programa": 3,
+                "id_estudiante": 30,
+                "id_estado": 2,
+                "id_sede": 14,
+                "id_Semestre": 2
+            }
+        ]
     }
 ]

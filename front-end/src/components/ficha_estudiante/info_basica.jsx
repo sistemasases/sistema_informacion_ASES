@@ -53,8 +53,11 @@ const Info_basica = (props) =>{
       tipo_doc:'',
       cedula:'',
       correo:'',
-      telefono:'',
+      telefono:3122131542,
       ptogramas:[],
+      monitor : [],
+      practicante : [],
+      profesional : [],
 
       nueva_cedula:'',
       edad:'',
@@ -76,6 +79,9 @@ const Info_basica = (props) =>{
           telefono :state.total_datos_estudiantes['telefono_res'],
           edad : '1',
           programas : state.total_datos_estudiantes['programas'],
+          monitor : state.total_datos_estudiantes['info_monitor'],
+          practicante : state.total_datos_estudiantes['practicante'],
+          profesional : state.total_datos_estudiantes['profesional'],
           total_datos_estudiante_seleccionado : state.total_datos_estudiantes
         })
       }
@@ -185,17 +191,15 @@ const Info_basica = (props) =>{
         })
 
         setSelectedOption(e)
-
     }
 
 
-
-
-
-
-
-
-
+    const handleWhatsapp = (e) =>{
+      if (state.telefono) {
+        const url = `https://api.whatsapp.com/send?phone=${state.telefono}`;
+        window.open(url, "_blank");
+      }
+    }
 
 
 
@@ -216,7 +220,6 @@ const Info_basica = (props) =>{
                               value={selectedOption}
                               />
                     </Row>
-
                         <Row className="rowJustFlex" >
                             <Col className="colInfo1" xs={"12"}>
                                 <Row className="infoRow1">
@@ -273,7 +276,6 @@ const Info_basica = (props) =>{
                                         </Row>
                                       )
                                     } 
-                                    
                                   </Col>
                                 </Row>
                                 {
@@ -316,7 +318,7 @@ const Info_basica = (props) =>{
                                           <button className="boton_editar_info_basica">
                                             <i>TRAYECTORIA</i>
                                           </button> 
-                                          <button className="boton_editar_info_basica">
+                                          <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
                                             <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                           </button>
                                           <Row className="texto_estatico">
@@ -338,6 +340,20 @@ const Info_basica = (props) =>{
                                             item={item}/>) 
                                           }
                                         <Row> 
+                                          <h4 className="texto_mas_pequeño">
+                                            <br/>
+                                            Profesional: {state.profesional.first_name}
+                                            <br/>
+                                            Practicante: {state.practicante.first_name}
+                                            <br/>
+                                            Monitor: {state.monitor.first_name} 
+                                            <br/> 
+                                            Ultima actualización: {state.total_datos_estudiantes.ult_modificacion}
+                                            <br/> 
+                                          </h4>
+                                        </Row>
+
+                                        <Row>  
                                           <h4 className="texto_mas_pequeño">
                                             <br/> 
                                             <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
@@ -366,13 +382,10 @@ const Info_basica = (props) =>{
                                       </div>                                    
                                     </Row>
                                   )
-
                                 }
                           </Col>
                         </Row>
                   </Col>
-
-
                   {
                     (state.seleccionado) === '' ?
                     (
@@ -400,12 +413,6 @@ const Info_basica = (props) =>{
 
 
 
-
-
-
-
-
-
           <div class="d-block d-md-none">
           <Row className="info_basica_borde_pequeño">
                             <Select  className="bold_select_pequeño"
@@ -425,33 +432,26 @@ const Info_basica = (props) =>{
                                   <i class="bi bi-person-fill"></i>
                                 </Row>
                               </Col>
-
                             
                             <Col xs={"7"} sm={"4"}>
                                   <Row className="botones_info_basica_pequeña">
-
                                     <button className="boton_editar_info_basica">
                                       <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                     </button>
                                   </Row>
-                                  
                                   <Row className="texto_estatico_pequeño">
                                     <h4 className="texto_mas_pequeño">Condición de excepción</h4>
                                       <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                   </Row>
-
                                       <Row className="botones_info_basica_pequeña">
                                     <button className="boton_editar_info_basica">
                                       <i>TRAYECTORIA</i>
                                     </button>
                                   </Row>
                               </Col>
-
                                   <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
                             </Row>
-                            
                           </Col>
-                            
                       )
                       :
                       (
@@ -465,7 +465,6 @@ const Info_basica = (props) =>{
 
                                 </Row>
                             </Col>
-
                             
                             <Col xs={"7"} sm={"4"}>
                             <Row className="botones_info_basica_pequeña">
@@ -474,21 +473,17 @@ const Info_basica = (props) =>{
                                   <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                 </button>
                                 </Row>
-
                                 <Row className="texto_estatico_pequeño">
-                                <h4 className="texto_mas_pequeño">Condición de excepción</h4>
+                                  <h4 className="texto_mas_pequeño">Condición de excepción</h4>
                                   <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                 </Row>
-
                                   <Row className="botones_info_basica_pequeña">
                                 <button className="boton_editar_info_basica">
                                   <i>TRAYECTORIA</i>
                                 </button>
                                 </Row>
                             </Col>
-
                                   <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
-
                             </Row>
                           
                           </Col>
@@ -597,15 +592,6 @@ const Info_basica = (props) =>{
                   </Col>
           </Row>
           </div>
-
-
-
-
-
-
-
-
-
 
 
 

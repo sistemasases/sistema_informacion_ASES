@@ -102,6 +102,16 @@ class user_selected (serializers.ModelSerializer):
 		model = User
 		fields = ('id','username', 'first_name', 'last_name')
 
+class user_actualizacion (serializers.Serializer):
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+
+    # def update(self, instance, validated_data):
+    #     instance.first_name = validated_data['first_name']
+    #     instance.last_name = validated_data['last_name']
+    #     instance.save()
+    #     return instance
+
 class cohorte_estudiante_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = cohorte_estudiante

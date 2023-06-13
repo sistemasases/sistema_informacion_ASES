@@ -17,28 +17,27 @@ const Sin_seguimientos = () =>{
     const userRole = sessionStorage.getItem('rol');
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
-        la_info_de_la_tabla : [],
+        semestre_activo : [],
     })
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
         useEffect(()=>{
-        // axios({
-        //   // Endpoint to send files
-        //   url:  "http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/",
-        //   method: "GET",
-        // })
-        // .then((respuesta)=>{
-        //   set_state({
-        //     ...state,
-        //     la_info_de_la_tabla : respuesta.data
-        //   })
-        // })
-        // .catch(err=>{
-        //     console.log("no llega :"+err)
-        // })
-
+        axios({
+          // Endpoint to send files
+          url:  "http://localhost:8000/usuario_rol/semestre/"+14+"/",
+          method: "GET",
+        })
+        .then((respuesta)=>{
+          set_state({
+            ...state,
+            semestre_activo : respuesta.data
+          })
+        })
+        .catch(err=>{
+            console.log("no llega :"+err)
+        })
         
       },[]);
 
@@ -46,7 +45,7 @@ const Sin_seguimientos = () =>{
         
         <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
             <Row className="containerRow">
-                <Tabla_sin_seguimientos la_info_de_la_tabla={state.la_info_de_la_tabla}></Tabla_sin_seguimientos>
+                <Tabla_sin_seguimientos semestre_activo={state.semestre_activo['id']}></Tabla_sin_seguimientos>
             </Row>
 
         </Col> : <Acceso_denegado/>}</>

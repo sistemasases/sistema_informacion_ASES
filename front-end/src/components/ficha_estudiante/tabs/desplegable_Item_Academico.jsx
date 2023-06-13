@@ -13,7 +13,7 @@ const Desplegable_item_academico = ({item}) => {
 
   const columnas2 = [
     {
-      name:'codigo_materia',
+      name:'codigo materia',
       selector:'codigo_materia',
       sortable: true,
       minWidth: '100',
@@ -88,21 +88,21 @@ const Desplegable_item_academico = ({item}) => {
         return (
             <Row className="periodo_activo_o_no">
                         {item.semestre_actual == true ? 
-                        (<Col>El periodo se encuentra en curso</Col>)
+                        (<Col>sin datos</Col>)
                             :
-                        (<Col>El periodo esta finalizado</Col>)}
+                        (<Col>sin datos</Col>)}
             </Row>
         )
-    } else if (item.json_materias)
+    } else if (item[1].json_materias)
             {return(
                 <Row>
                     <Col xs={12} className="col_reportes" >
                         <Row>
                             <Col xs={6}>
-                                promedio semestral : {item.promedio_semestral}
+                                promedio semestral : {item[1].promedio_semestral}
                             </Col>
                             <Col xs={6}>
-                                promedio acumulado : {item.promedio_acumulado}
+                                promedio acumulado : {item[1].promedio_acumulado}
                             </Col>
                         </Row>
                     </Col>
@@ -111,7 +111,7 @@ const Desplegable_item_academico = ({item}) => {
                             <Col xs={12}>
                                 <DataTable
                                     columns={columnas2}
-                                    data={item.json_materias}
+                                    data={item[1].json_materias}
                                     filter={true}
                                     filterPlaceHolder={2}
                                     filterDigit={1}

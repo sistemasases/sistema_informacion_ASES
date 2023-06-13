@@ -6,7 +6,7 @@ from rest_framework.serializers import ModelSerializer, Serializer
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, act_simultanea, cond_excepcion, discap_men, estado_civil,  etnia, identidad_gen, cohorte_estudiante
 from modulo_geografico.models import barrio, departamento, municipio
 from modulo_programa.models import programa_estudiante, programa, historial_estado_programa_estudiante
-from modulo_instancia.models import semestre
+from modulo_instancia.models import semestre, cohorte
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
 
@@ -17,9 +17,9 @@ from modulo_usuario_rol import serializers
 from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer, Estudiante_actualizacion,user_selected, Grupo_etnico_serializer, Actividad_simultanea_serializer, Identidad_de_genero_serializer, Estado_civil_serializer, Condicion_de_excepcion_serializer, cohorte_estudiante_serializer
+from .serializers import  user_serializer,estudiante_serializer,rol_serializer,usuario_rol_serializer, Estudiante_actualizacion,user_selected, Grupo_etnico_serializer, Actividad_simultanea_serializer, Identidad_de_genero_serializer, Estado_civil_serializer, Condicion_de_excepcion_serializer, cohorte_estudiante_serializer, user_actualizacion
 from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer, historial_estado_programa_estudiante_serializer
-from modulo_instancia.serializers import semestre_serializer
+from modulo_instancia.serializers import semestre_serializer, cohorte_serializer
 from modulo_asignacion.serializers import asignacion_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer, inasistencia_serializer
 
@@ -46,114 +46,91 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         var_estudiante = estudiante.objects.get(id=pk)
         serializer_estudiante = estudiante_serializer(var_estudiante)
         diccionario_estudiante = serializer_estudiante.data
-
         #llamado y seteo de barrios, ciudades y otros campos que hagan llamada a otra tabla ademas de estudiante (osea, estudiante tiene el id del campo a llamar de otra tabla)
         #barrio_ini         barrio_res
         barrio_ini_id = diccionario_estudiante['barrio_ini']
         barrio_res_id = diccionario_estudiante['barrio_res']
-
         try:
             barrio_ini_obj = barrio.objects.get(codigo_barrio=barrio_ini_id)
             diccionario_estudiante['barrio_ini'] = barrio_ini_obj.nombre
         except barrio.DoesNotExist:
             diccionario_estudiante['barrio_ini'] = None
-
         try:
             barrio_res_obj = barrio.objects.get(codigo_barrio=barrio_res_id)
             diccionario_estudiante['barrio_res'] = barrio_res_obj.nombre
-
             estrato_obj = barrio.objects.get(codigo_barrio=barrio_res_id)
             estrato_nombre = estrato_obj.estrato
             diccionario_estrato = {'estrato': estrato_nombre}
             diccionario_estudiante.update(diccionario_estrato)
         except barrio.DoesNotExist:
             diccionario_estudiante['barrio_res'] = None
-
-
         #municipio_nac          municipio_ini          municipio_res
         municipio_nac_id = diccionario_estudiante['ciudad_nac']
         municipio_ini_id = diccionario_estudiante['ciudad_ini']
         municipio_res_id = diccionario_estudiante['ciudad_res']
-
         try:
             municipio_nac_obj = municipio.objects.get(codigo_divipola=municipio_nac_id)
             diccionario_estudiante['ciudad_nac'] = municipio_nac_obj.nombre
         except municipio.DoesNotExist:
             diccionario_estudiante['ciudad_nac'] = None
-
         try:
             municipio_ini_obj = municipio.objects.get(codigo_divipola=municipio_ini_id)
             diccionario_estudiante['ciudad_ini'] = municipio_ini_obj.nombre
         except municipio.DoesNotExist:
             diccionario_estudiante['ciudad_ini'] = None
-
         try:
             municipio_res_obj = municipio.objects.get(codigo_divipola=municipio_res_id)
             diccionario_estudiante['ciudad_res'] = municipio_res_obj.nombre
         except municipio.DoesNotExist:
             diccionario_estudiante['ciudad_res'] = None
-            
-
         #cond_excepcion          discap_men
         cond_excepcion_id = diccionario_estudiante['id_cond_excepcion']
         discap_men_id = diccionario_estudiante['id_discapacidad']
-
         diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_id}
-
         try:
             cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_id)
             diccionario_estudiante['id_cond_excepcion'] = cond_excepcion_obj.alias
             diccionario_estudiante.update(diccionarion_cond_excepcion)
         except cond_excepcion.DoesNotExist:
             diccionario_estudiante['id_cond_excepcion'] = None
-
         try:
             discap_men_obj = discap_men.objects.get(codigo_men=discap_men_id)
             diccionario_estudiante['id_discapacidad'] = discap_men_obj.nombre
         except discap_men.DoesNotExist:
             diccionario_estudiante['id_discapacidad'] = None
-
-
         #identidad_gen          etnia       estado_civil        act_simultanea
         identidad_gen_id = diccionario_estudiante['id_identidad_gen']
         etnia_id = diccionario_estudiante['id_etnia']
         estado_civil_id = diccionario_estudiante['id_estado_civil']
         act_simultanea_id = diccionario_estudiante['id_act_simultanea']
-
         diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_id}
         diccionarion_etnia = {'el_id_de_etnia':etnia_id}
         diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_id}
         diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_id}
-
-
         try:
             identidad_gen_obj = identidad_gen.objects.get(opcion_general=identidad_gen_id)
             diccionario_estudiante['id_identidad_gen'] = identidad_gen_obj.genero
             diccionario_estudiante.update(diccionarion_identidad_gen)
         except identidad_gen.DoesNotExist:
             diccionario_estudiante['id_identidad_gen'] = None
-
         try:
             etnia_obj = etnia.objects.get(opcion_general=etnia_id)
             diccionario_estudiante['id_etnia'] = etnia_obj.etnia
             diccionario_estudiante.update(diccionarion_etnia)
         except etnia.DoesNotExist:
             diccionario_estudiante['id_etnia'] = None
-
         try:
             estado_civil_obj = estado_civil.objects.get(id=estado_civil_id)
             diccionario_estudiante['id_estado_civil'] = estado_civil_obj.estado_civil
             diccionario_estudiante.update(diccionarion_estado_civil)
         except estado_civil.DoesNotExist:
             diccionario_estudiante['id_estado_civil'] = None
-
         try:
             act_simultanea_obj = act_simultanea.objects.get(opcion_general=act_simultanea_id)
             diccionario_estudiante['id_act_simultanea'] = act_simultanea_obj.actividad
             diccionario_estudiante.update(diccionarion_act_simultanea)
         except act_simultanea.DoesNotExist:
             diccionario_estudiante['id_act_simultanea'] = None
-
         programas = programa_estudiante.objects.filter(id_estudiante=serializer_estudiante.data['id']).values()
         lista_programas = []
         for i in programas:
@@ -162,11 +139,56 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             dic = i
             dic.update(dic_programa)
             lista_programas.append(dic)
-
         diccionario_programas = {'programas': lista_programas}
+
         diccionario_estudiante.update(diccionario_programas)
 
+        try:
+            semestre_activo = semestre.objects.get(semestre_actual=True)
+            serializer_semestre = semestre_serializer(semestre_activo)
+            el_monitor_asignado = asignacion.objects.get(id_semestre=serializer_semestre.data['id'], id_estudiante=pk)
+            serializer_monitor_asignado = asignacion_serializer(el_monitor_asignado)
+
+            info_monitor = usuario_rol.objects.get(id_usuario = serializer_monitor_asignado.data['id_usuario'], id_semestre=serializer_semestre.data['id'])
+
+            serilalizer_info_monitor = usuario_rol_serializer(info_monitor)
+
+            su_practicante = usuario_rol.objects.get(id_usuario=serilalizer_info_monitor.data['id_jefe'], id_semestre=serializer_semestre.data['id'])
+            serializer_su_practicante = usuario_rol_serializer(su_practicante)
+
+            su_profesional = usuario_rol.objects.get(id_usuario=serializer_su_practicante.data['id_jefe'], id_semestre=serializer_semestre.data['id'])
+            serializer_su_profesional = usuario_rol_serializer(su_profesional)
+
+            consulta_practicante = User.objects.get(id =serializer_su_practicante.data['id_usuario'])
+            serializer_practicante = user_selected(consulta_practicante)
+
+            consulta_profesional = User.objects.get(id =serializer_su_profesional.data['id_usuario'])
+            serializer_profesional = user_selected(consulta_profesional)
+
+            consulta_monitor = User.objects.get(id =serilalizer_info_monitor.data['id_usuario'])
+            serializer_monitor = user_selected(consulta_monitor)
+
+            datos_encargados = {
+                    'profesional': serializer_profesional.data, 
+                    'practicante': serializer_practicante.data,
+                    'info_monitor': serializer_monitor.data
+                    }
+        except:
+            datos_encargados = {
+                    'profesional': 'sin asignacion', 
+                    'practicante': 'sin asignacion',
+                    'info_monitor': 'sin asignacion'
+                    }
+
+        diccionario_estudiante.update(datos_encargados)
+
         return Response(diccionario_estudiante)
+
+
+
+
+
+
 
 
 class rol_viewsets (viewsets.ModelViewSet):
@@ -252,7 +274,6 @@ class monitor_viewsets (viewsets.ModelViewSet):
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def list(self, request):
-        print("hola")
         list_monitores = []
 
         val_rol = rol.objects.get(nombre = 'monitor')
@@ -266,7 +287,6 @@ class monitor_viewsets (viewsets.ModelViewSet):
             list_monitores.append(serializer_monitor.data)
 
         return Response(list_monitores,status=status.HTTP_200_OK)
-
 
     def retrieve(self, request, pk):
         list_monitores = []
@@ -302,7 +322,6 @@ class estudiante_selected_viewsets (viewsets.ModelViewSet):
 
     def list(self, request):
         list_estudiantes = []
-
 
         list_all_estudiantes = list(estudiante.objects.all())
         for i in list_all_estudiantes: 
@@ -466,6 +485,47 @@ class usuario_rol_old_viewsets (viewsets.ModelViewSet):
             list_user_rol.append(usuarios)
         return Response(list_user_rol)
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class user_actualizacion_viewsets(viewsets.ViewSet):
+    serializer_class = user_actualizacion
+
+    def update(self, request, pk=None):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            first_name_request = serializer.validated_data['first_name']
+            last_name_request = serializer.validated_data['last_name']
+            print('entra al calid')
+            print(first_name_request)
+            print(last_name_request)
+            try:
+                user = User.objects.get(pk=pk)
+                user.first_name = first_name_request
+                user.last_name = last_name_request
+                user.save()
+
+                return Response({'Respuesta': 'True'}, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 
 
 
@@ -638,7 +698,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
-    def list(self, request):
+    def retrieve(self, request, pk):
         list_total_datos = []
 
         list_estudiantes = []
@@ -650,16 +710,13 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
         cedula = '',
         nombres = '',
         apellidos = '',
-        cantidad_de_fichas = '',
-        cantidad_de_inasistencias = '',
-        total_fichas = '',
-        monitor = '',
         practicante = '',
         profesional = '',
 
         list_semestre = list(semestre.objects.all().filter(semestre_actual = True))
         # Realiza la lista de estudiantes y los serializa
         consulta_estudiantes = list(estudiante.objects.all())
+
         for i in consulta_estudiantes: 
             serializer_estudiante =estudiante_serializer(i)
             list_estudiantes.append(serializer_estudiante.data)
@@ -677,36 +734,33 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
         val_rol_monitor = rol.objects.get(nombre = 'monitor')
         id_rol_monitor = (rol_serializer(val_rol_monitor)).data['id']
 
-        consulta_id_profesional = list(usuario_rol.objects.filter(id_rol = id_rol_profesional,estado = 'ACTIVO'))
+        consulta_id_profesional = list(usuario_rol.objects.filter(id_rol = id_rol_profesional, id_semestre=pk))
         
         for i in consulta_id_profesional:
             serializer_usuario_rol = usuario_rol_serializer(i)
             consulta_profesional = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
             serializer_profesional = user_selected(consulta_profesional)
-            profesional = serializer_profesional.data['id']
-            print('11111111 datos profesional : ')
-            print(profesional)
+            # profesional = serializer_profesional.data['first_name']
+            profesional = f"{serializer_profesional.data['first_name']} {serializer_profesional.data['last_name']}"
 
-            consulta_id_practicante_selected = list(usuario_rol.objects.filter(id_jefe = serializer_profesional.data['id'], id_rol = id_rol_practicante, estado = 'ACTIVO'))
+            consulta_id_practicante_selected = list(usuario_rol.objects.filter(id_semestre=pk, id_jefe = serializer_profesional.data['id'], id_rol = id_rol_practicante))
 
             for j in consulta_id_practicante_selected:
                 serializer_usuario_rol_selected =usuario_rol_serializer(j)
-                consulta_practicante_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
+                consulta_practicante_selected  = User.objects.get(id = serializer_usuario_rol_selected.data['id_usuario'])
                 serializer_practicante_selected  = user_selected(consulta_practicante_selected )
-                practicante = serializer_practicante_selected.data['id']
-                print('datos practicante : ')
-                print(practicante)
-                consulta_id_monitores_selected = list(usuario_rol.objects.filter(id_jefe = serializer_practicante_selected.data['id'], id_rol = id_rol_monitor, estado = 'ACTIVO'))
+                practicante = f"{serializer_practicante_selected.data['first_name']} {serializer_practicante_selected.data['last_name']}"
+
+                consulta_id_monitores_selected = list(usuario_rol.objects.filter(id_semestre=pk, id_jefe = serializer_practicante_selected.data['id'], id_rol = id_rol_monitor))
 
                 for k in consulta_id_monitores_selected:
                     serializer_usuario_rol_selected =usuario_rol_serializer(k)
                     consulta_monitor_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
                     serializer_monitor_selected  = user_selected(consulta_monitor_selected )
-                    monitor = serializer_monitor_selected.data['id']
+                    # monitor = serializer_monitor_selected.data['first_name']
+                    monitor = f"{serializer_monitor_selected.data['first_name']} {serializer_monitor_selected.data['last_name']}"
 
                     lista_asignacion = list(asignacion.objects.filter(id_usuario = serializer_monitor_selected.data['id'], estado=True))
-                    print('datos monitor : ')
-                    print(monitor)
 
                     for l in lista_asignacion:
                         serializer_asignacion =asignacion_serializer(l)
@@ -862,6 +916,14 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
             consulta_id_monitores_selected = list(usuario_rol.objects.filter(id_jefe = serializer_practicante_selected.data['id'], id_rol = id_rol_monitor))
             total_estudiantes = 0
             list_monitor_selected =[]
+            #reinicio_conteo proacticante
+            practicante_list_inasistencia=0
+            practicante_list_seguimientos=0
+            practicante_count_seguimientos_individual_practicante= 0
+            practicante_count_count_inasistencias_pendientes_profesional= 0
+            practicante_count_count_seguimientos_pendientes_practicante= 0
+            practicante_count_seguimientos_pendientes_profesional= 0
+
             for i in consulta_id_monitores_selected:
                 serializer_usuario_rol_selected =usuario_rol_serializer(i)
                 consulta_monitor_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
@@ -871,7 +933,16 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
                 print('id monitor')
                 print(serializer_monitor_selected.data['id'])
                 list_estudiante_selected =[]
-
+    
+                #reinicio_conteo monitor
+                monitor_list_inasistencia=0
+                monitor_list_seguimientos=0
+                monitor_count_seguimientos_individual_practicante= 0
+                monitor_count_count_inasistencias_pendientes_profesional= 0
+                monitor_count_count_seguimientos_pendientes_practicante= 0
+                monitor_count_seguimientos_pendientes_profesional= 0
+    
+    
                 for i in lista_asignacion:
                     serializer_asignacion =asignacion_serializer(i)
                     estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
@@ -927,7 +998,7 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
                         'cantidad_seguimientos':{
                             'count_inasistencias': list_inasistencia,
                             'count_seguimientos': list_seguimientos,
-                            'list_seguimientos_individual_practicante': list_seguimientos_individual_practicante,
+                            'count_seguimientos_individual_practicante': list_seguimientos_individual_practicante,
                             'count_inasistencias_pendientes_profesional': list_seguimientos_individual_profesional,
                             'count_seguimientos_pendientes_practicante': list_inasistencia_individual_practicante,
                             'count_seguimientos_pendientes_profesional': list_inasistencia_individual_profesional,
@@ -935,19 +1006,40 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
                     }
                     data_estudiantes = dict(serializer_estudiante.data, **counts)
 
+                    # conteos del monitor
+                    monitor_list_inasistencia+=list_inasistencia
+                    monitor_list_seguimientos+=list_seguimientos
+                    monitor_count_seguimientos_individual_practicante+=list_seguimientos_individual_practicante
+                    monitor_count_count_inasistencias_pendientes_profesional+=list_seguimientos_individual_profesional
+                    monitor_count_count_seguimientos_pendientes_practicante+=list_inasistencia_individual_practicante
+                    monitor_count_seguimientos_pendientes_profesional+=list_inasistencia_individual_profesional
+                    #conteos practicante
+                    practicante_list_inasistencia+=list_inasistencia
+                    practicante_list_seguimientos+=list_seguimientos
+                    practicante_count_seguimientos_individual_practicante+=list_seguimientos_individual_practicante
+                    practicante_count_count_inasistencias_pendientes_profesional+=list_seguimientos_individual_profesional
+                    practicante_count_count_seguimientos_pendientes_practicante+=list_inasistencia_individual_practicante
+                    practicante_count_seguimientos_pendientes_profesional+=list_inasistencia_individual_profesional
+                    
                     list_estudiante_selected.append(data_estudiantes)
 
 
                 diccionario_cantidad_reportes_monitor = {'tipo_usuario': 'monitor',
                             'cantidad_estudiantes': len(list_estudiante_selected),
                             'cantidad_reportes' : {
-                                    "count_inasistencias":0,"count_seguimientos":0,
-                                    'count_inasistencias_pendientes_practicante': 0, 'count_inasistencias_pendientes_profesional': 0,
-                                    'count_seguimientos_pendientes_practicante': 0, 'count_seguimientos_pendientes_profesional': 0,
+                                    "count_inasistencias":monitor_list_inasistencia,
+                                    "count_seguimientos":monitor_list_seguimientos,
+                                    'count_inasistencias_pendientes_practicante': monitor_count_seguimientos_individual_practicante, 
+                                    'count_inasistencias_pendientes_profesional': monitor_count_count_inasistencias_pendientes_profesional,
+                                    'count_seguimientos_pendientes_practicante': monitor_count_count_seguimientos_pendientes_practicante, 
+                                    'count_seguimientos_pendientes_profesional': monitor_count_seguimientos_pendientes_profesional,
                                   },'estudiantes_del_monitor':list_estudiante_selected,
                             }
 
                 data_monitores = dict(serializer_monitor_selected.data, **diccionario_cantidad_reportes_monitor)
+
+
+
                 
                 list_monitor_selected.append(data_monitores)
                 total_estudiantes += len(list_estudiante_selected)  # Línea añadida
@@ -955,9 +1047,12 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
             diccionario_cantidad_reportes_practicante = {'tipo_usuario': 'practicante',
                                         'cantidad_estudiantes': 0,
                                         'cantidad_reportes' : {
-                                                "count_inasistencias":0,"count_seguimientos":0,
-                                                'count_inasistencias_pendientes_practicante': 0, 'count_inasistencias_pendientes_profesional': 0,
-                                                'count_seguimientos_pendientes_practicante': 0, 'count_seguimientos_pendientes_profesional': 0,
+                                                "count_inasistencias":practicante_list_inasistencia,
+                                                "count_seguimientos":practicante_list_seguimientos,
+                                                'count_inasistencias_pendientes_practicante': practicante_count_seguimientos_individual_practicante, 
+                                                'count_inasistencias_pendientes_profesional': practicante_count_count_inasistencias_pendientes_profesional,
+                                                'count_seguimientos_pendientes_practicante': practicante_count_count_seguimientos_pendientes_practicante, 
+                                                'count_seguimientos_pendientes_profesional': practicante_count_seguimientos_pendientes_profesional,
                                                 },
                                         'monitores_del_practicante':list_monitor_selected,}
 
@@ -973,12 +1068,28 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
 
 
 
+class cohortes_lista_viewsets (viewsets.ModelViewSet):
+    serializer_class = cohorte_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = cohorte_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+        list_final = []
+
+        list_estudiantes_de_la_cohorte = cohorte.objects.all()
+        print(list_estudiantes_de_la_cohorte)
+        for i in list_estudiantes_de_la_cohorte:
+            serializer_usuario_rol =cohorte_serializer(i)
+            list_final.append(serializer_usuario_rol.data)
+
+        return Response(list_final,status=status.HTTP_200_OK)
+
+
 
 class cohorte_estudiante_info_viewsets (viewsets.ModelViewSet):
     serializer_class = cohorte_estudiante_serializer
     # permission_classes = (IsAuthenticated,)
     queryset = cohorte_estudiante_serializer.Meta.model.objects.all()
-
 
     def list(self, request):
         list_final = []
@@ -1000,12 +1111,25 @@ class cohorte_estudiante_info_viewsets (viewsets.ModelViewSet):
 
         for i in list_estudiantes_de_la_cohorte:
             serializer_list = cohorte_estudiante_serializer(i)
-            data_estudiante.append(serializer_list.data)
+            nombre_estudiante = estudiante.objects.get(id=serializer_list.data['id_estudiante'])
+            nombre = nombre_estudiante.nombre
+            apellido = nombre_estudiante.apellido
+            num_doc = nombre_estudiante.num_doc
+            info_estudiante = {
+                        'nombre' : nombre,
+                        'apellido' : apellido,
+                        'num_doc' : num_doc
+            }
+            data_estudiante.append(dict(serializer_list.data, info_estudiante=info_estudiante))
 
             estudiante_selected = historial_estado_programa_estudiante.objects.filter(id_estudiante=serializer_list.data['id_estudiante'])
             for j in estudiante_selected:
                 serializer_estudiante = historial_estado_programa_estudiante_serializer(j)
-                data_periodos.append(serializer_estudiante.data)
+                programa_obj = programa.objects.get(id=serializer_estudiante.data['id_programa'])
+                nombre_programa = programa_obj.codigo_univalle
+                
+                serializer_estudiante.data['nombre_programa'] = nombre_programa
+                data_periodos.append(dict(serializer_estudiante.data, nombre_programa=nombre_programa))
 
             data_estudiante[-1]['periodos'] = data_periodos
             result.append(data_estudiante[-1])
@@ -1013,6 +1137,92 @@ class cohorte_estudiante_info_viewsets (viewsets.ModelViewSet):
 
         return Response(result, status=status.HTTP_200_OK)
 
+
+
+
+
+
+
+
+class historial_monitor_viewsets(viewsets.ModelViewSet):
+    serializer_class = asignacion_serializer
+    queryset = asignacion_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+        list_final = []
+
+        val_rol = rol.objects.get(nombre='monitor')
+        id_rol_monitor = (rol_serializer(val_rol)).data['id']
+
+        info_monitor = usuario_rol.objects.filter(id_rol=id_rol_monitor)
+
+        for i in info_monitor:
+            serilalizer_info_monitor = usuario_rol_serializer(i)
+
+            sus_estudiantes_ids = asignacion.objects.filter(id_usuario=serilalizer_info_monitor.data['id_usuario']).values_list('id_estudiante', flat=True)
+
+            estudiantes = estudiante.objects.filter(id__in=sus_estudiantes_ids).values('nombre', 'apellido', 'cod_univalle')
+
+            consulta_monitor = User.objects.get(id =serilalizer_info_monitor.data['id_usuario'])
+            serializer_monitor = user_selected(consulta_monitor)
+            
+            datos_unidos = {
+                            'info_monitor': serializer_monitor.data,
+                            'estudiantes': estudiantes} 
+
+            data_monitor = serilalizer_info_monitor.data.copy()  # Crear una copia del diccionario existente
+            data_monitor.update(datos_unidos)  # Unir los datos
+
+            list_final.append(data_monitor)
+
+        return Response(list_final, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        list_final = []
+       
+        val_rol = rol.objects.get(nombre='monitor')
+        id_rol_monitor = (rol_serializer(val_rol)).data['id']
+
+        info_monitor = usuario_rol.objects.filter(id_rol = id_rol_monitor, id_usuario = pk)
+
+        for i in info_monitor:
+            serilalizer_info_monitor = usuario_rol_serializer(i)
+
+            sus_estudiantes_ids = asignacion.objects.filter(id_usuario=serilalizer_info_monitor.data['id_usuario']).values_list('id_estudiante', flat=True)
+
+            estudiantes = estudiante.objects.filter(id__in=sus_estudiantes_ids).values('nombre', 'apellido', 'cod_univalle')
+
+            su_practicante = usuario_rol.objects.get(id_usuario=serilalizer_info_monitor.data['id_jefe'])
+            serializer_su_practicante = usuario_rol_serializer(su_practicante)
+
+            su_profesional = usuario_rol.objects.get(id_usuario=serializer_su_practicante.data['id_jefe'])
+            serializer_su_profesional = usuario_rol_serializer(su_profesional)
+
+            consulta_practicante = User.objects.get(id =serializer_su_practicante.data['id_usuario'])
+            serializer_practicante = user_selected(consulta_practicante)
+
+            consulta_profesional = User.objects.get(id =serializer_su_profesional.data['id_usuario'])
+            serializer_profesional = user_selected(consulta_profesional)
+
+            consulta_monitor = User.objects.get(id =serilalizer_info_monitor.data['id_usuario'])
+            serializer_monitor = user_selected(consulta_monitor)
+
+            datos_semestre = semestre.objects.get(id = serilalizer_info_monitor.data['id_semestre'])
+            serializer_datos_semestre = semestre_serializer(datos_semestre)
+
+            datos_unidos = {
+                            'datos_semestre' : serializer_datos_semestre.data,
+                            'info_monitor': serializer_monitor.data,
+                            'profesional': serializer_profesional.data, 
+                            'practicante': serializer_practicante.data, 
+                            'estudiantes': estudiantes}  # Datos a unir
+
+            data_monitor = serilalizer_info_monitor.data.copy()  # Crear una copia del diccionario existente
+            data_monitor.update(datos_unidos)  # Unir los datos
+
+            list_final.append(data_monitor)
+
+        return Response(list_final, status=status.HTTP_200_OK)
 
 
 # class All_user(APIView):

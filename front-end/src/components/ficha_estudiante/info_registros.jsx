@@ -463,14 +463,6 @@ const Info_registros = (props) =>{
 
 
 
-
-
-
-
-
-
-
-
                 <div class="d-block d-md-none">
                 <Row className="riesgos_pequeño">
                     <Col>
@@ -526,54 +518,9 @@ const Info_registros = (props) =>{
                                             <Col  xs={"6"} sm={"6"} className="center_tipos_riesgos">
                                                     <label  className="button_tipo_riesgo_bajo_texto_pequeño">ECONOMICO</label> 
                                             </Col>
-
                             
-
-
-
-
-                                
-                                
-
-
-
-
-
-
-                                
-                                
-
-
-
-
-
-                                
-                                
-
-
-
-
-                                
-                                
-
-
-
-
-                                
-                                
-
-
-
-
-
-                                    
-
-                            
-
                         </Row>
                     </Col>
-                        
-
                         
                             
                 </Row>

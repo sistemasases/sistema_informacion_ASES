@@ -1,121 +1,244 @@
-import React, {useMemo, useState} from 'react';
-import ReactDOM from "react-dom";
-import {useTable, Table} from 'react-table';
-import MOCK_DATA from './MOCK_DATA.json';
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import Cabecera from "./cabecera.jsx";
-import DataTable, {selectFilter} from'react-data-table-component';
+import React, { useMemo, useState } from 'react';
+import ReactDOM from 'react-dom';
+import { Container, Row } from 'react-bootstrap';
 import DataTableExtensions from 'react-data-table-component-extensions';
-import Select from 'react-select'  ;
+import DataTable from 'react-data-table-component';
+import MOCK_DATA from './MOCK_DATA.json';
+import Cabecera from './cabecera.jsx';
+import { useEffect } from 'react';
+import axios from 'axios';
 
-const Tabla_desercion = () =>{
+const Tabla_desercion = () => {
+  const [state, set_state] = useState({
+    periodo: '',
+    usuario: '',
+    data_user: [],
+    data_periodo: [],
+    data_rol: [],
+    id_cohorte: 3,
+    data_cohorte: [],
+  });
 
-  const data = useMemo(()=> MOCK_DATA, []);
+  const [records, setRecords] = useState([]);
 
-
-
-  const columns = [
-    { name: 'ID Estudiante', selector: 'id_estudiante', sortable: true },
-    { name: 'Tiempo Creación', selector: 'tiempo_creacion', sortable: true },
-    { name: 'Periodos', selector: 'periodos', cell: (row) => JSON.stringify(row.periodos) },
-  ];
-    
-
-  const paginacionOpciones={
-    rowsPerPageText:'textooooo',
-    rangeSeparratorText:'de',
-    selectAllRowsItem:true,
-    selectAllRowsItemtEXT:'TODO',
-
+  function cohorte_seleccion(name) {
+    set_state({
+      ...state,
+      id_cohorte: name,
+    });
   }
 
+  useEffect(() => {
+    axios({
+      url: `http://localhost:8000/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
+      method: 'GET',
+    })
+      .then((respuesta) => {
+        set_state({
+          ...state,
+          data_cohorte: respuesta.data,
+        });
+        setRecords(respuesta.data);
+      })
+      .catch((err) => {
+        console.log('Error:', err);
+      });
+  }, [state.id_cohorte]);
 
+  const columns = useMemo(() => {
+    const existingColumnNames = [];
 
+    const generatedColumns = generatePeriodColumns().filter((column) => {
+      if (existingColumnNames.includes(column.name)) {
+        return false;
+      }
+      existingColumnNames.push(column.name);
+      return true;
+    });
 
-  const [records, setRecords] = useState(MOCK_DATA);
+    return [
+      {
+        name: 'Documento',
+        selector: 'info_estudiante',
+        cell: (row) => `${row.info_estudiante.num_doc}`,
+        sortable: true,
+      },
+      {
+        name: 'Estudiante',
+        selector: 'info_estudiante',
+        cell: (row) => `${row.info_estudiante.nombre} ${row.info_estudiante.apellido}`,
+        sortable: true,
+      },
+      ...generatedColumns,
+    ];
+  }, [records]);
 
+  function generatePeriodColumns() {
+    const periods = getDistinctPeriods();
 
+    periods.sort((a, b) => a.id_Semestre - b.id_Semestre); // Ordenar los periodos en orden ascendente
 
+    return periods.map((period) => ({
+      name: `Semestre ${period.id_Semestre}`,
+      selector: `periodos.find((p) => p.id_Semestre === ${period.id_Semestre})`,
+      cell: (row) => renderPeriodCell(row, period.id_Semestre),
+    }));
+  }
+
+  function getDistinctPeriods() {
+    const periods = new Set();
+
+    records.forEach((item) => {
+      item.periodos.forEach((period) => {
+        periods.add(period);
+      });
+    });
+
+    return Array.from(periods);
+  }
+
+  const paginacionOpciones = {
+    rowsPerPageText: 'textooooo',
+    rangeSeparatorText: 'de',
+    selectAllRowsItem: true,
+    selectAllRowsItemText: 'TODO',
+  };
+
+  function renderPeriodCell(row, idSemestre) {
+    const periods = row.periodos.filter((p) => p.id_Semestre === idSemestre);
   
-  function handleFilter_cedula(event) {
-
-    const newData = MOCK_DATA.filter(row => {
-      return row.phone.includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
-  }
-
-
-  function handleFilter_nombre(event) {
-    const newData = MOCK_DATA.filter(row => {
-      return row.first_name.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
+    if (periods.length > 0) {
+      return periods.map((period) => {
+        const cellStyle = {
+          backgroundColor:
+            period.id_estado === 1
+              ? 'orange'
+              : period.id_estado === 4
+              ? 'lightblue'
+              : 'inherit',
+        };
+  
+        return (
+          <div key={period.id} style={cellStyle}>
+            <div>Progama: {period.nombre_programa}</div>
+            <div>Estado: {renderEstadoLabel(period.id_estado)}</div>
+          </div>
+        );
+      });
+    }
+  
+    return null;
   }
   
-  function handleFilter_apellido(event) {
 
-    const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
+  function renderEstadoLabel(estado) {
+    switch (estado) {
+      case 1:
+        return 'Inactivo';
+      case 2:
+        return 'Activo';
+      case 4:
+        return 'Egresado';
+      default:
+        return '';
+    }
   }
 
-  function handleFilter_codigo(event) {
+  // Conteo total por cada columna de semestre
+  const semestreCount = useMemo(() => {
+    const semestreCounts = {};
 
-    const newData = MOCK_DATA.filter(row => {
-      return row.id.includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
-  }
+    getDistinctPeriods().forEach((period) => {
+      semestreCounts[period.id_Semestre] = {
+        total: 0,
+        inactivo: 0,
+        activo: 0,
+        egresado: 0,
+      };
+    });
 
-  function handleFilter_practicante(event) {
+    records.forEach((item) => {
+      item.periodos.forEach((period) => {
+        semestreCounts[period.id_Semestre].total++;
+        if (period.id_estado === 1) {
+          semestreCounts[period.id_Semestre].inactivo++;
+        } else if (period.id_estado === 2) {
+          semestreCounts[period.id_Semestre].activo++;
+        } else if (period.id_estado === 4) {
+          semestreCounts[period.id_Semestre].egresado++;
+        }
+      });
+    });
 
-    const newData = MOCK_DATA.filter(row => {
-      return row.first_name.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
-  }
+    return semestreCounts;
+  }, [records]);
 
-  function handleFilter_profesional(event) {
-
-    const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
-  }
-
-
-
-
-
-
-    return (
-        
-        <Container >
-          <Row>
-            <Cabecera/>
-          </Row>
-          <Row>
+  return (
+    <Container>
+      <Row>
+        <Cabecera childClicked={(name) => cohorte_seleccion(name)} />
+      </Row>
+      <Row>
+        {records.length > 0 ? (
           <DataTableExtensions
             columns={columns}
             data={records}
             filter={true}
             exportHeaders={true}
-            >
-              
+          >
             <DataTable
-            columns={columns}
-            data={MOCK_DATA}
-            pagination 
-            paginationRowsPerPageOptions={[10,20,30,40,50,100]}
-            paginationComponentOptions={paginacionOpciones}            
+              pagination
+              paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
+              paginationComponentOptions={paginacionOpciones}
             />
-            </DataTableExtensions>
-          </Row>
-          
-        </Container>
-    )
-}
+          </DataTableExtensions>
+        ) : (
+          <div className="alert alert-warning" role="alert">
+            Cargando...
+          </div>
+        )}
+      </Row>
+      <Row>
+        <h5>Totales por columna:</h5>
+        <table>
+          <thead>
+            <tr>
+              <th>Semestre</th>
+              {Object.keys(semestreCount).map((semestre) => (
+                <th key={semestre}>Semestre {semestre}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Total</td>
+              {Object.keys(semestreCount).map((semestre) => (
+                <td key={semestre}>{semestreCount[semestre].total}</td>
+              ))}
+            </tr>
+            <tr>
+              <td>Estudiantes Inactivos</td>
+              {Object.keys(semestreCount).map((semestre) => (
+                <td key={semestre}>{semestreCount[semestre].inactivo}</td>
+              ))}
+            </tr>
+            <tr>
+              <td>Estudiantes Activos</td>
+              {Object.keys(semestreCount).map((semestre) => (
+                <td key={semestre}>{semestreCount[semestre].activo}</td>
+              ))}
+            </tr>
+            <tr>
+              <td>Estudiantes Egresados</td>
+              {Object.keys(semestreCount).map((semestre) => (
+                <td key={semestre}>{semestreCount[semestre].egresado}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </Row>
+    </Container>
+  );
+};
 
-export default Tabla_desercion 
+export default Tabla_desercion;

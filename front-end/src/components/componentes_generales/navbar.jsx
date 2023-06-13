@@ -54,11 +54,11 @@ const navbar = (props) =>{
     <Container  >
         <Row className="nav">
 
-            <Col xs={"4"} md={"3"}>
+            <Col xs={"4"} md={"6"}>
                 <img src={Logos} className="logo" alt='/'></img>
             </Col>
 
-
+{/* 
             <Col className="ulDropdown" xs={"5"} md={"4"}>            
                 <Row >
                     <div class="d-none d-md-inline">
@@ -72,7 +72,7 @@ const navbar = (props) =>{
                         </Col>
                     </div>
                 </Row>
-            </Col>
+            </Col> */}
 
 
             <Col className="boton_perfil" xs={"2"} md={"5"}>

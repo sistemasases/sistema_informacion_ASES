@@ -54,7 +54,7 @@
             },
             {
                 "id":3,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/ficha_monitor",
                 "name":"ficha de monitores",
                 "icon":"bi-file-earmark-person-fill"
             },

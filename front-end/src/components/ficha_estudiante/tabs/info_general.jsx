@@ -95,52 +95,6 @@ const Info_general = (props) =>{
       nuevo_otros_acompañamientos:props.datos['otros_acompañamientos'],
     })
 
-/*
-    useEffect(()=>{
-      
-      axios.get('http://localhost:8000/usuario_rol/grupos_etnicos/')
-      .then((response) => {
-            const grupos = response.data;
-            const opciones = grupos.map((grupo) => ({
-              value: grupo.opcion_general,
-              label: grupo.etnia, // Reemplaza 'nombre' con el campo correspondiente
-              id: grupo.id
-            }));
-            set_state({
-                  ...state,
-                  lista_etnico : opciones
-            })
-            console.error('Entro a los grupos étnicos:');
-      })
-      .catch((error) => {
-        console.error('Error al obtener los grupos étnicos:');
-      });
-
-      
-      axios.get('http://localhost:8000/usuario_rol/grupos_etnicos/')
-      .then((response) => {
-            const grupos = response.data;
-            const opciones = grupos.map((grupo) => ({
-              value: grupo.opcion_general,
-              label: grupo.etnia, // Reemplaza 'nombre' con el campo correspondiente
-              id: grupo.id
-            }));
-            set_state({
-                  ...state,
-                  lista_actividad_simultanea : opciones
-            })
-            console.error('Entro a act simul:');
-      })
-      .catch((error) => {
-        console.error('Error al obtener los grupos étnicos:');
-      });      
-      
-
-
-    },[]
-    );
-
-    */
     const opciones_lista_Etico = ()=>{
       
       axios.get('http://localhost:8000/usuario_rol/grupos_etnicos/')

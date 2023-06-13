@@ -56,9 +56,10 @@ const Desplegable_item_listas_materias = ({item}) => {
         }
       }
 
-      const alumnos_del_profesor = async (index)=>{
+      const alumnos_del_profesor = async (index, index2)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/alumnos_del_profesor/"+index+"/",);
+          const response = await axios.get("http://localhost:8000/academico/alumnos_del_profesor/", 
+                                                        {params : {curso : index, profesor : index2}});
           set_state({
             alumnos_del_profesor : response.data
           })
@@ -94,7 +95,7 @@ const Desplegable_item_listas_materias = ({item}) => {
         return (
             <Row>
                 <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
-                    <Row className="link_academico1" onClick={() => {setOpen(!open); franjas_del_curso(item.codigo)}}>
+                    <Row className="link_academico1" onClick={() => {setOpen(!open); franjas_del_curso(item.cod_materia)}}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover2">
                                 {item.nombre}
@@ -114,7 +115,7 @@ const Desplegable_item_listas_materias = ({item}) => {
         return (
             <Row>
                 <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
-                    <Row className="link_academico1" onClick={() => {setOpen(!open); profesores_de_la_franja(item.codigo, item.franja)}}>
+                    <Row className="link_academico1" onClick={() => {setOpen(!open); profesores_de_la_franja(item.cod_materia, item.franja)}}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover2">
                                 {item.nombre} - {item.codigo} - {item.franja}  ---asdrse- {item.id}
@@ -136,13 +137,20 @@ const Desplegable_item_listas_materias = ({item}) => {
         return (
         <Row>
         <Col className={open ? "fichas_academico3 open" : "fichas_academico3"}>
-            <Row className="link_academico1" onClick={() => {setOpen(!open); alumnos_del_profesor(item.curso_del_profesor)}}>
+            <Row className="link_academico1" onClick={() => {setOpen(!open); alumnos_del_profesor(item.curso_del_profesor, item.id)}}>
                 <Col className="link_text_academico1" >
                     <Row className="link_text_academico_hover3">
                         {item.nombre} -- {item.curso_del_profesor}
                     </Row>
                 </Col>
             </Row>
+            <Row className="content_academico">
+                            <Col className="contenido_fichas_academico2" xs={4}>
+                            </Col>
+                            { item.items_materia.map((item, index) => 
+                                    <Col>( {item.nombre}  :   {item.porcentaje} )</Col>)
+                                }
+                        </Row>
             <Row className="content_academico">
                 <Col className="contenido_fichas_academico3">
                     {state.alumnos_del_profesor.map((child, index) => <Desplegable_item_listas_materias key={index} item={child}/>) }
@@ -157,7 +165,7 @@ const Desplegable_item_listas_materias = ({item}) => {
         <Row>
         <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
             <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
-                <Col className="link_text_academico1_sin_borde">
+                <Col className="link_text_academico1_sin_borde" xs={4}>
                     <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
                         {item.nombre} {item.apellido} - {item.cod_univalle}
                     </Link>
@@ -166,6 +174,9 @@ const Desplegable_item_listas_materias = ({item}) => {
                         {item.alumno}
                     </Row> */}
                 </Col>
+                { item.notas.map((item, index) => 
+                    <Col>( {item.nombre}  :   {item.calificacion} )</Col>)
+                }
             </Row>
         </Col>
     </Row>

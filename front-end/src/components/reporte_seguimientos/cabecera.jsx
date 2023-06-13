@@ -46,9 +46,68 @@ const Cabecera = (props) =>{
       ids_estudiantes_del_monitor : [],
       ids_monitores_del_practicante : [],
       ids_practicantes_del_profesional : [],
+
+      tiene_datos:false,
+
+      
+      fichas_profesional_total:0,
+      fichas_profesional_revisado:0,
+      fichas_profesional_no_revisado:0,
+      total_inasistencias_profesional:0,
+      inasistencias_profesional_revisado:0,
+      inasistencias_profesional_no_revisado:0,
+
+      fichas_practicante_total:0,
+      fichas_practicante_revisado:0,
+      fichas_practicante_no_revisado:0,
+      total_inasistencias_practicante:0,
+      inasistencias_practicante_revisado:0,
+      inasistencias_practicante_no_revisado:0,
     })
 
    
+    const conteo_datos =()=>{
+      set_state({
+        fichas_profesional_total:0,
+        fichas_profesional_revisado:0,
+        fichas_profesional_no_revisado:0,
+        total_inasistencias_profesional:0,
+        inasistencias_profesional_revisado:0,
+        inasistencias_profesional_no_revisado:0,
+  
+        fichas_practicante_total:0,
+        fichas_practicante_revisado:0,
+        fichas_practicante_no_revisado:0,
+        total_inasistencias_practicante:0,
+        inasistencias_practicante_revisado:0,
+        inasistencias_practicante_no_revisado:0,
+      });
+
+      for(var i=0; i < props.ids_practicantes_del_profesional; i++)
+      {
+        set_state({
+          
+          fichas_profesional_total:state.fichas_profesional_total + state.ids_practicantes_del_profesional[i].cantidad_reportes.count_seguimientos,
+          fichas_profesional_no_revisado:state.fichas_profesional_no_revisado + state.ids_practicantes_del_profesional[i].cantidad_reportes.count_seguimientos_pendientes_profesional,
+          total_inasistencias_profesional:state.total_inasistencias_profesional + state.ids_practicantes_del_profesional[i].cantidad_reportes.count_inasistencias,
+          inasistencias_profesional_no_revisado:state.fichas_profesional_no_revisado + state.ids_practicantes_del_profesional[i].cantidad_reportes.count_inasistencias_pendientes_profesional,
+    
+          fichas_practicante_total:state.fichas_profesional_total + state.ids_practicantes_del_profesional[i].cantidad_reportes.count_seguimientos,
+          total_inasistencias_practicante:state.total_inasistencias_profesional + state.ids_practicantes_del_profesional[i].cantidad_reportes.count_inasistencias,
+          fichas_practicante_no_revisado:state.fichas_practicante_no_revisado + state.ids_practicantes_del_profesional[i].cantidad_reportes.count_seguimientos_pendientes_practicante,
+          inasistencias_practicante_no_revisado:state.fichas_profesional_no_revisado + state.ids_practicantes_del_profesional[i].cantidad_reportes.count_inasistencias_pendientes_practicante,
+          
+          
+        });
+      }
+      set_state({
+        fichas_profesional_revisado:state.fichas_profesional_total - state.fichas_profesional_no_revisado,
+        fichas_practicante_revisado:state.fichas_profesional_total - state.fichas_practicante_no_revisado,
+
+        inasistencias_profesional_revisado:state.total_inasistencias_profesional - state.inasistencias_profesional_no_revisado,
+        inasistencias_practicante_revisado:state.total_inasistencias_practicante - state.inasistencias_practicante_no_revisado,
+      })
+    }
 
 
   
@@ -64,42 +123,13 @@ const Cabecera = (props) =>{
           ...state,
           data_periodo : respuesta.data
         })
-        console.log([datos_option_user]);
       })
       .catch(err=>{
           return (err)
       })
 
-      axios({
-        // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/profesional/",
-        method: "GET",
-      })
-      .then((respuesta)=>{
-        set_state({
-          ...state,
-          data_user : respuesta.data
-        })
-        console.log("estos son los primeros datos :"+respuesta.data)
-      })
-      .catch(err=>{
-        console.log("error" + err)
-      })
 
 
-
-      // axios({
-      //   // Endpoint to send files
-      //   url:  "http://localhost:8000/usuario_rol/practicante/"+19+"/",
-      //   method: "GET",
-      // })
-      // .then((respuesta)=>{
-      //   state.ids_practicantes_del_profesional.push(respuesta.data[0])
-      //   console.log("entra y trae el los practicantses del profesional :"+respuesta.data[0])
-      // })
-      // .catch(err=>{
-      //     return (err)
-      // })
 
 
       axios({
@@ -110,9 +140,11 @@ const Cabecera = (props) =>{
       .then((respuesta)=>{
         set_state({
           ids_practicantes_del_profesional: respuesta.data,
-        });
-        //state.ids_practicantes_del_profesional.push(respuesta.data)
-        console.log("entra y trae el los practicantses del profesional :"+respuesta.data)
+          tiene_datos:true
+        })
+        
+        // conteo_datos();
+        
       })
       .catch(err=>{
           return (err)
@@ -126,7 +158,6 @@ const Cabecera = (props) =>{
 
 
     const handle_users = (e) => {
-      console.log("estos son los primeros datos :"+state.data_user)
 
       // Getting the files from the input
       if(bandera_option_user==true){
@@ -147,7 +178,6 @@ const Cabecera = (props) =>{
               total_datos_estudiantes.push(respuesta.data)
             })
             .catch(err=>{
-                console.log("no tomo el dato")
             })
         }
         bandera_option_user = false;
@@ -156,31 +186,64 @@ const Cabecera = (props) =>{
         console.log("bandera off");
       }
     }
+
+    const handle_users_persona = (e) => {
+
+      // Getting the files from the input
+      if(bandera_option_user==true){
+  
+        for (var i = 0; i < props.data_user['length'] ; i++) {
+          const dato = { value: props.data_user[i]['id'], 
+          label:props.data_user[i]['username']+" "+props.data_user[i]['first_name']+" "+props.data_user[i]['last_name'],
+          id:i }
+          datos_option_user.push(dato)
+
+          const url_axios = "http://localhost:8000/usuario_rol/profesional/"+props.data_user[i]['id_rol']+"/";
+            axios({
+              // Endpoint to send files
+              url:  url_axios,
+              method: "GET",
+            })
+            .then((respuesta)=>{
+              total_datos_estudiantes.push(respuesta.data)
+            })
+            .catch(err=>{
+            })
+        }
+        bandera_option_user = false;
+      }
+      else{
+        console.log("bandera off");
+      }
+    }
+
+
+
     const handle_option_user = (e) => {
       // Getting the files from the input
 
-      console.log(e)
       set_state({
         ...state,
         seleccionado:e.id,
-        id_usuario:state.data_user[e.id]['id'],
-        nombres : state.data_user[e.id]['nombre'],
-        apellidos : state.data_user[e.id]['apellido'],
-        codigo : state.data_user[e.id]['cod_univalle'],
-        correo : state.data_user[e.id]['email'],
-        tipo_doc : state.data_user[e.id]['tipo_doc'],
-        cedula : state.data_user[e.id]['num_doc'],
-        telefono : state.data_user[e.id]['telefono_res'],
-        edad : '1',
-        programas : total_datos_estudiantes[e.id]['programas'],
+        id_usuario:props.data_user[e.id]['id'],
         total_datos_estudiante_seleccionado : total_datos_estudiantes[e.id]
       })
-      console.log("este es el")
-      console.log(datos_option_user)
-      console.log("este es el id seleccionado")
-      console.log(e.id)
-      console.log("total datos estudiantes seleccionado")
-      console.log(total_datos_estudiantes)
+      axios({
+        // Endpoint to send files
+        url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+props.data_user[e.id]['id']+"/",
+        method: "GET",
+      })
+      .then((respuesta)=>{
+        set_state({
+          ids_practicantes_del_profesional: respuesta.data,
+          tiene_datos:true
+        });
+        // conteo_datos()
+      })
+      .catch(err=>{
+          return (err)
+      })
+
     }
 
 
@@ -188,7 +251,6 @@ const Cabecera = (props) =>{
   
     const handle_option_periodo = (e) => {
       // Getting the files from the input
-      console.log(e)
       set_state({
         ...state,
         seleccionado:e.id,
@@ -197,24 +259,20 @@ const Cabecera = (props) =>{
 
 
     const handle_periodo = (e) => {
-      console.log("siiiii")
       // Getting the files from the input
       if(bandera_option_periodo==true){
         for (var i = 0; i < state.data_periodo['length'] ; i++) {
           const dato = { value: state.data_periodo[i]['nombre'], label: state.data_periodo[i]['nombre'],id:['id_instancia'] }
           datos_option_periodo.push(dato)
       }
-        console.log([datos_option_periodo]);
         bandera_option_periodo = false;
       }
       else{
-        console.log([datos_option_periodo]);
       }
     }
     const handle_upload = (e) => {
       // Getting the files from the input
-      console.log([state.rol])
-      console.log([state.usuario])
+    
     }
 
 
@@ -253,7 +311,7 @@ const Cabecera = (props) =>{
                 <Row>
                   <Select 
                     options={datos_option_user} 
-                    onMenuOpen={handle_users} 
+                    onMenuOpen={handle_users_persona} 
                     onChange={handle_option_user} 
                     />
                 </Row>
@@ -263,10 +321,21 @@ const Cabecera = (props) =>{
 
             <Row className="prueba_seguimintos">
 
-              {state.ids_practicantes_del_profesional.length>0 ?
-                (<Informacion_rol reportes_estudiante={state.reportes_estudiante} 
-                                ids_estudiantes_del_monitor={state.ids_estudiantes_del_monitor}
-                                ids_monitores_del_practicante={state.ids_monitores_del_practicante} 
+              {state.tiene_datos ?
+                (<Informacion_rol total_fichas_profesional={state.fichas_profesional_total}
+                                  fichas_profesional_revisado={state.fichas_profesional_revisado}
+                                  fichas_profesional_no_revisado={state.fichas_profesional_no_revisado}
+                                  total_inasistencias_profesional={state.fichas_profesional_total}
+                                  inasistencias_profesional_revisado={state.fichas_profesional_revisado}
+                                  inasistencias_profesional_no_revisado={state.fichas_profesional_no_revisado}
+
+                                  total_inasistencias_practicante={state.fichas_profesional_total}
+                                  fichas_practicantel_revisado={state.fichas_profesional_revisado}
+                                  fichas_practicante_no_revisado={state.fichas_profesional_no_revisado}
+                                  total_inasistencias_profesiona={state.total_inasistencias_profesiona}
+                                  inasistencias_practicante_revisado={state.inasistencias_practicante_revisado}
+                                  inasistencias_practicante_no_revisado={state.inasistencias_practicante_no_revisado}
+
                                 ids_practicantes_del_profesional={state.ids_practicantes_del_profesional}>
                 </Informacion_rol>):
                 (

@@ -9,8 +9,17 @@ import {useEffect} from 'react';
 import axios from 'axios';
 
 const Academico_desplegable = () =>{
+  const estudiantes_prueba =
+  [{'estudiantes':
+          [{'nombre':'estudiante1'},
+          {'nombre':'estudiante2'},
+          {'nombre':'estudiante3'},
+          {'nombre':'estudiante4'},
+          {'nombre':'estudiante5'},
+          ]
+      }
+  ]
 
-  
   const[switchChecked, setChecked] = useState(false);
   const handleChange = () => setChecked(!switchChecked);
 
@@ -19,18 +28,11 @@ const Academico_desplegable = () =>{
   const handleShow = () => setShow(true);
 
 
-const estudiantes_prueba =
-    [{'estudiantes':
-            [{'nombre':'estudiante1'},
-            {'nombre':'estudiante2'},
-            {'nombre':'estudiante3'},
-            {'nombre':'estudiante4'},
-            {'nombre':'estudiante5'},
-            ]
-        }
-    ]
     const [state,set_state] = useState({
-        facultades : []
+        facultades : [],
+        estudiantes_a_consultar : [{'estudiantes':''}],
+        tiene_estudiantes: false,
+        tiene_facultades: false
       })
     
     const[activeTabIndex, setActiveTabIndex] = useState("0");
@@ -49,24 +51,54 @@ const estudiantes_prueba =
 
 
     useEffect(()=>{
-        axios({
-          // Endpoint to send files
-          url:  "http://localhost:8000/academico/lista_de_facultades/",
-          method: "GET",
-        })
-        .then((respuesta)=>{
-          set_state({
-            ...state,
-            facultades : respuesta.data
-          })
-          console.log("estos son los primeros datos :"+respuesta.data)
-        })
-        .catch(err=>{
-            console.log("estos son los segundos datos :"+err.data)
-        })
+        // axios({
+        //   // Endpoint to send files
+        //   url:  "http://localhost:8000/academico/lista_de_facultades/",
+        //   method: "GET",
+        // })
+        // .then((respuesta)=>{
+        //   set_state({
+        //     ...state,
+        //     facultades : respuesta.data
+        //   })
+        //   console.log("estos son los primeros datos :"+respuesta.data)
+        // })
+        // .catch(err=>{
+        //     console.log("estos son los segundos datos :"+err.data)
+        // })
+        
         
       },[]);
 
+      const traer_facultades = async (index)=>{
+        try{
+          const response = await axios.get("http://localhost:8000/academico/lista_de_facultades/",);
+          set_state({
+            facultades : response.data,
+            tiene_facultades: true
+          })
+          console.log("entra aqui ssisisisiisj")
+        }
+        catch (error){
+          console.log("no capto el dato")
+        }
+      }
+
+
+
+      const traer_estudiantes = async (index)=>{
+        try{
+          const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/",);
+          set_state({
+            estudiantes_a_consultar : [{'estudiantes' : response.data}],
+            tiene_estudiantes: true
+          })
+          console.log("entra aqui ssisisisiisj")
+        }
+        catch (error){
+          console.log("no capto el dato")
+        }
+      }
 
 
     return (
@@ -75,7 +107,7 @@ const estudiantes_prueba =
             <Row className="academico_seguimientos_pares">Academico</Row>
                 <Row className="academico_fondo">
                             <Col className={"facultades" === activeTabIndex ? "academico_deplegable open" : "academico_deplegable"}>
-                                <Row className="academico_deplegable_seleccionar" onClick={() => activeTab("facultades")}>
+                                <Row className="academico_deplegable_seleccionar" onClick={() => {activeTab("facultades"); traer_facultades()}}>
                                     <Col className="academico_deplegable_seleccionar_text" >
                                         <Row className="academico_deplegable_seleccionar_hover">
                                             <Col  className="col_academico_deplegable_seleccionar_text" > 
@@ -84,7 +116,7 @@ const estudiantes_prueba =
                                                         "facultades" === activeTabIndex ?
                                                         (
                                                                 <i class="bi bi-chevron-up"></i>
-                                                        )   
+                                                        )
                                                         :
                                                         (
                                                                 <i class="bi bi-chevron-down"></i>
@@ -94,21 +126,28 @@ const estudiantes_prueba =
                                         </Row>
                                     </Col>
                                 </Row>
-                                <Row className="academico_deplegable_contenido">
+                                {state.tiene_facultades ?
+                                (
+                                  <Row className="academico_deplegable_contenido">
                                     {state.facultades.map((item, index) => 
                                     <Desplegable_item_listas_materias key={index} item={item} /> )}
                                 </Row>
+                                )
+                                :
+                                (<Row></Row>)
+                                }
+                                
                             </Col>
                 </Row>
                 <Row className="academico_fondo">
                             <Col className={"estudiantes" === activeTabIndex ? "academico_deplegable open" : "academico_deplegable"}>
-                                <Row className="academico_deplegable_seleccionar" onClick={() => activeTab("estudiantes")}>
+                                <Row className="academico_deplegable_seleccionar" onClick={() => {traer_estudiantes();activeTab("estudiantes")}}>
                                     <Col className="academico_deplegable_seleccionar_text" >
                                                         <Row className="academico_deplegable_seleccionar_hover">
                                                             <Col  className="col_academico_deplegable_seleccionar_text" > 
                                                                     Estudiantes
                                                                     {
-                                                                        "facultades" === activeTabIndex ?
+                                                                        "estudiantes" === activeTabIndex ?
                                                                         (
                                                                                 <i class="bi bi-chevron-up"></i>
                                                                         )   
@@ -122,7 +161,9 @@ const estudiantes_prueba =
                                         </Col>
                                 </Row>
                                     <Row className="academico_deplegable_contenido">
-                                        {estudiantes_prueba.map((item, index) => <Estudiantes key={index} item={item} /> )}
+                                        {state.tiene_estudiantes && 
+                                        state.estudiantes_a_consultar.map((item, index) => 
+                                        <Estudiantes key={index} item={item} /> )}
                                     </Row>
 
                             </Col>

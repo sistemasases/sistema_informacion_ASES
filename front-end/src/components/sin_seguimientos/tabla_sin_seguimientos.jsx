@@ -6,13 +6,12 @@ import DataTable, {selectFilter} from'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
 import  {useEffect} from 'react';
 import axios from 'axios';
-import MOCK_DATA from './MOCK_DATA.json';
 
 
 const Tabla_sin_Seguimientos = (props) =>{
 
   const [state,set_state] = useState({
-    semestre_Seleccionado : '',
+    id_semestre : 6,
     la_info_de_la_tabla : [],
   })
 
@@ -20,7 +19,7 @@ const Tabla_sin_Seguimientos = (props) =>{
     
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/",
+          url:  "http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/"+state.id_semestre+"/",
           method: "GET",
         })
         .then((respuesta)=>{
@@ -33,25 +32,7 @@ const Tabla_sin_Seguimientos = (props) =>{
             console.log("no llega :"+err)
         })
     
-  },[]);
-
-  const  mostrar = async (e) =>{
-
-    try {
-      const respuesta = await axios.get("http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/");
-      state.la_info_de_la_tabla = respuesta.data
-      set_state({
-        la_info_de_la_tabla : respuesta.data
-      })
-      setRecords(respuesta.data)
-      console.log("estos son los primeros :"+respuesta.data)
-      console.log("estos son los segundos :"+state.la_info_de_la_tabla)
-
-    }catch (err) {
-      console.log("no llega :"+err)
-
-    }
-  }
+  },[state.id_semestre]);
 
   const columnas2 = [
     {
@@ -222,7 +203,12 @@ const Tabla_sin_Seguimientos = (props) =>{
 
 
 
-
+  function semestre_seleccion(name) {
+    set_state({
+      ...state,
+      id_semestre: name,
+    });
+  }
 
 
 
@@ -233,8 +219,7 @@ const Tabla_sin_Seguimientos = (props) =>{
         
         <Container >
           <Row>
-            <Cabecera/>
-            <li>{JSON.stringify(state.records)}</li>
+            <Cabecera childClicked={(name) => semestre_seleccion(name)}/>
           </Row>
           {noResults && (
             <div className="alert alert-warning" role="alert">
@@ -267,7 +252,6 @@ const Tabla_sin_Seguimientos = (props) =>{
             (
               <div className="alert alert-warning" role="alert">
                 Cargando...
-                <Button onClick={mostrar}>traer información</Button>
               </div>
             )
           }

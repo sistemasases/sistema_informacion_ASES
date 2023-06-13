@@ -19,7 +19,7 @@ const login_component = () =>{
   }
 
   useEffect(() => {
-    const tiempoEspera = 1 * 1 * 30 * 1000; // en milisegundos
+    const tiempoEspera = 1 * 10 * 60 * 1000; // en milisegundos
 
     // Programar la eliminación después del tiempo especificado
     const timeoutId = setTimeout(() => {
