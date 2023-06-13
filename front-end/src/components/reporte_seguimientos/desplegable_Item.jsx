@@ -2,11 +2,37 @@ import React from 'react';
 import {useState } from "react";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
-
+import Socieducativa from "./socieducativa"
+import  {useEffect} from 'react';
+import axios from 'axios';
 const Desplegable_item = ({item}) => {
 
     const [open, setOpen] = useState(false)
 
+    const [state,set_state] = useState({
+        data_user_socioedu:[],
+        tiene_reportes_cargados:false
+      })
+    const traer_reportes = (e) => {
+
+        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+e+"/";
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            method: "GET",
+            })
+            .then((respuesta)=>{
+            state.data_user_socioedu.push(respuesta.data)
+            set_state({
+                data_user_socioedu:respuesta.data,
+                tiene_reportes_cargados:true
+            })
+            })
+            .catch(err=>{
+                return (err)
+            })
+
+    }
     if(item.tipo_usuario === "practicante"){
         return (
             <Row>
@@ -16,9 +42,9 @@ const Desplegable_item = ({item}) => {
                                 <Row className="link_text_reporte_seguimientos_hover1">
                                     <Col  xs={"10"} md={"4"}> 
                                         <Row className="col_link_text_reporte_seguimientos_nombre">
-                                            Nombres
+                                            {item.first_name}
                                             <br></br>
-                                            Apellidos
+                                            {item.last_name}
                                         </Row>
                                     </Col>
                                     <Col className="col_link_text_reporte_seguimientos_spans" xs={"2"} md={"1"}> 
@@ -148,9 +174,9 @@ const Desplegable_item = ({item}) => {
                                             <Row className="link_text_reporte_seguimientos_hover2">
                                                 <Col  xs={"10"}md={"4"}> 
                                                     <Row className="col_link_text_reporte_seguimientos_nombre">
-                                                        Nombres
+                                                        {item.first_name}
                                                         <br></br>
-                                                        Apellidos
+                                                        {item.last_name}
                                                     </Row>
 
                                                 </Col>
@@ -275,15 +301,15 @@ const Desplegable_item = ({item}) => {
         return (
         <Row>
             <Col className={open ? "fichas-item3 open" : "fichas-item3"}>
-                <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
+                <Row className="link_reporte_seguimientos1" onClick={() =>{ setOpen(!open); traer_reportes(item.id) }}>
 
                     <Col className="link_text_reporte_seguimientos1" >
                             <Row className="link_text_reporte_seguimientos_hover3">
                                 <Col  xs={"12"} md={"4"}> 
                                     <Row className="col_link_text_reporte_seguimientos_nombre">
-                                        Nombres
+                                        {item.nombre}
                                         <br></br>
-                                        Apellidos
+                                        {item.apellido}
                                     </Row>
                                 </Col>
                                 <Col className="col_link_text_reporte_seguimientos_info" xs={"12"} md={"6"}> 
@@ -369,6 +395,24 @@ const Desplegable_item = ({item}) => {
                         </Row>
                     </Col>
                 </Row>
+                {state.tiene_reportes_cargados ?
+                (
+                    <Row className="fichas-content">
+                    <div class="d-none d-md-inline col-12">
+                        <Col className="contenido_fichas">
+                            <Socieducativa data_user_socioedu={state.data_user_socioedu}  />
+                        </Col>
+                    </div>
+                    <div class="d-inline d-md-none col-12">
+                        <Col className="contenido_fichas_pequeño">
+                            <Socieducativa data_user_socioedu={state.data_user_socioedu}  />
+                        </Col>
+                    </div>
+                </Row>
+                ):
+                (<Row></Row>)
+
+                }
                 <div className="fichas-content">
                     <a href={item.path || "#"} className="fichas-reportes plain">
                         <h2>{item.num_doc_ini}</h2>

@@ -134,7 +134,7 @@ const Cabecera = (props) =>{
 
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+52+"/",
+        url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+41+"/",
         method: "GET",
       })
       .then((respuesta)=>{

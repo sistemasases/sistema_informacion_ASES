@@ -7,7 +7,7 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 import  {useEffect, componentDidUpdate} from 'react';
 import axios from 'axios';
-import Desplegable_item from "./desplegable_Item";
+import Desplegable_item from "./desplegable_Item copy";
 import Desplegable from "./desplegable";
 
 const Socieducativa = (props) =>{
@@ -19,7 +19,7 @@ const Socieducativa = (props) =>{
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [state,set_state] = useState({
-        data_user : props.data_user_socioedu[0],
+        data_user : props.data_user_socioedu,
       })
 
 
