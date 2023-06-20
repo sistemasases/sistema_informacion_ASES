@@ -1,6 +1,7 @@
 from ast import And
 from operator import and_
 from queue import Empty
+from datetime import datetime
 from django.contrib.auth.models import User
 from rest_framework.serializers import ModelSerializer, Serializer
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, act_simultanea, cond_excepcion, discap_men, estado_civil,  etnia, identidad_gen, cohorte_estudiante
@@ -86,10 +87,11 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         #cond_excepcion          discap_men
         cond_excepcion_id = diccionario_estudiante['id_cond_excepcion']
         discap_men_id = diccionario_estudiante['id_discapacidad']
-        diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_id}
+        # diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_id}
         try:
             cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_id)
-            diccionario_estudiante['id_cond_excepcion'] = cond_excepcion_obj.alias
+            # diccionario_estudiante['id_cond_excepcion'] = cond_excepcion_obj.alias
+            diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_obj.alias}
             diccionario_estudiante.update(diccionarion_cond_excepcion)
         except cond_excepcion.DoesNotExist:
             diccionario_estudiante['id_cond_excepcion'] = None
@@ -103,31 +105,35 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         etnia_id = diccionario_estudiante['id_etnia']
         estado_civil_id = diccionario_estudiante['id_estado_civil']
         act_simultanea_id = diccionario_estudiante['id_act_simultanea']
-        diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_id}
-        diccionarion_etnia = {'el_id_de_etnia':etnia_id}
-        diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_id}
-        diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_id}
+        # diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_id}
+        # diccionarion_etnia = {'el_id_de_etnia':etnia_id}
+        # diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_id}
+        # diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_id}
         try:
             identidad_gen_obj = identidad_gen.objects.get(opcion_general=identidad_gen_id)
-            diccionario_estudiante['id_identidad_gen'] = identidad_gen_obj.genero
+            # diccionario_estudiante['id_identidad_gen'] = identidad_gen_obj.genero
+            diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
             diccionario_estudiante.update(diccionarion_identidad_gen)
         except identidad_gen.DoesNotExist:
             diccionario_estudiante['id_identidad_gen'] = None
         try:
             etnia_obj = etnia.objects.get(opcion_general=etnia_id)
-            diccionario_estudiante['id_etnia'] = etnia_obj.etnia
+            # diccionario_estudiante['id_etnia'] = etnia_obj.etnia
+            diccionarion_etnia = {'el_id_de_etnia':etnia_obj.etnia}
             diccionario_estudiante.update(diccionarion_etnia)
         except etnia.DoesNotExist:
             diccionario_estudiante['id_etnia'] = None
         try:
             estado_civil_obj = estado_civil.objects.get(id=estado_civil_id)
-            diccionario_estudiante['id_estado_civil'] = estado_civil_obj.estado_civil
+            # diccionario_estudiante['id_estado_civil'] = estado_civil_obj.estado_civil
+            diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_obj.estado_civil}
             diccionario_estudiante.update(diccionarion_estado_civil)
         except estado_civil.DoesNotExist:
             diccionario_estudiante['id_estado_civil'] = None
         try:
             act_simultanea_obj = act_simultanea.objects.get(opcion_general=act_simultanea_id)
-            diccionario_estudiante['id_act_simultanea'] = act_simultanea_obj.actividad
+            # diccionario_estudiante['id_act_simultanea'] = act_simultanea_obj.actividad
+            diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_obj.actividad}
             diccionario_estudiante.update(diccionarion_act_simultanea)
         except act_simultanea.DoesNotExist:
             diccionario_estudiante['id_act_simultanea'] = None
@@ -543,7 +549,6 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
         # if (serializer.is_valid()):
         serializer = self.serializer_class(data=request.data)
 
-
         print('este es jajaja : ' + str(serializer))
         if serializer.is_valid():
 
@@ -552,16 +557,16 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
             celular_request = serializer.data['celular']
             email_request = serializer.data['email']
             sexo_request = serializer.data['sexo']
-            cantidad_hijo_request = serializer.data['cantidad_hijo']
+            cantidad_hijo_request = serializer.data['hijos']
             deporte_request = serializer.data['actividades_ocio_deporte']
-            acudiente_emergencia_request = serializer.data['acudiente_emergencia']
-            tel_acudiente_emergencia_request = serializer.data['tel_acudiente_emergencia']
+            acudiente_emergencia_request = serializer.data['acudiente']
+            tel_acudiente_emergencia_request = serializer.data['telefono_acudiente']
 
-            etnia_request = serializer.data['etnia']
-            act_simultanea_request = serializer.data['act_simultanea']
-            identidad_gen_request = serializer.data['identidad_gen']
-            estado_civil_request = serializer.data['estado_civil']
-            cond_excepcion_request = serializer.data['cond_excepcion']
+            etnia_request = serializer.data['id_etnia']
+            act_simultanea_request = serializer.data['id_act_simultanea']
+            identidad_gen_request = serializer.data['id_identidad_gen']
+            estado_civil_request = serializer.data['id_estado_civil']
+            cond_excepcion_request = serializer.data['id_cond_excepcion']
 
             var_estudiante = estudiante.objects.get(id=pk)
             serializer_estudiante = estudiante_serializer(var_estudiante)
@@ -579,21 +584,54 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
                 var_estudiante.hijos = cantidad_hijo_request
                 var_estudiante.acudiente = acudiente_emergencia_request
                 var_estudiante.telefono_acudiente = tel_acudiente_emergencia_request
+
+                try:
+                    etnia_obj = etnia.objects.get(id=etnia_request)
+                    var_estudiante.id_etnia = etnia_obj
+                except:
+                    print('no hiz etnia')
+
+                try:
+                    act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
+                    var_estudiante.id_act_simultanea = act_simultanea_obj
+                except:
+                    print('no hiz act_simultanea')
+
+                try:
+                    identidad_gen_obj = identidad_gen.objects.get(id=identidad_gen_request)
+                    var_estudiante.id_identidad_gen = identidad_gen_obj
+                except:
+                    print('no hiz identidad_gen')
+
+                try:
+                    estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
+                    var_estudiante.id_estado_civil = estado_civil_obj
+                except:
+                    print('no hiz estado_civil')
+
+                try:
+                    cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
+                    var_estudiante.id_cond_excepcion = cond_excepcion_obj
+                except:
+                    print('no hiz cond_excepcion')
+
+
+
                 
-                etnia_obj = etnia.objects.get(id=etnia_request)
-                var_estudiante.id_etnia = etnia_obj
+                # etnia_obj = etnia.objects.get(id=etnia_request)
+                # var_estudiante.id_etnia = etnia_obj
 
-                act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
-                var_estudiante.id_act_simultanea = act_simultanea_obj
+                # act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
+                # var_estudiante.id_act_simultanea = act_simultanea_obj
 
-                identidad_gen_obj = identidad_gen.objects.get(id=identidad_gen_request)
-                var_estudiante.id_identidad_gen = identidad_gen_obj
+                # identidad_gen_obj = identidad_gen.objects.get(id=identidad_gen_request)
+                # var_estudiante.id_identidad_gen = identidad_gen_obj
 
-                estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
-                var_estudiante.id_estado_civil = estado_civil_obj
+                # estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
+                # var_estudiante.id_estado_civil = estado_civil_obj
 
-                cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
-                var_estudiante.id_cond_excepcion = cond_excepcion_obj
+                # cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
+                # var_estudiante.id_cond_excepcion = cond_excepcion_obj
 
                 var_estudiante.save()
                 return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
@@ -604,10 +642,7 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
         print(serializer.errors)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            # except:
-            #     return Response(
-            #     status=status.HTTP_404_NOT_FOUND
-            #     )
+
 
 
 class Grupo_etnico_viewsets(viewsets.ModelViewSet):
@@ -737,6 +772,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
         consulta_id_profesional = list(usuario_rol.objects.filter(id_rol = id_rol_profesional, id_semestre=pk))
         
         for i in consulta_id_profesional:
+            print('entra a los profesionales, son :' + str(consulta_id_profesional))
             serializer_usuario_rol = usuario_rol_serializer(i)
             consulta_profesional = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
             serializer_profesional = user_selected(consulta_profesional)
@@ -746,6 +782,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
             consulta_id_practicante_selected = list(usuario_rol.objects.filter(id_semestre=pk, id_jefe = serializer_profesional.data['id'], id_rol = id_rol_practicante))
 
             for j in consulta_id_practicante_selected:
+                print('entra a los practicantes, son :' + str(consulta_id_practicante_selected))
                 serializer_usuario_rol_selected =usuario_rol_serializer(j)
                 consulta_practicante_selected  = User.objects.get(id = serializer_usuario_rol_selected.data['id_usuario'])
                 serializer_practicante_selected  = user_selected(consulta_practicante_selected )
@@ -754,15 +791,17 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
                 consulta_id_monitores_selected = list(usuario_rol.objects.filter(id_semestre=pk, id_jefe = serializer_practicante_selected.data['id'], id_rol = id_rol_monitor))
 
                 for k in consulta_id_monitores_selected:
+                    print('entra a los monitores, son :' + str(consulta_id_monitores_selected))
                     serializer_usuario_rol_selected =usuario_rol_serializer(k)
                     consulta_monitor_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
                     serializer_monitor_selected  = user_selected(consulta_monitor_selected )
                     # monitor = serializer_monitor_selected.data['first_name']
                     monitor = f"{serializer_monitor_selected.data['first_name']} {serializer_monitor_selected.data['last_name']}"
 
-                    lista_asignacion = list(asignacion.objects.filter(id_usuario = serializer_monitor_selected.data['id'], estado=True))
+                    lista_asignacion = list(asignacion.objects.filter(id_usuario = serializer_monitor_selected.data['id'], estado=True, id_semestre=pk))
 
                     for l in lista_asignacion:
+                        print('entra a los estudiantes, son :' + str(lista_asignacion))
                         serializer_asignacion =asignacion_serializer(l)
                         estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
                         serializer_estudiante =estudiante_serializer(estudiante_selected)
@@ -894,6 +933,10 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
         val_rol = rol.objects.get(nombre = 'Practicante')
         id_rol_practicante = (rol_serializer(val_rol)).data['id']
 
+        # seteo del semestre a analizar
+        list_semestre = list(semestre.objects.all().filter(semestre_actual = True))
+        serializer_semestre = semestre_serializer(list_semestre[0])
+
         consulta_id_practicante = list(usuario_rol.objects.filter(id_rol = id_rol_practicante,estado = 'ACTIVO'))
         for i in consulta_id_practicante:
             serializer_usuario_rol =usuario_rol_serializer(i)
@@ -928,7 +971,7 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
                 serializer_usuario_rol_selected =usuario_rol_serializer(i)
                 consulta_monitor_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
                 serializer_monitor_selected  = user_selected(consulta_monitor_selected )
-                lista_asignacion = list(asignacion.objects.filter(id_usuario = serializer_monitor_selected.data['id'], estado=True))
+                lista_asignacion = list(asignacion.objects.filter(id_usuario = serializer_monitor_selected.data['id'], estado=True, id_semestre=serializer_semestre.data['id']))
 
                 print('id monitor')
                 print(serializer_monitor_selected.data['id'])
@@ -947,11 +990,13 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
                     serializer_asignacion =asignacion_serializer(i)
                     estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
                     serializer_estudiante =estudiante_serializer(estudiante_selected)
-                    
-                    list_semestre = list(semestre.objects.all().filter(semestre_actual = True))
-                    serializer_semestre =semestre_serializer(0)
-                    print('id estudiante')
-                    print(serializer_estudiante.data['id'])
+
+
+                    fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+                    fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+                    print('el priiiiiiint' + str(serializer_semestre))
+                    # print('id estudiante')
+                    # print(serializer_estudiante.data['id'])
                     list_seguimientos_individual_practicante = seguimiento_individual.objects.filter(
                                                         id_estudiante = serializer_estudiante.data['id'],
                                                         revisado_practicante = False,
@@ -960,32 +1005,32 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
                     list_inasistencia_individual_practicante = inasistencia.objects.filter(
                                                         id_estudiante = serializer_estudiante.data['id'], 
                                                         revisado_practicante = False,
-                                                        # fecha > serializer_semestre.data['fecha_inicio'],
-                                                        # fecha < serializer_semestre.data['fecha_fin']
+                                                        fecha__gt = fecha_inicio,
+                                                        fecha__lt =fecha_fin
                                                         ).count()
 
                     list_seguimientos_individual_profesional = seguimiento_individual.objects.filter(
                                                         id_estudiante = serializer_estudiante.data['id'], 
                                                         revisado_profesional = False,
-                                                        # fecha > serializer_semestre.data['fecha_inicio'],
-                                                        # fecha < serializer_semestre.data['fecha_fin']
+                                                        fecha__gt = fecha_inicio,
+                                                        fecha__lt =fecha_fin
                                                         ).count()
                     list_inasistencia_individual_profesional = inasistencia.objects.filter(
                                                         id_estudiante = serializer_estudiante.data['id'], 
                                                         revisado_profesional = False,
-                                                        # fecha > serializer_semestre.data['fecha_inicio'],
-                                                        # fecha < serializer_semestre.data['fecha_fin']
+                                                        fecha__gt = fecha_inicio,
+                                                        fecha__lt =fecha_fin
                                                         ).count()
                     list_inasistencia = inasistencia.objects.filter(
                                                         id_estudiante = serializer_estudiante.data['id'], 
-                                                        # fecha > serializer_semestre.data['fecha_inicio'],
-                                                        # fecha < serializer_semestre.data['fecha_fin']
+                                                        fecha__gt = fecha_inicio,
+                                                        fecha__lt =fecha_fin
                                                         ).count()
 
                     list_seguimientos = seguimiento_individual.objects.filter(
                                                         id_estudiante = serializer_estudiante.data['id'], 
-                                                        # fecha > serializer_semestre.data['fecha_inicio'],
-                                                        # fecha < serializer_semestre.data['fecha_fin']
+                                                        fecha__gt = fecha_inicio,
+                                                        fecha__lt =fecha_fin
                                                         ).count()
                     
                     # for i in list_inasistencia_individual: 

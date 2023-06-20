@@ -58,11 +58,11 @@ const Info_general = (props) =>{
             año_ingreso_univalle:props.datos['anio_ingreso'],                 // DateTimeField
             deportes_que_practica:props.datos['actividades_ocio_deporte'],
 
-            grupo_etnico:props.datos['id_etnia'],                             // Tabla etnia
-            actividad_simultanea:props.datos['id_act_simultanea'],            // Tabla act_simultanea
-            identidad_de_genero:props.datos['id_identidad_gen'],              // Tabla identidad_gen
-            estado_civil:props.datos['id_estado_civil'],                      // Tabla estado_civil
-            condicion_de_excepcion:props.datos['id_cond_excepcion'],    // Tabla cond_excepcion
+            grupo_etnico:props.datos['el_id_de_etnia'],                             // Tabla etnia
+            actividad_simultanea:props.datos['el_id_de_act_simultanea'],            // Tabla act_simultanea
+            identidad_de_genero:props.datos['el_id_de_identidad_gen'],              // Tabla identidad_gen
+            estado_civil:props.datos['el_id_de_estado_civil'],                      // Tabla estado_civil
+            condicion_de_excepcion:props.datos['el_id_de_cond_excepcion'],    // Tabla cond_excepcion
 
 
       ultima_actualizacion:'sin dato',                                         
@@ -218,15 +218,15 @@ const Info_general = (props) =>{
       nuevo_telefono_res:props.datos['telefono_res'],
       nuevo_celular:props.datos['celular'],
       nuevo_email_alternativo:props.datos['email'],
-      nuevo_grupo_etnico:props.datos['id_etnia'],
-      nuevo_actividad_simultanea:props.datos['id_act_simultanea'],
-      nuevo_identidad_de_genero:props.datos['id_identidad_gen'],
+      nuevo_grupo_etnico_id:props.datos['id_etnia'],
+      nuevo_actividad_simultanea_id:props.datos['id_act_simultanea'],
+      nuevo_identidad_de_genero_id:props.datos['id_identidad_gen'],
       nuevo_sexo:props.datos['sexo'],
-      nuevo_estado_civil:props.datos['id_estado_civil'],
+      nuevo_estado_civil_id:props.datos['id_estado_civil'],
       nuevo_cantidad_hijo:props.datos['cantidad_hijos'],  
       nuevo_actividades_tiempo_libre:props.datos['actividades_tiempo_libre'],
       nuevo_deportes_que_practica:props.datos['actividades_ocio_deporte'],
-      nuevo_condicion_de_excepcion:props.datos['id_cond_excepcion'],
+      nuevo_condicion_de_excepcion_id:props.datos['id_cond_excepcion'],
       nuevo_otros_acompañamientos:props.datos['otros_acompañamientos'],
     });
 
@@ -249,36 +249,36 @@ const Info_general = (props) =>{
       const cambiar_datos_select_etnia = (e) => {
             set_state({
               ...state,
-              nuevo_grupo_etnico: e.label,
-              nuevo_grupo_etnico_id: e.value
+              nuevo_grupo_etnico: e.value,
+              nuevo_grupo_etnico_id: e.label
             });     
       }
       const cambiar_datos_select_actividad_simultanea = (e) => {
             set_state({
               ...state,
-              nuevo_actividad_simultanea: e.label,
-              nuevo_actividad_simultanea_id: e.value
+              nuevo_actividad_simultanea: e.value,
+              nuevo_actividad_simultanea_id: e.label
             });     
       }
       const cambiar_datos_select_identidad_de_genero = (e) => {
             set_state({
               ...state,
-              nuevo_identidad_de_genero: e.label,
-              nuevo_identidad_de_genero_id: e.value
+              nuevo_identidad_de_genero: e.value,
+              nuevo_identidad_de_genero_id: e.label
             });     
       }
       const cambiar_datos_select_estado_civil = (e) => {
             set_state({
               ...state,
-              nuevo_estado_civil: e.label,
-              nuevo_estado_civil_id: e.value
+              nuevo_estado_civil: e.value,
+              nuevo_estado_civil_id: e.label
             });     
       }
       const cambiar_datos_select_condicion_de_excepcion = (e) => {
             set_state({
               ...state,
-              nuevo_condicion_de_excepcion: e.label,
-              nuevo_condicion_de_excepcion_id: e.value
+              nuevo_condicion_de_excepcion: e.value,
+              nuevo_condicion_de_excepcion_id: e.label
             });     
       }
       const [show, setShow] = useState(false);
@@ -292,21 +292,22 @@ const Info_general = (props) =>{
   const handle_upload_estudiante = (e) => {
 
     let formData = new FormData();
-      formData.append('puntaje_icfes', state.nuevo_puntaje_icfes)
+      formData.append('puntaje_icfes', state.nuevo_puntaje_icfes !== null ? state.nuevo_puntaje_icfes : [null])
       formData.append('telefono_res', state.nuevo_telefono_res)
       formData.append('celular', state.nuevo_celular)
       formData.append('email', state.nuevo_email_alternativo)
       formData.append('sexo', state.nuevo_sexo)      
-      formData.append('cantidad_hijo', state.nuevo_cantidad_hijo)
+      formData.append('hijos', state.nuevo_cantidad_hijo)
       formData.append('actividades_ocio_deporte', state.nuevo_deportes_que_practica)
-      formData.append('acudiente_emergencia', state.nuevo_acudiente_emergencia)
-      formData.append('tel_acudiente_emergencia', state.nuevo_tel_acudiente_emergencia)
+      formData.append('acudiente', state.nuevo_acudiente_emergencia)
+      formData.append('telefono_acudiente', state.nuevo_tel_acudiente_emergencia !== null ? [state.nuevo_tel_acudiente_emergencia] : [null])
 
-      formData.append('etnia', state.nuevo_grupo_etnico_id)
-      formData.append('act_simultanea', state.nuevo_actividad_simultanea_id)
-      formData.append('identidad_gen', state.nuevo_identidad_de_genero_id)
-      formData.append('estado_civil', state.nuevo_estado_civil_id)
-      formData.append('cond_excepcion', state.nuevo_condicion_de_excepcion_id)
+      formData.append('id_etnia', state.nuevo_grupo_etnico !== null ? state.nuevo_grupo_etnico : [null]);
+      formData.append('id_act_simultanea', state.nuevo_actividad_simultanea !== null ? state.nuevo_actividad_simultanea : [null]);
+      formData.append('id_identidad_gen', state.nuevo_identidad_de_genero !== null ? state.nuevo_identidad_de_genero : [null]);
+      formData.append('id_estado_civil', state.nuevo_estado_civil !== null ? state.nuevo_estado_civil : [null]);
+      formData.append('id_cond_excepcion', state.nuevo_condicion_de_excepcion !== null ? state.nuevo_condicion_de_excepcion : [null]);
+      
 
       axios({
       url: 'http://localhost:8000/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
@@ -328,11 +329,11 @@ const Info_general = (props) =>{
             deportes_que_practica:state.nuevo_deportes_que_practica,
             otros_acompañamientos:state.nuevo_otros_acompañamientos,
 
-            grupo_etnico:state.nuevo_grupo_etnico,
-            actividad_simultanea:state.nuevo_actividad_simultanea,
-            identidad_de_genero:state.nuevo_identidad_de_genero,
-            estado_civil:state.nuevo_estado_civil,
-            condicion_de_excepcion:state.nuevo_condicion_de_excepcion,
+            grupo_etnico:state.nuevo_grupo_etnico_id,
+            actividad_simultanea:state.nuevo_actividad_simultanea_id,
+            identidad_de_genero:state.nuevo_identidad_de_genero_id,
+            estado_civil:state.nuevo_estado_civil_id,
+            condicion_de_excepcion:state.nuevo_condicion_de_excepcion_id,
 
             editar : false,
             })
@@ -343,27 +344,27 @@ const Info_general = (props) =>{
             
             set_state({
                   ...state,
-                  puntaje_icfes:state.nuevo_puntaje_icfes,
-                  año_ingreso_univalle:state.nuevo_año_ingreso_univalle,
-                  telefono_res:state.nuevo_telefono_res,
-                  celular:state.nuevo_celular,
-                  email_alternativo:state.nuevo_email_alternativo,
-                  sexo:state.nuevo_sexo,
-                  cantidad_hijo:state.nuevo_cantidad_hijo,  
-                  actividades_tiempo_libre:state.nuevo_actividades_tiempo_libre,
-                  deportes_que_practica:state.nuevo_deportes_que_practica,
-                  otros_acompañamientos:state.nuevo_otros_acompañamientos,
+                  puntaje_icfes:state.puntaje_icfes,
+                  año_ingreso_univalle:state.año_ingreso_univalle,
+                  telefono_res:state.telefono_res,
+                  celular:state.celular,
+                  email_alternativo:state.email_alternativo,
+                  sexo:state.sexo,
+                  cantidad_hijo:state.cantidad_hijo,  
+                  actividades_tiempo_libre:state.actividades_tiempo_libre,
+                  deportes_que_practica:state.deportes_que_practica,
+                  otros_acompañamientos:state.otros_acompañamientos,
       
-                  grupo_etnico:state.nuevo_grupo_etnico,
-                  actividad_simultanea:state.nuevo_actividad_simultanea,
-                  identidad_de_genero:state.nuevo_identidad_de_genero,
-                  estado_civil:state.nuevo_estado_civil,
-                  condicion_de_excepcion:state.nuevo_condicion_de_excepcion,
+                  grupo_etnico:state.grupo_etnico,
+                  actividad_simultanea:state.actividad_simultanea,
+                  identidad_de_genero:state.identidad_de_genero,
+                  estado_civil:state.estado_civil,
+                  condicion_de_excepcion:state.condicion_de_excepcion,
       
                   editar : false,
                   })
                   console.log("pero que esta pasando ???" )
-                  alert("estudiante fue editado correctamente a :" + props.datos.id)
+                  alert("error al editar el estudiante :" + err)
                   
             //console.log("entra al malo")
             //alert("error al editar el estudiante : " + props.datos.id);
@@ -371,66 +372,6 @@ const Info_general = (props) =>{
 
   }
 
-
-  const handle_upload_estudiante2 = (e) => {
-
-      let formData = new FormData();
-  
-        formData.append('id_usuario', props.datos.id)
-  
-        formData.append('puntaje_icfes', state.nuevo_puntaje_icfes)
-  //      formData.append('anio_ingreso', state.nuevo_año_ingreso_univalle)
-        formData.append('telefono_res', state.nuevo_telefono_res)
-        formData.append('celular', state.nuevo_celular)
-        formData.append('email', state.nuevo_email_alternativo)
-  
-        formData.append('id_etnia', state.nuevo_grupo_etnico)      
-        formData.append('id_act_simultanea', state.nuevo_actividad_simultanea)
-        formData.append('id_identidad_gen', state.nuevo_identidad_de_genero)
-        formData.append('sexo', state.nuevo_sexo)      
-        formData.append('id_estado_civil', state.nuevo_estado_civil)
-  
-        formData.append('cantidad_hijos', state.nuevo_cantidad_hijo)
-  //      formData.append('actividades_tiempo_libre', state.nuevo_actividades_tiempo_libre)
-        formData.append('actividades_ocio_deporte', state.nuevo_deportes_que_practica)
-        formData.append('otros_acompañamientos', state.nuevo_condicion_de_excepcion)
-  //      formData.append('otros_acompañamientos', state.nuevo_otros_acompañamientos)
-  
-        axios({
-        url: 'http://localhost:8000/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
-        method: "POST",
-        data: formData,
-          })
-          .then((res)=>{
-          console.log(res)
-          set_state({
-               ...state,
-  
-               puntaje_icfes:state.nuevo_puntaje_icfes,
-               año_ingreso_univalle:state.nuevo_año_ingreso_univalle,
-               telefono_res:state.nuevo_telefono_res,
-               celular:state.nuevo_celular,
-               email_alternativo:state.nuevo_email_alternativo,
-               grupo_etnico:state.nuevo_state.nuevo_grupo_etnico,
-               actividad_simultanea:state.nuevo_actividad_simultanea,
-               identidad_de_genero:state.nuevo_identidad_de_genero,
-               sexo:state.nuevo_sexo,
-               estado_civil:state.nuevo_estado_civil,
-               cantidad_hijo:state.nuevo_cantidad_hijo,  
-               actividades_tiempo_libre:state.nuevo_actividades_tiempo_libre,
-               deportes_que_practica:state.nuevo_deportes_que_practica,
-               condicion_de_excepcion:state.nuevo_condicion_de_excepcion,
-               otros_acompañamientos:state.nuevo_otros_acompañamientos,
-  
-              editar : false,
-            })
-              alert("estudiante fue editado correctamente a :" + props.datos.id)
-          })
-          .catch(err=>{
-              alert("error al editar el estudiante : " + props.datos.id);
-          })
-  
-    }
   
     const [selectedDate, setSelectedDate] = useState(null);
 
@@ -493,6 +434,9 @@ const Info_general = (props) =>{
                         <Col xs={"12"}>
                               <Row>
                               <h1 className="texto_subtitulo">Información del estudiante :{props.datos['nombre']}</h1>
+                              <div>
+                                    <pre>{JSON.stringify(props.datos, null, 2)}</pre>
+                              </div>
                                     <Row className="row_flex_general">
                                           <Col xs={"12"} md={"3"}>
                                           <h4 className="texto_pequeño_gris">Nombres</h4>
@@ -689,13 +633,11 @@ const Info_general = (props) =>{
                                                             onMenuOpen={opciones_lista_Etico}
                                                             onChange={cambiar_datos_select_etnia}
                                                       />
-                                                      {state.nuevo_grupo_etnico}
-                                                      {state.nuevo_grupo_etnico_id}
                                                 </Col>      
                                                 ):
                                                 (
                                                 <Col xs={"12"} md={"6"}>
-                                                      {state.nuevo_grupo_etnico}
+                                                      {state.nuevo_grupo_etnico_id}
                                                 </Col>      
                                                 )
                                           }

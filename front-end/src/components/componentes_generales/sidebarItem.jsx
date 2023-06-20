@@ -1,7 +1,6 @@
 import React from 'react';
 import {useState } from "react";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
+import {Row, Col, } from "react-bootstrap";
 
 
 const SidebarItem = (props) => {

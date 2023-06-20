@@ -118,7 +118,7 @@ const Desplegable_item_listas_materias = ({item}) => {
                     <Row className="link_academico1" onClick={() => {setOpen(!open); profesores_de_la_franja(item.cod_materia, item.franja)}}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover2">
-                                {item.nombre} - {item.codigo} - {item.franja}  ---asdrse- {item.id}
+                                {item.nombre} - {item.codigo} - {item.franja}  
                             </Row>
                         </Col>
                     </Row>

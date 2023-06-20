@@ -55,22 +55,28 @@ class User_rol_manage(serializers.Serializer):
 class Estudiante_manage(serializers.Serializer):
 	id = serializers.IntegerField()
 
-class Estudiante_actualizacion(serializers.Serializer):
-    puntaje_icfes = serializers.IntegerField(allow_null=True, required=False)
-    telefono_res = serializers.CharField(allow_null=True, required=False)
-    celular = serializers.CharField(allow_null=True, required=False)
-    email = serializers.CharField(allow_null=True, required=False)
-    sexo = serializers.CharField(allow_null=True, required=False)
-    cantidad_hijo = serializers.IntegerField(allow_null=True, required=False)
-    actividades_ocio_deporte = serializers.CharField(allow_null=True, required=False)
-    acudiente_emergencia = serializers.CharField(allow_null=True, required=False)
-    tel_acudiente_emergencia = serializers.CharField(allow_null=True, required=False)
-    etnia = serializers.IntegerField(allow_null=True, required=False)
-    act_simultanea = serializers.IntegerField(allow_null=True, required=False)
-    identidad_gen = serializers.IntegerField(allow_null=True, required=False)
-    estado_civil = serializers.IntegerField(allow_null=True, required=False)
-    cond_excepcion = serializers.IntegerField(allow_null=True, required=False)
+# class Estudiante_actualizacion1(serializers.Serializer):
+#     puntaje_icfes = serializers.IntegerField(allow_null=True, required=False)
+#     telefono_res = serializers.CharField(allow_null=True, required=False)
+#     celular = serializers.CharField(allow_null=True, required=False)
+#     email = serializers.CharField(allow_null=True, required=False)
+#     sexo = serializers.CharField(allow_null=True, required=False)
+#     cantidad_hijo = serializers.IntegerField(allow_null=True, required=False)
+#     actividades_ocio_deporte = serializers.CharField(allow_null=True, required=False)
+#     acudiente_emergencia = serializers.CharField(allow_null=True, required=False)
+#     tel_acudiente_emergencia = serializers.CharField(allow_null=True, required=False)
+#     etnia = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
+#     act_simultanea = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
+#     identidad_gen = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
+#     estado_civil = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
+#     cond_excepcion = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
 	
+class Estudiante_actualizacion(serializers.ModelSerializer):
+	class Meta:
+		model = estudiante
+		fields = ['puntaje_icfes', 'telefono_res', 'celular', 'email', 'sexo', 'hijos', 'actividades_ocio_deporte',
+                  'acudiente', 'telefono_acudiente', 'id_etnia', 'id_act_simultanea', 'id_identidad_gen', 'id_estado_civil',
+                  'id_cond_excepcion']
 
 class Grupo_etnico_serializer(serializers.ModelSerializer):
 	class Meta:

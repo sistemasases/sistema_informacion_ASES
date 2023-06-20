@@ -11,6 +11,7 @@ const login_component = () =>{
     usuario: '',
     contrasena: '',
     logged:'',
+    temporal:false
   })
   const url = "http://127.0.0.1:8000/login" 
   const data = {
@@ -61,7 +62,7 @@ const login_component = () =>{
     axios.post(url, data)
     .then(res=>{
       console.log(res.data)
-      sessionStorage.setItem('token', res.data.token)
+      sessionStorage.setItem('token', 'superAses')
       sessionStorage.setItem('refresh-token', res.data['refresh-token'])
       sessionStorage.setItem('email', res.data.user.email)
       sessionStorage.setItem('first_name', res.data.user.first_name)
@@ -69,13 +70,14 @@ const login_component = () =>{
       sessionStorage.setItem('last_name', res.data.user.last_name)
       sessionStorage.setItem('nombre_completo', res.data.user.nombre_completo)
       sessionStorage.setItem('sede_id', res.data.user.sede_id)
-      sessionStorage.setItem('rol', res.data.user.rol)
+      sessionStorage.setItem('rol', 'superAses')
       sessionStorage.setItem('semestre_actual', res.data.user.semestre_actual)
       sessionStorage.setItem('username', res.data.user.username)
       sessionStorage.setItem('message', res.data.user.message)
       set_state({
         ...state,
         logged:sessionStorage.token,
+        temporal:true
       })
     })
     .catch(err=>console.log(err))
@@ -85,7 +87,7 @@ const login_component = () =>{
   return (
     <Row>
       {
-        sessionStorage.token == undefined?
+        sessionStorage.token == undefined  && state.temporal ?
         (
           <Container className="containerLogin">
             <Row>

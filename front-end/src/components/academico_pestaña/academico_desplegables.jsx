@@ -1,10 +1,8 @@
-import React, {useMemo, useState} from 'react';
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import Desplegable_item from "./desplegable_Item";
+import React, {useState} from 'react';
+import {Container, Row, Col, Button} from "react-bootstrap";
 import Desplegable_item_listas_materias from "./desplegable_Item_listas_materias";
 import Modal from 'react-bootstrap/Modal';
 import Estudiantes from './estudiantes';
-import MOCK_DATA from './MOCK_DATA.json';
 import {useEffect} from 'react';
 import axios from 'axios';
 

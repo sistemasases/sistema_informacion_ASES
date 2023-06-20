@@ -87,7 +87,7 @@ useEffect(()=>{
                 Reporte cantidad de seguimientos
                 </Col>
                 <Col xs={"12"} md={"4"} className="texto_pequeño">
-                    Seleccione la cohorte
+                    Seleccione el semestre
                     <Select 
                     options={datos_option_user} 
                     onMenuOpen={handle_users} 

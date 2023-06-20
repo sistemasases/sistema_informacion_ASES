@@ -3,7 +3,7 @@
         "id":"1",
         "path":"/",
         "name":"sistemas",
-        "icon":"bi-people-fill",
+        "icon":"bi-pc-display-horizontal",
         "childrens":[
 
             {
@@ -38,7 +38,7 @@
         "id":"2",
         "path":"/ficha_estudiante/sin_seleccion",
         "name":"socieducativo",
-        "icon":"bi-people-fill",
+        "icon":"bi-journal-bookmark-fill",
         "childrens":[
             {
                 "id":1,
@@ -113,7 +113,7 @@
         "id":"3",
         "path":"/",
         "name":"academico",
-        "icon":"bi-people-fill",
+        "icon":"bi-mortarboard-fill",
         "childrens":[
             {
                 "path":"/academico",
@@ -157,40 +157,45 @@
             }
         ]
     },
-    {
-        "id":"4",
-        "path":"/",
-        "name":"ICETEX/MEN",
-        "icon":"bi-people-fill",
-        "childrens":[
             {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reporte MEN",
+                "path":"/academico",
+                "name":"ifno general",
                 "icon":"bi-people-fill"
             },
             {
                 "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes ICETEX",
-                "icon":"bi-people-fill"
-            }
-        ]
-    },
-    {
-        "id":"5",
-        "path":"/",
-        "name":"discapacidad",
-        "icon":"bi-people-fill",
-        "childrens":[
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"registrar nuevo estudiante",
+                "name":"carga de notas",
                 "icon":"bi-people-fill"
             },
             {
                 "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reporte discapacidad e inclusion",
+                "name":"inscripcion a monitorias academicas",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"monitorias academicas",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"registro de notas",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"reportes historicos academicos",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"reportes notas por items",
+                "icon":"bi-people-fill"
+            },
+            {
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"reportes por docentes",
                 "icon":"bi-people-fill"
             }
-        ]
-    }
+
 ]

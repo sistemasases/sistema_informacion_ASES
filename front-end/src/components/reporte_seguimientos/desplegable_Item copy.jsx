@@ -21,7 +21,6 @@ const Desplegable_item = ({item}) => {
                         (<Col>El periodo se encuentra en curso</Col>)
                             :
                         (<Col>El periodo esta finalizado</Col>)}
-                        aqyiu
             </Row>
         )
     } else{
