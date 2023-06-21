@@ -1,21 +1,14 @@
 import React, {useState} from 'react';
-import Select from 'react-select';
-import Switch from 'react-switch';
 
-import Info_basica from "../../components/ficha_estudiante/info_basica";
-import Selector from "../../components/ficha_estudiante/selector";
 import {Dropdown, Button} from "react-bootstrap";
 import {Container, Row, Col} from "styled-bootstrap-grid";
 
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import Footer from '../../components/componentes_generales/footer';
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
+import {useEffect} from 'react';
+import axios from 'axios';
 
-
-const Info_registros = () =>{
+const Info_registros = (props) =>{
 
     const [show, setShow] = useState(false);
     const handleModal = () => setShow(true);
@@ -24,6 +17,32 @@ const Info_registros = () =>{
     const [showIn, setShowIn] = useState(false);
     const handleModalIn = () => setShowIn(true);
     const handleCloseIn = () => setShowIn(false);
+
+    const [state,set_state] = useState({
+
+        data_user:[]
+
+      })
+ 
+      useEffect(()=>{
+        axios({
+          // Endpoint to send files
+          url:  "http://localhost:8000/usuario_rol/ultimo_seguimiento_individual/" + props.id_estudiante + "/",
+          method: "GET",
+        })
+        .then((respuesta)=>{
+          set_state({
+            ...state,
+            data_user : respuesta.data
+          })
+        })
+        .catch(err=>{
+          console.log("estos son los primeros datos :"+state.data_user)
+        })
+        
+      },[props.id_estudiante]);
+
+
 
     return (
         <Row className="container_info_registro">
@@ -76,94 +95,348 @@ const Info_registros = () =>{
                         <Row className="riesgos_fondo_claro">
                             <Col>
 
-                                <Row className="row_riesgo">
-                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+                            {state.data_user['riesgo_individual'] === 0 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
                                         <label className="borde_riesgos_bajo">
                                             <label className="button_tipo_riesgo_bajo_2">B</label>
                                         </label>
-                                    </Col>
-                                    <Col  xs={"10"}  sm={"10"} className="center_tipos_riesgos">
-                                        <label  className="button_tipo_riesgo_bajo_texto">INDIVIDUAL</label> 
-                                    </Col>
-                                </Row>
-                                
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_bajo_texto">INDIVIDUAL</label>
+                                        </Col>
+                                    </Row>
+                                    )}
 
-
-
-
-
-
-                                <Row  className="row_riesgo">
-                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+                                    {state.data_user['riesgo_individual'] === 1 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
                                         <label className="borde_riesgos_medio">
                                             <label className="button_tipo_riesgo_medio_2">M</label>
                                         </label>
-                                    </Col>
-                                    <Col  xs={"10"}  sm={"10"} className="center_tipos_riesgos">
-                                        <label  className="button_tipo_riesgo_medio_texto">FAMILIAR</label>
-                                    </Col>
-                                </Row>
-                                
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_medio_texto">INDIVIDUAL</label>
+                                        </Col>
+                                    </Row>
+                                    )}
 
-
-
-
-
-                                <Row  className="row_riesgo">
-                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+                                    {state.data_user['riesgo_individual'] === 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
                                         <label className="borde_riesgos_alto">
                                             <label className="button_tipo_riesgo_alto_2">A</label>
                                         </label>
                                         </Col>
-                                        <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                                            <label  className="button_tipo_riesgo_alto_texto">ACADEMICO</label>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_alto_texto">INDIVIDUAL</label>
                                         </Col>
-                                </Row>
-                                
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_individual'] !== 0 && state.data_user['riesgo_individual'] !== 1 && state.data_user['riesgo_individual'] !== 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_ninguno">
+                                            <label className="button_tipo_riesgo_ninguno_2">N</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_ninguno_texto">INDIVIDUAL</label>
+                                        </Col>
+                                    </Row>
+                                    )}
 
 
 
 
-                                <Row className="row_riesgo">
-                                    <Col xs={"2"} sm={"2"} className="z_index_2">
-                                            <label className="borde_riesgos_bajo">
-                                                <label className="button_tipo_riesgo_bajo_2">B</label>
-                                            </label>                             
-                                    </Col>
-                                    <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                                            <label  className="button_tipo_riesgo_bajo_texto">ECONOMICO</label> 
-                                    </Col>
-                                </Row>
-                                
 
 
 
 
-                                <Row className="row_riesgo">
-                                    <Col xs={"2"} sm={"2"} className="z_index_2">
+
+                                {state.data_user['riesgo_familiar'] === 0 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_bajo">
+                                            <label className="button_tipo_riesgo_bajo_2">B</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_bajo_texto">FAMILIAR</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_familiar'] === 1 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
                                         <label className="borde_riesgos_medio">
                                             <label className="button_tipo_riesgo_medio_2">M</label>
                                         </label>
-                                    </Col>
-                                    <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                                        <label  className="button_tipo_riesgo_medio_texto">VIDA UNIV..</label>
-                                    </Col>
-                                </Row>
-                                
-
-
-
-
-
-                                    <Row className="row_riesgo" >
-                                        <Col xs={"2"} sm={"2"} className="z_index_2">
-                                            <label className="borde_riesgos_alto">
-                                                <label className="button_tipo_riesgo_alto_2">A</label>
-                                            </label>                                        </Col>
-                                        <Col  xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                                            <label  className="button_tipo_riesgo_alto_texto">GEOGRAFICO</label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_medio_texto">FAMILIAR</label>
                                         </Col>
                                     </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_familiar'] === 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_alto">
+                                            <label className="button_tipo_riesgo_alto_2">A</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_alto_texto">FAMILIAR</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_familiar'] !== 0 && state.data_user['riesgo_familiar'] !== 1 && state.data_user['riesgo_familiar'] !== 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_ninguno">
+                                            <label className="button_tipo_riesgo_ninguno_2">N</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_ninguno_texto">FAMILIAR</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+
+
+
+
+
+
+
+                                {state.data_user['riesgo_academico'] === 0 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_bajo">
+                                            <label className="button_tipo_riesgo_bajo_2">B</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_bajo_texto">ACADEMICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_academico'] === 1 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_medio">
+                                            <label className="button_tipo_riesgo_medio_2">M</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_medio_texto">ACADEMICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_academico'] === 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_alto">
+                                            <label className="button_tipo_riesgo_alto_2">A</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_alto_texto">ACADEMICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_academico'] !== 0 && state.data_user['riesgo_academico'] !== 1 && state.data_user['riesgo_academico'] !== 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_ninguno">
+                                            <label className="button_tipo_riesgo_ninguno_2">N</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_ninguno_texto">ACADEMICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+
+
+
+
+
+
+                                {state.data_user['riesgo_economico'] === 0 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_bajo">
+                                            <label className="button_tipo_riesgo_bajo_2">B</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_bajo_texto">ECONOMICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_economico'] === 1 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_medio">
+                                            <label className="button_tipo_riesgo_medio_2">M</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_medio_texto">ECONOMICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_economico'] === 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_alto">
+                                            <label className="button_tipo_riesgo_alto_2">A</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_alto_texto">ECONOMICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_economico'] !== 0 && state.data_user['riesgo_economico'] !== 1 && state.data_user['riesgo_economico'] !== 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_ninguno">
+                                            <label className="button_tipo_riesgo_ninguno_2">N</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_ninguno_texto">ECONOMICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+
+
+
+
+                                {state.data_user['riesgo_vida_universitaria_ciudad'] === 0 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_bajo">
+                                            <label className="button_tipo_riesgo_bajo_2">B</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_bajo_texto">VIDA UNIVERSITARIA</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_vida_universitaria_ciudad'] === 1 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_medio">
+                                            <label className="button_tipo_riesgo_medio_2">M</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_medio_texto">VIDA UNIVERSITARIA</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_vida_universitaria_ciudad'] === 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_alto">
+                                            <label className="button_tipo_riesgo_alto_2">A</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_alto_texto">VIDA UNIVERSITARIA</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_vida_universitaria_ciudad'] !== 0 && state.data_user['riesgo_vida_universitaria_ciudad'] !== 1 && state.data_user['riesgo_vida_universitaria_ciudad'] !== 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_ninguno">
+                                            <label className="button_tipo_riesgo_ninguno_2">N</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_ninguno_texto">VIDA UNIVERSITARIA</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+
+
+                                {state.data_user['riesgo_geografico'] === 0 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_bajo">
+                                            <label className="button_tipo_riesgo_bajo_2">B</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_bajo_texto">GEOGRAFICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_geografico'] === 1 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_medio">
+                                            <label className="button_tipo_riesgo_medio_2">M</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_medio_texto">GEOGRAFICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_geografico'] === 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_alto">
+                                            <label className="button_tipo_riesgo_alto_2">A</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_alto_texto">GEOGRAFICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+                                    {state.data_user['riesgo_geografico'] !== 0 && state.data_user['riesgo_geografico'] !== 1 && state.data_user['riesgo_geografico'] !== 2 && (
+                                    <Row className="row_riesgo">
+                                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                                        <label className="borde_riesgos_ninguno">
+                                            <label className="button_tipo_riesgo_ninguno_2">N</label>
+                                        </label>
+                                        </Col>
+                                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                                        <label className="button_tipo_riesgo_ninguno_texto">GEOGRAFICO</label>
+                                        </Col>
+                                    </Row>
+                                    )}
+
+
+
+
 
                             </Col>
                             
@@ -176,14 +449,6 @@ const Info_registros = () =>{
                             
                 </Row>
                 </div>
-
-
-
-
-
-
-
-
 
 
 
@@ -253,54 +518,9 @@ const Info_registros = () =>{
                                             <Col  xs={"6"} sm={"6"} className="center_tipos_riesgos">
                                                     <label  className="button_tipo_riesgo_bajo_texto_pequeño">ECONOMICO</label> 
                                             </Col>
-
                             
-
-
-
-
-                                
-                                
-
-
-
-
-
-
-                                
-                                
-
-
-
-
-
-                                
-                                
-
-
-
-
-                                
-                                
-
-
-
-
-                                
-                                
-
-
-
-
-
-                                    
-
-                            
-
                         </Row>
                     </Col>
-                        
-
                         
                             
                 </Row>

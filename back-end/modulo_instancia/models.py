@@ -14,6 +14,7 @@ Todos los modelos están asociados con una su tabla específica de la base de da
 
 from django.db import models
 from modulo_geografico.models import municipio
+from django.contrib.auth.models import User
 
 class sede (models.Model):
     id_municipio= models.ForeignKey(municipio,on_delete=models.CASCADE,default=0,related_name='id_municipio_in_sede')
@@ -52,3 +53,6 @@ class cohorte_sede (models.Model):
     
     class Meta:
         db_table = "cohorte_sede"
+
+
+

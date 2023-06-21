@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import {Container, Row, Col} from "react-bootstrap";
 import Info_general from "./tabs/info_general"
-import Academico from "./tabs/academico"
-import Socieducativa from "./tabs/socieducativa"
+import Historico from "./tabs/historico"
 import Modal from 'react-bootstrap/Modal';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {Dropdown, Button} from "react-bootstrap";
@@ -11,7 +10,10 @@ import { NavLink } from 'react-router-dom';
 import  {useEffect, componentDidUpdate} from 'react';
 import axios from 'axios';
 
+
 const Selector = (props) =>{
+    
+    const{childClicked, childClicked2} = props
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -65,7 +67,7 @@ const Selector = (props) =>{
             id:2,
             name:"HISTORIAL",
             contenido:"hola",
-            component:<Socieducativa id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
+            component:<Historico id={props.id} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}></Historico>,
         },
 
     ]

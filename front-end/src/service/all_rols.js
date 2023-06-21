@@ -6,7 +6,7 @@ const all_rols = async () => {
         const resRol = await axios.get(url_axios 
         //     {
         //         headers: {
-        //         Authorization: 'Bearer ' + localStorage.getItem('token')
+        //         Authorization: 'Bearer ' + sessionStorage.getItem('token')
         //         }
         //    }
         )

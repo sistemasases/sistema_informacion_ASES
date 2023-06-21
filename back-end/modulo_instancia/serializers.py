@@ -9,7 +9,7 @@ La clase 'Meta' se define en cada serializador y especifica el modelo y los camp
 """
 
 from rest_framework import serializers
-from .models import sede, semestre
+from .models import sede, semestre, cohorte
 
 class sede_serializer(serializers.ModelSerializer):
 	class Meta:
@@ -19,4 +19,9 @@ class sede_serializer(serializers.ModelSerializer):
 class semestre_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = semestre
+		fields = '__all__'
+
+class cohorte_serializer(serializers.ModelSerializer):
+	class Meta:
+		model = cohorte
 		fields = '__all__'
