@@ -41,6 +41,11 @@
         "icon":"bi-people-fill",
         "childrens":[
             {
+                "path":"/reporte",
+                "name":"reporte",
+                "icon":"bi-people-fill"
+            },
+            {
                 "path":"/sin_seguimientos",
                 "name":"Cantidad de seguimientos",
                 "icon":"bi-people-fill"
