@@ -107,6 +107,13 @@
                 "name":"reporte grupal",
                 "icon":"bi-people-fill"
             }
+            ,
+            {
+                "id":12,
+                "path":"/reporte",
+                "name":"reporte",
+                "icon":"bi-people-fill"
+            }
         ]
     },
     {
