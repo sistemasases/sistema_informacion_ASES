@@ -1,13 +1,13 @@
 import React, {useMemo, useState} from 'react';
 import {useTable, Table} from 'react-table';
-import MOCK_DATA from './MOCK_DATA.json';
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Select from 'react-select'  ;
 
 
-const Cabecera = () =>{
+const Cabecera = (props) =>{
+      const{childClicked} = props
 
     const datos_option_user = [];
     var bandera_option_user = true;
@@ -21,22 +21,14 @@ const Cabecera = () =>{
         data_periodo : [],
         data_rol : [],
   
-        seleccionado:'',
-  
-        id_usuario:'',
-        nombres:'',
-        apellidos: '',
-        cedula:'',
-        correo:'',
-        telefono:'',
-  
       })
+
 
     useEffect(()=>{
   
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/wizard/semestre/",
+          url:  "http://localhost:8000/usuario_rol/cohortes_lista/",
           method: "GET",
         })
         .then((respuesta)=>{
@@ -44,25 +36,22 @@ const Cabecera = () =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+state.data_user)
         })
         .catch(err=>{
-          console.log("estos son los primeros datos :"+state.data_user)
+          console.log("estos son los pr:"+state.data_user)
         })
-        
+
       },[]);
 
+
       const handle_users = (e) => {
-        console.log("estos son los segundos datos :"+state.data_user)
-        console.log("estos son los tercer datos :"+state.data_user[0]['id_rol'])
-  
         // Getting the files from the input
         if(bandera_option_user==true){
     
           for (var i = 0; i < state.data_user['length'] ; i++) {
             const dato = { value: state.data_user[i]['nombre'], 
-            label:state.data_user[i]['nombre'],
-            id:i }
+            label:state.data_user[i]['id']+" "+state.data_user[i]['nombre'],
+            id:state.data_user[i]['id']}
             datos_option_user.push(dato)
           }
           bandera_option_user = false;
@@ -72,14 +61,13 @@ const Cabecera = () =>{
         }
       }
 
+
+      
       const handle_option_user = (e) => {
         // Getting the files from the input
-  
-        console.log(e)
-        set_state({
-          ...state,
-          seleccionado:e.id,
-        })
+
+        childClicked(e.id)
+
       }
 
     return (

@@ -244,13 +244,10 @@ const selector_usuarios = () =>{
       const id_user = state.select_rows[i].id
       let formData = new FormData();
       formData.append('id', id_user);
-
-      
-      
       axios({
         // Endpoint to send files
         //FALTA ORGANIZAR EL PK
-        url:  "http://localhost:8000/usuario_rol/usuario_rol/1/",
+        url:  "http://localhost:8000/usuario_rol/usuario_rol/"+id_user+"/",
         method: "PUT",
         data: formData,
       })

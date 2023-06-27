@@ -20,18 +20,18 @@ const navbar = (props) =>{
     const toggle = ()=> setIsOpen(!isOpen);
 
     const handleSalir = () =>{
-        localStorage.removeItem('token')
-        localStorage.removeItem('refresh-token')
-        localStorage.removeItem('email')
-        localStorage.removeItem('first_name')
-        localStorage.removeItem('instancia')
-        localStorage.removeItem('last_name')
-        localStorage.removeItem('nombre_completo')
-        localStorage.removeItem('instancia_id')
-        localStorage.removeItem('rol')
-        localStorage.removeItem('semestre_actual')
-        localStorage.removeItem('username')
-        localStorage.removeItem('message')
+        sessionStorage.removeItem('token')
+        sessionStorage.removeItem('refresh-token')
+        sessionStorage.removeItem('email')
+        sessionStorage.removeItem('first_name')
+        sessionStorage.removeItem('instancia')
+        sessionStorage.removeItem('last_name')
+        sessionStorage.removeItem('nombre_completo')
+        sessionStorage.removeItem('instancia_id')
+        sessionStorage.removeItem('rol')
+        sessionStorage.removeItem('semestre_actual')
+        sessionStorage.removeItem('username')
+        sessionStorage.removeItem('message')
         window.location.replace('');
     }    
 
@@ -54,11 +54,11 @@ const navbar = (props) =>{
     <Container  >
         <Row className="nav">
 
-            <Col xs={"4"} md={"3"}>
-                <img src={Logos} className="logo"></img>
+            <Col xs={"4"} md={"6"}>
+                <img src={Logos} className="logo" alt='/'></img>
             </Col>
 
-
+{/* 
             <Col className="ulDropdown" xs={"5"} md={"4"}>            
                 <Row >
                     <div class="d-none d-md-inline">
@@ -72,7 +72,7 @@ const navbar = (props) =>{
                         </Col>
                     </div>
                 </Row>
-            </Col>
+            </Col> */}
 
 
             <Col className="boton_perfil" xs={"2"} md={"5"}>
@@ -80,7 +80,7 @@ const navbar = (props) =>{
                         <div class="d-none d-md-inline col-md-9" >
 
                             <Col xs={"1"} sm={"1"} md={"9"} className="info_perfil">
-                                <Row>{localStorage.nombre_completo} </Row>
+                                <Row>{sessionStorage.nombre_completo} </Row>
                                 <Row>Enlace del documento de aceptación t.d.p</Row>
                             </Col>
                         </div>

@@ -3,6 +3,8 @@ import {useState } from "react";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import Modal from 'react-bootstrap/Modal';
+import { Link } from "react-router-dom";
+
 
 const Estudiantes = ({item}) => {
 
@@ -40,13 +42,30 @@ const Estudiantes = ({item}) => {
                     <Row className="content_academico">
                             <Col className="contenido_fichas_academico2">
 
-                                { item.estudiantes.filter((item)=>{
+                            { item.estudiantes.filter((item)=>{
                                     return state.filtro.toLowerCase() === '' ? item 
                                     : 
                                     item.nombre.toLowerCase().includes(state.filtro);                      
                                     }).map((item, index) => <Estudiantes 
                                 key={index} item={item} practicante_seleccionado={state.practicante_seleccionado}
                                 />) }
+                                {/* { item.estudiantes.filter((item)=>{
+                                    return state.filtro.toLowerCase() === '' ? item 
+                                    : 
+                                    item.nombre.toLowerCase().includes(state.filtro);                      
+                                    }).map((item, index) => 
+                                    <Row>
+                                        <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
+                                            <Row className="link_academico1_sin_borde">
+                                                <Col className="link_text_academico1_sin_borde" >
+                                                    <Row className="link_text_academico_hover4">
+                                                        {item.nombre}   {item.apellido}  {item.cod_univalle}
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    ) } */}
 
                             </Col>
                         </Row>
@@ -56,17 +75,19 @@ const Estudiantes = ({item}) => {
     }
     else{
         return (
-            <Row>
-        <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
-            <Row className="link_academico1_sin_borde">
-            <Col className="link_text_academico1_sin_borde" >
-                                    <Row className="link_text_academico_hover4">
-                                        {item.nombre}
-                                    </Row>
+        <Row>
+            <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
+                <Row className="link_academico1_sin_borde">
+                    <Col className="link_text_academico1_sin_borde" >
+                        <Row className="link_text_academico_hover4">
+                            <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                {item.nombre} {item.apellido} - {item.cod_univalle}
+                            </Link>
+                        </Row>
                     </Col>
-            </Row>
-        </Col>
-    </Row>
+                </Row>
+            </Col>
+        </Row>
         )
     }
     

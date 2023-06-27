@@ -18,60 +18,6 @@ import {Scrollbars} from 'react-custom-scrollbars';
 
 
 /*
-<Row style={{width: isOpen ? "300px" : "70px"}} className="sideBar">
-                    <Row className="top_selection">
-                        <Row  className="bars">
-                            <FaBars onClick={toggle}/>
-                        </Row>
-                    </Row>
-                <Scrollbars className="scrollbar_sidebar">
-                    {
-                        isOpen ?
-                        (<div className="sidebar_item">
-                            { Menu.map((item, index) => <SidebarItem key={index} item={item}/>) }
-                        </div>)
-                        :
-                        (<div className="sidebar_item">
-                        { Menu.map((item, index) => <Sidebar_item_closed key={index} item={item} />) }
-                        </div>)
-                    }
-                </Scrollbars>
-
-                </Row>
-                
-                
-                <Row>
-                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}></NavBar>
-                </Row>
-
-                <main style={{marginLeft: isOpen ? "300px" : "50px"}}>
-                    {props.children}
-                    <Footer></Footer>
-                </main>
-*/
-
-const SideBar = (props) =>{
-
-    const[isOpen, setIsOpen] = useState(false);
-    const toggle = ()=> setIsOpen(!isOpen);
-
-
-
-    const [state,set_state] = useState({
-        desplegable : localStorage.rol === 'superAses' ? Menu : Menu2
-      })
-
-    function path_actual(name){
-        set_state({
-          ...state,
-          path_actual : name,
-        })
-      }
-      
-
-        
-
-
     return (
         <Container className="containerSidebar">
                 <Row className="top_selection">
@@ -131,7 +77,92 @@ const SideBar = (props) =>{
                 </Row>
                 <div  class="d-none d-md-block">
                     <Row className="inf_der">
-                        <main style={{marginLeft: isOpen ? "230px" : "50px", marginTop: "5rem",}}>
+                        <main style={{marginLeft: isOpen ? "230px" : "50px", marginTop: "5rem",}} onClick={outSideClick}>
+                            {props.children}
+                        </main>
+                    </Row>
+                </div>
+
+                <div  class="d-block d-md-none">
+                    <Row className="inf_der">
+                        <main style={ {marginTop: "4rem"}}>
+                            {props.children}
+                        </main>
+                    </Row>
+                </div>
+                
+                <Footer></Footer>
+        </Container>
+    )
+*/
+
+const SideBar = (props) =>{
+
+    const[isOpen, setIsOpen] = useState(false);
+    const toggle = ()=> setIsOpen(!isOpen);
+
+
+    const outSideClick=(e)=>{
+        if(isOpen==true){
+            setIsOpen(false)
+        }
+    }
+
+    const [state,set_state] = useState({
+        desplegable : sessionStorage.rol === 'superAses' ? Menu : Menu2
+      })
+
+    function path_actual(name){
+        set_state({
+          ...state,
+          path_actual : name,
+        })
+      }
+      
+
+        
+
+
+    return (
+        <Container className="containerSidebar">
+                <Row className="top_selection">
+                    <FaBars onClick={toggle}/>
+                </Row>
+                {
+                    isOpen ?
+                    (
+                        <Row style={{width: isOpen ? "250px" : "70px"}} className="sideBar">
+                            <Scrollbars className="scrollbar_sidebar">
+                                <div className="sidebar_item">
+                                    { state.desplegable.map((item, index) => <SidebarItem key={index} item={item}
+                                    childClicked2={(name)=>path_actual(name)}/>) }
+                                </div>
+                            </Scrollbars>
+                        </Row>
+                    )
+                    :
+                    (
+                    <div  class="d-none d-md-block">
+                        <Row style={{width: isOpen ? "250px" : "70px"}} className="sideBar">
+                            <Scrollbars className="scrollbar_sidebar">
+                                <div className="sidebar_item">
+                                    { state.desplegable.map((item, index) => <Sidebar_item_closed key={index} item={item}
+                                    childClicked2={(name)=>path_actual(name)}/>) }
+                                </div>
+                            </Scrollbars>
+                        </Row>
+                    </div>
+                    )
+                }
+                
+                
+                
+                <Row className="row_navbar">
+                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}  path_actual={state.path_actual}></NavBar>
+                </Row>
+                <div  class="d-none d-md-block">
+                    <Row className="inf_der">
+                        <main style={{marginLeft: isOpen ? "230px" : "50px", marginTop: "5rem",}} onClick={outSideClick}>
                             {props.children}
                         </main>
                     </Row>

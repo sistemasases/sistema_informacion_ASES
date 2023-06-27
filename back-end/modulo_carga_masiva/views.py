@@ -6,8 +6,8 @@ from modulo_usuario_rol.models import estudiante
 from django.contrib.auth.models import User
 from modulo_programa.models import programa, programa_estudiante
 from modulo_carga_masiva.models import retiro, motivo
-from modulo_academico.models import historial_academico, materia
-from modulo_instancia.models import semestre
+from modulo_academico.models import historial_academico, materia, profesor, facultad
+from modulo_instancia.models import semestre, sede
 from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -187,9 +187,18 @@ def carga_materias(file):
             list_dict_result.append(dict_result)
         else:
             try:
+                consulta_semestre= semestre.objects.get(id =datos.iat[i,3])
+                consulta_sede= sede.objects.get(id =datos.iat[i,4])
+                consulta_facultad= facultad.objects.get(id =datos.iat[i,5])
+                consulta_profesor= profesor.objects.get(id =datos.iat[i,6])
                 Materia = materia(
                 cod_materia = str(datos.iat[i,0]),
                 nombre = str(datos.iat[i,1]),
+                franja = str(datos.iat[i,2]),
+                id_semestre = consulta_semestre,
+                id_sede = consulta_sede,
+                id_facultad = consulta_facultad,
+                id_profesor = consulta_profesor,
 
                 )
                 lista_materias.append(Materia)
@@ -218,12 +227,14 @@ def carga_notas(file):
         try:
             consulta_programa_estudiante= programa_estudiante.objects.get(id =datos.iat[i,0])
             consulta_semestre= semestre.objects.get(id =datos.iat[i,1])
+            consulta_estudiante= estudiante.objects.get(id =datos.iat[i,5])
             Nota = historial_academico(
             id_programa_estudiante= consulta_programa_estudiante,
             id_semestre= consulta_semestre,
             promedio_semestral = float(datos.iat[i,2]),
             promedio_acumulado= float(datos.iat[i,3]),
             json_materias = str(datos.iat[i,4]),
+            id_estudiante= consulta_estudiante,
 
             )
             lista_notas.append(Nota)

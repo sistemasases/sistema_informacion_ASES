@@ -5,6 +5,7 @@ import Academico from "./tabs/academico"
 import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
 import {Dropdown, Button} from "react-bootstrap";
+import {useEffect} from 'react';
 
 import axios from 'axios';
 
@@ -22,19 +23,27 @@ const Selector = (props) =>{
       data_user : [],
       data_user_socioedu : [],
       data_rol : [],
-
-      id_usuario:'',
-      nombres:'',
-      apellidos: '',
-      cedula:'',
+      tab_abierto : '',
+      id_usuario :'',
+      nombres :'',
+      apellidos : '',
+      cedula : '',
       correo:'',
       telefono:'',
+
+      data_user_academico: [[]],
+      tiene_datos_cargados : false
 
     })
 
 
+    useEffect(() => {
+        console.log('entra al useeffct xd : ' + props.tab_abierto)
+        setActiveTabIndex(props.tab_abierto)
 
-    const[activeTabIndex, setActiveTabIndex] = useState(0);
+      }, [props.tab_abierto]);
+
+    const[activeTabIndex, setActiveTabIndex] = useState(state.tab_abierto);
     const activeTab = (index)=> 
     {
         index === activeTabIndex ?
@@ -48,24 +57,22 @@ const Selector = (props) =>{
         
     }
 
-
-
       const loadInfo = (e) => {
-  
-            const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
-              axios({
-                // Endpoint to send files
-                url:  url_axios,
-                method: "GET",
-              })
-              .then((respuesta)=>{
-                state.data_user_socioedu.push(respuesta.data)
-              })
-              .catch(err=>{
-                  return (err)
-              })
 
-      }
+        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            method: "GET",
+            })
+            .then((respuesta)=>{
+            state.data_user_socioedu.push(respuesta.data)
+            })
+            .catch(err=>{
+                return (err)
+            })
+
+    }
 
 
     const tabs=[
@@ -85,14 +92,19 @@ const Selector = (props) =>{
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
-            component:<Socieducativa id={props.id} data_user_socioedu={state.data_user_socioedu} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
+            component:<Socieducativa 
+                        id={props.id} 
+                        data_user_socioedu={state.data_user_socioedu} 
+                        seleccionado={props.seleccionado} datos={props.datos} 
+                        rolUsuario={props.rolUsuario} editar={props.editar} 
+                        codigo={props.codigo}/>,
         },
         {
             id:3,
             name:"ACADEMICO",
             contenido:"hola",
-
-            component:<Academico />,
+            component:<Academico data_user_academico={state.data_user_academico}
+                        id={props.id}/>,
         },
         {
             id:4,

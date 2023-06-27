@@ -46,7 +46,7 @@ const Listas = (props) => {
         let formData = new FormData();
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.item.id);
-        formData.append("id_jefe", props.profecional_seleccionado);
+        formData.append("id_jefe", props.profesional_seleccionado);
 
       axios({
       // Endpoint to send files
@@ -56,7 +56,7 @@ const Listas = (props) => {
         })
         .then((res)=>{
         console.log(res)
-            alert("practicante "+props.item.id+" fue eliminado correctamente de :"+props.profecional_seleccionado)
+            alert("practicante "+props.item.id+" fue eliminado correctamente de :"+props.profesional_seleccionado)
         })
         .catch(err=>{
             alert("error al eliminar el usuario : "+props.item.id);
@@ -68,7 +68,7 @@ const Listas = (props) => {
         return (
             <Row className="row_opcion">
             {
-                props.profecional_seleccionado === '' ?
+                props.profesional_seleccionado === '' ?
                 (
                 <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
                     <Row className="asignaciones_hover1">
