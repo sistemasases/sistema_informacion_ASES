@@ -28,8 +28,8 @@ const Estudiantes = ({item}) => {
         return (
             <Row>
                     <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
-                    <Row className="link_academico1">
-                    <Col className="link_text_academico1" >
+                        <Row className="link_academico1">
+                            <Col className="link_text_academico1" >
                                             <Row className="link_text_academico_hover2">
                                                 {item.asignatura}
                                                 return
@@ -38,8 +38,8 @@ const Estudiantes = ({item}) => {
                                                 </Col>
                                             </Row>
                             </Col>
-                    </Row>
-                    <Row className="content_academico">
+                        </Row>
+                        <Row className="content_academico">
                             <Col className="contenido_fichas_academico2">
 
                             { item.estudiantes.filter((item)=>{
@@ -49,26 +49,9 @@ const Estudiantes = ({item}) => {
                                     }).map((item, index) => <Estudiantes 
                                 key={index} item={item} practicante_seleccionado={state.practicante_seleccionado}
                                 />) }
-                                {/* { item.estudiantes.filter((item)=>{
-                                    return state.filtro.toLowerCase() === '' ? item 
-                                    : 
-                                    item.nombre.toLowerCase().includes(state.filtro);                      
-                                    }).map((item, index) => 
-                                    <Row>
-                                        <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
-                                            <Row className="link_academico1_sin_borde">
-                                                <Col className="link_text_academico1_sin_borde" >
-                                                    <Row className="link_text_academico_hover4">
-                                                        {item.nombre}   {item.apellido}  {item.cod_univalle}
-                                                    </Row>
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                    ) } */}
-
-                            </Col>
-                        </Row>
+                                
+                                </Col>
+                            </Row>
                 </Col>
             </Row>
         )
