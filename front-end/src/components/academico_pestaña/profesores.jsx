@@ -98,9 +98,9 @@ const Profesores = ({item}) => {
                     <Row className="link_academico1" onClick={() => { setOpen(!open) }}>
                         <Col className="link_text_academico1">
                             <Row className="link_text_academico_hover3">
-                            <a href={`/calificador/profesor=${encodeURIComponent(item.id_profesor)}&curso=${encodeURIComponent(item.id)}`} target="_blank" rel="noopener noreferrer" className="fichas_academico plain">
-                                {item.nombre} -- {item.cod_materia} -- {item.franja}
-                            </a>
+                                <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}`} target="_blank" rel="noopener noreferrer" className="fichas_academico plain">
+                                    {item.nombre} -- {item.cod_materia} -- {item.franja}
+                                </a>
                             </Row>
                         </Col>
                     </Row>

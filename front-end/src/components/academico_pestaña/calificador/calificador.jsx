@@ -4,28 +4,52 @@ import Select from 'react-select'  ;
 import Tabla_de_notas from './tabla_de_notas'
 import {useEffect} from 'react';
 import axios from 'axios';
+import { useLocation, useParams } from 'react-router-dom';
+
 const Cabecera = () =>{
 
+    const [profesor, setProfesor] = useState('');
+    const [curso, setCurso] = useState('');
+
+
     const [state,set_state] = useState({
-        facultades : [],
-        estudiantes_a_consultar : [{'estudiantes':''}],
-        tiene_estudiantes: false,
-        tiene_facultades: false,
+        alumnos_del_profesor : [],
+        tiene_alumnos_del_profesor : false,
         filtro : '',
 
       })
-      const[activeTabIndex, setActiveTabIndex] = useState("0");
-      const activeTab = (index)=> 
-      {
-          index === activeTabIndex ?
-          (
-              setActiveTabIndex(0)
-          )
-          :
-          (
-              setActiveTabIndex(index)
-          )
-      }
+  
+    useEffect(() => {
+        const currentUrl = window.location.href;
+        const urlParts = currentUrl.split("/");
+        const profesorParam = urlParts[4]; // Obtiene el valor del profesor
+        const cursoParam = urlParts[5]; // Obtiene el valor del curso
+        setProfesor(profesorParam);
+        setCurso(cursoParam);
+  
+    }, []);
+
+
+
+    useEffect(() => {
+
+      const fetchData = async () => {
+        try {
+          const response = await axios.get("http://localhost:8000/academico/alumnos_del_profesor/", 
+                                        {params: { curso : curso, profesor : profesor}});
+          set_state({
+            alumnos_del_profesor : response.data,
+            tiene_alumnos_del_profesor: true
+          })
+          console.log("Datos capturados correctamente");
+        } catch (error) {
+          console.log("Error al obtener los datos");
+        }
+      };
+  
+      fetchData();
+  
+    }, [profesor, curso]);
 
 
     const traer_facultades = async (index)=>{
@@ -55,57 +79,21 @@ const Cabecera = () =>{
             </Row>
 
 
-            <Row>
-                <Col>
+                    {state.tiene_alumnos_del_profesor ?
+                    (
                     <Row>
-                        <h4>Mostrar <select className="select_tabla_cantidad_seguimientos"/> estudiantes</h4>
+                        {state.alumnos_del_profesor.map((item, index) => 
+                        <Tabla_de_notas key={index} item={item} /> )}
                     </Row>
-                    <Row>
-                        <Col xs={"12"} md={"6"}>
-                            mostrando el registro del 1 al 10 de un total de # registros
-                        </Col>
-                        <Col xs={"12"} md={"6"}>
-                            Buscar
-                            <select/>
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>   
-            
-            <Row className="academico_fondo">
-                            <Col className={"facultades" === activeTabIndex ? "academico_deplegable open" : "academico_deplegable"}>
-                                <Row className="academico_deplegable_seleccionar" onClick={() => {activeTab("facultades"); traer_facultades()}}>
-                                    <Col className="academico_deplegable_seleccionar_text" >
-                                        <Row className="academico_deplegable_seleccionar_hover">
-                                            <Col  className="col_academico_deplegable_seleccionar_text" > 
-                                                    Separación por asignaturas
-                                                    {
-                                                        "facultades" === activeTabIndex ?
-                                                        (
-                                                          <i class="bi bi-chevron-up"></i>
-                                                        )
-                                                        :
-                                                        (
-                                                          <i class="bi bi-chevron-down"></i>
-                                                        )
-                                                    }
-                                            </Col>
-                                        </Row>
-                                    </Col>
-                                </Row>
-                                {state.tiene_facultades ?
-                                (
-                                  <Row className="academico_deplegable_contenido">
-                                    {state.facultades.map((item, index) => 
-                                    <Tabla_de_notas key={index} item={item} /> )}
-                                </Row>
-                                )
-                                :
-                                (<Row></Row>)
-                                }
-                                
-                            </Col>
-                </Row>   
+                    )
+                    :
+                    (<Row>
+                        Tiene : {state.tiene_alumnos_del_profesor} -- {profesor} -- {curso}
+                        <li>{JSON.stringify(state.alumnos_del_profesor)}</li>
+                    </Row>)
+                    }
+                    
+
         </Container>
     )
 }
