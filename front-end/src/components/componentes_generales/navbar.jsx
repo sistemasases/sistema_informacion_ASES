@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Container, Row, Col} from "react-bootstrap";
+import {Container, Row, Col, Badge} from "react-bootstrap";
 import  {useEffect} from 'react';
 import Logos from './LOGO BLANCORecurso 1.png';
 import { useLocation } from 'react-router-dom';
@@ -76,21 +76,26 @@ const navbar = (props) =>{
     <Container  >
         <Row className="nav">
 
-            <Col xs={"4"} md={"2"}>
-                <img src={Logos} className="logo" alt='/'></img>
-            </Col>
-
-            <Col className="ulDropdown" xs="5" md="4">
-          {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
-          {lastVisitedRoutes.reverse().map((url, index) => (
-            <span key={index}>
-                <a href={url} >
-                    {getSegmentsFromUrl(url).join('/')} ---
-                </a>
-            </span>
-            
-          ))}
+        <Col xs={"4"} md={"2"}>
+            <img src={Logos} className="logo" alt='/'></img>
         </Col>
+
+        <div class="col-md-6" >
+            <Col className="ulDropdown">
+                <Row>
+                {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
+            {lastVisitedRoutes.reverse().map((url, index) => (    
+                    
+                <Col md={"4"} className="row_modulo_activo" href={url}>
+                    <a href={url}>
+                        {getSegmentsFromUrl(url).join('/')}
+                    </a>
+                </Col>
+            ))}
+                </Row>
+
+            </Col>
+        </div>
 
 
 {/* 
@@ -110,7 +115,7 @@ const navbar = (props) =>{
             </Col> */}
 
 
-            <Col className="boton_perfil" xs={"2"} md={"5"}>
+            <Col className="boton_perfil" xs={"2"} md={"4"}>
                 <Row>
                         <div class="d-none d-md-inline col-md-9" >
 
