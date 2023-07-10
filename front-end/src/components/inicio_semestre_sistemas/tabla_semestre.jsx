@@ -11,7 +11,7 @@ import React, {useState, useEffect} from 'react';
 import {Container, Row, Table} from "react-bootstrap";
 import All_Users_Rols from '../../service/all_users_rol';
 
-const semestre_sistemas_component = () =>{
+const Semestre_sistemas_component = () =>{
 
     // Constante para guardar el estado de la tabla
     const [state,set_state] = useState({
@@ -58,4 +58,4 @@ const semestre_sistemas_component = () =>{
     )
 }
 
-export default semestre_sistemas_component
+export default Semestre_sistemas_component

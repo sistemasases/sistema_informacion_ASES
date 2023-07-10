@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
 
-const login_component = () =>{
+const Login_component = () =>{
 
   const [state,set_state] = useState({
     usuario: '',
@@ -131,4 +131,4 @@ const login_component = () =>{
   )
 }
 
-export default login_component
+export default Login_component
