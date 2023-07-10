@@ -3,6 +3,7 @@ import {Container, Row, Col, Button} from "react-bootstrap";
 import Desplegable_item_listas_materias from "./desplegable_Item_listas_materias";
 import Modal from 'react-bootstrap/Modal';
 import Estudiantes from './estudiantes';
+import Profesores from './profesores';
 import {useEffect} from 'react';
 import axios from 'axios';
 
@@ -28,9 +29,13 @@ const Academico_desplegable = () =>{
 
     const [state,set_state] = useState({
         facultades : [],
+        profesores : [{'profesores':''}],
         estudiantes_a_consultar : [{'estudiantes':''}],
         tiene_estudiantes: false,
-        tiene_facultades: false
+        tiene_facultades: false,
+        tiene_profesores: false,
+        filtro : '',
+
       })
     
     const[activeTabIndex, setActiveTabIndex] = useState("0");
@@ -45,7 +50,13 @@ const Academico_desplegable = () =>{
             setActiveTabIndex(index)
         )
     }
-
+    const cambiar_dato = (e) =>{
+      set_state({
+            ...state,
+            [e.target.name] : e.target.value
+      })
+      console.log(e.target.value)
+}
 
 
     useEffect(()=>{
@@ -83,6 +94,20 @@ const Academico_desplegable = () =>{
       }
 
 
+      const traer_profesores = async (index)=>{
+        try{
+          const response = await axios.get("http://localhost:8000/academico/lista_de_profesores/",);
+          set_state({
+            profesores : [{'profesores' : response.data}],
+            tiene_profesores: true
+          })
+          console.log("entra aqui ssisisisiisj")
+        }
+        catch (error){
+          console.log("no capto el dato")
+        }
+      }
+
 
       const traer_estudiantes = async (index)=>{
         try{
@@ -99,6 +124,101 @@ const Academico_desplegable = () =>{
       }
 
 
+
+
+
+    const profesores_ejemplo =
+    [
+      {
+        nombre: 'profesor 1',
+        materias: [
+          {
+            curso: 'materia 1',
+            estudiantes: 
+            [
+              {estudiante: 'estudiante 1'},
+              {estudiante: 'estudiante 2'},
+              {estudiante: 'estudiante 3'},
+              {estudiante: 'estudiante 4'}
+            ]
+          },
+          {
+            curso: 'materia 2',
+            estudiantes: 
+            [
+              {estudiante: 'estudiante 1'},
+              {estudiante: 'estudiante 2'}
+            ]
+          },
+          {
+            curso: 'materia 3',
+            estudiantes: 
+            [
+              {estudiante: 'estudiante 1'},
+              {estudiante: 'estudiante 2'},
+              {estudiante: 'estudiante 3'}
+            ]
+          }
+        ]
+      },
+
+      {
+        nombre: 'profesor 2',
+        materias: [
+          {
+            curso: 'materia 1',
+            estudiantes: 
+            [
+              {estudiante: 'estudiante 1'},
+              {estudiante: 'estudiante 2'}
+            ]
+          },
+          {
+            curso: 'materia 2',
+            estudiantes: 
+            [
+              {estudiante: 'estudiante 1'},
+              {estudiante: 'estudiante 2'}
+            ]
+          },
+          {
+            curso: 'materia 3',
+            estudiantes: 
+            [
+              {estudiante: 'estudiante 1'},
+              {estudiante: 'estudiante 2'},
+              {estudiante: 'estudiante 3'}
+            ]
+          }
+        ]
+      },
+
+      {
+        nombre: 'profesor 3',
+        materias: [
+          {
+            curso: 'materia 1',
+            estudiantes: 
+            [
+              {estudiante: 'estudiante 1'},
+              {estudiante: 'estudiante 2'},
+              {estudiante: 'estudiante 3'},
+              {estudiante: 'estudiante 4'}
+            ]
+          },
+          {
+            curso: 'materia 2',
+            estudiantes: 
+            [
+              {estudiante: 'estudiante 1'},
+              {estudiante: 'estudiante 2'}
+            ]
+          }
+        ]
+      }
+    ]
+
+
     return (
         
       <Container className="academico_container">
@@ -113,17 +233,19 @@ const Academico_desplegable = () =>{
                                                     {
                                                         "facultades" === activeTabIndex ?
                                                         (
-                                                                <i class="bi bi-chevron-up"></i>
+                                                          <i class="bi bi-chevron-up"></i>
                                                         )
                                                         :
                                                         (
-                                                                <i class="bi bi-chevron-down"></i>
+                                                          <i class="bi bi-chevron-down"></i>
                                                         )
                                                     }
                                             </Col>
                                         </Row>
                                     </Col>
                                 </Row>
+                                <li >{JSON.stringify(state.facultades)}</li>
+
                                 {state.tiene_facultades ?
                                 (
                                   <Row className="academico_deplegable_contenido">
@@ -137,6 +259,48 @@ const Academico_desplegable = () =>{
                                 
                             </Col>
                 </Row>
+
+
+
+                  <Row className="academico_fondo">
+                      <Col className={"profesores" === activeTabIndex ? "academico_deplegable open" : "academico_deplegable"}>
+                          <Row className="academico_deplegable_seleccionar" onClick={() => {activeTab("profesores"); traer_profesores()}}>
+                              <Col className="academico_deplegable_seleccionar_text" >
+                              
+                                  <Row className="academico_deplegable_seleccionar_hover">
+                                      <Col  className="col_academico_deplegable_seleccionar_text" > 
+                                          Profesores
+                                          {
+                                              "profesores" === activeTabIndex ?
+                                              (
+                                                <i class="bi bi-chevron-up"></i>
+                                              )
+                                              :
+                                              (
+                                                <i class="bi bi-chevron-down"></i>
+                                              )
+                                          }
+                                      </Col>
+                                  </Row>
+                              </Col>
+                          </Row>
+                          <li >{JSON.stringify(state.profesores)}</li>
+                          {state.tiene_profesores ?
+                          (
+                            <Row className="academico_deplegable_contenido">
+                              {state.tiene_profesores && 
+                                state.profesores.map((item, index) => 
+                                <Profesores key={index} item={item} /> )}
+                            </Row>
+                          )
+                          :
+                          (<Row></Row>)
+                          }
+                      </Col>
+                </Row>
+
+
+
                 <Row className="academico_fondo">
                             <Col className={"estudiantes" === activeTabIndex ? "academico_deplegable open" : "academico_deplegable"}>
                                 <Row className="academico_deplegable_seleccionar" onClick={() => {traer_estudiantes();activeTab("estudiantes")}}>
@@ -157,13 +321,12 @@ const Academico_desplegable = () =>{
                                                             </Col>
                                                         </Row>
                                         </Col>
-                                </Row>
+                                </Row><li >{JSON.stringify(state.estudiantes_a_consultar)}</li>
                                     <Row className="academico_deplegable_contenido">
                                         {state.tiene_estudiantes && 
                                         state.estudiantes_a_consultar.map((item, index) => 
                                         <Estudiantes key={index} item={item} /> )}
                                     </Row>
-
                             </Col>
                 </Row>
 

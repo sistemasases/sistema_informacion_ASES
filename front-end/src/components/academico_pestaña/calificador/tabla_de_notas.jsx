@@ -3,7 +3,7 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
 
-const Desplegable_item_listas_materias = ({item, franja}) => {
+const Desplegable_item_listas_materias = ({item}) => {
 
     const [open, setOpen] = useState(false)
 
@@ -78,7 +78,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
                     <Row className="link_academico1" onClick={() => {setOpen(!open); traer_cursos_de_facultad(item.id)}}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover1">
-                                {item.nombre}
+                                {item.nombre} entra 1
                             </Row>
                         </Col>
                     </Row>
@@ -99,7 +99,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover2">
                                 {item.nombre}
-                                {item.codigo}
+                                {item.codigo} entra 2
                             </Row>
                         </Col>
                     </Row>
@@ -114,23 +114,21 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
     }else if(item.tipo_dato === 'franja') {
         return (
             <Row>
-
                 <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
                     <Row className="link_academico1" onClick={() => {setOpen(!open); profesores_de_la_franja(item.cod_materia, item.franja)}}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover2">
-                                {item.nombre} - {item.codigo} - {item.franja}  
+                                {item.nombre} - {item.codigo} - {item.franja}  entra 3
                             </Row>
                         </Col>
                     </Row>
                     <Row className="content_academico">
                             <Col className="contenido_fichas_academico2">
                                 { state.profesores_de_la_franja.map((child, index) => 
-                                    <Desplegable_item_listas_materias key={index} item={child} franja={item.franja}/>) 
+                                    <Desplegable_item_listas_materias key={index} item={child} />) 
                                 }
                             </Col>
                         </Row>
-
                 </Col>
             </Row>
         )
@@ -142,7 +140,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
             <Row className="link_academico1" onClick={() => {setOpen(!open); alumnos_del_profesor(item.curso_del_profesor, item.id)}}>
                 <Col className="link_text_academico1" >
                     <Row className="link_text_academico_hover3">
-                        {item.nombre} -- {item.curso_del_profesor} --- {franja}
+                        {item.nombre} -- {item.curso_del_profesor} entra 4
                     </Row>
                 </Col>
             </Row>
@@ -151,9 +149,8 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
                             </Col>
                             { item.items_materia.map((item, index) => 
                                     <Col>( {item.nombre}  :   {item.porcentaje} )</Col>)
-                                }
+                                } entra 5
                         </Row>
-
             <Row className="content_academico">
                 <Col className="contenido_fichas_academico3">
                     {state.alumnos_del_profesor.map((child, index) => <Desplegable_item_listas_materias key={index} item={child}/>) }
@@ -170,12 +167,8 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
             <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
                 <Col className="link_text_academico1_sin_borde" xs={4}>
                     <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
-                        {item.nombre} {item.apellido} - {item.cod_univalle}
+                        {item.nombre} {item.apellido} - {item.cod_univalle} entra 6
                     </Link>
-                                    
-                    {/* <Row className="link_text_academico_hover4">
-                        {item.alumno}
-                    </Row> */}
                 </Col>
                 { item.notas.map((item, index) => 
                     <Col>( {item.nombre}  :   {item.calificacion} )</Col>)
