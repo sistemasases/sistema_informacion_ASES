@@ -87,7 +87,7 @@ const login_component = () =>{
   return (
     <Row>
       {
-        sessionStorage.token == undefined  && state.temporal ?
+        sessionStorage.token == undefined ?
         (
           <Container className="containerLogin">
             <Row>
