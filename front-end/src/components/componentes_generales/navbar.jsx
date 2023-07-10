@@ -5,7 +5,7 @@ import Logos from './LOGO BLANCORecurso 1.png';
 import { useLocation } from 'react-router-dom';
 import { useNavigate  } from 'react-router-dom';
 
-const navbar = (props) =>{
+const Navbar = (props) =>{
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -181,4 +181,4 @@ const navbar = (props) =>{
     )
 }
 
-export default navbar 
+export default Navbar 

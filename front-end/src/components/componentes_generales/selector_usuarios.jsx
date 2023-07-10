@@ -20,7 +20,8 @@ var bandera_option_user = true;
 var bandera_option_rol = true;
 const datos_option_user = []
 const datos_option_rol = []
-const selector_usuarios = () =>{
+
+const Selector_usuarios = () =>{
 
   /*
     constantes
@@ -334,7 +335,7 @@ const selector_usuarios = () =>{
   )
 }
 
-export default selector_usuarios
+export default Selector_usuarios
 
 
   
