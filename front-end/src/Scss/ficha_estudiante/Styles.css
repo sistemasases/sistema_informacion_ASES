@@ -264,6 +264,7 @@ body {
 
 .texto_pequeño{
     font-size: 14pt;
+    word-break: break-all;
 }
 .texto_pequeño_gris{
     font-size: 14pt;
