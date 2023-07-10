@@ -5,3 +5,11 @@ from modulo_academico.models import *
 admin.site.register(historial_academico)
 admin.site.register(materia)
 
+admin.site.register(profesor)
+admin.site.register(matricula)
+admin.site.register(items_historico)
+admin.site.register(items_semestre)
+admin.site.register(notas_historico)
+admin.site.register(notas_semestre)
+
+

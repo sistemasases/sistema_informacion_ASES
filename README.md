@@ -1,5 +1,5 @@
 # SISTEMA DE INFORMACIÓN ASES
-Este es un proyecto modular basado en Python, Djando y React. Se ha realizado para actualizar y mejorar la plataforma de apoyo académico existente en la estrategia de apoyo ASES. La nueva versión está diseñada para ser más eficiente, intuitiva, fácil de usar, y para proporcionar una experiencia de usuario más completa y enriquecedora para monitores, practicantes y profecionales.
+Este es un proyecto modular basado en Python, Djando y React. Se ha realizado para actualizar y mejorar la plataforma de apoyo académico existente en la estrategia de apoyo ASES. La nueva versión está diseñada para ser más eficiente, intuitiva, fácil de usar, y para proporcionar una experiencia de usuario más completa y enriquecedora para monitores, practicantes y profesionales.
 	Mayor eficiencia: Las nuevas tecnologías permiten una programación más eficiente y rápida, lo que significa que se puede desarrollar el sistema en menos tiempo y con menos recursos.
 	Mejora de la experiencia del usuario: React, en particular, es conocido por proporcionar una experiencia de usuario más fluida y dinámica, lo que significa que los estudiantes y profesores pueden interactuar con la plataforma de manera más efectiva.
 	Mayor escalabilidad: Las nuevas tecnologías permiten que el sistema sea escalable y adaptable, lo que significa que se puede mejorar y actualizar en el futuro sin necesidad de cambiar completamente de tecnología.
@@ -31,9 +31,9 @@ Los siguientes requerimientos deben se todos instalados sobre la ruta C:\"ruta h
 	1. Se require la instalación de Django con el comando "pip install Django"
 	2. Se require la instalación de django-cors-headers con el comando "pip install django-cors-headers"
 	3. Se require la instalación de djangorestframework con el comando "pip install djangorestframework"
-	4. Se require la instalación de psycopg2  o  psycopg2-binary con el comando "pip install psycopg2"
-	5. Se require la instalación de pandas con el comando "pip install pandas"
-	6. "falta 1 que no recuerdo cual es xd"
+	4. Se require la instalación de djangorestframework con el comando "pip install djangorestframework-simplejwt"
+	5. Se require la instalación de psycopg2  o  psycopg2-binary con el comando "pip install psycopg2"
+	6. Se require la instalación de pandas con el comando "pip install pandas"
 
 
 # INICIO DEL SISTEMA

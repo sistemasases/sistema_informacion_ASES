@@ -3,12 +3,16 @@ import Select from 'react-select';
 import Switch from 'react-switch';
 import axios from 'axios';
 import Asignaciones_component from "../../components/asignaciones/asignaciones_component";
+import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
 import { FaRegChartBar, FaThList, FaBars } from "react-icons/fa";
 import { DropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
 const Carga_masiva = () => {
+
+  const userRole = sessionStorage.getItem('rol');
+
   const [state, set_state] = useState({
     data1: [],
     data2: [],
@@ -74,7 +78,7 @@ const Carga_masiva = () => {
   }, [state.data1, state.data2, state.data3, state.data4]);
 
   return (
-    <Col className="contenido_children">
+    <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
         <Row>
           <Col>
             <Row className="justify-content-md-center">
@@ -94,7 +98,7 @@ const Carga_masiva = () => {
             )}
           </Col>
         </Row>
-    </Col>
+    </Col> : <Acceso_denegado/>}</>
     )
 }
 

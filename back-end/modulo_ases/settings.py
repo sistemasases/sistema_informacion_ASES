@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'modulo_seguimiento',
     'modulo_programa',
     'modulo_academico',
+    'modulo_reportes',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',
@@ -115,6 +116,18 @@ DATABASES = {
         'DATABASE_PORT' : '5432',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'ases',
+#         'USER' : 'postgres',
+#         'PASSWORD' : 'MrSteven',
+#         'HOST' : 'localhost',
+#         'DATABASE_PORT' : '5432',
+#     }
+# }
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

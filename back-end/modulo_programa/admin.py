@@ -5,4 +5,5 @@ from modulo_programa.models import *
 admin.site.register(programa)
 admin.site.register(programa_estudiante)
 admin.site.register(facultad)
-admin.site.register(sede)
+admin.site.register(estado_programa)
+admin.site.register(historial_estado_programa_estudiante)

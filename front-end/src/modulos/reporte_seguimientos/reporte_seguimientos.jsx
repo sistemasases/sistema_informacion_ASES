@@ -8,20 +8,48 @@ import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Cabecera from "../../components/reporte_seguimientos/cabecera";
 import Informacion_rol from "../../components/reporte_seguimientos/informacion_rol";
-
+import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
+import  {useEffect} from 'react';
+import axios from 'axios';
 
 const Reporte_seguimientos = (props) =>{
 
+    const [state,set_state] = useState({
+        periodo : '',
+        data_user : [],
+
+      })
+    const userRole = sessionStorage.getItem('rol');
+    useEffect(()=>{
+  
+        axios({
+          // Endpoint to send files
+          url:  "http://localhost:8000/usuario_rol/profesional/",
+          method: "GET",
+        })
+        .then((respuesta)=>{
+          set_state({
+            ...state,
+            data_user : respuesta.data
+          })
+          console.log("estos son los primeros datos :"+respuesta.data)
+        })
+        .catch(err=>{
+          console.log("error" + err)
+        })
+  
+  
+      },[]);
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
     return (
         
-        <Col className="contenido_children">
+        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
             <Row className="containerRow">
-                <Cabecera usuario={props.usuario} area={props.area} periodo={props.periodo}></Cabecera>
+                <Cabecera usuario={props.usuario} area={props.area} periodo={props.periodo} data_user={state.data_user}></Cabecera>
             </Row>
-        </Col>
+        </Col> : <Acceso_denegado/>}</>
     )
 }
 

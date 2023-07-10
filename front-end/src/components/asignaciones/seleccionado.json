@@ -5,13 +5,13 @@
         "nombre":"practicante1",
         "cedula":"cedula",
         "rol":"practicante",
-        "superior" : "profecional1"
+        "superior" : "profesional1"
     },
     {
         "nombre":"practicante2",
         "cedula":"cedula",
         "rol":"practicante",
-        "superior" : "profecional2"
+        "superior" : "profesional2"
     },
     {
         "nombre":"monitor1",

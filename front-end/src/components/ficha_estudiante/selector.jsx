@@ -4,11 +4,9 @@ import Info_general from "./tabs/info_general"
 import Academico from "./tabs/academico"
 import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import { NavLink } from 'react-router-dom';
-import  {useEffect, componentDidUpdate} from 'react';
+import {useEffect} from 'react';
+
 import axios from 'axios';
 
 const Selector = (props) =>{
@@ -20,30 +18,32 @@ const Selector = (props) =>{
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-
-    const datos_option_user = []
-    const datos_option_rol = []
-    var bandera_option_user = true;
-    var bandera_option_rol = true;
-    var bandera = true;
     const [state,set_state] = useState({
       usuario : '',
       data_user : [],
       data_user_socioedu : [],
       data_rol : [],
-
-      id_usuario:'',
-      nombres:'',
-      apellidos: '',
-      cedula:'',
+      tab_abierto : '',
+      id_usuario :'',
+      nombres :'',
+      apellidos : '',
+      cedula : '',
       correo:'',
       telefono:'',
+
+      data_user_academico: [[]],
+      tiene_datos_cargados : false
 
     })
 
 
+    useEffect(() => {
+        console.log('entra al useeffct xd : ' + props.tab_abierto)
+        setActiveTabIndex(props.tab_abierto)
 
-    const[activeTabIndex, setActiveTabIndex] = useState(0);
+      }, [props.tab_abierto]);
+
+    const[activeTabIndex, setActiveTabIndex] = useState(state.tab_abierto);
     const activeTab = (index)=> 
     {
         index === activeTabIndex ?
@@ -57,24 +57,22 @@ const Selector = (props) =>{
         
     }
 
-
-
       const loadInfo = (e) => {
-  
-            const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
-              axios({
-                // Endpoint to send files
-                url:  url_axios,
-                method: "GET",
-              })
-              .then((respuesta)=>{
-                state.data_user_socioedu.push(respuesta.data)
-              })
-              .catch(err=>{
-                  return (err)
-              })
 
-      }
+        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            method: "GET",
+            })
+            .then((respuesta)=>{
+            state.data_user_socioedu.push(respuesta.data)
+            })
+            .catch(err=>{
+                return (err)
+            })
+
+    }
 
 
     const tabs=[
@@ -82,7 +80,8 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            component:<Info_general id={props.id} 
+            component:<Info_general 
+                        id={props.id} 
                         seleccionado={props.seleccionado} 
                         datos={props.datos} 
                         rolUsuario={props.rolUsuario} 
@@ -93,19 +92,24 @@ const Selector = (props) =>{
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
-            component:<Socieducativa id={props.id} data_user_socioedu={state.data_user_socioedu} seleccionado={props.seleccionado} datos={props.datos} rolUsuario={props.rolUsuario} editar={props.editar} codigo={props.codigo}/>,
+            component:<Socieducativa 
+                        id={props.id} 
+                        data_user_socioedu={state.data_user_socioedu} 
+                        seleccionado={props.seleccionado} datos={props.datos} 
+                        rolUsuario={props.rolUsuario} editar={props.editar} 
+                        codigo={props.codigo}/>,
         },
         {
             id:3,
             name:"ACADEMICO",
             contenido:"hola",
-
-            component:<Academico />,
+            component:<Academico data_user_academico={state.data_user_academico}
+                        id={props.id}/>,
         },
         {
             id:4,
             name:"GEOGRAFICO",
-            contenido:"hola",
+            contenido:"bloqueado",
             component:<Info_general />,
         },
 
@@ -115,24 +119,22 @@ const Selector = (props) =>{
 
     return (
         <Container className="containerSelector">
-
-                {
-                    props.seleccionado ==='' ?
+                {/* {
+                    props.seleccionado === '' ?
                     (
                         <Row className="tabs" >
-                                    {
-                                    tabs.map((tab, index)=>(
-                                        <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
-                                            <Row onClick={handleShow}>
-                                                <label key={index} classNmae="tab_bloqueado">
-                                                    {tab.name}
-                                                </label>
-                                            </Row>
-                                        </Row>
-                                        
-                                        ))
-                                    }
+                            {
+                            tabs.map((tab, index)=>(
+                                <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
+                                    <Row onClick={handleShow}>
+                                        <label key={index}>
+                                            {tab.name}
+                                        </label>
+                                    </Row>
                                 </Row>
+                                ))
+                            }
+                        </Row>
                     )
                     :
                     (
@@ -145,11 +147,9 @@ const Selector = (props) =>{
                                                     {tab.name}
                                                 </label>
                                             </Row>
-                                            
                                             {
                                                 (tab.id === activeTabIndex)?
                                                 (
-                                                
                                                 <Row>
                                                     <div class="d-none d-md-block col-md-1">
                                                         <Col md={"1"}></Col>
@@ -163,17 +163,69 @@ const Selector = (props) =>{
                                                 :
                                                 (<Row></Row>)
                                             }
-                                        
                                         </Col>
-                                        
                                         ))
                                     }
-                                    
                                 </Row>
                     )
-                    
-
                 }
+ */}
+
+
+
+
+                <Row className="tabs" >
+                    {
+                        tabs.map((tab, index)=>(
+
+                            <Col xs={12}>
+                            {
+                                ( props.seleccionado === '' || tab.contenido === 'bloqueado' ) ?
+                                (<Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
+                                    <Row onClick={handleShow}>
+                                        <label key={index}>
+                                            {tab.name}
+                                        </label>
+                                    </Row>
+                                </Row>):
+                                (                                        <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
+                                <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
+                                    <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
+                                        {tab.name}
+                                    </label>
+                                </Row>
+                                {
+                                    (tab.id === activeTabIndex)?
+                                    (
+                                    <Row>
+                                        {/* <div class="d-none d-md-block col-md-1">
+                                            <Col md={"1"}></Col>
+                                        </div>
+                                            <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
+                                        <div class="d-none d-md-block col-md-1">
+                                            <Col md={"1"}></Col>
+                                        </div> */}
+                                        
+                                        <Col className="contentTab" xs={"12"} md={"12"}>{tabs[activeTabIndex-1].component}</Col>
+
+                                    </Row>)
+                                    :
+                                    (<Row></Row>)
+                                }
+                            </Col>)
+                            }
+                            </Col>
+                        ))
+                    }
+                </Row>
+
+
+
+
+
+
+
+                
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>

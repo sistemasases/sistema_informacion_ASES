@@ -11,11 +11,14 @@ import Ficha_footer from "./ficha_footer";
 import Info_registros from './info_registros';
 import Programas_academicos from './programas_academicos'
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
-
-
+import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 const Info_basica = (props) =>{
 
+
+    //ids de los tabs para cuando lo s requieran abrir apenas cargue la pestaña     General :1, Sociedu:2, Academico:3, Geografico:4
+       
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
@@ -28,7 +31,7 @@ const Info_basica = (props) =>{
     const handleCloseIn = () => setShowIn(false);
 
     const datos_option_user = []
-    const total_datos_estudiantes = []
+    const [isLoading, setIsLoading] = useState(true);
 
     var bandera_option_user = true;
     const [state,set_state] = useState({
@@ -38,9 +41,10 @@ const Info_basica = (props) =>{
       usuario : '',
       data_user : [],
       data_rol : [],
-
-
+      total_datos_estudiantes : [],
+      tab_abierto : '',
       seleccionado:'',
+      ya_selecciono_automatico : true ,
 
       id_usuario:'',
       nombres:'',
@@ -49,133 +53,153 @@ const Info_basica = (props) =>{
       tipo_doc:'',
       cedula:'',
       correo:'',
-      telefono:'',
+      telefono:3122131542,
       ptogramas:[],
+      monitor : [],
+      practicante : [],
+      profesional : [],
 
       nueva_cedula:'',
       edad:'',
     })
+
+    useEffect(() => {
+      console.log('entra al useeffct xd')
+      if (state.total_datos_estudiantes['nombre'] && isLoading) {
+        set_state({
+          ...state,
+          seleccionado:state.total_datos_estudiantes['id'],
+          id_usuario:state.total_datos_estudiantes['id'],
+          nombres : state.total_datos_estudiantes['nombre'],
+          apellidos : state.total_datos_estudiantes['apellido'],
+          codigo :state.total_datos_estudiantes['cod_univalle'],
+          correo :state.total_datos_estudiantes['email'],
+          tipo_doc : state.total_datos_estudiantes['tipo_doc'],
+          cedula :state.total_datos_estudiantes['num_doc'],
+          telefono :state.total_datos_estudiantes['telefono_res'],
+          edad : '1',
+          programas : state.total_datos_estudiantes['programas'],
+          monitor : state.total_datos_estudiantes['info_monitor'],
+          practicante : state.total_datos_estudiantes['practicante'],
+          profesional : state.total_datos_estudiantes['profesional'],
+          total_datos_estudiante_seleccionado : state.total_datos_estudiantes
+        })
+      }
+      else{
+      console.log(state.total_datos_estudiantes.length)
+      }
+
+    }, [state.total_datos_estudiantes]);
+
+
+    const [selectedOption, setSelectedOption] = useState("");
+
+    const { id } = useParams();
+
+
+    useEffect(() => {
+      handle_users()
+    }, [props.data_user]);
+
+
+    const [url, setUrl] = useState('');
+
+
+    useEffect(() => {
+      const currentUrl = window.location.href;
+      const subUrl = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
+      setUrl(subUrl);
+    }, []);
+
+
+    const fetchData = async (index)=>{
+      try{
+        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
+        state.total_datos_estudiantes.push(response.data)
+        console.log("entra aqui ssisisisiisj")
+      }
+      catch (error){
+        console.log("no capto el dato")
+        fetchData(index);
+      }
+    }
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const id_parametros = searchParams.get('id');
+
+    const handle_users = (e) => {
+      // Getting the files from the input
+      if(bandera_option_user==true){
   
-    useEffect(()=>{
+        for (var i = 0; i < props.data_user['length'] ; i++) {
+          const dato = 
+          { value: props.data_user[i]['id'], 
+          label:props.data_user[i]['cod_univalle']+" "+props.data_user[i]['nombre']+" "+props.data_user[i]['apellido'],
+          id:i }
+          datos_option_user.push(dato)
+
+          //este if lo pongo para que abra academico de una
+          if (url == dato.value && state.ya_selecciono_automatico){
+            setSelectedOption(dato)
+            
+            const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+dato.value+"/";
+            axios({
+              // Endpoint to send files
+              url:  url_axios,
+              method: "GET",
+            })
+            .then((respuesta)=>{
+              set_state({
+                ...state,
+                total_datos_estudiantes : respuesta.data,
+                tab_abierto : 3,
+                ya_selecciono_automatico : false
+              })
+            })
+            .catch(err=>{
+                console.log("no tomo el dato")
+              })
+          }
+        }
+        bandera_option_user = false;
+      }
+      else{
+        console.log("bandera off");
+      }
+
+    }
+
+
+    const handle_option_user = (e) => {
+      // Getting the files from the input
+
+      const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+e.value+"/";
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/estudiante/",
+        url:  url_axios,
         method: "GET",
       })
       .then((respuesta)=>{
         set_state({
           ...state,
-          data_user : respuesta.data
+          total_datos_estudiantes : respuesta.data
         })
-
-        for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], 
-          label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],
-          id:[i] }
-          datos_option_user.push(dato)
-
-          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
-            axios({
-              // Endpoint to send files
-              url:  url_axios,
-              method: "GET",
-            })
-            .then((respuesta)=>{
-              total_datos_estudiantes.push(respuesta.dato)
-            })
-            .catch(err=>{
-                return (err)
-            })
-
-        }
-        
       })
       .catch(err=>{
-          return (err)
-      })
-      
-    },[]);
-   
+          console.log("no tomo el dato 174 de basica" + err)
+        })
 
-
-    const handle_upload = (e) => {
-      // Getting the files from the input
-      console.log([state.rol])
-      console.log([state.usuario])
+        setSelectedOption(e)
     }
 
 
-    const handle_users = (e) => {
-      console.log("opciones2");
-      console.log([datos_option_user]);
-      console.log("datos totales2");
-      console.log(total_datos_estudiantes);
-      // Getting the files from the input
-      if(bandera_option_user==true){
-  
-        for (var i = 0; i < state.data_user['length'] ; i++) {
-          const dato = { value: state.data_user[i]['id'], label:state.data_user[i]['cod_univalle']+" "+state.data_user[i]['nombre']+" "+state.data_user[i]['apellido'],id:[i] }
-          datos_option_user.push(dato)
-
-          const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+state.data_user[i]['id']+"/";
-            axios({
-              // Endpoint to send files
-              url:  url_axios,
-              method: "GET",
-            })
-            .then((respuesta)=>{
-              total_datos_estudiantes.push(respuesta.data)
-            })
-            .catch(err=>{
-                return (err)
-            })
-
-        }
-        console.log("opciones");
-        console.log([datos_option_user]);
-        console.log("datos totales finales siiiiiiiu");
-        console.log(total_datos_estudiantes);
-        bandera_option_user = false;
-      }
-      else{
-        console.log([datos_option_user]);
+    const handleWhatsapp = (e) =>{
+      if (state.telefono) {
+        const url = `https://api.whatsapp.com/send?phone=${state.telefono}`;
+        window.open(url, "_blank");
       }
     }
-
-
-
-
-
-    const handle_option_user = (e) => {
-      // Getting the files from the input
-      console.log(e)
-      set_state({
-        ...state,
-        seleccionado:e.id,
-        id_usuario:state.data_user[e.id]['id'],
-        nombres : state.data_user[e.id]['nombre'],
-        apellidos : state.data_user[e.id]['apellido'],
-        codigo : state.data_user[e.id]['cod_univalle'],
-        correo : state.data_user[e.id]['email'],
-        tipo_doc : state.data_user[e.id]['tipo_doc'],
-        cedula : state.data_user[e.id]['num_doc'],
-        telefono : state.data_user[e.id]['telefono_res'],
-        edad : '1',
-        programas : total_datos_estudiantes[e.id]['programas'],
-        total_datos_estudiante_seleccionado : total_datos_estudiantes[e.id]
-      })
-      console.log("estos son los programas")
-      console.log(state.programas)
-    }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -192,9 +216,10 @@ const Info_basica = (props) =>{
                       <Select className="bold_select"
                               options={datos_option_user} 
                               onMenuOpen={handle_users} 
-                              onChange={handle_option_user}  />
+                              onChange={handle_option_user}  
+                              value={selectedOption}
+                              />
                     </Row>
-
                         <Row className="rowJustFlex" >
                             <Col className="colInfo1" xs={"12"}>
                                 <Row className="infoRow1">
@@ -205,7 +230,7 @@ const Info_basica = (props) =>{
                                         <Row className="info"> 
                                             <Col className="info_texto" xs={"5"} md={"3"}>
                                               <h4 className="texto_mas_pequeño">{state.tipo_doc}
-                                                cedula
+                                                cédula
                                               </h4>
                                             </Col>
                                             <Col className="info_texto" md={"5"}>
@@ -220,7 +245,7 @@ const Info_basica = (props) =>{
                                             </Col>
                                             <Col className="info_texto" xs={"3"} md={"2"}>
                                               <h4 className="texto_mas_pequeño">
-                                                Telefono
+                                                Teléfono
                                               </h4>
                                             </Col>
                                         </Row>
@@ -251,7 +276,6 @@ const Info_basica = (props) =>{
                                         </Row>
                                       )
                                     } 
-                                    
                                   </Col>
                                 </Row>
                                 {
@@ -261,7 +285,7 @@ const Info_basica = (props) =>{
                                       <Col xs={"12"} md={"9"}>
                                         <Row>
                                           <h4 className="bold">
-                                            Programas academicos 
+                                            Programas académicos 
                                           </h4>
                                         </Row>
                                         <Row className="infoRow23_inactivo"> 
@@ -277,13 +301,13 @@ const Info_basica = (props) =>{
                                         <Row> 
                                           <h4 className="texto_mas_pequeño">
                                             <br/>
-                                            Profecional: 
+                                            Profesional: 
                                             <br/>
                                             Practicante: 
                                             <br/>
                                             Monitor: 
                                             <br/> 
-                                            Ultima astualización:
+                                            Ultima actualización:
                                             <br/> 
                                           </h4>
                                         </Row>
@@ -294,11 +318,11 @@ const Info_basica = (props) =>{
                                           <button className="boton_editar_info_basica">
                                             <i>TRAYECTORIA</i>
                                           </button> 
-                                          <button className="boton_editar_info_basica">
+                                          <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
                                             <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                           </button>
                                           <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">Condicion de excepcion <br/>2017-C.A</h4>
+                                            <h4 className="texto_mas_pequeño">Condición de excepcion <br/>2017-C.A</h4>
                                           </Row>
                                         </Col> 
                                       </div>
@@ -309,13 +333,27 @@ const Info_basica = (props) =>{
                                     <Row className="infoRow2">
                                       <Col md={"9"}>
                                         <Row>
-                                          <h4 className="texto_pequeño">Programas academicos </h4>
+                                          <h4 className="texto_pequeño">Programas académicos </h4>
                                         </Row>
                                           { state.programas.map((item, index) => <Programas_academicos 
                                             rolUsuario={props.rolUsuario}
                                             item={item}/>) 
                                           }
                                         <Row> 
+                                          <h4 className="texto_mas_pequeño">
+                                            <br/>
+                                            Profesional: {state.profesional.first_name}
+                                            <br/>
+                                            Practicante: {state.practicante.first_name}
+                                            <br/>
+                                            Monitor: {state.monitor.first_name} 
+                                            <br/> 
+                                            Ultima actualización: {state.total_datos_estudiantes.ult_modificacion}
+                                            <br/> 
+                                          </h4>
+                                        </Row>
+
+                                        <Row>  
                                           <h4 className="texto_mas_pequeño">
                                             <br/> 
                                             <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
@@ -335,7 +373,7 @@ const Info_basica = (props) =>{
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">
-                                              Condicion de excepcion 
+                                            Condición de excepcion 
                                               <br/>
                                               2017-C.A
                                             </h4>
@@ -344,13 +382,10 @@ const Info_basica = (props) =>{
                                       </div>                                    
                                     </Row>
                                   )
-
                                 }
                           </Col>
                         </Row>
                   </Col>
-
-
                   {
                     (state.seleccionado) === '' ?
                     (
@@ -378,18 +413,14 @@ const Info_basica = (props) =>{
 
 
 
-
-
-
-
-
-
           <div class="d-block d-md-none">
           <Row className="info_basica_borde_pequeño">
                             <Select  className="bold_select_pequeño"
                                         options={datos_option_user} 
                                         onMenuOpen={handle_users} 
-                                        onChange={handle_option_user}  />
+                                        onChange={handle_option_user}  
+                                        value={selectedOption}
+                                        />
           {
                       (state.seleccionado) === '' ?
                       (
@@ -401,33 +432,26 @@ const Info_basica = (props) =>{
                                   <i class="bi bi-person-fill"></i>
                                 </Row>
                               </Col>
-
                             
                             <Col xs={"7"} sm={"4"}>
                                   <Row className="botones_info_basica_pequeña">
-
                                     <button className="boton_editar_info_basica">
                                       <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                     </button>
                                   </Row>
-                                  
                                   <Row className="texto_estatico_pequeño">
-                                    <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
+                                    <h4 className="texto_mas_pequeño">Condición de excepción</h4>
                                       <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                   </Row>
-
                                       <Row className="botones_info_basica_pequeña">
                                     <button className="boton_editar_info_basica">
                                       <i>TRAYECTORIA</i>
                                     </button>
                                   </Row>
                               </Col>
-
                                   <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
                             </Row>
-                            
                           </Col>
-                            
                       )
                       :
                       (
@@ -441,7 +465,6 @@ const Info_basica = (props) =>{
 
                                 </Row>
                             </Col>
-
                             
                             <Col xs={"7"} sm={"4"}>
                             <Row className="botones_info_basica_pequeña">
@@ -450,21 +473,17 @@ const Info_basica = (props) =>{
                                   <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                 </button>
                                 </Row>
-
                                 <Row className="texto_estatico_pequeño">
-                                <h4 className="texto_mas_pequeño">Condicion de excepción</h4>
+                                  <h4 className="texto_mas_pequeño">Condición de excepción</h4>
                                   <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                 </Row>
-
                                   <Row className="botones_info_basica_pequeña">
                                 <button className="boton_editar_info_basica">
                                   <i>TRAYECTORIA</i>
                                 </button>
                                 </Row>
                             </Col>
-
                                   <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
-
                             </Row>
                           
                           </Col>
@@ -481,13 +500,13 @@ const Info_basica = (props) =>{
                                       <h4 className="texto_mas_pequeño">correo</h4>
                                     </Col>
                                     <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño"  md={"2"}>
-                                      <h4 className="texto_mas_pequeño"> cedula</h4>
+                                      <h4 className="texto_mas_pequeño"> cédula</h4>
                                     </Col>
                                     <Col className="info_texto" xs={"3"} md={"12"}>
                                       <h4 className="texto_mas_pequeño">edad</h4>
                                     </Col>
                                     <Col className="info_texto" xs={"3"} md={"2"}>
-                                      <h4 className="texto_mas_pequeño">telefono</h4>
+                                      <h4 className="texto_mas_pequeño">teléfono</h4>
                                     </Col>
                                   </Row>
                                 )
@@ -511,7 +530,6 @@ const Info_basica = (props) =>{
                                   </Row>
                                 )
                               } 
-                                      
                               <Row className="ficha_footer_pequeña">
                                 <Col xs={"12"} className="texto_estatico">
                                   <h4 className="texto_mas_pequeño">Monitor</h4>
@@ -523,16 +541,14 @@ const Info_basica = (props) =>{
                                   <h4 className="texto_mas_pequeño">Practicante</h4>
                                 </Col>
                               </Row>
-
                                 {
                                   (state.seleccionado) === '' ?
                                   (
                                     <Row className="infoRow2_pequeño">
                                       <Col xs={"12"} md={"9"}>
                                         <Row className="texto_estatico">
-                                          <h4 className="bold">Programas academicos </h4>
+                                          <h4 className="bold">Programas académicos </h4>
                                         </Row>
-                                        
                                         <Row className="infoRow23_inactivo"> 
                                           <Col xs={"6"} md={"6"}>
                                             <h4 className="texto_pequeño">{state.codigo} </h4>
@@ -555,7 +571,6 @@ const Info_basica = (props) =>{
                                           </Col>
                                         </Row>
                                       </Col>
-                                      
                                     </Row>
                                   )
                                   :
@@ -563,24 +578,18 @@ const Info_basica = (props) =>{
                                     <Row className="infoRow2_pequeño">
                                       <Col xs={"12"} md={"9"}>
                                         <Row className="texto_estatico">
-                                          <h4 className="texto_pequeño">Programas academicos </h4>
+                                          <h4 className="texto_pequeño">Programas académicos </h4>
                                         </Row>
                                         { state.programas.map((item, index) => <Programas_academicos 
                                             rolUsuario={props.rolUsuario}
                                             item={item}/>) }
                                       </Col>      
-                                      
                                     </Row>
                                   )
-
                                 }
-
-                                
                             </Col>
-
                         </Row>
                   </Col>
-
           </Row>
           </div>
 
@@ -591,18 +600,10 @@ const Info_basica = (props) =>{
 
 
 
-
-
-
-
-
-
-
-
-
         <div class="d-none d-md-block col-12">
           <Row>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
+            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
+                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}/>
           </Row>
           <Row>
             <Ficha_footer></Ficha_footer>
@@ -613,14 +614,15 @@ const Info_basica = (props) =>{
 
 
         <Col xs={"12"} lg={"3"} className="prueba1">
-          <Info_registros></Info_registros>
+          <Info_registros id_estudiante={state.total_datos_estudiantes['id']}></Info_registros>
         </Col>
         
 
 
         <div class="d-block d-md-none col-12">
           <Col>
-          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
+          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
+                    seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}/>
           </Col>
         </div>
       

@@ -1,19 +1,38 @@
 import React, {useMemo, useState} from 'react';
 import ReactDOM from "react-dom";
-import {useTable, Table} from 'react-table';
-import MOCK_DATA from './MOCK_DATA.json';
-import Columnas from './columnas' ;
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import Cabecera from "./cabecera.jsx";
 import DataTable, {selectFilter} from'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
-import Select from 'react-select'  ;
+import  {useEffect} from 'react';
+import axios from 'axios';
 
 
-const Tabla_sin_Seguimientos = () =>{
+const Tabla_sin_Seguimientos = (props) =>{
 
-  const data = useMemo(()=> MOCK_DATA, []);
+  const [state,set_state] = useState({
+    id_semestre : 6,
+    la_info_de_la_tabla : [],
+  })
 
+  useEffect(()=>{
+    
+        axios({
+          // Endpoint to send files
+          url:  "http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/"+state.id_semestre+"/",
+          method: "GET",
+        })
+        .then((respuesta)=>{
+          set_state({
+            la_info_de_la_tabla : respuesta.data
+          })
+            setRecords(respuesta.data)
+          })
+        .catch(err=>{
+            console.log("no llega :"+err)
+        })
+    
+  },[state.id_semestre]);
 
   const columnas2 = [
     {
@@ -23,40 +42,37 @@ const Tabla_sin_Seguimientos = () =>{
     },
 
     
-
     {
       name:
       <Row className="center_tabla_sin_seguimientos">
-      <h4 className="texto_mas_pequeño">Cedula</h4>
-      <input onChange={handleFilter_cedula}/>
+        <h4 className="texto_mas_pequeño">Cedula</h4>
+        <input onChange={handleFilter_cedula}/>
       </Row>,
-      selector:'phone',
+      selector:'cedula',
       sortable:true,
     },
-
 
 
     {
       name:
       <Row className="center_tabla_sin_seguimientos">
-      <h4 className="texto_mas_pequeño">Nombres</h4>
-      <input onChange={handleFilter_nombre}/>
+        <h4 className="texto_mas_pequeño">Nombres</h4>
+        <input onChange={handleFilter_nombre}/>
       </Row>,
-      selector:'first_name',
+      selector:'nombres',
       sortable:true,
     },
-
 
 
     {
       name:
       <Row className="center_tabla_sin_seguimientos">
-      <h4 className="texto_mas_pequeño">Apellidos</h4>
-      <input onChange={handleFilter_apellido}/></Row>,
-      selector:'last_name',
+        <h4 className="texto_mas_pequeño">Apellidos</h4>
+        <input onChange={handleFilter_apellido}/>
+      </Row>,
+      selector:'apellidos',
       sortable:true,
     },
-
 
 
     {
@@ -64,11 +80,10 @@ const Tabla_sin_Seguimientos = () =>{
         <Row className="center_tabla_sin_seguimientos">
           <h4 className="texto_mas_pequeño">Cantidad de fichas</h4>
         </Row>
-</div>),
-      selector:'phone',
+            </div>),
+      selector:'cantidad_de_fichas',
       sortable:true
     },
-
 
 
     {
@@ -77,10 +92,9 @@ const Tabla_sin_Seguimientos = () =>{
           <h4 className="texto_mas_pequeño">Cantidad de inasistencias</h4>
         </Row>
 </div>),
-      selector:'age',
+      selector:'cantidad_de_inasistencias',
       sortable:true,
     },
-
 
 
     {
@@ -89,10 +103,9 @@ const Tabla_sin_Seguimientos = () =>{
           <h4 className="texto_mas_pequeño">Total de fichas</h4>
         </Row>
 </div>),
-      selector:'age',
+      selector:'total_fichas',
       sortable:true,
     },
-
 
 
     {
@@ -100,11 +113,10 @@ const Tabla_sin_Seguimientos = () =>{
           <Row className="center_tabla_sin_seguimientos">
             <h4 className="texto_mas_pequeño">Monitor</h4>
             <input onChange={handleFilter_monitor}/>
-            </Row>,
-      selector:'last_name',
+          </Row>,
+      selector:'monitor',
       sortable: true
     },
-
 
 
     {
@@ -113,19 +125,20 @@ const Tabla_sin_Seguimientos = () =>{
             <h4 className="texto_mas_pequeño">Practicante</h4>
             <input onChange={handleFilter_practicante}/>
           </Row>,
-      selector:'first_name',
-      sortable:true,
-    },
-    {
-      name:
-          <Row className="center_tabla_sin_seguimientos">
-            <h4 className="texto_mas_pequeño">Profecional</h4>
-            <input onChange={handleFilter_profecional}/>
-          </Row>,
-      selector:'last_name',
+      selector:'practicante',
       sortable:true,
     },
 
+
+    {
+      name:
+          <Row className="center_tabla_sin_seguimientos">
+            <h4 className="texto_mas_pequeño">profesional</h4>
+            <input onChange={handleFilter_profesional}/>
+          </Row>,
+      selector:'profesional',
+      sortable:true,
+    },
   ]
     
 
@@ -140,64 +153,62 @@ const Tabla_sin_Seguimientos = () =>{
   }
 
 
-  const [records, setRecords] = useState(MOCK_DATA);
-
+  const [records, setRecords] = useState(state.la_info_de_la_tabla);
+  const [noResults, setNoResults] = useState(false);
 
 
 
   function handleFilter_cedula(event) {
-
-    const newData = MOCK_DATA.filter(row => {
-      return row.phone.includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
+    const newData = state.la_info_de_la_tabla.filter(row => row.cedula.toString().includes(event.target.value));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
   }
 
-
   function handleFilter_nombre(event) {
-
-    const newData = MOCK_DATA.filter(row => {
-      return row.first_name.toLowerCase.includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
+    const newData = state.la_info_de_la_tabla.filter(row => row.nombres.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
   }
   
   function handleFilter_apellido(event) {
-
-    const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
+    const newData = state.la_info_de_la_tabla.filter(row => row.apellidos.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
   }
-
+  
   function handleFilter_monitor(event) {
-
-    const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
+    const newData = state.la_info_de_la_tabla.filter(row => row.monitor.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
   }
-
+  
   function handleFilter_practicante(event) {
-
-    const newData = MOCK_DATA.filter(row => {
-      return row.first_name.toLowerCase().includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
+    const newData = state.la_info_de_la_tabla.filter(row => row.practicante.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
+  }
+  
+  function handleFilter_profesional(event) {
+    const newData = state.la_info_de_la_tabla.filter(row => row.profesional.toLowerCase().includes(event.target.value.toLowerCase()));
+    const updatedData = newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
   }
 
-  function handleFilter_profecional(event) {
 
-    const newData = MOCK_DATA.filter(row => {
-      return row.last_name.toLowerCase.includes(event.target.value.toLowerCase())
-    })
-    setRecords(newData)
+
+
+  function semestre_seleccion(name) {
+    set_state({
+      ...state,
+      id_semestre: name,
+    });
   }
-
-
-
-
-
 
 
 
@@ -208,27 +219,43 @@ const Tabla_sin_Seguimientos = () =>{
         
         <Container >
           <Row>
-            <Cabecera/>
+            <Cabecera childClicked={(name) => semestre_seleccion(name)}/>
           </Row>
-          <Row>
-            <DataTableExtensions
-            columns={columnas2}
-            data={records}
-            filter={true}
-            filterPlaceHolder={2}
-            filterDigit={'1'}
-            exportHeaders={true}
-            >
-              
-            <DataTable
-            pagination 
-            paginationRowsPerPageOptions={[10,20,30,40,50,100]}
-            paginationComponentOptions={paginacionOpciones}            
-            />
-            </DataTableExtensions>
-            
-          </Row>
-
+          {noResults && (
+            <div className="alert alert-warning" role="alert">
+              No se encontraron resultados.
+            </div>
+          )}
+          {
+            records.length > 0 ?
+            (
+              <Row>
+                <DataTableExtensions
+                  columns={columnas2}
+                  data={records}
+                  filter={true}
+                  filterPlaceHolder={2}
+                  filterDigit={1}
+                  exportHeaders={true}
+                  >
+                    
+                  <DataTable
+                  pagination 
+                  paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+                  paginationComponentOptions={paginacionOpciones}            
+                  />
+                </DataTableExtensions>
+                
+              </Row>
+            )
+            :
+            (
+              <div className="alert alert-warning" role="alert">
+                Cargando...
+              </div>
+            )
+          }
+          
         </Container>
     )
 }

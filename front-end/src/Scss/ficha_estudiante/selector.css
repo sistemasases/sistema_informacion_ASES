@@ -50,6 +50,8 @@
 .contentTab{
     margin: 20px 0px;
     padding: 20px 20px;
+    border-right: white solid 15px;
+    border-left: white solid 15px;
     background: lightgray;
     color: black;
 }

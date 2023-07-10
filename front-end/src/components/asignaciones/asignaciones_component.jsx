@@ -5,7 +5,6 @@ import Listas from './listas'
 import Listas_no_seleccion from './listas_no_seleccion';
 import axios from 'axios';
 
-import profecionales from "./profecionales";
 import {Scrollbars} from 'react-custom-scrollbars'; 
 
 
@@ -18,10 +17,9 @@ const asignaciones_component = (props) =>{
 
   const [state,set_state] = useState({
 
-    profecional_seleccionado : '',
+    profesional_seleccionado : '',
     practicante_seleccionado : '',
     monitor_seleccionado : '',
-    estudiante_seleccion : '',
 
     practicante_filtro : '',
     monitor_filtro : '',
@@ -40,7 +38,7 @@ const asignaciones_component = (props) =>{
     separacion_monitores : [],
     separacion_estudiantes : [],
 
-    opciones_profecionales : [],
+    opciones_profesionales : [],
   })
 
 
@@ -52,7 +50,7 @@ const asignaciones_component = (props) =>{
     
   useEffect(()=>{
 
-    if(state.data_profesionales.length > state.opciones_profecionales.length)
+    if(state.data_profesionales.length > state.opciones_profesionales.length)
     {
       console.log("entra una vez")
       for (var i = 0; i < state.data_profesionales.length ; i++) {
@@ -62,12 +60,12 @@ const asignaciones_component = (props) =>{
           label:state.data_profesionales[i]['username']+" "+state.data_profesionales[i]['first_name']+" "+state.data_profesionales[i]['last_name'],
           id:state.data_profesionales[i]['id'] }
 
-          state.opciones_profecionales.push(dato)
+          state.opciones_profesionales.push(dato)
           console.log("entra 1")
-          console.log(state.opciones_profecionales[i])
+          console.log(state.opciones_profesionales[i])
         }
         console.log("entra2")
-        console.log(state.opciones_profecionales)
+        console.log(state.opciones_profesionales)
     }
     {
       console.log("entra dos veces")
@@ -121,7 +119,7 @@ const asignaciones_component = (props) =>{
 
       set_state({
             ...state,
-              profecional_seleccionado: e.value
+              profesional_seleccionado: e.value
       })
     }
 
@@ -154,7 +152,6 @@ const asignaciones_component = (props) =>{
       ...state,
       practicante_seleccionado : name
     })
-
     alert(name)
 
     console.log("estos son los monitores separados : " + state.separacion_monitores)
@@ -187,15 +184,6 @@ const asignaciones_component = (props) =>{
   }
 
 
-  
-  function estudiante_seleccion(name){
-    set_state({
-      ...state,
-      estudiante_seleccionado : name
-    })
-        alert(name)
-
-  }
 
 
   const limpiar_practicantes = () => {
@@ -233,9 +221,9 @@ const asignaciones_component = (props) =>{
                 Total estudiantes acompañados 
                 </Col> 
                 <Col xs={"12"} className="col_asignaciones_titulos">
-                Profecional
+                profesional
                 </Col>   
-                <Select options={state.opciones_profecionales} onChange={cambiar_dato_select} ></Select>
+                <Select options={state.opciones_profesionales} onChange={cambiar_dato_select} ></Select>
               </Row>
               <Row >
 
@@ -244,7 +232,7 @@ const asignaciones_component = (props) =>{
                     (
                       <Col className="scroll_listas">
                         <Row className="asignaciones_no_seleccion">
-                          Profecional no seleccionado 
+                          profesional no seleccionado 
                         </Row>
                       <Scrollbars>
                           { state.data_practicantes.filter((item)=>{
@@ -253,10 +241,12 @@ const asignaciones_component = (props) =>{
                           item.username.toLowerCase().includes(state.practicante_filtro) ||
                           item.first_name.toLowerCase().includes(state.practicante_filtro) ||
                           item.last_name.toLowerCase().includes(state.practicante_filtro);                      
-                        }).map((item, index) => <Listas 
-                        key={index} item={item} rol={rol} 
-                        profecional_seleccionado={state.profecional_seleccionado}
-                        childClicked={(name)=>practicante_seleccion(name)}/>) }
+                        }).map((item, index) => 
+                        <Listas 
+                          key={index} item={item} rol={rol} 
+                          profesional_seleccionado={state.profesional_seleccionado}
+                          childClicked={(name)=>practicante_seleccion(name)}>
+                        </Listas>) }
                       </Scrollbars>
 
                       </Col>
@@ -264,9 +254,6 @@ const asignaciones_component = (props) =>{
                     :
                     (
                     <Col className="scroll_listas">
-                      <Row className="asignaciones_seleccion_profecional">
-                        profecional: {state.profecional_seleccionado}
-                        </Row>
                       { state.separacion_practicantes['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
@@ -274,7 +261,7 @@ const asignaciones_component = (props) =>{
                         item.first_name.toLowerCase().includes(state.practicante_filtro) ||
                         item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                       }).map((item, index) => <Listas 
-                    key={index} item={item} rol={rol} profecional_seleccionado={state.profecional_seleccionado}
+                    key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
                     childClicked={(name)=>practicante_seleccion(name)}/>) }
 
 
@@ -287,7 +274,7 @@ const asignaciones_component = (props) =>{
                         item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                       }).map((item, index) => <Listas_no_seleccion 
                     key={index} item={item} rol={rol} 
-                    profecional_seleccionado={state.profecional_seleccionado}
+                    profesional_seleccionado={state.profesional_seleccionado}
                     childClicked={(name)=>practicante_seleccion(name)}/>) }
                     </Col>
                     )
@@ -332,18 +319,18 @@ const asignaciones_component = (props) =>{
                         item.username.toLowerCase().includes(state.monitor_filtro) ||
                         item.first_name.toLowerCase().includes(state.monitor_filtro) ||
                         item.last_name.toLowerCase().includes(state.monitor_filtro);                      
-                      }).map((item, index) => <Listas 
-                      key={index} item={item} rol={rol2} practicante_seleccionado={state.practicante_seleccionado}
-                      childClicked2={(name)=>monitor_seleccion(name)}/>) }
+                      }).map((item, index) => 
+                      <Listas 
+                        key={index} item={item} rol={rol2} 
+                        practicante_seleccionado={state.practicante_seleccionado}
+                        childClicked2={(name)=>monitor_seleccion(name)}>
+                      </Listas>) }
                      </Scrollbars>
                     </Col>
                   )
                   :
                   (
                   <Col className="scroll_listas">
-                    <Row className="asignaciones_seleccion">
-                      Practicante seleccionado : {state.monitor_seleccionado }
-                    </Row>
                     <Scrollbars>
                     { state.separacion_monitores['0'].filter((item)=>{
                       return state.monitor_filtro.toLowerCase() === '' ? item 
@@ -351,11 +338,15 @@ const asignaciones_component = (props) =>{
                       item.username.toLowerCase().includes(state.monitor_filtro) ||
                       item.first_name.toLowerCase().includes(state.monitor_filtro) ||
                       item.last_name.toLowerCase().includes(state.monitor_filtro);                      
-                    }).map((item, index) => <Listas 
-                  key={index} item={item} rol={rol2} 
-                  practicante_seleccionado={state.practicante_seleccionado}
-                  childClicked2={(name)=>monitor_seleccion(name)}
-                  childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    }).map((item, index) =>   
+                  <Listas 
+                    key={index} item={item} rol={rol2} 
+                    practicante_seleccionado={state.practicante_seleccionado}
+                    childClicked2={(name)=>monitor_seleccion(name)}
+                    childClicked={(name)=>practicante_seleccion(name)}>
+                  </Listas>) }
+
+
                     <Row className="separador_asignaciones"></Row>
 
                     { state.separacion_monitores['1'].filter((item)=>{
@@ -364,15 +355,16 @@ const asignaciones_component = (props) =>{
                       item.username.toLowerCase().includes(state.monitor_filtro) ||
                       item.first_name.toLowerCase().includes(state.monitor_filtro) ||
                       item.last_name.toLowerCase().includes(state.monitor_filtro);                      
-                    }).map((item, index) => <Listas_no_seleccion 
-                  key={index} item={item} rol={rol2}
-                  practicante_seleccionado={state.practicante_seleccionado}
-                  childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    }).map((item, index) => 
+                  <Listas_no_seleccion 
+                    key={index} item={item} rol={rol2}
+                    practicante_seleccionado={state.practicante_seleccionado}
+                    childClicked={(name)=>practicante_seleccion(name)}>
+                  </Listas_no_seleccion>) }
                   </Scrollbars>
                   </Col>
                   )
                 }
-
                 
               </Row>
             </Col>
@@ -418,43 +410,45 @@ const asignaciones_component = (props) =>{
                       key={index} item={item} rol={rol3} 
                       monitor_seleccionado={state.monitor_seleccionado}
                       filtro={state.estudiante_filtro}
-                      childClicked3={(name)=>estudiante_seleccion(name)}/>) }
+                      />) }
                     </Scrollbars>
                     </Col>
                   )
                   :
                   (
                   <Col className="scroll_listas">
-                    <Row className="asignaciones_seleccion">
-                      Monitor seleccionado : {state.monitor_seleccionado }
-                    </Row>
-                  <Scrollbars>
-                  { state.separacion_estudiantes['0'].filter((item)=>{
-                      return state.estudiante_filtro.toLowerCase() === '' ? item 
-                      : 
-                      item.nombre.toLowerCase().includes(state.estudiante_filtro) || 
-                      item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
-                      item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
-                    }).map((item, index) => <Listas 
-                  key={index} item={item} rol={rol3} 
-                  filtro={state.estudiante_filtro}
-                  monitor_seleccionado={state.monitor_seleccionado}
-                  childClicked3={(name)=>estudiante_seleccion(name)}
-                  childClicked2={(name)=>monitor_seleccion(name)}/>) }
-                    <Row className="separador_asignaciones"></Row>
+                    <Scrollbars>
+                      { state.separacion_estudiantes['0'].filter((item)=>{
+                          return state.estudiante_filtro.toLowerCase() === '' ? item 
+                          : 
+                          item.nombre.toLowerCase().includes(state.estudiante_filtro) || 
+                          item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
+                          item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
+                        }).map((item, index) => 
+                        
+                      <Listas 
+                        key={index} item={item} rol={rol3} 
+                        filtro={state.estudiante_filtro}
+                        monitor_seleccionado={state.monitor_seleccionado}
+                        childClicked2={(name)=>monitor_seleccion(name)}>
+                      </Listas>)}
 
-                    { state.separacion_estudiantes['1'].filter((item)=>{
-                      return state.estudiante_filtro.toLowerCase() === '' ? item 
-                      : 
-                      item.nombre.toLowerCase().includes(state.estudiante_filtro), 
-                      item.apellido.toLowerCase().includes(state.estudiante_filtro),
-                      item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
-                    }).map((item, index) => <Listas_no_seleccion 
-                  key={index} item={item} rol={rol3} 
-                  filtro={state.estudiante_filtro}
-                  monitor_seleccionado={state.monitor_seleccionado}
-                  childClicked2={(name)=>monitor_seleccion(name)}/>) }
-                  </Scrollbars>
+                        <Row className="separador_asignaciones"></Row>
+
+                      { state.separacion_estudiantes['1'].filter((item)=>{
+                        return state.estudiante_filtro.toLowerCase() === '' ? item 
+                        : 
+                        item.nombre.toLowerCase().includes(state.estudiante_filtro), 
+                        item.apellido.toLowerCase().includes(state.estudiante_filtro),
+                        item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
+                      }).map((item, index) => 
+                      <Listas_no_seleccion 
+                        key={index} item={item} rol={rol3} 
+                        filtro={state.estudiante_filtro}
+                        monitor_seleccionado={state.monitor_seleccionado}
+                        childClicked2={(name)=>monitor_seleccion(name)}>
+                      </Listas_no_seleccion>) }
+                    </Scrollbars>
                   </Col>
                   )
                 }

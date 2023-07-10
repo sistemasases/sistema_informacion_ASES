@@ -1,7 +1,5 @@
-import React, {useMemo, useState} from 'react';
-import {useTable, Table} from 'react-table';
-import MOCK_DATA from './MOCK_DATA.json';
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import React from 'react';
+import {Container, Row, Col, } from "react-bootstrap";
 import Select from 'react-select'  ;
 
 
