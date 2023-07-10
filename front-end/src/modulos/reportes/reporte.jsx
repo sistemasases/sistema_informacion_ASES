@@ -34,7 +34,7 @@ var columns = [
     isCheck: true,
   },
 ];
-const reporte = () => {
+const Reporte = () => {
   const opciones = [];
 
   const [state, set_state] = useState({ estudiante: [] });
@@ -381,4 +381,4 @@ const reporte = () => {
   );
 };
 
-export default reporte;
+export default Reporte;

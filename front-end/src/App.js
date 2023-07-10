@@ -79,7 +79,7 @@ import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
 import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
 import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia.jsx";
 import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas.jsx";
-// import Reporte from "./modulos/reportes/reporte.jsx";
+import Reporte from "./modulos/reportes/reporte.jsx";
 import Footer from './components/componentes_generales/footer.jsx';
 
 
@@ -128,7 +128,7 @@ const App = () => {
                         <Route path="/asignaciones" element={<Asignaciones/>}/>
                         <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
-                        {/* <Route path="/reporte"element={<Reporte/>}/> */}
+                        <Route path="/reporte"element={<Reporte/>}/>
                         <Route path="/"element={<Inicio/>}/>
                     </Routes>
                 </SideBar>
