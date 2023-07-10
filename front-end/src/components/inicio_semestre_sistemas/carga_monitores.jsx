@@ -13,7 +13,7 @@ import {Container, Row, Col, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import DataTable from 'react-data-table-component';
 
-const carga_masiva_component = () =>{
+const Carga_masiva_component = () =>{
 
   // Constante que guarda la dirección url utilizada por el axios
   const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
@@ -137,4 +137,4 @@ const carga_masiva_component = () =>{
   )
 }
 
-export default carga_masiva_component
+export default Carga_masiva_component

@@ -8,7 +8,7 @@ import axios from 'axios';
 import {Scrollbars} from 'react-custom-scrollbars'; 
 
 
-const asignaciones_component = (props) =>{
+const Asignaciones_component = (props) =>{
 
   const[rol] = useState("practicante");
   const[rol2] = useState("monitor");
@@ -466,4 +466,4 @@ const asignaciones_component = (props) =>{
   )
 }
 
-export default asignaciones_component
+export default Asignaciones_component

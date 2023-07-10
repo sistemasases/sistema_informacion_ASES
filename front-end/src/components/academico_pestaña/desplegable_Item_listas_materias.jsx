@@ -3,7 +3,7 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
 
-const Desplegable_item_listas_materias = ({item}) => {
+const Desplegable_item_listas_materias = ({item, franja}) => {
 
     const [open, setOpen] = useState(false)
 
@@ -114,6 +114,7 @@ const Desplegable_item_listas_materias = ({item}) => {
     }else if(item.tipo_dato === 'franja') {
         return (
             <Row>
+
                 <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
                     <Row className="link_academico1" onClick={() => {setOpen(!open); profesores_de_la_franja(item.cod_materia, item.franja)}}>
                         <Col className="link_text_academico1" >
@@ -125,10 +126,11 @@ const Desplegable_item_listas_materias = ({item}) => {
                     <Row className="content_academico">
                             <Col className="contenido_fichas_academico2">
                                 { state.profesores_de_la_franja.map((child, index) => 
-                                    <Desplegable_item_listas_materias key={index} item={child} />) 
+                                    <Desplegable_item_listas_materias key={index} item={child} franja={item.franja}/>) 
                                 }
                             </Col>
                         </Row>
+
                 </Col>
             </Row>
         )
@@ -140,7 +142,7 @@ const Desplegable_item_listas_materias = ({item}) => {
             <Row className="link_academico1" onClick={() => {setOpen(!open); alumnos_del_profesor(item.curso_del_profesor, item.id)}}>
                 <Col className="link_text_academico1" >
                     <Row className="link_text_academico_hover3">
-                        {item.nombre} -- {item.curso_del_profesor}
+                        {item.nombre} -- {item.curso_del_profesor} --- {franja}
                     </Row>
                 </Col>
             </Row>
@@ -151,6 +153,7 @@ const Desplegable_item_listas_materias = ({item}) => {
                                     <Col>( {item.nombre}  :   {item.porcentaje} )</Col>)
                                 }
                         </Row>
+
             <Row className="content_academico">
                 <Col className="contenido_fichas_academico3">
                     {state.alumnos_del_profesor.map((child, index) => <Desplegable_item_listas_materias key={index} item={child}/>) }
