@@ -8,7 +8,8 @@ import axios from 'axios';
 import Select from 'react-select'  ;
 
 
-const Cabecera = () =>{
+const Cabecera = (props) =>{
+  const{childClicked} = props
 
     
     const datos_option_user = [];
@@ -22,7 +23,7 @@ const Cabecera = () =>{
         data_user : [],
         data_periodo : [],
         data_rol : [],
-  
+        data_cohorte:[],
         seleccionado:'',
   
         id_usuario:'',
@@ -34,7 +35,8 @@ const Cabecera = () =>{
   
       })
 
-    useEffect(()=>{
+
+useEffect(()=>{
   
         axios({
           // Endpoint to send files
@@ -55,16 +57,14 @@ const Cabecera = () =>{
       },[]);
 
       const handle_users = (e) => {
-        console.log("estos son los segundos datos :"+state.data_user)
-        console.log("estos son los tercer datos :"+state.data_user[0]['id_rol'])
-  
+        console.log("estos son los segundos datos :"+state.data_user)  
         // Getting the files from the input
         if(bandera_option_user==true){
     
           for (var i = 0; i < state.data_user['length'] ; i++) {
             const dato = { value: state.data_user[i]['nombre'], 
             label:state.data_user[i]['nombre'],
-            id:i }
+            id:state.data_user[i]['id'] }
             datos_option_user.push(dato)
           }
           bandera_option_user = false;
@@ -76,12 +76,7 @@ const Cabecera = () =>{
 
       const handle_option_user = (e) => {
         // Getting the files from the input
-  
-        console.log(e)
-        set_state({
-          ...state,
-          seleccionado:e.id,
-        })
+        childClicked(e.id)
       }
 
     return (
@@ -92,7 +87,7 @@ const Cabecera = () =>{
                 Reporte cantidad de seguimientos
                 </Col>
                 <Col xs={"12"} md={"4"} className="texto_pequeño">
-                    Seleccione la cohorte
+                    Seleccione el semestre
                     <Select 
                     options={datos_option_user} 
                     onMenuOpen={handle_users} 
@@ -100,22 +95,7 @@ const Cabecera = () =>{
                     />
                 </Col>
             </Row>
-
-
-            <Row>
-                <Col>
-                    <Row>
-                        <Col xs={"12"} md={"6"}>
-                            mostrando el registro del 1 al 10 de un total de # registros
-                        </Col>
-                        <Col xs={"12"} md={"6"}>
-                            Buscar
-                            <select/>
-                        </Col>
-                    </Row>
-                </Col>
-
-            </Row>          
+      
         </Container>
     )
 }

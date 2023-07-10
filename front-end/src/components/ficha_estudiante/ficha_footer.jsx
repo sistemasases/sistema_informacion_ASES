@@ -27,7 +27,7 @@ const Ficha_footer = () =>{
         <Container>
             <Row className="ficha_footer">
                     <h4 className="texto_pequeño">
-                            Profecional: Practicante: Monitor: 
+                            profesional: Practicante: Monitor: 
                         <br/> Ultima astualización:
                         <br/> 
                         <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">

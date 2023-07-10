@@ -58,7 +58,7 @@ const Listas_no_seleccion = (props) => {
         let formData = new FormData();
 
         formData.append("llamada", "asignar");
-        formData.append("id_jefe", props.profecional_seleccionado)
+        formData.append("id_jefe", props.profesional_seleccionado)
         formData.append("id_usuario", props.item.id)
 
 
@@ -70,7 +70,7 @@ const Listas_no_seleccion = (props) => {
         })
         .then((res)=>{
         console.log(res)
-            alert("estudiante "+props.item.id+" fue asignado correctamente a :"+props.profecional_seleccionado)
+            alert("estudiante "+props.item.id+" fue asignado correctamente a :"+props.profesional_seleccionado)
         })
         .catch(err=>{
             alert("error al asignar el estudiante : "+props.item.id);
@@ -83,7 +83,7 @@ const Listas_no_seleccion = (props) => {
         return (
             <Row className="row_opcion">
                 {
-                props.profecional_seleccionado === '' ?
+                props.profesional_seleccionado === '' ?
                 (
                 <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.nombre)}>
                     <Row className="asignaciones_hover1">

@@ -1,31 +1,35 @@
 import React from 'react';
 import {useState } from "react";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
+import {Row, Col,} from "react-bootstrap";
 
 
-const Sidebar_item_closed = ({item},{toggled}) => {
+const Sidebar_item_closed = (props) => {
 
     const [open, setOpen] = useState(false)
     
-    if(item.childrens){
+    if(props.item.childrens){
         return (
-            <div className={open ? "sidebar-item open" : "sidebar-item"}>
-                <div className="sidebar-title">
-                    <span onClick={() => setOpen(!open)} className="tamaño_icon">
-                        { item.icon && <i className={item.icon}></i> }
+            <Row className={open ? "sidebar-item-closed open" : "sidebar-item-closed"}>
+                <Col xs={12} n>
+                    <span onClick={() => setOpen(!open)} className="tamaño_super_icon">
+                        { props.item.icon && <i className={props.item.icon} title={props.item.name}></i> }
                     </span> 
-                    
-                </div>
-                <div className="sidebar-content">
-                    { item.childrens.map((child, index) => <Sidebar_item_closed key={index} item={child} />) }
-                </div>
-            </div>
+                </Col>
+                <Col xs={12} className="sidebar-content-closed">
+                    { props.item.childrens.map((child, index) => <Sidebar_item_closed key={index} item={child} sub_item={true}/>) }
+                </Col>
+            </Row>
+        )
+    }else if(props.sub_item){
+        return (
+            <a href={props.item.path || "#"} className="sidebar-item-closed-final">
+                <span className="tamaño_icon">{ props.item.icon && <i className={props.item.icon} title={props.item.name}></i> }</span>
+            </a>
         )
     }else{
         return (
-            <a href={item.path || "#"} className="sidebar-item">
-                <span className="tamaño_icon">{ item.icon && <i className={item.icon}></i> }</span>
+            <a href={props.item.path || "#"} className="sidebar-item-closed-final-con-margen">
+                <span className="tamaño_icon">{ props.item.icon && <i className={props.item.icon} title={props.item.name}></i> }</span>
             </a>
         )
     }

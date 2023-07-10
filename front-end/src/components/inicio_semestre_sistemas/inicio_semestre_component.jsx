@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
 import All_instancias_service from '../../service/all_instancias';
 
-const inicio_semestre_component = () =>{
+const Inicio_semestre_component = () =>{
 
     //Constante y variable que se usaran para el select
     const opciones = [];
@@ -259,4 +259,4 @@ const inicio_semestre_component = () =>{
     )
 }
 
-export default inicio_semestre_component
+export default Inicio_semestre_component
