@@ -34,6 +34,7 @@ var columns = [
     isCheck: true,
   },
 ];
+
 const reporte = () => {
   const opciones = [];
 
@@ -62,16 +63,16 @@ const reporte = () => {
   //   };
   // };
 
-  const [search, set_Search] = useState();
+  const [search, set_Search] = useState({
+    busqueda: "",
+  });
   //   {
   //   // busqueda: "Z",
   // }
 
   const onSearch = (e) => {
-    // e.persist();
-    set_Search(e.target.value);
-
-    
+    set_Search({ ...search, busqueda: e.target.value });
+    console.log(search);
   };
 
   const [columnas, set_columnas] = useState({ cabeceras: columns });
@@ -350,8 +351,19 @@ const reporte = () => {
             <DataTable
               title="Reporte"
               columns={columnas.cabeceras}
+              // data={state.estudiante.filter((item, index) => {
+              //   if (search.busqueda.toLowerCase() === "") {
+
+              //     // break
+              //     console.log("helo");
+              //   } else {
+              //     // estudiante_buscado
+              //     //   .toLowerCase()
+              //     //   .includes(search.busqueda.toLowerCase().includes());
+              //     console.log("Se salio ???");
+              //   }
+              // })}
               data={state.estudiante}
-              // data={}
               // data={state.estudiante.filter((estudiante) => {
               //   return search.toLowerCase() === ""
               //     ? estudiante
