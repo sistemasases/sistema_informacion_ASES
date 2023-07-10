@@ -6,7 +6,8 @@ import Form from 'react-bootstrap/Form';
 import all_rols_service from '../../service/all_rols'
 import asignar_rol_service from '../../service/asignar_rol'
 import { FaBuromobelexperte } from 'react-icons/fa';
-const formulario_asginacion_rol = () =>{
+
+const Formulario_asginacion_rol = () =>{
 
   const[switchChecked, setChecked] = useState(false);
   
@@ -77,7 +78,7 @@ const formulario_asginacion_rol = () =>{
   )
 }
 
-export default formulario_asginacion_rol
+export default Formulario_asginacion_rol
 
 
   
