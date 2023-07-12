@@ -22,7 +22,7 @@ var datos_option_rol = [];
 // variable bandera para saber si ya se solicitaron los roles del back.
 var bandera_option_rol = true;
 
-const semestre_sistemas_component = () =>{
+const Semestre_sistemas_component = () =>{
 
     //Constante para guardar el estado actual de la tabla de usuario y el form del usuario a agregar.
     const [state,set_state] = useState({
@@ -180,7 +180,6 @@ const semestre_sistemas_component = () =>{
             formData.append('id_rol', state.data[i].id_rol);
             formData.append('id_usuario', state.data[i].id);
             user_rol.user_rol(formData);
-            window.location.replace('');
         }
     }
 
@@ -254,4 +253,4 @@ const semestre_sistemas_component = () =>{
     )
 }
 
-export default semestre_sistemas_component
+export default Semestre_sistemas_component

@@ -1,5 +1,5 @@
 # SISTEMA DE INFORMACIÓN ASES
-Este es un proyecto modular basado en Python, Djando y React. Se ha realizado para actualizar y mejorar la plataforma de apoyo académico existente en la estrategia de apoyo ASES. La nueva versión está diseñada para ser más eficiente, intuitiva, fácil de usar, y para proporcionar una experiencia de usuario más completa y enriquecedora para monitores, practicantes y profecionales.
+Este es un proyecto modular basado en Python, Djando y React. Se ha realizado para actualizar y mejorar la plataforma de apoyo académico existente en la estrategia de apoyo ASES. La nueva versión está diseñada para ser más eficiente, intuitiva, fácil de usar, y para proporcionar una experiencia de usuario más completa y enriquecedora para monitores, practicantes y profesionales.
 	Mayor eficiencia: Las nuevas tecnologías permiten una programación más eficiente y rápida, lo que significa que se puede desarrollar el sistema en menos tiempo y con menos recursos.
 	Mejora de la experiencia del usuario: React, en particular, es conocido por proporcionar una experiencia de usuario más fluida y dinámica, lo que significa que los estudiantes y profesores pueden interactuar con la plataforma de manera más efectiva.
 	Mayor escalabilidad: Las nuevas tecnologías permiten que el sistema sea escalable y adaptable, lo que significa que se puede mejorar y actualizar en el futuro sin necesidad de cambiar completamente de tecnología.
@@ -45,7 +45,7 @@ Para la inicialización del sistema en un host local se requiere :
 
 # COLABOLADORES :
 
-	Cesar Alberto Becerra - Rhazeck12
+	Cesar Alberto Becerra - Rhazek12
 	Deiby Rodriguez - Dalex11
 	José David Erazo - JoseD32
 

@@ -20,7 +20,8 @@ var bandera_option_user = true;
 var bandera_option_rol = true;
 const datos_option_user = []
 const datos_option_rol = []
-const selector_usuarios = () =>{
+
+const Selector_usuarios = () =>{
 
   /*
     constantes
@@ -244,13 +245,10 @@ const selector_usuarios = () =>{
       const id_user = state.select_rows[i].id
       let formData = new FormData();
       formData.append('id', id_user);
-
-      
-      
       axios({
         // Endpoint to send files
         //FALTA ORGANIZAR EL PK
-        url:  "http://localhost:8000/usuario_rol/usuario_rol/1/",
+        url:  "http://localhost:8000/usuario_rol/usuario_rol/"+id_user+"/",
         method: "PUT",
         data: formData,
       })
@@ -337,7 +335,7 @@ const selector_usuarios = () =>{
   )
 }
 
-export default selector_usuarios
+export default Selector_usuarios
 
 
   

@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
 import All_instancias_service from '../../service/all_instancias';
 
-const inicio_semestre_component = () =>{
+const Inicio_semestre_component = () =>{
 
     //Constante y variable que se usaran para el select
     const opciones = [];
@@ -23,7 +23,7 @@ const inicio_semestre_component = () =>{
     //Hook que se usara para el redirecionamiento
     const navigate = useNavigate();
 
-    //Estado que se usara para extraer todas las instancias
+    //Estado que se usara para extraer todas las sedes
     const [state,set_state] = useState({tabs: [],})
 
     //Estados que se usaran para activar o desactivar parte de la vista
@@ -49,7 +49,7 @@ const inicio_semestre_component = () =>{
     var date_fin = new Date();
     date_fin.setMonth(date_fin.getMonth() + 6);
 
-    //Conexion con el back para extraer todas las instancias
+    //Conexion con el back para extraer todas las sedes
     useEffect(()=>{
         All_instancias_service.all_instancias().then((res) => {
             set_state({
@@ -60,7 +60,7 @@ const inicio_semestre_component = () =>{
     },[]);
 
     /**
-        * Prop que toma las instancias y las transforma en opciones para el select
+        * Prop que toma las sedes y las transforma en opciones para el select
     */
     const handle_instancias = () => {
         if(bandera_option===true){
@@ -154,7 +154,7 @@ const inicio_semestre_component = () =>{
 
     /**
         * Activa las vistas una vez se haya seleccionado algo en el select y actualiza los valores a mostrar.
-        * @param {Number} e Id de la instancia selecionada.
+        * @param {Number} e Id de la sede selecionada.
     */
     const handleActivateButton = async (e) =>{
 
@@ -206,7 +206,7 @@ const inicio_semestre_component = () =>{
         <Container>
             <h2>Paso cero: creación del periodo</h2>
             <Row className="rowJustFlex" hidden={isSelected}>
-                <p>Para iniciar el semestre selecione la instancia con la cual desea trabajar:</p>
+                <p>Para iniciar el semestre selecione la sede con la cual desea trabajar:</p>
                 <Select class="option" options={opciones} onMenuOpen={handle_instancias} onChange={handleActivateButton} className="option" placeholder="Selecione una instancia"/>
             </Row>
             <Row className="rowJustFlex">
@@ -220,7 +220,7 @@ const inicio_semestre_component = () =>{
                 </Alert>
             </Row>
             <Row className="rowJustFlex" hidden={!activated.isDisabled}>
-                <p>Usted está apunto de iniciar un nuevo semestre, lo cual finalizará el semestre anterior y se creará uno nuevo en la instancia {semestre.nombreInstancia}.</p>
+                <p>Usted está apunto de iniciar un nuevo semestre, lo cual finalizará el semestre anterior y se creará uno nuevo en la sede {semestre.nombreInstancia}.</p>
                 <p>Por favor verifique que los argumentos sean correctos e inicie el semestre. </p>
             </Row>
             <Row className="rowJustFlex" hidden={!activated.isDisabled}>
@@ -259,4 +259,4 @@ const inicio_semestre_component = () =>{
     )
 }
 
-export default inicio_semestre_component
+export default Inicio_semestre_component

@@ -14,6 +14,7 @@ Todos los modelos están asociados con una su tabla específica de la base de da
 
 from django.db import models
 from modulo_geografico.models import municipio
+from django.contrib.auth.models import User
 
 class sede (models.Model):
     id_municipio= models.ForeignKey(municipio,on_delete=models.CASCADE,default=0,related_name='id_municipio_in_sede')
@@ -30,7 +31,7 @@ class semestre (models.Model):
     fecha_fin= models.DateTimeField(auto_now_add=False)
     semestre_actual= models.BooleanField(default= False)
     estado = models.SmallIntegerField(default=0)
-    id_sede= models.ForeignKey(sede ,on_delete=models.CASCADE,default=0)
+    id_sede= models.ForeignKey(sede ,on_delete=models.CASCADE,default=None,null=True)
 
     class Meta:
         db_table = "semestre"
@@ -52,3 +53,6 @@ class cohorte_sede (models.Model):
     
     class Meta:
         db_table = "cohorte_sede"
+
+
+

@@ -29,6 +29,8 @@ urlpatterns = [
     path('usuario_rol/', include('modulo_usuario_rol.routers')),
     path('seguimiento/', include('modulo_seguimiento.routers')),
     path('asignacion/', include('modulo_asignacion.routers')),
+    path('reportes/', include('modulo_reportes.routers')),
+    path('academico/', include('modulo_academico.routers')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 

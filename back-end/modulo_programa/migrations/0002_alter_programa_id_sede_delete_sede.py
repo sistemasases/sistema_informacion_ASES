@@ -12,15 +12,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.DeleteModel(name="sede",),
         migrations.AlterField(
             model_name="programa",
             name="id_sede",
             field=models.ForeignKey(
-                default=0,
+                default=None,
+                null=True,
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="id_sede_in_programa",
                 to="modulo_instancia.sede",
             ),
         ),
-        migrations.DeleteModel(name="sede",),
     ]

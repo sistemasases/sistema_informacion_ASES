@@ -1,64 +1,104 @@
 import React, {useState} from 'react';
-import {Container, Row, Col, Dropdown} from "react-bootstrap";
+import {Container, Row, Col, Badge} from "react-bootstrap";
 import  {useEffect} from 'react';
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-
 import Logos from './LOGO BLANCORecurso 1.png';
+import { useLocation } from 'react-router-dom';
+import { useNavigate  } from 'react-router-dom';
 
+const Navbar = (props) =>{
 
-const navbar = (props) =>{
-
-    const [url, setUrl] = useState('');
-
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [lastVisitedRoutes, setLastVisitedRoutes] = useState([]);
+  
     useEffect(() => {
-        const currentUrl = window.location.href;
-        const subUrl = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
-        setUrl(subUrl);
-    }, []);
+      const currentPath = location.pathname;
+      const currentUrl = window.location.href;
+      const storedRoutes = sessionStorage.getItem('lastVisitedRoutes');
+      let updatedRoutes = [];
+  
+      if (storedRoutes) {
+        updatedRoutes = JSON.parse(storedRoutes);
+  
+        if (updatedRoutes.includes(currentUrl)) {
+          const index = updatedRoutes.indexOf(currentUrl);
+          updatedRoutes.splice(index, 1);
+        }
+  
+        updatedRoutes.unshift(currentUrl);
+        if (updatedRoutes.length > 3) {
+          updatedRoutes.pop();
+        }
+      } else {
+        updatedRoutes = [currentUrl];
+      }
+  
+      sessionStorage.setItem('lastVisitedRoutes', JSON.stringify(updatedRoutes));
+      setLastVisitedRoutes(updatedRoutes.reverse());
+    }, [location]);
+  
+
+  
+    const getSegmentsFromUrl = (url) => {
+        const segments = url.split('/');
+        return segments.slice(3, 4); // Obtener el cuarto segmento (índice 3)
+      };
+
+    const handleSalir = () => {
+        sessionStorage.clear();
+        window.location.replace('');
+      };
+
+
+
+
 
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
 
-    const handleSalir = () =>{
-        localStorage.removeItem('token')
-        localStorage.removeItem('refresh-token')
-        localStorage.removeItem('email')
-        localStorage.removeItem('first_name')
-        localStorage.removeItem('instancia')
-        localStorage.removeItem('last_name')
-        localStorage.removeItem('nombre_completo')
-        localStorage.removeItem('instancia_id')
-        localStorage.removeItem('rol')
-        localStorage.removeItem('semestre_actual')
-        localStorage.removeItem('username')
-        localStorage.removeItem('message')
-        window.location.replace('');
-    }    
+    // const handleSalir = () =>{
+    //     sessionStorage.removeItem('token')
+    //     sessionStorage.removeItem('refresh-token')
+    //     sessionStorage.removeItem('email')
+    //     sessionStorage.removeItem('first_name')
+    //     sessionStorage.removeItem('instancia')
+    //     sessionStorage.removeItem('last_name')
+    //     sessionStorage.removeItem('nombre_completo')
+    //     sessionStorage.removeItem('instancia_id')
+    //     sessionStorage.removeItem('rol')
+    //     sessionStorage.removeItem('semestre_actual')
+    //     sessionStorage.removeItem('username')
+    //     sessionStorage.removeItem('message')
+    //     window.location.replace('');
+    // }    
 
-    const menuOptions=[
-        {
-            id:1,
-            path:"/",
-            name:"Analitics",
-            icon:<FaRegChartBar />,
-        },
-        {
-            id:2,
-            path:"/ficha_estudiante",
-            name:"fichaDeEstudiante aiiiiiiiiiiiiiiii",
-            icon:<FaThList />,
-            thisIsOpen:true,
-        }
-    ]
     return (
     <Container  >
         <Row className="nav">
 
-            <Col xs={"4"} md={"3"}>
-                <img src={Logos} className="logo"></img>
+        <Col xs={"4"} md={"2"}>
+            <img src={Logos} className="logo" alt='/'></img>
+        </Col>
+
+        <div class="col-md-6" >
+            <Col className="ulDropdown">
+                <Row>
+                {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
+            {lastVisitedRoutes.reverse().map((url, index) => (    
+                    
+                <Col md={"4"} className="row_modulo_activo" href={url}>
+                    <a href={url}>
+                        {getSegmentsFromUrl(url).join('/')}
+                    </a>
+                </Col>
+            ))}
+                </Row>
+
             </Col>
+        </div>
 
 
+{/* 
             <Col className="ulDropdown" xs={"5"} md={"4"}>            
                 <Row >
                     <div class="d-none d-md-inline">
@@ -72,15 +112,15 @@ const navbar = (props) =>{
                         </Col>
                     </div>
                 </Row>
-            </Col>
+            </Col> */}
 
 
-            <Col className="boton_perfil" xs={"2"} md={"5"}>
+            <Col className="boton_perfil" xs={"2"} md={"4"}>
                 <Row>
                         <div class="d-none d-md-inline col-md-9" >
 
                             <Col xs={"1"} sm={"1"} md={"9"} className="info_perfil">
-                                <Row>{localStorage.nombre_completo} </Row>
+                                <Row>{sessionStorage.nombre_completo} </Row>
                                 <Row>Enlace del documento de aceptación t.d.p</Row>
                             </Col>
                         </div>
@@ -141,4 +181,4 @@ const navbar = (props) =>{
     )
 }
 
-export default navbar 
+export default Navbar 

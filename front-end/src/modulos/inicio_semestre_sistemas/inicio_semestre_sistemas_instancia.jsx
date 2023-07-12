@@ -8,20 +8,23 @@
 */
 
 import React from 'react';
-import Inicio_semestre_component from "../../components/inicio_semestre_sistemas/inicio_semestre_component"
+import Inicio_semestre_component from "../../components/inicio_semestre_sistemas/inicio_semestre_component";
+import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import {Container, Row, Col} from "react-bootstrap";
 
 const Inicio_semestre_sistemas_instancia = () =>{
 
+    const userRole = sessionStorage.getItem('rol');
+
     return (
-        <Col className="contenido_children">
-            <Row className="rowJustFlex">
-                <h1>INICIO DE SEMESTRE</h1>
-            </Row>
-            <Row className="containerRow">
-                <Inicio_semestre_component/>
-            </Row>
-        </Col>
+    <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <Row className="rowJustFlex">
+            <h1>INICIO DE SEMESTRE</h1>
+        </Row>
+        <Row className="containerRow">
+            <Inicio_semestre_component/>
+        </Row>
+    </Col> : <Acceso_denegado/>}</>
     )
 }
 

@@ -9,9 +9,9 @@ const login = (info) => {
     })
     .then(res=>{
       console.log(res.data)
-      localStorage.setItem('token', res.data.token)
-      localStorage.setItem('user', res.data.user.nombre_completo)
-      localStorage.setItem('refresh-token', res.data['refresh-token'])
+      sessionStorage.setItem('token', res.data.token)
+      sessionStorage.setItem('user', res.data.user.nombre_completo)
+      sessionStorage.setItem('refresh-token', res.data['refresh-token'])
     })
     .catch(err=>console.log(err))
   }
