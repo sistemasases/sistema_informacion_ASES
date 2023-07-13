@@ -9,6 +9,10 @@ import Select from 'react-select'  ;
 
 
 const Cabecera = (props) =>{
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+  
   const{childClicked} = props
 
     
@@ -42,6 +46,7 @@ useEffect(()=>{
           // Endpoint to send files
           url:  "http://localhost:8000/wizard/semestre/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({

@@ -14,6 +14,16 @@ var now = today.toLocaleString();
 
 const Info_general = (props) =>{
 
+      const config = {
+            headers: {
+                  Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            }
+      };
+
+      const config2 = {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      };
+
     const temporal = false;
 
     // Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ 
@@ -97,7 +107,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Etico = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/grupos_etnicos/')
+      axios.get('http://localhost:8000/usuario_rol/grupos_etnicos/', config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -118,7 +128,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Actividad_simultanea = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/actividad_simultanea/')
+      axios.get('http://localhost:8000/usuario_rol/actividad_simultanea/', config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -139,7 +149,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_identidad_de_genero = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/identidad_gen/')
+      axios.get('http://localhost:8000/usuario_rol/identidad_gen/', config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -160,7 +170,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_estado_civil = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/estado_civil/')
+      axios.get('http://localhost:8000/usuario_rol/estado_civil/', config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -181,7 +191,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_condicion_de_excepcion = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/condicion_de_excepcion/')
+      axios.get('http://localhost:8000/usuario_rol/condicion_de_excepcion/', config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -313,6 +323,7 @@ const Info_general = (props) =>{
       url: 'http://localhost:8000/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
       method: "POST",
       data: formData,
+      headers: config2,
       })
       .then((res)=>{
             console.log("este es el response : " + res)

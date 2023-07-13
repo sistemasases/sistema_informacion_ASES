@@ -35,12 +35,13 @@ import pandas as pd
 # Create your views here.
 class user_viewsets (viewsets.ModelViewSet):
     serializer_class = user_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = user_serializer.Meta.model.objects.all()
 
 
 class estudiante_viewsets(viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
@@ -199,14 +200,14 @@ class estudiante_viewsets(viewsets.ModelViewSet):
 
 class rol_viewsets (viewsets.ModelViewSet):
     serializer_class = rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = rol_serializer.Meta.model.objects.all()
 
 
 
 class profesional_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -227,7 +228,7 @@ class profesional_viewsets (viewsets.ModelViewSet):
 
 class practicante_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -276,7 +277,7 @@ class practicante_viewsets (viewsets.ModelViewSet):
 
 class monitor_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -323,7 +324,7 @@ class monitor_viewsets (viewsets.ModelViewSet):
 
 class estudiante_selected_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -363,7 +364,7 @@ class estudiante_selected_viewsets (viewsets.ModelViewSet):
 
 class usuario_rol_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
     
 
@@ -476,7 +477,7 @@ class usuario_rol_viewsets (viewsets.ModelViewSet):
 
 class usuario_rol_old_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
     
 
@@ -507,6 +508,7 @@ class usuario_rol_old_viewsets (viewsets.ModelViewSet):
 
 class user_actualizacion_viewsets(viewsets.ViewSet):
     serializer_class = user_actualizacion
+    permission_classes = (IsAuthenticated,)
 
     def update(self, request, pk=None):
         serializer = self.serializer_class(data=request.data)
@@ -541,6 +543,7 @@ class user_actualizacion_viewsets(viewsets.ViewSet):
 
 class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
     serializer_class = Estudiante_actualizacion
+    permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
 
     def post(self, request, pk=None):
@@ -647,7 +650,7 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
 
 class Grupo_etnico_viewsets(viewsets.ModelViewSet):
     serializer_class = Grupo_etnico_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = etnia.objects.all()
 
     def list(self, request):
@@ -659,7 +662,7 @@ class Grupo_etnico_viewsets(viewsets.ModelViewSet):
 
 class Actividad_simultanea_viewsets(viewsets.ModelViewSet):
     serializer_class = Actividad_simultanea_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = act_simultanea.objects.all()
 
     def list(self, request):
@@ -671,7 +674,7 @@ class Actividad_simultanea_viewsets(viewsets.ModelViewSet):
 
 class Identidad_gen_viewsets(viewsets.ModelViewSet):
     serializer_class = Identidad_de_genero_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = identidad_gen.objects.all()
 
     def list(self, request):
@@ -683,7 +686,7 @@ class Identidad_gen_viewsets(viewsets.ModelViewSet):
 
 class Estado_civil_viewsets(viewsets.ModelViewSet):
     serializer_class = Estado_civil_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = estado_civil.objects.all()
 
     def list(self, request):
@@ -695,7 +698,7 @@ class Estado_civil_viewsets(viewsets.ModelViewSet):
 
 class Condicion_de_excepcion_viewsets(viewsets.ModelViewSet):
     serializer_class = Condicion_de_excepcion_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = cond_excepcion.objects.all()
 
     def list(self, request):
@@ -712,7 +715,7 @@ class Condicion_de_excepcion_viewsets(viewsets.ModelViewSet):
 
 class ids_estudiantes_del_monitor_viewsets(viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk):
@@ -730,7 +733,7 @@ class ids_estudiantes_del_monitor_viewsets(viewsets.ModelViewSet):
 
 class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk):
@@ -862,7 +865,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
 
 class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
     print('que pasaaaaaa 1qqqe')
 
@@ -920,7 +923,7 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
 
 class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk):
@@ -1115,7 +1118,7 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
 
 class cohortes_lista_viewsets (viewsets.ModelViewSet):
     serializer_class = cohorte_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = cohorte_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -1133,7 +1136,7 @@ class cohortes_lista_viewsets (viewsets.ModelViewSet):
 
 class cohorte_estudiante_info_viewsets (viewsets.ModelViewSet):
     serializer_class = cohorte_estudiante_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = cohorte_estudiante_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -1191,6 +1194,7 @@ class cohorte_estudiante_info_viewsets (viewsets.ModelViewSet):
 
 class historial_monitor_viewsets(viewsets.ModelViewSet):
     serializer_class = asignacion_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = asignacion_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -1472,8 +1476,9 @@ class historial_monitor_viewsets(viewsets.ModelViewSet):
 
 
 class Estudiante_actualizacion(APIView):
-
     serializer_class =serializers.Estudiante_actualizacion
+    permission_classes = (IsAuthenticated,)
+    
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if (serializer.is_valid()):

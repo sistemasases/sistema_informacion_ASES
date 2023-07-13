@@ -16,6 +16,15 @@ import { useLocation, Link } from 'react-router-dom';
 
 const Info_basica = (props) =>{
 
+  const config = {
+    headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
+
+  const config2 = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
 
     //ids de los tabs para cuando lo s requieran abrir apenas cargue la pestaña     General :1, Sociedu:2, Academico:3, Geografico:4
        
@@ -114,7 +123,7 @@ const Info_basica = (props) =>{
 
     const fetchData = async (index)=>{
       try{
-        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
+        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/", config);
         state.total_datos_estudiantes.push(response.data)
         console.log("entra aqui ssisisisiisj")
       }
@@ -148,6 +157,7 @@ const Info_basica = (props) =>{
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
+              headers: config2,
             })
             .then((respuesta)=>{
               set_state({
@@ -179,6 +189,7 @@ const Info_basica = (props) =>{
         // Endpoint to send files
         url:  url_axios,
         method: "GET",
+        headers: config2,
       })
       .then((respuesta)=>{
         set_state({

@@ -11,6 +11,10 @@ import axios from 'axios';
 
 const Selector = (props) =>{
 
+    const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
@@ -64,6 +68,7 @@ const Selector = (props) =>{
             // Endpoint to send files
             url:  url_axios,
             method: "GET",
+            headers: config,
             })
             .then((respuesta)=>{
             state.data_user_socioedu.push(respuesta.data)

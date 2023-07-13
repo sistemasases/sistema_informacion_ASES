@@ -23,6 +23,9 @@ Tabla Conteo de Seguimientos:
 
 const Academico = (props) =>{
 
+    const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
     
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -50,6 +53,7 @@ const Academico = (props) =>{
         // Endpoint to send files
         url:  url_axios,
         method: "GET",
+        headers: config,
         })
         .then((respuesta)=>{
             set_state({

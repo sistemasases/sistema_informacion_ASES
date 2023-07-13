@@ -10,6 +10,10 @@ import axios from 'axios';
 
 const Info_registros = (props) =>{
 
+    const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+
     const [show, setShow] = useState(false);
     const handleModal = () => setShow(true);
     const handleClose = () => setShow(false);
@@ -29,6 +33,7 @@ const Info_registros = (props) =>{
           // Endpoint to send files
           url:  "http://localhost:8000/usuario_rol/ultimo_seguimiento_individual/" + props.id_estudiante + "/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({

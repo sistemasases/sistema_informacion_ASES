@@ -14,6 +14,10 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Ficha_monitor = (props) =>{
 
+  const config = {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
     const userRole = sessionStorage.getItem('rol');
 
     const[switchChecked, setChecked] = useState(false);
@@ -28,6 +32,7 @@ const Ficha_monitor = (props) =>{
             // Endpoint to send files
             url:  "http://localhost:8000/usuario_rol/monitor/",
             method: "GET",
+            headers: config,
           })
           .then((respuesta)=>{
             set_state({
