@@ -117,7 +117,8 @@ body {
     padding-top: 2px;
     height: 30px;
     color: white;
-    background: rgba(65,174,27,255);
+    background: rgba(65,174,27);
+    border: 2px solid rgb(38, 100, 16);
 }
 .infoRow23_inactivo{
     font-size: 8pt;
@@ -125,13 +126,15 @@ body {
     height: 30px;
     color: white;
     background: gray;
+    border: 2px solid rgb(58, 58, 58);
 }
 .infoRow23_finalizado{
     font-size: 8pt;
     padding-top: 2px;
     height: 30px;
     color: white;
-    background: rgba(30,195,196,255);
+    background: rgba(30,195,196);
+    border: 2px solid rgb(30, 100, 100);
 }
 .infoRow3{
     
@@ -266,16 +269,20 @@ body {
     font-size: 14pt;
     word-break: break-all;
 }
+.texto_pequeño_12pt{
+    font-size: 12pt;
+    word-break: break-all;
+}
 .texto_pequeño_gris{
-    font-size: 14pt;
-    color:gray;
+    font-size: 12pt;
+    font-weight: bold;
 }
 
 .texto_subtitulo{
-    color: rgba(229,41,67,255);
+    color: rgba(229,41,67);
     margin-top: 5px;
     font-weight: bold;
-    font-size: 18pt;
+    font-size: 15pt;
 }
 .texto_subtitulo2{
     font-size: 18pt;
@@ -333,4 +340,38 @@ body {
 .contenido_children{
     margin-left: 3%;
     margin-right: 3%;
+}
+
+
+.info_programa_academico_egresado{
+    padding: 4px 4px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    color: white;
+    background: rgba(30,195,196);
+    border: 2px solid rgb(30, 100, 100);
+    font-size: 9pt;
+    font-weight: bold;
+}
+
+.info_programa_academico_en_curso{
+    padding: 4px 4px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    color: white;
+    background: rgba(65,174,27);
+    border: 2px solid rgb(38, 100, 16);
+    font-size: 9pt;
+    font-weight: bold;
+}
+
+.info_programa_academico_desertor{
+    padding: 4px 4px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    color: white;
+    background: gray;
+    border: 2px solid rgb(58, 58, 58);
+    font-size: 9pt;
+    font-weight: bold;
 }

@@ -84,16 +84,23 @@ useEffect(()=>{
         <Container >
             <Row >
                 <Col xs={"12"} md={"8"} className="texto_titulo_bold">
-                Reporte cantidad de seguimientos
+                Reporte estudiantes sin seguimientos
                 </Col>
-                <Col xs={"12"} md={"4"} className="texto_pequeño">
-                    Seleccione el semestre
-                    <Select 
-                    options={datos_option_user} 
-                    onMenuOpen={handle_users} 
-                    onChange={handle_option_user} 
-                    />
-                </Col>
+                {
+                  sessionStorage.rol === 'superAses' || sessionStorage.rol === 'sistemas' ?
+                  (
+                    <Col xs={"12"} md={"4"} className="texto_pequeño">
+                      Seleccione el semestre
+                      <Select 
+                      options={datos_option_user} 
+                      onMenuOpen={handle_users} 
+                      onChange={handle_option_user} 
+                      />
+                    </Col>
+                  ):
+                  (<Col>{sessionStorage.semestre_actual}</Col>)
+                }
+
             </Row>
       
         </Container>

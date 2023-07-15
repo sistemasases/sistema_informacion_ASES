@@ -1,15 +1,9 @@
 import React from 'react';
-import {useState } from "react";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import DataTable, {selectFilter} from'react-data-table-component';
+import {Row, Col} from "react-bootstrap";
+import DataTable from'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
 const Desplegable_item_academico = ({item}) => {
 
-    const [open, setOpen] = useState(false)
-
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
   const columnas2 = [
     {
@@ -60,34 +54,11 @@ const Desplegable_item_academico = ({item}) => {
 
 
 
-  const conditionalRowStyles = [
-    {
-      when: (row) => row.index % 2 === 0, // Aplica la clase 'row-even' a filas pares
-      style: {
-        backgroundColor: '#f2f2f2',
-      },
-    },
-    {
-      when: (row) => row.index % 2 !== 0, // Aplica la clase 'row-odd' a filas impares
-      style: {
-        backgroundColor: '#ffffff',
-      },
-    },
-  ];
-
-  const customStyles = {
-    cells: {
-      style: {
-        whiteSpace: 'normal',
-        wordBreak: 'break-word',
-      },
-    },
-  };
     
     if(item.nombre){
         return (
             <Row className="periodo_activo_o_no">
-                        {item.semestre_actual == true ? 
+                        {item.semestre_actual === true ? 
                         (<Col>sin datos</Col>)
                             :
                         (<Col>sin datos</Col>)}
@@ -109,17 +80,27 @@ const Desplegable_item_academico = ({item}) => {
                     <Col className="col_reportes" >
                         <Row>
                             <Col xs={12}>
-                                <DataTable
+                                {/* <DataTable
                                     columns={columnas2}
                                     data={item[1].json_materias}
                                     filter={true}
                                     filterPlaceHolder={2}
                                     filterDigit={1}
                                     exportHeaders={true}
-                                    customStyles={customStyles}
-                                    conditionalRowStyles={conditionalRowStyles}
+                                    striped
                                     >
-                                </DataTable>
+                                </DataTable> */}
+                                <DataTableExtensions
+                                    columns={columnas2}
+                                    data={item[1].json_materias}
+                                    filterPlaceHolder={2}
+                                    filterDigit={1}
+                                    exportHeaders={true}>
+                                        
+                                    <DataTable
+                                    striped
+                                    />
+                                </DataTableExtensions>
                             </Col>
                         </Row>
                     </Col>

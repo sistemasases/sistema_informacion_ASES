@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col} from "styled-bootstrap-grid";
-import {Dropdown, Button} from "react-bootstrap";
+import {Row, Col} from "styled-bootstrap-grid";
+import {Button} from "react-bootstrap";
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
 import {useEffect} from 'react';
 import axios from 'axios';
@@ -11,13 +10,219 @@ import Ficha_footer from "./ficha_footer";
 import Info_registros from './info_registros';
 import Programas_academicos from './programas_academicos'
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useLocation, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { differenceInYears } from 'date-fns';
+import { parseISO } from 'date-fns';
+import Modal from 'react-bootstrap/Modal';
+import GraphComponent from './trayectoria.jsx';
 
 const Info_basica = (props) =>{
 
 
-    //ids de los tabs para cuando lo s requieran abrir apenas cargue la pestaña     General :1, Sociedu:2, Academico:3, Geografico:4
+//   const grafico_riesgos = [
+//     {
+//         "fechas": [
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-05-11",
+//             "2023-05-04",
+//             "2023-05-17",
+//             "2023-05-02",
+//             "2023-05-12",
+//             "2023-05-10",
+//             "2023-05-01",
+//             "2023-04-05",
+//             "2023-05-18",
+//             "2023-05-10",
+//             "2023-05-31"
+//         ]
+//     },
+//     {
+//         "riesgo_individual": [
+//             1,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             0,
+//             0,
+//             2,
+//             2,
+//             0
+//         ]
+//     },
+//     {
+//         "riesgo_familiar": [
+//             -1,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             0,
+//             2,
+//             1,
+//             1
+//         ]
+//     },
+//     {
+//         "riesgo_academico": [
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             1,
+//             0,
+//             0,
+//             2
+//         ]
+//     },
+//     {
+//         "riesgo_economico": [
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             0,
+//             1,
+//             1,
+//             null
+//         ]
+//     },
+//     {
+//         "riesgo_vida_universitaria_ciudad": [
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             0,
+//             1,
+//             1,
+//             2
+//         ]
+//     }
+// ]
+
+
+// const riesgos = grafico_riesgos.slice(1);
+// const riesgosObj = {};
+
+// riesgos.forEach((riesgo) => {
+//   const [key] = Object.keys(riesgo);
+//   const [values] = Object.values(riesgo);
+//   riesgosObj[key] = values;
+// });
+
+  
+    const [loading, setLoading2] = useState(false);
+    const [fechas, setFechas] = useState([]);
+    const [riesgos, setRiesgos] = useState({});
+
+    const traer_graficos = () => {
+      setLoading2(true);
+    
+      axios
+        .get('http://localhost:8000/usuario_rol/trayectoria/' + state.id_usuario + '/')
+        .then((response) => {
+          setFechas(response.data[0].fechas);
+          const riesgos = response.data.slice(1);
+          const riesgosObj = {};
+    
+          riesgos.forEach((riesgo) => {
+            const [key] = Object.keys(riesgo);
+            const [values] = Object.values(riesgo);
+            riesgosObj[key] = values;
+          });
+    
+          setRiesgos(riesgosObj);
+        })
+        .catch((error) => {
+          console.error('Error al obtener los riesgos:', error);
+        })
+        .finally(() => {
+          setLoading2(false);
+          handleShow();
+        });
+    };
+    
+
+
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+    //ids de los tabs para cuando los requieran abrir apenas cargue la pestaña     General :1, Sociedu:2, Academico:3, Geografico:4
        
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -25,6 +230,10 @@ const Info_basica = (props) =>{
     const [show, setShow] = useState(false);
     const handleModal = () => setShow(true);
     const handleClose = () => setShow(false);
+
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow = () => setShow2(true);
 
     const [showIn, setShowIn] = useState(false);
     const handleModalIn = () => setShowIn(true);
@@ -77,7 +286,6 @@ const Info_basica = (props) =>{
           tipo_doc : state.total_datos_estudiantes['tipo_doc'],
           cedula :state.total_datos_estudiantes['num_doc'],
           telefono :state.total_datos_estudiantes['telefono_res'],
-          edad : '1',
           programas : state.total_datos_estudiantes['programas'],
           monitor : state.total_datos_estudiantes['info_monitor'],
           practicante : state.total_datos_estudiantes['practicante'],
@@ -112,25 +320,13 @@ const Info_basica = (props) =>{
     }, []);
 
 
-    const fetchData = async (index)=>{
-      try{
-        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/");
-        state.total_datos_estudiantes.push(response.data)
-        console.log("entra aqui ssisisisiisj")
-      }
-      catch (error){
-        console.log("no capto el dato")
-        fetchData(index);
-      }
-    }
-
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const id_parametros = searchParams.get('id');
 
     const handle_users = (e) => {
       // Getting the files from the input
-      if(bandera_option_user==true){
+      if(bandera_option_user === true){
   
         for (var i = 0; i < props.data_user['length'] ; i++) {
           const dato = 
@@ -140,7 +336,7 @@ const Info_basica = (props) =>{
           datos_option_user.push(dato)
 
           //este if lo pongo para que abra academico de una
-          if (url == dato.value && state.ya_selecciono_automatico){
+          if (url === dato.value && state.ya_selecciono_automatico){
             setSelectedOption(dato)
             
             const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+dato.value+"/";
@@ -172,26 +368,38 @@ const Info_basica = (props) =>{
 
 
     const handle_option_user = (e) => {
-      // Getting the files from the input
-
-      const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+e.value+"/";
+      const url_axios = "http://localhost:8000/usuario_rol/estudiante/" + e.value + "/";
       axios({
-        // Endpoint to send files
-        url:  url_axios,
+        url: url_axios,
         method: "GET",
       })
-      .then((respuesta)=>{
-        set_state({
-          ...state,
-          total_datos_estudiantes : respuesta.data
+        .then((respuesta) => {
+          const json = respuesta.data;
+    
+          // Obtener la fecha de nacimiento del JSON
+          const fechaNacimiento = parseISO(json.fecha_nac);
+    
+          // Obtener la fecha actual
+          const fechaActual = new Date();
+    
+          // Calcular la diferencia de años entre la fecha actual y la fecha de nacimiento
+          const edad = differenceInYears(fechaActual, fechaNacimiento);
+    
+          // Actualizar el estado con los datos y la edad calculada
+          set_state({
+            ...state,
+            total_datos_estudiantes: {
+              ...json,
+            },
+            edad: edad
+          });
         })
-      })
-      .catch(err=>{
-          console.log("no tomo el dato 174 de basica" + err)
-        })
-
-        setSelectedOption(e)
-    }
+        .catch((err) => {
+          console.log("Error al obtener el dato del estudiante: " + err);
+        });
+    
+      setSelectedOption(e);
+    };
 
 
     const handleWhatsapp = (e) =>{
@@ -207,6 +415,10 @@ const Info_basica = (props) =>{
       <Row className="row_prueba">
         <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
         <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
+        
+        {/* <li >{JSON.stringify(data.fechas)}</li>
+        <li >{JSON.stringify(data.riesgos)}</li> */}
+
         <Col xs={"12"} lg={"9"} >
 
           <div class="d-none d-md-block">
@@ -288,6 +500,11 @@ const Info_basica = (props) =>{
                                             Programas académicos 
                                           </h4>
                                         </Row>
+                                        <Row>
+                                          <label className='info_programa_academico_egresado'>Egresado</label>
+                                          <label className='info_programa_academico_en_curso'>En curso</label>
+                                          <label className='info_programa_academico_desertor'>Desertor</label>
+                                        </Row>
                                         <Row className="infoRow23_inactivo"> 
                                           <Col xs={"6"} md={"6"}>
                                             <h4 className="texto_pequeño">
@@ -315,7 +532,7 @@ const Info_basica = (props) =>{
 
                                       <div class="d-none d-md-block col-md-3">
                                       <Col xs={"12"} md={"12"} className="col_2017">
-                                          <button className="boton_editar_info_basica">
+                                          <button className="boton_editar_info_basica" >
                                             <i>TRAYECTORIA</i>
                                           </button> 
                                           <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
@@ -334,6 +551,11 @@ const Info_basica = (props) =>{
                                       <Col md={"9"}>
                                         <Row>
                                           <h4 className="texto_pequeño">Programas académicos </h4>
+                                        </Row>
+                                        <Row>
+                                          <label className='info_programa_academico_egresado'>Egresado</label>
+                                          <label className='info_programa_academico_en_curso'>En curso</label>
+                                          <label className='info_programa_academico_desertor'>Desertor</label>
                                         </Row>
                                           { state.programas.map((item, index) => <Programas_academicos 
                                             rolUsuario={props.rolUsuario}
@@ -365,7 +587,7 @@ const Info_basica = (props) =>{
 
                                       <div class="d-none d-md-block col-md-3">
                                         <Col xs={"12"} md={"12"} className="col_2017">
-                                          <button className="boton_editar_info_basica">
+                                          <button className="boton_editar_info_basica"  onClick={traer_graficos}>
                                             <i>TRAYECTORIA</i>
                                           </button> 
                                           <button className="boton_editar_info_basica">
@@ -444,7 +666,7 @@ const Info_basica = (props) =>{
                                       <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                   </Row>
                                       <Row className="botones_info_basica_pequeña">
-                                    <button className="boton_editar_info_basica">
+                                    <button className="boton_editar_info_basica" onClick={traer_graficos}>
                                       <i>TRAYECTORIA</i>
                                     </button>
                                   </Row>
@@ -478,7 +700,7 @@ const Info_basica = (props) =>{
                                   <h4 className="texto_mas_pequeño">2017-C.A</h4>
                                 </Row>
                                   <Row className="botones_info_basica_pequeña">
-                                <button className="boton_editar_info_basica">
+                                <button className="boton_editar_info_basica" onClick={traer_graficos}>
                                   <i>TRAYECTORIA</i>
                                 </button>
                                 </Row>
@@ -553,22 +775,6 @@ const Info_basica = (props) =>{
                                           <Col xs={"6"} md={"6"}>
                                             <h4 className="texto_pequeño">{state.codigo} </h4>
                                           </Col>
-                                          {
-                                            props.rolUsuario==='superSistemas' ?
-                                            (
-                                              <Col xs={"3"} md={"2"}>
-                                                <Switch onClick={handleChange}/>
-                                              </Col>
-                                            )
-                                            :
-                                            (
-                                              <Col xs={"1"} md={"1"}>
-                                              </Col>
-                                            )
-                                          }
-                                          <Col xs={"3"} md={"4"}> 
-                                            <select/>
-                                          </Col>
                                         </Row>
                                       </Col>
                                     </Row>
@@ -626,8 +832,23 @@ const Info_basica = (props) =>{
           </Col>
         </div>
       
-        
 
+
+        <Modal show={show2} onHide={handleClose2}>
+          <Modal.Header closeButton>
+            <Modal.Title>Importante</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {!loading && fechas.length > 0 && Object.keys(riesgos).length > 0 && (
+              <GraphComponent fechas={fechas} riesgos={riesgos} />
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose2}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
       </Row>
     )
