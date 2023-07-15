@@ -993,32 +993,81 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
 
 
 
+# class trayectoria_viewsets(viewsets.ModelViewSet):
+#     serializer_class = seguimiento_individual_serializer
+#     # permission_classes = (IsAuthenticated,)
+#     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
+
+#     def retrieve(self, request, pk):
+
+#         estudiante_id = request.query_params.get('estudiante_id')
+#         list_semestre = semestre.objects.all().get(semestre_actual = True)
+#         serializer_semestre = semestre_serializer(list_semestre)
+#         # fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+#         # fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+#         listas = []
+#         fechas=[]
+#         riesgo_individual=[]
+#         riesgo_familiar=[]
+#         riesgo_academico=[]
+#         riesgo_economico=[]
+#         riesgo_vida_universitaria_ciudad=[]
+
+#         try:
+#             # Obtener el seguimiento más reciente del estudiante especificado
+#             # seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk, fecha__gt=fecha_inicio)
+#             seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk)
+
+#             # Crear un diccionario con los datos de riesgo del seguimiento
+#             for i in seguimiento_reciente:
+#                 seguimiento = seguimiento_individual_serializer(i)
+#                 fechas.append(seguimiento.data['fecha'])
+#                 riesgo_individual.append(seguimiento.data['riesgo_individual'])
+#                 riesgo_familiar.append(seguimiento.data['riesgo_familiar'])
+#                 riesgo_academico.append(seguimiento.data['riesgo_academico'])
+#                 riesgo_economico.append(seguimiento.data['riesgo_economico'])
+#                 riesgo_vida_universitaria_ciudad.append(seguimiento.data['riesgo_vida_universitaria_ciudad'])
+#             fechas_lista = {'fechas' : fechas}
+#             riesgo_individual_lista = {'riesgo_individual' : riesgo_individual }
+#             riesgo_familiar_lista = {'riesgo_familiar' : riesgo_familiar}
+#             riesgo_academico_lista = {'riesgo_academico' :  riesgo_academico}
+#             riesgo_economico_lista = {'riesgo_economico' :riesgo_economico}
+#             riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad' : riesgo_vida_universitaria_ciudad}
+
+#             listas.append(fechas_lista)
+#             listas.append(riesgo_individual_lista)
+#             listas.append(riesgo_familiar_lista)
+#             listas.append(riesgo_academico_lista)
+#             listas.append(riesgo_economico_lista)
+#             listas.append(riesgo_vida_universitaria_ciudad_lista)  
+
+#             # Devolver el riesgo en la respuesta
+#             return Response(listas)
+#         except seguimiento_individual.DoesNotExist:
+#             # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+#             return Response({})
 class trayectoria_viewsets(viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
-    queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
+    queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk):
-
         estudiante_id = request.query_params.get('estudiante_id')
-        list_semestre = semestre.objects.all().get(semestre_actual = True)
-        serializer_semestre = semestre_serializer(list_semestre)
-        # fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
-        # fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+        list_semestre = semestre.objects.all().get(semestre_actual=True)
+        fecha_inicio_semestre = list_semestre.fecha_inicio
+
         listas = []
-        fechas=[]
-        riesgo_individual=[]
-        riesgo_familiar=[]
-        riesgo_academico=[]
-        riesgo_economico=[]
-        riesgo_vida_universitaria_ciudad=[]
+        fechas = []
+        riesgo_individual = []
+        riesgo_familiar = []
+        riesgo_academico = []
+        riesgo_economico = []
+        riesgo_vida_universitaria_ciudad = []
 
         try:
-            # Obtener el seguimiento más reciente del estudiante especificado
-            # seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk, fecha__gt=fecha_inicio)
-            seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk)
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk, fecha__gt=fecha_inicio_semestre
+            )
 
-            # Crear un diccionario con los datos de riesgo del seguimiento
             for i in seguimiento_reciente:
                 seguimiento = seguimiento_individual_serializer(i)
                 fechas.append(seguimiento.data['fecha'])
@@ -1027,26 +1076,24 @@ class trayectoria_viewsets(viewsets.ModelViewSet):
                 riesgo_academico.append(seguimiento.data['riesgo_academico'])
                 riesgo_economico.append(seguimiento.data['riesgo_economico'])
                 riesgo_vida_universitaria_ciudad.append(seguimiento.data['riesgo_vida_universitaria_ciudad'])
-            fechas_lista = {'fechas' : fechas}
-            riesgo_individual_lista = {'riesgo_individual' : riesgo_individual }
-            riesgo_familiar_lista = {'riesgo_familiar' : riesgo_familiar}
-            riesgo_academico_lista = {'riesgo_academico' :  riesgo_academico}
-            riesgo_economico_lista = {'riesgo_economico' :riesgo_economico}
-            riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad' : riesgo_vida_universitaria_ciudad}
+
+            fechas_lista = {'fechas': fechas}
+            riesgo_individual_lista = {'riesgo_individual': riesgo_individual}
+            riesgo_familiar_lista = {'riesgo_familiar': riesgo_familiar}
+            riesgo_academico_lista = {'riesgo_academico': riesgo_academico}
+            riesgo_economico_lista = {'riesgo_economico': riesgo_economico}
+            riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad': riesgo_vida_universitaria_ciudad}
 
             listas.append(fechas_lista)
             listas.append(riesgo_individual_lista)
             listas.append(riesgo_familiar_lista)
             listas.append(riesgo_academico_lista)
             listas.append(riesgo_economico_lista)
-            listas.append(riesgo_vida_universitaria_ciudad_lista)  
+            listas.append(riesgo_vida_universitaria_ciudad_lista)
 
-            # Devolver el riesgo en la respuesta
             return Response(listas)
         except seguimiento_individual.DoesNotExist:
-            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
             return Response({})
-
 
 
 
