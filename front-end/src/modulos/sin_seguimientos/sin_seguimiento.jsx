@@ -14,6 +14,10 @@ import axios from 'axios';
 
 const Sin_seguimientos = () =>{
 
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
     const userRole = sessionStorage.getItem('rol');
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
@@ -28,6 +32,7 @@ const Sin_seguimientos = () =>{
           // Endpoint to send files
           url:  "http://localhost:8000/usuario_rol/semestre/"+14+"/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({

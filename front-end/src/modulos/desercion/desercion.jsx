@@ -14,6 +14,10 @@ import axios from 'axios';
 
 const Desercion = () =>{
 
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
     const userRole = sessionStorage.getItem('rol');
 
     const [state,set_state] = useState({
@@ -34,6 +38,7 @@ const Desercion = () =>{
           // Endpoint to send files
           url:  "http://localhost:8000/usuario_rol/cohorte_estudiante_info/"+state.id_cohorte+"/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({

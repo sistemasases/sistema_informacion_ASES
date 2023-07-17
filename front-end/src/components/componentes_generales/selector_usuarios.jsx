@@ -26,6 +26,9 @@ const Selector_usuarios = () =>{
   /*
     constantes
   */
+  const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
 
   const [state,set_state] = useState({
     rol: '',
@@ -155,6 +158,7 @@ const Selector_usuarios = () =>{
       //FALTA ORGANIZAR PK
       url:  "http://localhost:8000/usuario_rol/usuario_rol/"+e.id+"/",
       method: "GET",
+      headers: config,
       data: formData,
     })
     .then(res=>{set_state({
@@ -250,6 +254,7 @@ const Selector_usuarios = () =>{
         //FALTA ORGANIZAR EL PK
         url:  "http://localhost:8000/usuario_rol/usuario_rol/"+id_user+"/",
         method: "PUT",
+        headers: config,
         data: formData,
       })
     }

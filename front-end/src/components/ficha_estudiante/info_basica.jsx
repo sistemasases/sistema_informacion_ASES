@@ -19,6 +19,15 @@ import GraphComponent from './trayectoria.jsx';
 
 const Info_basica = (props) =>{
 
+  const config = {
+    headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
+
+  const config2 = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
 
 //   const grafico_riesgos = [
 //     {
@@ -322,6 +331,18 @@ const Info_basica = (props) =>{
     }, []);
 
 
+    const fetchData = async (index)=>{
+      try{
+        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/", config);
+        state.total_datos_estudiantes.push(response.data)
+        console.log("entra aqui ssisisisiisj")
+      }
+      catch (error){
+        console.log("no capto el dato")
+        fetchData(index);
+      }
+    }
+
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const id_parametros = searchParams.get('id');
@@ -346,6 +367,7 @@ const Info_basica = (props) =>{
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
+              headers: config2,
             })
             .then((respuesta)=>{
               set_state({
@@ -374,6 +396,7 @@ const Info_basica = (props) =>{
       axios({
         url: url_axios,
         method: "GET",
+        headers: config2,
       })
         .then((respuesta) => {
           const json = respuesta.data;
