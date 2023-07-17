@@ -110,6 +110,15 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         # diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_id}
         # diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_id}
         try:
+            cohorte_obj = cohorte_estudiante.objects.get(id_estudiante=pk)
+            serializer_id_cohorte = cohorte_estudiante_serializer(cohorte_obj)
+            id_cohorte = serializer_id_cohorte.data['id_cohorte']
+            nombre_cohorte = cohorte.objects.get(id=id_cohorte)
+            diccionarion_cohorte = {'nombre_cohorte':nombre_cohorte.nombre}
+            diccionario_estudiante.update(diccionarion_cohorte)
+        except cohorte_estudiante.DoesNotExist:
+            diccionario_estudiante['nombre_cohorte'] = None
+        try:
             identidad_gen_obj = identidad_gen.objects.get(opcion_general=identidad_gen_id)
             # diccionario_estudiante['id_identidad_gen'] = identidad_gen_obj.genero
             diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}

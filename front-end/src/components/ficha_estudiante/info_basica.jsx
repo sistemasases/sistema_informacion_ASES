@@ -267,6 +267,7 @@ const Info_basica = (props) =>{
       monitor : [],
       practicante : [],
       profesional : [],
+      nombre_cohorte : '',
 
       nueva_cedula:'',
       edad:'',
@@ -290,6 +291,7 @@ const Info_basica = (props) =>{
           monitor : state.total_datos_estudiantes['info_monitor'],
           practicante : state.total_datos_estudiantes['practicante'],
           profesional : state.total_datos_estudiantes['profesional'],
+          nombre_cohorte : state.total_datos_estudiantes['nombre_cohorte'],
           total_datos_estudiante_seleccionado : state.total_datos_estudiantes
         })
       }
@@ -416,8 +418,7 @@ const Info_basica = (props) =>{
         <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
         <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
         
-        {/* <li >{JSON.stringify(data.fechas)}</li>
-        <li >{JSON.stringify(data.riesgos)}</li> */}
+        {/* <li >{JSON.stringify(state.total_datos_estudiantes)}</li> */}
 
         <Col xs={"12"} lg={"9"} >
 
@@ -539,7 +540,7 @@ const Info_basica = (props) =>{
                                             <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
                                           </button>
                                           <Row className="texto_estatico">
-                                            <h4 className="texto_mas_pequeño">Condición de excepcion <br/>2017-C.A</h4>
+                                            <h4 className="texto_mas_pequeño">{state.nombre_cohorte} <br/></h4>
                                           </Row>
                                         </Col> 
                                       </div>
@@ -595,9 +596,9 @@ const Info_basica = (props) =>{
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">
-                                            Condición de excepcion 
+                                            {state.nombre_cohorte} 
                                               <br/>
-                                              2017-C.A
+                                              
                                             </h4>
                                           </Row>
                                         </Col>  
@@ -663,7 +664,7 @@ const Info_basica = (props) =>{
                                   </Row>
                                   <Row className="texto_estatico_pequeño">
                                     <h4 className="texto_mas_pequeño">Condición de excepción</h4>
-                                      <h4 className="texto_mas_pequeño">2017-C.A</h4>
+                                      <h4 className="texto_mas_pequeño"></h4>
                                   </Row>
                                       <Row className="botones_info_basica_pequeña">
                                     <button className="boton_editar_info_basica" onClick={traer_graficos}>
@@ -697,7 +698,7 @@ const Info_basica = (props) =>{
                                 </Row>
                                 <Row className="texto_estatico_pequeño">
                                   <h4 className="texto_mas_pequeño">Condición de excepción</h4>
-                                  <h4 className="texto_mas_pequeño">2017-C.A</h4>
+                                  <h4 className="texto_mas_pequeño"></h4>
                                 </Row>
                                   <Row className="botones_info_basica_pequeña">
                                 <button className="boton_editar_info_basica" onClick={traer_graficos}>
