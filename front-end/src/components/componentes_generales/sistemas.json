@@ -49,7 +49,7 @@
             {
                 "id":1,
                 "path":"/sin_seguimientos",
-                "name":"Cantidad de seguimientos",
+                "name":"Estudiantes sin seguimientos",
                 "icon":"bi-instagram"
             },
             {

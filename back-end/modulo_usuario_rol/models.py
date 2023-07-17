@@ -83,7 +83,7 @@ class estudiante (models.Model):
     ciudad_nac = models.ForeignKey(municipio ,on_delete=models.CASCADE,default=None,null=True,related_name='ciudad_nacimiento')
     observacion = models.CharField(max_length=500, default=None,null=True)
     id_discapacidad =models.ForeignKey(discap_men,on_delete=models.CASCADE,default=None,null=True,related_name='discap_men_in_estudiante')
-    vive_con = models.CharField(max_length=1000, default=None,null=True)
+    vive_con = models.JSONField(default=dict, null=True)
     id_cond_excepcion=models.ForeignKey(cond_excepcion ,on_delete=models.CASCADE,default=None,null=True,related_name='cond_excepcion_in_estudiante')
     id_estado_civil=models.ForeignKey(estado_civil ,on_delete=models.CASCADE,default=None,null=True,related_name='estado_civil_in_estudiante')
     id_identidad_gen=models.ForeignKey(identidad_gen,on_delete=models.CASCADE,default=None,null=True,related_name='identidad_gen_in_estudiante')

@@ -10,6 +10,8 @@ import axios from 'axios';
 
 const Tabla_sin_Seguimientos = (props) =>{
 
+
+
   const [state,set_state] = useState({
     id_semestre : 6,
     la_info_de_la_tabla : [],
@@ -201,15 +203,12 @@ const Tabla_sin_Seguimientos = (props) =>{
   }
 
 
-
-
   function semestre_seleccion(name) {
     set_state({
       ...state,
       id_semestre: name,
     });
   }
-
 
 
 
@@ -230,21 +229,21 @@ const Tabla_sin_Seguimientos = (props) =>{
             records.length > 0 ?
             (
               <Row>
-                <DataTableExtensions
-                  columns={columnas2}
-                  data={records}
-                  filter={true}
-                  filterPlaceHolder={2}
-                  filterDigit={1}
-                  exportHeaders={true}
-                  >
-                    
-                  <DataTable
+              <DataTableExtensions
+                columns={columnas2}
+                data={records}
+                filter={true}
+                filterPlaceHolder={2}
+                filterDigit={1}
+                exportHeaders={true}>
+
+                <DataTable
                   pagination 
                   paginationRowsPerPageOptions={[10,20,30,40,50,100]}
-                  paginationComponentOptions={paginacionOpciones}            
+                  paginationComponentOptions={paginacionOpciones}
+                  striped      
                   />
-                </DataTableExtensions>
+              </DataTableExtensions>
                 
               </Row>
             )
