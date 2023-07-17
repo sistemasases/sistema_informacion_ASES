@@ -4,6 +4,9 @@ const url_carga = "http://127.0.0.1:8000/carga_masiva"
 
 const carga_masiva = (file,option) => {
     let formData = new FormData();
+    const config = {
+      Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
   
     //Adding files to the formdata
     formData.append("tipo_de_carga", option);
@@ -14,6 +17,7 @@ const carga_masiva = (file,option) => {
       // Endpoint to send files
       url: url_carga,
       method: "POST",
+      headers: config,
       // Attaching the form data
       data: formData,
     })

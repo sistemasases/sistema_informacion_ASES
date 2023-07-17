@@ -15,6 +15,11 @@ import DataTable from 'react-data-table-component';
 
 const Carga_masiva_component = () =>{
 
+  // constante para el header del axios
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
   // Constante que guarda la dirección url utilizada por el axios
   const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
   // Estado que permite guardar la respuesta del axios
@@ -66,6 +71,7 @@ const Carga_masiva_component = () =>{
       url: url_carga,
       method: "POST",
       data: formData,
+      headers: config,
     })
     .then((res)=>{
       set_state({

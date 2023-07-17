@@ -9,6 +9,10 @@ import DataTable, {createTheme} from 'react-data-table-component';
 
 const Carga_masiva_component = () =>{
 
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
   const[switchChecked, setChecked] = useState(false);
   const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
   
@@ -60,6 +64,7 @@ const Carga_masiva_component = () =>{
       // Endpoint to send files
       url: url_carga,
       method: "POST",
+      headers: config,
       data: formData,
     })
     .then((res)=>{

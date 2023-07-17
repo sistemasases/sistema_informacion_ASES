@@ -9,6 +9,9 @@ import { useEffect } from 'react';
 import axios from 'axios';
 
 const Tabla_desercion = () => {
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
   const [state, set_state] = useState({
     periodo: '',
     usuario: '',
@@ -32,6 +35,7 @@ const Tabla_desercion = () => {
     axios({
       url: `http://localhost:8000/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
       method: 'GET',
+      headers: config,
     })
       .then((respuesta) => {
         set_state({

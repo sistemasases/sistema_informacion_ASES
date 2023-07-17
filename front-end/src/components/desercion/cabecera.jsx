@@ -7,6 +7,9 @@ import Select from 'react-select'  ;
 
 
 const Cabecera = (props) =>{
+    const config = {
+      Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
       const{childClicked} = props
 
     const datos_option_user = [];
@@ -30,6 +33,7 @@ const Cabecera = (props) =>{
           // Endpoint to send files
           url:  "http://localhost:8000/usuario_rol/cohortes_lista/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({
