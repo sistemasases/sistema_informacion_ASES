@@ -7,12 +7,6 @@ import Footer from '../componentes_generales/footer.jsx';
 
 const Login_component = () => {
 
-  const config = {
-    headers: {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
-    }
-  };
-
   const [state, set_state] = useState({
     usuario: '',
     contrasena: '',
@@ -65,7 +59,7 @@ const Login_component = () => {
   };
 
   const handleSendNewData = () => {
-    axios.post(url, config, data)
+    axios.post(url, data)
       .then(res => {
         console.log(res.data)
         sessionStorage.setItem('token', res.data.token);

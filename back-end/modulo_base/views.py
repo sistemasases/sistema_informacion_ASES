@@ -62,9 +62,11 @@ class Login(TokenObtainPairView):
                         'user': data,
                         'message': 'Inicio de Sesion Exitoso'
                     }, status=status.HTTP_200_OK)
-                return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
+                print("hola1")    
+                return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_40_BAD_REQUEST)
+            print("hola2")   
             return Response({'error': 'El usuario no está activo'}, status=status.HTTP_400_BAD_REQUEST)
-
+        print("hola3")   
         return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
 
 class Logout(GenericAPIView):
