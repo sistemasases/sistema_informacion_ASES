@@ -949,7 +949,7 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
     # permission_classes = (IsAuthenticated,)
     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
-    print('que pasaaaaaa 1qqqe')
+    
 
     def list(self, request):
         estudiante_id = request.query_params.get('estudiante_id')
@@ -966,7 +966,6 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
                 'riesgo_economico': seguimiento_reciente.riesgo_economico,
                 'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
             }
-            print('que pasaaaaaa')
             # Devolver el riesgo en la respuesta
             return Response(riesgo)
         except seguimiento_individual.DoesNotExist:
