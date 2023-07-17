@@ -88,37 +88,23 @@ body {
 }
 .info_perfil{
     height: 3rem;
-    padding-top: 1rem;
-    font-size:9pt;
+    font-size : 10pt;
     color: white;
+    padding-left: 10%;
 }
 .toggle_perfil_usuario{
     display: flex;
-}
-.desplegable_usuario{
 }
 
 .boton_usuario{
     cursor: pointer;
     color: white;
-    text-align: center;
-    text-justify: center;
-    justify-content: center;
-    align-content: center;
-    margin-top:0.5rem;
-    font-size: 2rem;
-    width: 3rem;
-    height: 3rem;
-    background: #dfdfdf;
-    border-radius: 100%;
+    font-size: 2.5rem;
 }
 .flecha_usuario{
     cursor: pointer;
-    text-align: center;
-    text-justify: center;
-    justify-content: center;
-    align-content: center;
-    font-size: 3vh;
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
     color: white;
     font-weight: bold;
 }

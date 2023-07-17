@@ -14,6 +14,8 @@ router.register(r'monitor',monitor_viewsets,basename = 'monitor')
 router.register(r'estudiante_selected',estudiante_selected_viewsets,basename = 'estudiante_selected')
 router.register(r'estudiante_actualizacion',estudiante_actualizacion_viewsets,basename = 'estudiante_actualizacion')
 router.register(r'user_actualizacion',user_actualizacion_viewsets,basename = 'user_actualizacion')
+router.register(r'mas_con_quien_vive',mas_con_quien_vive_viewsets,basename = 'mas_con_quien_vive')
+router.register(r'trayectoria',trayectoria_viewsets,basename = 'trayectoria')
 
 router.register(r'grupos_etnicos',Grupo_etnico_viewsets,basename = 'grupos_etnicos')
 router.register(r'actividad_simultanea',Actividad_simultanea_viewsets,basename = 'actividad_simultanea')

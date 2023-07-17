@@ -110,6 +110,15 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         # diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_id}
         # diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_id}
         try:
+            cohorte_obj = cohorte_estudiante.objects.get(id_estudiante=pk)
+            serializer_id_cohorte = cohorte_estudiante_serializer(cohorte_obj)
+            id_cohorte = serializer_id_cohorte.data['id_cohorte']
+            nombre_cohorte = cohorte.objects.get(id=id_cohorte)
+            diccionarion_cohorte = {'nombre_cohorte':nombre_cohorte.nombre}
+            diccionario_estudiante.update(diccionarion_cohorte)
+        except cohorte_estudiante.DoesNotExist:
+            diccionario_estudiante['nombre_cohorte'] = None
+        try:
             identidad_gen_obj = identidad_gen.objects.get(opcion_general=identidad_gen_id)
             # diccionario_estudiante['id_identidad_gen'] = identidad_gen_obj.genero
             diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
@@ -615,23 +624,92 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
                 except:
                     print('no hiz cond_excepcion')
 
+                var_estudiante.save()
+                return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
+            except estudiante.DoesNotExist:
+                print('primer print')
+                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        print('segundo print')
+        print(serializer.errors)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-                
-                # etnia_obj = etnia.objects.get(id=etnia_request)
-                # var_estudiante.id_etnia = etnia_obj
+class mas_con_quien_vive_viewsets (viewsets.ModelViewSet):
+    serializer_class = Estudiante_actualizacion
+    queryset = estudiante_serializer.Meta.model.objects.all()
 
-                # act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
-                # var_estudiante.id_act_simultanea = act_simultanea_obj
+    def post(self, request, pk=None):
+        # serializer = self.serializer_class(data=request.data)
+        # print('esta es la info: '+ str(request.data))
+        # if (serializer.is_valid()):
+        serializer = self.serializer_class(data=request.data)
 
-                # identidad_gen_obj = identidad_gen.objects.get(id=identidad_gen_request)
-                # var_estudiante.id_identidad_gen = identidad_gen_obj
+        print('este es jajaja : ' + str(serializer))
+        if serializer.is_valid():
 
-                # estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
-                # var_estudiante.id_estado_civil = estado_civil_obj
+            puntaje_icfes_request = serializer.data['puntaje_icfes']
+            telefono_res_request = serializer.data['telefono_res']
+            celular_request = serializer.data['celular']
+            email_request = serializer.data['email']
+            sexo_request = serializer.data['sexo']
+            cantidad_hijo_request = serializer.data['hijos']
+            deporte_request = serializer.data['actividades_ocio_deporte']
+            acudiente_emergencia_request = serializer.data['acudiente']
+            tel_acudiente_emergencia_request = serializer.data['telefono_acudiente']
 
-                # cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
-                # var_estudiante.id_cond_excepcion = cond_excepcion_obj
+            etnia_request = serializer.data['id_etnia']
+            act_simultanea_request = serializer.data['id_act_simultanea']
+            identidad_gen_request = serializer.data['id_identidad_gen']
+            estado_civil_request = serializer.data['id_estado_civil']
+            cond_excepcion_request = serializer.data['id_cond_excepcion']
+
+            var_estudiante = estudiante.objects.get(id=pk)
+            serializer_estudiante = estudiante_serializer(var_estudiante)
+
+            try:
+                var_old_estudiante = estudiante.objects.get(pk = serializer_estudiante.data['id'])
+                var_estudiante = var_old_estudiante
+
+                var_estudiante.puntaje_icfes = puntaje_icfes_request
+                var_estudiante.telefono_res = telefono_res_request
+                var_estudiante.celular = celular_request
+                var_estudiante.email = email_request
+                var_estudiante.sexo = sexo_request
+                var_estudiante.actividades_ocio_deporte = deporte_request
+                var_estudiante.hijos = cantidad_hijo_request
+                var_estudiante.acudiente = acudiente_emergencia_request
+                var_estudiante.telefono_acudiente = tel_acudiente_emergencia_request
+
+                try:
+                    etnia_obj = etnia.objects.get(id=etnia_request)
+                    var_estudiante.id_etnia = etnia_obj
+                except:
+                    print('no hiz etnia')
+
+                try:
+                    act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
+                    var_estudiante.id_act_simultanea = act_simultanea_obj
+                except:
+                    print('no hiz act_simultanea')
+
+                try:
+                    identidad_gen_obj = identidad_gen.objects.get(id=identidad_gen_request)
+                    var_estudiante.id_identidad_gen = identidad_gen_obj
+                except:
+                    print('no hiz identidad_gen')
+
+                try:
+                    estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
+                    var_estudiante.id_estado_civil = estado_civil_obj
+                except:
+                    print('no hiz estado_civil')
+
+                try:
+                    cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
+                    var_estudiante.id_cond_excepcion = cond_excepcion_obj
+                except:
+                    print('no hiz cond_excepcion')
 
                 var_estudiante.save()
                 return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
@@ -642,6 +720,13 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
         print(serializer.errors)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
 
 
 
@@ -864,7 +949,7 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
     # permission_classes = (IsAuthenticated,)
     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
-    print('que pasaaaaaa 1qqqe')
+    
 
     def list(self, request):
         estudiante_id = request.query_params.get('estudiante_id')
@@ -881,7 +966,6 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
                 'riesgo_economico': seguimiento_reciente.riesgo_economico,
                 'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
             }
-            print('que pasaaaaaa')
             # Devolver el riesgo en la respuesta
             return Response(riesgo)
         except seguimiento_individual.DoesNotExist:
@@ -912,6 +996,114 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
 #             }
 
 #         return Response(riesgo,status=status.HTTP_200_OK)
+
+
+
+
+
+# class trayectoria_viewsets(viewsets.ModelViewSet):
+#     serializer_class = seguimiento_individual_serializer
+#     # permission_classes = (IsAuthenticated,)
+#     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
+
+#     def retrieve(self, request, pk):
+
+#         estudiante_id = request.query_params.get('estudiante_id')
+#         list_semestre = semestre.objects.all().get(semestre_actual = True)
+#         serializer_semestre = semestre_serializer(list_semestre)
+#         # fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+#         # fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+#         listas = []
+#         fechas=[]
+#         riesgo_individual=[]
+#         riesgo_familiar=[]
+#         riesgo_academico=[]
+#         riesgo_economico=[]
+#         riesgo_vida_universitaria_ciudad=[]
+
+#         try:
+#             # Obtener el seguimiento más reciente del estudiante especificado
+#             # seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk, fecha__gt=fecha_inicio)
+#             seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk)
+
+#             # Crear un diccionario con los datos de riesgo del seguimiento
+#             for i in seguimiento_reciente:
+#                 seguimiento = seguimiento_individual_serializer(i)
+#                 fechas.append(seguimiento.data['fecha'])
+#                 riesgo_individual.append(seguimiento.data['riesgo_individual'])
+#                 riesgo_familiar.append(seguimiento.data['riesgo_familiar'])
+#                 riesgo_academico.append(seguimiento.data['riesgo_academico'])
+#                 riesgo_economico.append(seguimiento.data['riesgo_economico'])
+#                 riesgo_vida_universitaria_ciudad.append(seguimiento.data['riesgo_vida_universitaria_ciudad'])
+#             fechas_lista = {'fechas' : fechas}
+#             riesgo_individual_lista = {'riesgo_individual' : riesgo_individual }
+#             riesgo_familiar_lista = {'riesgo_familiar' : riesgo_familiar}
+#             riesgo_academico_lista = {'riesgo_academico' :  riesgo_academico}
+#             riesgo_economico_lista = {'riesgo_economico' :riesgo_economico}
+#             riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad' : riesgo_vida_universitaria_ciudad}
+
+#             listas.append(fechas_lista)
+#             listas.append(riesgo_individual_lista)
+#             listas.append(riesgo_familiar_lista)
+#             listas.append(riesgo_academico_lista)
+#             listas.append(riesgo_economico_lista)
+#             listas.append(riesgo_vida_universitaria_ciudad_lista)  
+
+#             # Devolver el riesgo en la respuesta
+#             return Response(listas)
+#         except seguimiento_individual.DoesNotExist:
+#             # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+#             return Response({})
+class trayectoria_viewsets(viewsets.ModelViewSet):
+    serializer_class = seguimiento_individual_serializer
+    queryset = seguimiento_individual_serializer.Meta.model.objects.all()
+
+    def retrieve(self, request, pk):
+        estudiante_id = request.query_params.get('estudiante_id')
+        list_semestre = semestre.objects.all().get(semestre_actual=True)
+        fecha_inicio_semestre = list_semestre.fecha_inicio
+
+        listas = []
+        fechas = []
+        riesgo_individual = []
+        riesgo_familiar = []
+        riesgo_academico = []
+        riesgo_economico = []
+        riesgo_vida_universitaria_ciudad = []
+
+        try:
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk, fecha__gt=fecha_inicio_semestre
+            )
+
+            for i in seguimiento_reciente:
+                seguimiento = seguimiento_individual_serializer(i)
+                fechas.append(seguimiento.data['fecha'])
+                riesgo_individual.append(seguimiento.data['riesgo_individual'])
+                riesgo_familiar.append(seguimiento.data['riesgo_familiar'])
+                riesgo_academico.append(seguimiento.data['riesgo_academico'])
+                riesgo_economico.append(seguimiento.data['riesgo_economico'])
+                riesgo_vida_universitaria_ciudad.append(seguimiento.data['riesgo_vida_universitaria_ciudad'])
+
+            fechas_lista = {'fechas': fechas}
+            riesgo_individual_lista = {'riesgo_individual': riesgo_individual}
+            riesgo_familiar_lista = {'riesgo_familiar': riesgo_familiar}
+            riesgo_academico_lista = {'riesgo_academico': riesgo_academico}
+            riesgo_economico_lista = {'riesgo_economico': riesgo_economico}
+            riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad': riesgo_vida_universitaria_ciudad}
+
+            listas.append(fechas_lista)
+            listas.append(riesgo_individual_lista)
+            listas.append(riesgo_familiar_lista)
+            listas.append(riesgo_academico_lista)
+            listas.append(riesgo_economico_lista)
+            listas.append(riesgo_vida_universitaria_ciudad_lista)
+
+            return Response(listas)
+        except seguimiento_individual.DoesNotExist:
+            return Response({})
+
+
 
 
 
@@ -1068,7 +1260,6 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
                     
                     list_estudiante_selected.append(data_estudiantes)
 
-
                 diccionario_cantidad_reportes_monitor = {'tipo_usuario': 'monitor',
                             'cantidad_estudiantes': len(list_estudiante_selected),
                             'cantidad_reportes' : {
@@ -1083,9 +1274,6 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
 
                 data_monitores = dict(serializer_monitor_selected.data, **diccionario_cantidad_reportes_monitor)
 
-
-
-                
                 list_monitor_selected.append(data_monitores)
                 total_estudiantes += len(list_estudiante_selected)  # Línea añadida
 
@@ -1108,6 +1296,8 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
             list_practicante_selected.append(data_practicantes)
 
         return Response(list_practicante_selected,status=status.HTTP_200_OK)
+
+
 
 
 

@@ -90,13 +90,11 @@ const Carga_masiva_component = () =>{
   const handleClose = () => setShow(false);
 
   return (
-        <Container>
-
-            <Row >
-                  <h4>Tipo de Carga</h4>
-            </Row>
+        <Container className="mi-clase-background">
 
             <Row className='mt-2' >
+
+            <h5>Tipo de Carga</h5>
 
               <Col sm={9}>
                 <Form.Select name= "option" onChange={handle_options} >
@@ -113,7 +111,7 @@ const Carga_masiva_component = () =>{
               <Col sm={9}>
                 <Form.Control type="file" name='file' onChange={handle_file}/>   
               </Col>
-              <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0">Plantillas de Carga</a>
+              <a href="https://docs.google.com/spreadsheets/d/1NcB2BQFo5yigrm4ffls7pNoGoCi766Pe7bXbfNOwDQY/edit#gid=0" target="_blank">Plantillas de Carga</a>
     
             </Row>
             <Row className='mt-2'>
