@@ -35,7 +35,7 @@ from rest_framework.decorators import action
 
 class lista_de_facultades_viewsets(viewsets.ModelViewSet):
     serializer_class = facultad_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = facultad_serializer.Meta.model.objects.all()
 
     @action(detail=False, methods=['get'])
@@ -48,7 +48,7 @@ class lista_de_facultades_viewsets(viewsets.ModelViewSet):
 
 class lista_de_profesores_viewsets(viewsets.ModelViewSet):
     serializer_class = profesor_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = profesor.objects.all()
 
     @action(detail=False, methods=['get'])
@@ -60,6 +60,7 @@ class lista_de_profesores_viewsets(viewsets.ModelViewSet):
 
 class cursos_facultad_viewsets(viewsets.ModelViewSet):
     serializer_class = materia_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = materia_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
@@ -77,6 +78,7 @@ class cursos_facultad_viewsets(viewsets.ModelViewSet):
 
 class traer_cursos_del_profesor_viewsets(viewsets.ModelViewSet):
     serializer_class = materia_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = materia_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
@@ -95,6 +97,7 @@ class traer_cursos_del_profesor_viewsets(viewsets.ModelViewSet):
 
 class franja_curso_viewsets(viewsets.ModelViewSet):
     serializer_class = materia_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = materia_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
@@ -112,6 +115,7 @@ class franja_curso_viewsets(viewsets.ModelViewSet):
 
 class profesores_del_curso_sin_separar_por_franja_viewsets(viewsets.ModelViewSet):
     serializer_class = profesor_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = profesor.objects.all()
 
     def retrieve(self, request, pk=None):
@@ -147,6 +151,7 @@ class profesores_del_curso_sin_separar_por_franja_viewsets(viewsets.ModelViewSet
 
 class profesores_del_curso_viewsets(viewsets.ModelViewSet):
     serializer_class = profesor_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = profesor.objects.all()
 
     def list(self, request):
@@ -181,6 +186,7 @@ class profesores_del_curso_viewsets(viewsets.ModelViewSet):
 
 class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
     serializer_class = notas_semestre_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = notas_semestre_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -222,6 +228,7 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
 
 class notas_estudiantes_calificador_viewsets(viewsets.ModelViewSet):
     serializer_class = notas_semestre_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = notas_semestre_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -283,6 +290,7 @@ class notas_estudiantes_calificador_viewsets(viewsets.ModelViewSet):
 
 class lista_historiales_academicos_viewsets(viewsets.ModelViewSet):
     serializer_class = historial_academico_serializer
+    permission_classes = (IsAuthenticated,)
     queryset = historial_academico_serializer.Meta.model.objects.all()
 
     def list(self, request):

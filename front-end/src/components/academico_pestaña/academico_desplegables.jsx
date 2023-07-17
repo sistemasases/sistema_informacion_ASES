@@ -8,6 +8,11 @@ import {useEffect} from 'react';
 import axios from 'axios';
 
 const Academico_desplegable = () =>{
+  const config = {
+    headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
   const estudiantes_prueba =
   [{'estudiantes':
           [{'nombre':'estudiante1'},
@@ -81,7 +86,7 @@ const Academico_desplegable = () =>{
 
       const traer_facultades = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/lista_de_facultades/",);
+          const response = await axios.get("http://localhost:8000/academico/lista_de_facultades/", config);
           set_state({
             facultades : response.data,
             tiene_facultades: true
@@ -96,7 +101,7 @@ const Academico_desplegable = () =>{
 
       const traer_profesores = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/lista_de_profesores/",);
+          const response = await axios.get("http://localhost:8000/academico/lista_de_profesores/", config);
           set_state({
             profesores : [{'profesores' : response.data}],
             tiene_profesores: true
@@ -111,7 +116,7 @@ const Academico_desplegable = () =>{
 
       const traer_estudiantes = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/",);
+          const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/", config);
           set_state({
             estudiantes_a_consultar : [{'estudiantes' : response.data}],
             tiene_estudiantes: true

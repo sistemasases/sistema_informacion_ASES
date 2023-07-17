@@ -3,6 +3,11 @@ import axios from 'axios';
 const create_seguimiento = async (formData) => {
     var respuesta = false;
     try {
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            }
+        };
         const url_axios = 'http://localhost:8000/seguimiento/seguimiento_individual/';
 
         const seguimiento = {
@@ -71,7 +76,7 @@ const create_seguimiento = async (formData) => {
             "id_estudiante": formData.id_estudiante
         }
 
-        await axios.post(url_axios, seguimiento)
+        await axios.post(url_axios, seguimiento, config)
         .then(res=>{
             console.log(res);
             respuesta = true;

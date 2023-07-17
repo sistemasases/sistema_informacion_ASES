@@ -11,6 +11,12 @@ import { NavLink } from 'react-router-dom';
 
 const Carga_masiva = () => {
 
+  const config = {
+    headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
+
   const userRole = sessionStorage.getItem('rol');
 
   const [state, set_state] = useState({
@@ -23,7 +29,7 @@ const Carga_masiva = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/usuario_rol/profesional/')
+    axios.get('http://localhost:8000/usuario_rol/profesional/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -34,7 +40,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8000/usuario_rol/practicante/')
+    axios.get('http://localhost:8000/usuario_rol/practicante/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -45,7 +51,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8000/usuario_rol/monitor/')
+    axios.get('http://localhost:8000/usuario_rol/monitor/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -57,7 +63,7 @@ const Carga_masiva = () => {
       });
 
 
-      axios.get('http://localhost:8000/usuario_rol/estudiante_selected/')
+      axios.get('http://localhost:8000/usuario_rol/estudiante_selected/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
