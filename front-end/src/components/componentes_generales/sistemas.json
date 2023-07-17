@@ -31,6 +31,12 @@
                 "path":"/inicio_semestre_sistemas",
                 "name":"inicio_semestre_sistema",
                 "icon":"bi-people-fill"
+            },
+            {
+                
+                "path":"/reporte",
+                "name":"reporte",
+                "icon":"bi-people-fill"
             }
         ]
     },
@@ -43,7 +49,7 @@
             {
                 "id":1,
                 "path":"/sin_seguimientos",
-                "name":"Cantidad de seguimientos",
+                "name":"Estudiantes sin seguimientos",
                 "icon":"bi-instagram"
             },
             {

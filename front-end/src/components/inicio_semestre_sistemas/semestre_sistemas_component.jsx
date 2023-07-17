@@ -24,6 +24,13 @@ var bandera_option_rol = true;
 
 const Semestre_sistemas_component = () =>{
 
+    // constante para el headers del axios
+    const config = {
+        headers: {
+              Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+    };
+
     //Constante para guardar el estado actual de la tabla de usuario y el form del usuario a agregar.
     const [state,set_state] = useState({
         data: [],
@@ -167,7 +174,7 @@ const Semestre_sistemas_component = () =>{
     const handleCreate = () => {
         for(var i = 0; i < state.data['length']; i++){
             if(state.data[i].id === undefined){
-                axios.get('http://localhost:8000/usuario_rol/user/')
+                axios.get('http://localhost:8000/usuario_rol/user/', config)
                 .then(res=>{
                     for(var j=0; j<res.data['length']; j++){
                         if(state.data[i] && res.data[j] && res.data[j]['username'] === state.data[i]['username']){

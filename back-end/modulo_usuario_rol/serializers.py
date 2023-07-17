@@ -78,6 +78,11 @@ class Estudiante_actualizacion(serializers.ModelSerializer):
                   'acudiente', 'telefono_acudiente', 'id_etnia', 'id_act_simultanea', 'id_identidad_gen', 'id_estado_civil',
                   'id_cond_excepcion']
 
+class mas_con_quien_vive(serializers.ModelSerializer):
+	class Meta:
+		model = estudiante
+		fields = ['vive_con']
+
 class Grupo_etnico_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = etnia
