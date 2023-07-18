@@ -6,6 +6,16 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
   const url_post = 'http://localhost:8000/wizard/semestre/';
   const url_semestre = 'http://localhost:8000/wizard/semestre/' + instancia.toString()+"/";
 
+  // header para la autorizacion con token
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+  const config2 = {
+    headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
+
   //variables para la creacion y finalizacion del semestre
   var semestreActual = {
     nombre: '',
@@ -40,6 +50,7 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
   axios({
     url: url_semestre,
     method: "GET",
+    headers: config,
   })
   .then((respuesta)=>{
     semestreActual = {
@@ -56,8 +67,8 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
       semestre_actual: true,
       id_instancia: instancia
     }
-    axios.put(url_semestre, semestreActual);
-    axios.post(url_post, semestreNuevo);
+    axios.put(url_semestre, semestreActual, config2);
+    axios.post(url_post, semestreNuevo, config2);
   })
   .catch((err)=>{console.log(err)})
 }
