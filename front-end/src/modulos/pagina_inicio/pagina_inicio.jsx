@@ -10,7 +10,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Button } from "react-bootstrap";
 import Carousel from "react-bootstrap/Carousel";
-import All_instancias_service from "../../service/all_instancias";
+import All_sede_service from "../../service/all_sede";
 import Select from "react-select";
 
 import Modal from "react-bootstrap/Modal";
@@ -24,13 +24,13 @@ const Pagina_inicio = () => {
 
   
 
-  //Estado que se usara para extraer todas las instancias
+  //Estado que se usara para extraer todas las sedes
   const [state, set_state] = useState({ tabs: [] });
   const [temp, set_temp] = useState({ seleccionado: "", value: "", id: "" });
 
-  //Conexion con el back para extraer todas las instancias
+  //Conexion con el back para extraer todas las sedes
   useEffect(() => {
-    All_instancias_service.all_instancias().then((res) => {
+    All_sede_service.all_sede().then((res) => {
       set_state({
         ...state,
         tabs: res,
@@ -39,9 +39,9 @@ const Pagina_inicio = () => {
   }, []);
 
   /**
-   * Prop que toma las instancias y las transforma en opciones para el select
+   * Prop que toma las sedes y las transforma en opciones para el select
    */
-  const handle_instancias = () => {
+  const handle_sedes = () => {
     if (bandera_option === true) {
       for (var i = 0; i < state.tabs["length"]; i++) {
         const dato = {
@@ -77,15 +77,15 @@ const Pagina_inicio = () => {
 
   //Cambia las sedes para visualizarse
   const handle_storage = () => {
-    localStorage.setItem("instancia", temp.value);
+    localStorage.setItem("sede", temp.value);
     // console.log(nombre_sede);
-    localStorage.setItem("instancia_id", temp.id);
+    localStorage.setItem("sede_id", temp.id);
     // console.log(temp.value + " fue Seleccionada");
     console.log(
-      "la instancia seleccionada es: " +
-        localStorage.getItem("instancia") +
+      "la sede seleccionada es: " +
+        localStorage.getItem("sede") +
         " con ID: " +
-        localStorage.getItem("instancia_id")
+        localStorage.getItem("sede_id")
     );
     // });
   };
@@ -110,10 +110,10 @@ const Pagina_inicio = () => {
                       name="def"
                       class="option"
                       options={opciones}
-                      onMenuOpen={handle_instancias}
+                      onMenuOpen={handle_sedes}
                       onChange={handleShow}
                       className="option"
-                      placeholder="Selecione una instancia"
+                      placeholder="Selecione una sede"
                     />
                   </Row>
 
