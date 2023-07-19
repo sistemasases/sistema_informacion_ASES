@@ -131,6 +131,7 @@ const Semestre_sistemas_component = () =>{
                 ...state,
                 data: res
             })
+            console.log(res)
         })
     },[]);
 
