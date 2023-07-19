@@ -245,7 +245,8 @@ const Asignaciones_component = (props) =>{
                         <Listas 
                           key={index} item={item} rol={rol} 
                           profesional_seleccionado={state.profesional_seleccionado}
-                          childClicked={(name)=>practicante_seleccion(name)}>
+                          ChildClicked={(name)=>practicante_seleccion(name)}
+                          childClicked2={(name) => monitor_seleccion(name)}>
                         </Listas>) }
                       </Scrollbars>
 
@@ -262,7 +263,7 @@ const Asignaciones_component = (props) =>{
                         item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                       }).map((item, index) => <Listas 
                     key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
-                    childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    ChildClicked={(name)=>practicante_seleccion(name)}/>) }
 
 
                     <Row className="separador_asignaciones"></Row>
@@ -275,7 +276,7 @@ const Asignaciones_component = (props) =>{
                       }).map((item, index) => <Listas_no_seleccion 
                     key={index} item={item} rol={rol} 
                     profesional_seleccionado={state.profesional_seleccionado}
-                    childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    ChildClicked={(name)=>practicante_seleccion(name)}/>) }
                     </Col>
                     )
                   }
@@ -343,7 +344,7 @@ const Asignaciones_component = (props) =>{
                     key={index} item={item} rol={rol2} 
                     practicante_seleccionado={state.practicante_seleccionado}
                     childClicked2={(name)=>monitor_seleccion(name)}
-                    childClicked={(name)=>practicante_seleccion(name)}>
+                    ChildClicked={(name)=>practicante_seleccion(name)}>
                   </Listas>) }
 
 
@@ -359,7 +360,7 @@ const Asignaciones_component = (props) =>{
                   <Listas_no_seleccion 
                     key={index} item={item} rol={rol2}
                     practicante_seleccionado={state.practicante_seleccionado}
-                    childClicked={(name)=>practicante_seleccion(name)}>
+                    ChildClicked={(name)=>practicante_seleccion(name)}>
                   </Listas_no_seleccion>) }
                   </Scrollbars>
                   </Col>

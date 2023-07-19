@@ -35,13 +35,6 @@ const SideBar = (props) =>{
         desplegable : sessionStorage.rol === 'superAses' ? Menu : Menu2
       })
 
-    function path_actual(name){
-        set_state({
-          ...state,
-          path_actual : name,
-        })
-      }
-      
 
         
 
@@ -58,7 +51,7 @@ const SideBar = (props) =>{
                             <Scrollbars className="scrollbar_sidebar">
                                 <div className="sidebar_item">
                                     { state.desplegable.map((item, index) => <SidebarItem key={index} item={item}
-                                    childClicked2={(name)=>path_actual(name)}/>) }
+                                    />) }
                                 </div>
                             </Scrollbars>
                         </Row>
@@ -70,7 +63,7 @@ const SideBar = (props) =>{
                             <Scrollbars className="scrollbar_sidebar">
                                 <div className="sidebar_item">
                                     { state.desplegable.map((item, index) => <Sidebar_item_closed key={index} item={item}
-                                    childClicked2={(name)=>path_actual(name)}/>) }
+                                    />) }
                                 </div>
                             </Scrollbars>
                         </Row>
@@ -81,7 +74,7 @@ const SideBar = (props) =>{
                 
                 
                 <Row className="row_navbar">
-                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}  path_actual={state.path_actual}></NavBar>
+                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario} ></NavBar>
                 </Row>
                 <div  class="d-none d-md-block">
                     <Row className="inf_der">

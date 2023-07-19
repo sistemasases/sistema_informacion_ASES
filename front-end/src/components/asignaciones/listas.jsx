@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const Listas = (props) => {
 
-    const{childClicked, childClicked2} = props
+    const{ChildClicked, childClicked2} = props
     
     const quitar_estudiante = (e) =>{
       axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/')
@@ -33,7 +33,7 @@ const Listas = (props) => {
         })
         .then((res)=>{
         console.log(res)
-        childClicked(props.practicante_seleccionado)
+        ChildClicked(props.practicante_seleccionado)
             alert("el monitor "+props.item.id+" fue eliminado correctamente de :"+props.practicante_seleccionado)
         })
         .catch(err=>{
@@ -70,7 +70,7 @@ const Listas = (props) => {
             {
                 props.profesional_seleccionado === '' ?
                 (
-                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
+                <Col className="listas_cuerpo" onClick={()=>ChildClicked(props.item.id)}>
                     <Row className="asignaciones_hover1">
                         <Col  xs={"10"} md={"4"}> 
                             <Row className="nombres_asignacion">
@@ -86,7 +86,7 @@ const Listas = (props) => {
                 )
                 :
                 (
-                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
+                <Col className="listas_cuerpo" onClick={()=>ChildClicked(props.item.id)}>
                     <Row className="asignaciones_hover1">
                         <Col xs={"2"} md={"2"}  className="center_asignacion"> 
                         <button onClick={()=>quitar_usuario()} className="asignaciones_icons_quitar">

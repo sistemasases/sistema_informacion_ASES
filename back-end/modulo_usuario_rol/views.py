@@ -951,12 +951,12 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
     print('que pasaaaaaa 1qqqe')
 
-    def list(self, request):
-        estudiante_id = request.query_params.get('estudiante_id')
+    def retrieve(self, request,pk):
+        # estudiante_id = request.query_params.get('estudiante_id')
 
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
-            seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=estudiante_id).latest('fecha')
+            seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk).latest('fecha')
 
             # Crear un diccionario con los datos de riesgo del seguimiento
             riesgo = {
