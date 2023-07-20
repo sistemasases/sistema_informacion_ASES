@@ -31,6 +31,9 @@ const Semestre_sistemas_component = () =>{
         }
     };
 
+    //Manejar la disponibilidad del boton
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
     //Constante para guardar el estado actual de la tabla de usuario y el form del usuario a agregar.
     const [state,set_state] = useState({
         data: [],
@@ -117,7 +120,7 @@ const Semestre_sistemas_component = () =>{
     useEffect(()=>{
         // Trae todos los roles y los guarda en la variable asignada.
         All_Rols.all_rols().then((res) => {
-            if(bandera_option_rol){
+            if(bandera_option_rol && res != undefined){
                 for (var i = 0; i < res.length ; i++) {
                     const dato = { value: res[i]['nombre'], label: res[i]['nombre'], id: res[i]['id'] }
                     datos_option_rol.push(dato);
@@ -127,11 +130,11 @@ const Semestre_sistemas_component = () =>{
         })
         // Trae todos los usuario con rol y los guarda en la tabla.
         All_Users_Rols.all_users_rols().then((res) => {
+            if (res != undefined)
             set_state({
                 ...state,
                 data: res
             })
-            console.log(res)
         })
     },[]);
 
@@ -173,21 +176,31 @@ const Semestre_sistemas_component = () =>{
         * @param {Event} e Evento del usuario de la tabla seleccionado para eliminar.
     */
     const handleCreate = () => {
-        for(var i = 0; i < state.data['length']; i++){
-            if(state.data[i].id === undefined){
-                axios.get('http://localhost:8000/usuario_rol/user/', config)
-                .then(res=>{
-                    for(var j=0; j<res.data['length']; j++){
-                        if(state.data[i] && res.data[j] && res.data[j]['username'] === state.data[i]['username']){
-                            state.data[i].id=res.data[j]['id'];
-                        }
+        try{
+            if(state.data['length']>0){
+                for(var i = 0; i < state.data['length']; i++){
+                    if(state.data[i].id === undefined){
+                        axios.get('http://localhost:8000/usuario_rol/user/', config)
+                        .then(res=>{
+                            for(var j=0; j<res.data['length']; j++){
+                                if(state.data[i] && res.data[j] && res.data[j]['username'] === state.data[i]['username']){
+                                    state.data[i].id=res.data[j]['id'];
+                                }
+                            }
+                        })
                     }
-                })
+                    let formData = new FormData();
+                    formData.append('id_rol', state.data[i].id_rol);
+                    formData.append('id_usuario', state.data[i].id);
+                    user_rol.user_rol(formData);
+                }
+                setIsButtonDisabled(true);
+            } else {
+                window.alert('No hay usuarios para crear');
             }
-            let formData = new FormData();
-            formData.append('id_rol', state.data[i].id_rol);
-            formData.append('id_usuario', state.data[i].id);
-            user_rol.user_rol(formData);
+        }
+        catch{
+
         }
     }
 
@@ -239,7 +252,8 @@ const Semestre_sistemas_component = () =>{
                         </tr>
                     </thead>
                     <tbody>
-                        {state.data.map((e)=>(
+                        {state.data.length > 0 ? (
+                            state.data.map((e)=>(
                             <tr>
                                 <td>{e.username}</td>
                                 <td>{e.first_name}</td>
@@ -252,10 +266,14 @@ const Semestre_sistemas_component = () =>{
                                     <Button variant="danger" onClick={() => handleClick(e)}>Eliminar</Button>
                                 </td>
                             </tr>
-                        ))}
+                        ))) : (
+                            <tr>
+                                <td colSpan="6">No hay datos disponibles.</td>
+                            </tr>
+                        )}
                     </tbody>
                 </Table>
-                <Button variant="primary" onClick={handleCreate}>Crear usuarios</Button>
+                <Button variant="primary" onClick={handleCreate} disabled={isButtonDisabled}>Crear usuarios</Button>
             </Row>
         </Container>
     )
