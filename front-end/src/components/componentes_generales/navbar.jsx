@@ -115,6 +115,7 @@ const Navbar = (props) =>{
                     <Col xs={"7"} md={"7"} className="info_perfil">
                         <Row>{sessionStorage.nombre_completo} </Row>
                         <Row>{sessionStorage.rol}</Row>
+                        <Row>{sessionStorage.sede}</Row>
                     </Col>
 
                     

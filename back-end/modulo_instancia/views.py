@@ -12,13 +12,14 @@ from .models import semestre
 from rest_framework.response import Response
 from .serializers import  semestre_serializer, sede_serializer
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 class sede_viewsets (viewsets.ModelViewSet):
     """
     Viewset para la gestión de 'sede'.
     """
     serializer_class = sede_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = sede_serializer.Meta.model.objects.all()
 
 class semestre_viewsets (viewsets.ModelViewSet):
@@ -26,7 +27,7 @@ class semestre_viewsets (viewsets.ModelViewSet):
     Viewset para la gestión de 'semestre'.
     """
     serializer_class = semestre_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = semestre_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):

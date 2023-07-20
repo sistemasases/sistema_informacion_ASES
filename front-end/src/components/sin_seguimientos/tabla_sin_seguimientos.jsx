@@ -10,7 +10,9 @@ import axios from 'axios';
 
 const Tabla_sin_Seguimientos = (props) =>{
 
-
+  const config = {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
 
   const [state,set_state] = useState({
     id_semestre : 6,
@@ -23,6 +25,7 @@ const Tabla_sin_Seguimientos = (props) =>{
           // Endpoint to send files
           url:  "http://localhost:8000/usuario_rol/info_estudiantes_sin_seguimientos/"+state.id_semestre+"/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({

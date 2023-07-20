@@ -24,6 +24,8 @@ import "./Scss/asignaciones/asignaciones.css";
 import "./Scss/sin_seguimientos/sin_seguimientos.css"
 import "./Scss/login/login_component.css";
 import "./Scss/componentes_generales/data_table_extensions.css";
+import "./Scss/carga_masiva/carga_masiva.css";
+
 
 
 import "bootstrap/dist/css/bootstrap.min.css";

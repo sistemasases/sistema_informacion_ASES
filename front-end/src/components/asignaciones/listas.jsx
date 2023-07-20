@@ -6,10 +6,21 @@ import axios from 'axios';
 
 const Listas = (props) => {
 
-    const{ChildClicked, childClicked2} = props
+
+    const config = {
+        headers: {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+    };
+
+    const config2 = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+
+    const{childClicked, childClicked2} = props
     
     const quitar_estudiante = (e) =>{
-      axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/')
+      axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/', config)
       .then(response => {
         childClicked2(props.monitor_seleccionado)
         alert("estudiante "+props.item.id+" eliminado correctamente")
@@ -29,11 +40,12 @@ const Listas = (props) => {
       // Endpoint to send files
       url: 'http://localhost:8000/asignacion/asignacion_usuario/',
       method: "POST",
+      headers: config2,
       data: formData,
         })
         .then((res)=>{
         console.log(res)
-        ChildClicked(props.practicante_seleccionado)
+        childClicked(props.practicante_seleccionado)
             alert("el monitor "+props.item.id+" fue eliminado correctamente de :"+props.practicante_seleccionado)
         })
         .catch(err=>{
@@ -52,6 +64,7 @@ const Listas = (props) => {
       // Endpoint to send files
       url: 'http://localhost:8000/asignacion/asignacion_usuario/',
       method: "POST",
+      headers: config2,
       data: formData,
         })
         .then((res)=>{
@@ -70,7 +83,7 @@ const Listas = (props) => {
             {
                 props.profesional_seleccionado === '' ?
                 (
-                <Col className="listas_cuerpo" onClick={()=>ChildClicked(props.item.id)}>
+                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
                     <Row className="asignaciones_hover1">
                         <Col  xs={"10"} md={"4"}> 
                             <Row className="nombres_asignacion">
@@ -86,7 +99,7 @@ const Listas = (props) => {
                 )
                 :
                 (
-                <Col className="listas_cuerpo" onClick={()=>ChildClicked(props.item.id)}>
+                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
                     <Row className="asignaciones_hover1">
                         <Col xs={"2"} md={"2"}  className="center_asignacion"> 
                         <button onClick={()=>quitar_usuario()} className="asignaciones_icons_quitar">
@@ -116,7 +129,7 @@ const Listas = (props) => {
                 )
             }
                     
-            </Row>
+            </Row> 
         )
     }else if(props.rol === "monitor") {
         return (

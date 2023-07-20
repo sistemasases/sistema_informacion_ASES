@@ -10,6 +10,12 @@ import {Scrollbars} from 'react-custom-scrollbars';
 
 const Asignaciones_component = (props) =>{
 
+  const config = {
+    headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
+
   const[rol] = useState("practicante");
   const[rol2] = useState("monitor");
   const[rol3] = useState("estudiante");
@@ -106,7 +112,7 @@ const Asignaciones_component = (props) =>{
 
   const cambiar_dato_select = (e) =>{
 
-      axios.get('http://localhost:8000/usuario_rol/practicante/'+e.id+'/')
+      axios.get('http://localhost:8000/usuario_rol/practicante/'+e.id+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -137,7 +143,7 @@ const Asignaciones_component = (props) =>{
 
   function practicante_seleccion(name){
 
-    axios.get('http://localhost:8000/usuario_rol/monitor/'+name+'/')
+    axios.get('http://localhost:8000/usuario_rol/monitor/'+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -163,7 +169,7 @@ const Asignaciones_component = (props) =>{
 
     //poner el de los estudiantes
 
-    axios.get('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/')
+    axios.get('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

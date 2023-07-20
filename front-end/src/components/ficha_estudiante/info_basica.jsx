@@ -19,6 +19,173 @@ import GraphComponent from './trayectoria.jsx';
 
 const Info_basica = (props) =>{
 
+  const config = {
+    headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
+
+  const config2 = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
+//   const grafico_riesgos = [
+//     {
+//         "fechas": [
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-01-04",
+//             "2023-05-11",
+//             "2023-05-04",
+//             "2023-05-17",
+//             "2023-05-02",
+//             "2023-05-12",
+//             "2023-05-10",
+//             "2023-05-01",
+//             "2023-04-05",
+//             "2023-05-18",
+//             "2023-05-10",
+//             "2023-05-31"
+//         ]
+//     },
+//     {
+//         "riesgo_individual": [
+//             1,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             0,
+//             0,
+//             2,
+//             2,
+//             0
+//         ]
+//     },
+//     {
+//         "riesgo_familiar": [
+//             -1,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             0,
+//             2,
+//             1,
+//             1
+//         ]
+//     },
+//     {
+//         "riesgo_academico": [
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             1,
+//             0,
+//             0,
+//             2
+//         ]
+//     },
+//     {
+//         "riesgo_economico": [
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             0,
+//             1,
+//             1,
+//             null
+//         ]
+//     },
+//     {
+//         "riesgo_vida_universitaria_ciudad": [
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             null,
+//             0,
+//             1,
+//             1,
+//             2
+//         ]
+//     }
+// ]
+
+
+// const riesgos = grafico_riesgos.slice(1);
+// const riesgosObj = {};
+
+// riesgos.forEach((riesgo) => {
+//   const [key] = Object.keys(riesgo);
+//   const [values] = Object.values(riesgo);
+//   riesgosObj[key] = values;
+// });
+
   
     const [loading, setLoading2] = useState(false);
     const [fechas, setFechas] = useState([]);
@@ -164,6 +331,18 @@ const Info_basica = (props) =>{
     }, []);
 
 
+    const fetchData = async (index)=>{
+      try{
+        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/", config);
+        state.total_datos_estudiantes.push(response.data)
+        console.log("entra aqui ssisisisiisj")
+      }
+      catch (error){
+        console.log("no capto el dato")
+        fetchData(index);
+      }
+    }
+
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const id_parametros = searchParams.get('id');
@@ -188,6 +367,7 @@ const Info_basica = (props) =>{
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
+              headers: config2,
             })
             .then((respuesta)=>{
               set_state({
@@ -216,6 +396,7 @@ const Info_basica = (props) =>{
       axios({
         url: url_axios,
         method: "GET",
+        headers: config2,
       })
         .then((respuesta) => {
           const json = respuesta.data;

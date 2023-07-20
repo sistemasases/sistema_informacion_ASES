@@ -6,6 +6,7 @@ import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
 
 const Login_component = () => {
+
   const [state, set_state] = useState({
     usuario: '',
     contrasena: '',
@@ -61,7 +62,7 @@ const Login_component = () => {
     axios.post(url, data)
       .then(res => {
         console.log(res.data)
-        sessionStorage.setItem('token', 'superAses');
+        sessionStorage.setItem('token', res.data.token);
         sessionStorage.setItem('refresh-token', res.data['refresh-token']);
         sessionStorage.setItem('email', res.data.user.email);
         sessionStorage.setItem('first_name', res.data.user.first_name);
@@ -69,7 +70,7 @@ const Login_component = () => {
         sessionStorage.setItem('last_name', res.data.user.last_name);
         sessionStorage.setItem('nombre_completo', res.data.user.nombre_completo);
         sessionStorage.setItem('sede_id', res.data.user.sede_id);
-        sessionStorage.setItem('rol', 'superAses');
+        sessionStorage.setItem('rol', res.data.user.rol);
         sessionStorage.setItem('semestre_actual', res.data.user.semestre_actual);
         sessionStorage.setItem('username', res.data.user.username);
         sessionStorage.setItem('message', res.data.user.message);

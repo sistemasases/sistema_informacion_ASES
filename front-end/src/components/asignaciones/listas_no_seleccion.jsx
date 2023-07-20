@@ -5,6 +5,9 @@ import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import axios from 'axios';
 
 const Listas_no_seleccion = (props) => {
+    const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
 
     const{ChildClicked, childClicked2} = props
 
@@ -18,6 +21,7 @@ const Listas_no_seleccion = (props) => {
       // Endpoint to send files
       url: 'http://localhost:8000/asignacion/asignacion_estudiante/',
       method: "POST",
+      headers: config,
       data: formData,
         })
         .then((res)=>{
@@ -42,6 +46,7 @@ const Listas_no_seleccion = (props) => {
       // Endpoint to send files
       url: 'http://localhost:8000/asignacion/asignacion_usuario/',
       method: "POST",
+      headers: config,
       data: formData,
         })
         .then((res)=>{
@@ -66,6 +71,7 @@ const Listas_no_seleccion = (props) => {
       // Endpoint to send files
       url: 'http://localhost:8000/asignacion/asignacion_usuario/',
       method: "POST",
+      headers: config,
       data: formData,
         })
         .then((res)=>{

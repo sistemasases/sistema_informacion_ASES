@@ -7,6 +7,12 @@ import axios from 'axios';
 
 const Profesores = ({item}) => {
 
+    const config = {
+        headers: {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      };
+
     const [state,set_state] = useState({
         cursos_profesor : [],
         filtro : '',
@@ -26,7 +32,7 @@ const Profesores = ({item}) => {
 
     const traer_cursos = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/traer_cursos_del_profesor/"+index+"/",);
+          const response = await axios.get("http://localhost:8000/academico/traer_cursos_del_profesor/"+index+"/", config);
           set_state({
             cursos_profesor : response.data
           })

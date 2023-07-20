@@ -7,6 +7,10 @@ import  {useEffect} from 'react';
 import axios from 'axios';
 const Desplegable_item = ({item}) => {
 
+    const config = {
+              Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+
     const [open, setOpen] = useState(false)
 
     const [state,set_state] = useState({
@@ -20,6 +24,7 @@ const Desplegable_item = ({item}) => {
             // Endpoint to send files
             url:  url_axios,
             method: "GET",
+            headers: config,
             })
             .then((respuesta)=>{
             state.data_user_socioedu.push(respuesta.data)
