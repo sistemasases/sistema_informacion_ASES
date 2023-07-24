@@ -7,8 +7,19 @@ import DataTable, { createTheme } from "react-data-table-component";
 import Checkbox from "react-bootstrap/FormCheck";
 import Modal from "react-bootstrap/Modal";
 import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
+import axios from 'axios';
+
+
+
+
 
 var columns = [
+  {
+    name: "Prueba",    
+    selector: (row) => row.cod_univalle,
+    sortable: true,
+    isCheck: true,
+  },
   {
     name: "Código",
     selector: (row) => row.cod_univalle,
@@ -49,6 +60,10 @@ const Reporte = () => {
     });
   }, []);
 
+
+
+
+
   const [search, set_Search] = useState({
     busqueda: "",
   });
@@ -66,6 +81,12 @@ const Reporte = () => {
   ];
   const filtros = [
     // { title: "Filtro contacto", name: "no-checkbox" },
+    {
+      name: "Prueba",
+      selector: (row) => row.tipo_doc,
+      sortable: true,
+      isCheck: false,
+    },
     {
       name: "Tipo de documento",
       selector: (row) => row.tipo_doc,
@@ -130,12 +151,14 @@ const Reporte = () => {
     if (
       (seleccionado.name === "Tipo de documento" && e.target.checked == true) ||
       (seleccionado.name === "Celular" && e.target.checked == true) ||
+      (seleccionado.name === "Prueba" && e.target.checked == true) ||
       (seleccionado.name === "Direccion" && e.target.checked == true)
       // ||
       // (seleccionado.name === "Correo electronico" && e.target.checked == true)
     ) {
       // columns.push(seleccionado);
       seleccionado.isCheck = true;
+
       columns.push(seleccionado);
       // columnas.cabeceras.push(seleccionado);
       // set_columnas({ ...columnas, cabeceras: columns });
@@ -144,9 +167,9 @@ const Reporte = () => {
       console.log("Columnas.cabeceras:");
       console.log(columnas.cabeceras);
     } else if (
-      (seleccionado.name === "Tipo de documento" &&
-        e.target.checked == false) ||
+      (seleccionado.name === "Tipo de documento" && e.target.checked == false) ||
       (seleccionado.name === "Celular" && e.target.checked == false) ||
+      (seleccionado.name === "Prueba" && e.target.checked == false) ||
       (seleccionado.name === "Direccion" && e.target.checked == false)
     ) {
       seleccionado.isCheck = false;
