@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
@@ -20,30 +20,6 @@ const Login_component = () => {
     'username': state.usuario[0],
     'password': state.contrasena[0]
   };
-
-  useEffect(() => {
-    const tiempoEspera = 1 * 60 * 60 * 1000; // en milisegundos
-
-    // Programar la eliminación después del tiempo especificado
-    const timeoutId = setTimeout(() => {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('refresh-token');
-      sessionStorage.removeItem('email');
-      sessionStorage.removeItem('first_name');
-      sessionStorage.removeItem('instancia');
-      sessionStorage.removeItem('last_name');
-      sessionStorage.removeItem('nombre_completo');
-      sessionStorage.removeItem('instancia_id');
-      sessionStorage.removeItem('rol');
-      sessionStorage.removeItem('semestre_actual');
-      sessionStorage.removeItem('username');
-      sessionStorage.removeItem('message');
-    }, tiempoEspera);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, []);
 
   const handle_user = (e) => {
     set_state({
