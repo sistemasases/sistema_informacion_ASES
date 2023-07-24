@@ -7,17 +7,12 @@ import Footer from '../componentes_generales/footer.jsx';
 
 const Login_component = () => {
 
-  const config = {
-    headers: {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
-    }
-  };
-
   const [state, set_state] = useState({
     usuario: '',
     contrasena: '',
     logged: '',
-    temporal: false
+    temporal: false,
+    errorMessage: '',
   });
 
   const url = "http://127.0.0.1:8000/login";
@@ -27,7 +22,7 @@ const Login_component = () => {
   };
 
   useEffect(() => {
-    const tiempoEspera = 1 * 10 * 60 * 1000; // en milisegundos
+    const tiempoEspera = 1 * 60 * 60 * 1000; // en milisegundos
 
     // Programar la eliminación después del tiempo especificado
     const timeoutId = setTimeout(() => {
@@ -65,7 +60,7 @@ const Login_component = () => {
   };
 
   const handleSendNewData = () => {
-    axios.post(url, config, data)
+    axios.post(url, data)
       .then(res => {
         console.log(res.data)
         sessionStorage.setItem('token', res.data.token);
@@ -86,7 +81,15 @@ const Login_component = () => {
           temporal: true
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err)
+        if (err.response.status === 400){
+          set_state({
+            ...state,
+            errorMessage: 'Usuario o contraseña incorrecto', // Mensaje de error personalizado
+          });
+        }
+      });
   };
 
   const handleKeyDown = (e) => {
@@ -110,6 +113,7 @@ const Login_component = () => {
                 <Row className="form_title">
                   <b>Sistema de Información ASES</b>
                 </Row>
+                {state.errorMessage && <div className="error-message" style={{ marginBottom: '20px' }}>{state.errorMessage}</div>}
                 <div className="form_login">
                   <div className="form_group_login">
                     <Form.Control

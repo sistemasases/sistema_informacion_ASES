@@ -49,29 +49,13 @@ const Reporte = () => {
     });
   }, []);
 
-  // const prueba = ({ item }) => {
-  //   const [search, set_Search] = useState({
-  //     busqueda: "",
-  //   });
-  //   const ejecutarBusqueda = (e) => {
-  //     set_Search({
-  //       ...search,
-  //       [e.target.name]: e.target.value,
-  //     });
-  //     console.log(e.target.value);
-  //   };
-  // };
-
-  const [search, set_Search] = useState();
-  //   {
-  //   // busqueda: "Z",
-  // }
+  const [search, set_Search] = useState({
+    busqueda: "",
+  });
 
   const onSearch = (e) => {
-    // e.persist();
-    set_Search(e.target.value);
-
-    
+    set_Search({ ...search, busqueda: e.target.value });
+    console.log(search);
   };
 
   const [columnas, set_columnas] = useState({ cabeceras: columns });
@@ -79,9 +63,6 @@ const Reporte = () => {
     { name: "Contacto" },
     { name: "Estados" },
     { name: "Académico" },
-    // { name: "Filtro contacto", name: "no-checkbox" },
-    // { name: "Estados", name: "no-checkbox" },
-    // { name: "Académico", name: "no-checkbox" },
   ];
   const filtros = [
     // { title: "Filtro contacto", name: "no-checkbox" },
@@ -109,17 +90,11 @@ const Reporte = () => {
     {
       name: "Direccion",
       value: "dir_res",
+      id: "4",
       selector: (row) => row.dir_res,
       sortable: true,
       isCheck: false,
     },
-    // {
-    //   name: "Sexo",
-    //   value: "sexo",
-    //   selector: (row) => row.sexo,
-    //   sortable: false,
-    //   isCheck: false,
-    // },
   ];
 
   useEffect(() => {
@@ -211,82 +186,6 @@ const Reporte = () => {
     });
     console.log("Array Cabeceras:");
     console.log(columnas.cabeceras);
-
-    // TRY #4;
-    // I´m kinda done now
-    // TRY #3;
-    // console.log(e.target.name);
-    // console.log(columns);
-    // // const seleccionado = filtros.find((item) => item.name === e.target.name);
-    // console.log(seleccionado);
-    // if (
-    //   seleccionado == columns.find((item) => item.name === seleccionado.name)
-    // ) {
-    //   columnas.cabeceras.map((item, index) => {
-    //     if (item.name === seleccionado.name) {
-    //       columnas.cabeceras.splice(index, 1);
-    //     }
-    //   });
-    //   console.log("ya existe");
-    //   console.log("algo se borró, supuestamente de la tabla: ");
-    //   console.log(columns);
-    //   console.log("cabecera eliminada es: ");
-    //   console.log(seleccionado.name);
-    //   // console.log(columnas.cabeceras);
-    // } else {
-    //   console.log("la opcion seleccionada es:");
-    //   console.log(seleccionado);
-    //   columns.push(seleccionado);
-    //   console.log("las cabeceras del state columnas son:");
-    //   // Esto Actualiza la cabecera segun lo seleccionado
-    //   columnas.cabeceras = columns;
-    //   // set_columnas({ ...columnas, cabeceras: columns });
-    //   console.log(columnas.cabeceras);
-    // }
-    // // set_columnas({ ...columnas, cabeceras: columns });
-    // // set_columnas({ ...columnas, cabeceras: columns }, [columns]);
-    // // colPruebas = columnas.cabeceras;
-    // console.log("el seleccionado es:");
-    // console.log(seleccionado);
-    // console.log("las columnas del array Columns son:");
-    // console.log(columns);
-    // console.log("JUEPT");
-    // console.log("las cabeceras del state columnas son:");
-    // console.log(columnas.cabeceras);
-
-    // seleccionado.name = "";
-    // Try #2
-    // const updatedCheckedState = Checked.map((item, index) =>
-    //   index === posicion ? !item : item
-    // );
-    // setChecked(updatedCheckedState);
-    // if (updatedCheckedState[posicion] === true) {
-    //   columns.push({
-    //     name: filtros[posicion].name,
-    //     selector: (row) => row.filtros[posicion].value,
-    //     sortable: false,
-    //   });
-    //   console.log(updatedCheckedState);
-    //   console.log("entró");
-    // } else {
-    //   console.log("no entró");
-    //   columns.pop({
-    //     name: filtros[posicion].name,
-    //     selector: (row) => row.filtros[posicion].value,
-    //     sortable: false,
-    //   });
-    // }
-    // console.log(updatedCheckedState[posicion]);
-    // console.log(columns);
-    // Try 1#
-    // columns.push({
-    //   name: e.target.name,
-    //   selector: (row) => row.e.target.value,
-    //   sortable: false,
-    // });
-    // console.log(e.target.name);
-    // console.log(columns);
-    // setChecked(!Checked);
   };
 
   const paginacionOpciones = {
@@ -340,7 +239,7 @@ const Reporte = () => {
             {/* Buscador */}
             <Form.Control
               type="text"
-              placeholder="Búsqueda de Datos - NOT WORKING YET"
+              placeholder="Búsqueda de Datos - WIP"
               // value={}
               onChange={(e) => onSearch(e)}
             />
@@ -350,8 +249,18 @@ const Reporte = () => {
             <DataTable
               title="Reporte"
               columns={columnas.cabeceras}
-              data={state.estudiante}
-              // data={}
+              data={state.estudiante.filter((item) => {
+                return search.busqueda.toLowerCase() === ""
+                  ? item
+                  : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
+                      item.nombre.toLowerCase().includes(search.busqueda) ||
+                      item.apellido.toLowerCase().includes(search.busqueda) ||
+                      item.num_doc
+                        .toString()
+                        .toLowerCase()
+                        .includes(search.busqueda);
+              })}
+              // data={state.estudiante}
               // data={state.estudiante.filter((estudiante) => {
               //   return search.toLowerCase() === ""
               //     ? estudiante
