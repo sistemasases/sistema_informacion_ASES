@@ -580,6 +580,9 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
             estado_civil_request = serializer.data['id_estado_civil']
             cond_excepcion_request = serializer.data['id_cond_excepcion']
 
+            vive_con_request = serializer.data['vive_con']
+            ult_modificacion_request = serializer.data['ult_modificacion']
+
             var_estudiante = estudiante.objects.get(id=pk)
             serializer_estudiante = estudiante_serializer(var_estudiante)
 
@@ -596,6 +599,8 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
                 var_estudiante.hijos = cantidad_hijo_request
                 var_estudiante.acudiente = acudiente_emergencia_request
                 var_estudiante.telefono_acudiente = tel_acudiente_emergencia_request
+                var_estudiante.vive_con = vive_con_request
+                var_estudiante.ult_modificacion = ult_modificacion_request
 
                 try:
                     etnia_obj = etnia.objects.get(id=etnia_request)
@@ -954,12 +959,12 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
     
 
-    def list(self, request):
-        estudiante_id = request.query_params.get('estudiante_id')
+    def retrieve(self, request,pk):
+        # estudiante_id = request.query_params.get('estudiante_id')
 
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
-            seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=estudiante_id).latest('fecha')
+            seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk).latest('fecha')
 
             # Crear un diccionario con los datos de riesgo del seguimiento
             riesgo = {
