@@ -78,7 +78,7 @@ class cursos_facultad_viewsets(viewsets.ModelViewSet):
 
 class traer_cursos_del_profesor_viewsets(viewsets.ModelViewSet):
     serializer_class = materia_serializer
-    permission_classes = (IsAuthenticated,)
+    #permission_classes = (IsAuthenticated,)
     queryset = materia_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
