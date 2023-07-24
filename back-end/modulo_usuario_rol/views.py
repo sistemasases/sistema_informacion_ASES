@@ -369,7 +369,68 @@ class estudiante_selected_viewsets (viewsets.ModelViewSet):
         datos = [list_estudiantes_selected,list_estudiantes]
         return Response(datos,status=status.HTTP_200_OK)
 
+class estudiante_selected2_viewsets (viewsets.ModelViewSet):
+    serializer_class = usuario_rol_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = usuario_rol_serializer.Meta.model.objects.all()
 
+    def list(self, request):
+        list_estudiantes = []
+
+        list_all_estudiantes = list(estudiante.objects.all())
+        for i in list_all_estudiantes: 
+            serializer_estudiante =estudiante_serializer(i)
+            try:
+                # Obtener el seguimiento más reciente del estudiante especificado
+                seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=serializer_estudiante.data['id']).latest('fecha')
+                # Crear un diccionario con los datos de riesgo del seguimiento
+                riesgo = {
+                    'riesgo_individual': seguimiento_reciente.riesgo_individual,
+                    'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
+                    'riesgo_academico': seguimiento_reciente.riesgo_academico,
+                    'riesgo_economico': seguimiento_reciente.riesgo_economico,
+                    'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+                }
+                # Devolver el riesgo en la respuesta
+            except seguimiento_individual.DoesNotExist:
+                # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+                riesgo = {
+                    'riesgo_individual': 'N/A',
+                    'riesgo_familiar': 'N/A',
+                    'riesgo_academico': 'N/A',
+                    'riesgo_economico': 'N/A',
+                    'riesgo_vida_universitaria_ciudad': 'N/A'
+                }
+                print('no riesgos')
+            
+            data = dict(serializer_estudiante.data, **riesgo)
+
+            list_estudiantes.append(data)
+
+        return Response(list_estudiantes,status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk):
+        list_estudiantes = []
+        list_estudiantes_selected = []
+
+        consulta_estudiantes = list(estudiante.objects.all())
+        for i in consulta_estudiantes: 
+            serializer_estudiante =estudiante_serializer(i)
+            list_estudiantes.append(serializer_estudiante.data)
+
+        lista_asignacion = list(asignacion.objects.filter(id_usuario = pk, estado=True))
+
+        for i in lista_asignacion:
+            serializer_asignacion =asignacion_serializer(i)
+            estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
+            serializer_estudiante =estudiante_serializer(estudiante_selected)
+            list_estudiantes_selected.append(serializer_estudiante.data)
+            for i in list_estudiantes:
+                if i['id'] == serializer_estudiante.data['id']:
+                    list_estudiantes.remove(i)
+
+        datos = [list_estudiantes_selected,list_estudiantes]
+        return Response(datos,status=status.HTTP_200_OK)
 
 class usuario_rol_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer

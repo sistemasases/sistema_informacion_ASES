@@ -73,6 +73,7 @@ const Login_component = () => {
         sessionStorage.setItem('rol', res.data.user.rol);
         sessionStorage.setItem('semestre_actual', res.data.user.semestre_actual);
         sessionStorage.setItem('username', res.data.user.username);
+        sessionStorage.setItem('permisos', res.data.user.permisos);
         sessionStorage.setItem('message', res.data.user.message);
         set_state({
           ...state,
