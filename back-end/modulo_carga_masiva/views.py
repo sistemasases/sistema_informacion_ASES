@@ -4,7 +4,7 @@ from django.http import JsonResponse
 import pandas as pd
 from modulo_usuario_rol.models import estudiante
 from django.contrib.auth.models import User
-from modulo_programa.models import programa, programa_estudiante
+from modulo_programa.models import programa, programa_estudiante, estado_programa
 from modulo_carga_masiva.models import retiro, motivo
 from modulo_academico.models import historial_academico, materia, profesor, facultad
 from modulo_instancia.models import semestre, sede
@@ -37,6 +37,12 @@ class Validador_carga(APIView):
                 return carga_notas(file)
             elif(tipo == "Retiro"):
                 return carga_retiros(file)
+            elif(tipo == "Historial_academico"):
+                return carga_retiros(file)
+            elif(tipo == "Profesor"):
+                return carga_retiros(file)
+            elif(tipo == "Ficha"):
+                return carga_retiros(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
 
@@ -44,15 +50,31 @@ def carga_estudiantes(file):
     print("entro al carga_estudiantes")
     list_dict_result = []
     lista_estudiantes =[]
+    lista_programa_estudiantes =[]
     datos = pd.read_csv(file,header=0)
-    print("estos son los datos: "+str(datos))
     for i in range(datos.shape[0]):
         if (estudiante.objects.filter(cod_univalle = datos.iat[i,22]).values()):
-            dict_result = {
-                'dato' : datos.iat[i,22],
-                'mensaje' : 'Ya existe en la BD este estudiante.'
-            }
-            list_dict_result.append(dict_result)
+            consulta_estudiante = estudiante.objects.filter(cod_univalle = datos.iat[i,22]).first()
+            consulta_programa = programa.objects.filter(codigo_univalle= datos.iat[i,23],id_sede = datos.iat[i,24]).first()
+            if(programa_estudiante.objects.filter(id_estudiante = consulta_estudiante,id_programa=consulta_programa).values()):
+                dict_result = {
+                    'dato' : datos.iat[i,22],
+                    'mensaje' : 'Ya existe en la BD este estudiante.'
+                }
+                list_dict_result.append(dict_result)
+            else:
+                dict_programa_estudiante = {
+                    'num_doc': datos.iat[i,3],
+                    'cod_programa': datos.iat[i,23],
+                    'sede': datos.iat[i,24],
+                }
+                lista_programa_estudiantes.append(dict_programa_estudiante)
+
+                dict_result = {
+                    'dato' : datos.iat[i,22],
+                    'mensaje' : 'Se le asignó un nuevo programa.'
+                }
+                list_dict_result.append(dict_result)
         else:
             try:
                 Estudiante = estudiante(
@@ -81,6 +103,12 @@ def carga_estudiantes(file):
                 cod_univalle = str(datos.iat[i,22])
                 )
                 lista_estudiantes.append(Estudiante)
+                dict_programa_estudiante = {
+                    'num_doc': datos.iat[i,3],
+                    'cod_programa': datos.iat[i,23],
+                    'sede': datos.iat[i,24],
+                }
+                lista_programa_estudiantes.append(dict_programa_estudiante)
                 dict_result = {
                     'dato' : datos.iat[i,22],
                     'mensaje' : 'Se cargó correctamente este estudiante.'
@@ -94,7 +122,28 @@ def carga_estudiantes(file):
                 list_dict_result.append(dict_result)
 
     estudiante.objects.bulk_create(lista_estudiantes)
-    return Response(list_dict_result)
+    carga_programa_estudiantes = carga_programa_estudiante(lista_programa_estudiantes)
+    if carga_programa_estudiantes:
+        return Response(list_dict_result)
+    else:
+        return Response(list_dict_result)
+    
+def carga_programa_estudiante(lista):
+    lista_programa_estudiante =[]
+    for i in lista:
+
+        consulta_estudiante = estudiante.objects.filter(num_doc =i['num_doc']).first()
+        consulta_programa = programa.objects.filter(codigo_univalle= i['cod_programa'],id_sede = i['sede']).first()
+        consulta_estado_programa = estado_programa.objects.filter(id= '1').first()
+        Programa_estudiante = programa_estudiante(
+            id_programa = consulta_programa,
+            id_estudiante = consulta_estudiante,
+            id_estado = consulta_estado_programa,
+            traker = True
+        )
+        lista_programa_estudiante.append(Programa_estudiante)
+    programa_estudiante.objects.bulk_create(lista_programa_estudiante)
+    return True
 
 def carga_usuarios(file):
     print("entro al carga_usuarios")
@@ -261,7 +310,7 @@ def carga_retiros(file):
     datos = pd.read_csv(file,header=0)
     print("estos son los datos: "+str(datos))
     for i in range(datos.shape[0]):
-        # try:
+        try:
             print("holaaaaaaa:"+str(datos.iat[i,0]))
             consulta_estudiante= estudiante.objects.get(id =datos.iat[i,0])
             consulta_motivo= motivo.objects.get(id =datos.iat[i,1])
@@ -278,12 +327,12 @@ def carga_retiros(file):
                 'mensaje' : 'Se cargó correctamente este retiro.'
             }
             list_dict_result.append(dict_result)
-        # except:
-        #     dict_result = {
-        #         'dato' : datos.iat[i,1],
-        #         'mensaje' : 'Error al cargar este retiro.'
-        #     }
-        #     list_dict_result.append(dict_result)
+        except:
+            dict_result = {
+                'dato' : datos.iat[i,1],
+                'mensaje' : 'Error al cargar este retiro.'
+            }
+            list_dict_result.append(dict_result)
 
     retiro.objects.bulk_create(lista_retiros)
     return Response(list_dict_result)
