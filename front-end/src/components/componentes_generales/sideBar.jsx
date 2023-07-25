@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Select from 'react-select';
-import {Container, Row, Col, Dropdown} from "react-bootstrap";
+import {Container, Row, Col, Dropdown, Button, Modal} from "react-bootstrap";
 import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import {FaBars} from "react-icons/fa";
 import NavBar from './navbar';
@@ -10,12 +10,11 @@ import Menu3 from './academico.json';
 import Menu4 from './icetex.json';
 import Menu5 from './discapacidad.json';
 import Ficha_estudiante from "../../modulos/ficha_estudiante/ficha_estudiante.jsx";
-
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
 import Sidebar_item_closed from './sidebar_item_closed';
 import {Scrollbars} from 'react-custom-scrollbars'; 
-
+import axios from 'axios';
 
 
 
@@ -41,10 +40,60 @@ const SideBar = (props) =>{
           path_actual : name,
         })
       }
-      
 
-        
+    const [data, setData] = useState(
+        {refreshtoken: sessionStorage.getItem('refresh-token')}
+    )
+    const [show, setShow] = useState(false);
 
+    const handleShow = () => setShow(true);
+
+    const handleClose = () => {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('refresh-token');
+        sessionStorage.removeItem('email');
+        sessionStorage.removeItem('first_name');
+        sessionStorage.removeItem('instancia');
+        sessionStorage.removeItem('last_name');
+        sessionStorage.removeItem('nombre_completo');
+        sessionStorage.removeItem('instancia_id');
+        sessionStorage.removeItem('rol');
+        sessionStorage.removeItem('semestre_actual');
+        sessionStorage.removeItem('username');
+        sessionStorage.removeItem('message');
+        sessionStorage.removeItem('sede_id');
+        sessionStorage.removeItem('sede');
+        sessionStorage.removeItem('lastVisitedRoutes');
+        setShow(false);
+        window.location.reload();
+    }
+
+    const handleContinue = () => {
+        axios.post('http://127.0.0.1:8000/refresh', data)
+        .then(res => {
+            sessionStorage.setItem('token', res.data.token);
+            setShow(false);
+        })
+        .catch(err => {
+            window.alert('Ocurrió un error, debes ingresar nuevamente');
+            handleClose();
+        })
+    }
+
+    const config = {
+        headers: {
+              Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+    };
+
+    const tiempoEspera = 1 * 1 * 60 * 1000;
+
+    const timeoutId = setTimeout(async () => {
+        await axios.get('http://127.0.0.1:8000/wizard/instancia/', config).then(res=>{})
+        .catch(err => {
+            handleShow()
+        })
+    }, tiempoEspera);
 
     return (
         <Container className="containerSidebar">
@@ -58,7 +107,7 @@ const SideBar = (props) =>{
                             <Scrollbars className="scrollbar_sidebar">
                                 <div className="sidebar_item">
                                     { state.desplegable.map((item, index) => <SidebarItem key={index} item={item}
-                                    childClicked2={(name)=>path_actual(name)}/>) }
+                                    />) }
                                 </div>
                             </Scrollbars>
                         </Row>
@@ -70,7 +119,7 @@ const SideBar = (props) =>{
                             <Scrollbars className="scrollbar_sidebar">
                                 <div className="sidebar_item">
                                     { state.desplegable.map((item, index) => <Sidebar_item_closed key={index} item={item}
-                                    childClicked2={(name)=>path_actual(name)}/>) }
+                                    />) }
                                 </div>
                             </Scrollbars>
                         </Row>
@@ -81,7 +130,7 @@ const SideBar = (props) =>{
                 
                 
                 <Row className="row_navbar">
-                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario}  path_actual={state.path_actual}></NavBar>
+                    <NavBar tamaño={isOpen} nombre={props.usuario} rol={props.rolUsuario} ></NavBar>
                 </Row>
                 <div  class="d-none d-md-block">
                     <Row className="inf_der">
@@ -97,6 +146,27 @@ const SideBar = (props) =>{
                             {props.children}
                         </main>
                     </Row>
+                </div>
+
+                <div>
+                    <Modal show={show}>
+                        <Modal.Header>
+                        <Modal.Title>Tiempo de sesión expirada</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        Su tiempo en la sesión ya expiró
+                        <br/>
+                        ¿Desea continuar con la sesión?
+                        </Modal.Body>
+                        <Modal.Footer>
+                        <Button variant="primary" onClick={handleContinue}>
+                            Sí
+                        </Button>
+                        <Button variant="secondary" onClick={handleClose}>
+                            No
+                        </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
                 
                 <Footer></Footer>

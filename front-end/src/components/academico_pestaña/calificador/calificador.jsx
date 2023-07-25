@@ -76,11 +76,7 @@ const Cabecera = () =>{
         <Container >
             <Row >
                 <Col xs={"12"} md={"8"} className="texto_titulo_bold">
-                    Reporte de estudiantes activos en SRA por semestre
-                </Col>
-                <Col xs={"12"} md={"4"} className="texto_pequeño">
-                    Seleccione la cohorte
-                    <Select></Select>
+                    Nombre de la materia
                 </Col>
             </Row>
 

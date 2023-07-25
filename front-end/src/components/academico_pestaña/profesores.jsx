@@ -47,31 +47,31 @@ const Profesores = ({item}) => {
     if(item.profesores) {
         return (
             <Row>
-                    <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
-                        <Row className="link_academico1">
-                            <Col className="link_text_academico1" >
-                                <Row className="link_text_academico_hover2">
-                                    {item.asignatura}
-                                    return
-                                    <Col xs={"12"} md={"9"}>
-                                        <input name="filtro" onChange={cambiar_dato}></input>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
+                <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
+                    <Row className="link_academico1">
+                        <Col className="link_text_academico1" >
+                            <Row className="link_text_academico_hover2">
+                                {item.asignatura}
+                                return
+                                <Col xs={"12"} md={"9"}>
+                                    <input name="filtro" onChange={cambiar_dato}></input>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
 
-                        <Row>
-                            <Col className="contenido_fichas_academico2">
-                            { item.profesores.filter((item)=>{
-                                    return state.filtro.toLowerCase() === '' ? item 
-                                    : 
-                                    item.username.toLowerCase().includes(state.filtro);                      
-                                    }).map((item, index) => <Profesores 
-                                    key={index} item={item} 
-                                />) }
-                                
-                            </Col>
-                        </Row>
+                    <Row>
+                        <Col className="contenido_fichas_academico2">
+                        { item.profesores.filter((item)=>{
+                                return state.filtro.toLowerCase() === '' ? item 
+                                : 
+                                item.username.toLowerCase().includes(state.filtro);                      
+                                }).map((item, index) => <Profesores 
+                                key={index} item={item} 
+                            />) }
+                            
+                        </Col>
+                    </Row>
                 </Col>
             </Row>
         )

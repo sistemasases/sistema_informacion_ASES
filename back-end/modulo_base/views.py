@@ -76,4 +76,20 @@ class Logout(GenericAPIView):
             RefreshToken.for_user(user.first())
             return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
         return Response({'error': 'No existe este usuario.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class Refresh(TokenObtainPairView):
+
+    def post(self, request, *args, **kwargs):
+        refresh = request.data.get('refreshtoken', '')
         
+        if not refresh:
+            return Response({'error': 'Refresh token no proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            try:
+                refresh_token = RefreshToken(refresh)
+                access_token = str(refresh_token.access_token)
+                return Response({'token': access_token})
+            
+            except Exception as e:
+                return Response({'error': 'El token de refresco no es válido.'}, status=status.HTTP_400_BAD_REQUEST)

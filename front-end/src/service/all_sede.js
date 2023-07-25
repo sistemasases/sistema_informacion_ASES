@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const all_instancias = async () => {
+const all_sede = async () => {
     try {
         const config = {
             headers: {
@@ -17,5 +17,5 @@ const all_instancias = async () => {
 }
 
 export default{
-    all_instancias
+    all_sede
 }
