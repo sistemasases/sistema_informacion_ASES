@@ -6,7 +6,7 @@ admin.site.register(permiso)
 admin.site.register(rol)
 admin.site.register(estudiante)
 admin.site.register(usuario_rol)
-
+admin.site.register(rol_permiso)
 admin.site.register(act_simultanea)
 admin.site.register(cond_excepcion)
 admin.site.register(discap_men)

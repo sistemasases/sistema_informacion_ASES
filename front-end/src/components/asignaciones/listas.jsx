@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const Listas = (props) => {
 
+
     const config = {
         headers: {
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
@@ -128,7 +129,7 @@ const Listas = (props) => {
                 )
             }
                     
-            </Row>
+            </Row> 
         )
     }else if(props.rol === "monitor") {
         return (

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
 import {Row, Col} from "styled-bootstrap-grid";
-import {Button} from "react-bootstrap";
+import {Button, ListGroupItem} from "react-bootstrap";
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
 import {useEffect} from 'react';
 import axios from 'axios';
@@ -440,7 +440,9 @@ const Info_basica = (props) =>{
       <Row className="row_prueba">
         <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
         <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
-        
+        {/* {!loading && fechas.length > 0 && Object.keys(riesgos).length > 0 && (
+          <GraphComponent fechas={fechas} riesgos={riesgos} />
+        )} */}
         {/* <li >{JSON.stringify(state.total_datos_estudiantes)}</li> */}
 
         <Col xs={"12"} lg={"9"} >
@@ -858,7 +860,7 @@ const Info_basica = (props) =>{
       
 
 
-        <Modal show={show2} onHide={handleClose2}>
+        <Modal show={show2} onHide={handleClose2} size={'lg'}>
           <Modal.Header closeButton>
             <Modal.Title>Importante</Modal.Title>
           </Modal.Header>

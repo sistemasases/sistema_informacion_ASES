@@ -11,11 +11,11 @@ from modulo_base.serializers import (
     CustomTokenObtainPairSerializer, user_token, group_serializer
 )
 from modulo_instancia.serializers import semestre_serializer, sede_serializer
-from modulo_usuario_rol.serializers import usuario_rol_serializer, rol_serializer
+from modulo_usuario_rol.serializers import usuario_rol_serializer, rol_serializer, rol_permiso_serializer, permiso_serializer
 from django.contrib.auth.models import User
 
 from modulo_instancia.models import semestre, sede
-from modulo_usuario_rol.models import rol, usuario_rol
+from modulo_usuario_rol.models import rol, usuario_rol, rol_permiso, permiso
 
 
 
@@ -32,17 +32,20 @@ class Login(TokenObtainPairView):
 
         if user:
             login_serializer = self.serializer_class(data=request.data)
-            print('1')
             if user.is_active:
-                print('2')
                 if login_serializer.is_valid():
-                    print('3')
                     user_serializer = user_token(user)
-                    print(user.id)
                     dato_usuario_rol = usuario_rol.objects.get(id_usuario = user.id,estado = "ACTIVO")
                     serializer_usuario_rol = usuario_rol_serializer(dato_usuario_rol)
                     dato_rol = rol.objects.get(id =serializer_usuario_rol.data['id_rol'] )
                     serializer_rol = rol_serializer(dato_rol)
+                    
+                    list_permisos = list()
+                    for consulta_rol_permiso in rol_permiso.objects.filter(id_rol = serializer_usuario_rol.data['id_rol']).values():
+                        dato_permiso = permiso.objects.get(id= consulta_rol_permiso['id_permiso_id'])
+                        serializer_permiso = permiso_serializer(dato_permiso)
+                        list_permisos.append(serializer_permiso.data['nombre'])
+
                     dato_semestre = semestre.objects.get(semestre_actual = True, id =serializer_usuario_rol.data['id_semestre'])
                     serializer_semestre =semestre_serializer(dato_semestre)
                     dato_sede = sede.objects.get(id = serializer_semestre.data['id_sede'])
@@ -53,20 +56,17 @@ class Login(TokenObtainPairView):
                                 'semestre_actual': serializer_semestre.data['nombre'],
                                 'sede':serializer_sede.data['nombre'],
                                 'sede_id':serializer_sede.data['id'],
+                                'permisos': list_permisos,
                                 }
                     data = dict(user_serializer.data, **extra_info)
-                    print(data)
                     return Response({
                         'token': login_serializer.validated_data.get('access'),
                         'refresh-token': login_serializer.validated_data.get('refresh'),
                         'user': data,
                         'message': 'Inicio de Sesion Exitoso'
-                    }, status=status.HTTP_200_OK)
-                print("hola1")    
-                return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_40_BAD_REQUEST)
-            print("hola2")   
+                    }, status=status.HTTP_200_OK)  
+                return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_40_BAD_REQUEST) 
             return Response({'error': 'El usuario no está activo'}, status=status.HTTP_400_BAD_REQUEST)
-        print("hola3")   
         return Response({'error': 'Contraseña o nombre de usuario incorrectos'}, status=status.HTTP_400_BAD_REQUEST)
 
 class Logout(GenericAPIView):
@@ -76,4 +76,20 @@ class Logout(GenericAPIView):
             RefreshToken.for_user(user.first())
             return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
         return Response({'error': 'No existe este usuario.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class Refresh(TokenObtainPairView):
+
+    def post(self, request, *args, **kwargs):
+        refresh = request.data.get('refreshtoken', '')
         
+        if not refresh:
+            return Response({'error': 'Refresh token no proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            try:
+                refresh_token = RefreshToken(refresh)
+                access_token = str(refresh_token.access_token)
+                return Response({'token': access_token})
+            
+            except Exception as e:
+                return Response({'error': 'El token de refresco no es válido.'}, status=status.HTTP_400_BAD_REQUEST)
