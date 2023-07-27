@@ -15,7 +15,7 @@ const Navbar = (props) =>{
     useEffect(() => {
       const currentPath = location.pathname;
       const currentUrl = window.location.href;
-      const storedRoutes = torage.getItem('lastVisitedRoutes');
+      const storedRoutes = AES.decrypt(sessionStorage.getItem('lastVisitedRoutes'),'lastVisitedRoute');
       let updatedRoutes = [];
   
       if (storedRoutes) {
@@ -34,7 +34,7 @@ const Navbar = (props) =>{
         updatedRoutes = [currentUrl];
       }
   
-      sessionStorage.setItem('lastVisitedRoutes',  AES.encrypt(JSON.stringify(updatedRoutes)));
+      sessionStorage.setItem('lastVisitedRoutes',  AES.encrypt(JSON.stringify(updatedRoutes),'lastVisitedRoute'));
       setLastVisitedRoutes(updatedRoutes.reverse());
     }, [location]);
   
