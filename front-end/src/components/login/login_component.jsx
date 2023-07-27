@@ -4,6 +4,7 @@ import {Container, Row, Col, Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
+import { AES } from 'crypto-js';
 
 const Login_component = () =>{
 
@@ -63,17 +64,17 @@ const Login_component = () =>{
     .then(res=>{
       console.log(res.data)
       sessionStorage.setItem('token', 'superAses')
-      sessionStorage.setItem('refresh-token', res.data['refresh-token'])
-      sessionStorage.setItem('email', res.data.user.email)
-      sessionStorage.setItem('first_name', res.data.user.first_name)
-      sessionStorage.setItem('sede', res.data.user.sede)
-      sessionStorage.setItem('last_name', res.data.user.last_name)
-      sessionStorage.setItem('nombre_completo', res.data.user.nombre_completo)
-      sessionStorage.setItem('sede_id', res.data.user.sede_id)
-      sessionStorage.setItem('rol', 'superAses')
-      sessionStorage.setItem('semestre_actual', res.data.user.semestre_actual)
-      sessionStorage.setItem('username', res.data.user.username)
-      sessionStorage.setItem('message', res.data.user.message)
+      sessionStorage.setItem('refresh-token', AES.encrypt(res.data['refresh-token'], 'refresh-token'))
+      sessionStorage.setItem('email', AES.encrypt(res.data.user.email, 'email'))
+      sessionStorage.setItem('first_name', AES.encrypt((res.data.user.first_name, 'first_name')))
+      sessionStorage.setItem('sede', AES.encrypt(res.data.user.sede, 'sede'))
+      sessionStorage.setItem('last_name', AES.encrypt(res.data.user.last_name, 'last_name'))
+      sessionStorage.setItem('nombre_completo', AES.encrypt(res.data.user.nombre_completo, 'nombre_completo'))
+      sessionStorage.setItem('sede_id', AES.encrypt(res.data.user.sede_id, 'sede_id'))
+      sessionStorage.setItem('rol', AES.encrypt('superAses','rol'))
+      sessionStorage.setItem('semestre_actual', AES.encrypt(res.data.user.semestre_actual,'semestre_actual'))
+      sessionStorage.setItem('username', AES.encrypt(res.data.user.username, 'username'))
+      sessionStorage.setItem('message', AES.encrypt(res.data.user.message, 'message'))
       set_state({
         ...state,
         logged:sessionStorage.token,

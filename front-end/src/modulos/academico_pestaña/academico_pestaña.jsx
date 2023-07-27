@@ -2,11 +2,12 @@ import React, {useState} from 'react';
 import {Container, Row, Col, Dropdown} from "react-bootstrap";
 import Academico_desplegables from "../../components/academico_pestaña/academico_desplegables";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
+import { AES } from 'crypto-js';
 
 
 const Academico_pestaña = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'), 'rol');
 
     return (
         <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">

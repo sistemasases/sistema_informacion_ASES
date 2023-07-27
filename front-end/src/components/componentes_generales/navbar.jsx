@@ -4,6 +4,7 @@ import  {useEffect} from 'react';
 import Logos from './LOGO BLANCORecurso 1.png';
 import { useLocation } from 'react-router-dom';
 import { useNavigate  } from 'react-router-dom';
+import { AES } from 'crypto-js';
 
 const Navbar = (props) =>{
 
@@ -14,7 +15,7 @@ const Navbar = (props) =>{
     useEffect(() => {
       const currentPath = location.pathname;
       const currentUrl = window.location.href;
-      const storedRoutes = sessionStorage.getItem('lastVisitedRoutes');
+      const storedRoutes = torage.getItem('lastVisitedRoutes');
       let updatedRoutes = [];
   
       if (storedRoutes) {
@@ -33,7 +34,7 @@ const Navbar = (props) =>{
         updatedRoutes = [currentUrl];
       }
   
-      sessionStorage.setItem('lastVisitedRoutes', JSON.stringify(updatedRoutes));
+      sessionStorage.setItem('lastVisitedRoutes',  AES.encrypt(JSON.stringify(updatedRoutes)));
       setLastVisitedRoutes(updatedRoutes.reverse());
     }, [location]);
   
