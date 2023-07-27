@@ -2,9 +2,6 @@ from rest_framework import serializers
 from modulo_instancia.models import semestre, sede
 from modulo_programa.models import programa_estudiante
 from modulo_usuario_rol.models import estudiante
-# from modulo_programa.serializer import programa_estudiante_serializer
-# from modulo_instancia.serializer import semestre_serializer, sede_serializer
-# from modulo_usuario_rol.serializer import estudiante_serializer
 
 from .models import (
     historial_academico,
