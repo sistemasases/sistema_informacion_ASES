@@ -19,7 +19,7 @@ const Desplegable_item = ({item}) => {
       })
     const traer_reportes = (e) => {
 
-        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+e+"/";
+        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante_solo_semestre_actual/"+e+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,
@@ -418,11 +418,7 @@ const Desplegable_item = ({item}) => {
                 (<Row></Row>)
 
                 }
-                <div className="fichas-content">
-                    <a href={item.path || "#"} className="fichas-reportes plain">
-                        <h2>{item.num_doc_ini}</h2>
-                    </a>
-                </div>
+
             </Col>
         </Row>
         )

@@ -69,7 +69,7 @@ const Informacion_rol = (props) =>{
             <Row className="row_contenido_reportes_seguimientos">
             <div class="d-none d-md-inline"> <br/></div>
 
-                        {/* <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
+                        <Col className="subrow_card_content_flex" xs={"12"} sm={"6"}>
 
                             <Row>
                                 <Col xs={"12"} md={"3"}>
@@ -148,7 +148,7 @@ const Informacion_rol = (props) =>{
                                 Total : {props.inasistencias_practicante_total}
                                 </Col>           
                             </Row>
-                        </Col> */}
+                        </Col> 
                         <div class="d-none d-md-inline"> <br/></div>
 
             </Row>

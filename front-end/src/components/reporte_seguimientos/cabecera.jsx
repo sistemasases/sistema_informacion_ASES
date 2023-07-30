@@ -330,6 +330,7 @@ const Cabecera = (props) =>{
             </Row>
 
             <Row className="prueba_seguimintos">
+                            <li>{JSON.stringify(state.data_user)}</li>
 
               {state.tiene_datos ?
                 (<Informacion_rol total_fichas_profesional={state.fichas_profesional_total}

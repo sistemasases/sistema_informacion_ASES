@@ -24,69 +24,55 @@ const Socieducativa = (props) =>{
 
 
 
-
-
-
-
-const[activeTabIndex, setActiveTabIndex] = useState(state.data_user[0]['nombre']);
-const activeTab = (index)=> 
-{
-    index === activeTabIndex ?
-    (setActiveTabIndex(0))
-    :
-    setActiveTabIndex(index)
-}
-
-
     return (
         <Container className="socioeducativa_container">
-            <Row className="socioeducativa_seguimientos_pares">Seguimientos de pares</Row>
+                            {/*
+                            <li>{JSON.stringify(state.data_user)}</li>
+                            <li>{JSON.stringify(state.data_user[0])}</li>
+                            */}
 
-                        <Row className="socioeducativa_fondo" >
+            <Row className="socioeducativa_fondo" >
 
-                            { state.data_user.map((item, index) => 
-                            <Row>
-                            <Col className={item[0]['nombre'] === activeTabIndex ? "periodo_asignaciones open" : "periodo_asignaciones"}>
-                            <Row className="periodo_asignaciones_seleccionar" onClick={() => activeTab(item[0]['nombre'])}>
-                                <Col className="periodo_asignaciones_seleccionar_text" >
-                                                    <Row className="periodo_asignaciones_seleccionar_hover">
-                                                        <Col  className="col_periodo_asignaciones_seleccionar_text" > 
-                                                                {item[0]['nombre']}
-                                                                {
-                                                                    item[0]['nombre'] === activeTabIndex ?
-                                                                    (
-                                                                            <i class="bi bi-chevron-up"></i>
-                                                                    )   
-                                                                    :
-                                                                    (
-                                                                            <i class="bi bi-chevron-down"></i>
-                                                                    )
-                                                                }
-                                                        </Col>
-                                                    </Row>
-                                    </Col>
-                            </Row>
-                                <Row className="periodo_asignaciones_contenido">
-                                    {item.map((item, index) => <Desplegable_item key={index} item={item} /> )}
-                                </Row>
+                { state.data_user.map((item, index) => 
+                        <Col className={"periodo_asignaciones open"}>
+                            {item[0]['nombre']?
+                                (
+                                    <Row className="periodo_asignaciones_seleccionar">
+                                        <Col className="periodo_asignaciones_seleccionar_text" >
+                                            <Row className="periodo_asignaciones_seleccionar_hover">
+                                                <Col  className="col_periodo_asignaciones_seleccionar_text" > 
+                                                    Seguimientos del periodo : {item[0]['nombre']}
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                )
+                                :
+                                (
+                                    <Row className="periodo_asignaciones_contenido">
+                                        <Desplegable_item key={index} item={item} /> 
+                                    </Row>
+                                )
+                            }
+
                         </Col>
-                    </Row>
 
-                            ) }
-                </Row>
+                    ) 
+                }
+            </Row>
 
 
-                <Modal show={show} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                    <Modal.Title>Importante</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Seleccione un estudiante.</Modal.Body>
-                    <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    </Modal.Footer>
-                </Modal>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                <Modal.Title>Importante</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Seleccione un estudiante.</Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                </Modal.Footer>
+            </Modal>
                 
         </Container>
     )

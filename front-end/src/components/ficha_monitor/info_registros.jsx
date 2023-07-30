@@ -60,7 +60,6 @@ const Info_registros = () =>{
 
 
 
-
                         <Row className="riesgos_fondo_claro">
                             <Col>
 
@@ -77,10 +76,6 @@ const Info_registros = () =>{
                                 
 
 
-
-
-
-
                                 <Row  className="row_riesgo">
                                     <Col xs={"2"} sm={"2"} className="z_index_2">
                                         <label className="borde_riesgos_medio">
@@ -92,8 +87,6 @@ const Info_registros = () =>{
                                     </Col>
                                 </Row>
                                 
-
-
 
 
 
@@ -110,8 +103,6 @@ const Info_registros = () =>{
                                 
 
 
-
-
                                 <Row className="row_riesgo">
                                     <Col xs={"2"} sm={"2"} className="z_index_2">
                                             <label className="borde_riesgos_bajo">
@@ -125,8 +116,6 @@ const Info_registros = () =>{
                                 
 
 
-
-
                                 <Row className="row_riesgo">
                                     <Col xs={"2"} sm={"2"} className="z_index_2">
                                         <label className="borde_riesgos_medio">
@@ -138,10 +127,6 @@ const Info_registros = () =>{
                                     </Col>
                                 </Row>
                                 
-
-
-
-
 
                                     <Row className="row_riesgo" >
                                         <Col xs={"2"} sm={"2"} className="z_index_2">
@@ -157,33 +142,10 @@ const Info_registros = () =>{
                             
 
                         </Row>
-                    </Col>
-                        
-
-                        
+                    </Col>             
                             
                 </Row>
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 <div class="d-block d-md-none">
@@ -196,100 +158,41 @@ const Info_registros = () =>{
 
                         </Row>
 
-
-
-
-
                         <Row className="riesgos_fondo_claro">
 
 
-
-                                                <Col   xs={"6"}  className="center_tipos_riesgos">
-                                                    <label  className="button_tipo_riesgo_alto_texto_pequeño">ACADEMICO</label>
-                                                </Col>
-
+                            <Col   xs={"6"}  className="center_tipos_riesgos">
+                                <label  className="button_tipo_riesgo_alto_texto_pequeño">ACADEMICO</label>
+                            </Col>
 
 
-                                            <Col   xs={"6"}  className="center_tipos_riesgos">
-                                                <label  className="button_tipo_riesgo_alto_texto_pequeño">GEOGRAFICO</label>
-                                            </Col>
+                            <Col   xs={"6"}  className="center_tipos_riesgos">
+                                <label  className="button_tipo_riesgo_alto_texto_pequeño">GEOGRAFICO</label>
+                            </Col>
 
 
+                            <Col  xs={"6"} className="center_tipos_riesgos">
+                                <label  className="button_tipo_riesgo_medio_texto_pequeño">VIDA UNIV..</label>
+                            </Col>
 
 
+                            <Col  xs={"6"}  className="center_tipos_riesgos">
+                                <label  className="button_tipo_riesgo_medio_texto_pequeño">FAMILIAR</label>
+                            </Col>
+
+                        
+                            <Col  xs={"6"}  sm={"6"} className="center_tipos_riesgos">
+                                <label  className="button_tipo_riesgo_bajo_texto_pequeño">INDIVIDUAL</label> 
+                            </Col>
 
 
-
-                                            <Col  xs={"6"} className="center_tipos_riesgos">
-                                                <label  className="button_tipo_riesgo_medio_texto_pequeño">VIDA UNIV..</label>
-                                            </Col>
-
-                                            <Col  xs={"6"}  className="center_tipos_riesgos">
-                                                <label  className="button_tipo_riesgo_medio_texto_pequeño">FAMILIAR</label>
-                                            </Col>
-
-
-
-
-
-                                        
-                                            <Col  xs={"6"}  sm={"6"} className="center_tipos_riesgos">
-                                                <label  className="button_tipo_riesgo_bajo_texto_pequeño">INDIVIDUAL</label> 
-                                            </Col>
-
-
-                                            <Col  xs={"6"} sm={"6"} className="center_tipos_riesgos">
-                                                    <label  className="button_tipo_riesgo_bajo_texto_pequeño">ECONOMICO</label> 
-                                            </Col>
-
-                            
-
-
-
-
-                                
-                                
-
-
-
-
-
-
-                                
-                                
-
-
-
-
-
-                                
-                                
-
-
-
-
-                                
-                                
-
-
-
-
-                                
-                                
-
-
-
-
-
-                                    
-
-                            
+                            <Col  xs={"6"} sm={"6"} className="center_tipos_riesgos">
+                                    <label  className="button_tipo_riesgo_bajo_texto_pequeño">ECONOMICO</label> 
+                            </Col>
 
                         </Row>
                     </Col>
-                        
 
-                        
                             
                 </Row>
                 </div>

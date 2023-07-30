@@ -15,15 +15,6 @@ const Info_basica_monitor = (props) =>{
   const config = {
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
-
-    const[switchChecked, setChecked] = useState(false);
-    const handleChange = () => setChecked(!switchChecked);
-    
-    const options = [
-      { value: 'chocolate', label: 'Chocolate' },
-      { value: 'strawberry', label: 'Strawberry' },
-      { value: 'vanilla', label: 'Vanilla' }
-        ]
    
 
     const datos_option_user = []
@@ -124,8 +115,23 @@ const Info_basica_monitor = (props) =>{
 
 
     const handle_option_user = (e) => {
+        
+  //      const url_axios = "http://localhost:8000/usuario_rol/monitor_info_extra/"+state.data_user[i]['id']+"/";
+  //      axios({
+          // Endpoint to send files
+  //        url:  url_axios,
+  //        method: "GET",
+  //        headers: config,
+  //      })
+  //      .then((respuesta)=>{
+  //       total_datos_monitors.push(respuesta.dato)
+  //      })
+  //      .catch(err=>{
+  //          return (err)
+  //      })
+
+
       // Getting the files from the input
-      console.log(e)
       set_state({
         ...state,
         seleccionado:e.id,
