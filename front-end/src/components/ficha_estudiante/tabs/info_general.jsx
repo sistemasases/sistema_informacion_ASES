@@ -245,15 +245,27 @@ const Info_general = (props) =>{
 
 
 const agregarPariente = () => {
-      set_state({
-            ...state,
+  if (state.nuevo_personas_con_quien_vive === null) {
+    set_state({
+      ...state,
+      nuevo_personas_con_quien_vive: [{
+        pariente: "",
+        nombre: "",
+      }],
+      agregarPariente: true,
+    });
+  } else {
+    set_state({
+      ...state,
       nuevo_personas_con_quien_vive: state.nuevo_personas_con_quien_vive.concat({
-      pariente: "",
-      nombre: "",
-      }),           
-            agregarPariente: true,
-      })
+        pariente: "",
+        nombre: "",
+      }),
+      agregarPariente: true,
+    });
+  }
 };
+
     
     const guardarPariente = () => {
       set_state({
@@ -958,30 +970,64 @@ const agregarPariente = () => {
       </Row>
     )}
   </Row>
-) : (
+) : 
+
+
+
+
+
+
+
+
+(
   <Row>
-    <h1 className="texto_subtitulo">Personas con quién vive</h1>
+      <h1 className="texto_subtitulo">Personas con quién vive</h1>
     <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
       Nombre Completo
     </Col>
     <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
       Parentesco
     </Col>
+  {state.agregarPariente ? (
+      <Row>
+        {state.nuevo_personas_con_quien_vive.map((item, index) => (
+          <Row className="row_flex_general">
+            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+              <input
+                className="texto_pequeño_12pt"
+                name={`nuevo_personas_con_quien_vive[${index}].nombre`}
+                onChange={cambiar_datos}
+                defaultValue={item.nombre}
+              ></input>
+            </Col>
+            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+              <input
+                className="texto_pequeño_12pt"
+                name={`nuevo_personas_con_quien_vive[${index}].pariente`}
+                onChange={cambiar_datos}
+                defaultValue={item.pariente}
+              ></input>
+            </Col>
+          </Row>
+        ))}
       <Col xs={"12"} className="col_adicionar_parentesco">
-            <Button className="adicionar_parentesco" onClick={agregarPariente}>
-            <i class="bi bi-plus-circle"></i>
+            <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                  Guardar
+            </Button>
+            <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                  Cancelar
             </Button>
       </Col>
-      {state.agregarPariente &&(
-            <Col xs={"12"} className="col_adicionar_parentesco">
-                  <Button className="adicionar_parentesco" onClick={guardarPariente}>
-                        Guardar
-                  </Button>
-                  <Button className="adicionar_parentesco" onClick={cancelarPariente}>
-                        Cancelar
-                  </Button>
-            </Col>
-      )}
+      </Row>
+    ) : (
+      <Row>
+          <Col xs={"12"} className="col_adicionar_parentesco">
+                <Button className="adicionar_parentesco" onClick={agregarPariente}>
+                <i class="bi bi-plus-circle"></i>
+                </Button>
+          </Col>
+      </Row>
+    )}
   </Row>
 )}
 

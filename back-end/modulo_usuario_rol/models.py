@@ -110,6 +110,36 @@ class rol (models.Model):
     def __str__(self):
         return self.nombre
 
+
+
+
+class monitor (models.Model):
+    id_user= models.ForeignKey(User,on_delete=models.CASCADE,default=None,related_name='id_user', null=True)
+    tipo_doc= models.CharField(max_length=30, null=True)
+    cod_univalle = models.CharField(max_length=12,unique = True)
+    num_doc= models.BigIntegerField(default=None, null=True)
+    dir_res= models.CharField(max_length=50, default=None, null=True)
+    barrio_res=models.ForeignKey(barrio ,on_delete=models.CASCADE,default=0,related_name='barrio', null=True)
+    ciudad_res=models.ForeignKey(municipio ,on_delete=models.CASCADE,default=0,related_name='ciudad', null=True)
+    sexo=models.CharField(max_length=20, null=True)
+    telefono=models.BigIntegerField(default=None, null=True)
+    celular=models.BigIntegerField(default=0, null=True)
+    acudiente=models.CharField(max_length=100, default=None, null=True)
+    telefono_acudiente=models.BigIntegerField(default=None, null=True)
+    fecha_nac = models.DateTimeField(auto_now_add=False,null=True)
+    observacion = models.CharField(max_length=500, default=None,null=True)
+    anio_ingreso=models.DateTimeField(auto_now_add=False,null=True)
+    ult_modificacion=models.DateTimeField(auto_now_add=False,null=True)
+
+    class Meta:
+        db_table = "monitor"
+
+    def __str__(self):
+        return str(self.num_doc)
+
+
+
+
 class usuario_rol (models.Model):
 
     id_rol= models.ForeignKey(rol,on_delete=models.CASCADE,default=0,related_name='rol_por_asignar')

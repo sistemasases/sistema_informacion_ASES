@@ -9,8 +9,6 @@ from modulo_usuario_rol.models import estudiante
 from .models import (
     historial_academico,
     materia,
-    profesor,
-    materia,
     matricula,
     items_historico,
     items_semestre,
@@ -33,13 +31,6 @@ class materia_serializer(serializers.ModelSerializer):
     class Meta:
         model = materia
         fields = '__all__'
-
-
-class profesor_serializer(serializers.ModelSerializer):
-    class Meta:
-        model = profesor
-        fields = '__all__'
-
 
 
 class matricula_serializer(serializers.ModelSerializer):

@@ -9,7 +9,7 @@ const Academico_pestaña = () =>{
     const userRole = sessionStorage.getItem('permisos');
 
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? 
+        <>{userRole === 'superAses' || userRole === 'sistemas' || 'profesor' ? 
         <Col className="contenido_children">
             <Row className="containerRow">
                 <Calificador/>

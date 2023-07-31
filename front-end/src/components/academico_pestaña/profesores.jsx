@@ -1,8 +1,7 @@
 import React from 'react';
 import {useState } from "react";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import {Row, Col} from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {useEffect} from 'react';
 import axios from 'axios';
 
 const Profesores = ({item}) => {
@@ -52,7 +51,7 @@ const Profesores = ({item}) => {
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover2">
                                 {item.asignatura}
-                                return
+                                Buscar
                                 <Col xs={"12"} md={"9"}>
                                     <input name="filtro" onChange={cambiar_dato}></input>
                                 </Col>
@@ -65,7 +64,8 @@ const Profesores = ({item}) => {
                         { item.profesores.filter((item)=>{
                                 return state.filtro.toLowerCase() === '' ? item 
                                 : 
-                                item.username.toLowerCase().includes(state.filtro);                      
+                                item.first_name.toLowerCase().includes(state.filtro);  
+                                item.last_name.toLowerCase().includes(state.filtro);                                          
                                 }).map((item, index) => <Profesores 
                                 key={index} item={item} 
                             />) }
@@ -84,7 +84,7 @@ const Profesores = ({item}) => {
                         <Row className="link_academico1" onClick={() => {setOpen(!open); traer_cursos(item.id)}}>
                             <Col className="link_text_academico1" >
                                 <Row className="link_text_academico_hover3">
-                                    {item.nombre} --  {item.apellido}
+                                    {item.first_name} --  {item.last_name}
                                 </Row>
                             </Col>
                         </Row>
@@ -104,8 +104,8 @@ const Profesores = ({item}) => {
                     <Row className="link_academico1" onClick={() => { setOpen(!open) }}>
                         <Col className="link_text_academico1">
                             <Row className="link_text_academico_hover3">
-                                <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}`} target="_blank" rel="noopener noreferrer" className="fichas_academico plain">
-                                    {item.nombre} -- {item.cod_materia} -- {item.franja}
+                                <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} target="_blank" rel="noopener noreferrer" className="fichas_academico plain">
+                                    {item.nombre} -- {item.cod_materia} -- {item.franja} 
                                 </a>
                             </Row>
                         </Col>
