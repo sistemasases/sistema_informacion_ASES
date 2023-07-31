@@ -405,12 +405,15 @@ const Desplegable_item = ({item}) => {
                     <Row className="fichas-content">
                     <div class="d-none d-md-inline col-12">
                         <Col className="contenido_fichas">
-                            <Socieducativa data_user_socioedu={state.data_user_socioedu}  />
+                            <Socieducativa data_user_socioedu={state.data_user_socioedu[0]}  />
                         </Col>
+                    
+
                     </div>
                     <div class="d-inline d-md-none col-12">
                         <Col className="contenido_fichas_pequeño">
-                            <Socieducativa data_user_socioedu={state.data_user_socioedu}  />
+                            <Socieducativa data_user_socioedu={state.data_user_socioedu[0]}  />
+
                         </Col>
                     </div>
                 </Row>
@@ -435,33 +438,6 @@ const Desplegable_item = ({item}) => {
 }
 
 export default Desplegable_item
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

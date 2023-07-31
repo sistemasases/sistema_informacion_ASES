@@ -24,8 +24,11 @@ const Reporte_seguimientos = (props) =>{
 
       })
     const userRole = sessionStorage.getItem('rol');
+
     useEffect(()=>{
-  
+      
+      if (sessionStorage.getItem('rol') === 'superAses')
+      {
         axios({
           // Endpoint to send files
           url:  "http://localhost:8000/usuario_rol/profesional/",
@@ -42,17 +45,60 @@ const Reporte_seguimientos = (props) =>{
         .catch(err=>{
           console.log("error" + err)
         })
-  
+      }
+      else if (sessionStorage.getItem('rol') === 'Profesional')
+      {
+        axios({
+          // Endpoint to send files
+          url:  "http://localhost:8000/usuario_rol/practicante/",
+          method: "GET",
+          headers: config,
+        })
+        .then((respuesta)=>{
+          set_state({
+            ...state,
+            data_user : respuesta.data
+          })
+          console.log("estos son los primeros datos :"+respuesta.data)
+        })
+        .catch(err=>{
+          console.log("error" + err)
+        })
+
+      }
+      else if (sessionStorage.getItem('rol') === 'Practicante')
+      {
+        axios({
+          // Endpoint to send files
+          url:  "http://localhost:8000/usuario_rol/monitor/",
+          method: "GET",
+          headers: config,
+        })
+        .then((respuesta)=>{
+          set_state({
+            ...state,
+            data_user : respuesta.data
+          })
+          console.log("estos son los primeros datos :"+respuesta.data)
+        })
+        .catch(err=>{
+          console.log("error" + err)
+        })
+      }
+
   
       },[]);
+
+
+
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
     return (
         
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{userRole === 'superAses' || userRole === 'sistemas' || 'profesional' || 'pracgicante' ? <Col className="contenido_children">
             <Row className="containerRow">
-                <Cabecera usuario={props.usuario} area={props.area} periodo={props.periodo} data_user={state.data_user}></Cabecera>
+                <Cabecera usuario={props.usuario} periodo={props.periodo} data_user={state.data_user}></Cabecera>
             </Row>
         </Col> : <Acceso_denegado/>}</>
     )

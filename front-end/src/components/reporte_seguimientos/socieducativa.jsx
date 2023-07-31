@@ -26,22 +26,23 @@ const Socieducativa = (props) =>{
 
     return (
         <Container className="socioeducativa_container">
-                            {/*
-                            <li>{JSON.stringify(state.data_user)}</li>
-                            <li>{JSON.stringify(state.data_user[0])}</li>
-                            */}
+                            
+                        <li>{JSON.stringify(props.data_user_socioedu)}</li>
+                        <li>{JSON.stringify(props.data_user_socioedu[0])}</li>
+
+                            
 
             <Row className="socioeducativa_fondo" >
 
-                { state.data_user.map((item, index) => 
-                        <Col className={"periodo_asignaciones open"}>
-                            {item[0]['nombre']?
+                { props.data_user_socioedu.map((item, index) => 
+                        <Col className={"periodo_asignaciones open"} xs={'12'}>
+                            {item['nombre']?
                                 (
                                     <Row className="periodo_asignaciones_seleccionar">
                                         <Col className="periodo_asignaciones_seleccionar_text" >
                                             <Row className="periodo_asignaciones_seleccionar_hover">
                                                 <Col  className="col_periodo_asignaciones_seleccionar_text" > 
-                                                    Seguimientos del periodo : {item[0]['nombre']}
+                                                    Seguimientos del periodo : {item['nombre']}
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -79,3 +80,6 @@ const Socieducativa = (props) =>{
 }
 
 export default Socieducativa 
+
+
+
