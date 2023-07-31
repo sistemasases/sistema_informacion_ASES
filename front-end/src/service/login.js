@@ -9,9 +9,9 @@ const login = (info) => {
     })
     .then(res=>{
       console.log(res.data)
-      sessionStorage.setItem('token', res.data.token)
-      sessionStorage.setItem('user', res.data.user.nombre_completo)
-      sessionStorage.setItem('refresh-token', res.data['refresh-token'])
+      sessionStorage.setItem('token',  AES.encrypt(res.data.token, 'token'))
+      sessionStorage.setItem('user', AES.encrypt(res.data.user.nombre_completo,'user'))
+      sessionStorage.setItem('refresh-token', AES.encrypt(res.data['refresh-token'],'refresh-token'))
     })
     .catch(err=>console.log(err))
   }

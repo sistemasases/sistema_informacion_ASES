@@ -14,7 +14,7 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Ficha_monitor = (props) =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);

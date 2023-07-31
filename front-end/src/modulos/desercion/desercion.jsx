@@ -14,8 +14,7 @@ import axios from 'axios';
 
 const Desercion = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
-
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
     const [state,set_state] = useState({
         periodo : '',
     

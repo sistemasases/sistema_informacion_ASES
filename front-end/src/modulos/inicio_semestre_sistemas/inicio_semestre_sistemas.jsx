@@ -17,7 +17,7 @@ import {Container, Row, Accordion, Button, useAccordionButton, Col} from "react-
 
 const Inicio_semestre_sistemas = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
 
     // Constante para cerrar el acordión.
     const [show, setShow] = useState(true);

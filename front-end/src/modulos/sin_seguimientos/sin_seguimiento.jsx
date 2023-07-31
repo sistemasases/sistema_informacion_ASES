@@ -14,7 +14,7 @@ import axios from 'axios';
 
 const Sin_seguimientos = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
         semestre_activo : [],

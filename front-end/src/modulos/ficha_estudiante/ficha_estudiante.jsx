@@ -14,8 +14,7 @@ const Ficha_estudiante = (props) =>{
         data_user : [],
       })
 
-    const userRole = sessionStorage.getItem('rol');
-
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
 
     useEffect(() => {
         axios({

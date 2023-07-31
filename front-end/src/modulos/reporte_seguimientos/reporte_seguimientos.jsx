@@ -19,7 +19,7 @@ const Reporte_seguimientos = (props) =>{
         data_user : [],
 
       })
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
     useEffect(()=>{
   
         axios({
