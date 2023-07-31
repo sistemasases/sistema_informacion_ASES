@@ -23,7 +23,8 @@ const Reporte_seguimientos = (props) =>{
         data_user : [],
 
       })
-    const userRole = sessionStorage.getItem('rol');
+
+    const userRole = sessionStorage.getItem('permisos');
 
     useEffect(()=>{
       
@@ -96,7 +97,7 @@ const Reporte_seguimientos = (props) =>{
 
     return (
         
-        <>{userRole === 'superAses' || userRole === 'sistemas' || 'profesional' || 'pracgicante' ? <Col className="contenido_children">
+        <>{userRole.includes('view_reporte_segui') ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Cabecera usuario={props.usuario} periodo={props.periodo} data_user={state.data_user}></Cabecera>
             </Row>
