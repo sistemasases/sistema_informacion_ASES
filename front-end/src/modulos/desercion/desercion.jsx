@@ -18,7 +18,7 @@ const Desercion = () =>{
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
 
     const [state,set_state] = useState({
         periodo : '',

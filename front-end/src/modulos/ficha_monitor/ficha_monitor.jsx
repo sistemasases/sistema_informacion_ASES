@@ -18,7 +18,7 @@ const Ficha_monitor = (props) =>{
           Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -47,7 +47,7 @@ const Ficha_monitor = (props) =>{
       }, []);
 
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{userRole.includes('view_ficha_monitores') ? <Col className="contenido_children">
             <Info_basica usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} 
                                 area={props.area} periodo={props.periodo} data_user={state.data_user}/>
         </Col> : <Acceso_denegado/>}</>
