@@ -22,10 +22,9 @@ const Reporte_seguimientos = (props) =>{
         periodo : '',
         data_user : [],
 
-      })
-    const userRole = sessionStorage.getItem('rol');
 
-    useEffect(()=>{
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
+
       
       if (sessionStorage.getItem('rol') === 'superAses')
       {
