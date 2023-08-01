@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Seguimiento from '../../service/create_seguimiento';
-import { AES } from 'crypto-js';
 
 
 const Seguimiento_individual = (props) =>{

@@ -14,15 +14,11 @@ import axios from 'axios';
 
 const Sin_seguimientos = () =>{
 
-<<<<<<< HEAD
-    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
-=======
   const config = {
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
     const userRole = sessionStorage.getItem('rol');
->>>>>>> Desarrollo
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
         semestre_activo : [],

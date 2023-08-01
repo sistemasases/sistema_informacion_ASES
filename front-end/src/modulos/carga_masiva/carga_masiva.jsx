@@ -11,7 +11,7 @@ import { NavLink } from 'react-router-dom';
 
 const Carga_masiva = () =>{
 
-    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
+    const userRole = sessionStorage.getItem('rol');
 
     return (
         <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">

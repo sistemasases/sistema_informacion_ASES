@@ -14,7 +14,7 @@ import {Container, Row, Col} from "react-bootstrap";
 
 const Inicio_semestre_sistemas_instancia = () =>{
 
-    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
+    const userRole = sessionStorage.getItem('rol');
 
     return (
     <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">

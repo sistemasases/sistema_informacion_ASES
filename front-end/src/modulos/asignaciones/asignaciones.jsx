@@ -11,9 +11,6 @@ import { NavLink } from 'react-router-dom';
 
 const Carga_masiva = () => {
 
-<<<<<<< HEAD
-  const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
-=======
   const config = {
     headers: {
           Authorization: 'Bearer ' + sessionStorage.getItem('token')
@@ -21,7 +18,6 @@ const Carga_masiva = () => {
   };
 
   const userRole = sessionStorage.getItem('rol');
->>>>>>> Desarrollo
 
   const [state, set_state] = useState({
     data1: [],
