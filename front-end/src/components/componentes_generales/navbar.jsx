@@ -3,11 +3,6 @@ import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
 import Logos from './LOGO BLANCORecurso 1.png';
 import { useLocation } from 'react-router-dom';
-<<<<<<< HEAD
-import { useNavigate  } from 'react-router-dom';
-import { AES } from 'crypto-js';
-=======
->>>>>>> Desarrollo
 
 const Navbar = (props) =>{
 
@@ -16,7 +11,7 @@ const Navbar = (props) =>{
   
     useEffect(() => {
       const currentUrl = window.location.href;
-      const storedRoutes = AES.decrypt(sessionStorage.getItem('lastVisitedRoutes'),'lastVisitedRoute');
+      const storedRoutes = sessionStorage.getItem('lastVisitedRoutes');
       let updatedRoutes = [];
   
       if (storedRoutes) {
@@ -35,7 +30,7 @@ const Navbar = (props) =>{
         updatedRoutes = [currentUrl];
       }
   
-      sessionStorage.setItem('lastVisitedRoutes',  AES.encrypt(JSON.stringify(updatedRoutes),'lastVisitedRoute'));
+      sessionStorage.setItem('lastVisitedRoutes', JSON.stringify(updatedRoutes));
       setLastVisitedRoutes(updatedRoutes.reverse());
     }, [location]);
   
