@@ -14,12 +14,7 @@ import SidebarItem from './sidebarItem';
 import Footer from './footer';
 import Sidebar_item_closed from './sidebar_item_closed';
 import {Scrollbars} from 'react-custom-scrollbars'; 
-<<<<<<< HEAD
-import { AES, enc } from 'crypto-js';
-
-=======
 import axios from 'axios';
->>>>>>> Desarrollo
 
 
 
@@ -36,7 +31,7 @@ const SideBar = (props) =>{
     }
 
     const [state,set_state] = useState({
-        desplegable : AES.decrypt(sessionStorage.rol, 'rol') === 'superAses' ? Menu : Menu2
+        desplegable : sessionStorage.rol === 'superAses' ? Menu : Menu2
       })
 
     function path_actual(name){

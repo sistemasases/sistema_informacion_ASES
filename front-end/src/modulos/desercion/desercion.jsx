@@ -14,16 +14,12 @@ import axios from 'axios';
 
 const Desercion = () =>{
 
-<<<<<<< HEAD
-    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
-=======
   const config = {
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
     const userRole = sessionStorage.getItem('rol');
 
->>>>>>> Desarrollo
     const [state,set_state] = useState({
         periodo : '',
     
