@@ -1,4 +1,3 @@
-# import serializers from the REST framework
 from rest_framework import serializers
 from modulo_asignacion.models import asignacion
 

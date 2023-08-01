@@ -14,11 +14,15 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Ficha_monitor = (props) =>{
 
+<<<<<<< HEAD
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
+=======
   const config = {
           Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
     const userRole = sessionStorage.getItem('rol');
+>>>>>>> Desarrollo
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);

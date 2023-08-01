@@ -13,7 +13,7 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Gestion_usuario_rol = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
