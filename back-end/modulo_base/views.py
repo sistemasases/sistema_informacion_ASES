@@ -59,6 +59,8 @@ class Login(TokenObtainPairView):
                                 'permisos': list_permisos,
                                 }
                     data = dict(user_serializer.data, **extra_info)
+                    print(data)
+                    
                     return Response({
                         'token': login_serializer.validated_data.get('access'),
                         'refresh-token': login_serializer.validated_data.get('refresh'),

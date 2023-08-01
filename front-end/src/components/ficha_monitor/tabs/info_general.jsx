@@ -165,6 +165,7 @@ const Info_general = (props) =>{
                           state.editar ?
                           (
                             <Row>
+                            
                               <Col xs={"6"} sm={"6"}>
                                 <Button className="boton_editar_info_basica" onClick={handle_upload_estudiante}>
                                   ACEPTAR
@@ -181,25 +182,11 @@ const Info_general = (props) =>{
                           (
                             <Row>
 
-                              {
-                                  props.rolUsuario == 'superSistemas' ?
-                                  (
-                                    <Col xs={"12"} sm={"12"}>
-                                      <Button className="boton_editar_info_basica" onClick={esta_editando}>
-                                        EDITAR INFORMACIÓN
-                                      </Button>
-                                    </Col>
-                                  )
-                                  :
-                                  (
-                                    <Col xs={"12"} sm={"12"}>
-                                      <Button className="boton_editar_info_basica" >
-                                        EDITAR INFORMACIÓN
-                                      </Button>
-                                    </Col>
-                                  )
-                                }
-                              
+                              <Col xs={"12"} sm={"12"}>
+                                <Button className="boton_editar_info_basica" onClick={esta_editando}>
+                                  EDITAR INFORMACIÓN
+                                </Button>
+                              </Col>
                             </Row>
                           )
                         }

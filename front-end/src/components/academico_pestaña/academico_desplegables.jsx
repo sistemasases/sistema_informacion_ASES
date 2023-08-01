@@ -108,6 +108,7 @@ const Academico_desplegable = () => {
     facultades: [],
     profesores: [{ profesores: '' }],
     estudiantes_a_consultar: [{ estudiantes: '' }],
+    traer_materias_del_profesor: [],
     tiene_estudiantes: false,
     tiene_facultades: false,
     tiene_profesores: false,
@@ -130,8 +131,29 @@ const Academico_desplegable = () => {
   useEffect(() => {
     // Aquí puedes realizar las llamadas iniciales si es necesario
     // Por ejemplo, si necesitas obtener facultades al cargar el componente
-    traer_facultades();
+    if(sessionStorage.getItem('rol') === 'profesor')
+    {
+      traer_materias_del_profesor()
+    }
+    else
+    {
+        traer_facultades();
+    }
   }, []);
+
+
+
+  const traer_materias_del_profesor = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/academico/traer_materias_del_profesor/'+sessionStorage.getItem('id_usuario')+'/', config);
+      set_state({
+        traer_materias_del_profesor: response.data,
+      });
+      console.log('Facultades:', response.data);
+    } catch (error) {
+      console.log('Error al obtener facultades:', error);
+    }
+  };
 
   const traer_facultades = async () => {
     try {
@@ -172,9 +194,11 @@ const Academico_desplegable = () => {
     }
   };
 
+
+
   const prueba = 'profesor';
  //sessionStorage.rol
-  if (prueba === 'profesor') {
+  if (sessionStorage.rol === 'profesor') {
     return (
       <Container className="academico_container">
         <Row className="academico_fondo">
@@ -189,7 +213,7 @@ const Academico_desplegable = () => {
               </Col>
             </Row>
               <Row className="academico_deplegable_contenido">
-                {profesores_ejemplo.map((item, index) => <Profesores key={index} item={item} />)}
+                {state.traer_materias_del_profesor.map((item, index) => <Profesores key={index} item={item} />)}
               </Row>
           </Col>
         </Row>
@@ -213,7 +237,8 @@ const Academico_desplegable = () => {
             </Row>
             {state.tiene_facultades ? (
               <Row className="academico_deplegable_contenido">
-                {state.facultades.map((item, index) => <Desplegable_item_listas_materias key={index} item={item} />)}
+                {state.facultades.map((item, index) => 
+                  <Desplegable_item_listas_materias key={index} item={item} />)}
               </Row>
             ) : (
               <Row></Row>
@@ -235,7 +260,8 @@ const Academico_desplegable = () => {
             </Row>
             {state.tiene_profesores ? (
               <Row className="academico_deplegable_contenido">
-                {state.tiene_profesores && state.profesores.map((item, index) => <Profesores key={index} item={item} />)}
+                {state.tiene_profesores && state.profesores.map((item, index) => 
+                  <Profesores key={index} item={item} />)}
               </Row>
             ) : (
               <Row></Row>
@@ -256,7 +282,8 @@ const Academico_desplegable = () => {
               </Col>
             </Row>
             <Row className="academico_deplegable_contenido">
-              {state.tiene_estudiantes && state.estudiantes_a_consultar.map((item, index) => <Estudiantes key={index} item={item} />)}
+              {state.tiene_estudiantes && state.estudiantes_a_consultar.map((item, index) => 
+                <Estudiantes key={index} item={item} />)}
             </Row>
           </Col>
         </Row>

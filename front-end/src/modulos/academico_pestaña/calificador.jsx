@@ -11,7 +11,7 @@ const Academico_pestaña = () =>{
     const userRole = AES.decrypt(sessionStorage.getItem('rol'),'rol');
 
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? 
+        <>{userRole === 'superAses' || userRole === 'sistemas' || 'profesor' ? 
         <Col className="contenido_children">
             <Row className="containerRow">
                 <Calificador/>
