@@ -9,11 +9,13 @@ from modulo_seguimiento.models import *
 from modulo_instancia.models import *
 from modulo_instancia.serializers import semestre_serializer
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+
 # Create your views here.
 
 class seguimiento_individual_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def create(self, request, *args, **kwargs):
@@ -37,7 +39,7 @@ class seguimiento_individual_viewsets (viewsets.ModelViewSet):
 
 class inasistencia_viewsets (viewsets.ModelViewSet):
     serializer_class = inasistencia_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = inasistencia_serializer.Meta.model.objects.all()
 
     def create(self, request, *args, **kwargs):
@@ -61,7 +63,7 @@ class inasistencia_viewsets (viewsets.ModelViewSet):
 
 class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
@@ -94,7 +96,7 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
 
 class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
@@ -129,7 +131,7 @@ class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewS
 
 class conteo_seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):

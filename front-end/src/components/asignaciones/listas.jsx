@@ -6,10 +6,21 @@ import axios from 'axios';
 
 const Listas = (props) => {
 
+
+    const config = {
+        headers: {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+    };
+
+    const config2 = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+
     const{childClicked, childClicked2} = props
     
     const quitar_estudiante = (e) =>{
-      axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/')
+      axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/', config)
       .then(response => {
         childClicked2(props.monitor_seleccionado)
         alert("estudiante "+props.item.id+" eliminado correctamente")
@@ -29,6 +40,7 @@ const Listas = (props) => {
       // Endpoint to send files
       url: 'http://localhost:8000/asignacion/asignacion_usuario/',
       method: "POST",
+      headers: config2,
       data: formData,
         })
         .then((res)=>{
@@ -52,6 +64,7 @@ const Listas = (props) => {
       // Endpoint to send files
       url: 'http://localhost:8000/asignacion/asignacion_usuario/',
       method: "POST",
+      headers: config2,
       data: formData,
         })
         .then((res)=>{
@@ -116,7 +129,7 @@ const Listas = (props) => {
                 )
             }
                     
-            </Row>
+            </Row> 
         )
     }else if(props.rol === "monitor") {
         return (

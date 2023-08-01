@@ -8,6 +8,12 @@ import { useLocation, useParams } from 'react-router-dom';
 
 const Cabecera = () =>{
 
+  const config = {
+    headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    }
+  };
+
     const [profesor, setProfesor] = useState('');
     const [curso, setCurso] = useState('');
 
@@ -36,7 +42,7 @@ const Cabecera = () =>{
       const fetchData = async () => {
         try {
           const response = await axios.get("http://localhost:8000/academico/alumnos_del_profesor/", 
-                                        {params: { curso : curso, profesor : profesor}});
+                                        {params: { curso : curso, profesor : profesor}}, config);
           set_state({
             alumnos_del_profesor : response.data,
             tiene_alumnos_del_profesor: true
@@ -54,7 +60,7 @@ const Cabecera = () =>{
 
     const traer_facultades = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/lista_de_facultades/",);
+          const response = await axios.get("http://localhost:8000/academico/lista_de_facultades/", config);
           set_state({
             facultades : response.data,
             tiene_facultades: true
@@ -70,11 +76,7 @@ const Cabecera = () =>{
         <Container >
             <Row >
                 <Col xs={"12"} md={"8"} className="texto_titulo_bold">
-                    Reporte de estudiantes activos en SRA por semestre
-                </Col>
-                <Col xs={"12"} md={"4"} className="texto_pequeño">
-                    Seleccione la cohorte
-                    <Select></Select>
+                    Nombre de la materia
                 </Col>
             </Row>
 

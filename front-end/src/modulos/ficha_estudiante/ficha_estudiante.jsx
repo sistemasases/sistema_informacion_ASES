@@ -10,6 +10,10 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Ficha_estudiante = (props) =>{
 
+  const config = {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
     const [state,set_state] = useState({
         data_user : [],
       })
@@ -21,6 +25,7 @@ const Ficha_estudiante = (props) =>{
             // Endpoint to send files
             url:  "http://localhost:8000/usuario_rol/estudiante/",
             method: "GET",
+            headers: config,
           })
           .then((respuesta)=>{
             set_state({

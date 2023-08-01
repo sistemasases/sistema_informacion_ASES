@@ -12,6 +12,10 @@ import Selector from "./selector";
 
 const Info_basica_monitor = (props) =>{
 
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
     
@@ -51,6 +55,7 @@ const Info_basica_monitor = (props) =>{
         // Endpoint to send files
         url:  "http://localhost:8000/usuario_rol/monitor/",
         method: "GET",
+        headers: config,
       })
       .then((respuesta)=>{
         set_state({
@@ -71,6 +76,7 @@ const Info_basica_monitor = (props) =>{
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
+              headers: config,
             })
             .then((respuesta)=>{
               total_datos_monitors.push(respuesta.dato)
@@ -311,7 +317,7 @@ const Info_basica_monitor = (props) =>{
                                                     <h4 className="texto_mas_pequeño">correo</h4>
                                                   </Col>
 
-                                                <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño" xs={"5"} md={"2"}>
+                                                <Col xs={"5"} sm={"1"} className="info_texto_cedula_pequeño" md={"2"}>
                                                 <h4 className="texto_mas_pequeño"> cedula</h4>
                                                 </Col>
                                                 

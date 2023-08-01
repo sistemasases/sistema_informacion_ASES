@@ -13,6 +13,11 @@ import Informacion_rol from "../../components/reporte_seguimientos/informacion_r
   
 
 const Cabecera = (props) =>{
+
+  const config = {
+    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
@@ -117,6 +122,7 @@ const Cabecera = (props) =>{
         // Endpoint to send files
         url:  "http://localhost:8000/wizard/semestre/",
         method: "GET",
+        headers: config,
       })
       .then((respuesta)=>{
         set_state({
@@ -136,6 +142,7 @@ const Cabecera = (props) =>{
         // Endpoint to send files
         url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+41+"/",
         method: "GET",
+        headers: config,
       })
       .then((respuesta)=>{
         set_state({
@@ -173,6 +180,7 @@ const Cabecera = (props) =>{
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
+              headers: config,
             })
             .then((respuesta)=>{
               total_datos_estudiantes.push(respuesta.data)
@@ -203,6 +211,7 @@ const Cabecera = (props) =>{
               // Endpoint to send files
               url:  url_axios,
               method: "GET",
+              headers: config,
             })
             .then((respuesta)=>{
               total_datos_estudiantes.push(respuesta.data)
@@ -232,6 +241,7 @@ const Cabecera = (props) =>{
         // Endpoint to send files
         url:  "http://localhost:8000/usuario_rol/reporte_seguimientos/"+props.data_user[e.id]['id']+"/",
         method: "GET",
+        headers: config,
       })
       .then((respuesta)=>{
         set_state({

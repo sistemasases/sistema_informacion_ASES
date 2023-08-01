@@ -14,6 +14,10 @@ import axios from 'axios';
 
 const Reporte_seguimientos = (props) =>{
 
+  const config = {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  };
+
     const [state,set_state] = useState({
         periodo : '',
         data_user : [],
@@ -26,6 +30,7 @@ const Reporte_seguimientos = (props) =>{
           // Endpoint to send files
           url:  "http://localhost:8000/usuario_rol/profesional/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({

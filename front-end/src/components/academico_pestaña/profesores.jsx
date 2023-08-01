@@ -7,6 +7,12 @@ import axios from 'axios';
 
 const Profesores = ({item}) => {
 
+    const config = {
+        headers: {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      };
+
     const [state,set_state] = useState({
         cursos_profesor : [],
         filtro : '',
@@ -26,7 +32,7 @@ const Profesores = ({item}) => {
 
     const traer_cursos = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/traer_cursos_del_profesor/"+index+"/",);
+          const response = await axios.get("http://localhost:8000/academico/traer_cursos_del_profesor/"+index+"/", config);
           set_state({
             cursos_profesor : response.data
           })
@@ -41,31 +47,31 @@ const Profesores = ({item}) => {
     if(item.profesores) {
         return (
             <Row>
-                    <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
-                        <Row className="link_academico1">
-                            <Col className="link_text_academico1" >
-                                <Row className="link_text_academico_hover2">
-                                    {item.asignatura}
-                                    return
-                                    <Col xs={"12"} md={"9"}>
-                                        <input name="filtro" onChange={cambiar_dato}></input>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
+                <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
+                    <Row className="link_academico1">
+                        <Col className="link_text_academico1" >
+                            <Row className="link_text_academico_hover2">
+                                {item.asignatura}
+                                return
+                                <Col xs={"12"} md={"9"}>
+                                    <input name="filtro" onChange={cambiar_dato}></input>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
 
-                        <Row>
-                            <Col className="contenido_fichas_academico2">
-                            { item.profesores.filter((item)=>{
-                                    return state.filtro.toLowerCase() === '' ? item 
-                                    : 
-                                    item.username.toLowerCase().includes(state.filtro);                      
-                                    }).map((item, index) => <Profesores 
-                                    key={index} item={item} 
-                                />) }
-                                
-                            </Col>
-                        </Row>
+                    <Row>
+                        <Col className="contenido_fichas_academico2">
+                        { item.profesores.filter((item)=>{
+                                return state.filtro.toLowerCase() === '' ? item 
+                                : 
+                                item.username.toLowerCase().includes(state.filtro);                      
+                                }).map((item, index) => <Profesores 
+                                key={index} item={item} 
+                            />) }
+                            
+                        </Col>
+                    </Row>
                 </Col>
             </Row>
         )

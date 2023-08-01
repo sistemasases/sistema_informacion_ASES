@@ -17,6 +17,9 @@ var now = today.toLocaleString();
 
 const Info_general = (props) =>{
 
+      const config = {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      };
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -96,6 +99,7 @@ const Info_general = (props) =>{
         url: 'http://localhost:8000/usuario_rol/user_actualizacion/'+props.datos.id+'/',
         method: "PUT", // O "PATCH"
         data: formData,
+        headers: config,
         })
         .then((res)=>{
               console.log("este es el response : " + res)

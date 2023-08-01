@@ -1,19 +1,20 @@
 import React, {useState} from 'react';
-import {Container, Row, Col, Badge} from "react-bootstrap";
+import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
 import Logos from './LOGO BLANCORecurso 1.png';
 import { useLocation } from 'react-router-dom';
+<<<<<<< HEAD
 import { useNavigate  } from 'react-router-dom';
 import { AES } from 'crypto-js';
+=======
+>>>>>>> Desarrollo
 
 const Navbar = (props) =>{
 
     const location = useLocation();
-    const navigate = useNavigate();
     const [lastVisitedRoutes, setLastVisitedRoutes] = useState([]);
   
     useEffect(() => {
-      const currentPath = location.pathname;
       const currentUrl = window.location.href;
       const storedRoutes = AES.decrypt(sessionStorage.getItem('lastVisitedRoutes'),'lastVisitedRoute');
       let updatedRoutes = [];
@@ -52,8 +53,6 @@ const Navbar = (props) =>{
 
 
 
-
-
     const[isOpen, setIsOpen] = useState(false);
     const toggle = ()=> setIsOpen(!isOpen);
 
@@ -77,16 +76,15 @@ const Navbar = (props) =>{
     <Container  >
         <Row className="nav">
 
-        <Col xs={"4"} md={"2"}>
+        <Col xs={"5"} md={"2"} href={"/"}>
             <img src={Logos} className="logo" alt='/'></img>
         </Col>
 
-        <div class="col-md-6" >
+        <div class="d-none d-md-inline col-md-6" >
             <Col className="ulDropdown">
                 <Row>
                 {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
             {lastVisitedRoutes.reverse().map((url, index) => (    
-                    
                 <Col md={"4"} className="row_modulo_activo" href={url}>
                     <a href={url}>
                         {getSegmentsFromUrl(url).join('/')}
@@ -116,38 +114,35 @@ const Navbar = (props) =>{
             </Col> */}
 
 
-            <Col className="boton_perfil" xs={"2"} md={"4"}>
-                <Row>
-                        <div class="d-none d-md-inline col-md-9" >
+            <Col className="boton_perfil" xs={"7"} md={"4"}>
+                <Row >
 
-                            <Col xs={"1"} sm={"1"} md={"9"} className="info_perfil">
-                                <Row>{sessionStorage.nombre_completo} </Row>
-                                <Row>Enlace del documento de aceptación t.d.p</Row>
-                            </Col>
-                        </div>
+                    <Col xs={"7"} md={"7"} className="info_perfil">
+                        <Row>{sessionStorage.nombre_completo} </Row>
+                        <Row>{sessionStorage.rol}</Row>
+                        <Row>{sessionStorage.sede}</Row>
+                    </Col>
 
                     
-                    <Col xs={"12"} sm={"12"} md={"3"} className="desplegable_usuario">
-                         <Row onClick={toggle}>
-                                <Col xs={"7"} md={"4"} >
-                                    <label className="boton_usuario">
-                                        <i class="bi bi-person-fill"/>
-                                    </label>
+                    <Col xs={"5"} md={"3"}>
+                         <Row onClick={toggle} className="desplegable_usuario">
+                                <Col xs={"10"} md={"6"} className="boton_usuario">
+                                    <i class="bi bi-person-circle"></i>
                                 </Col>
                                 {
                                     isOpen ?
                                     (
-                                        <div class="d-none d-lg-inline col-md-3"> 
+                                        <div class="d-none d-md-inline col-md-5" >
                                             <Col className="flecha_usuario">
-                                                <i class="bi bi-chevron-up"></i>
+                                                <i class="bi bi-caret-up-fill"></i>
                                             </Col>
                                         </div>
                                     )
                                     :
                                     (
-                                        <div class="d-none d-lg-inline col-md-3"> 
-                                            <Col  xs={"2"}  md={"3"} className="flecha_usuario">
-                                                <i class="bi bi-chevron-down"></i>
+                                        <div class="d-none d-md-inline col-md-5" >
+                                            <Col className="flecha_usuario">
+                                                <i class="bi bi-caret-down-fill"></i>
                                             </Col>
                                         </div>
                                     )

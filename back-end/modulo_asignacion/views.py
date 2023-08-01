@@ -18,7 +18,7 @@ from django.shortcuts import render, get_object_or_404
 # Create your views here.
 class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
     serializer_class = asignacion_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = asignacion_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk):
@@ -88,7 +88,7 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
 
 class usuario_rol_asignacion_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
 

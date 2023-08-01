@@ -1,17 +1,18 @@
-import React, {useMemo, useState} from 'react';
-import {useTable, Table} from 'react-table';
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import React, {useState} from 'react';
+import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Select from 'react-select'  ;
 
 
 const Cabecera = (props) =>{
+    const config = {
+      Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
       const{childClicked} = props
 
     const datos_option_user = [];
     var bandera_option_user = true;
-    const total_datos_estudiantes = []
 
     const [state,set_state] = useState({
         periodo : '',
@@ -30,6 +31,7 @@ const Cabecera = (props) =>{
           // Endpoint to send files
           url:  "http://localhost:8000/usuario_rol/cohortes_lista/",
           method: "GET",
+          headers: config,
         })
         .then((respuesta)=>{
           set_state({
@@ -46,7 +48,7 @@ const Cabecera = (props) =>{
 
       const handle_users = (e) => {
         // Getting the files from the input
-        if(bandera_option_user==true){
+        if(bandera_option_user === true){
     
           for (var i = 0; i < state.data_user['length'] ; i++) {
             const dato = { value: state.data_user[i]['nombre'], 
@@ -91,12 +93,23 @@ const Cabecera = (props) =>{
             <Row>
                 <Col>
                     <Row>
-                        <Col xs={"12"} md={"6"}>
-                            mostrando el registro del 1 al 10 de un total de # registros
+                        <Col xs={"12"} md={"12"}>
+                            Información del estado del estudiante : 
                         </Col>
-                        <Col xs={"12"} md={"6"}>
-                            Buscar
-                            <select/>
+                        <br></br>
+                        <br></br>
+
+                        <Col xs={"12"} md={"2"}>
+                             Activo :  
+                             <label className="info_desercion_activo"></label>
+                        </Col>
+                        <Col xs={"12"} md={"2"}>
+                            Inactivo :  
+                            <label className="info_desercion_inactivo"></label>
+                        </Col>
+                        <Col xs={"12"} md={"2"}>
+                            Egresado :  
+                            <label className="info_desercion_egresado"></label>
                         </Col>
                     </Row>
                 </Col>

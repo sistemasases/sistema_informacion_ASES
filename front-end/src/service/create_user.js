@@ -3,6 +3,11 @@ import axios from 'axios';
 const user_rol = async (formData) => {
     var creacion_exitosa = null;
     try {
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            }
+        };
         const url_axios = 'http://localhost:8000/usuario_rol/user/';
         const url_usuario_rol = 'http://localhost:8000/usuario_rol/usuario_rol/';
 
@@ -22,14 +27,14 @@ const user_rol = async (formData) => {
             "date_joined": fecha_actual_string
         }
 
-        await axios.post(url_axios, usuario_nuevo)
+        await axios.post(url_axios, usuario_nuevo, config)
         .then(res=> {
             creacion_exitosa = res.data.id
             var usuario_rol = {
                 "id_rol": 2,
                 "id_usuario": res.data.id,
             }
-            axios.post(url_usuario_rol, usuario_rol)
+            axios.post(url_usuario_rol, usuario_rol, config)
             .catch(err=>{
                 console.log(err);
             });

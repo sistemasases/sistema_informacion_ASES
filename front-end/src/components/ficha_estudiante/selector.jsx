@@ -11,6 +11,10 @@ import axios from 'axios';
 
 const Selector = (props) =>{
 
+    const config = {
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    };
+
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
@@ -64,6 +68,7 @@ const Selector = (props) =>{
             // Endpoint to send files
             url:  url_axios,
             method: "GET",
+            headers: config,
             })
             .then((respuesta)=>{
             state.data_user_socioedu.push(respuesta.data)
@@ -188,31 +193,31 @@ const Selector = (props) =>{
                                         </label>
                                     </Row>
                                 </Row>):
-                                (                                        <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
-                                <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
-                                    <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
-                                        {tab.name}
-                                    </label>
-                                </Row>
-                                {
-                                    (tab.id === activeTabIndex)?
-                                    (
-                                    <Row>
-                                        {/* <div class="d-none d-md-block col-md-1">
-                                            <Col md={"1"}></Col>
-                                        </div>
-                                            <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
-                                        <div class="d-none d-md-block col-md-1">
-                                            <Col md={"1"}></Col>
-                                        </div> */}
-                                        
-                                        <Col className="contentTab" xs={"12"} md={"12"}>{tabs[activeTabIndex-1].component}</Col>
+                                (<Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
+                                    <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
+                                        <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
+                                            {tab.name}
+                                        </label>
+                                    </Row>
+                                    {
+                                        (tab.id === activeTabIndex)?
+                                        (
+                                        <Row>
+                                            {/* <div class="d-none d-md-block col-md-1">
+                                                <Col md={"1"}></Col>
+                                            </div>
+                                                <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
+                                            <div class="d-none d-md-block col-md-1">
+                                                <Col md={"1"}></Col>
+                                            </div> */}
+                                            
+                                            <Col className="contentTab" xs={"12"} md={"12"}>{tabs[activeTabIndex-1].component}</Col>
 
-                                    </Row>)
-                                    :
-                                    (<Row></Row>)
-                                }
-                            </Col>)
+                                        </Row>)
+                                        :
+                                        (<Row></Row>)
+                                    }
+                                </Col>)
                             }
                             </Col>
                         ))
@@ -231,7 +236,11 @@ const Selector = (props) =>{
                     <Modal.Header closeButton>
                     <Modal.Title>Importante</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Seleccione un estudiante.</Modal.Body>
+                    {props.seleccionado === '' ?
+                    (<Modal.Body>Seleccione un estudiante.</Modal.Body>)
+                    :
+                    (<Modal.Body>Opción bloqueada.</Modal.Body>)
+                    }
                     <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
