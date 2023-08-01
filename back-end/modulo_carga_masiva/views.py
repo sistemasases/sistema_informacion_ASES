@@ -6,7 +6,7 @@ from modulo_usuario_rol.models import estudiante
 from django.contrib.auth.models import User
 from modulo_programa.models import programa, programa_estudiante, estado_programa
 from modulo_carga_masiva.models import retiro, motivo
-from modulo_academico.models import historial_academico, materia, profesor, facultad
+from modulo_academico.models import historial_academico, materia, facultad
 from modulo_instancia.models import semestre, sede
 from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
@@ -38,8 +38,6 @@ class Validador_carga(APIView):
             elif(tipo == "Retiro"):
                 return carga_retiros(file)
             elif(tipo == "Historial_academico"):
-                return carga_retiros(file)
-            elif(tipo == "Profesor"):
                 return carga_retiros(file)
             elif(tipo == "Ficha"):
                 return carga_retiros(file)

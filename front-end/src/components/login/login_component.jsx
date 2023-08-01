@@ -41,6 +41,7 @@ const Login_component = () => {
         console.log(res.data)
         sessionStorage.setItem('token', res.data.token);
         sessionStorage.setItem('refresh-token', res.data['refresh-token']);
+        sessionStorage.setItem('id_usuario', res.data.user.id);
         sessionStorage.setItem('email', res.data.user.email);
         sessionStorage.setItem('first_name', res.data.user.first_name);
         sessionStorage.setItem('sede', res.data.user.sede);

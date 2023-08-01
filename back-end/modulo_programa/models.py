@@ -1,5 +1,5 @@
 from django.db import models
-from modulo_usuario_rol.models import estudiante
+from modulo_usuario_rol.models import estudiante, monitor
 from modulo_instancia.models import sede, semestre
 
 # Create your models here.
@@ -26,6 +26,11 @@ class programa_estudiante (models.Model):
     id_estado = models.ForeignKey(estado_programa,on_delete=models.CASCADE,default=None,null=True,related_name='id_estado_programa_in_programa_estudiante')
     traker = models.BooleanField(default=True)
 
+class programa_monitor (models.Model):
+    id_programa= models.ForeignKey(programa,on_delete=models.CASCADE,default=0,related_name='id_programa_in_programa_monitor')
+    id_monitor= models.ForeignKey(monitor,on_delete=models.CASCADE,default=0,related_name='id_estudiante_in_programa_monitor')
+    id_estado = models.ForeignKey(estado_programa,on_delete=models.CASCADE,default=None,null=True,related_name='id_estado_programa_in_programa_monitor')
+    traker = models.BooleanField(default=True)
 
 class historial_estado_programa_estudiante (models.Model):
     id_programa= models.ForeignKey(programa,on_delete=models.CASCADE,default=0)
