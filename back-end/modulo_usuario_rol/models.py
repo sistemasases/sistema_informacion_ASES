@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class cond_excepcion(models.Model):
 
-    cond_excepcion= models.CharField(max_length=100)
+    cond_excepcion= models.CharField(max_length=200)
     alias= models.CharField(max_length=20)
     
     class Meta:
