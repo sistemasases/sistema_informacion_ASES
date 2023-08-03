@@ -1,0 +1,26 @@
+.info_desercion_activo{
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-left: 15px;  
+    background: lightgray;
+    color: rgba(235,30,0);
+    font-weight: bold;
+    clip-path: circle(50% at 50% 50%);
+}
+
+.info_desercion_inactivo{
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-left: 15px;  
+    background: orange;
+    clip-path: circle(50% at 50% 50%);
+}
+
+
+.info_desercion_egresado{
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-left: 15px;  
+    background: lightblue;
+    clip-path: circle(50% at 50% 50%);
+}

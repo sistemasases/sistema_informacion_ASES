@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
 import {Row, Col} from "styled-bootstrap-grid";
-import {Button} from "react-bootstrap";
+import {Button, ListGroupItem} from "react-bootstrap";
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
 import {useEffect} from 'react';
 import axios from 'axios';
@@ -29,162 +29,6 @@ const Info_basica = (props) =>{
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-//   const grafico_riesgos = [
-//     {
-//         "fechas": [
-//             "2023-01-04",
-//             "2023-01-04",
-//             "2023-01-04",
-//             "2023-01-04",
-//             "2023-01-04",
-//             "2023-01-04",
-//             "2023-01-04",
-//             "2023-01-04",
-//             "2023-01-04",
-//             "2023-05-11",
-//             "2023-05-04",
-//             "2023-05-17",
-//             "2023-05-02",
-//             "2023-05-12",
-//             "2023-05-10",
-//             "2023-05-01",
-//             "2023-04-05",
-//             "2023-05-18",
-//             "2023-05-10",
-//             "2023-05-31"
-//         ]
-//     },
-//     {
-//         "riesgo_individual": [
-//             1,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             0,
-//             0,
-//             2,
-//             2,
-//             0
-//         ]
-//     },
-//     {
-//         "riesgo_familiar": [
-//             -1,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             0,
-//             2,
-//             1,
-//             1
-//         ]
-//     },
-//     {
-//         "riesgo_academico": [
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             1,
-//             0,
-//             0,
-//             2
-//         ]
-//     },
-//     {
-//         "riesgo_economico": [
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             0,
-//             1,
-//             1,
-//             null
-//         ]
-//     },
-//     {
-//         "riesgo_vida_universitaria_ciudad": [
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             null,
-//             0,
-//             1,
-//             1,
-//             2
-//         ]
-//     }
-// ]
-
-
-// const riesgos = grafico_riesgos.slice(1);
-// const riesgosObj = {};
-
-// riesgos.forEach((riesgo) => {
-//   const [key] = Object.keys(riesgo);
-//   const [values] = Object.values(riesgo);
-//   riesgosObj[key] = values;
-// });
 
   
     const [loading, setLoading2] = useState(false);
@@ -321,7 +165,7 @@ const Info_basica = (props) =>{
     }, [props.data_user]);
 
 
-    const [url, setUrl] = useState('');
+    const [url_estudiante, setUrl] = useState('');
 
 
     useEffect(() => {
@@ -357,11 +201,11 @@ const Info_basica = (props) =>{
           label:props.data_user[i]['cod_univalle']+" "+props.data_user[i]['nombre']+" "+props.data_user[i]['apellido'],
           id:i }
           datos_option_user.push(dato)
+          //alert(dato.value+' '+url_estudiante+' '+state.ya_selecciono_automatico)
 
           //este if lo pongo para que abra academico de una
-          if (url === dato.value && state.ya_selecciono_automatico){
+          if (url_estudiante == dato.value && state.ya_selecciono_automatico){
             setSelectedOption(dato)
-            
             const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+dato.value+"/";
             axios({
               // Endpoint to send files
@@ -440,8 +284,10 @@ const Info_basica = (props) =>{
       <Row className="row_prueba">
         <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
         <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
-        
-        {/* <li >{JSON.stringify(state.total_datos_estudiantes)}</li> */}
+        {/* {!loading && fechas.length > 0 && Object.keys(riesgos).length > 0 && (
+          <GraphComponent fechas={fechas} riesgos={riesgos} />
+        )} */}
+        {/*<li >{JSON.stringify(state.total_datos_estudiantes)}</li>*/} 
 
         <Col xs={"12"} lg={"9"} >
 
@@ -858,7 +704,7 @@ const Info_basica = (props) =>{
       
 
 
-        <Modal show={show2} onHide={handleClose2}>
+        <Modal show={show2} onHide={handleClose2} size={'lg'}>
           <Modal.Header closeButton>
             <Modal.Title>Importante</Modal.Title>
           </Modal.Header>

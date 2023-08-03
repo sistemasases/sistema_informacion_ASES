@@ -38,8 +38,8 @@ class semestre (models.Model):
 
 class cohorte (models.Model):
 
-    id_number= models.IntegerField()
-    nombre= models.CharField(max_length=30)
+    id_number= models.CharField(max_length=20)
+    nombre= models.CharField(max_length=50)
     tiempo_creacion= models.DateTimeField(auto_now_add=True)
     tiempo_modificacion= models.DateTimeField(auto_now_add=False)
 

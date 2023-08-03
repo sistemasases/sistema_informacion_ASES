@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
@@ -11,7 +11,8 @@ const Login_component = () => {
     usuario: '',
     contrasena: '',
     logged: '',
-    temporal: false
+    temporal: false,
+    errorMessage: '',
   });
 
   const url = "http://127.0.0.1:8000/login";
@@ -19,30 +20,6 @@ const Login_component = () => {
     'username': state.usuario[0],
     'password': state.contrasena[0]
   };
-
-  useEffect(() => {
-    const tiempoEspera = 1 * 10 * 60 * 1000; // en milisegundos
-
-    // Programar la eliminación después del tiempo especificado
-    const timeoutId = setTimeout(() => {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('refresh-token');
-      sessionStorage.removeItem('email');
-      sessionStorage.removeItem('first_name');
-      sessionStorage.removeItem('instancia');
-      sessionStorage.removeItem('last_name');
-      sessionStorage.removeItem('nombre_completo');
-      sessionStorage.removeItem('instancia_id');
-      sessionStorage.removeItem('rol');
-      sessionStorage.removeItem('semestre_actual');
-      sessionStorage.removeItem('username');
-      sessionStorage.removeItem('message');
-    }, tiempoEspera);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, []);
 
   const handle_user = (e) => {
     set_state({
@@ -64,6 +41,7 @@ const Login_component = () => {
         console.log(res.data)
         sessionStorage.setItem('token', res.data.token);
         sessionStorage.setItem('refresh-token', res.data['refresh-token']);
+        sessionStorage.setItem('id_usuario', res.data.user.id);
         sessionStorage.setItem('email', res.data.user.email);
         sessionStorage.setItem('first_name', res.data.user.first_name);
         sessionStorage.setItem('sede', res.data.user.sede);
@@ -81,7 +59,15 @@ const Login_component = () => {
           temporal: true
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err)
+        if (err.response.status === 400){
+          set_state({
+            ...state,
+            errorMessage: 'Usuario o contraseña incorrecto', // Mensaje de error personalizado
+          });
+        }
+      });
   };
 
   const handleKeyDown = (e) => {
@@ -105,6 +91,7 @@ const Login_component = () => {
                 <Row className="form_title">
                   <b>Sistema de Información ASES</b>
                 </Row>
+                {state.errorMessage && <div className="error-message" style={{ marginBottom: '20px' }}>{state.errorMessage}</div>}
                 <div className="form_login">
                   <div className="form_group_login">
                     <Form.Control

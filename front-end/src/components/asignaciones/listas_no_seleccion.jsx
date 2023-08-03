@@ -9,7 +9,7 @@ const Listas_no_seleccion = (props) => {
         Authorization: 'Bearer ' + sessionStorage.getItem('token')
     };
 
-    const{childClicked, childClicked2} = props
+    const{ChildClicked, childClicked2} = props
 
     const añadir_estudiante = (e) =>{
         let formData = new FormData();
@@ -51,7 +51,7 @@ const Listas_no_seleccion = (props) => {
         })
         .then((res)=>{
             console.log(res)
-            childClicked(props.practicante_seleccionado)
+            ChildClicked(props.practicante_seleccionado)
             alert("estudiante "+props.item.id+" fue asignado correctamente a :"+props.practicante_seleccionado)
         })
         .catch(err=>{
@@ -91,7 +91,7 @@ const Listas_no_seleccion = (props) => {
                 {
                 props.profesional_seleccionado === '' ?
                 (
-                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.nombre)}>
+                <Col className="listas_cuerpo" onClick={()=>ChildClicked(props.item.nombre)}>
                     <Row className="asignaciones_hover1">
                         <Col  xs={"10"} md={"4"}> 
                             <Row className="nombres_asignacion">
@@ -108,7 +108,7 @@ const Listas_no_seleccion = (props) => {
                 )
                 :
                 (
-                <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.nombre)}>
+                <Col className="listas_cuerpo" onClick={()=>ChildClicked(props.item.nombre)}>
                     <Row className="asignaciones_hover1">
                         <Col  xs={"2"} md={"2"} className="center_asignacion"> 
                             <button onClick={()=>añadir_usuario_practicante()} className="asignaciones_icons_añadir">

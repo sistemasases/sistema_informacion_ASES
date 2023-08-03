@@ -71,7 +71,7 @@ const Navbar = (props) =>{
     <Container  >
         <Row className="nav">
 
-        <Col xs={"5"} md={"2"}>
+        <Col xs={"5"} md={"2"} href={"/"}>
             <img src={Logos} className="logo" alt='/'></img>
         </Col>
 
@@ -121,21 +121,25 @@ const Navbar = (props) =>{
                     
                     <Col xs={"5"} md={"3"}>
                          <Row onClick={toggle} className="desplegable_usuario">
-                                <Col xs={"6"} className="boton_usuario">
+                                <Col xs={"10"} md={"6"} className="boton_usuario">
                                     <i class="bi bi-person-circle"></i>
                                 </Col>
                                 {
                                     isOpen ?
                                     (
-                                        <Col xs={"5"} className="flecha_usuario">
-                                            <i class="bi bi-chevron-up"></i>
-                                        </Col>
+                                        <div class="d-none d-md-inline col-md-5" >
+                                            <Col className="flecha_usuario">
+                                                <i class="bi bi-caret-up-fill"></i>
+                                            </Col>
+                                        </div>
                                     )
                                     :
                                     (
-                                        <Col  xs={"5"} className="flecha_usuario">
-                                            <i class="bi bi-chevron-down"></i>
-                                        </Col>
+                                        <div class="d-none d-md-inline col-md-5" >
+                                            <Col className="flecha_usuario">
+                                                <i class="bi bi-caret-down-fill"></i>
+                                            </Col>
+                                        </div>
                                     )
                                 }  
                         </Row>  

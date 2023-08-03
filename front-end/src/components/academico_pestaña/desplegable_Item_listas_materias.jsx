@@ -101,23 +101,27 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
         return (
             <Row>
                 <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
-                    <Row className="link_academico1" onClick={() => {setOpen(!open); franjas_del_curso(item.cod_materia)}}>
+                    <Row className="link_academico1" onClick={() => {setOpen(!open); profesores_de_la_franja(item.cod_materia, item.franja)}}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover2">
-                                {item.nombre}
-                                {item.codigo}
+                                {item.nombre} --
+                                {item.cod_materia} --
+                                {item.franja}
                             </Row>
                         </Col>
                     </Row>
                     <Row className="content_academico">
                         <Col className="contenido_fichas_academico2">
-                            { state.franjas_de_curso.map((child, index) => <Desplegable_item_listas_materias key={index} item={child} />) }
+                            { state.profesores_de_la_franja.map((child, index) => 
+                                <Desplegable_item_listas_materias key={index} item={child} franja={item.franja}/>) 
+                            }
                         </Col>
                     </Row>
                 </Col>
             </Row>
         )
-    }else if(item.tipo_dato === 'franja') {
+    }
+    /*else if(item.tipo_dato === 'franja') {
         return (
             <Row>
 
@@ -141,6 +145,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
             </Row>
         )
     }
+    */
     else if (item.tipo_dato === 'profesor'){
         return (
         <Row>
@@ -148,17 +153,17 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
             <Row className="link_academico1" onClick={() => {setOpen(!open); alumnos_del_profesor(item.curso_del_profesor, item.id)}}>
                 <Col className="link_text_academico1" >
                     <Row className="link_text_academico_hover3">
-                        {item.nombre} -- {item.curso_del_profesor} --- {franja}
+                        {item.first_name} {item.last_name} -- {item.curso_del_profesor} --- {franja}
                     </Row>
                 </Col>
             </Row>
             <Row className="content_academico">
-                            <Col className="contenido_fichas_academico2" xs={4}>
-                            </Col>
-                            { item.items_materia.map((item, index) => 
-                                    <Col>( {item.nombre}  :   {item.porcentaje} )</Col>)
-                                }
-                        </Row>
+                <Col className="contenido_fichas_academico2" xs={4}>
+                </Col>
+                { item.items_materia.map((item, index) => 
+                    <Col>( {item.nombre} )</Col>)
+                }
+            </Row>
 
             <Row className="content_academico">
                 <Col className="contenido_fichas_academico3">
@@ -169,35 +174,34 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
     </Row>
         )
     }
-    else if (item.tipo_dato === 'estudiante'){
-        return (
+    else if (item.tipo_dato === 'estudiante') {
+      return (
         <Row>
-        <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
+          <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
             <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
-                <Col className="link_text_academico1_sin_borde" xs={4}>
-                    <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
-                        {item.nombre} {item.apellido} - {item.cod_univalle}
-                    </Link>
-                                    
-                    {/* <Row className="link_text_academico_hover4">
-                        {item.alumno}
-                    </Row> */}
-                </Col>
-                { item.notas.map((item, index) => 
-                    <Col>( {item.nombre}  :   {item.calificacion} )</Col>)
-                }
+              <Col className="link_text_academico1_sin_borde" xs={4}>
+                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                  {item.nombre} {item.apellido} - {item.cod_univalle}
+                </Link>
+              </Col>
+              {item.notas ? (
+                item.notas.length > 0 ? ( // Verificar si el array de notas no está vacío
+                  item.notas.map((nota, index) => ( // Si no está vacío, realizar el mapeo
+                    <Col key={index}>( {nota.nombre} : {nota.calificacion} )</Col>
+                  ))
+                ) : (
+                  <Col>No hay notas disponibles</Col> // Si está vacío, mostrar un mensaje o contenido alternativo
+                )
+              ) : (
+                <Col>No hay notas disponibles</Col> // Si item.notas no existe, mostrar un mensaje o contenido alternativo
+              )}
             </Row>
-        </Col>
-    </Row>
-        )
+          </Col>
+        </Row>
+      );
     }
-    else{
-        return (
-            <a href={item.path || "#"} className="fichas_academico plain">
-                return
-            </a>
-        )
-    }
+    // ...
+
     
 }
 

@@ -41,7 +41,8 @@ const Info_general = (props) =>{
       lista_estado_civil:[],                      // Tabla estado_civil
       lista_condicion_de_excepcion:[],    // Tabla cond_excepcion
       seleccionado:props.codigo,
-
+      agregarPariente: false,
+      
       id_usuario:props.datos['id'],
 
       nombres:props.datos['nombre'],
@@ -101,6 +102,9 @@ const Info_general = (props) =>{
       //no estan por ahora
       nuevo_actividades_tiempo_libre:props.datos['actividades_tiempo_libre'],
       nuevo_otros_acompañamientos:props.datos['otros_acompañamientos'],
+
+      nuevo_personas_con_quien_vive : props.datos['vive_con'],                                      
+
     })
 
     const opciones_lista_Etico = ()=>{
@@ -240,19 +244,84 @@ const Info_general = (props) =>{
 
 
 
+const agregarPariente = () => {
+  if (state.nuevo_personas_con_quien_vive === null) {
+    set_state({
+      ...state,
+      nuevo_personas_con_quien_vive: [{
+        pariente: "",
+        nombre: "",
+      }],
+      agregarPariente: true,
+    });
+  } else {
+    set_state({
+      ...state,
+      nuevo_personas_con_quien_vive: state.nuevo_personas_con_quien_vive.concat({
+        pariente: "",
+        nombre: "",
+      }),
+      agregarPariente: true,
+    });
+  }
+};
+
+    
+    const guardarPariente = () => {
+      set_state({
+            ...state,
+      personas_con_quien_vive: state.nuevo_personas_con_quien_vive,
+      agregarPariente: false,
+      })
+
+      handle_upload_estudiante()
+    };
 
 
+  const cancelarPariente = () => {
+      set_state({
+            ...state,
+      nuevo_personas_con_quien_vive: state.personas_con_quien_vive,
+      agregarPariente: false,
+      })
+    };
 
       // zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ 
       // zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ 
       // zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ zona para Activar/Desactivar cosas ------------------ 
 
+      // const cambiar_datos = (e) => {
+      //       set_state({
+      //             ...state,
+      //             [e.target.name] : e.target.value
+      //       })
+      // }
       const cambiar_datos = (e) => {
-            set_state({
-                  ...state,
-                  [e.target.name] : e.target.value
-            })
+      if (e.target.name.startsWith("nuevo_personas_con_quien_vive")) {
+      // Si el campo está relacionado con personas con quien vive, actualiza el estado
+      const [indexStr, field] = e.target.name.match(/\[(\d+)\]\.(.*)/).slice(1);
+      const index = parseInt(indexStr);
+      set_state((prevState) => {
+            const newPersonasConQuienVive = [...prevState.nuevo_personas_con_quien_vive];
+            newPersonasConQuienVive[index] = {
+            ...newPersonasConQuienVive[index],
+            [field]: e.target.value,
+            };
+            return {
+            ...prevState,
+            nuevo_personas_con_quien_vive: newPersonasConQuienVive,
+            };
+      });
+      console.log("este esl personas con quie viv :  " + state.nuevo_personas_con_quien_vive)
+      } else {
+      // Si no, actualiza los demás campos normalmente
+      set_state({
+            ...state,
+            [e.target.name]: e.target.value,
+      });
       }
+      };
+
 
       const cambiar_datos_select_etnia = (e) => {
             set_state({
@@ -298,6 +367,7 @@ const Info_general = (props) =>{
 
 
   const handle_upload_estudiante = (e) => {
+      const fechaHoraActual = new Date().toISOString();
 
     let formData = new FormData();
       formData.append('puntaje_icfes', state.nuevo_puntaje_icfes !== null ? state.nuevo_puntaje_icfes : [null])
@@ -316,6 +386,9 @@ const Info_general = (props) =>{
       formData.append('id_estado_civil', state.nuevo_estado_civil !== null ? state.nuevo_estado_civil : [null]);
       formData.append('id_cond_excepcion', state.nuevo_condicion_de_excepcion !== null ? state.nuevo_condicion_de_excepcion : [null]);
       
+      formData.append("vive_con", JSON.stringify(state.nuevo_personas_con_quien_vive));
+      formData.append("ult_modificacion", fechaHoraActual);
+
 
       axios({
       url: 'http://localhost:8000/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
@@ -343,6 +416,7 @@ const Info_general = (props) =>{
             identidad_de_genero:state.nuevo_identidad_de_genero_id,
             estado_civil:state.nuevo_estado_civil_id,
             condicion_de_excepcion:state.nuevo_condicion_de_excepcion_id,
+            personas_con_quien_vive:state.nuevo_personas_con_quien_vive,
 
             editar : false,
             })
@@ -369,7 +443,8 @@ const Info_general = (props) =>{
                   identidad_de_genero:state.identidad_de_genero,
                   estado_civil:state.estado_civil,
                   condicion_de_excepcion:state.condicion_de_excepcion,
-      
+                  personas_con_quien_vive:state.personas_con_quien_vive,
+
                   editar : false,
                   })
                   console.log("pero que esta pasando ???" )
@@ -388,7 +463,9 @@ const Info_general = (props) =>{
     return (
           <Container className="container_informacion_general" xs={"12"} sm={"6"} >
             <Col xs={"12"}>
-            <li >{JSON.stringify(props.datos)}</li>
+            <li >{JSON.stringify(state.nuevo_personas_con_quien_vive)}</li>
+            <li >{JSON.stringify(state.personas_con_quien_vive)}</li>
+
             {
                           state.editar ?
                           (
@@ -832,41 +909,128 @@ const Info_general = (props) =>{
                         </Col>
                   </Row>
 
+{state.personas_con_quien_vive !== null ? (
+  <Row>
+    <h1 className="texto_subtitulo">Personas con quién vive</h1>
+    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
+      Nombre Completo
+    </Col>
+    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
+      Parentesco
+    </Col>
 
-                  <Row>
-                    <h1 className="texto_subtitulo">Personas con quién vive</h1>
-                    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Nombre Completo</Col>
-                    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">Parentesco</Col>
-                    { state.personas_con_quien_vive.map((item, index) => 
-                        <Row>
-                              <Col xs={"12"} md={"6"} className="texto_pequeño">{item.nombre}</Col>
-                              <Col xs={"12"} md={"6"} className="texto_pequeño">{item.pariente}</Col>
-                        </Row>
-                        ) }
+    {state.editar || state.agregarPariente ? (
+      <Row>
+        {state.nuevo_personas_con_quien_vive.map((item, index) => (
+          <Row className="row_flex_general">
+            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+              <input
+                className="texto_pequeño_12pt"
+                name={`nuevo_personas_con_quien_vive[${index}].nombre`}
+                onChange={cambiar_datos}
+                defaultValue={item.nombre}
+              ></input>
+            </Col>
+            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+              <input
+                className="texto_pequeño_12pt"
+                name={`nuevo_personas_con_quien_vive[${index}].pariente`}
+                onChange={cambiar_datos}
+                defaultValue={item.pariente}
+              ></input>
+            </Col>
+          </Row>
+        ))}
+      <Col xs={"12"} className="col_adicionar_parentesco">
+            <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                  Guardar
+            </Button>
+            <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                  Cancelar
+            </Button>
+      </Col>
+      </Row>
+    ) : (
+      <Row>
+        {state.personas_con_quien_vive.map((item, index) => (
+          <Row>
+            <Col xs={"12"} md={"6"} className="texto_pequeño">
+              {item.nombre}
+            </Col>
+            <Col xs={"12"} md={"6"} className="texto_pequeño">
+              {item.pariente}
+            </Col>
+          </Row>
+        ))}
+      <Col xs={"12"} className="col_adicionar_parentesco">
+            <Button className="adicionar_parentesco" onClick={agregarPariente}>
+            <i class="bi bi-plus-circle"></i>
+            </Button>
+      </Col>
+      </Row>
+    )}
+  </Row>
+) : 
 
-                    {state.editar ?
-                    (
-                        <Row>
-                        { state.personas_con_quien_vive.map((item, index) => 
-                              <Row className="row_flex_general">
-                                    <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">{item.nombre}<input className="texto_pequeño_12pt"></input></Col>
-                                    <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">{item.pariente}<input className="texto_pequeño_12pt"></input></Col>                            
-                              </Row>
-                              ) }
-                        </Row>
-                    )
-                        :
-                        (
-                        <Row className="row_flex_general">
-                              <Col xs={"12"} className="col_adicionar_parentesco">
-                                    <Button className="adicionar_parentesco">
-                                          <i class="bi bi-plus-circle"></i>
-                                    </Button>
-                              </Col>
-                          </Row>
-                        )
-                        }
-                </Row>
+
+
+
+
+
+
+
+(
+  <Row>
+      <h1 className="texto_subtitulo">Personas con quién vive</h1>
+    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
+      Nombre Completo
+    </Col>
+    <Col xs={"6"} md={"6"} className="texto_pequeño_gris">
+      Parentesco
+    </Col>
+  {state.agregarPariente ? (
+      <Row>
+        {state.nuevo_personas_con_quien_vive.map((item, index) => (
+          <Row className="row_flex_general">
+            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+              <input
+                className="texto_pequeño_12pt"
+                name={`nuevo_personas_con_quien_vive[${index}].nombre`}
+                onChange={cambiar_datos}
+                defaultValue={item.nombre}
+              ></input>
+            </Col>
+            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+              <input
+                className="texto_pequeño_12pt"
+                name={`nuevo_personas_con_quien_vive[${index}].pariente`}
+                onChange={cambiar_datos}
+                defaultValue={item.pariente}
+              ></input>
+            </Col>
+          </Row>
+        ))}
+      <Col xs={"12"} className="col_adicionar_parentesco">
+            <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                  Guardar
+            </Button>
+            <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                  Cancelar
+            </Button>
+      </Col>
+      </Row>
+    ) : (
+      <Row>
+          <Col xs={"12"} className="col_adicionar_parentesco">
+                <Button className="adicionar_parentesco" onClick={agregarPariente}>
+                <i class="bi bi-plus-circle"></i>
+                </Button>
+          </Col>
+      </Row>
+    )}
+  </Row>
+)}
+
                 
                 <Row>
                         <h1 className="texto_subtitulo">Información general del acudiente de emergencia</h1>

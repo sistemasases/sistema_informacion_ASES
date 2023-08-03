@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Select from 'react-select'  ;
 import Switch from 'react-switch'
 import {Container, Row, Col} from "styled-bootstrap-grid";
+import Programas_academicos from './programas_academicos'
 
 import  {useEffect} from 'react';
 import axios from 'axios';
@@ -15,15 +16,6 @@ const Info_basica_monitor = (props) =>{
   const config = {
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
-
-    const[switchChecked, setChecked] = useState(false);
-    const handleChange = () => setChecked(!switchChecked);
-    
-    const options = [
-      { value: 'chocolate', label: 'Chocolate' },
-      { value: 'strawberry', label: 'Strawberry' },
-      { value: 'vanilla', label: 'Vanilla' }
-        ]
    
 
     const datos_option_user = []
@@ -40,6 +32,8 @@ const Info_basica_monitor = (props) =>{
       usuario : '',
       data_user : [],
       data_a_enviar : [],
+      monitor_datos_extra: [],
+      programas:[],
 
       seleccionado:'',
 
@@ -124,9 +118,35 @@ const Info_basica_monitor = (props) =>{
 
 
     const handle_option_user = (e) => {
+        
+        const url_axios = "http://localhost:8000/usuario_rol/monitor_info_extra/"+state.data_user[e.id]['id']+"/";
+        axios({
+          // Endpoint to send files
+          url:  url_axios,
+          method: "GET",
+          headers: config,
+        })
+        .then((respuesta)=>{
+           set_state({
+          ...state,
+          monitor_datos_extra : respuesta.data,
+          seleccionado:e.id,
+          id_usuario:state.data_user[e.id]['id'],
+          nombres : state.data_user[e.id]['first_name'],
+          apellidos : state.data_user[e.id]['last_name'],
+          codigo : state.data_user[e.id]['username'],
+          correo : state.data_user[e.id]['email_address'],
+          data_a_enviar: state.data_user[e.id],
+          programas: respuesta.data.programas
+          })
+        })
+        .catch(err=>{
+            return (err)
+        })
+
+
       // Getting the files from the input
-      console.log(e)
-      set_state({
+/*      set_state({
         ...state,
         seleccionado:e.id,
         id_usuario:state.data_user[e.id]['id'],
@@ -134,11 +154,18 @@ const Info_basica_monitor = (props) =>{
         apellidos : state.data_user[e.id]['last_name'],
         codigo : state.data_user[e.id]['username'],
         correo : state.data_user[e.id]['email_address'],
-        data_a_enviar: state.data_user[e.id]
+        data_a_enviar: state.data_user[e.id],
+        programas: state.monitor_datos_extra.programas
       })
+*/
     }
 
-
+    const handleWhatsapp = (e) =>{
+      if (state.telefono) {
+        const url = `https://api.whatsapp.com/send?phone=${state.telefono}`;
+        window.open(url, "_blank");
+      }
+    }
 
 
     return (
@@ -154,6 +181,7 @@ const Info_basica_monitor = (props) =>{
                                         options={datos_option_user} 
                                         onMenuOpen={handle_users} 
                                         onChange={handle_option_user}  />
+                            {/*   <li>{JSON.stringify(state.monitor_datos_extra)}</li>*/}
                         </Row>
 
                         <Row className="rowJustFlex" >
@@ -163,9 +191,51 @@ const Info_basica_monitor = (props) =>{
                                         {
                                           (state.seleccionado) === '' ?
                                           (
-                                            <Row className="info"> 
-  
-                                            </Row>
+                                           <Row className="infoRow2">
+                                            <Col xs={"12"} md={"9"}>
+                                              <Row>
+                                                <h4 className="bold">
+                                                  Programas académicos 
+                                                </h4>
+                                              </Row>
+                                              <Row>
+                                                <label className='info_programa_academico_egresado'>Egresado</label>
+                                                <label className='info_programa_academico_en_curso'>En curso</label>
+                                                <label className='info_programa_academico_desertor'>Desertor</label>
+                                              </Row>
+                                              <Row className="infoRow23_inactivo"> 
+                                                <Col xs={"6"} md={"6"}>
+                                                  <h4 className="texto_pequeño">
+                                                    {state.codigo} 
+                                                  </h4>
+                                                </Col>
+                                                <Col xs={"3"} md={"4"}> 
+                                                  <select></select>
+                                                </Col>
+                                              </Row>
+                                              <Row> 
+                                                <h4 className="texto_mas_pequeño">
+                                                  <br/>
+                                                  Profesional: 
+                                                  <br/>
+                                                  Practicante: 
+                                                  <br/>
+                                                  Monitor: 
+                                                  <br/> 
+                                                  Ultima actualización:
+                                                  <br/> 
+                                                </h4>
+                                              </Row>
+                                            </Col>
+
+                                            <div class="d-none d-md-block col-md-3">
+                                            <Col xs={"12"} md={"12"} className="col_2017">
+                                                <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
+                                                  <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                                </button>
+                                              </Col> 
+                                            </div>
+                                          </Row>
                                           )
                                           :
                                           (
@@ -181,7 +251,22 @@ const Info_basica_monitor = (props) =>{
 
                                                         <h4 className="texto_grande">{state.correo}</h4>
                                                   </Col>
+                                                  <Col md={"9"}>
+                                                    <Row>
+                                                      <h4 className="texto_pequeño">Programas académicos </h4>
+                                                    </Row>
+                                                    <Row>
+                                                      <label className='info_programa_academico_egresado'>Egresado</label>
+                                                      <label className='info_programa_academico_en_curso'>En curso</label>
+                                                      <label className='info_programa_academico_desertor'>Desertor</label>
+                                                    </Row>
+                                                       {state.programas ? (
+                                                            state.programas.map((item, index) => <Programas_academicos rolUsuario={props.rolUsuario} item={item} />)
+                                                          ) : (
+                                                            <p>Cargando programas...</p>
+                                                          )}
 
+                                                  </Col>
                                             </Row>
                                           )
                                         } 
@@ -360,7 +445,7 @@ const Info_basica_monitor = (props) =>{
 
         <div class="col-12">
           <Row>
-            <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} 
+            <Selector id={state.id_usuario} 
                     datos={state.data_a_enviar} seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario}/>
           </Row>
         </div>
