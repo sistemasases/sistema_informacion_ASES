@@ -272,7 +272,41 @@ const handleDeleteItem = async () => {
       )}
 
       <Modal show={show} onHide={handleClose} size={'lg'}>
-        {/* ... (Código del modal existente) */}
+        <Modal.Header closeButton>
+          <Modal.Title>Nuevo Item</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row>
+            <Col xs={'12'} md={'6'}>
+              <input
+                type="text"
+                value={itemName}
+                onChange={(e) => setItemName(e.target.value)}
+                placeholder="Nombre del Item"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={'12'} md={'6'}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={isPartial}
+                  onChange={() => setIsPartial(!isPartial)}
+                />
+                Parcial
+              </label>
+            </Col>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cerrar
+          </Button>
+          <Button variant="primary" onClick={agregar_item}>
+            Aceptar
+          </Button>
+        </Modal.Footer>
       </Modal>
 
       {/* Modal para editar/borrar ítems */}
