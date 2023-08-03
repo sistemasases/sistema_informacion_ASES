@@ -80,9 +80,10 @@ const Academico = (props) =>{
     setActiveTabIndex(index)
   }
 
-
+  const userRole = sessionStorage.getItem('rol');
 
     return (
+        <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' ? <></> :
         <Container className="socioeducativa_container">
             <Row className="socioeducativa_seguimientos_pares">Academico</Row>
                 {state.tiene_datos_cargados ? 
@@ -136,6 +137,7 @@ const Academico = (props) =>{
                 </Modal>
                 
         </Container>
+    }</>
     )
 }
 

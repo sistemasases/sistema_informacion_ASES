@@ -51,7 +51,7 @@ const Desercion = () =>{
         })
       },[]);
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{ userRole.includes('view_reporte_desercion') ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_desercion data_cohorte={state.data_cohorte}/>
             </Row>

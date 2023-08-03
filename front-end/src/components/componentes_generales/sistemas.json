@@ -79,7 +79,7 @@
             },
             {
                 "id":8,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/reporte",
                 "name":"reporte general",
                 "icon":"bi bi-graph-up-arrow"
             },
@@ -105,64 +105,10 @@
             ,
             {
                 "id":12,
-                "path":"/reporte",
-                "name":"reporte",
+                "path":"/calificador",
+                "name":"calificador",
                 "icon":"bi-people-fill"
             }
         ]
-    },
-    {
-        "id":"3",
-        "path":"/",
-        "name":"academico",
-        "icon":"bi-mortarboard-fill",
-        "childrens":[
-            {
-                "path":"/academico",
-                "name":"calificador",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes por docentes",
-                "icon":"bi-people-fill"
-            }
-        ]
-    },
-            {
-                "path":"/academico",
-                "name":"calificador",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"inscripcion a monitorias academicas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"monitorias academicas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"registro de notas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes historicos academicos",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes notas por items",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes por docentes",
-                "icon":"bi-people-fill"
-            }
-
+    }
 ]
