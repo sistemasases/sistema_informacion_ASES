@@ -40,6 +40,17 @@ body {
     width: 15vh;
 }
 
+
+.col_historial{
+    place-items: center;
+    margin-top: 1rem;
+    padding-top: .5rem;
+    padding-left: 10px; 
+    height: 2.5rem;
+    color: white;
+    font-weight: bold;
+}
+
 .row_modulo_activo{
     place-items: center;
     margin-top: 1rem;
@@ -49,7 +60,7 @@ body {
     background: white;
     color: rgba(235,30,0);
     font-weight: bold;
-    clip-path: polygon(0 0, 95% 0, 100% 50%, 95% 100%, 0 100%, 5% 50%);
+    clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%, 20% 50%);
 }
 .row_modulo_activo_pequeño{
     font-size: 9pt;
