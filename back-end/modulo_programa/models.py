@@ -5,13 +5,13 @@ from modulo_instancia.models import sede, semestre
 # Create your models here.
 
 class facultad (models.Model):
-    codigo_univalle = models.BigIntegerField()
+    codigo_univalle = models.CharField(max_length=2)
     nombre= models.CharField(max_length=50)
 
 class programa (models.Model):
     codigo_snies = models.BigIntegerField()
-    codigo_univalle = models.BigIntegerField()
-    nombre= models.CharField(max_length=50)
+    codigo_univalle = models.BigIntegerField(4)
+    nombre= models.CharField(max_length=100)
     jornada= models.CharField(max_length=50)
     id_facultad= models.ForeignKey(facultad,on_delete=models.CASCADE,default=0,related_name='id_facultad_in_programa')
     id_sede= models.ForeignKey(sede,on_delete=models.CASCADE,default=None,null=True,related_name='id_sede_in_programa')
