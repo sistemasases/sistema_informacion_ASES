@@ -60,12 +60,70 @@ const Reporte = () => {
 
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
-    all_estudiantes_reportes.all_estudiantes_reportes().then((res) => {
-      set_state({
-        ...state,
-        estudiante: res,
-      });
-    });
+    let formData = new FormData();
+    let formDataNoData = [
+      {
+        usuario_rol: sessionStorage.getItem("rol"),
+      },
+      {
+        sede: sessionStorage.getItem("sede_id"),
+      },
+    ];
+
+    //Adding files to the formdata
+    console.log("DATOS DE FORMULARIO - APPEND");
+    // formData.append("usuario_rol", sessionStorage.getItem("rol"));
+    console.log(sessionStorage.getItem("rol"));
+    // formData.append("sede", sessionStorage.getItem("sede_id"));
+    console.log(sessionStorage.getItem("sede_id"));
+    console.log(formData.get("usuario_rol"));
+    let rol = sessionStorage.getItem("rol");
+    let sede = sessionStorage.getItem("sede_id");
+    let id_usuario = sessionStorage.getItem("id_usuario");
+    console.log(rol);
+    console.log(sede);
+    formData.append("usuario_rol", rol);
+    formData.append("sede", sede);
+    console.log("ACAAA");
+    console.log(formData.get("usuario_rol"));
+    const config = {
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    };
+    const estudiantes_por_rol = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/reportes/estudiante_por_rol/" +
+            id_usuario.toString() +
+            "/",
+          { params: { usuario_rol: rol, sede: sede } }
+          // config
+        );
+        console.log(response);
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        console.log("entra aqui ssisisisiisj");
+      } catch (error) {
+        console.log("no capto el dato");
+      }
+    };
+
+    estudiantes_por_rol();
+
+    //   all_estudiantes_reportes
+    //     .all_estudiantes_reportes(formData, sessionStorage.getItem("id_usuario"))
+    //     .then((res) => {
+    //       console.log("RES is:");
+    //       console.log(res);
+    //       set_state({
+    //         ...state,
+    //         estudiante: res,
+    //       });
+    //     });
+    //   console.log(sessionStorage.getItem("rol"));
   }, []);
 
   const [search, set_Search] = useState({
@@ -179,9 +237,9 @@ const Reporte = () => {
       isCheck: false,
     },
     {
-      name: "Facultad",
-      value: "facultad",
-      selector: (row) => row.facultad,
+      name: "Sede",
+      value: "sede",
+      selector: (row) => row.sede,
       sortable: true,
       isCheck: false,
     },
@@ -529,8 +587,25 @@ const Reporte = () => {
 
     // condiciones para Filtros de Academico
     if (seleccionado_academico === undefined) {
+    } else if (
+      seleccionado_academico.name == "Código programa académico" &&
+      e.target.checked == true
+    ) {
+      seleccionado_academico.isCheck = true;
+      columns.push(seleccionado_academico);
+      csv_conversion(seleccionado_academico);
+    } else if (
+      seleccionado_academico.name == "Código programa académico" &&
+      e.target.checked == false
+    ) {
+      seleccionado_academico.isCheck = false;
+      columns.map((item, index) => {
+        if (item.name === seleccionado_academico.name) {
+          columns.splice(index, 1);
+        }
+      });
+      csv_pop(seleccionado_academico);
     }
-    // else if(
 
     // condiciones para Filtros de Asignaciones
     if (seleccionado_asignaciones === undefined) {
@@ -771,18 +846,18 @@ const Reporte = () => {
               id="tabla_Reporte"
               title="Reporte"
               columns={columnas.cabeceras}
-              data={state.estudiante.filter((item) => {
-                return search.busqueda.toLowerCase() === ""
-                  ? item
-                  : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
-                      item.nombre.toLowerCase().includes(search.busqueda) ||
-                      item.apellido.toLowerCase().includes(search.busqueda) ||
-                      item.num_doc
-                        .toString()
-                        .toLowerCase()
-                        .includes(search.busqueda);
-              })}
-              // data={state.estudiante}
+              // data={state.estudiante.filter((item) => {
+              //   return search.busqueda.toLowerCase() === ""
+              //     ? item
+              //     : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
+              //         item.nombre.toLowerCase().includes(search.busqueda) ||
+              //         item.apellido.toLowerCase().includes(search.busqueda) ||
+              //         item.num_doc
+              //           .toString()
+              //           .toLowerCase()
+              //           .includes(search.busqueda);
+              // })}
+              data={state.estudiante}
               // data={state.estudiante.filter((estudiante) => {
               //   return search.toLowerCase() === ""
               //     ? estudiante
@@ -795,7 +870,7 @@ const Reporte = () => {
               //       estudiante.cod_univalle().includes(search.toLowerCase()) ||
               //         estudiante.num_doc().includes(search.toLowerCase());
               // })}
-              noDataComponent="Cargando Información."
+              noDataComponent="Cargando Información..."
               pagination
               paginationComponentOptions={paginacionOpciones}
               fixedHeader
@@ -804,7 +879,7 @@ const Reporte = () => {
               responsive
               striped
               filter={true}
-              paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
+              paginationRowsPerPageOptions={[10, 50, 100, 200, 500]}
             />
             <Row>
               <Col style={{ padding: 10 }}>
