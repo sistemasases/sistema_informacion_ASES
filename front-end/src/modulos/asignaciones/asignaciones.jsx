@@ -29,7 +29,7 @@ const Carga_masiva = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/usuario_rol/profesional/', config)
+    axios.get('http://localhost:8000/usuario_rol/profesional/'+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -40,7 +40,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8000/usuario_rol/practicante/', config)
+    axios.get('http://localhost:8000/usuario_rol/practicante/'+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -51,7 +51,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8000/usuario_rol/monitor/', config)
+    axios.get('http://localhost:8000/usuario_rol/monitor/'+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

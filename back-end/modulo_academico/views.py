@@ -35,7 +35,7 @@ from rest_framework.decorators import action
 
 class lista_de_facultades_viewsets(viewsets.ModelViewSet):
     serializer_class = facultad_serializer
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = facultad_serializer.Meta.model.objects.all()
 
     @action(detail=False, methods=['get'])
@@ -48,7 +48,7 @@ class lista_de_facultades_viewsets(viewsets.ModelViewSet):
 
 class lista_de_profesores_viewsets(viewsets.ModelViewSet):
     serializer_class = user_serializer
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = user_serializer.Meta.model.objects.all()
 
     def list(self, request, pk=None):
@@ -266,7 +266,7 @@ class traer_materias_del_profesor_viewsets(viewsets.ModelViewSet):
 
 class datos_del_curso_viewsets(viewsets.ModelViewSet):
     serializer_class = items_semestre_serializer
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = items_semestre.objects.all()
 
     def list(self, request):
@@ -281,7 +281,7 @@ class datos_del_curso_viewsets(viewsets.ModelViewSet):
 
 class curso_datos_generales_viewsets(viewsets.ModelViewSet):
     serializer_class = materia_serializer
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = materia.objects.all()
 
     def retrieve(self, request, pk):
@@ -295,7 +295,7 @@ class curso_datos_generales_viewsets(viewsets.ModelViewSet):
 
 class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
     serializer_class = notas_semestre_serializer
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = notas_semestre_serializer.Meta.model.objects.all()
 
     def list(self, request):
@@ -343,7 +343,7 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
 
 class notas_estudiantes_calificador_viewsets(viewsets.ModelViewSet):
     serializer_class = notas_semestre_serializer
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = notas_semestre_serializer.Meta.model.objects.all()
 
     def list(self, request):

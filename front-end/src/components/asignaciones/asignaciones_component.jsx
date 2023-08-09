@@ -112,38 +112,42 @@ const Asignaciones_component = (props) =>{
 
   const cambiar_dato_select = (e) =>{
 
-      axios.get('http://localhost:8000/usuario_rol/practicante/'+e.id+'/', config)
-      .then(response => {
-        set_state(prevState => ({
-          ...prevState,
-          separacion_practicantes : response.data
-        }));
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    let data = new FormData();
+    data.append('id_sede', sessionStorage.getItem('sede_id'));
 
-      set_state({
-            ...state,
-              profesional_seleccionado: e.value
-      })
-    }
+    axios.put('http://localhost:8000/usuario_rol/practicante/'+e.id+'/', data,config)
+    .then(response => {
+      set_state(prevState => ({
+        ...prevState,
+        separacion_practicantes : response.data
+      }));
+    })
+    .catch(error => {
+      console.log(error);
+    });
+
+    set_state({
+      ...state,
+      profesional_seleccionado: e.value
+    })
+  }
 
 
-   const cambiar_dato = (e) =>{
-          set_state({
-                ...state,
-                [e.target.name] : e.target.value
-          })
-          console.log(e.target.value)
+  const cambiar_dato = (e) =>{
+    set_state({
+      ...state,
+      [e.target.name] : e.target.value
+    })
+    console.log(e.target.value)
     }
 
 
 
 
   function practicante_seleccion(name){
-
-    axios.get('http://localhost:8000/usuario_rol/monitor/'+name+'/', config)
+    let data = new FormData();
+    data.append('id_sede', sessionStorage.getItem('sede_id'));
+    axios.put('http://localhost:8000/usuario_rol/monitor/'+name+'/',data, config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -168,8 +172,10 @@ const Asignaciones_component = (props) =>{
   function monitor_seleccion(name){
 
     //poner el de los estudiantes
+    let formData = new FormData();
+    formData.append('id_sede', sessionStorage.getItem('sede_id'));
 
-    axios.get('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/', config)
+    axios.put('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/',formData, config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -251,7 +257,7 @@ const Asignaciones_component = (props) =>{
                         <Listas 
                           key={index} item={item} rol={rol} 
                           profesional_seleccionado={state.profesional_seleccionado}
-                          ChildClicked={(name)=>practicante_seleccion(name)}
+                          childClicked={(name)=>practicante_seleccion(name)}
                           childClicked2={(name) => monitor_seleccion(name)}>
                         </Listas>) }
                       </Scrollbars>
@@ -269,7 +275,7 @@ const Asignaciones_component = (props) =>{
                         item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                       }).map((item, index) => <Listas 
                     key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
-                    ChildClicked={(name)=>practicante_seleccion(name)}/>) }
+                    childClicked={(name)=>practicante_seleccion(name)}/>) }
 
 
                     <Row className="separador_asignaciones"></Row>
@@ -282,7 +288,7 @@ const Asignaciones_component = (props) =>{
                       }).map((item, index) => <Listas_no_seleccion 
                     key={index} item={item} rol={rol} 
                     profesional_seleccionado={state.profesional_seleccionado}
-                    ChildClicked={(name)=>practicante_seleccion(name)}/>) }
+                    childClicked={(name)=>practicante_seleccion(name)}/>) }
                     </Col>
                     )
                   }
@@ -350,7 +356,7 @@ const Asignaciones_component = (props) =>{
                     key={index} item={item} rol={rol2} 
                     practicante_seleccionado={state.practicante_seleccionado}
                     childClicked2={(name)=>monitor_seleccion(name)}
-                    ChildClicked={(name)=>practicante_seleccion(name)}>
+                    childClicked={(name)=>practicante_seleccion(name)}>
                   </Listas>) }
 
 
@@ -366,7 +372,7 @@ const Asignaciones_component = (props) =>{
                   <Listas_no_seleccion 
                     key={index} item={item} rol={rol2}
                     practicante_seleccionado={state.practicante_seleccionado}
-                    ChildClicked={(name)=>practicante_seleccion(name)}>
+                    childClicked={(name)=>practicante_seleccion(name)}>
                   </Listas_no_seleccion>) }
                   </Scrollbars>
                   </Col>
