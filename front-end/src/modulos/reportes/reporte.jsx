@@ -8,10 +8,7 @@ import Checkbox from "react-bootstrap/FormCheck";
 import Modal from "react-bootstrap/Modal";
 import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import axios from 'axios';
-
-
-
-
+import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 
 var columns = [
   {
@@ -218,8 +215,11 @@ const Reporte = () => {
     selectAllRowsItemText: "Mostrar Todo",
   };
 
+  const userRole = sessionStorage.getItem('permisos');
+
   return (
-    <>
+    <>{ userRole.includes('view_reporte_general') ? 
+      <>
       <div>
         <h1>Consulta de reportes en general </h1>
       </div>
@@ -308,7 +308,7 @@ const Reporte = () => {
             />
           </Container>
         }
-      </>
+      </> </> : <Acceso_denegado/>}
     </>
   );
 };

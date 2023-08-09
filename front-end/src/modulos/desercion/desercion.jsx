@@ -18,7 +18,7 @@ const Desercion = () =>{
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
 
     const [state,set_state] = useState({
         periodo : '',
@@ -51,7 +51,7 @@ const Desercion = () =>{
         })
       },[]);
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{ userRole.includes('view_reporte_desercion') ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_desercion data_cohorte={state.data_cohorte}/>
             </Row>

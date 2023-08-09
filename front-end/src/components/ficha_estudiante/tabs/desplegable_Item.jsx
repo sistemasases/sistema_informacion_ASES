@@ -14,17 +14,22 @@ const Desplegable_item = ({item}) => {
     const handleShow = () => setShow(true);
     console.log("item datos : "+item.datos)
 
+    const userRole = sessionStorage.getItem('rol');
+
     if(item.nombre){
         return (
+            <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
             <Row className="periodo_activo_o_no">
                         {item.Actual ? 
                         (<Col>El periodo se encuentra en curso</Col>)
                             :
                         (<Col>El periodo esta finalizado</Col>)}
             </Row>
+            }</>
         )
     } else{
         return (
+            <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
             <Row>
                 <Col className="col_reportes" >
                     <Row className="col_reportes_hover">
@@ -36,6 +41,7 @@ const Desplegable_item = ({item}) => {
                 
                 <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} size="lg"/>
             </Row>
+            }</>
         )
     }
     

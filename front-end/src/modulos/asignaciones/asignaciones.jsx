@@ -17,7 +17,7 @@ const Carga_masiva = () => {
     }
   };
 
-  const userRole = sessionStorage.getItem('rol');
+  const userRole = sessionStorage.getItem('permisos');
 
   const [state, set_state] = useState({
     data1: [],
@@ -84,7 +84,7 @@ const Carga_masiva = () => {
   }, [state.data1, state.data2, state.data3, state.data4]);
 
   return (
-    <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+    <>{userRole.includes('view_gestion_asignaciones') ? <Col className="contenido_children">
         <Row>
           <Col>
             <Row className="justify-content-md-center">

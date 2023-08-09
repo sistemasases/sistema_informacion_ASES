@@ -6,8 +6,11 @@ import Desplegable_item from "./desplegable_Item";
 
 const Desplegable = ({item}) => {
 
+    const userRole = sessionStorage.getItem('rol');
+
     const [open, setOpen] = useState(false)
         return (
+            <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
             <Row>
                     <Col className={open ? "fichas-item open" : "fichas-item"}>
                     <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>
@@ -61,6 +64,7 @@ const Desplegable = ({item}) => {
 
                 </Col>
             </Row>
+            }</>
         )
     
 }

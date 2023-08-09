@@ -95,6 +95,8 @@ const Info_basica = (props) =>{
     const datos_option_user = []
     const [isLoading, setIsLoading] = useState(true);
 
+    const userRole = sessionStorage.getItem('rol');
+
     var bandera_option_user = true;
     const [state,set_state] = useState({
 

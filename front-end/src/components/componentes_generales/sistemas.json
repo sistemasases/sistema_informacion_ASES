@@ -16,11 +16,6 @@
                 "name":"gestion de incidencias",
                 "icon":"bi-people-fill"
             },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"gestion de permiso",
-                "icon":"bi-people-fill"
-            },
 
             {
                 "path":"/gestion_usuario_rol",
@@ -29,13 +24,7 @@
             },
             {
                 "path":"/inicio_semestre_sistemas",
-                "name":"inicio_semestre_sistema",
-                "icon":"bi-people-fill"
-            },
-            {
-                
-                "path":"/reporte",
-                "name":"reporte",
+                "name":"inicio semestre sistema",
                 "icon":"bi-people-fill"
             }
         ]
@@ -90,7 +79,7 @@
             },
             {
                 "id":8,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/reporte",
                 "name":"reporte general",
                 "icon":"bi bi-graph-up-arrow"
             },
@@ -110,105 +99,16 @@
             {
                 "id":11,
                 "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reporte grupal",
+                "name":"seguimiento grupal",
                 "icon":"bi-people-fill"
             }
             ,
             {
                 "id":12,
-                "path":"/reporte",
-                "name":"reporte",
+                "path":"/calificador",
+                "name":"calificador",
                 "icon":"bi-people-fill"
             }
         ]
-    },
-    {
-        "id":"3",
-        "path":"/",
-        "name":"academico",
-        "icon":"bi-mortarboard-fill",
-        "childrens":[
-            {
-                "path":"/academico",
-                "name":"ifno general",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"carga de notas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"inscripcion a monitorias academicas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"monitorias academicas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"registro de notas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes historicos academicos",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes notas por items",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes por docentes",
-                "icon":"bi-people-fill"
-            }
-        ]
-    },
-            {
-                "path":"/academico",
-                "name":"ifno general",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"carga de notas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"inscripcion a monitorias academicas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"monitorias academicas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"registro de notas",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes historicos academicos",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes notas por items",
-                "icon":"bi-people-fill"
-            },
-            {
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"reportes por docentes",
-                "icon":"bi-people-fill"
-            }
-
+    }
 ]
