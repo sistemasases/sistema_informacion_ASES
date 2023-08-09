@@ -2,10 +2,10 @@ import axios from "axios";
 
 const all_estudiantes_reportes = async (formData, id_usuario) => {
   try {
-    console.log("LO RECIBIDO EN EL FORM DATA ES:");
-    console.log(formData.get("usuario_rol"));
-    console.log("LO RECIBIDO EN EL ID_USUARIO ES:");
-    console.log(id_usuario);
+    // console.log("LO RECIBIDO EN EL FORM DATA ES:");
+    // console.log(formData.get("usuario_rol"));
+    // console.log("LO RECIBIDO EN EL ID_USUARIO ES:");
+    // console.log(id_usuario);
     const config = {
       //   headers: {
       Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -27,14 +27,14 @@ const all_estudiantes_reportes = async (formData, id_usuario) => {
       //     "sede":"1",
       // }
     }).then((res) => {
-      console.log("HOLAAAAAAAAAAAA");
-      console.log(res.data);
+      // console.log("HOLAAAAAAAAAAAA");
+      // console.log(res.data);
       // const res = await axios.get(url_axios, config)
       return res.data;
     });
   } catch (err) {
-    console.log("HOLAAAAAAAAAAAA");
-    console.log(formData);
+    // console.log("HOLAAAAAAAAAAAA");
+    // console.log(formData);
 
     console.log(err);
   }

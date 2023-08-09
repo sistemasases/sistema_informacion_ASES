@@ -71,25 +71,26 @@ const Reporte = () => {
     ];
 
     //Adding files to the formdata
-    console.log("DATOS DE FORMULARIO - APPEND");
-    // formData.append("usuario_rol", sessionStorage.getItem("rol"));
-    console.log(sessionStorage.getItem("rol"));
-    // formData.append("sede", sessionStorage.getItem("sede_id"));
-    console.log(sessionStorage.getItem("sede_id"));
-    console.log(formData.get("usuario_rol"));
+    // console.log("DATOS DE FORMULARIO - APPEND");
+    // // formData.append("usuario_rol", sessionStorage.getItem("rol"));
+    // console.log(sessionStorage.getItem("rol"));
+    // // formData.append("sede", sessionStorage.getItem("sede_id"));
+    // console.log(sessionStorage.getItem("sede_id"));
+    // console.log(formData.get("usuario_rol"));
     let rol = sessionStorage.getItem("rol");
     let sede = sessionStorage.getItem("sede_id");
     let id_usuario = sessionStorage.getItem("id_usuario");
-    console.log(rol);
-    console.log(sede);
-    formData.append("usuario_rol", rol);
-    formData.append("sede", sede);
-    console.log("ACAAA");
-    console.log(formData.get("usuario_rol"));
+    // console.log(rol);
+    // console.log(sede);
+    // formData.append("usuario_rol", rol);
+    // formData.append("sede", sede);
+    // console.log("ACAAA");
+    // console.log(formData.get("usuario_rol"));
+
     const config = {
-      headers: {
+      // headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
+      // },
     };
     const estudiantes_por_rol = async () => {
       try {
@@ -105,7 +106,7 @@ const Reporte = () => {
           ...state,
           estudiante: response.data,
         });
-        console.log("entra aqui ssisisisiisj");
+        // console.log("entra aqui ssisisisiisj");
       } catch (error) {
         console.log("no capto el dato");
       }
@@ -159,6 +160,7 @@ const Reporte = () => {
     { name: "Riesgos" },
     { name: "Condición de Excepción" },
   ];
+  
   const filtros_Contacto = [
     // { title: "Filtro contacto", name: "no-checkbox" },
     // {
@@ -198,6 +200,7 @@ const Reporte = () => {
       isCheck: false,
     },
   ];
+
   const filtros_Estados = [
     {
       name: "ASES",
@@ -221,11 +224,12 @@ const Reporte = () => {
       isCheck: false,
     },
   ];
+
   const filtros_Academico = [
     {
       name: "Código programa académico",
       value: "codigo_programa_academico",
-      selector: (row) => row.codigo_programa_academico,
+      selector: (row) => row.id_programa,
       sortable: true,
       isCheck: false,
     },

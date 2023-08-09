@@ -131,7 +131,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
 
             # ven todo
             list_estudiantes = []
-
+            list_programas = []
             serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
 
             # for i in list(estudiante.objects.all()): 
@@ -164,20 +164,21 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
                     }
                     # print('no riesgos')
                 
-                data = dict(i, **riesgo)
-                # try:
-                #     programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
-                #     # print(programa_del_estudiante)
-                #     dic_programa = {
-                #         'id_programa': programa_estudiante.id_programa,
-                        
-                #     }
+                try:
+                    programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
+                    var_programa = programa.objects.filter(id=programa_del_estudiante.id_programa_id).values()
+                    # print(programa_del_estudiante)
+                    list_programas.append(var_programa)
+                    dic_programa = {
+                        'id_programa': var_programa[0]['codigo_univalle'],
+                    }
 
-                # except programa_estudiante.DoesNotExist:
-                #     print("no hay programa")
+                except :
+                    dic_programa = {'id_programa': 'N/A'}  # Agregar el estado del curso al diccionario
 
+                data = dict(i, **riesgo, **dic_programa)
                 list_estudiantes.append(data)
-                
+            # print(list_programas)  
             # print(list_estudiantes)
             return Response(list_estudiantes)
 
