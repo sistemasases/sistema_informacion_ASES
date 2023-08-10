@@ -40,7 +40,7 @@ const activeTab = (index)=>
 const userRole = sessionStorage.getItem('rol');
 
     return (
-        <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> : 
+        <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> : 
         <Container className="socioeducativa_container">
         <Row className="socioeducativa_seguimientos_pares">Seguimientos de pares</Row>
 

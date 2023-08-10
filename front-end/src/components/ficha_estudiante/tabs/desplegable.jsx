@@ -10,7 +10,7 @@ const Desplegable = ({item}) => {
 
     const [open, setOpen] = useState(false)
         return (
-            <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
+            <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
             <Row>
                     <Col className={open ? "fichas-item open" : "fichas-item"}>
                     <Row className="link_reporte_seguimientos1" onClick={() => setOpen(!open)}>

@@ -57,7 +57,7 @@ const Desplegable_item_academico = ({item}) => {
     
     if(item.nombre){
         return (
-            <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
+            <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
             <Row className="periodo_activo_o_no">
                         {item.semestre_actual === true ? 
                         (<Col>sin datos</Col>)
@@ -68,7 +68,7 @@ const Desplegable_item_academico = ({item}) => {
         )
     } else if (item[1].json_materias)
             {return(
-                <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
+                <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
                 <Row>
                     <Col xs={12} className="col_reportes" >
                         <Row>
@@ -113,7 +113,7 @@ const Desplegable_item_academico = ({item}) => {
             }
             else
             {return(
-                <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
+                <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
                 <Row>
                     Cargando...
                 </Row>

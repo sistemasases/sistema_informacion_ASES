@@ -83,7 +83,7 @@ const Academico = (props) =>{
   const userRole = sessionStorage.getItem('rol');
 
     return (
-        <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' ? <></> :
+        <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' ? <></> :
         <Container className="socioeducativa_container">
             <Row className="socioeducativa_seguimientos_pares">Academico</Row>
                 {state.tiene_datos_cargados ? 

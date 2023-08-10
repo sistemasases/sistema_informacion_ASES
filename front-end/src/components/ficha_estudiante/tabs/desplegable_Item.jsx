@@ -18,7 +18,7 @@ const Desplegable_item = ({item}) => {
 
     if(item.nombre){
         return (
-            <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
+            <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
             <Row className="periodo_activo_o_no">
                         {item.Actual ? 
                         (<Col>El periodo se encuentra en curso</Col>)
@@ -29,7 +29,7 @@ const Desplegable_item = ({item}) => {
         )
     } else{
         return (
-            <>{ userRole === 'VCD_ACADEMICO' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
+            <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
             <Row>
                 <Col className="col_reportes" >
                     <Row className="col_reportes_hover">
