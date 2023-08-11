@@ -110,5 +110,18 @@
                 "icon":"bi-people-fill"
             }
         ]
+    },
+    {
+        "id":"3",
+        "path":"/",
+        "name":"academico",
+        "icon":"bi-mortarboard-fill",
+        "childrens":[
+            {
+                "path":"/academico",
+                "name":"Calificador",
+                "icon":"bi bi-calculator-fill"
+            }
+        ]
     }
 ]
