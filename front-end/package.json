@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
+  "homepage": "http://localhost/",
   "dependencies": {
     "@fontsource/manrope": "^4.5.13",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
@@ -53,7 +54,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "rm -rf build && mkdir build && react-scripts build && cp .htaccess build/.htaccess",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

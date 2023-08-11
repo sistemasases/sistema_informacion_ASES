@@ -14,7 +14,7 @@ const Carga_masiva_component = () =>{
   };
 
   const[switchChecked, setChecked] = useState(false);
-  const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
+  const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva/carga/`
   
 
   const [state,set_state] = useState({

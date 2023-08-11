@@ -7,7 +7,7 @@ const all_sede = async () => {
                 Authorization: 'Bearer ' + sessionStorage.getItem('token')
             }
         };
-        const url_axios = 'http://127.0.0.1:8000/wizard/instancia/';
+        const url_axios = `${process.env.REACT_APP_API_URL}/wizard/instancia/`;
         const resInst = await axios.get(url_axios, config)
         return resInst.data;
         

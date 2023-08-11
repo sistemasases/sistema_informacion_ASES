@@ -5,7 +5,7 @@ const user_rol_manage = async(formData,pk) => {
         const config = {
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
         };
-        const url_axios = 'http://localhost:8000/usuario_rol/usuario_rol/'+ pk.toString()+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`+ pk.toString()+"/";
         await axios({
             url:  url_axios,
             method: "GET",

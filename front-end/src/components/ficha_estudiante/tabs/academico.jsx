@@ -50,7 +50,7 @@ const Academico = (props) =>{
 
     useEffect(() => {
         
-        const url_axios = "http://localhost:8000/academico/lista_historiales_academicos/"+props.id+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/academico/lista_historiales_academicos/`+props.id+"/";
         axios({
         // Endpoint to send files
         url:  url_axios,

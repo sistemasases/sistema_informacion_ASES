@@ -64,7 +64,7 @@ const Cabecera = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:8000/academico/alumnos_del_profesor/',
+          `${process.env.REACT_APP_API_URL}/academico/alumnos_del_profesor/`,
           { params: { curso: curso, profesor: profesor } },
           config
         );
@@ -82,7 +82,7 @@ const Cabecera = () => {
     const datos_del_curso = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:8000/academico/datos_del_curso/',
+          `${process.env.REACT_APP_API_URL}/academico/datos_del_curso/`,
           { params: { curso_id: curso } },
           config
         );
@@ -103,7 +103,7 @@ const Cabecera = () => {
     const curso_datos_generales = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:8000/academico/curso_datos_generales/' + curso + '/',
+          `${process.env.REACT_APP_API_URL}/academico/curso_datos_generales/` + curso + '/',
           config
         );
 
@@ -136,7 +136,7 @@ const Cabecera = () => {
       };
 
       const response = await axios.post(
-        'http://localhost:8000/academico/crear_item/',
+        `${process.env.REACT_APP_API_URL}/academico/crear_item/`,
         data,
         config
       );
@@ -148,7 +148,7 @@ const Cabecera = () => {
       const estudiantesCurso = alumnos_del_profesor.map((estudiante) => estudiante.id);
       for (const estudianteId of estudiantesCurso) {
         await axios.post(
-          'http://localhost:8000/academico/crear_nota/',
+          `${process.env.REACT_APP_API_URL}/academico/crear_nota/`,
           { id_item: newItemId, id_estudiante: estudianteId, calificacion: 0 }, // Puedes poner 0 o dejarlo vacío según sea necesario
           config
         );
@@ -186,7 +186,7 @@ const handleDeleteItem = async () => {
     // Borrar cada una de las notas
     for (const nota of notasToDelete) {
       await axios.delete(
-        `http://localhost:8000/academico/borrar_nota/${nota.id}/`,
+        `${process.env.REACT_APP_API_URL}/academico/borrar_nota/${nota.id}/`,
         config
       );
       console.log('Nota borrada correctamente');
@@ -194,7 +194,7 @@ const handleDeleteItem = async () => {
 
     // Borrar el ítem
     await axios.delete(
-      `http://localhost:8000/academico/borrar_item/${editingItem.id}/`,
+      `${process.env.REACT_APP_API_URL}/academico/borrar_item/${editingItem.id}/`,
       config
     );
     console.log('Ítem borrado correctamente');

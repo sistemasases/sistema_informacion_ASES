@@ -7,7 +7,7 @@ const eliminar_asignacion = async (id_estudiante) => {
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
         }
       };
-      const url_axios = 'http://localhost:8000/asignacion/asignacion_estudiante' + id_estudiante.toString()+"/";
+      const url_axios = `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante` + id_estudiante.toString()+"/";
       const resUserRol = await axios(url_axios, config)
       return resUserRol.data;
       

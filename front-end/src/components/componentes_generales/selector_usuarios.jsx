@@ -156,7 +156,7 @@ const Selector_usuarios = () =>{
     axios({
       // Endpoint to send files
       //FALTA ORGANIZAR PK
-      url:  "http://localhost:8000/usuario_rol/usuario_rol/"+e.id+"/",
+      url:  `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`+e.id+"/",
       method: "GET",
       headers: config,
       data: formData,
@@ -252,7 +252,7 @@ const Selector_usuarios = () =>{
       axios({
         // Endpoint to send files
         //FALTA ORGANIZAR EL PK
-        url:  "http://localhost:8000/usuario_rol/usuario_rol/"+id_user+"/",
+        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`+id_user+"/",
         method: "PUT",
         headers: config,
         data: formData,

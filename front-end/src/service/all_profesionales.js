@@ -7,7 +7,7 @@ const all_profesionales = async () => {
                 Authorization: 'Bearer ' + sessionStorage.getItem('token')
             }
         };
-        const url_axios = 'http://localhost:8000/usuario_rol/profesional/';
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`;
         const res = await axios.get(url_axios, config)
         return res.data;
         

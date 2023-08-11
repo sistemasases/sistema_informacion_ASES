@@ -8,7 +8,7 @@ const create_seguimiento = async (formData) => {
                 Authorization: 'Bearer ' + sessionStorage.getItem('token')
             }
         };
-        const url_axios = 'http://localhost:8000/seguimiento/seguimiento_individual/';
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimiento_individual/`;
 
         const seguimiento = {
             "fecha": formData.fecha,

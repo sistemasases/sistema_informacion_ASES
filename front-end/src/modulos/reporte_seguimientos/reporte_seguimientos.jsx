@@ -31,7 +31,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/profesional/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`,
           method: "GET",
           headers: config,
         })
@@ -50,7 +50,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/practicante/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`,
           method: "GET",
           headers: config,
         })
@@ -70,7 +70,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/monitor/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`,
           method: "GET",
           headers: config,
         })

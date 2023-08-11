@@ -2,6 +2,6 @@ Django
 django-cors-headers
 djangorestframework
 djangorestframework-simplejwt
-psycopg2
+django-environ
 psycopg2-binary
 pandas

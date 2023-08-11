@@ -109,7 +109,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Etico = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/grupos_etnicos/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/grupos_etnicos/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -130,7 +130,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Actividad_simultanea = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/actividad_simultanea/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/actividad_simultanea/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -151,7 +151,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_identidad_de_genero = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/identidad_gen/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/identidad_gen/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -172,7 +172,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_estado_civil = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/estado_civil/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estado_civil/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -193,7 +193,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_condicion_de_excepcion = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/condicion_de_excepcion/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/condicion_de_excepcion/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -391,7 +391,7 @@ const agregarPariente = () => {
 
 
       axios({
-      url: 'http://localhost:8000/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+props.datos.id+'/',
       method: "POST",
       data: formData,
       headers: config2,

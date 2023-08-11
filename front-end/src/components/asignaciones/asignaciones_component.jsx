@@ -112,7 +112,7 @@ const Asignaciones_component = (props) =>{
 
   const cambiar_dato_select = (e) =>{
 
-      axios.get('http://localhost:8000/usuario_rol/practicante/'+e.id+'/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+e.id+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -143,7 +143,7 @@ const Asignaciones_component = (props) =>{
 
   function practicante_seleccion(name){
 
-    axios.get('http://localhost:8000/usuario_rol/monitor/'+name+'/', config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -169,7 +169,7 @@ const Asignaciones_component = (props) =>{
 
     //poner el de los estudiantes
 
-    axios.get('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/', config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

@@ -33,7 +33,7 @@ const Tabla_desercion = () => {
 
   useEffect(() => {
     axios({
-      url: `http://localhost:8000/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
       method: 'GET',
       headers: config,
     })

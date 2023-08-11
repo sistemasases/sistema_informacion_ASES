@@ -19,7 +19,7 @@ const Desplegable_item = ({item}) => {
       })
     const traer_reportes = (e) => {
 
-        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante_solo_semestre_actual/"+e+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante_solo_semestre_actual/`+e+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,

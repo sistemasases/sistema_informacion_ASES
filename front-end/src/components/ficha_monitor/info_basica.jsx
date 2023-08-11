@@ -47,7 +47,7 @@ const Info_basica_monitor = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  "http://localhost:8000/usuario_rol/monitor/",
+        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`,
         method: "GET",
         headers: config,
       })
@@ -65,7 +65,7 @@ const Info_basica_monitor = (props) =>{
                       id:[i] }
           datos_option_user.push(dato)
 
-          const url_axios = "http://localhost:8000/usuario_rol/monitor/"+state.data_user[i]['id']+"/";
+          const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+state.data_user[i]['id']+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
@@ -119,7 +119,7 @@ const Info_basica_monitor = (props) =>{
 
     const handle_option_user = (e) => {
         
-        const url_axios = "http://localhost:8000/usuario_rol/monitor_info_extra/"+state.data_user[e.id]['id']+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_info_extra/`+state.data_user[e.id]['id']+"/";
         axios({
           // Endpoint to send files
           url:  url_axios,

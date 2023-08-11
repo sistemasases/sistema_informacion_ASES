@@ -31,7 +31,7 @@ const Profesores = ({item}) => {
 
     const traer_cursos = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/traer_cursos_del_profesor/"+index+"/", config);
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/traer_cursos_del_profesor/`+index+"/", config);
           set_state({
             cursos_profesor : response.data
           })

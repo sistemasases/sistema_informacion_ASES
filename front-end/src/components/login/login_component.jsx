@@ -14,8 +14,7 @@ const Login_component = () => {
     temporal: false,
     errorMessage: '',
   });
-
-  const url = "http://127.0.0.1:8000/login";
+  const url = `${process.env.REACT_APP_API_URL}/login`
   const data = {
     'username': state.usuario[0],
     'password': state.contrasena[0]

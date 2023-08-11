@@ -30,7 +30,7 @@ const Ficha_monitor = (props) =>{
     useEffect(() => {
         axios({
             // Endpoint to send files
-            url:  "http://localhost:8000/usuario_rol/monitor/",
+            url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`,
             method: "GET",
             headers: config,
           })

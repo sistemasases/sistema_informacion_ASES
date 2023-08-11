@@ -31,7 +31,7 @@ const Info_registros = (props) =>{
       useEffect(()=>{
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/ultimo_seguimiento_individual/" + props.id_estudiante + "/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/ultimo_seguimiento_individual/` + props.id_estudiante + "/",
           method: "GET",
           headers: config,
         })
