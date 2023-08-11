@@ -267,6 +267,7 @@ const Asignaciones_component = (props) =>{
                     :
                     (
                     <Col className="scroll_listas">
+                          <br></br> 
                       { state.separacion_practicantes['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 

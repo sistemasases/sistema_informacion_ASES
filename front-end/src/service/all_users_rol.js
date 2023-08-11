@@ -5,13 +5,14 @@ const all_users_rols = async (pk) => {
         const config = {
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
         };
-        const url_axios = 'http://localhost:8000/usuario_rol/actual_usuario_rol/'+ pk.toString()+"/";;
+        const url_axios = 'http://localhost:8000/usuario_rol/actual_usuario_rol/'+ pk +"/";
         await axios({
             url:  url_axios,
             method: "GET",
             headers: config,
         })
         .then((res => {
+            console.log("llamda: "+ res.data[1])
             return res.data
         }))
     } catch (err) {

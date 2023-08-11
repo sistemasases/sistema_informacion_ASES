@@ -28,9 +28,9 @@ class Validador_carga(APIView):
             if(tipo == 'Estudiante'):
                 print("entro al if")
                 return carga_estudiantes(file)
-            elif(tipo == "Estudiante"):
+            elif(tipo == "Programa_estudiante"):
                 print("entro al if")
-                return carga_usuarios(file)
+                return carga_programa_estudiante(file)
             elif(tipo == "Usuario"):
                 print("entro al if")
                 return carga_usuarios(file)
@@ -57,7 +57,7 @@ def carga_estudiantes(file):
     print("entro al carga_estudiantes")
     list_dict_result = []
     lista_estudiantes =[]
-    lista_programa_estudiantes =[]
+    
     datos = pd.read_csv(file,header=0)
     for i in range(datos.shape[0]):
         if (estudiante.objects.filter(cod_univalle = datos.iat[i,22]).values()):
@@ -70,16 +70,9 @@ def carga_estudiantes(file):
                 }
                 list_dict_result.append(dict_result)
             else:
-                dict_programa_estudiante = {
-                    'num_doc': datos.iat[i,3],
-                    'cod_programa': datos.iat[i,23],
-                    'sede': datos.iat[i,24],
-                }
-                lista_programa_estudiantes.append(dict_programa_estudiante)
-
                 dict_result = {
                     'dato' : datos.iat[i,22],
-                    'mensaje' : 'Se le asignó un nuevo programa.'
+                    'mensaje' : 'El estudiante existe pero No en este programa.'
                 }
                 list_dict_result.append(dict_result)
         else:
@@ -110,12 +103,6 @@ def carga_estudiantes(file):
                 cod_univalle = str(datos.iat[i,22])
                 )
                 lista_estudiantes.append(Estudiante)
-                dict_programa_estudiante = {
-                    'num_doc': datos.iat[i,3],
-                    'cod_programa': datos.iat[i,23],
-                    'sede': datos.iat[i,24],
-                }
-                lista_programa_estudiantes.append(dict_programa_estudiante)
                 dict_result = {
                     'dato' : datos.iat[i,22],
                     'mensaje' : 'Se cargó correctamente este estudiante.'
@@ -129,28 +116,42 @@ def carga_estudiantes(file):
                 list_dict_result.append(dict_result)
 
     estudiante.objects.bulk_create(lista_estudiantes)
-    carga_programa_estudiantes = carga_programa_estudiante(lista_programa_estudiantes)
-    if carga_programa_estudiantes:
-        return Response(list_dict_result)
-    else:
-        return Response(list_dict_result)
-    
-def carga_programa_estudiante(lista):
-    lista_programa_estudiante =[]
-    for i in lista:
 
-        consulta_estudiante = estudiante.objects.filter(num_doc =i['num_doc']).first()
-        consulta_programa = programa.objects.filter(codigo_univalle= i['cod_programa'],id_sede = i['sede']).first()
+    return Response(list_dict_result)
+    
+def carga_programa_estudiante(file):
+    list_dict_result = []
+    lista_programa_estudiante =[]
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+
+        consulta_estudiante = estudiante.objects.filter(num_doc =datos.iat[i,0]).first()
+        print(str(consulta_estudiante) + "holaaaa "+str(i))
+        consulta_programa = programa.objects.filter(codigo_univalle= datos.iat[i,1],id_sede = datos.iat[i,2]).first()
+        print(str(consulta_programa) + "holaaaa "+str(i))
         consulta_estado_programa = estado_programa.objects.filter(id= '1').first()
-        Programa_estudiante = programa_estudiante(
-            id_programa = consulta_programa,
-            id_estudiante = consulta_estudiante,
-            id_estado = consulta_estado_programa,
-            traker = True
-        )
-        lista_programa_estudiante.append(Programa_estudiante)
+        try:
+            Programa_estudiante = programa_estudiante(
+                id_programa = consulta_programa,
+                id_estudiante = consulta_estudiante,
+                id_estado = consulta_estado_programa,
+                traker = True
+            )
+            lista_programa_estudiante.append(Programa_estudiante)
+            dict_result = {
+                        'dato' : datos.iat[i,0],
+                        'mensaje' : 'Se relacionó correctamente este estudiante con su programa.'
+                    }
+            list_dict_result.append(dict_result)
+        except:
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'Error al relacionar el estudiante con su programa.'
+            }
+            list_dict_result.append(dict_result)
+
     programa_estudiante.objects.bulk_create(lista_programa_estudiante)
-    return True
+    return Response(list_dict_result)
 
 def carga_usuarios(file):
     print("entro al carga_usuarios")

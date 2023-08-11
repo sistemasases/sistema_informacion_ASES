@@ -525,7 +525,7 @@ class actual_usuario_rol_viewsets (viewsets.ModelViewSet):
 
     def retrieve(self, request,pk=None):
         list_user_rol = list()
-        var_semestre = get_object_or_404(semestre, semestre_actual = True,sede=pk)
+        var_semestre = get_object_or_404(semestre, semestre_actual = True,id_sede=pk)
         for user_rol in usuario_rol.objects.filter(id_semestre =var_semestre.id, estado = "ACTIVO").values():
             rols= rol.objects.filter(id =user_rol['id_rol_id']).annotate(id_rol=F('id')).values('id_rol','nombre')[0]
             usuarios= User.objects.filter(id =user_rol['id_usuario_id']).values('id','username','first_name','last_name', 'email')[0]

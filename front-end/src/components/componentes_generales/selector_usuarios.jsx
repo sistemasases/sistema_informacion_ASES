@@ -102,9 +102,10 @@ const Selector_usuarios = () =>{
     
   }
   const consulta_all_user_rol = (e)=>{
-    console.log(state.data_user_rol)
+    let pk = sessionStorage.getItem('sede_id');
 
-    all_users_rols.all_users_rols(sessionStorage.getItem('sede_id')).then((res) => {
+    all_users_rols.all_users_rols(pk).then((res) => {
+      console.log(res)
       set_state({
         ...state,
         data_user_rol : res
