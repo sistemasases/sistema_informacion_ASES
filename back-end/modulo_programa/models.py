@@ -10,7 +10,7 @@ class facultad (models.Model):
 
 class programa (models.Model):
     codigo_snies = models.BigIntegerField()
-    codigo_univalle = models.BigIntegerField(4)
+    codigo_univalle = models.BigIntegerField()
     nombre= models.CharField(max_length=100)
     jornada= models.CharField(max_length=50)
     id_facultad= models.ForeignKey(facultad,on_delete=models.CASCADE,default=0,related_name='id_facultad_in_programa')
