@@ -1,0 +1,22 @@
+[
+    {
+        "id":"2",
+        "path":"/ficha_estudiante/sin_seleccion",
+        "name":"socieducativo",
+        "icon":"bi-journal-bookmark-fill",
+        "childrens":[
+            {
+                "id":2,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Ficha de estudiantes",
+                "icon":"bi bi-file-earmark-person-fill"
+            },
+            {
+                "id":12,
+                "path":"/reporte",
+                "name":"reporte",
+                "icon":"bi-people-fill"
+            }
+        ]
+    }
+]

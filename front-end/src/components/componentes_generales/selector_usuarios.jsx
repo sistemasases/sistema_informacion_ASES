@@ -96,18 +96,23 @@ const Selector_usuarios = () =>{
       })
       bandera_consulta_rol++;
       console.log(bandera_consulta_rol)
+      console.log(state.data_user_rol)
     }
 
     
   }
   const consulta_all_user_rol = (e)=>{
+    let pk = sessionStorage.getItem('sede_id');
 
-      all_users_rols.all_users_rols().then((res) => {
-        set_state({
-          ...state,
-          data_user_rol : res
-        })
+    all_users_rols.all_users_rols(pk).then((res) => {
+      console.log(res)
+      set_state({
+        ...state,
+        data_user_rol : res
       })
+    })
+
+    console.log(state.data_user_rol)
 
   }
 
@@ -153,11 +158,12 @@ const Selector_usuarios = () =>{
   
     //Adding files to the formdata
     formData.append('id', e.id);
+    formData.append('id_sede', sessionStorage.getItem('sede_id'));
     axios({
       // Endpoint to send files
       //FALTA ORGANIZAR PK
-      url:  `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`+e.id+"/",
-      method: "GET",
+      url:  `${process.env.REACT_APP_API_URL}/usuario_rol/actual_usuario_rol/`+e.id+"/",
+      method: "PUT",
       headers: config,
       data: formData,
     })
@@ -197,7 +203,8 @@ const Selector_usuarios = () =>{
   
     //Adding files to the formdata
     formData.append('id_rol', state.id_rol[0]);
-    formData.append('id_usuario', state.id_usuario[0]);
+    formData.append('id_user', state.id_usuario[0]);
+    formData.append('id_sede', sessionStorage.getItem('sede_id'));
     try {
       user_rol.user_rol(formData);
       set_state({
@@ -249,6 +256,7 @@ const Selector_usuarios = () =>{
       const id_user = state.select_rows[i].id
       let formData = new FormData();
       formData.append('id', id_user);
+      formData.append('id_sede', sessionStorage.getItem('sede_id'));
       axios({
         // Endpoint to send files
         //FALTA ORGANIZAR EL PK

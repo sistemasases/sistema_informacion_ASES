@@ -7,6 +7,7 @@ router.register(r'user',user_viewsets,basename = 'user')
 router.register(r'estudiante',estudiante_viewsets,basename = 'estudiante')
 router.register(r'rol',rol_viewsets,basename = 'rol')
 router.register(r'usuario_rol',usuario_rol_viewsets,basename = 'usuario_rol')
+router.register(r'actual_usuario_rol',actual_usuario_rol_viewsets,basename = 'actual_usuario_rol')
 router.register(r'usuario_rol_old',usuario_rol_old_viewsets,basename = 'usuario_rol_old')
 router.register(r'profesional',profesional_viewsets,basename = 'profesional')
 router.register(r'practicante',practicante_viewsets,basename = 'practicante')
@@ -34,6 +35,12 @@ router.register(r'cohorte_estudiante_info',cohorte_estudiante_info_viewsets,base
 router.register(r'cohortes_lista',cohortes_lista_viewsets,basename = 'cohortes_lista')
 
 router.register(r'historial_monitor',historial_monitor_viewsets,basename = 'historial_monitor')
+
+
+
+#rutas de views que son prueba o valen mondaa
+router.register(r'estudiante_selected2',estudiante_selected2_viewsets,basename = 'estudiante_selected2')
+
 
 
 urlpatterns = router.urls

@@ -18,7 +18,7 @@ const Ficha_estudiante = (props) =>{
         data_user : [],
       })
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
 
 
     useEffect(() => {
@@ -42,7 +42,7 @@ const Ficha_estudiante = (props) =>{
     
 
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Row>
+        <>{userRole.includes('view_ficha_estudiantes') ? <Row>
             <Col className="contenido_children">
                 <Info_basica usuario={props.nombreUsuario} rolUsuario={props.rolUsuario} 
                                 area={props.area} periodo={props.periodo} data_user={state.data_user}/>

@@ -68,16 +68,39 @@ const Desplegable_item_listas_materias = ({ item }) => {
             <Row>
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
+                    {sessionStorage.getItem('rol') === 'profesor' ?
+                        (
+                            <Col className="link_text_academico1_sin_borde" xs={2}>
+                                    {item.nombre} {item.apellido}
+                            </Col>
+                        ):
+                        (
+                            <Col className="link_text_academico1_sin_borde" xs={2}>
+                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                    {item.nombre} {item.apellido}
+                                </Link>
+                            </Col>
+                        )
+                    }
+
+                    {sessionStorage.getItem('rol') === 'profesor' ?
+                        (
                         <Col className="link_text_academico1_sin_borde" xs={2}>
-                            <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
-                                {item.nombre} {item.apellido}
-                            </Link>
-                        </Col>
-                        <Col className="link_text_academico1_sin_borde" xs={2}>
-                            <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
                                 {item.cod_univalle}
-                            </Link>
                         </Col>
+                        )
+                        :
+                        (
+                            <Col className="link_text_academico1_sin_borde" xs={2}>
+                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                    {item.cod_univalle}
+                                </Link>
+                            </Col>
+                        )
+                    }
+
+
+
                         {item.notas ? (
                             <>
                                 {item.notas.map((nota, index) => (

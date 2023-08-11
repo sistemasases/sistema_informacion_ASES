@@ -20,7 +20,9 @@ const Semestre_sistemas_component = () =>{
 
     useEffect(()=>{
         //Trae todos los usuarios con rol del semestre
-        All_Users_Rols.all_users_rols().then((res) => {
+        let formData = new FormData();
+        formData.append('id_sede', sessionStorage.getItem('sede_id'));
+        All_Users_Rols.all_users_rols(formData).then((res) => {
             if(res != undefined)
             set_state({
                 ...state,

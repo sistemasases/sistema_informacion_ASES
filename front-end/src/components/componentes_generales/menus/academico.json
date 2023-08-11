@@ -1,0 +1,35 @@
+[
+    {
+        "id":"2",
+        "path":"/ficha_estudiante/sin_seleccion",
+        "name":"socieducativo",
+        "icon":"bi-journal-bookmark-fill",
+        "childrens":[
+            {
+                "id":2,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Ficha de estudiantes",
+                "icon":"bi bi-file-earmark-person-fill"
+            },
+            {
+                "id":12,
+                "path":"/reporte",
+                "name":"reporte",
+                "icon":"bi-people-fill"
+            }
+        ]
+    },
+    {
+        "id":"3",
+        "path":"/",
+        "name":"academico",
+        "icon":"bi-mortarboard-fill",
+        "childrens":[
+            {
+                "path":"/academico",
+                "name":"Calificador",
+                "icon":"bi bi-calculator-fill"
+            }
+        ]
+    }
+]

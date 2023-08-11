@@ -18,7 +18,7 @@ const Sin_seguimientos = () =>{
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
         semestre_activo : [],
@@ -48,7 +48,7 @@ const Sin_seguimientos = () =>{
 
     return (
         
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{ userRole.includes('view_estudiantes_sin_segui') ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_sin_seguimientos semestre_activo={state.semestre_activo['id']}></Tabla_sin_seguimientos>
             </Row>

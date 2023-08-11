@@ -17,7 +17,7 @@ import {Container, Row, Accordion, Button, useAccordionButton, Col} from "react-
 
 const Inicio_semestre_sistemas = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
 
     // Constante para cerrar el acordión.
     const [show, setShow] = useState(true);
@@ -41,7 +41,7 @@ const Inicio_semestre_sistemas = () =>{
     }
 
     return (
-    <>{userRole === 'superAses' || userRole === 'sistemas' ? <Container>
+    <>{ userRole.includes('view_inicio_semestre') ? <Container>
         <Row className="rowJustFlex">
             <h1>INICIO DE SEMESTRE</h1>
         </Row>

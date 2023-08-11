@@ -47,7 +47,7 @@ const Info_basica_monitor = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`,
+        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/",
         method: "GET",
         headers: config,
       })
@@ -64,13 +64,15 @@ const Info_basica_monitor = (props) =>{
                       label:state.data_user[i]['username']+" "+state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],
                       id:[i] }
           datos_option_user.push(dato)
-
+          let formData = new FormData();
+          formData.append('id_sede', sessionStorage.getItem('sede_id'));
           const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+state.data_user[i]['id']+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
-              method: "GET",
+              method: "PUT",
               headers: config,
+              data: formData,
             })
             .then((respuesta)=>{
               total_datos_monitors.push(respuesta.dato)
@@ -123,7 +125,7 @@ const Info_basica_monitor = (props) =>{
         axios({
           // Endpoint to send files
           url:  url_axios,
-          method: "GET",
+          method: "POST",
           headers: config,
         })
         .then((respuesta)=>{

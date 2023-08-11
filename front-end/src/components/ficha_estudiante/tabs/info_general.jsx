@@ -456,9 +456,7 @@ const agregarPariente = () => {
 
   }
 
-
-
-    
+  const userRole = sessionStorage.getItem('rol');
 
     return (
           <Container className="container_informacion_general" xs={"12"} sm={"6"} >

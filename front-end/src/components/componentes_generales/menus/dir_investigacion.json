@@ -1,0 +1,70 @@
+[
+    {
+        "id":"2",
+        "path":"/ficha_estudiante/sin_seleccion",
+        "name":"socieducativo",
+        "icon":"bi-journal-bookmark-fill",
+        "childrens":[
+            {
+                "id":1,
+                "path":"/sin_seguimientos",
+                "name":"Reporte general de seguimientos",
+                "icon":"bi bi-file-earmark-ruled-fill"
+            },
+            {
+                "id":2,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Ficha de estudiantes",
+                "icon":"bi bi-file-earmark-person-fill"
+            },
+            {
+                "id":5,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Reporte geográfico Ases",
+                "icon":"bi bi-pin-map-fill"
+            },
+            {
+                "id":6,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Descarga de formularios",
+                "icon":"bi bi-file-earmark-arrow-down-fill"
+            },
+            {
+                "id":7,
+                "path":"/desercion",
+                "name":"Reporte de deserción",
+                "icon":"bi bi-clipboard-x-fill"
+            },
+            {
+                "id":8,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Reporte general",
+                "icon":"bi bi-file-ruled-fill"
+            },
+            {
+                "id":9,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Reporte grafico ASES",
+                "icon":"bi-clipboard2-data-fill"
+            },
+            {
+                "id":10,
+                "path":"/reporte_seguimientos",
+                "name":"Consulta de seguimientos", 
+                "icon":"bi bi-search"
+            },
+            {
+                "id":11,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Reporte grupal",
+                "icon":"bi bi-ui-checks-grid"
+            },
+            {
+                "id":12,
+                "path":"/reporte",
+                "name":"reporte",
+                "icon":"bi-people-fill"
+            }
+        ]
+    }
+]
