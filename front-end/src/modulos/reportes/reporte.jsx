@@ -1,12 +1,12 @@
 import React, { useState, useEffect, Component, useRef } from "react";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
-import Carousel from "react-bootstrap/Carousel";
-import all_estudiantes_reportes from "../../service/all_estudiantes_reportes";
-import Select from "react-select";
-import DataTable, { createTheme } from "react-data-table-component";
-import Checkbox from "react-bootstrap/FormCheck";
-import Modal from "react-bootstrap/Modal";
-import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
+// import Carousel from "react-bootstrap/Carousel";
+// import all_estudiantes_reportes from "../../service/all_estudiantes_reportes";
+// import Select from "react-select";
+import DataTable from "react-data-table-component";
+// import Checkbox from "react-bootstrap/FormCheck";
+// import Modal from "react-bootstrap/Modal";
+// import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import axios from "axios";
 import { CSVLink } from "react-csv";
 // import ExportExcel from "react-export-excel";
@@ -58,25 +58,9 @@ const Reporte = () => {
 
   const [state, set_state] = useState({ estudiante: [] });
 
+
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
-    let formData = new FormData();
-    let formDataNoData = [
-      {
-        usuario_rol: sessionStorage.getItem("rol"),
-      },
-      {
-        sede: sessionStorage.getItem("sede_id"),
-      },
-    ];
-
-    //Adding files to the formdata
-    // console.log("DATOS DE FORMULARIO - APPEND");
-    // // formData.append("usuario_rol", sessionStorage.getItem("rol"));
-    // console.log(sessionStorage.getItem("rol"));
-    // // formData.append("sede", sessionStorage.getItem("sede_id"));
-    // console.log(sessionStorage.getItem("sede_id"));
-    // console.log(formData.get("usuario_rol"));
     let rol = sessionStorage.getItem("rol");
     let sede = sessionStorage.getItem("sede_id");
     let id_usuario = sessionStorage.getItem("id_usuario");
@@ -89,9 +73,10 @@ const Reporte = () => {
 
     const config = {
       // headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      Authorization: "Bearer " + sessionStorage.getItem("token"),
       // },
     };
+
     const estudiantes_por_rol = async () => {
       try {
         const response = await axios.get(
@@ -101,11 +86,12 @@ const Reporte = () => {
           { params: { usuario_rol: rol, sede: sede } }
           // config
         );
-        console.log(response);
+        // console.log(response.data);
         set_state({
           ...state,
           estudiante: response.data,
         });
+        // old_estudiante.push(response.data);
         // console.log("entra aqui ssisisisiisj");
       } catch (error) {
         console.log("no capto el dato");
@@ -127,6 +113,38 @@ const Reporte = () => {
     //   console.log(sessionStorage.getItem("rol"));
   }, []);
 
+  useEffect(() => {
+    // let old_estudiante = state.estudiante;
+    let rol = sessionStorage.getItem("rol");
+    let sede = sessionStorage.getItem("sede_id");
+    let id_usuario = sessionStorage.getItem("id_usuario");
+    const riesgos_estudiante = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/reportes/estudiante_filtros/" +
+            id_usuario.toString() +
+            "/",
+          { params: { usuario_rol: rol, sede: sede } }
+          // config
+        );
+        // console.log(response);
+
+        // set_state({
+        //   estudiante: [{}],
+        // });
+
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        // console.log("entra aqui ssisisisiisj");
+      } catch (error) {
+        console.log("no capto el dato");
+      }
+    };
+    riesgos_estudiante();
+  }, []);
+
   const [search, set_Search] = useState({
     busqueda: "",
   });
@@ -138,8 +156,8 @@ const Reporte = () => {
   };
 
   const csv_pop = (item) => {
-    var label = item.name;
-    var key = item.value;
+    // var label = item.name;
+    // var key = item.value;
     csv_headers.map((item_csv, index) => {
       if (item_csv.label === item.name) {
         csv_headers.splice(index, 1);
@@ -148,7 +166,7 @@ const Reporte = () => {
   };
   const onSearch = (e) => {
     set_Search({ ...search, busqueda: e.target.value });
-    console.log(search);
+    // console.log(search);
   };
 
   const [columnas, set_columnas] = useState({ cabeceras: columns });
@@ -160,7 +178,7 @@ const Reporte = () => {
     { name: "Riesgos" },
     { name: "Condición de Excepción" },
   ];
-  
+
   const filtros_Contacto = [
     // { title: "Filtro contacto", name: "no-checkbox" },
     // {
@@ -228,7 +246,7 @@ const Reporte = () => {
   const filtros_Academico = [
     {
       name: "Código programa académico",
-      value: "codigo_programa_academico",
+      value: "id_programa",
       selector: (row) => row.id_programa,
       sortable: true,
       isCheck: false,
@@ -839,7 +857,7 @@ const Reporte = () => {
             {/* Buscador */}
             <Form.Control
               type="text"
-              placeholder="Búsqueda de Datos - WIP"
+              placeholder="Búsqueda de Datos"
               // value={}
               onChange={(e) => onSearch(e)}
             />
@@ -850,18 +868,18 @@ const Reporte = () => {
               id="tabla_Reporte"
               title="Reporte"
               columns={columnas.cabeceras}
-              // data={state.estudiante.filter((item) => {
-              //   return search.busqueda.toLowerCase() === ""
-              //     ? item
-              //     : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
-              //         item.nombre.toLowerCase().includes(search.busqueda) ||
-              //         item.apellido.toLowerCase().includes(search.busqueda) ||
-              //         item.num_doc
-              //           .toString()
-              //           .toLowerCase()
-              //           .includes(search.busqueda);
-              // })}
-              data={state.estudiante}
+              data={state.estudiante.filter((item) => {
+                return search.busqueda.toLowerCase() === ""
+                  ? item
+                  : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
+                      item.nombre.toLowerCase().includes(search.busqueda) ||
+                      item.apellido.toLowerCase().includes(search.busqueda) ||
+                      item.num_doc
+                        .toString()
+                        .toLowerCase()
+                        .includes(search.busqueda);
+              })}
+              // data={state.estudiante}
               // data={state.estudiante.filter((estudiante) => {
               //   return search.toLowerCase() === ""
               //     ? estudiante

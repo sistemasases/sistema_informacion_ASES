@@ -10,6 +10,7 @@ from modulo_asignacion.models import asignacion
 from modulo_instancia.models import semestre
 from modulo_programa.models import programa, programa_estudiante
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
+from modulo_seguimiento.serializers import seguimiento_individual_serializer
 
 
 from django.shortcuts import render, get_object_or_404
@@ -137,50 +138,50 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             # for i in list(estudiante.objects.all()): 
                 # list_estudiantes.append(serializer_estudiante.data)
             # print(list_estudiantes)
-            for i in serializer_estudiante.data: 
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
-                # serializer_estudiante_2 = estudiante_serializer(i)
-                try:
-                    # print(i.data)
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-                    riesgo = {
-                        'riesgo_individual': seguimiento_reciente.riesgo_individual,
-                        'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
-                        'riesgo_academico': seguimiento_reciente.riesgo_academico,
-                        'riesgo_economico': seguimiento_reciente.riesgo_economico,
-                        'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
-                    }
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A'
-                    }
-                    # print('no riesgos')
+            # for i in serializer_estudiante.data: 
+            #     # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
+            #     # serializer_estudiante_2 = estudiante_serializer(i)
+            #     try:
+            #         # print(i.data)
+            #         # Obtener el seguimiento más reciente del estudiante especificado
+            #         seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha')
+            #         # Crear un diccionario con los datos de riesgo del seguimiento
+            #         riesgo = {
+            #             'riesgo_individual': seguimiento_reciente.riesgo_individual,
+            #             'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
+            #             'riesgo_academico': seguimiento_reciente.riesgo_academico,
+            #             'riesgo_economico': seguimiento_reciente.riesgo_economico,
+            #             'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+            #         }
+            #         # Devolver el riesgo en la respuesta
+            #     except seguimiento_individual.DoesNotExist:
+            #         # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+            #         riesgo = {
+            #             'riesgo_individual': 'N/A',
+            #             'riesgo_familiar': 'N/A',
+            #             'riesgo_academico': 'N/A',
+            #             'riesgo_economico': 'N/A',
+            #             'riesgo_vida_universitaria_ciudad': 'N/A'
+            #         }
+            #         # print('no riesgos')
                 
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
-                    var_programa = programa.objects.filter(id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
-                    list_programas.append(var_programa)
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                    }
+            #     try:
+            #         programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
+            #         var_programa = programa.objects.filter(id=programa_del_estudiante.id_programa_id).values()
+            #         # print(programa_del_estudiante)
+            #         list_programas.append(var_programa)
+            #         dic_programa = {
+            #             'id_programa': var_programa[0]['codigo_univalle'],
+            #         }
 
-                except :
-                    dic_programa = {'id_programa': 'N/A'}  # Agregar el estado del curso al diccionario
+            #     except :
+            #         dic_programa = {'id_programa': 'N/A'}  # Agregar el estado del curso al diccionario
 
-                data = dict(i, **riesgo, **dic_programa)
-                list_estudiantes.append(data)
+            #     data = dict(i, **riesgo, **dic_programa)
+            #     list_estudiantes.append(data)
             # print(list_programas)  
             # print(list_estudiantes)
-            return Response(list_estudiantes)
+            return Response(serializer_estudiante.data)
 
             # return Response("caso no encontrado")
         
@@ -221,4 +222,71 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
 
         else:
             return Response("caso no encontrado")
+        
+
+class estudiante_filtros_viewsets(viewsets.ModelViewSet):
+    serializer_class = estudiante_serializer
+    queryset = estudiante_serializer.Meta.model.objects.all()
+    def retrieve(self, request, pk):
+        
+        data_usuario_rol = request.GET.get('usuario_rol')
+        data_sede = request.GET.get('sede')
+        # print(data_usuario_rol)
+        # print(data_sede)
+        if data_usuario_rol == "superAses":
+            list_estudiantes = list()
+            list_programas = list()
+            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
+
+            # for i in list(estudiante.objects.all()): 
+                # list_estudiantes.append(serializer_estudiante.data)
+            # print(list_estudiantes)
+            for i in serializer_estudiante.data: 
+                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
+                # serializer_estudiante_2 = estudiante_serializer(i)
+                try:
+                    # print(i.data)
+                    # Obtener el seguimiento más reciente del estudiante especificado
+                    seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha')
+                    # Crear un diccionario con los datos de riesgo del seguimiento
+                    riesgo = {
+                        'riesgo_individual': seguimiento_reciente.riesgo_individual,
+                        'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
+                        'riesgo_academico': seguimiento_reciente.riesgo_academico,
+                        'riesgo_economico': seguimiento_reciente.riesgo_economico,
+                        'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+                    }
+                    # Devolver el riesgo en la respuesta
+                except seguimiento_individual.DoesNotExist:
+                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+                    riesgo = {
+                        'riesgo_individual': 'N/A',
+                        'riesgo_familiar': 'N/A',
+                        'riesgo_academico': 'N/A',
+                        'riesgo_economico': 'N/A',
+                        'riesgo_vida_universitaria_ciudad': 'N/A'
+                    }
+                    # print('no riesgos')
+                
+                try:
+                    programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
+                    var_programa = programa.objects.filter(id=programa_del_estudiante.id_programa_id).values()
+                    # print(programa_del_estudiante)
+                    list_programas.append(var_programa)
+                    dic_programa = {
+                        'id_programa': var_programa[0]['codigo_univalle'],
+                    }
+
+                except :
+                    dic_programa = {'id_programa': 'N/A'}  # Agregar el estado del curso al diccionario
+
+                # print(riesgo)
+                data = dict(i, **riesgo, **dic_programa)
+                list_estudiantes.append(data)
+            # print(list_programas)  
+            # print(list_estudiantes)
+            return Response(list_estudiantes)
+            # return Response ("HOLAAAA")
+        
+    
 
