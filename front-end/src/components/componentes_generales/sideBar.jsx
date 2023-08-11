@@ -4,11 +4,13 @@ import {Container, Row, Col, Dropdown, Button, Modal} from "react-bootstrap";
 import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import {FaBars} from "react-icons/fa";
 import NavBar from './navbar';
-import Menu from './sistemas.json';
-import Menu2 from './socioeducativa.json';
-import Menu3 from './academico.json';
-import Menu4 from './icetex.json';
-import Menu5 from './discapacidad.json';
+import Menu from './menus/sistemas.json';
+import Menu2 from './menus/socioeducativa.json';
+import Menu3 from './menus/academico.json';
+import Menu4 from './menus/monitor.json';
+import Menu5 from './menus/dir_investigacion.json';
+import Menu6 from './menus/ente_academico.json';
+import Menu7 from './menus/sin_rol.json';
 import Ficha_estudiante from "../../modulos/ficha_estudiante/ficha_estudiante.jsx";
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
@@ -31,7 +33,12 @@ const SideBar = (props) =>{
     }
 
     const [state,set_state] = useState({
-        desplegable : sessionStorage.rol === 'superAses' ? Menu : Menu2
+        desplegable : sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'superAses' ? Menu : 
+        sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'Profesional' || sessionStorage.rol === 'Socioeducativo' ? Menu2 :
+        sessionStorage.rol === 'dir_academico' ? Menu3 : 
+        sessionStorage.rol === 'monitor' || sessionStorage.rol === 'Practicante' ? Menu4 :
+        sessionStorage.rol === 'dir_investigacion' ? Menu5 : 
+        sessionStorage.rol === 'dir_programa' || sessionStorage.rol === 'vcd_academico' ? Menu6 : Menu7
       })
 
     function path_actual(name){

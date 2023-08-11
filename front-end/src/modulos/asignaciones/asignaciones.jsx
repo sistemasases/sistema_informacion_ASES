@@ -17,7 +17,7 @@ const Carga_masiva = () => {
     }
   };
 
-  const userRole = sessionStorage.getItem('rol');
+  const userRole = sessionStorage.getItem('permisos');
 
   const [state, set_state] = useState({
     data1: [],
@@ -29,7 +29,7 @@ const Carga_masiva = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/usuario_rol/profesional/', config)
+    axios.get('http://localhost:8000/usuario_rol/profesional/'+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -40,7 +40,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8000/usuario_rol/practicante/', config)
+    axios.get('http://localhost:8000/usuario_rol/practicante/'+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -51,7 +51,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get('http://localhost:8000/usuario_rol/monitor/', config)
+    axios.get('http://localhost:8000/usuario_rol/monitor/'+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -84,7 +84,7 @@ const Carga_masiva = () => {
   }, [state.data1, state.data2, state.data3, state.data4]);
 
   return (
-    <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+    <>{userRole.includes('view_gestion_asignaciones') ? <Col className="contenido_children">
         <Row>
           <Col>
             <Row className="justify-content-md-center">

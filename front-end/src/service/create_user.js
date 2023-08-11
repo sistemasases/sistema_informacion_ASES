@@ -33,6 +33,7 @@ const user_rol = async (formData) => {
             var usuario_rol = {
                 "id_rol": 2,
                 "id_usuario": res.data.id,
+                "id_sede": sessionStorage.getItem('sede_id'),
             }
             axios.post(url_usuario_rol, usuario_rol, config)
             .catch(err=>{

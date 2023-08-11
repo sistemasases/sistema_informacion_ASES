@@ -20,14 +20,26 @@ const Listas = (props) => {
     const{childClicked, childClicked2} = props
     
     const quitar_estudiante = (e) =>{
-      axios.get('http://localhost:8000/asignacion/asignacion_estudiante/'+props.item.id+'/', config)
-      .then(response => {
-        childClicked2(props.monitor_seleccionado)
-        alert("estudiante "+props.item.id+" eliminado correctamente")
-      })
-      .catch(error => {
-        alert("error al eliminar el estudiante : "+props.item.id);
-      });
+        let formData = new FormData();
+
+        formData.append("llamada", "eliminar");
+        formData.append("id_usuario", props.monitor_seleccionado);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
+        formData.append("id_estudiante", props.item.id);
+        axios({
+            // Endpoint to send files
+            url: 'http://localhost:8000/asignacion/asignacion_estudiante/',
+            method: "POST",
+            headers: config2,
+            data: formData,
+        })
+        .then(response => {
+            childClicked2(props.monitor_seleccionado)
+            alert("estudiante "+props.item.id+" eliminado correctamente")
+        })
+        .catch(error => {
+            alert("error al eliminar el estudiante : "+props.item.id);
+        });
     }
 
     const quitar_usuario_monitor = (e) =>{
@@ -35,6 +47,7 @@ const Listas = (props) => {
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.item.id);
         formData.append("id_jefe", props.practicante_seleccionado);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
 
       axios({
       // Endpoint to send files
@@ -59,6 +72,7 @@ const Listas = (props) => {
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.item.id);
         formData.append("id_jefe", props.profesional_seleccionado);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
 
       axios({
       // Endpoint to send files
@@ -84,7 +98,7 @@ const Listas = (props) => {
                 props.profesional_seleccionado === '' ?
                 (
                 <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
-                    <Row className="asignaciones_hover1">
+                    <Row className="asignaciones_hover2">
                         <Col  xs={"10"} md={"4"}> 
                             <Row className="nombres_asignacion">
                                 {props.item.username}
@@ -100,7 +114,7 @@ const Listas = (props) => {
                 :
                 (
                 <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.id)}>
-                    <Row className="asignaciones_hover1">
+                    <Row className="asignaciones_hover2">
                         <Col xs={"2"} md={"2"}  className="center_asignacion"> 
                         <button onClick={()=>quitar_usuario()} className="asignaciones_icons_quitar">
                         <i class="bi bi-x"></i>                                                    
@@ -138,7 +152,7 @@ const Listas = (props) => {
                 props.practicante_seleccionado === '' ?
                 (
                 <Col className= "listas_cuerpo" onClick={()=>childClicked2(props.item.id)}>
-                    <Row className="asignaciones_hover1">
+                    <Row className="asignaciones_hover2">
 
                         <Col  xs={"10"} md={"4"}> 
                             <Row className="nombres_asignacion">
@@ -157,7 +171,7 @@ const Listas = (props) => {
                 :
                 (
                     <Col className= "listas_cuerpo" onClick={()=>childClicked2(props.item.id)}>
-                        <Row className="asignaciones_hover1">
+                        <Row className="asignaciones_hover2">
                             <Col  xs={"2"} md={"2"}  className="center_asignacion"> 
                                 <button onClick={()=>quitar_usuario_monitor()} className="asignaciones_icons_quitar">
                                     <i class="bi bi-x"></i>                                                    
@@ -196,7 +210,7 @@ const Listas = (props) => {
                 props.monitor_seleccionado === '' ?
                 (
             <Col className="listas_cuerpo" >
-                <Row className="asignaciones_hover1">
+                <Row className="asignaciones_hover2">
                     <Col  xs={"10"} md={"8"}> 
                         <Row className="nombres_asignacion">
                             {props.item.cod_univalle}
@@ -212,7 +226,7 @@ const Listas = (props) => {
             :
             (
                 <Col className="listas_cuerpo" >
-                    <Row className="asignaciones_hover1">
+                    <Row className="asignaciones_hover2">
                         <Col  xs={"2"} md={"2"} className="center_asignacion"> 
                             <button onClick={()=>quitar_estudiante()} className="asignaciones_icons_quitar">
                                 <i class="bi bi-x"></i>                                                    

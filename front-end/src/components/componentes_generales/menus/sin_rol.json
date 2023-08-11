@@ -1,0 +1,16 @@
+[
+    {
+        "id":"1",
+        "path":"/",
+        "name":"Error",
+        "icon":"exclamation-triangle-fill",
+        "childrens":[
+
+            {
+                "path":"/",
+                "name":"Error con el rol",
+                "icon":"exclamation-triangle-fill"
+            }
+        ]
+    }
+]

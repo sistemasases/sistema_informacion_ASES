@@ -23,7 +23,8 @@ const Reporte_seguimientos = (props) =>{
         data_user : [],
 
       })
-    const userRole = sessionStorage.getItem('rol');
+
+    const userRole = sessionStorage.getItem('permisos');
 
     useEffect(()=>{
       
@@ -31,7 +32,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/profesional/",
+          url:  "http://localhost:8000/usuario_rol/profesional/"+sessionStorage.getItem('sede_id')+"/",
           method: "GET",
           headers: config,
         })
@@ -50,7 +51,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/practicante/",
+          url:  "http://localhost:8000/usuario_rol/practicante/"+sessionStorage.getItem('sede_id')+"/",
           method: "GET",
           headers: config,
         })
@@ -70,7 +71,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/monitor/",
+          url:  "http://localhost:8000/usuario_rol/monitor/"+sessionStorage.getItem('sede_id')+"/",
           method: "GET",
           headers: config,
         })
@@ -96,7 +97,7 @@ const Reporte_seguimientos = (props) =>{
 
     return (
         
-        <>{userRole === 'superAses' || userRole === 'sistemas' || 'profesional' || 'pracgicante' ? <Col className="contenido_children">
+        <>{userRole.includes('view_reporte_segui') ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Cabecera usuario={props.usuario} periodo={props.periodo} data_user={state.data_user}></Cabecera>
             </Row>

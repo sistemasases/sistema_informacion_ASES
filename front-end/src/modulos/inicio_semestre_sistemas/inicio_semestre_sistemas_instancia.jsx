@@ -14,10 +14,10 @@ import {Container, Row, Col} from "react-bootstrap";
 
 const Inicio_semestre_sistemas_instancia = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
 
     return (
-    <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+    <>{ userRole.includes('view_inicio_semestre') ? <Col className="contenido_children">
         <Row className="rowJustFlex">
             <h1>INICIO DE SEMESTRE</h1>
         </Row>
