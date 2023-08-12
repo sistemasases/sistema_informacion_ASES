@@ -10,7 +10,7 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { CSVLink } from "react-csv";
 // import ExportExcel from "react-export-excel";
-import ReactExport from "react-export-excel";
+//import ReactExport from "react-export-excel";
 
 var columns = [
   {
@@ -49,9 +49,9 @@ var csv_headers = [
   { label: "Apellido", key: "apellido" },
   { label: "Documento", key: "num_doc" },
 ];
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelColumn;
+//const ExcelFile = ReactExport.ExcelFile;
+//const ExcelSheet = ReactExport.ExcelSheet;
+//const ExcelColumn = ReactExport.ExcelColumn;
 
 const Reporte = () => {
   // const opciones = [];
@@ -914,7 +914,7 @@ const Reporte = () => {
                   <Button style={{ margin: 5 }}> Imprimir CSV</Button>
                 </CSVLink>
 
-                <ExcelFile
+                {/*<ExcelFile
                   element={
                     <Button style={{ margin: 5 }} name="imprimir_excel">
                       Imprimir Excel
@@ -927,7 +927,7 @@ const Reporte = () => {
                       <ExcelColumn label={item.label} value={item.key} />
                     ))}
                   </ExcelSheet>
-                </ExcelFile>
+                </ExcelFile>*/}
               </Col>
             </Row>
           </Container>
