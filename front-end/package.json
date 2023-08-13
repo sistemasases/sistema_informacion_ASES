@@ -21,6 +21,7 @@
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "django": "^1.0.0",
+    "excel4node": "^1.8.2",
     "file-saver": "^2.0.5",
     "final-form": "^4.20.9",
     "node-fetch": "^3.3.1",

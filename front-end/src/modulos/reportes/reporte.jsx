@@ -10,7 +10,7 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { CSVLink } from "react-csv";
 // import ExportExcel from "react-export-excel";
-import ReactExport from "react-export-excel";
+// import ReactExport from "react-export-excel";
 
 var columns = [
   {
@@ -49,15 +49,14 @@ var csv_headers = [
   { label: "Apellido", key: "apellido" },
   { label: "Documento", key: "num_doc" },
 ];
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelColumn;
+// const ExcelFile = ReactExport.ExcelFile;
+// const ExcelSheet = ReactExport.ExcelSheet;
+// const ExcelColumn = ReactExport.ExcelColumn;
 
 const Reporte = () => {
   // const opciones = [];
 
   const [state, set_state] = useState({ estudiante: [] });
-
 
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
@@ -222,15 +221,8 @@ const Reporte = () => {
   const filtros_Estados = [
     {
       name: "ASES",
-      value: "ases",
-      selector: (row) => row.ases,
-      sortable: true,
-      isCheck: false,
-    },
-    {
-      name: "ICETEX",
-      value: "icetex",
-      selector: (row) => row.icetex,
+      value: "estado_ases",
+      selector: (row) => row.estado_ases,
       sortable: true,
       isCheck: false,
     },
@@ -291,22 +283,22 @@ const Reporte = () => {
   const filtros_Asignaciones = [
     {
       name: "Profesional",
-      value: "profesional",
-      selector: (row) => row.profesional,
+      value: "asignacion_profesional",
+      selector: (row) => row.asignacion_profesional,
       sortable: true,
       isCheck: false,
     },
     {
       name: "Practicante",
-      value: "practicante",
-      selector: (row) => row.practicante,
+      value: "asignacion_practicante",
+      selector: (row) => row.asignacion_practicante,
       sortable: true,
       isCheck: false,
     },
     {
       name: "Monitor",
-      value: "monitor",
-      selector: (row) => row.monitor,
+      value: "asignacion_monitores",
+      selector: (row) => row.asignacion_monitores,
       sortable: true,
       isCheck: false,
     },
@@ -554,14 +546,6 @@ const Reporte = () => {
     const seleccionado_condiciones_excepcion_2 =
       filtros_Condicion_Excepcion_2.find((item) => item.name === e.target.name);
 
-    // console.log("Seleccionado 2 es:");
-    // console.log(seleccionado_riesgos);
-    // console.log(seleccionado_contacto);
-    // console.log(columns);
-
-    // console.log("Array Columns Antes:");
-    // console.log(columns);
-
     //  condiciones Para Filtros de Contacto
 
     if (seleccionado_contacto === undefined) {
@@ -574,16 +558,9 @@ const Reporte = () => {
       (seleccionado_contacto.name === "Prueba" && e.target.checked == true) ||
       (seleccionado_contacto.name === "Direccion" && e.target.checked == true)
     ) {
-      // columns.push(seleccionado_contacto);
       seleccionado_contacto.isCheck = true;
       columns.push(seleccionado_contacto);
       csv_conversion(seleccionado_contacto);
-      // columnas.cabeceras.push(seleccionado_contacto);
-      // set_columnas({ ...columnas, cabeceras: columns });
-      // console.log("Array Columns Despues:");
-      // console.log(columns);
-      // console.log("Columnas.cabeceras:");
-      // console.log(columnas.cabeceras);
     } else if (
       (seleccionado_contacto.name === "Tipo de documento" &&
         e.target.checked == false) ||
@@ -602,23 +579,64 @@ const Reporte = () => {
       csv_pop(seleccionado_contacto);
     }
 
+    // **
     //  condiciones Para Filtros de Estados
+    // **
+
     if (seleccionado_estados === undefined) {
+    } else if (
+      (seleccionado_estados.name === "ASES" && e.target.checked == true) ||
+      (seleccionado_estados.name === "Resgistro Académico" &&
+        e.target.checked == true)
+    ) {
+      seleccionado_estados.isCheck = true;
+      columns.push(seleccionado_estados);
+      csv_conversion(seleccionado_estados);
+    } else if (
+      (seleccionado_estados.name === "ASES" && e.target.checked == false) ||
+      (seleccionado_estados.name === "Resgistro Académico" &&
+        e.target.checked == false)
+    ) {
+      seleccionado_estados.isCheck = false;
+      columns.map((item, index) => {
+        if (item.name === seleccionado_estados.name) {
+          columns.splice(index, 1);
+        }
+      });
+      csv_pop(seleccionado_estados);
     }
-    // else if (
 
     // condiciones para Filtros de Academico
+
     if (seleccionado_academico === undefined) {
     } else if (
-      seleccionado_academico.name == "Código programa académico" &&
-      e.target.checked == true
+      (seleccionado_academico.name == "Código programa académico" &&
+        e.target.checked == true) ||
+      (seleccionado_academico.name == "Programa académico" &&
+        e.target.checked == true) ||
+      (seleccionado_academico.name == "Sede" && e.target.checked == true) ||
+      (seleccionado_academico.name == "Promedio acumulado" &&
+        e.target.checked == true) ||
+      (seleccionado_academico.name == "Estimulos" &&
+        e.target.checked == true) ||
+      (seleccionado_academico.name == "Bajos rendimiento" &&
+        e.target.checked == true)
     ) {
       seleccionado_academico.isCheck = true;
       columns.push(seleccionado_academico);
       csv_conversion(seleccionado_academico);
     } else if (
-      seleccionado_academico.name == "Código programa académico" &&
-      e.target.checked == false
+      (seleccionado_academico.name == "Código programa académico" &&
+        e.target.checked == false) ||
+      (seleccionado_academico.name == "Programa académico" &&
+        e.target.checked == false) ||
+      (seleccionado_academico.name == "Sede" && e.target.checked == false) ||
+      (seleccionado_academico.name == "Promedio acumulado" &&
+        e.target.checked == false) ||
+      (seleccionado_academico.name == "Estimulos" &&
+        e.target.checked == false) ||
+      (seleccionado_academico.name == "Bajos rendimiento" &&
+        e.target.checked == false)
     ) {
       seleccionado_academico.isCheck = false;
       columns.map((item, index) => {
@@ -630,11 +648,36 @@ const Reporte = () => {
     }
 
     // condiciones para Filtros de Asignaciones
+
     if (seleccionado_asignaciones === undefined) {
+    } else if (
+      (seleccionado_asignaciones.name == "Profesional" &&
+        e.target.checked == true) ||
+      (seleccionado_asignaciones.name == "Practicante" &&
+        e.target.checked == true) ||
+      (seleccionado_asignaciones.name == "Monitor" && e.target.checked == true)
+    ) {
+      seleccionado_asignaciones.isCheck = true;
+      columns.push(seleccionado_asignaciones);
+      csv_conversion(seleccionado_asignaciones);
+    } else if (
+      (seleccionado_asignaciones.name == "Profesional" &&
+        e.target.checked == false) ||
+      (seleccionado_asignaciones.name == "Practicante" &&
+        e.target.checked == false) ||
+      (seleccionado_asignaciones.name == "Monitor" && e.target.checked == false)
+    ) {
+      seleccionado_asignaciones.isCheck = false;
+      columns.map((item, index) => {
+        if (item.name === seleccionado_asignaciones.name) {
+          columns.splice(index, 1);
+        }
+      });
+      csv_pop(seleccionado_asignaciones);
     }
-    // else if(
 
     //  condiciones Para Filtros de Riesgo
+
     if (seleccionado_riesgos === undefined) {
     } else if (
       (seleccionado_riesgos.name === "Riesgo individual" &&
@@ -914,7 +957,7 @@ const Reporte = () => {
                   <Button style={{ margin: 5 }}> Imprimir CSV</Button>
                 </CSVLink>
 
-                <ExcelFile
+                {/* <ExcelFile
                   element={
                     <Button style={{ margin: 5 }} name="imprimir_excel">
                       Imprimir Excel
@@ -927,7 +970,7 @@ const Reporte = () => {
                       <ExcelColumn label={item.label} value={item.key} />
                     ))}
                   </ExcelSheet>
-                </ExcelFile>
+                </ExcelFile> */}
               </Col>
             </Row>
           </Container>
