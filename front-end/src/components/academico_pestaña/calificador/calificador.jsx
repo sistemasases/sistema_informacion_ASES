@@ -44,6 +44,8 @@ const Cabecera = () => {
   const [alumnos_del_profesor, setAlumnos_del_profesor] = useState([]);
   const [curso_datos_generales, setCurso_datos_generales] = useState([]);
   const [datos_del_curso, setDatos_del_curso] = useState([]);
+  const [idParciales, setIdParciales] = useState([]);
+
   const [info_materia, setInfo_materia] = useState([]);
 
   useEffect(() => {
@@ -88,7 +90,9 @@ const Cabecera = () => {
         );
 
         setDatos_del_curso(response.data);
-        console.log('Datos del curso capturados correctamente');
+        const parcialIDs = response.data.filter(item => item.parcial).map(item => item.id);
+        setIdParciales(parcialIDs)
+
       } catch (error) {
         console.log('No se pudo obtener el dato del curso');
       }
@@ -169,12 +173,34 @@ const Cabecera = () => {
   };
 
   // Función para editar el ítem
+  // Función para editar el ítem
   const handleEditItem = async () => {
-    // Aquí realizas la lógica para editar el ítem usando la información de 'editingItem' y los nuevos valores de 'editItemName' y 'editIsPartial'.
-    // Luego, cierras el modal de edición:
-    setEditingItem(null);
-    setEditShow(false);
-  };
+    const semestreActual = curso_datos_generales['id_semestre'];
+  
+    try {
+      const data = {
+        id_curso: curso,
+        id_profesor: profesor,
+        nombre: editItemName,
+        parcial: editIsPartial,
+        id_semestre: semestreActual,
+      };
+  
+      // Realizar la solicitud PUT al backend para editar el ítem
+      await axios.put(
+        `http://localhost:8000/academico/crear_item/${editingItem.id}/`,
+        data,
+        config
+      );
+  
+      // Aquí puedes realizar alguna acción adicional después de editar el ítem si es necesario.
+      setFlag_de_actualizacion(!flag_de_actualizacion);
+      setEditingItem(null); // Limpiar el objeto de edición
+      setEditShow(false); // Cerrar el modal de edición
+    } catch (error) {
+      console.log('Error al editar el ítem' + error);
+    }
+};
 
 const handleDeleteItem = async () => {
   try {
@@ -218,58 +244,97 @@ const handleDeleteItem = async () => {
           {curso_datos_generales.nombre}
         </Col>
       </Row>
+
       <br/>
       <Row>
         <Col xs={'12'} md={'8'} className="texto_titulo_bold">
           <Button onClick={handleShow}>Agregar Item</Button>
         </Col>
       </Row>
-      <Row><Col> Parciales : <i class="bi bi-star"></i></Col></Row>
+
+      <Row>
+        <Col> Parciales : <i class="bi bi-star"></i></Col>
+      </Row>
       <br/>
 
+
+
       {state.tiene_alumnos_del_profesor ? (
-        <Row>
-          <Col className="contenido_fichas_academico2" xs={2}>
+        <Row >
+
+          <Col className="contenido_fichas_academico2" xs={2} >
             Estudiante
           </Col>
-          <Col className="contenido_fichas_academico2" xs={2}>
+
+          <Col className="contenido_fichas_academico2" xs={2} >
             Cod. Estudiante
           </Col>
+
           {datos_del_curso.length > 0 ? (
             datos_del_curso.map((item, index) => (
-              <Col key={index}>
+              <Col key={index} >
                 {item.parcial && <i class="bi bi-star"></i>}
                 <span>{item.nombre}</span>
-                <Button
-                  variant="link"
-                  onClick={() => handleEditModal(item)}
-                  style={{ textDecoration: 'none' }}
-                >
+                  <Button
+                    variant="link"
+                    onClick={() => handleEditModal(item)}
+                    style={{ textDecoration: 'none' }}
+                  >
                   <i className="bi bi-pencil" />
                 </Button>
               </Col>
             ))
-          ) : (
+          )
+          : 
+          (
             <Col>No hay items registrados</Col>
           )}
 
           {sessionStorage.rol !== 'profesor' ? (
-            <Col xs={'1'}>Promedio:</Col>
+            <Col xs={'2'}>
+              <Row>
+                <Col xs={"6"}>Promedio:</Col>
+                <Col xs={"6"}>Parciales:</Col>
+              </Row>
+            </Col>
           ) : (
             <div class="d-none"></div>
           )}
 
-          {alumnos_del_profesor.length > 0 ? (
-            alumnos_del_profesor.map((item, index) => (
-              <Tabla_de_notas key={index} item={item} />
-            ))
-          ) : (
-            <Col>No hay estudiantes registrados</Col>
-          )}
         </Row>
-      ) : (
+      ) 
+      : 
+      (
         <Row>Sin alumnos ni items registrados</Row>
-      )}
+      )
+    }
+
+
+
+
+      {state.tiene_alumnos_del_profesor ? (
+        <Row >
+
+        <Col xs={"12"}>
+          {alumnos_del_profesor.length > 0 ? (
+              alumnos_del_profesor.map((item, index) => (
+                <Tabla_de_notas key={index} item={item} lista_parciales={idParciales} />
+              ))
+            ) 
+            : 
+            (
+              <Col>No hay estudiantes registrados</Col>
+            )
+          }
+        </Col>
+
+        </Row>
+        ) 
+        : 
+        (
+          <Row>Sin alumnos ni items registrados</Row>
+        )
+      }
 
       <Modal show={show} onHide={handleClose} size={'lg'}>
         <Modal.Header closeButton>

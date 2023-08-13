@@ -3,6 +3,7 @@ import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
 import Logos from './LOGO BLANCORecurso 1.png';
 import { useLocation } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const Navbar = (props) =>{
 
@@ -79,8 +80,11 @@ const Navbar = (props) =>{
         <Row className="nav">
 
         <Col xs={"5"} md={"2"} href={"/"}>
-            <img src={Logos} className="logo" alt='/'></img>
+            <Link to={`/`}> 
+                <img src={Logos} className="logo" alt='/'></img>
+            </Link>
         </Col>
+
 
 
         <div class="d-none d-md-inline col-md-6">

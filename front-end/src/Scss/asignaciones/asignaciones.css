@@ -34,9 +34,9 @@
       margin-bottom: 5px;
   }
   .listas_cuerpo{
-    border-left: 15px solid rgb(94, 94, 94);
+    border-left: 5px solid rgb(94, 94, 94);
     padding-left: 15px;
-    background: white;
+    background: lightgray;
   }
   .listas_cuerpo2{
     background: white;
@@ -279,12 +279,22 @@
     background: white;
 }
 .asignaciones_hover1{
-    background:  lightgray;
     display: flex;
     height: 100%;
 }
 .asignaciones_hover1:hover{
     background: red;
+}
+.asignaciones_hover_seleccionado{
+    background:  red;
+    color:white;
+    border-left: 5px solid rgb(94, 94, 94);
+    padding-left: 15px;  
+}
+.asignaciones_hover_no_seleccionado{
+    background:  lightgray; 
+        border-left: 5px solid rgb(94, 94, 94);
+    padding-left: 15px;
 }
 
 .nombres_asignacion{
