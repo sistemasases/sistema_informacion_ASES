@@ -13,7 +13,7 @@ const all_estudiantes_reportes = async (formData, id_usuario) => {
     };
     // const url_axios = 'http://localhost:8000/usuario_rol/estudiante_selected2/';
     const url_axios =
-      "http://127.0.0.1:8000/reportes/estudiante_por_rol/" +
+      `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
       id_usuario.toString() +
       "/";
     //   + id_usuario + "/"
@@ -23,7 +23,7 @@ const all_estudiantes_reportes = async (formData, id_usuario) => {
       headers: config,
       data: formData,
       // {
-      //     "usuario_rol": "superAses"
+      //     "usuario_rol": "super_ases"
       //     "sede":"1",
       // }
     }).then((res) => {

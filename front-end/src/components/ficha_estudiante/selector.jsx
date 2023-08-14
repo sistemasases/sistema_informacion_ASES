@@ -85,18 +85,22 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante","monitor"],
             component:<Info_general 
                         id={props.id} 
                         seleccionado={props.seleccionado} 
                         datos={props.datos} 
                         rolUsuario={props.rolUsuario} 
                         editar={props.editar} 
-                        codigo={props.codigo}/>,
+                        codigo={props.codigo}
+                        handleOptionUser={props.handleOptionUser}
+                        />,
         },
         {
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante"],
             component:<Socieducativa 
                         id={props.id} 
                         data_user_socioedu={state.data_user_socioedu} 
@@ -108,6 +112,7 @@ const Selector = (props) =>{
             id:3,
             name:"ACADEMICO",
             contenido:"hola",
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante"],
             component:<Academico data_user_academico={state.data_user_academico}
                         id={props.id}/>,
         },
@@ -115,6 +120,7 @@ const Selector = (props) =>{
             id:4,
             name:"GEOGRAFICO",
             contenido:"bloqueado",
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante","monitor"],
             component:<Info_general />,
         },
 
@@ -124,75 +130,15 @@ const Selector = (props) =>{
 
     return (
         <Container className="containerSelector">
-                {/* {
-                    props.seleccionado === '' ?
-                    (
-                        <Row className="tabs" >
-                            {
-                            tabs.map((tab, index)=>(
-                                <Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
-                                    <Row onClick={handleShow}>
-                                        <label key={index}>
-                                            {tab.name}
-                                        </label>
-                                    </Row>
-                                </Row>
-                                ))
-                            }
-                        </Row>
-                    )
-                    :
-                    (
-                        <Row className="tabs" >
-                                    {
-                                    tabs.map((tab, index)=>(
-                                        <Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
-                                            <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
-                                                <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
-                                                    {tab.name}
-                                                </label>
-                                            </Row>
-                                            {
-                                                (tab.id === activeTabIndex)?
-                                                (
-                                                <Row>
-                                                    <div class="d-none d-md-block col-md-1">
-                                                        <Col md={"1"}></Col>
-                                                    </div>
-                                                    <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
-                                                    <div class="d-none d-md-block col-md-1">
-                                                        <Col md={"1"}></Col>
-                                                    </div>
-        
-                                                </Row>)
-                                                :
-                                                (<Row></Row>)
-                                            }
-                                        </Col>
-                                        ))
-                                    }
-                                </Row>
-                    )
-                }
- */}
-
-
-
-
+                
                 <Row className="tabs" >
                     {
                         tabs.map((tab, index)=>(
 
                             <Col xs={12}>
                             {
-                                ( props.seleccionado === '' || tab.contenido === 'bloqueado' ) ?
-                                (<Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
-                                    <Row onClick={handleShow}>
-                                        <label key={index}>
-                                            {tab.name}
-                                        </label>
-                                    </Row>
-                                </Row>):
+                                ( props.seleccionado !== '' && tab.contenido !== 'bloqueado' && tab.permitidos.includes(sessionStorage.getItem('rol')) ) ?
+
                                 (<Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
                                     <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
                                         <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
@@ -203,13 +149,6 @@ const Selector = (props) =>{
                                         (tab.id === activeTabIndex)?
                                         (
                                         <Row>
-                                            {/* <div class="d-none d-md-block col-md-1">
-                                                <Col md={"1"}></Col>
-                                            </div>
-                                                <Col className="contentTab" xs={"12"} md={"10"}>{tabs[activeTabIndex-1].component}</Col>
-                                            <div class="d-none d-md-block col-md-1">
-                                                <Col md={"1"}></Col>
-                                            </div> */}
                                             
                                             <Col className="contentTab" xs={"12"} md={"12"}>{tabs[activeTabIndex-1].component}</Col>
 
@@ -218,6 +157,14 @@ const Selector = (props) =>{
                                         (<Row></Row>)
                                     }
                                 </Col>)
+                                :
+                                (<Row className={tab.id === activeTabIndex ? "tab_separador" : "tab_bloqueado_externo"} >
+                                    <Row onClick={handleShow}>
+                                        <label key={index}>
+                                            {tab.name}
+                                        </label>
+                                    </Row>
+                                </Row>)
                             }
                             </Col>
                         ))
