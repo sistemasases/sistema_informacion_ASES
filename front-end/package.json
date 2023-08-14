@@ -52,7 +52,8 @@
     "styled-bootstrap-grid": "^3.1.2",
     "styled-component": "^2.8.0",
     "styled-components": "^5.3.9",
-    "web-vitals": "^3.3.1"
+    "web-vitals": "^3.3.1",
+    "write-excel-file": "^1.4.27"
   },
   "scripts": {
     "start": "react-scripts start",

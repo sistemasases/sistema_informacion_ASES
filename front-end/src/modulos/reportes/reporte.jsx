@@ -9,8 +9,7 @@ import DataTable from "react-data-table-component";
 // import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import axios from "axios";
 import { CSVLink } from "react-csv";
-// import ExportExcel from "react-export-excel";
-// import ReactExport from "react-export-excel";
+import writeXlsxFile from "write-excel-file";
 
 var columns = [
   {
@@ -48,6 +47,29 @@ var csv_headers = [
   { label: "Nombre", key: "nombre" },
   { label: "Apellido", key: "apellido" },
   { label: "Documento", key: "num_doc" },
+];
+
+var schema = [
+  {
+    column: "Código univalle",
+    type: String,
+    value: (student) => student.cod_univalle,
+  },
+  {
+    column: "Nombre",
+    type: String,
+    value: (student) => student.nombre,
+  },
+  {
+    column: "Apellido",
+    type: String,
+    value: (student) => student.apellido,
+  },
+  {
+    column: "Documento",
+    type: Number,
+    value: (student) => student.num_doc,
+  },
 ];
 
 const Reporte = () => {
@@ -118,14 +140,41 @@ const Reporte = () => {
   };
 
   const csv_pop = (item) => {
-    // var label = item.name;
-    // var key = item.value;
     csv_headers.map((item_csv, index) => {
       if (item_csv.label === item.name) {
         csv_headers.splice(index, 1);
       }
     });
   };
+
+  const schema_push = (item) => {
+    let tipo;
+    if (
+      item.name === "Código univalle" ||
+      item.name === "Celular" ||
+      item.name === "Código programa académico" ||
+      item.name === "Promedio acumulado" ||
+      item.name === "Riesgo geográfico"
+    ) {
+      tipo = Number;
+    } else {
+      tipo = String;
+    }
+    schema.push({
+      column: item.name,
+      type: tipo,
+      value: (student) => student[item.value],
+    });
+  };
+
+  const schema_pop = (item) => {
+    schema.map((item_schema, index) => {
+      if (item_schema.column === item.name) {
+        schema.splice(index, 1);
+      }
+    });
+  };
+
   const onSearch = (e) => {
     set_Search({ ...search, busqueda: e.target.value });
     // console.log(search);
@@ -142,13 +191,6 @@ const Reporte = () => {
   ];
 
   const filtros_Contacto = [
-    // { title: "Filtro contacto", name: "no-checkbox" },
-    // {
-    //   name: "Prueba",
-    //   selector: (row) => row.riesgo_individual,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
     {
       name: "Tipo de documento",
       selector: (row) => row.tipo_doc,
@@ -174,7 +216,6 @@ const Reporte = () => {
     {
       name: "Dirección",
       value: "dir_res",
-      // id: "4",
       selector: (row) => row.dir_res,
       sortable: true,
       isCheck: false,
@@ -526,6 +567,7 @@ const Reporte = () => {
       seleccionado_contacto.isCheck = true;
       columns.push(seleccionado_contacto);
       csv_conversion(seleccionado_contacto);
+      schema_push(seleccionado_contacto);
     } else if (
       (seleccionado_contacto.name === "Tipo de documento" &&
         e.target.checked == false) ||
@@ -543,6 +585,7 @@ const Reporte = () => {
         }
       });
       csv_pop(seleccionado_contacto);
+      schema_pop(seleccionado_contacto);
     }
 
     // **
@@ -558,6 +601,7 @@ const Reporte = () => {
       seleccionado_estados.isCheck = true;
       columns.push(seleccionado_estados);
       csv_conversion(seleccionado_estados);
+      schema_push(seleccionado_estados);
     } else if (
       (seleccionado_estados.name === "ASES" && e.target.checked == false) ||
       (seleccionado_estados.name === "Registro Académico" &&
@@ -571,6 +615,7 @@ const Reporte = () => {
         }
       });
       csv_pop(seleccionado_estados);
+      schema_pop(seleccionado_estados);
     }
 
     // condiciones para Filtros de Academico
@@ -592,6 +637,7 @@ const Reporte = () => {
       seleccionado_academico.isCheck = true;
       columns.push(seleccionado_academico);
       csv_conversion(seleccionado_academico);
+      schema_push(seleccionado_academico);
     } else if (
       (seleccionado_academico.name == "Código programa académico" &&
         e.target.checked == false) ||
@@ -613,6 +659,7 @@ const Reporte = () => {
         }
       });
       csv_pop(seleccionado_academico);
+      schema_pop(seleccionado_academico);
     }
 
     // condiciones para Filtros de Asignaciones
@@ -628,6 +675,7 @@ const Reporte = () => {
       seleccionado_asignaciones.isCheck = true;
       columns.push(seleccionado_asignaciones);
       csv_conversion(seleccionado_asignaciones);
+      schema_push(seleccionado_asignaciones);
     } else if (
       (seleccionado_asignaciones.name == "Profesional" &&
         e.target.checked == false) ||
@@ -643,6 +691,7 @@ const Reporte = () => {
         }
       });
       csv_pop(seleccionado_asignaciones);
+      schema_pop(seleccionado_asignaciones);
     }
 
     //  condiciones Para Filtros de Riesgo
@@ -665,6 +714,7 @@ const Reporte = () => {
       seleccionado_riesgos.isCheck = true;
       columns.push(seleccionado_riesgos);
       csv_conversion(seleccionado_riesgos);
+      schema_push(seleccionado_riesgos);
     } else if (
       (seleccionado_riesgos.name === "Riesgo individual" &&
         e.target.checked == false) ||
@@ -687,6 +737,7 @@ const Reporte = () => {
         }
       });
       csv_pop(seleccionado_riesgos);
+      schema_pop(seleccionado_riesgos);
     }
 
     // condiciones para Filtros de Excepcion
@@ -722,7 +773,6 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Contacto" &&
         e.target.checked == true
       ) {
-        console.log("entra aqui");
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("Tipo de documento")[0].checked = false;
         document.getElementsByName("Correo electrónico")[0].checked = false;
@@ -763,13 +813,13 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Contacto.length; i++) {
           const element = filtros_Contacto[i];
           csv_conversion(element);
+          schema_push(element);
         }
         // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Estados" &&
         e.target.checked == true
       ) {
-        console.log("entra aqui");
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("ASES")[0].checked = false;
         document.getElementsByName("Registro Académico")[0].checked = false;
@@ -802,13 +852,13 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Estados.length; i++) {
           const element = filtros_Estados[i];
           csv_conversion(element);
+          schema_push(element);
         }
         // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Académico" &&
         e.target.checked == true
       ) {
-        console.log("entra aqui");
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName(
           "Código programa académico"
@@ -862,12 +912,12 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Academico.length; i++) {
           const element = filtros_Academico[i];
           csv_conversion(element);
+          schema_push(element);
         }
       } else if (
         seleccionado_cabeceras_filtros.name === "Asignaciones" &&
         e.target.checked == true
       ) {
-        console.log("entra aqui");
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("Profesional")[0].checked = false;
         document.getElementsByName("Practicante")[0].checked = false;
@@ -904,12 +954,12 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Asignaciones.length; i++) {
           const element = filtros_Asignaciones[i];
           csv_conversion(element);
+          schema_push(element);
         }
       } else if (
         seleccionado_cabeceras_filtros.name === "Riesgos" &&
         e.target.checked == true
       ) {
-        console.log("entra aqui");
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("Riesgo individual")[0].checked = false;
         document.getElementsByName("Riesgo familiar")[0].checked = false;
@@ -963,6 +1013,7 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Riesgos.length; i++) {
           const element = filtros_Riesgos[i];
           csv_conversion(element);
+          schema_push(element);
         }
       }
     } else if (
@@ -1028,6 +1079,7 @@ const Reporte = () => {
           filtros_Contacto[i].isCheck = false;
           const element = filtros_Contacto[i];
           csv_pop(element);
+          schema_pop(element);
         }
         console.log(columns);
       } else if (
@@ -1058,6 +1110,7 @@ const Reporte = () => {
           filtros_Estados[i].isCheck = false;
           const element = filtros_Estados[i];
           csv_pop(element);
+          schema_pop(element);
         }
 
         // console.log(columns);
@@ -1104,6 +1157,7 @@ const Reporte = () => {
           filtros_Academico[i].isCheck = false;
           const element = filtros_Academico[i];
           csv_pop(element);
+          schema_pop(element);
         }
       } else if (
         seleccionado_cabeceras_filtros.name === "Asignaciones" &&
@@ -1136,6 +1190,7 @@ const Reporte = () => {
           filtros_Asignaciones[i].isCheck = false;
           const element = filtros_Asignaciones[i];
           csv_pop(element);
+          schema_pop(element);
         }
       } else if (
         seleccionado_cabeceras_filtros.name === "Riesgos" &&
@@ -1180,6 +1235,7 @@ const Reporte = () => {
           filtros_Riesgos[i].isCheck = false;
           const element = filtros_Riesgos[i];
           csv_pop(element);
+          schema_pop(element);
         }
       }
     }
@@ -1193,8 +1249,6 @@ const Reporte = () => {
       ...columnas,
       cabeceras: nuevasColumnas.filter((item) => item.isCheck === true),
     });
-    // console.log("Array Cabeceras:");
-    // console.log(columnas.cabeceras);
   };
 
   const paginacionOpciones = {
@@ -1202,6 +1256,27 @@ const Reporte = () => {
     rangeSeparatorText: "de",
     selectAllRowsItem: true,
     selectAllRowsItemText: "Mostrar Todo",
+  };
+
+  const imprimir_excel = () => {
+    let new_data_excel = [];
+
+    for (let i = 0; i < state.estudiante.length; i++) {
+      let new_data = [];
+      new_data.push({
+        cod_univalle: state.estudiante[i].cod_univalle,
+        nombre: state.estudiante[i].nombre,
+        apellido: state.estudiante[i].apellido,
+        num_doc: state.estudiante[i].num_doc,
+      });
+      new_data_excel.push(new_data);
+    }
+
+    writeXlsxFile(state.estudiante, {
+      schema, // (optional) column widths, etc.
+      fileName: "file.xlsx",
+      // filePath: '../dowloads/file.xlsx'
+    });
   };
 
   return (
@@ -1365,18 +1440,7 @@ const Reporte = () => {
                         .includes(search.busqueda);
               })}
               // data={state.estudiante}
-              // data={state.estudiante.filter((estudiante) => {
-              //   return search.toLowerCase() === ""
-              //     ? estudiante
-              //     : // : estudiante.nombre
-              //       //     .toLowerCase()
-              //       //     .includes(search.toLowerCase()) ||
-              //       //     estudiante.apellido
-              //       //       .toLowerCase()
-              //       //       .includes(search.toLowerCase()) ||
-              //       estudiante.cod_univalle().includes(search.toLowerCase()) ||
-              //         estudiante.num_doc().includes(search.toLowerCase());
-              // })}
+
               noDataComponent="Cargando Información..."
               pagination
               paginationComponentOptions={paginacionOpciones}
@@ -1399,20 +1463,13 @@ const Reporte = () => {
                   <Button style={{ margin: 5 }}> Imprimir CSV</Button>
                 </CSVLink>
 
-                {/* <ExcelFile
-                  element={
-                    <Button style={{ margin: 5 }} name="imprimir_excel">
-                      Imprimir Excel
-                    </Button>
-                  }
-                  filename="Reporte general Campus Virtual Ases universidad del Valle Excel"
+                <Button
+                  style={{ margin: 5 }}
+                  name="imprimir_excel"
+                  onClick={imprimir_excel}
                 >
-                  <ExcelSheet data={state.estudiante} name={"Reporte General"}>
-                    {csv_headers.map((item) => (
-                      <ExcelColumn label={item.label} value={item.key} />
-                    ))}
-                  </ExcelSheet>
-                </ExcelFile> */}
+                  Imprimir Excel
+                </Button>
               </Col>
             </Row>
           </Container>
