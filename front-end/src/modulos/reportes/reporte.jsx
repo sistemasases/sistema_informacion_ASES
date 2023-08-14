@@ -1278,7 +1278,7 @@ const Reporte = () => {
 
     writeXlsxFile(state.estudiante, {
       schema, // (optional) column widths, etc.
-      fileName: "file.xlsx",
+      fileName: "Reporte general Campus Virtual Ases universidad del Valle Excel.xlsx",
       // filePath: '../dowloads/file.xlsx'
     });
   };
