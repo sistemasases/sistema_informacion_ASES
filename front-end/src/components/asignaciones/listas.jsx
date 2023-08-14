@@ -28,7 +28,7 @@ const Listas = (props) => {
         formData.append("id_estudiante", props.item.id);
         axios({
             // Endpoint to send files
-            url: 'http://localhost:8000/asignacion/asignacion_estudiante/',
+            url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
             method: "POST",
             headers: config2,
             data: formData,
@@ -51,7 +51,7 @@ const Listas = (props) => {
 
       axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
       method: "POST",
       headers: config2,
       data: formData,
@@ -76,7 +76,7 @@ const Listas = (props) => {
 
       axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
       method: "POST",
       headers: config2,
       data: formData,

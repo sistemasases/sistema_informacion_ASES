@@ -5,8 +5,8 @@ const delete_user_rol = (id_usuario) => {
         const config = {
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
         };
-        const url_axios = 'http://localhost:8000/usuario_rol/user/' + id_usuario + '/';
-        const url_usuario_rol = 'http://localhost:8000/usuario_rol/usuario_rol/' + id_usuario + '/';
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/user/` + id_usuario + '/';
+        const url_usuario_rol = `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/` + id_usuario + '/';
 
         axios({
             url:  url_axios,

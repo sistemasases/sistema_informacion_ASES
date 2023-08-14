@@ -115,7 +115,7 @@ const Asignaciones_component = (props) =>{
     let data = new FormData();
     data.append('id_sede', sessionStorage.getItem('sede_id'));
 
-    axios.put('http://localhost:8000/usuario_rol/practicante/'+e.id+'/', data,config)
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+e.id+'/', data,config)
     .then(response => {
       set_state(prevState => ({
         ...prevState,
@@ -145,9 +145,8 @@ const Asignaciones_component = (props) =>{
 
 
   function practicante_seleccion(name){
-    let data = new FormData();
-    data.append('id_sede', sessionStorage.getItem('sede_id'));
-    axios.put('http://localhost:8000/usuario_rol/monitor/'+name+'/',data, config)
+
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -175,7 +174,7 @@ const Asignaciones_component = (props) =>{
     let formData = new FormData();
     formData.append('id_sede', sessionStorage.getItem('sede_id'));
 
-    axios.put('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/',formData, config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

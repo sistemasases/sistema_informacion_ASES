@@ -24,7 +24,7 @@ const Ficha_estudiante = (props) =>{
     useEffect(() => {
         axios({
             // Endpoint to send files
-            url:  "http://localhost:8000/usuario_rol/estudiante/",
+            url:  `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`,
             method: "GET",
             headers: config,
           })

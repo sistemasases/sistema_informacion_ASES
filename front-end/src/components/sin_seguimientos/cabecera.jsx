@@ -44,7 +44,7 @@ useEffect(()=>{
   
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/wizard/semestre/",
+          url:  `${process.env.REACT_APP_API_URL}/wizard/semestre/`,
           method: "GET",
           headers: config,
         })

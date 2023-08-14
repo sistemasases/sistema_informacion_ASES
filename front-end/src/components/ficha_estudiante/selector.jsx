@@ -63,7 +63,7 @@ const Selector = (props) =>{
 
       const loadInfo = (e) => {
 
-        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+props.id+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.id+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,

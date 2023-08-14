@@ -7,7 +7,7 @@ const update_estado = async (semestre_id) => {
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
         }
       };
-      const url_axios = 'http://localhost:8000/wizard/semestre/' + semestre_id.toString()+"/";
+      const url_axios = `${process.env.REACT_APP_API_URL}/wizard/semestre/` + semestre_id.toString()+"/";
       const resUserRol = await axios(url_axios, config)
       return resUserRol.data;
       

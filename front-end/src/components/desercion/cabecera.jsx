@@ -29,7 +29,7 @@ const Cabecera = (props) =>{
   
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/cohortes_lista/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/cohortes_lista/`,
           method: "GET",
           headers: config,
         })

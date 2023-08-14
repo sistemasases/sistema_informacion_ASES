@@ -9,17 +9,16 @@ dist/
 build/
 .vscode/
 
-# Virtual environment
+# Environment
 venv/
 env/
 ENV/
-
-# Django
-db.sqlite3
-media/
+.env
+.htaccess
 
 # Node.js
 /front-end/node_modules/
 
-# React
+# Static Files
 front-end/build/
+back-end/staticfiles

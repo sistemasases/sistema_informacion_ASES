@@ -39,7 +39,7 @@ const Info_basica = (props) =>{
       setLoading2(true);
     
       axios
-        .get('http://localhost:8000/usuario_rol/trayectoria/' + state.id_usuario + '/')
+        .get(`${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/')
         .then((response) => {
           setFechas(response.data[0].fechas);
           const riesgos = response.data.slice(1);
@@ -179,7 +179,7 @@ const Info_basica = (props) =>{
 
     const fetchData = async (index)=>{
       try{
-        const response = await axios.get("http://localhost:8000/usuario_rol/estudiante/"+state.data_user[index]['id']+"/", config);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config);
         state.total_datos_estudiantes.push(response.data)
         console.log("entra aqui ssisisisiisj")
       }
@@ -208,7 +208,7 @@ const Info_basica = (props) =>{
           //este if lo pongo para que abra academico de una
           if (url_estudiante == dato.value && state.ya_selecciono_automatico){
             setSelectedOption(dato)
-            const url_axios = "http://localhost:8000/usuario_rol/estudiante/"+dato.value+"/";
+            const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+dato.value+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
@@ -238,7 +238,7 @@ const Info_basica = (props) =>{
 
 
     const handle_option_user = (e) => {
-      const url_axios = "http://localhost:8000/usuario_rol/estudiante/" + e.value + "/";
+      const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` + e.value + "/";
       axios({
         url: url_axios,
         method: "GET",

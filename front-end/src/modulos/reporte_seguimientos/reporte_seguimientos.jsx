@@ -32,7 +32,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/profesional/"+sessionStorage.getItem('sede_id')+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+sessionStorage.getItem('sede_id')+"/",
           method: "GET",
           headers: config,
         })
@@ -51,7 +51,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/practicante/"+sessionStorage.getItem('sede_id')+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+sessionStorage.getItem('sede_id')+"/",
           method: "GET",
           headers: config,
         })
@@ -71,7 +71,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/monitor/"+sessionStorage.getItem('sede_id')+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/",
           method: "GET",
           headers: config,
         })

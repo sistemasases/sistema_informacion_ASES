@@ -21,7 +21,7 @@ const Carga_masiva_component = () =>{
   };
 
   // Constante que guarda la dirección url utilizada por el axios
-  const url_carga = "http://127.0.0.1:8000/carga_masiva/carga/"
+  const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva/carga/`
   // Estado que permite guardar la respuesta del axios
   const [state,set_state] = useState({
     option : 'Usuario',

@@ -96,7 +96,7 @@ const Info_general = (props) =>{
       formData.append('last_name', state.nuevo_apellidos);
         
         axios({
-        url: 'http://localhost:8000/usuario_rol/user_actualizacion/'+props.datos.id+'/',
+        url: `${process.env.REACT_APP_API_URL}/usuario_rol/user_actualizacion/`+props.datos.id+'/',
         method: "PUT", // O "PATCH"
         data: formData,
         headers: config,

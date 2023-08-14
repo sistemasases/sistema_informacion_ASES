@@ -52,7 +52,7 @@ const Desplegable_item_listas_materias = ({ item }) => {
         try {
             const notaId = item.notas[notaIndex].id; // Obtener el ID de la nota que se está actualizando
             const response = await axios.put(
-                `http://localhost:8000/academico/crear_nota/${notaId}/`, // Reemplaza esta URL con la ruta correcta para actualizar la nota
+                `${process.env.REACT_APP_API_URL}/academico/crear_nota/${notaId}/`, // Reemplaza esta URL con la ruta correcta para actualizar la nota
                 { calificacion: nuevoValor }, // Datos a enviar en el cuerpo de la solicitud (nueva calificación)
                 config
             );

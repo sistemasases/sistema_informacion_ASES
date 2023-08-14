@@ -3,8 +3,8 @@ import axios from 'axios';
 const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_nuevo) => {
 
   //URL para el axios
-  const url_post = 'http://localhost:8000/wizard/semestre/';
-  const url_semestre = 'http://localhost:8000/wizard/semestre/' + instancia.toString()+"/";
+  const url_post = `${process.env.REACT_APP_API_URL}/wizard/semestre/`;
+  const url_semestre = `${process.env.REACT_APP_API_URL}/wizard/semestre/` + instancia.toString()+"/";
 
   // header para la autorizacion con token
   const config = {

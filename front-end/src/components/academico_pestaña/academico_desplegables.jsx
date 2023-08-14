@@ -145,7 +145,7 @@ const Academico_desplegable = () => {
 
   const traer_materias_del_profesor = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/academico/traer_materias_del_profesor/'+sessionStorage.getItem('id_usuario')+'/', config);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/traer_materias_del_profesor/`+sessionStorage.getItem('id_usuario')+'/', config);
       set_state({
         traer_materias_del_profesor: response.data,
       });
@@ -157,7 +157,7 @@ const Academico_desplegable = () => {
 
   const traer_facultades = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/academico/lista_de_facultades/', config);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/lista_de_facultades/`, config);
       set_state({
         facultades: response.data,
         tiene_facultades: true
@@ -170,7 +170,7 @@ const Academico_desplegable = () => {
 
   const traer_profesores = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/academico/lista_de_profesores/', config);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/lista_de_profesores/`, config);
       set_state({
         profesores: [{ profesores: response.data }],
         tiene_profesores: true
@@ -183,7 +183,7 @@ const Academico_desplegable = () => {
 
   const traer_estudiantes = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/usuario_rol/estudiante/', config);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`, config);
       set_state({
         estudiantes_a_consultar: [{ estudiantes: response.data }],
         tiene_estudiantes: true
