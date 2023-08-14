@@ -188,7 +188,7 @@ const Cabecera = () => {
   
       // Realizar la solicitud PUT al backend para editar el ítem
       await axios.put(
-        `http://localhost:8000/academico/crear_item/${editingItem.id}/`,
+        `${process.env.REACT_APP_API_URL}/academico/crear_item/${editingItem.id}/`,
         data,
         config
       );

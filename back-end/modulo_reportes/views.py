@@ -128,7 +128,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
                             list_estudiantes.append(serializer_estudiante.data)
             return Response (list_estudiantes, status=status.HTTP_200_OK)
         
-        elif data_usuario_rol == "superAses":
+        elif data_usuario_rol == "super_ases":
 
             # ven todo
             list_estudiantes = []
@@ -233,7 +233,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
         data_sede = request.GET.get('sede')
         # print(data_usuario_rol)
         # print(data_sede)
-        if data_usuario_rol == "superAses":
+        if data_usuario_rol == "super_ases":
             list_estudiantes = list()
             list_programas = list()
             serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)

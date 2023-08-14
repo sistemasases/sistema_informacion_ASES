@@ -85,7 +85,7 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            permitidos: ["sistemas","superAses","sociEducativo","Profesional","Practicante","Monitor"],
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante","monitor"],
             component:<Info_general 
                         id={props.id} 
                         seleccionado={props.seleccionado} 
@@ -100,7 +100,7 @@ const Selector = (props) =>{
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
-            permitidos: ["sistemas","superAses","sociEducativo","Profesional","Practicante"],
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante"],
             component:<Socieducativa 
                         id={props.id} 
                         data_user_socioedu={state.data_user_socioedu} 
@@ -112,7 +112,7 @@ const Selector = (props) =>{
             id:3,
             name:"ACADEMICO",
             contenido:"hola",
-            permitidos: ["sistemas","superAses","sociEducativo","Profesional","Practicante"],
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante"],
             component:<Academico data_user_academico={state.data_user_academico}
                         id={props.id}/>,
         },
@@ -120,7 +120,7 @@ const Selector = (props) =>{
             id:4,
             name:"GEOGRAFICO",
             contenido:"bloqueado",
-            permitidos: ["sistemas","superAses","sociEducativo","Profesional","Practicante","Monitor"],
+            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante","monitor"],
             component:<Info_general />,
         },
 

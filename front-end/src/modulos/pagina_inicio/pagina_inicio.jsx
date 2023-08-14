@@ -92,7 +92,7 @@ const Pagina_inicio = () => {
 
   return (
     <>
-      {userRole === "superAses" || userRole === "sistemas" ? (
+      {userRole === "super_ases" || userRole === "sistemas" ? (
         <div
           className="banner"
           style={{ marginTop: 20, marginBottom: 20, marginLeft: 22 }}

@@ -33,10 +33,10 @@ const SideBar = (props) =>{
     }
 
     const [state,set_state] = useState({
-        desplegable : sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'superAses' ? Menu : 
-        sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'Profesional' || sessionStorage.rol === 'Socioeducativo' ? Menu2 :
+        desplegable : sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'super_ases' ? Menu : 
+        sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'profesional' || sessionStorage.rol === 'socioeducativo' ? Menu2 :
         sessionStorage.rol === 'dir_academico' ? Menu3 : 
-        sessionStorage.rol === 'monitor' || sessionStorage.rol === 'Practicante' ? Menu4 :
+        sessionStorage.rol === 'monitor' || sessionStorage.rol === 'practicante' ? Menu4 :
         sessionStorage.rol === 'dir_investigacion' ? Menu5 : 
         sessionStorage.rol === 'dir_programa' || sessionStorage.rol === 'vcd_academico' ? Menu6 : Menu7
       })

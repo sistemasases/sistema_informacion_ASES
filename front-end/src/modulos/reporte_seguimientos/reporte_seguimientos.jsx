@@ -28,7 +28,7 @@ const Reporte_seguimientos = (props) =>{
 
     useEffect(()=>{
       
-      if (sessionStorage.getItem('rol') === 'superAses')
+      if (sessionStorage.getItem('rol') === 'super_ases')
       {
         axios({
           // Endpoint to send files
