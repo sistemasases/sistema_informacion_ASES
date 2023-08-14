@@ -3,7 +3,7 @@ import { Container, Row, Col, Dropdown, Button, Form } from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
 
-const Desplegable_item_listas_materias = ({ item }) => {
+const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
 
     const config = {
         headers: {
@@ -29,6 +29,19 @@ const Desplegable_item_listas_materias = ({ item }) => {
         const promedio = sum / notas.length;
         return promedio.toFixed(2);
     }
+
+
+    const calcularPromedio_parciales = (notas) => {
+        if (!notas || notas.length === 0) return 0;
+
+        const notasParciales = notas.filter(nota => lista_parciales.includes(nota.id_item)); // Filtrar notas por IDs en la lista parcialIDs
+        if (notasParciales.length === 0) return 0; // Si no hay notas parciales, retornar 0
+
+        const sum = notasParciales.reduce((acc, nota) => acc + parseFloat(nota.calificacion), 0);
+        const promedio = sum / notasParciales.length;
+        return promedio.toFixed(2);
+    };
+
 
     // Función para obtener el color del fondo del campo de promedio
     const getPromedioColor = (promedio) => {
@@ -66,6 +79,9 @@ const Desplegable_item_listas_materias = ({ item }) => {
     if (item.tipo_dato === 'estudiante') {
         return (
             <Row>
+            {/*esta es la lista : <li >{JSON.stringify(lista_parciales)}</li>*/}
+
+
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
                     {sessionStorage.getItem('rol') === 'profesor' ?
@@ -75,7 +91,7 @@ const Desplegable_item_listas_materias = ({ item }) => {
                             </Col>
                         ):
                         (
-                            <Col className="link_text_academico1_sin_borde" xs={2}>
+                            <Col className="link_text_academico1_sin_borde" xs={2} >
                                 <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
                                     {item.nombre} {item.apellido}
                                 </Link>
@@ -91,7 +107,7 @@ const Desplegable_item_listas_materias = ({ item }) => {
                         )
                         :
                         (
-                            <Col className="link_text_academico1_sin_borde" xs={2}>
+                            <Col className="link_text_academico1_sin_borde" xs={2} >
                                 <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
                                     {item.cod_univalle}
                                 </Link>
@@ -104,7 +120,7 @@ const Desplegable_item_listas_materias = ({ item }) => {
                         {item.notas ? (
                             <>
                                 {item.notas.map((nota, index) => (
-                                    <Col key={index}>
+                                    <Col key={index} >
                                         <Form.Control
                                             type="number"
                                             value={nota.calificacion}
@@ -115,9 +131,18 @@ const Desplegable_item_listas_materias = ({ item }) => {
                                     </Col>
                                 ))}
                                 {sessionStorage.rol !== 'profesor' ?
-                                    (<Col xs={"1"} style={{ backgroundColor: getPromedioColor(calcularPromedio(item.notas)) }}>
-                                        {calcularPromedio(item.notas)}
-                                    </Col>)
+                                    (
+                                        <Col xs={"2"} >
+                                            <Row>
+                                                <Col xs={"6"} style={{ backgroundColor: getPromedioColor(calcularPromedio(item.notas)) }}>
+                                                    {calcularPromedio(item.notas)}
+                                                </Col>
+                                                <Col xs={"6"} style={{ backgroundColor: getPromedioColor(calcularPromedio_parciales(item.notas)) }}>
+                                                    {calcularPromedio_parciales(item.notas)}
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    )
                                     :
                                     (<div class="d-none"></div>)
                                 }

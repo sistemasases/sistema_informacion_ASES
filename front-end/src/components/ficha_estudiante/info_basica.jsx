@@ -681,7 +681,8 @@ const Info_basica = (props) =>{
         <div class="d-none d-md-block col-12">
           <Row>
             <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
-                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}/>
+                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
+                      handleOptionUser={handle_option_user}/>
           </Row>
           <Row>
             <Ficha_footer></Ficha_footer>
@@ -700,7 +701,8 @@ const Info_basica = (props) =>{
         <div class="d-block d-md-none col-12">
           <Col>
           <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
-                    seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}/>
+                    seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
+                    handleOptionUser={handle_option_user}/>
           </Col>
         </div>
       
