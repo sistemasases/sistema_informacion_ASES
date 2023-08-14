@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "homepage": "http://localhost/",
+  "homepage": "https://sistemaases.univalle.edu.co/",
   "dependencies": {
     "@fontsource/manrope": "^4.5.13",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
