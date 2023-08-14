@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Component, useRef } from "react";
-import { Container, Col, Row, Button, Form } from "react-bootstrap";
+import { Container, Col, Row, Button, Form, Alert } from "react-bootstrap";
 // import Carousel from "react-bootstrap/Carousel";
 // import all_estudiantes_reportes from "../../service/all_estudiantes_reportes";
 // import Select from "react-select";
@@ -10,6 +10,7 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { CSVLink } from "react-csv";
 import writeXlsxFile from "write-excel-file";
+import myGif from "../reportes/loading_data.gif";
 
 var columns = [
   {
@@ -109,6 +110,7 @@ const Reporte = () => {
     let rol = sessionStorage.getItem("rol");
     let sede = sessionStorage.getItem("sede_id");
     let id_usuario = sessionStorage.getItem("id_usuario");
+
     const riesgos_estudiante = async () => {
       try {
         const response = await axios.get(
@@ -122,6 +124,8 @@ const Reporte = () => {
           ...state,
           estudiante: response.data,
         });
+        document.getElementsByName("loading_data")[0].style.visibility =
+          "hidden";
       } catch (error) {
         console.log("no capto el dato");
       }
@@ -261,27 +265,27 @@ const Reporte = () => {
       sortable: true,
       isCheck: false,
     },
-    {
-      name: "Promedio acumulado",
-      value: "promedio_acumulado",
-      selector: (row) => row.promedio_acumulado,
-      sortable: true,
-      isCheck: false,
-    },
-    {
-      name: "Estimulos",
-      value: "estimulos",
-      selector: (row) => row.estimulos,
-      sortable: true,
-      isCheck: false,
-    },
-    {
-      name: "Bajo rendimiento",
-      value: "bajos_rendimiento",
-      selector: (row) => row.bajos_rendimiento,
-      sortable: true,
-      isCheck: false,
-    },
+    // {
+    //   name: "Promedio acumulado",
+    //   value: "promedio_acumulado",
+    //   selector: (row) => row.promedio_acumulado,
+    //   sortable: true,
+    //   isCheck: false,
+    // },
+    // {
+    //   name: "Estimulos",
+    //   value: "estimulos",
+    //   selector: (row) => row.estimulos,
+    //   sortable: true,
+    //   isCheck: false,
+    // },
+    // {
+    //   name: "Bajo rendimiento",
+    //   value: "bajos_rendimiento",
+    //   selector: (row) => row.bajos_rendimiento,
+    //   sortable: true,
+    //   isCheck: false,
+    // },
   ];
 
   const filtros_Asignaciones = [
@@ -865,17 +869,17 @@ const Reporte = () => {
         )[0].checked = false;
         document.getElementsByName("Programa académico")[0].checked = false;
         document.getElementsByName("Sede")[0].checked = false;
-        document.getElementsByName("Promedio acumulado")[0].checked = false;
-        document.getElementsByName("Estimulos")[0].checked = false;
-        document.getElementsByName("Bajo rendimiento")[0].checked = false;
+        // document.getElementsByName("Promedio acumulado")[0].checked = false;
+        // document.getElementsByName("Estimulos")[0].checked = false;
+        // document.getElementsByName("Bajo rendimiento")[0].checked = false;
         document.getElementsByName(
           "Código programa académico"
         )[0].checked = true;
         document.getElementsByName("Programa académico")[0].checked = true;
         document.getElementsByName("Sede")[0].checked = true;
-        document.getElementsByName("Promedio acumulado")[0].checked = true;
-        document.getElementsByName("Estimulos")[0].checked = true;
-        document.getElementsByName("Bajo rendimiento")[0].checked = true;
+        // document.getElementsByName("Promedio acumulado")[0].checked = true;
+        // document.getElementsByName("Estimulos")[0].checked = true;
+        // document.getElementsByName("Bajo rendimiento")[0].checked = true;
 
         for (let i = 0; i < columns.length; i++) {
           if (
@@ -1124,9 +1128,9 @@ const Reporte = () => {
         )[0].checked = false;
         document.getElementsByName("Programa académico")[0].checked = false;
         document.getElementsByName("Sede")[0].checked = false;
-        document.getElementsByName("Promedio acumulado")[0].checked = false;
-        document.getElementsByName("Estimulos")[0].checked = false;
-        document.getElementsByName("Bajo rendimiento")[0].checked = false;
+        // document.getElementsByName("Promedio acumulado")[0].checked = false;
+        // document.getElementsByName("Estimulos")[0].checked = false;
+        // document.getElementsByName("Bajo rendimiento")[0].checked = false;
 
         for (let i = 0; i < columns.length; i++) {
           if (
@@ -1470,6 +1474,21 @@ const Reporte = () => {
                 >
                   Imprimir Excel
                 </Button>
+
+                <img
+                  src={myGif}
+                  name="loading_data"
+                  alt="my-gif"
+                  style={{
+                    float: "right",
+                    height: 100,
+                    width: 100,
+                    position: "fixed",
+                    right: 0,
+                    bottom: 0,
+                    visibility: "visible",
+                  }}
+                />
               </Col>
             </Row>
           </Container>

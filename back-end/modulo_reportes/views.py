@@ -182,6 +182,19 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             #     list_estudiantes.append(data)
             # print(list_programas)  
             # print(list_estudiantes)
+            # riesgo = {
+            #             'riesgo_individual': 'Cargando...',
+            #             'riesgo_familiar': 'Cargando...',
+            #             'riesgo_academico': 'Cargando...',
+            #             'riesgo_economico': 'Cargando...',
+            #             'riesgo_vida_universitaria_ciudad': 'N/A'
+            #         }
+            # for i in serializer_estudiante.data:
+            #     data = dict(i, **riesgo)
+            #     list_estudiantes.append(data)
+            # data = dict(serializer_estudiante, **riesgo)
+            
+            # return Response(list_estudiantes)
             return Response(serializer_estudiante.data)
 
             # return Response("caso no encontrado")
@@ -289,7 +302,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
                 except :
                     dic_programa = {
-                        'id_programa': 'N/A',
+                        'id_programa': '',
                         'programa_academico': 'N/A',
                         'sede': 'N/A'
                         }  # Agregar el estado del curso al diccionario
