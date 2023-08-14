@@ -342,7 +342,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'asignacion_practicante': 'Sin Asignar',
                         'asignacion_profesional': 'Sin Asignar'
                     }
-                    pass
+                    # pass
 
                 # print(riesgo)
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **dic_reg_academico, **dic_asignaciones)
