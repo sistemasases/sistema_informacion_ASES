@@ -391,88 +391,88 @@ def carga_fichas(file):
                 if (estudiante.objects.filter(id = datos.iat[i,62]).values()):
                     consulta_estudiante= estudiante.objects.get(id =datos.iat[i,62])
 
-                    # try:
-                    Seguimiento_individual =seguimiento_individual(
-                        fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
-                        lugar = str(datos.iat[i,1]),
-                        hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M %p'),
-                        hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M %p'),
-                        objetivos= str(datos.iat[i,4]),
-                        individual= str(datos.iat[i,5]),
-                        riesgo_individual= int(datos.iat[i,6]),
-                        autoconocimiento= bool(datos.iat[i,7]),
-                        rasgos_de_personalidad=bool(datos.iat[i,8]),
-                        identificación=bool(datos.iat[i,9]),
-                        red_de_apoyo=bool(datos.iat[i,10]),
-                        proyecto_de_vida= bool(datos.iat[i,11]),
-                        salud=bool(datos.iat[i,12]),
-                        aspectos_motivacionales=bool(datos.iat[i,13]),
-                        historia_de_vida=bool(datos.iat[i,14]),
-                        relación_eriótico_afectivas=bool(datos.iat[i,15]),
-                        diversidad_sexual=bool(datos.iat[i,16]),
-                        familiar=str(datos.iat[i,17]),
-                        riesgo_familiar=int(datos.iat[i,18]),
-                        dinamica_familiar=bool(datos.iat[i,19]),
-                        academico=str(datos.iat[i,20]),
-                        riesgo_academico= int(datos.iat[i,21]),
-                        desempeño_académico=bool(datos.iat[i,22]),
-                        elección_vocacional=bool(datos.iat[i,23]),
-                        manejo_del_tiempo =bool(datos.iat[i,24]),
-                        economico=str(datos.iat[i,25]),
-                        riesgo_economico=int(datos.iat[i,26]),
-                        apoyos_económicos_institucionales=bool(datos.iat[i,27]),
-                        manejo_finanzas=bool(datos.iat[i,28]),
-                        apoyo_económico_familiar=bool(datos.iat[i,29]),
-                        situación_laboral_ocupacional=bool(datos.iat[i,30]),
-                        vida_universitaria_ciudad=str(datos.iat[i,31]),
-                        riesgo_vida_universitaria_ciudad=int(datos.iat[i,32]),
-                        motivación_compañamiento=bool(datos.iat[i,33]),
-                        referencia_geográfica=bool(datos.iat[i,34]),
-                        adaptación_ciudad_Universidad=bool(datos.iat[i,35]),
-                        oferta_servicios=bool(datos.iat[i,36]),
-                        vivienda=bool(datos.iat[i,37]),
-                        vinculación_grupos_actividades_extracurriculares=bool(datos.iat[i,38]),
+                    try:
+                        Seguimiento_individual =seguimiento_individual(
+                            fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
+                            lugar = str(datos.iat[i,1]),
+                            hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M %p'),
+                            hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M %p'),
+                            objetivos= str(datos.iat[i,4]),
+                            individual= str(datos.iat[i,5]),
+                            riesgo_individual= int(datos.iat[i,6]),
+                            autoconocimiento= bool(datos.iat[i,7]),
+                            rasgos_de_personalidad=bool(datos.iat[i,8]),
+                            identificación=bool(datos.iat[i,9]),
+                            red_de_apoyo=bool(datos.iat[i,10]),
+                            proyecto_de_vida= bool(datos.iat[i,11]),
+                            salud=bool(datos.iat[i,12]),
+                            aspectos_motivacionales=bool(datos.iat[i,13]),
+                            historia_de_vida=bool(datos.iat[i,14]),
+                            relación_eriótico_afectivas=bool(datos.iat[i,15]),
+                            diversidad_sexual=bool(datos.iat[i,16]),
+                            familiar=str(datos.iat[i,17]),
+                            riesgo_familiar=int(datos.iat[i,18]),
+                            dinamica_familiar=bool(datos.iat[i,19]),
+                            academico=str(datos.iat[i,20]),
+                            riesgo_academico= int(datos.iat[i,21]),
+                            desempeño_académico=bool(datos.iat[i,22]),
+                            elección_vocacional=bool(datos.iat[i,23]),
+                            manejo_del_tiempo =bool(datos.iat[i,24]),
+                            economico=str(datos.iat[i,25]),
+                            riesgo_economico=int(datos.iat[i,26]),
+                            apoyos_económicos_institucionales=bool(datos.iat[i,27]),
+                            manejo_finanzas=bool(datos.iat[i,28]),
+                            apoyo_económico_familiar=bool(datos.iat[i,29]),
+                            situación_laboral_ocupacional=bool(datos.iat[i,30]),
+                            vida_universitaria_ciudad=str(datos.iat[i,31]),
+                            riesgo_vida_universitaria_ciudad=int(datos.iat[i,32]),
+                            motivación_compañamiento=bool(datos.iat[i,33]),
+                            referencia_geográfica=bool(datos.iat[i,34]),
+                            adaptación_ciudad_Universidad=bool(datos.iat[i,35]),
+                            oferta_servicios=bool(datos.iat[i,36]),
+                            vivienda=bool(datos.iat[i,37]),
+                            vinculación_grupos_actividades_extracurriculares=bool(datos.iat[i,38]),
 
-                        apoyo_académico = bool(datos.iat[i,39]),
-                        taller_par_par = bool(datos.iat[i,40]),
-                        reconocimiento_ciudad_U = bool(datos.iat[i,41]),
-                        rem_profesional_SE = bool(datos.iat[i,42]),
-                        rem_racticante_SE = bool(datos.iat[i,43]),
-                        rem_actividades_grupales = bool(datos.iat[i,44]),
-                        rem_monitorías_académicas = bool(datos.iat[i,45]),
-                        rem_proyectos_Universidad = bool(datos.iat[i,46]),
-                        rem_servicio_salud = bool(datos.iat[i,47]),
-                        rem_registro_académico = bool(datos.iat[i,48]),
-                        rem_matrícula_financiera = bool(datos.iat[i,49]),
-                        rem_desarrollo_humano_promoción_SE = bool(datos.iat[i,50]),
-                        rem_directores_programa = bool(datos.iat[i,51]),
-                        rem_grupos_universidad = bool(datos.iat[i,52]),
-                        rem_externa = bool(datos.iat[i,53]),
-                        Ninguna_acción_realizada = bool(datos.iat[i,54]),
+                            apoyo_académico = bool(datos.iat[i,39]),
+                            taller_par_par = bool(datos.iat[i,40]),
+                            reconocimiento_ciudad_U = bool(datos.iat[i,41]),
+                            rem_profesional_SE = bool(datos.iat[i,42]),
+                            rem_racticante_SE = bool(datos.iat[i,43]),
+                            rem_actividades_grupales = bool(datos.iat[i,44]),
+                            rem_monitorías_académicas = bool(datos.iat[i,45]),
+                            rem_proyectos_Universidad = bool(datos.iat[i,46]),
+                            rem_servicio_salud = bool(datos.iat[i,47]),
+                            rem_registro_académico = bool(datos.iat[i,48]),
+                            rem_matrícula_financiera = bool(datos.iat[i,49]),
+                            rem_desarrollo_humano_promoción_SE = bool(datos.iat[i,50]),
+                            rem_directores_programa = bool(datos.iat[i,51]),
+                            rem_grupos_universidad = bool(datos.iat[i,52]),
+                            rem_externa = bool(datos.iat[i,53]),
+                            Ninguna_acción_realizada = bool(datos.iat[i,54]),
 
-                        observaciones=str(datos.iat[i,55]),
-                        revisado_profesional = bool(datos.iat[i,56]),
-                        revisado_practicante = bool(datos.iat[i,57]),
-                        primer_acercamiento =bool(datos.iat[i,58]),
-                        cierre =bool(datos.iat[i,59]),
+                            observaciones=str(datos.iat[i,55]),
+                            revisado_profesional = bool(datos.iat[i,56]),
+                            revisado_practicante = bool(datos.iat[i,57]),
+                            primer_acercamiento =bool(datos.iat[i,58]),
+                            cierre =bool(datos.iat[i,59]),
 
-                        id_creador = consulta_creador,
-                        id_modificador = consulta_editor,
-                        id_estudiante =  consulta_estudiante,
+                            id_creador = consulta_creador,
+                            id_modificador = consulta_editor,
+                            id_estudiante =  consulta_estudiante,
 
-                    )
-                    list_fichas.append(Seguimiento_individual)
-                    dict_result = {
-                        'dato' : datos.iat[i,0],
-                        'mensaje' : 'Se cargó correctamente la ficha del estudiante con id: '+str(datos.iat[i,62])+'.'
-                    }
-                    list_dict_result.append(dict_result)
-                    # except:
-                    #     dict_result = {
-                    #         'dato' : datos.iat[i,0],
-                    #         'mensaje' : 'Error al cargar este la ficha del estudiante con id: '+str(datos.iat[i,62])+'.'
-                    #     }
-                    #     list_dict_result.append(dict_result)
+                        )
+                        list_fichas.append(Seguimiento_individual)
+                        dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Se cargó correctamente la ficha del estudiante con id: '+str(datos.iat[i,62])+'.'
+                        }
+                        list_dict_result.append(dict_result)
+                    except:
+                        dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Error al cargar este la ficha del estudiante con id: '+str(datos.iat[i,62])+'.'
+                        }
+                        list_dict_result.append(dict_result)
                 else:
                     dict_result = {
                         'dato' : datos.iat[i,0],
