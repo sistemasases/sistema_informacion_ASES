@@ -127,7 +127,7 @@ def carga_programa_estudiante(file):
                 if(programa_estudiante.objects.filter(id_estudiante = consulta_estudiante,id_programa=consulta_programa).values()):
                     dict_result = {
                         'dato' : datos.iat[i,0],
-                        'mensaje' : 'Este estudiante ya está matriculado en este programa.'
+                        'mensaje' : 'Este estudiante ya está matriculado en este programa: '+ str(datos.iat[i,1])
                     }
                     list_dict_result.append(dict_result)
                 else:
