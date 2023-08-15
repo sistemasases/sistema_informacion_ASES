@@ -33,10 +33,10 @@ const SideBar = (props) =>{
     }
 
     const [state,set_state] = useState({
-        desplegable : sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'superAses' ? Menu : 
-        sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'Profesional' || sessionStorage.rol === 'Socioeducativo' ? Menu2 :
+        desplegable : sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'super_ases' ? Menu : 
+        sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'profesional' || sessionStorage.rol === 'socioeducativo' ? Menu2 :
         sessionStorage.rol === 'dir_academico' ? Menu3 : 
-        sessionStorage.rol === 'monitor' || sessionStorage.rol === 'Practicante' ? Menu4 :
+        sessionStorage.rol === 'monitor' || sessionStorage.rol === 'practicante' ? Menu4 :
         sessionStorage.rol === 'dir_investigacion' ? Menu5 : 
         sessionStorage.rol === 'dir_programa' || sessionStorage.rol === 'vcd_academico' ? Menu6 : Menu7
       })
@@ -76,7 +76,7 @@ const SideBar = (props) =>{
     }
 
     const handleContinue = () => {
-        axios.post('http://127.0.0.1:8000/refresh', data)
+        axios.post(`${process.env.REACT_APP_API_URL}/refresh`, data)
         .then(res => {
             sessionStorage.setItem('token', res.data.token);
             setShow(false);
@@ -96,7 +96,7 @@ const SideBar = (props) =>{
     const tiempoEspera = 1 * 1 * 60 * 1000;
 
     const timeoutId = setTimeout(async () => {
-        await axios.get('http://127.0.0.1:8000/wizard/instancia/', config).then(res=>{})
+        await axios.get(`${process.env.REACT_APP_API_URL}/wizard/instancia/`, config).then(res=>{})
         .catch(err => {
             handleShow()
         })

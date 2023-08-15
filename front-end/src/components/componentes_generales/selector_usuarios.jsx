@@ -15,6 +15,8 @@ import user_rol_manage from '../../service/user_rol_manage';
 import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
 import DataTable, {createTheme} from 'react-data-table-component';
+import DataTableExtensions from 'react-data-table-component-extensions';
+
 var bandera_consulta_rol = 0;
 var bandera_option_user = true;
 var bandera_option_rol = true;
@@ -162,7 +164,7 @@ const Selector_usuarios = () =>{
     axios({
       // Endpoint to send files
       //FALTA ORGANIZAR PK
-      url:  "http://localhost:8000/usuario_rol/actual_usuario_rol/"+e.id+"/",
+      url:  `${process.env.REACT_APP_API_URL}/usuario_rol/actual_usuario_rol/`+e.id+"/",
       method: "PUT",
       headers: config,
       data: formData,
@@ -260,7 +262,7 @@ const Selector_usuarios = () =>{
       axios({
         // Endpoint to send files
         //FALTA ORGANIZAR EL PK
-        url:  "http://localhost:8000/usuario_rol/usuario_rol/"+id_user+"/",
+        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`+id_user+"/",
         method: "PUT",
         headers: config,
         data: formData,
@@ -318,6 +320,7 @@ const Selector_usuarios = () =>{
           <Accordion.Item eventKey="1">
           <Accordion.Header onClick={consulta_all_user_rol}>Lista de Usuarios</Accordion.Header>
             <Accordion.Body>
+            {/*
               <DataTable 
               title="Usuarios"
               columns={columnas}
@@ -328,6 +331,26 @@ const Selector_usuarios = () =>{
               selectableRows
               onSelectedRowsChange={handleChange}
               />
+              */}
+              <DataTableExtensions
+                columns={columnas}
+                data={state.data_user_rol}
+                filter={true}
+                filterPlaceHolder={2}
+                filterDigit={1}
+                exportHeaders={true}
+                >
+
+                <DataTable
+                  title="Usuarios"
+                  noDataComponent="Cargando Información."
+                  pagination 
+                  paginationRowsPerPageOptions={[10,20,30,40,50,100]}
+                  selectableRows
+                  onSelectedRowsChange={handleChange}
+                  striped      
+                  />
+              </DataTableExtensions>
               <Button onClick={delete_user_rol}>Eliminar Rol</Button> 
             </Accordion.Body>
           </Accordion.Item>

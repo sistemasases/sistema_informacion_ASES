@@ -4,7 +4,7 @@ const crear_asignacion = (formData) => {
     const config = {
         Authorization: 'Bearer ' + sessionStorage.getItem('token')
     };
-    const url_axios = 'http://localhost:8000/asignacion/asignacion_estudiante';
+    const url_axios = `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante`;
     axios({
         url:  url_axios,
         method: "POST",

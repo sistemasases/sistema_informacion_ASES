@@ -180,7 +180,7 @@ const Semestre_sistemas_component = () =>{
             if(state.data['length']>0){
                 for(var i = 0; i < state.data['length']; i++){
                     if(state.data[i].id === undefined){
-                        axios.get('http://localhost:8000/usuario_rol/user/', config)
+                        axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/user/`, config)
                         .then(res=>{
                             for(var j=0; j<res.data['length']; j++){
                                 if(state.data[i] && res.data[j] && res.data[j]['username'] === state.data[i]['username']){

@@ -8,6 +8,8 @@ const Seguimiento_individual = (props) =>{
     const set_info = (e) => {
     }
 
+    console.log(props.item)
+
     return (
         
         <Modal {...props}

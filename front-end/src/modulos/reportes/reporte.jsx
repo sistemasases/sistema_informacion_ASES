@@ -89,7 +89,7 @@ const Reporte = () => {
     const estudiantes_por_rol = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/reportes/estudiante_por_rol/" +
+          `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
             id_usuario.toString() +
             "/",
           { params: { usuario_rol: rol, sede: sede } }
@@ -114,7 +114,7 @@ const Reporte = () => {
     const riesgos_estudiante = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/reportes/estudiante_filtros/" +
+          `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
             id_usuario.toString() +
             "/",
           { params: { usuario_rol: rol, sede: sede } }

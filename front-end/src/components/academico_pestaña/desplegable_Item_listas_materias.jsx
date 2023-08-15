@@ -23,7 +23,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
     
       const traer_cursos_de_facultad = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/cursos_facultad/" + index + "/", config);
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/cursos_facultad/` + index + "/", config);
           set_state({
             cursos_de_la_facultad : response.data
           })
@@ -37,7 +37,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
 
       const franjas_del_curso = async (index)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/franja_curso/" + index + "/", config);
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/franja_curso/` + index + "/", config);
           set_state({
             franjas_de_curso : response.data
           })
@@ -50,7 +50,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
 
       const profesores_de_la_franja = async (index, index2)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/profesores_del_curso/",
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/profesores_del_curso/`,
                                     {params : {curso : index, franja : index2}}, config);
           set_state({
             profesores_de_la_franja : response.data
@@ -64,7 +64,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
 
       const alumnos_del_profesor = async (index, index2)=>{
         try{
-          const response = await axios.get("http://localhost:8000/academico/alumnos_del_profesor/", 
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/alumnos_del_profesor/`, 
                                                         {params : {curso : index, profesor : index2}}, config);
           set_state({
             alumnos_del_profesor : response.data

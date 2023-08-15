@@ -63,7 +63,7 @@ const Cabecera = (props) => {
 
   useEffect(() => {
     axios({
-      url: 'http://localhost:8000/wizard/semestre/',
+      url: `${process.env.REACT_APP_API_URL}/wizard/semestre/`,
       method: 'GET',
       headers: config,
     })
@@ -80,7 +80,7 @@ const Cabecera = (props) => {
     if (sessionStorage.getItem('rol') === 'Profesional')
       {
         axios({
-          url: 'http://localhost:8000/usuario_rol/reporte_seguimientos/' + sessionStorage.getItem('id_usuario') + '/',
+          url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + sessionStorage.getItem('id_usuario') + '/',
           method: 'GET',
           headers: config,
         })
@@ -100,7 +100,7 @@ const Cabecera = (props) => {
       else if (sessionStorage.getItem('rol') === 'Practicante')
       {
         axios({
-          url: 'http://localhost:8000/usuario_rol/reporte_seguimientos_practicante/' + sessionStorage.getItem('id_usuario') + '/',
+          url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos_practicante/` + sessionStorage.getItem('id_usuario') + '/',
           method: 'GET',
           headers: config,
         })
@@ -136,7 +136,7 @@ const Cabecera = (props) => {
         };
         datos_option_user.push(dato);
 
-        const url_axios = 'http://localhost:8000/usuario_rol/profesional/' + state.data_user[i]['id_rol'] + '/';
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/' + state.data_user[i]['id_rol'] + '/';
         axios({
           url: url_axios,
           method: 'GET',
@@ -168,7 +168,7 @@ const Cabecera = (props) => {
         };
         datos_option_user.push(dato);
 
-        const url_axios = 'http://localhost:8000/usuario_rol/profesional/' + props.data_user[i]['id_rol'] + '/';
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/` + props.data_user[i]['id_rol'] + '/';
         axios({
           url: url_axios,
           method: 'GET',
@@ -198,7 +198,7 @@ const Cabecera = (props) => {
       total_datos_estudiante_seleccionado: total_datos_estudiantes[e.id],
     });
     axios({
-      url: 'http://localhost:8000/usuario_rol/reporte_seguimientos/' + props.data_user[e.id]['id'] + '/',
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + props.data_user[e.id]['id'] + '/',
       method: 'GET',
       headers: config,
     })

@@ -4,7 +4,7 @@ const actualizar_estudiante = (formData) => {
     const config = {
         Authorization: 'Bearer ' + sessionStorage.getItem('token')
     };
-    const url_axios = 'http://localhost:8000/usuario_rol/estudiante_actualizacion/';
+    const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`;
     axios({
         url:  url_axios,
         method: "POST",

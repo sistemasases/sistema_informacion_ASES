@@ -109,7 +109,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Etico = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/grupos_etnicos/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/grupos_etnicos/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -130,7 +130,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_Actividad_simultanea = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/actividad_simultanea/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/actividad_simultanea/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -151,7 +151,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_identidad_de_genero = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/identidad_gen/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/identidad_gen/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -172,7 +172,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_estado_civil = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/estado_civil/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estado_civil/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -193,7 +193,7 @@ const Info_general = (props) =>{
 
     const opciones_lista_condicion_de_excepcion = ()=>{
       
-      axios.get('http://localhost:8000/usuario_rol/condicion_de_excepcion/', config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/condicion_de_excepcion/`, config)
       .then((response) => {
             const grupos = response.data;
             const opciones = grupos.map((grupo) => ({
@@ -245,7 +245,7 @@ const Info_general = (props) =>{
 
 
 const agregarPariente = () => {
-  if (state.nuevo_personas_con_quien_vive === null) {
+  if (!Array.isArray(state.nuevo_personas_con_quien_vive)) {
     set_state({
       ...state,
       nuevo_personas_con_quien_vive: [{
@@ -265,6 +265,7 @@ const agregarPariente = () => {
     });
   }
 };
+
 
     
     const guardarPariente = () => {
@@ -391,7 +392,7 @@ const agregarPariente = () => {
 
 
       axios({
-      url: 'http://localhost:8000/usuario_rol/estudiante_actualizacion/'+props.datos.id+'/',
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+props.datos.id+'/',
       method: "POST",
       data: formData,
       headers: config2,
@@ -453,6 +454,9 @@ const agregarPariente = () => {
             //console.log("entra al malo")
             //alert("error al editar el estudiante : " + props.datos.id);
       })
+
+
+       //props.handleOptionUser({ value: props.datos['id'] });
 
   }
 
@@ -919,47 +923,79 @@ const agregarPariente = () => {
 
     {state.editar || state.agregarPariente ? (
       <Row>
-        {state.nuevo_personas_con_quien_vive.map((item, index) => (
-          <Row className="row_flex_general">
-            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
-              <input
-                className="texto_pequeño_12pt"
-                name={`nuevo_personas_con_quien_vive[${index}].nombre`}
-                onChange={cambiar_datos}
-                defaultValue={item.nombre}
-              ></input>
-            </Col>
-            <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
-              <input
-                className="texto_pequeño_12pt"
-                name={`nuevo_personas_con_quien_vive[${index}].pariente`}
-                onChange={cambiar_datos}
-                defaultValue={item.pariente}
-              ></input>
-            </Col>
+      {
+        state.personas_con_quien_vive.length > 0 ?
+        (
+          <Row>
+              {state.nuevo_personas_con_quien_vive.map((item, index) => (
+                <Row className="row_flex_general">
+                  <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+                    <input
+                      className="texto_pequeño_12pt"
+                      name={`nuevo_personas_con_quien_vive[${index}].nombre`}
+                      onChange={cambiar_datos}
+                      defaultValue={item.nombre}
+                    ></input>
+                  </Col>
+                  <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+                    <input
+                      className="texto_pequeño_12pt"
+                      name={`nuevo_personas_con_quien_vive[${index}].pariente`}
+                      onChange={cambiar_datos}
+                      defaultValue={item.pariente}
+                    ></input>
+                  </Col>
+
+                  <Col xs={"12"} className="col_adicionar_parentesco">
+                        <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                              Guardar
+                        </Button>
+                        <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                              Cancelar
+                        </Button>
+                  </Col>
+                </Row>
+            ))}
           </Row>
-        ))}
-      <Col xs={"12"} className="col_adicionar_parentesco">
-            <Button className="adicionar_parentesco" onClick={guardarPariente}>
-                  Guardar
-            </Button>
-            <Button className="adicionar_parentesco" onClick={cancelarPariente}>
-                  Cancelar
-            </Button>
-      </Col>
+          )
+        :
+        (<Row>
+          <Col xs={"12"} className="col_adicionar_parentesco">
+                <Button className="adicionar_parentesco" onClick={agregarPariente}>
+                <i class="bi bi-plus-circle"></i>
+                </Button>
+          </Col>
+        </Row>)
+      }
+        
+
       </Row>
     ) : (
       <Row>
-        {state.personas_con_quien_vive.map((item, index) => (
+
+
+      {
+        state.personas_con_quien_vive.length > 0 ?
+        (
           <Row>
-            <Col xs={"12"} md={"6"} className="texto_pequeño">
-              {item.nombre}
-            </Col>
-            <Col xs={"12"} md={"6"} className="texto_pequeño">
-              {item.pariente}
-            </Col>
+              {state.personas_con_quien_vive.map((item, index) => (
+                <Row>
+                  <Col xs={"12"} md={"6"} className="texto_pequeño">
+                    {item.nombre}
+                  </Col>
+                  <Col xs={"12"} md={"6"} className="texto_pequeño">
+                    {item.pariente}
+                  </Col>
+                </Row>
+              ))}
           </Row>
-        ))}
+          )
+        :
+        (<Row></Row>)
+      }
+
+
+
       <Col xs={"12"} className="col_adicionar_parentesco">
             <Button className="adicionar_parentesco" onClick={agregarPariente}>
             <i class="bi bi-plus-circle"></i>
@@ -969,9 +1005,6 @@ const agregarPariente = () => {
     )}
   </Row>
 ) : 
-
-
-
 
 
 

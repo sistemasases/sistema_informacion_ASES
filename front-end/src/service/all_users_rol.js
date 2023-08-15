@@ -5,7 +5,7 @@ const all_users_rols = async (pk) => {
         const config = {
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
         };
-        const url_axios = 'http://localhost:8000/usuario_rol/actual_usuario_rol/'+ pk +"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/actual_usuario_rol/`+ pk +"/";
         await axios({
             url:  url_axios,
             method: "GET",

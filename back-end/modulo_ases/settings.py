@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+import environ
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1w5uon7br&w89d60u7v^=0#(*p@fo81_^^x-o9m^2q=1(5v(x0'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_INSECURE_SETTINGS') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') or ['localhost']
 
 
 # Application definition
@@ -70,19 +73,10 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'modulo_ases.urls'
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-]
+CORS_ALLOWED_ORIGINS = os.environ.get('DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get('DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
+CORS_ORIGIN_WHITELIST = os.environ.get('DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-]
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8000',
-]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -106,25 +100,14 @@ WSGI_APPLICATION = 'modulo_ases.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'mszacasn',
-#         'USER' : 'mszacasn',
-#         'PASSWORD' : 'BGCLKJM0p4fPlpbziUER8eupqcCM0HxJ',
-#         'HOST' : 'jelani.db.elephantsql.com',
-#         'DATABASE_PORT' : '5432',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ases',
-        'USER' : 'postgres',
-        'PASSWORD' : 'MrSteven',
-        'HOST' : 'localhost',
-        'DATABASE_PORT' : '5432',
+        'NAME': os.environ.get('DJANGO_DB_NAME'),
+        'USER' : os.environ.get('DJANGO_DB_USER'),
+        'PASSWORD' : os.environ.get('DJANGO_DB_PASSWORD'),
+        'HOST' : os.environ.get('DJANGO_DB_HOST'),
+        'DATABASE_PORT' : os.environ.get('DJANGO_DB_PORT'),
     }
 }
 
@@ -178,10 +161,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'modulo_base/templates/static'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'modulo_base/templates/'),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSP_DEFAULT_SRC = ("'self'",)
+
+SECURE_BROWSER_XSS_FILTER = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
+SESSION_COOKIE_SECURE = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
+CSRF_COOKIE_SECURE = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
+
 

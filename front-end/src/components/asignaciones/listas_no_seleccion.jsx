@@ -21,7 +21,7 @@ const Listas_no_seleccion = (props) => {
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_estudiante/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
       method: "POST",
       headers: config,
       data: formData,
@@ -47,7 +47,7 @@ const Listas_no_seleccion = (props) => {
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
       method: "POST",
       headers: config,
       data: formData,
@@ -73,7 +73,7 @@ const Listas_no_seleccion = (props) => {
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
       method: "POST",
       headers: config,
       data: formData,

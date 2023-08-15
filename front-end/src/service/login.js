@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const url = "http://localhost:8000/login"
+const url = `${process.env.REACT_APP_API_URL}/login`
 
 const login = (info) => {
-    axios.post("http://127.0.0.1:8000/login", {
+    axios.post(`${process.env.REACT_APP_API_URL}/login`, {
       'username' : info.username,
       'password' : info.password
     })
