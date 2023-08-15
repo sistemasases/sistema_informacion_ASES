@@ -6,10 +6,10 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Academico_pestaña = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
 
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? 
+        <>{ userRole.includes('view_calificador') ? 
         <Col className="contenido_children">
             <Row className="containerRow">
                 <Calificador/>

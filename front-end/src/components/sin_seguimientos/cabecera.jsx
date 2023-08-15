@@ -44,7 +44,7 @@ useEffect(()=>{
   
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/wizard/semestre/",
+          url:  `${process.env.REACT_APP_API_URL}/wizard/semestre/`,
           method: "GET",
           headers: config,
         })
@@ -92,7 +92,7 @@ useEffect(()=>{
                 Reporte estudiantes sin seguimientos
                 </Col>
                 {
-                  sessionStorage.rol === 'superAses' || sessionStorage.rol === 'sistemas' ?
+                  sessionStorage.rol === 'super_ases' || sessionStorage.rol === 'sistemas' ?
                   (
                     <Col xs={"12"} md={"4"} className="texto_pequeño">
                       Seleccione el semestre

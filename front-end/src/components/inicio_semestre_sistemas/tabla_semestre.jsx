@@ -20,7 +20,10 @@ const Semestre_sistemas_component = () =>{
 
     useEffect(()=>{
         //Trae todos los usuarios con rol del semestre
-        All_Users_Rols.all_users_rols().then((res) => {
+        let formData = new FormData();
+        formData.append('id_sede', sessionStorage.getItem('sede_id'));
+        All_Users_Rols.all_users_rols(formData).then((res) => {
+            if(res != undefined)
             set_state({
                 ...state,
                 data: res
@@ -42,7 +45,7 @@ const Semestre_sistemas_component = () =>{
                         </tr>
                     </thead>
                     <tbody>
-                        {state.data.map((e)=>(
+                        {state.data.length > 0 ? ( state.data.map((e)=>(
                             <tr>
                                 <td>{e.username}</td>
                                 <td>{e.first_name}</td>
@@ -50,7 +53,11 @@ const Semestre_sistemas_component = () =>{
                                 <td>{e.email}</td>
                                 <td>{e.nombre}</td>
                             </tr>
-                        ))}
+                        ))) : (
+                            <tr>
+                              <td colSpan="6">No hay datos disponibles.</td>
+                            </tr>
+                        )}
                     </tbody>
                 </Table>
             </Row>

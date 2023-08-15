@@ -16,6 +16,48 @@ const Asignaciones_component = (props) =>{
     }
   };
 
+
+
+
+
+  const [selectedTabIndices, setSelectedTabIndices] = useState({
+    practicantes: null,
+    monitores: null,
+    estudiantes: null,
+  });
+
+  const selectTab = (section, index) => {
+    setSelectedTabIndices((prevIndices) => ({
+      ...prevIndices,
+      [section]: index === prevIndices[section] ? null : index,
+    }));
+  };
+
+  const isTabSelected = (section, index) => index === selectedTabIndices[section];
+
+const selectTab_practicante = (username) => {
+  selectTab('practicantes', username);
+};
+
+const isTabSelected_practicante = (username) => {
+  return isTabSelected('practicantes', username);
+};
+
+const selectTab_monitor = (username) => {
+  selectTab('monitores', username);
+};
+
+const isTabSelected_monitor = (username) => {
+  return isTabSelected('monitores', username);
+};
+
+
+
+
+
+
+
+
   const[rol] = useState("practicante");
   const[rol2] = useState("monitor");
   const[rol3] = useState("estudiante");
@@ -112,30 +154,33 @@ const Asignaciones_component = (props) =>{
 
   const cambiar_dato_select = (e) =>{
 
-      axios.get('http://localhost:8000/usuario_rol/practicante/'+e.id+'/', config)
-      .then(response => {
-        set_state(prevState => ({
-          ...prevState,
-          separacion_practicantes : response.data
-        }));
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    let data = new FormData();
+    data.append('id_sede', sessionStorage.getItem('sede_id'));
 
-      set_state({
-            ...state,
-              profesional_seleccionado: e.value
-      })
-    }
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+e.id+'/', data,config)
+    .then(response => {
+      set_state(prevState => ({
+        ...prevState,
+        separacion_practicantes : response.data
+      }));
+    })
+    .catch(error => {
+      console.log(error);
+    });
+
+    set_state({
+      ...state,
+      profesional_seleccionado: e.value
+    })
+  }
 
 
-   const cambiar_dato = (e) =>{
-          set_state({
-                ...state,
-                [e.target.name] : e.target.value
-          })
-          console.log(e.target.value)
+  const cambiar_dato = (e) =>{
+    set_state({
+      ...state,
+      [e.target.name] : e.target.value
+    })
+    console.log(e.target.value)
     }
 
 
@@ -143,7 +188,7 @@ const Asignaciones_component = (props) =>{
 
   function practicante_seleccion(name){
 
-    axios.get('http://localhost:8000/usuario_rol/monitor/'+name+'/', config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -168,8 +213,10 @@ const Asignaciones_component = (props) =>{
   function monitor_seleccion(name){
 
     //poner el de los estudiantes
+    let formData = new FormData();
+    formData.append('id_sede', sessionStorage.getItem('sede_id'));
 
-    axios.get('http://localhost:8000/usuario_rol/estudiante_selected/'+name+'/', config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -248,11 +295,18 @@ const Asignaciones_component = (props) =>{
                           item.first_name.toLowerCase().includes(state.practicante_filtro) ||
                           item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                         }).map((item, index) => 
-                        <Listas 
-                          key={index} item={item} rol={rol} 
-                          profesional_seleccionado={state.profesional_seleccionado}
-                          childClicked={(name)=>practicante_seleccion(name)}>
-                        </Listas>) }
+
+                        <Col className={isTabSelected_practicante(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'} 
+                              onClick={() => selectTab_practicante(item.username)}>
+                          <Listas  
+                            key={index} item={item} rol={rol} 
+                            profesional_seleccionado={state.profesional_seleccionado}
+                            childClicked={(name)=>practicante_seleccion(name)}
+                            childClicked2={(name) => monitor_seleccion(name)}>
+                          </Listas>
+                        </Col>
+                        ) }
+
                       </Scrollbars>
 
                       </Col>
@@ -260,15 +314,24 @@ const Asignaciones_component = (props) =>{
                     :
                     (
                     <Col className="scroll_listas">
+                          <br></br> 
                       { state.separacion_practicantes['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
                         item.username.toLowerCase().includes(state.practicante_filtro) ||
                         item.first_name.toLowerCase().includes(state.practicante_filtro) ||
                         item.last_name.toLowerCase().includes(state.practicante_filtro);                      
-                      }).map((item, index) => <Listas 
-                    key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
-                    childClicked={(name)=>practicante_seleccion(name)}/>) }
+                      }).map((item, index) => 
+
+                      <Col className={isTabSelected_practicante(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'}  
+                            onClick={() => selectTab_practicante(item.username)}>
+                          <Listas 
+                          key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
+                          childClicked={(name)=>practicante_seleccion(name)}/>
+                        </Col>
+                      
+
+                    ) }
 
 
                     <Row className="separador_asignaciones"></Row>
@@ -326,11 +389,19 @@ const Asignaciones_component = (props) =>{
                         item.first_name.toLowerCase().includes(state.monitor_filtro) ||
                         item.last_name.toLowerCase().includes(state.monitor_filtro);                      
                       }).map((item, index) => 
-                      <Listas 
-                        key={index} item={item} rol={rol2} 
-                        practicante_seleccionado={state.practicante_seleccionado}
-                        childClicked2={(name)=>monitor_seleccion(name)}>
-                      </Listas>) }
+
+
+                      <Col className={isTabSelected_monitor(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'}  
+                            onClick={() => selectTab_monitor(item.username)}>
+                        <Listas 
+                          key={index} item={item} rol={rol2} 
+                          practicante_seleccionado={state.practicante_seleccionado}
+                          childClicked2={(name)=>monitor_seleccion(name)}>
+                        </Listas>
+                      </Col>
+
+
+                      ) }
                      </Scrollbars>
                     </Col>
                   )
@@ -345,12 +416,18 @@ const Asignaciones_component = (props) =>{
                       item.first_name.toLowerCase().includes(state.monitor_filtro) ||
                       item.last_name.toLowerCase().includes(state.monitor_filtro);                      
                     }).map((item, index) =>   
-                  <Listas 
-                    key={index} item={item} rol={rol2} 
-                    practicante_seleccionado={state.practicante_seleccionado}
-                    childClicked2={(name)=>monitor_seleccion(name)}
-                    childClicked={(name)=>practicante_seleccion(name)}>
-                  </Listas>) }
+                  <Col className={isTabSelected_monitor(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'}  
+                        onClick={() => selectTab_monitor(item.username)}>
+
+                    <Listas 
+                      key={index} item={item} rol={rol2} 
+                      practicante_seleccionado={state.practicante_seleccionado}
+                      childClicked2={(name)=>monitor_seleccion(name)}
+                      childClicked={(name)=>practicante_seleccion(name)}>
+                    </Listas>
+                  </Col>
+
+                  ) }
 
 
                     <Row className="separador_asignaciones"></Row>
@@ -411,12 +488,15 @@ const Asignaciones_component = (props) =>{
                         item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
                         item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
                       }).map((item, index) => 
-                      
+                    <Col className='asignaciones_hover_no_seleccionado'>
+
                       <Listas 
                       key={index} item={item} rol={rol3} 
                       monitor_seleccionado={state.monitor_seleccionado}
                       filtro={state.estudiante_filtro}
-                      />) }
+                      />
+
+                    </Col>) }
                     </Scrollbars>
                     </Col>
                   )
@@ -431,13 +511,16 @@ const Asignaciones_component = (props) =>{
                           item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
                           item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
                         }).map((item, index) => 
-                        
+                    <Col className='asignaciones_hover_no_seleccionado'>
+
                       <Listas 
                         key={index} item={item} rol={rol3} 
                         filtro={state.estudiante_filtro}
                         monitor_seleccionado={state.monitor_seleccionado}
                         childClicked2={(name)=>monitor_seleccion(name)}>
-                      </Listas>)}
+                      </Listas>
+
+                      </Col>)}
 
                         <Row className="separador_asignaciones"></Row>
 

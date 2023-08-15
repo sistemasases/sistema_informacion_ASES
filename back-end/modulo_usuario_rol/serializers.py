@@ -1,6 +1,6 @@
 # import serializers from the REST framework
 from rest_framework import serializers
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante, rol_permiso, permiso
 from django.contrib.auth.models import User
 
 # create a serializer class
@@ -22,6 +22,27 @@ class estudiante_serializer(serializers.ModelSerializer):
 	# create a meta class
 	class Meta:
 		model = estudiante
+		fields = '__all__'
+
+class monitor_serializer(serializers.ModelSerializer):
+
+	# create a meta class
+	class Meta:
+		model = monitor
+		fields = '__all__'
+
+class permiso_serializer(serializers.ModelSerializer):
+
+	# create a meta class
+	class Meta:
+		model = permiso
+		fields = '__all__'
+
+class rol_permiso_serializer(serializers.ModelSerializer):
+
+	# create a meta class
+	class Meta:
+		model = rol_permiso
 		fields = '__all__'
 
 class rol_serializer(serializers.ModelSerializer):
@@ -48,6 +69,11 @@ class Rol_manage(serializers.Serializer):
 class User_rol(serializers.Serializer):
     id_user = serializers.IntegerField()
     id_rol = serializers.IntegerField()
+    
+class User_rol_sede(serializers.Serializer):
+    id_user = serializers.IntegerField()
+    id_rol = serializers.IntegerField()
+    id_sede = serializers.IntegerField()
 
 class User_rol_manage(serializers.Serializer):
     id = serializers.IntegerField()
@@ -76,7 +102,7 @@ class Estudiante_actualizacion(serializers.ModelSerializer):
 		model = estudiante
 		fields = ['puntaje_icfes', 'telefono_res', 'celular', 'email', 'sexo', 'hijos', 'actividades_ocio_deporte',
                   'acudiente', 'telefono_acudiente', 'id_etnia', 'id_act_simultanea', 'id_identidad_gen', 'id_estado_civil',
-                  'id_cond_excepcion']
+                  'id_cond_excepcion','vive_con', 'ult_modificacion']
 
 class mas_con_quien_vive(serializers.ModelSerializer):
 	class Meta:

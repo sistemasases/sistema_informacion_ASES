@@ -19,7 +19,7 @@ const Desplegable_item = ({item}) => {
       })
     const traer_reportes = (e) => {
 
-        const url_axios = "http://localhost:8000/seguimiento/seguimientos_estudiante/"+e+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante_solo_semestre_actual/`+e+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,
@@ -405,12 +405,15 @@ const Desplegable_item = ({item}) => {
                     <Row className="fichas-content">
                     <div class="d-none d-md-inline col-12">
                         <Col className="contenido_fichas">
-                            <Socieducativa data_user_socioedu={state.data_user_socioedu}  />
+                            <Socieducativa data_user_socioedu={state.data_user_socioedu[0]}  />
                         </Col>
+                    
+
                     </div>
                     <div class="d-inline d-md-none col-12">
                         <Col className="contenido_fichas_pequeño">
-                            <Socieducativa data_user_socioedu={state.data_user_socioedu}  />
+                            <Socieducativa data_user_socioedu={state.data_user_socioedu[0]}  />
+
                         </Col>
                     </div>
                 </Row>
@@ -418,11 +421,7 @@ const Desplegable_item = ({item}) => {
                 (<Row></Row>)
 
                 }
-                <div className="fichas-content">
-                    <a href={item.path || "#"} className="fichas-reportes plain">
-                        <h2>{item.num_doc_ini}</h2>
-                    </a>
-                </div>
+
             </Col>
         </Row>
         )
@@ -439,33 +438,6 @@ const Desplegable_item = ({item}) => {
 }
 
 export default Desplegable_item
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -3,6 +3,7 @@ import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
 import Logos from './LOGO BLANCORecurso 1.png';
 import { useLocation } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const Navbar = (props) =>{
 
@@ -38,13 +39,20 @@ const Navbar = (props) =>{
   
     const getSegmentsFromUrl = (url) => {
         const segments = url.split('/');
-        return segments.slice(3, 4); // Obtener el cuarto segmento (índice 3)
+        return segments.slice(1, 2); // Obtener el cuarto segmento (índice 3)
       };
 
     const handleSalir = () => {
         sessionStorage.clear();
         window.location.replace('');
       };
+
+      const getTitleFromUrl = (url) => {
+  const segments = url.split('/');
+  const lastSegment = segments.slice(1)[2]; // Obtener el último segmento
+  return lastSegment.replaceAll('_', ' '); // Reemplazar "_" por " "
+};
+
 
 
 
@@ -71,25 +79,30 @@ const Navbar = (props) =>{
     <Container  >
         <Row className="nav">
 
-        <Col xs={"5"} md={"2"}>
-            <img src={Logos} className="logo" alt='/'></img>
+        <Col xs={"5"} md={"2"} href={"/"}>
+            <Link to={`/`}> 
+                <img src={Logos} className="logo" alt='/'></img>
+            </Link>
         </Col>
 
-        <div class="d-none d-md-inline col-md-6" >
-            <Col className="ulDropdown">
-                <Row>
-                {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
-            {lastVisitedRoutes.reverse().map((url, index) => (    
-                <Col md={"4"} className="row_modulo_activo" href={url}>
-                    <a href={url}>
-                        {getSegmentsFromUrl(url).join('/')}
-                    </a>
-                </Col>
-            ))}
-                </Row>
 
-            </Col>
+
+        <div class="d-none d-md-inline col-md-6">
+          <Col className="ulDropdown">
+            <Row>
+              {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
+              {lastVisitedRoutes.reverse().map((url, index) => (
+                <Col key={index} md={'4'} className="col_historial">
+                  <a href={url}> 
+                  {getTitleFromUrl(url) === '' ? 'Inicio' : getTitleFromUrl(url)}
+                  </a>
+                  <i class="bi bi-chevron-right"></i>
+                </Col>
+              ))}
+            </Row>
+          </Col>
         </div>
+
 
 
 {/* 
@@ -121,21 +134,25 @@ const Navbar = (props) =>{
                     
                     <Col xs={"5"} md={"3"}>
                          <Row onClick={toggle} className="desplegable_usuario">
-                                <Col xs={"6"} className="boton_usuario">
+                                <Col xs={"10"} md={"6"} className="boton_usuario">
                                     <i class="bi bi-person-circle"></i>
                                 </Col>
                                 {
                                     isOpen ?
                                     (
-                                        <Col xs={"5"} className="flecha_usuario">
-                                            <i class="bi bi-chevron-up"></i>
-                                        </Col>
+                                        <div class="d-none d-md-inline col-md-5" >
+                                            <Col className="flecha_usuario">
+                                                <i class="bi bi-caret-up-fill"></i>
+                                            </Col>
+                                        </div>
                                     )
                                     :
                                     (
-                                        <Col  xs={"5"} className="flecha_usuario">
-                                            <i class="bi bi-chevron-down"></i>
-                                        </Col>
+                                        <div class="d-none d-md-inline col-md-5" >
+                                            <Col className="flecha_usuario">
+                                                <i class="bi bi-caret-down-fill"></i>
+                                            </Col>
+                                        </div>
                                     )
                                 }  
                         </Row>  

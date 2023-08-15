@@ -7,7 +7,7 @@ const all_users = async () => {
           Authorization: 'Bearer ' + sessionStorage.getItem('token')
       }
     };
-    const url_axios = 'http://localhost:8000/usuario_rol/user/';
+    const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/user/`;
     const resUserRol = await axios(url_axios, config)
     return resUserRol.data;
     

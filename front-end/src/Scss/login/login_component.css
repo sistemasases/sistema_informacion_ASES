@@ -97,3 +97,8 @@
     font-size: 2rem;
     padding-top: 2em;
 }
+
+.error-message {
+    color: red;
+    margin-top: 5px;
+  }

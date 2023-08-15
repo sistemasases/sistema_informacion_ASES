@@ -25,6 +25,7 @@ import "./Scss/sin_seguimientos/sin_seguimientos.css"
 import "./Scss/login/login_component.css";
 import "./Scss/componentes_generales/data_table_extensions.css";
 import "./Scss/carga_masiva/carga_masiva.css";
+import "./Scss/reporte_desercion/desercion.css";
 
 
 
@@ -67,7 +68,7 @@ const App = () => {
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
                         <Route path="/desercion"element={<Desercion path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
                         <Route path="/academico"element={<Academico_pestaña path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
-                        <Route path="/calificador/:profesor/:curso"element={<Calificador path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
+                        <Route path="/calificador/:profesor/:curso/:cod/:franja"element={<Calificador path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol path_actual={"Gestion usuarios"} usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
                         <Route path="/asignaciones" element={<Asignaciones/>}/>

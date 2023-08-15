@@ -15,5 +15,12 @@ class asignacion_serializer(serializers.ModelSerializer):
 class asignacion_user_serializer(serializers.Serializer):
     id_jefe = serializers.IntegerField()    
     id_usuario = serializers.IntegerField()
+    id_sede = serializers.IntegerField()
+    llamada = serializers.CharField()
+    
+class asignacion_estudiante_serializer(serializers.Serializer):
+    id_estudiante = serializers.IntegerField()
+    id_usuario = serializers.IntegerField()   
+    id_sede = serializers.IntegerField()
     llamada = serializers.CharField()
 

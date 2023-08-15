@@ -6,7 +6,6 @@ import {Row, Col, } from "react-bootstrap";
 const SidebarItem = (props) => {
 
     const [open, setOpen] = useState(false)
-    const{childClicked2} = props
     
     if(props.item.childrens){
         return (
@@ -24,8 +23,7 @@ const SidebarItem = (props) => {
         )
     }else{
         return (
-            <a href={props.item.path || "#"}  className="sidebar-item" 
-                onClick={()=>childClicked2(props.item.name)}>
+            <a href={props.item.path || "#"}  className="sidebar-item" >
                 <span className="tamaño_icon">{ props.item.icon && <i className={props.item.icon}></i> }</span>
                 <span className="tamaño_font">{props.item.name}</span>
             </a>

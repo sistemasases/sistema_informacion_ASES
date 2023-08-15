@@ -13,13 +13,15 @@ const Listas_no_seleccion = (props) => {
 
     const añadir_estudiante = (e) =>{
         let formData = new FormData();
-
+        
+        formData.append("llamada", "asignar");
         formData.append("id_usuario", props.monitor_seleccionado);
         formData.append("id_estudiante", props.item.id);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_estudiante/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
       method: "POST",
       headers: config,
       data: formData,
@@ -39,12 +41,13 @@ const Listas_no_seleccion = (props) => {
         let formData = new FormData();
 
         formData.append("llamada", "asignar");
-        formData.append("id_jefe", props.practicante_seleccionado)
-        formData.append("id_usuario", props.item.id)
+        formData.append("id_jefe", props.practicante_seleccionado);
+        formData.append("id_usuario", props.item.id);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
       method: "POST",
       headers: config,
       data: formData,
@@ -63,13 +66,14 @@ const Listas_no_seleccion = (props) => {
         let formData = new FormData();
 
         formData.append("llamada", "asignar");
-        formData.append("id_jefe", props.profesional_seleccionado)
-        formData.append("id_usuario", props.item.id)
+        formData.append("id_jefe", props.profesional_seleccionado);
+        formData.append("id_usuario", props.item.id);
+        formData.append("id_sede",sessionStorage.getItem('sede_id'));
 
 
         axios({
       // Endpoint to send files
-      url: 'http://localhost:8000/asignacion/asignacion_usuario/',
+      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
       method: "POST",
       headers: config,
       data: formData,

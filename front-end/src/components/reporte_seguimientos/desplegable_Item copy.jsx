@@ -28,12 +28,12 @@ const Desplegable_item = ({item}) => {
             <Row>
                 <Col className="col_reportes" >
                     <Row className="col_reportes_hover">
-                        <Col onClick={handleShow}>
+                        <Col onClick={handleShow}>                            
                             Reportes{item.fecha}
                         </Col>
                     </Row>
                 </Col>
-                
+
                 <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} size="lg"/>
             </Row>
         )

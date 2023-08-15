@@ -1,0 +1,24 @@
+
+# General
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+*.egg-info/
+dist/
+build/
+.vscode/
+
+# Environment
+venv/
+env/
+ENV/
+.env
+.htaccess
+
+# Node.js
+/front-end/node_modules/
+
+# Static Files
+front-end/build/
+back-end/staticfiles

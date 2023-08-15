@@ -13,13 +13,13 @@ import Acceso_denegado from "../../components/componentes_generales/acceso_deneg
 
 const Gestion_usuario_rol = () =>{
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
     return (
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{ userRole.includes('view_gestion_usuarios') ? <Col className="contenido_children">
             <Row className="rowJustFlex_usuario_rol">
                 <h1>Usuario Rol</h1>
             </Row>

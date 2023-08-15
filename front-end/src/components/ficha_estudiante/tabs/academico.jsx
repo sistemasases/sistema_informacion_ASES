@@ -50,7 +50,7 @@ const Academico = (props) =>{
 
     useEffect(() => {
         
-        const url_axios = "http://localhost:8000/academico/lista_historiales_academicos/"+props.id+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/academico/lista_historiales_academicos/`+props.id+"/";
         axios({
         // Endpoint to send files
         url:  url_axios,
@@ -80,9 +80,10 @@ const Academico = (props) =>{
     setActiveTabIndex(index)
   }
 
-
+  const userRole = sessionStorage.getItem('rol');
 
     return (
+        <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' ? <></> :
         <Container className="socioeducativa_container">
             <Row className="socioeducativa_seguimientos_pares">Academico</Row>
                 {state.tiene_datos_cargados ? 
@@ -136,6 +137,7 @@ const Academico = (props) =>{
                 </Modal>
                 
         </Container>
+    }</>
     )
 }
 

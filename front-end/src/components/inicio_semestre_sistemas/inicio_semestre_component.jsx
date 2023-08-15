@@ -1,7 +1,7 @@
 /**
   * @file inicio_semestre_component.jsx
   * @version 1.0.0
-  * @description Componente para crear un nuevo semestre. Utiliza un select para elegir la instancia a la que pertenecerá el semestre, además de otros campos como el nombre del semestre, fecha de inicio y fecha de fin.
+  * @description Componente para crear un nuevo semestre. Utiliza un select para elegir la sede a la que pertenecerá el semestre, además de otros campos como el nombre del semestre, fecha de inicio y fecha de fin.
   * @author Deiby A. Rodriguez R.
   * @contact deiby.rodriguez@correounivalle.edu.co
   * @date 28 de marzo de 2023
@@ -12,9 +12,16 @@ import {Container, Row, Button, Col, Alert, Form} from "react-bootstrap";
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
-import All_instancias_service from '../../service/all_instancias';
+import All_sede_service from '../../service/all_sede';
 
 const Inicio_semestre_component = () =>{
+
+    // Config para el fetch
+    const config = {
+        headers: {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+    };
 
     //Constante y variable que se usaran para el select
     const opciones = [];
@@ -37,8 +44,8 @@ const Inicio_semestre_component = () =>{
 
     //Estado que se usara para los diferentes atributos del semestre
     const [semestre, setSemestre] = useState({
-        idInstancia: 0,
-        nombreInstancia: '',
+        idSede: 0,
+        nombreSede: '',
         nombreSemestre: '',
         fecha_inicio: '',
         fecha_fin: '',
@@ -51,7 +58,7 @@ const Inicio_semestre_component = () =>{
 
     //Conexion con el back para extraer todas las sedes
     useEffect(()=>{
-        All_instancias_service.all_instancias().then((res) => {
+        All_sede_service.all_sede().then((res) => {
             set_state({
                 ...state,
                 tabs : res
@@ -62,7 +69,7 @@ const Inicio_semestre_component = () =>{
     /**
         * Prop que toma las sedes y las transforma en opciones para el select
     */
-    const handle_instancias = () => {
+    const handle_sedes = () => {
         if(bandera_option===true){
             for (var i = 0; i < state.tabs['length'] ; i++) {
                 const dato = { value: state.tabs[i]['nombre'], label: state.tabs[i]['nombre'], id: state.tabs[i]['id'] }
@@ -79,7 +86,7 @@ const Inicio_semestre_component = () =>{
         if(!(!semestre.nombreSemestre || semestre.nombreSemestre === '') && (semestre.nombreSemestre.includes('-A') || semestre.nombreSemestre.includes('-B')) && (semestre.nombreSemestre.length === 6)){
             if(!(!semestre.fecha_inicio || semestre.fecha_inicio === '') && (dateToInt(formatDate(date_inicio)) <= dateToInt(semestre.fecha_inicio))){
                 if(!(!semestre.fecha_fin || semestre.fecha_fin === '') && (dateToInt(semestre.fecha_inicio) < dateToInt(semestre.fecha_fin))){
-                    Inicio_semestre_service.inicio_semestre(semestre.idInstancia, semestre.nombreSemestre, semestre.fecha_inicio, semestre.fecha_fin);
+                    Inicio_semestre_service.inicio_semestre(semestre.idSede, semestre.nombreSemestre, semestre.fecha_inicio, semestre.fecha_fin);
                     navigate('/crear_semestre_sistemas');
                 } else {
                     setActivated({
@@ -161,7 +168,7 @@ const Inicio_semestre_component = () =>{
         //codigo para la obtencion del nombre del semestre y la fecha de finalizacion del semestre anterior
         var nombre_nuevo = '';
         var fecha = '';
-        await fetch('http://localhost:8000/wizard/semestre/' + (e.id).toString() +"/")
+        await fetch(`${process.env.REACT_APP_API_URL}/wizard/semestre/` + (e.id).toString() +"/", config)
         .then((res) => res.json())
         .then((res)=>{
             nombre_nuevo = res['nombre']
@@ -180,8 +187,8 @@ const Inicio_semestre_component = () =>{
         //actualizacion de los datos del semestre
         setSemestre({
             ...semestre,
-            idInstancia: e.id,
-            nombreInstancia: e.value,
+            idSede: e.id,
+            nombreSede: e.value,
             nombreSemestre: nombre_nuevo,
             fecha_inicio: formatDate(date_inicio),
             fecha_fin: formatDate(date_fin)
@@ -207,7 +214,7 @@ const Inicio_semestre_component = () =>{
             <h2>Paso cero: creación del periodo</h2>
             <Row className="rowJustFlex" hidden={isSelected}>
                 <p>Para iniciar el semestre selecione la sede con la cual desea trabajar:</p>
-                <Select class="option" options={opciones} onMenuOpen={handle_instancias} onChange={handleActivateButton} className="option" placeholder="Selecione una instancia"/>
+                <Select class="option" options={opciones} onMenuOpen={handle_sedes} onChange={handleActivateButton} className="option" placeholder="Selecione una sede"/>
             </Row>
             <Row className="rowJustFlex">
                 <Alert variant='danger' show={activated.isError}>
@@ -220,7 +227,7 @@ const Inicio_semestre_component = () =>{
                 </Alert>
             </Row>
             <Row className="rowJustFlex" hidden={!activated.isDisabled}>
-                <p>Usted está apunto de iniciar un nuevo semestre, lo cual finalizará el semestre anterior y se creará uno nuevo en la sede {semestre.nombreInstancia}.</p>
+                <p>Usted está apunto de iniciar un nuevo semestre, lo cual finalizará el semestre anterior y se creará uno nuevo en la sede {semestre.nombreSede}.</p>
                 <p>Por favor verifique que los argumentos sean correctos e inicie el semestre. </p>
             </Row>
             <Row className="rowJustFlex" hidden={!activated.isDisabled}>

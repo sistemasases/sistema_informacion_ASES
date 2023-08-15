@@ -1,18 +1,22 @@
 import axios from 'axios';
 
-const all_users_rols = async () => {
+const all_users_rols = async (pk) => {
     try {
         const config = {
-            headers: {
-                Authorization: 'Bearer ' + sessionStorage.getItem('token')
-            }
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
         };
-        const url_axios = 'http://localhost:8000/usuario_rol/usuario_rol/';
-        const resUserRol = await axios(url_axios, config)
-        return resUserRol.data;
-        
-    } catch (error) {
-        console.log(error);
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/actual_usuario_rol/`+ pk +"/";
+        await axios({
+            url:  url_axios,
+            method: "GET",
+            headers: config,
+        })
+        .then((res => {
+            console.log("llamda: "+ res.data[1])
+            return res.data
+        }))
+    } catch (err) {
+        console.log(err)
     }
 }
 

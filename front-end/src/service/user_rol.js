@@ -4,7 +4,7 @@ const user_rol = (formData) => {
     const config = {
         Authorization: 'Bearer ' + sessionStorage.getItem('token')
     };
-    const url_axios = 'http://localhost:8000/usuario_rol/usuario_rol/';
+    const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`;
     axios({
         url:  url_axios,
         method: "POST",

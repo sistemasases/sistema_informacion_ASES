@@ -3,8 +3,7 @@ import React from "react"
 import axios from 'axios';
 
 export default function (props) {
-
-  const url = "http://localhost:8000/login"
+  const url = `${process.env.REACT_APP_API_URL}/login`
   const data = {
     'username' : 'admin',
     'password' : 'admin'

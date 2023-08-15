@@ -18,7 +18,7 @@ const Sin_seguimientos = () =>{
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = sessionStorage.getItem('permisos');
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
         semestre_activo : [],
@@ -30,7 +30,7 @@ const Sin_seguimientos = () =>{
         useEffect(()=>{
         axios({
           // Endpoint to send files
-          url:  "http://localhost:8000/usuario_rol/semestre/"+14+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/semestre/`+14+"/",
           method: "GET",
           headers: config,
         })
@@ -48,7 +48,7 @@ const Sin_seguimientos = () =>{
 
     return (
         
-        <>{userRole === 'superAses' || userRole === 'sistemas' ? <Col className="contenido_children">
+        <>{ userRole.includes('view_estudiantes_sin_segui') ? <Col className="contenido_children">
             <Row className="containerRow">
                 <Tabla_sin_seguimientos semestre_activo={state.semestre_activo['id']}></Tabla_sin_seguimientos>
             </Row>

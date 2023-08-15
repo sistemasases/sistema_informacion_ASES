@@ -10,7 +10,7 @@ import axios from 'axios';
 
 const Tabla_desercion = () => {
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    Authorization: 'Bearer ' + sessionStorage.getItem('token'),
   };
   const [state, set_state] = useState({
     periodo: '',
@@ -33,7 +33,7 @@ const Tabla_desercion = () => {
 
   useEffect(() => {
     axios({
-      url: `http://localhost:8000/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
       method: 'GET',
       headers: config,
     })
@@ -74,6 +74,10 @@ const Tabla_desercion = () => {
         sortable: true,
       },
       ...generatedColumns,
+      {
+        name: 'Cantidad de Programas Distintos',
+        cell: (row) => getDistinctProgramsCount(row),
+      },
     ];
   }, [records]);
 
@@ -101,39 +105,37 @@ const Tabla_desercion = () => {
     return Array.from(periods);
   }
 
-  const paginacionOpciones = {
-    rowsPerPageText: 'textooooo',
-    rangeSeparatorText: 'de',
-    selectAllRowsItem: true,
-    selectAllRowsItemText: 'TODO',
-  };
+  function getDistinctProgramsCount(row) {
+    const programs = new Set();
+
+    row.periodos.forEach((period) => {
+      programs.add(period.nombre_programa);
+    });
+
+    return Array.from(programs).length;
+  }
 
   function renderPeriodCell(row, idSemestre) {
     const periods = row.periodos.filter((p) => p.id_Semestre === idSemestre);
-  
+
     if (periods.length > 0) {
       return periods.map((period) => {
         const cellStyle = {
           backgroundColor:
-            period.id_estado === 1
-              ? 'orange'
-              : period.id_estado === 4
-              ? 'lightblue'
-              : 'inherit',
+            period.id_estado === 1 ? 'orange' : period.id_estado === 4 ? 'lightblue' : 'lightgray',
         };
-  
+
         return (
           <div key={period.id} style={cellStyle}>
             <div>Progama: {period.nombre_programa}</div>
-            <div>Estado: {renderEstadoLabel(period.id_estado)}</div>
+            <div>{renderEstadoLabel(period.id_estado)}</div>
           </div>
         );
       });
     }
-  
+
     return null;
   }
-  
 
   function renderEstadoLabel(estado) {
     switch (estado) {
@@ -193,7 +195,7 @@ const Tabla_desercion = () => {
             <DataTable
               pagination
               paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
-              paginationComponentOptions={paginacionOpciones}
+              striped
             />
           </DataTableExtensions>
         ) : (
@@ -211,6 +213,7 @@ const Tabla_desercion = () => {
               {Object.keys(semestreCount).map((semestre) => (
                 <th key={semestre}>Semestre {semestre}</th>
               ))}
+              <th>Total Programas Distintos</th>
             </tr>
           </thead>
           <tbody>
@@ -219,24 +222,28 @@ const Tabla_desercion = () => {
               {Object.keys(semestreCount).map((semestre) => (
                 <td key={semestre}>{semestreCount[semestre].total}</td>
               ))}
+              <td></td>
             </tr>
             <tr>
               <td>Estudiantes Inactivos</td>
               {Object.keys(semestreCount).map((semestre) => (
                 <td key={semestre}>{semestreCount[semestre].inactivo}</td>
               ))}
+              <td></td>
             </tr>
             <tr>
               <td>Estudiantes Activos</td>
               {Object.keys(semestreCount).map((semestre) => (
                 <td key={semestre}>{semestreCount[semestre].activo}</td>
               ))}
+              <td></td>
             </tr>
             <tr>
               <td>Estudiantes Egresados</td>
               {Object.keys(semestreCount).map((semestre) => (
                 <td key={semestre}>{semestreCount[semestre].egresado}</td>
               ))}
+              <td></td>
             </tr>
           </tbody>
         </table>

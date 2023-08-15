@@ -8,8 +8,8 @@ const user_rol = async (formData) => {
                 Authorization: 'Bearer ' + sessionStorage.getItem('token')
             }
         };
-        const url_axios = 'http://localhost:8000/usuario_rol/user/';
-        const url_usuario_rol = 'http://localhost:8000/usuario_rol/usuario_rol/';
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/user/`;
+        const url_usuario_rol = `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`;
 
         var fecha_actual = new Date();
         var fecha_actual_string = fecha_actual.toISOString();
@@ -33,6 +33,7 @@ const user_rol = async (formData) => {
             var usuario_rol = {
                 "id_rol": 2,
                 "id_usuario": res.data.id,
+                "id_sede": sessionStorage.getItem('sede_id'),
             }
             axios.post(url_usuario_rol, usuario_rol, config)
             .catch(err=>{

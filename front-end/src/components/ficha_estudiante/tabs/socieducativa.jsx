@@ -37,58 +37,61 @@ const activeTab = (index)=>
     setActiveTabIndex(index)
 }
 
+const userRole = sessionStorage.getItem('rol');
 
     return (
+        <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> : 
         <Container className="socioeducativa_container">
-            <Row className="socioeducativa_seguimientos_pares">Seguimientos de pares</Row>
+        <Row className="socioeducativa_seguimientos_pares">Seguimientos de pares</Row>
 
-                        <Row className="socioeducativa_fondo" >
+                    <Row className="socioeducativa_fondo" >
 
-                            { state.data_user.map((item, index) => 
-                            <Row>
-                            <Col className={item[0]['nombre'] === activeTabIndex ? "periodo_asignaciones open" : "periodo_asignaciones"}>
-                            <Row className="periodo_asignaciones_seleccionar" onClick={() => activeTab(item[0]['nombre'])}>
-                                <Col className="periodo_asignaciones_seleccionar_text" >
-                                                    <Row className="periodo_asignaciones_seleccionar_hover">
-                                                        <Col  className="col_periodo_asignaciones_seleccionar_text" > 
-                                                                {item[0]['nombre']}
-                                                                {
-                                                                    item[0]['nombre'] === activeTabIndex ?
-                                                                    (
-                                                                            <i class="bi bi-chevron-up"></i>
-                                                                    )   
-                                                                    :
-                                                                    (
-                                                                            <i class="bi bi-chevron-down"></i>
-                                                                    )
-                                                                }
-                                                        </Col>
-                                                    </Row>
-                                    </Col>
+                        { state.data_user.map((item, index) => 
+                        <Row>
+                        <Col className={item[0]['nombre'] === activeTabIndex ? "periodo_asignaciones open" : "periodo_asignaciones"}>
+                        <Row className="periodo_asignaciones_seleccionar" onClick={() => activeTab(item[0]['nombre'])}>
+                            <Col className="periodo_asignaciones_seleccionar_text" >
+                                                <Row className="periodo_asignaciones_seleccionar_hover">
+                                                    <Col  className="col_periodo_asignaciones_seleccionar_text" > 
+                                                            {item[0]['nombre']}
+                                                            {
+                                                                item[0]['nombre'] === activeTabIndex ?
+                                                                (
+                                                                        <i class="bi bi-chevron-up"></i>
+                                                                )   
+                                                                :
+                                                                (
+                                                                        <i class="bi bi-chevron-down"></i>
+                                                                )
+                                                            }
+                                                    </Col>
+                                                </Row>
+                                </Col>
+                        </Row>
+                            <Row className="periodo_asignaciones_contenido">
+                                {item.map((item, index) => <Desplegable_item key={index} item={item} /> )}
                             </Row>
-                                <Row className="periodo_asignaciones_contenido">
-                                    {item.map((item, index) => <Desplegable_item key={index} item={item} /> )}
-                                </Row>
-                        </Col>
-                    </Row>
-
-                            ) }
+                    </Col>
                 </Row>
 
+                        ) }
+            </Row>
 
-                <Modal show={show} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                    <Modal.Title>Importante</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Seleccione un estudiante.</Modal.Body>
-                    <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    </Modal.Footer>
-                </Modal>
-                
-        </Container>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                <Modal.Title>Importante</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Seleccione un estudiante.</Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Close
+                </Button>
+                </Modal.Footer>
+            </Modal>
+            
+    </Container>
+    }</>
     )
 }
 
