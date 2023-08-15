@@ -5,12 +5,13 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from modulo_usuario_rol.serializers import  user_serializer, estudiante_serializer, usuario_rol_serializer, user_selected
+from modulo_seguimiento.serializers import seguimiento_individual_serializer
+
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante
 from modulo_asignacion.models import asignacion
-from modulo_instancia.models import semestre
-from modulo_programa.models import programa, programa_estudiante
+from modulo_instancia.models import semestre, sede
+from modulo_programa.models import programa, programa_estudiante, estado_programa
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
-from modulo_seguimiento.serializers import seguimiento_individual_serializer
 
 
 from django.shortcuts import render, get_object_or_404
@@ -181,6 +182,19 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             #     list_estudiantes.append(data)
             # print(list_programas)  
             # print(list_estudiantes)
+            # riesgo = {
+            #             'riesgo_individual': 'Cargando...',
+            #             'riesgo_familiar': 'Cargando...',
+            #             'riesgo_academico': 'Cargando...',
+            #             'riesgo_economico': 'Cargando...',
+            #             'riesgo_vida_universitaria_ciudad': 'N/A'
+            #         }
+            # for i in serializer_estudiante.data:
+            #     data = dict(i, **riesgo)
+            #     list_estudiantes.append(data)
+            # data = dict(serializer_estudiante, **riesgo)
+            
+            # return Response(list_estudiantes)
             return Response(serializer_estudiante.data)
 
             # return Response("caso no encontrado")
@@ -227,6 +241,8 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
 class estudiante_filtros_viewsets(viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
     queryset = estudiante_serializer.Meta.model.objects.all()
+    # permission_classes = (IsAuthenticated,)
+
     def retrieve(self, request, pk):
         
         data_usuario_rol = request.GET.get('usuario_rol')
@@ -244,6 +260,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             for i in serializer_estudiante.data: 
                 # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
+
                 try:
                     # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
@@ -272,19 +289,80 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
                     var_programa = programa.objects.filter(id=programa_del_estudiante.id_programa_id).values()
                     # print(programa_del_estudiante)
-                    list_programas.append(var_programa)
+                    # list_programas.append(var_programa)
+                    id_sede_programa = var_programa[0]['id_sede_id']
+                    sede_programa = sede.objects.filter(id = id_sede_programa).values()
+                    # renombrar dic_programa a dic_academico
                     dic_programa = {
                         'id_programa': var_programa[0]['codigo_univalle'],
+                        'programa_academico': var_programa[0]['nombre'],
+                        'sede': sede_programa[0]['nombre']
+                        
                     }
 
                 except :
-                    dic_programa = {'id_programa': 'N/A'}  # Agregar el estado del curso al diccionario
+                    dic_programa = {
+                        'id_programa': '',
+                        'programa_academico': 'N/A',
+                        'sede': 'N/A'
+                        }  # Agregar el estado del curso al diccionario
+                    
+                try:
+                    if asignacion.objects.filter(id_estudiante = i['id'], estado = True).exists():
+                        dic_estados = {
+                            'estado_ases': 'ACTIVO/A'
+                        }
+                    else:
+                        dic_estados = {
+                            'estado_ases': 'INACTIVO/A'
+                        }
+                except:
+                    # dic_estados = {
+                    #         'estado_ases': 'INACTIVO/A'
+                    #     }
+                    pass
+
+                try:
+                    programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
+                    estado_estudiante = estado_programa.objects.filter(id = programa_del_estudiante.id_estado_id).values()
+                    dic_reg_academico = {
+                        'registro_academico': estado_estudiante[0]['nombre']
+                    }
+                except:
+                    dic_reg_academico = {
+                        'registro_academico': 'N/A'
+                    }
+                    # pass
+                
+                try:
+                    asignaciones_estudiante = asignacion.objects.filter(id_estudiante = i['id'], estado = True).first()
+                    data_monitor = User.objects.filter(id = asignaciones_estudiante.id_usuario_id).values()
+
+                    asignacion_monitor = usuario_rol.objects.filter(id_usuario = asignaciones_estudiante.id_usuario_id).values()
+                    data_practicante = User.objects.filter(id = asignacion_monitor[0]['id_jefe_id']).values()
+
+                    asignacion_practicante = usuario_rol.objects.filter(id_usuario = asignacion_monitor[0]['id_jefe_id']).values()
+                    data_profesional = User.objects.filter(id = asignacion_practicante[0]['id_jefe_id']).values()
+
+                    dic_asignaciones = {
+                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
+                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
+                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
+                    }
+                except:
+                    dic_asignaciones = {
+                        'asignacion_monitores': 'Sin Asignar',
+                        'asignacion_practicante': 'Sin Asignar',
+                        'asignacion_profesional': 'Sin Asignar'
+                    }
+                    # pass
 
                 # print(riesgo)
-                data = dict(i, **riesgo, **dic_programa)
+                data = dict(i, **riesgo, **dic_programa, **dic_estados, **dic_reg_academico, **dic_asignaciones)
                 list_estudiantes.append(data)
             # print(list_programas)  
             # print(list_estudiantes)
+            # print(dic_estados)
             return Response(list_estudiantes)
             # return Response ("HOLAAAA")
         
