@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "django": "^1.0.0",
+    "excel4node": "^1.8.2",
     "file-saver": "^2.0.5",
     "final-form": "^4.20.9",
     "fs": "0.0.1-security",
@@ -54,7 +55,7 @@
     "styled-component": "^2.8.0",
     "styled-components": "^5.3.9",
     "web-vitals": "^3.3.1",
-    "xlsx": "^0.18.5"
+    "write-excel-file": "^1.4.27"
   },
   "scripts": {
     "start": "react-scripts start",
