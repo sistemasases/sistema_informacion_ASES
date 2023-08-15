@@ -142,19 +142,19 @@ def carga_programa_estudiante(file):
                         lista_programa_estudiante.append(Programa_estudiante)
                         dict_result = {
                                     'dato' : datos.iat[i,0],
-                                    'mensaje' : 'Se relacionó correctamente este estudiante con su programa.'
+                                    'mensaje' : 'Se relacionó correctamente este estudiante con su programa: '+ str(datos.iat[i,1])
                                 }
                         list_dict_result.append(dict_result)
                     except:
                         dict_result = {
                             'dato' : datos.iat[i,0],
-                            'mensaje' : 'Error al relacionar el estudiante con su programa.'
+                            'mensaje' : 'Error al relacionar el estudiante con su programa: '+ str(datos.iat[i,1])
                         }
                         list_dict_result.append(dict_result)   
             else:
                 dict_result = {
                     'dato' : datos.iat[i,0],
-                    'mensaje' : 'El programa al que se quiere matricular el estudiante no existe.'
+                    'mensaje' : 'El programa al que se quiere matricular el estudiante no existe: '+ str(datos.iat[i,1])
                 }
                 list_dict_result.append(dict_result) 
         else:
