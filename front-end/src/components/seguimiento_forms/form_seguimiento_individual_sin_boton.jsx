@@ -8,8 +8,8 @@ const Seguimiento_individual = (props) =>{
     const set_info = (e) => {
     }
 
-    console.log("Esta es la info: ")
-    console.log(props.item)
+    const userRole = sessionStorage.getItem('rol');
+
     const [state, setState] = useState({
         riesgo_individual_bajo: false,
         riesgo_individual_medio: false,
@@ -320,24 +320,24 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Motivación para el acompañamiento" checked={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Motivación para el acompañamiento" checked={props.item.motivación_compañamiento}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Referencia geográfica" checked={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Referencia geográfica" checked={props.item.referencia_geográfica}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Adaptación a la ciudad y Universidad" checked={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Adaptación a la ciudad y Universidad" checked={props.item.adaptación_ciudad_Universidad}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Oferta de servicios" checked={props.item.individual}/>        
+                        <Form.Check type="checkbox" label="Oferta de servicios" checked={props.item.oferta_servicios}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Vivienda" checked={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Vivienda" checked={props.item.vivienda}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Vinculación a grupos y realización de actividades extracurriculares" checked={props.item.individual}/>        
+                        <Form.Check type="checkbox" label="Vinculación a grupos y realización de actividades extracurriculares" checked={props.item.vinculación_grupos_actividades_extracurriculares}/>        
                     </Col>
                 </Row>
                 <hr></hr>
@@ -346,62 +346,62 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Apoyo académico" checked={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Apoyo académico" checked={props.item.apoyo_académico}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Actividades grupales" checked={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Rem. Actividades grupales" checked={props.item.rem_actividades_grupales}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Matrícula financiera" checked={props.item.individual}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Check type="checkbox" label="Taller par-par" checked={props.item.individual}/>        
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Monitorías académicas" checked={props.item.individual}/>
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Desarrollo humano y promoción SE" checked={props.item.individual}/>        
+                        <Form.Check type="checkbox" label="Rem. Matrícula financiera" checked={props.item.rem_matrícula_financiera}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Reconocimiento ciudad y U." checked={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Taller par-par" checked={props.item.taller_par_par}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Proyectos de la Universidad" checked={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Rem. Monitorías académicas" checked={props.item.rem_monitorías_académicas}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Directores de programa" checked={props.item.individual}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Profesional SE" defaultValue={props.item.individual}/>        
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Servicio de salud" defaultValue={props.item.individual}/>
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Grupos de la Universidad" defaultValue={props.item.individual}/>        
+                        <Form.Check type="checkbox" label="Rem. Desarrollo humano y promoción SE" checked={props.item.rem_desarrollo_humano_promoción_SE}/>        
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Practicante SE" defaultValue={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Reconocimiento ciudad y U." checked={props.item.reconocimiento_ciudad_U}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Registro académico" defaultValue={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Rem. Proyectos de la Universidad" checked={props.item.rem_proyectos_Universidad}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Externa" defaultValue={props.item.individual}/>
+                        <Form.Check type="checkbox" label="Rem. Directores de programa" checked={props.item.rem_directores_programa}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Ninguna acción realizada" defaultValue={props.item.individual}/>        
+                        <Form.Check type="checkbox" label="Rem. Profesional SE" checked={props.item.rem_profesional_SE}/>        
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Servicio de salud" checked={props.item.rem_servicio_salud}/>
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Grupos de la Universidad" checked={props.item.rem_grupos_universidad}/>        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Practicante SE" checked={props.item.rem_racticante_SE}/>
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Registro académico" checked={props.item.rem_registro_académico}/>
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Externa" checked={props.item.rem_externa}/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Check type="checkbox" label="Ninguna acción realizada" checked={props.item.Ninguna_acción_realizada}/>        
                     </Col>
                 </Row>
                 <hr></hr>
@@ -409,20 +409,20 @@ const Seguimiento_individual = (props) =>{
                     <h6>Observaciones:</h6>
                 </Row>
                 <Row className="g-2">
-                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.individual}/>
+                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.observaciones}/>
                 </Row>
                 <hr></hr>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado profesional" defaultValue={props.item.individual}/>        
+                        <Form.Check type="checkbox" label="Revisado profesional" checked={props.item.revisado_profesional} disabled={!(userRole === 'profesional')}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado practicante" defaultValue={props.item.individual}/>        
+                        <Form.Check type="checkbox" label="Revisado practicante" checked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional')}/>        
                     </Col>
                 </Row>
             </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={set_info}>
+            <Button variant="secondary" onClick={set_info} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
               Editar
             </Button>
             <Button variant="secondary" onClick={()=>props.handleClose()}>
