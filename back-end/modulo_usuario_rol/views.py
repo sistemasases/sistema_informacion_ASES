@@ -1838,12 +1838,17 @@ class firma_tratamiento_datos_view(APIView):
             print(serializer.data["documento"])
             if (estudiante.objects.filter(num_doc = serializer.data["documento"]).first()):
                 consulta_estudiante = estudiante.objects.filter(num_doc = request.data["documento"]).first()
-                Firma = firma_tratamiento_datos.objects.create(
-                    id_estudiante = consulta_estudiante,
-                    fecha_firma = serializer.data["fecha_firma"],
-                    nombre_firma = serializer.data["nombre_firma"],
-                    autoriza = bool(serializer.data["autoriza"])
-                    )
+                try:
+                    Firma = firma_tratamiento_datos.objects.create(
+                        id_estudiante = consulta_estudiante,
+                        fecha_firma = serializer.data["fecha_firma"],
+                        tipo_id_estudiante= serializer.data["tipo_id_estudiante"],
+                        nombre_firma = serializer.data["nombre_firma"],
+                        correo_firma= serializer.data["correo_firma"],
+                        autoriza = bool(serializer.data["autoriza"])
+                        )
+                except:
+                    return Response({'Respuesta': 'Ya existe una firma con ese documento'}, status=status.HTTP_400_BAD_REQUEST)
                 return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
             else:
                 return Response({'Respuesta': 'No existe un estudiante con ese documento'}, status=status.HTTP_404_NOT_FOUND)
