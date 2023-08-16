@@ -159,4 +159,6 @@ class firma_tratamiento_datos_serializer(serializers.Serializer):
 	documento = serializers.IntegerField()
 	nombre_firma = serializers.CharField()
 	fecha_firma = serializers.DateField()
+	correo_firma = serializers.CharField()
+	tipo_id_estudiante = serializers.CharField()
 	autoriza = serializers.BooleanField()
