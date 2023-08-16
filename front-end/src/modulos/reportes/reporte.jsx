@@ -19,6 +19,7 @@ var columns = [
     value: "cod_univalle",
     sortable: true,
     isCheck: true,
+    width: "110px",
   },
   {
     name: "Nombre",
@@ -31,14 +32,15 @@ var columns = [
     name: "Apellido",
     selector: (row) => row.apellido,
     value: "apellido",
-    sortable: false,
+    sortable: true,
     isCheck: true,
+    
   },
   {
     name: "Documento",
     selector: (row) => row.num_doc,
     value: "num_doc",
-    sortable: false,
+    sortable: true,
     isCheck: true,
   },
 ];
@@ -155,9 +157,9 @@ const Reporte = () => {
     let tipo;
     if (
       item.name === "Código univalle" ||
-      item.name === "Celular" ||
+      // item.name === "Celular" ||
       item.name === "Código programa académico" ||
-      item.name === "Promedio acumulado" ||
+      // item.name === "Promedio acumulado" ||
       item.name === "Riesgo geográfico"
     ) {
       tipo = Number;
@@ -364,8 +366,7 @@ const Reporte = () => {
       selector: (row) => row.i_n,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     {
       name: "M.A.P",
@@ -373,8 +374,9 @@ const Reporte = () => {
       selector: (row) => row.m_a_p,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
+      padding: "0px 0px 0px 0px",
+      margin: "0px 0px 0px 0px",
     },
     {
       name: "C.A",
@@ -382,8 +384,7 @@ const Reporte = () => {
       selector: (row) => row.c_a,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     {
       name: "C.A.C",
@@ -391,8 +392,7 @@ const Reporte = () => {
       selector: (row) => row.c_a_c,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     {
       name: "C.U",
@@ -400,8 +400,7 @@ const Reporte = () => {
       selector: (row) => row.c_u,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     {
       name: "P.R",
@@ -409,8 +408,7 @@ const Reporte = () => {
       selector: (row) => row.p_r,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     {
       name: "M.P.M",
@@ -418,8 +416,7 @@ const Reporte = () => {
       selector: (row) => row.m_p_m,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     // {
     //   name: "D.N.I",
@@ -479,8 +476,7 @@ const Reporte = () => {
       selector: (row) => row.d_n_i,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     {
       name: "M.D.P",
@@ -488,8 +484,7 @@ const Reporte = () => {
       selector: (row) => row.m_d_p,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     {
       name: "P.D",
@@ -497,8 +492,7 @@ const Reporte = () => {
       selector: (row) => row.p_d,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     // {
     //   name: "P.D",
@@ -515,8 +509,7 @@ const Reporte = () => {
       selector: (row) => row.v_c,
       sortable: true,
       isCheck: false,
-      width: "80px"
-
+      width: "80px",
     },
     {
       name: "A.R",
@@ -1291,7 +1284,7 @@ const Reporte = () => {
           csv_pop(element);
           schema_pop(element);
         }
-        console.log(columns);
+        // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Estados" &&
         e.target.checked === false
@@ -1537,6 +1530,30 @@ const Reporte = () => {
     selectAllRowsItemText: "Mostrar Todo",
   };
 
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color:'#223336',
+        backgroundColor: '#e7eef0'
+      },
+    },
+    // rows: {
+    //   style: {
+    //     color: "#000000",
+    //     backgroundColor: "#F7E6E6"
+    //   },
+    //   stripedStyle: {
+    //     color: "#000000",
+    //     backgroundColor: "#F5DDDD "
+    //   }
+    // },
+    // border: { 
+    //   style: {
+    //     color: "#0000",
+    //   }
+    // }
+  }
+
   const imprimir_excel = () => {
     let new_data_excel = [];
 
@@ -1720,7 +1737,6 @@ const Reporte = () => {
                         .includes(search.busqueda);
               })}
               // data={state.estudiante}
-
               noDataComponent="Cargando Información..."
               pagination
               paginationComponentOptions={paginacionOpciones}
@@ -1731,6 +1747,7 @@ const Reporte = () => {
               striped
               filter={true}
               paginationRowsPerPageOptions={[10, 50, 100, 200, 500]}
+              customStyles={tableCustomStyles}
             />
             <Row>
               <Col style={{ padding: 10 }}>
