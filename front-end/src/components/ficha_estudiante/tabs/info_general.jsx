@@ -7,9 +7,6 @@ import Modal from 'react-bootstrap/Modal';
 //import DatePicker from 'react-datepicker';
 
 
-var today = new Date();
-var now = today.toLocaleString();
-
 
 const Info_general = (props) =>{
 
@@ -23,7 +20,6 @@ const Info_general = (props) =>{
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
       };
 
-    const temporal = false;
 
     // Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ 
 
@@ -446,7 +442,7 @@ const agregarPariente = () => {
                   condicion_de_excepcion:state.condicion_de_excepcion,
                   personas_con_quien_vive:state.personas_con_quien_vive,
 
-                  editar : false,
+                  editar : true,
                   })
                   console.log("pero que esta pasando ???" )
                   alert("error al editar el estudiante :" + err)
@@ -460,13 +456,14 @@ const agregarPariente = () => {
 
   }
 
-  const userRole = sessionStorage.getItem('rol');
 
     return (
           <Container className="container_informacion_general" xs={"12"} sm={"6"} >
             <Col xs={"12"}>
+            {/*
             <li >{JSON.stringify(state.nuevo_personas_con_quien_vive)}</li>
             <li >{JSON.stringify(state.personas_con_quien_vive)}</li>
+            */}
 
             {
                           state.editar ?
