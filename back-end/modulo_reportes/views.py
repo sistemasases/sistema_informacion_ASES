@@ -7,11 +7,12 @@ from rest_framework.permissions import IsAuthenticated
 from modulo_usuario_rol.serializers import  user_serializer, estudiante_serializer, usuario_rol_serializer, user_selected
 from modulo_seguimiento.serializers import seguimiento_individual_serializer
 
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, cond_excepcion
 from modulo_asignacion.models import asignacion
 from modulo_instancia.models import semestre, sede
 from modulo_programa.models import programa, programa_estudiante, estado_programa
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
+
 
 
 from django.shortcuts import render, get_object_or_404
@@ -358,11 +359,118 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     # pass
 
                 # print(riesgo)
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **dic_reg_academico, **dic_asignaciones)
+
+                try:
+                    
+                    # print(cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
+                    var_excepcion = cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values()
+                    
+                    # dic_cond_excepcion = {
+                    #     # "i_n": var_i_n,
+                    #     "i_n":var_excepcion[0]['alias'],
+                    #     # "m_a_p":var_excepcion[0]['alias'],
+                    #     # "c_a":var_excepcion[0]['alias'],
+                    #     # "c_a_c":var_excepcion[0]["alias"],
+                    #     # "c_u":var_excepcion[0]["alias"],
+                    #     # "p_r":var_excepcion[0]["alias"],
+                    #     # "m_p_m":var_excepcion[0]["alias"],
+                    #     # "d_n_i":var_excepcion[0]["alias"],
+                    #     # "m_d_p":var_excepcion[0]["alias"],
+                    #     # "P.D":var_excepcion[0]["alias"],
+                    #     # "P.D":var_excepcion[0]["alias"],
+                    #     # "v_c":var_excepcion[0]["alias"],
+                    #     # "a_r":var_excepcion[0]["alias"],
+                    #     # "n_a": var_excepcion[0]["alias"],
+
+                    # }
+                    
+                    # TRY #2
+                    
+                    dic_cond_excepcion = {
+                        "i_n":'',
+                        "m_a_p":'',
+                        "c_a":'',
+                        "c_a_c":'',
+                        "c_u":'',
+                        "p_r":'',
+                        "m_p_m":'',
+                        "d_n_i":'',
+                        "m_d_p":'',
+                        "P.D":'',
+                        "P.D":'',
+                        "v_c":'',
+                        "a_r":'',
+                        "n_a":'',
+                    }
+                    
+                    if var_excepcion[0]['alias'] == "I.N":
+                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "M.A.P":
+                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "C.A":
+                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "C.A.C":
+                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "C.U":
+                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "P.R":
+                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "M.P.M":
+                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "D.N.I":
+                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "M.D.P":
+                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "P.D":
+                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "V.C":
+                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "A.R":
+                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
+                    elif var_excepcion[0]['alias'] == "N/A":
+                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
+                    # else:
+                    #     pass
+                    
+                except:
+                    dic_cond_excepcion = {
+                        "i_n":'',
+                        "m_a_p":'',
+                        "c_a":'',
+                        "c_a_c":'',
+                        "c_u":'',
+                        "p_r":'',
+                        "m_p_m":'',
+                        "d_n_i":'',
+                        "m_d_p":'',
+                        "p_d":'',
+                        "v_c":'',
+                        "a_r":'',
+                        "n_a":'N/A',
+                    }
+                    
+                    # dic_cond_excepcion = {
+                    #     "i_n":'',
+                    #     # "m_a_p":'N/A',
+                    #     # "C.A":'N/A',
+                    #     # "C.U":'N/A',
+                    #     # "P.R":'N/A',
+                    #     # "M.P.M":'N/A',
+                    #     # "D.N.I":'N/A',
+                    #     # "M.D.P":'N/A',
+                    #     # "P.D":'N/A',
+                    #     # "P.D":'N/A',
+                    #     # "V.C":'N/A',
+                    #     # "A.R":'N/A',
+                    #     # "n/a": 'N/A'
+                    # }
+
+                data = dict(i, **riesgo, **dic_programa, **dic_estados, **dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
                 list_estudiantes.append(data)
             # print(list_programas)  
             # print(list_estudiantes)
             # print(dic_estados)
+            # print(list_estudiantes)
             return Response(list_estudiantes)
             # return Response ("HOLAAAA")
         
