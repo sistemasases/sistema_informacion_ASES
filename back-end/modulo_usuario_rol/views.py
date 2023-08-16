@@ -524,17 +524,27 @@ class actual_usuario_rol_viewsets (viewsets.ModelViewSet):
     queryset = usuario_rol_serializer.Meta.model.objects.all()
     
 
-    def retrieve(self, request,pk=None):
-        list_user_rol = list()
-        var_semestre = get_object_or_404(semestre, semestre_actual = True,id_sede=pk)
-        for user_rol in usuario_rol.objects.filter(id_semestre =var_semestre.id, estado = "ACTIVO").values():
-            rols= rol.objects.filter(id =user_rol['id_rol_id']).annotate(id_rol=F('id')).values('id_rol','nombre')[0]
-            usuarios= User.objects.filter(id =user_rol['id_usuario_id']).values('id','username','first_name','last_name', 'email')[0]
-            usuarios.update(rols)
-            list_user_rol.append(usuarios)
+    def retrieve(self, request, pk=None):
+        var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=pk)
 
-        
-        return Response (list_user_rol)
+        user_rols = usuario_rol.objects.filter(
+            id_semestre=var_semestre.id,
+            estado="ACTIVO"
+        ).select_related('id_rol', 'id_usuario').annotate(
+            rol_id=F('id_rol__id'),
+            rol_nombre=F('id_rol__nombre'),
+            user_id=F('id_usuario__id'),
+            user_username=F('id_usuario__username'),
+            user_first_name=F('id_usuario__first_name'),
+            user_last_name=F('id_usuario__last_name'),
+            user_email=F('id_usuario__email')
+        ).values(
+            'user_id', 'user_username', 'user_first_name', 'user_last_name', 'user_email', 'rol_id', 'rol_nombre'
+        )
+
+        user_rols_list = list(user_rols)
+
+        return Response(user_rols_list)
     
     def update(self, request, pk=None):
         try:
