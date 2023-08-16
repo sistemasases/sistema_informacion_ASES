@@ -98,8 +98,6 @@ class estudiante (models.Model):
 
     class Meta:
         db_table = "estudiante"
-    def __str__(self):
-        return self.cod_univalle
 
 class rol (models.Model):
 
@@ -178,3 +176,16 @@ class cohorte_estudiante(models.Model):
     
     class Meta:
         db_table = "cohorte_estudiante"
+
+
+class firma_tratamiento_datos(models.Model):
+
+    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
+    tipo_id_estudiante= models.CharField(max_length=10,default=None,unique=True)
+    fecha_firma = models.DateTimeField(auto_now_add=False,null=False)
+    nombre_firma= models.CharField(max_length=50,default=None)
+    correo_firma= models.CharField(max_length=50,default=None)
+    autoriza= models.BooleanField(default=False)
+    
+    class Meta:
+        db_table = "firma_tratamiento_datos"

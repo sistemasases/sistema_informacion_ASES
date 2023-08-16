@@ -94,5 +94,3 @@ class inasistencia (models.Model):
 
     class Meta:
         db_table = "inasistencia"
-    def __str__(self):
-        return self.fecha

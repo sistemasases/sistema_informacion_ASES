@@ -7,9 +7,6 @@ import Modal from 'react-bootstrap/Modal';
 //import DatePicker from 'react-datepicker';
 
 
-var today = new Date();
-var now = today.toLocaleString();
-
 
 const Info_general = (props) =>{
 
@@ -23,7 +20,6 @@ const Info_general = (props) =>{
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
       };
 
-    const temporal = false;
 
     // Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ 
 
@@ -446,7 +442,7 @@ const agregarPariente = () => {
                   condicion_de_excepcion:state.condicion_de_excepcion,
                   personas_con_quien_vive:state.personas_con_quien_vive,
 
-                  editar : false,
+                  editar : true,
                   })
                   console.log("pero que esta pasando ???" )
                   alert("error al editar el estudiante :" + err)
@@ -460,13 +456,14 @@ const agregarPariente = () => {
 
   }
 
-  const userRole = sessionStorage.getItem('rol');
 
     return (
           <Container className="container_informacion_general" xs={"12"} sm={"6"} >
             <Col xs={"12"}>
-            <li >{JSON.stringify(state.nuevo_personas_con_quien_vive)}</li>
-            <li >{JSON.stringify(state.personas_con_quien_vive)}</li>
+            {/*
+                  <li >{JSON.stringify(state.nuevo_personas_con_quien_vive)}</li>
+                  <li >{JSON.stringify(state.personas_con_quien_vive)}</li>
+            */}
 
             {
                           state.editar ?
@@ -544,6 +541,13 @@ const agregarPariente = () => {
                                           <Col xs={"12"} md={"3"} className="row_flex_general">
                                                 <input name="nuevo_puntaje_icfes"
                                                       onChange={cambiar_datos} 
+                                                      onKeyPress={(e) => {
+                                                              const allowedCharacters = /^[0-9()+-]*$/;
+                                                              if (!allowedCharacters.test(e.key)) {
+                                                                  e.preventDefault();
+                                                                  }
+                                                              }}
+                                                      title="Solo números, paréntesis y guiones son permitidos"
                                                       defaultValue={state.puntaje_icfes}>
                                                 </input>
                                           </Col>
@@ -582,8 +586,17 @@ const agregarPariente = () => {
                                           state.editar ?
                                           (
                                           <Col xs={"12"} md={"3"} className="row_flex_general">
-                                                <input name="nuevo_telefono_res" defaultValue={state.telefono_res}
-                                                      onChange={cambiar_datos}></input>
+                                                <input name="nuevo_telefono_res" 
+                                                      defaultValue={state.telefono_res}
+                                                      onKeyPress={(e) => {
+                                                          const allowedCharacters = /^[0-9()+-]*$/;
+                                                          if (!allowedCharacters.test(e.key)) {
+                                                              e.preventDefault();
+                                                          }
+                                                      }}
+                                                      title="Solo números, paréntesis y guiones son permitidos"
+                                                      onChange={cambiar_datos}>
+                                                </input>
                                           </Col>
                                           ):
                                           (
@@ -601,8 +614,16 @@ const agregarPariente = () => {
                                                 state.editar ?
                                                 (
                                                 <Col xs={"12"} md={"3"} className="row_flex_general">
-                                                      <input name="nuevo_celular" defaultValue={state.celular}
-                                                      onChange={cambiar_datos}
+                                                      <input name="nuevo_celular" 
+                                                            defaultValue={state.celular}
+                                                            onKeyPress={(e) => {
+                                                              const allowedCharacters = /^[0-9()+-]*$/;
+                                                              if (!allowedCharacters.test(e.key)) {
+                                                                  e.preventDefault();
+                                                                  }
+                                                              }}
+                                                            title="Solo números, paréntesis y guiones son permitidos"
+                                                            onChange={cambiar_datos}
                                                       ></input>
                                                       
                                                 </Col>
@@ -731,7 +752,7 @@ const agregarPariente = () => {
 
 
                                     <Col xs={"12"} md={"3"} className="row_flex_general">
-                                          <h4 className="texto_pequeño_gris">Identidad de género</h4>
+                                          <h4 className="texto_pequeño_gris">Sexo</h4>
                                     </Col>
                                     {
                                           state.editar ?
@@ -754,7 +775,7 @@ const agregarPariente = () => {
 
 
                                     <Col xs={"12"} md={"3"} className="row_flex_general">
-                                          <h4 className="texto_pequeño_gris">Sexo</h4>
+                                          <h4 className="texto_pequeño_gris">Identidad de género</h4>
                                     </Col>
                                     {
                                           state.editar ?
@@ -946,16 +967,17 @@ const agregarPariente = () => {
                     ></input>
                   </Col>
 
-                  <Col xs={"12"} className="col_adicionar_parentesco">
-                        <Button className="adicionar_parentesco" onClick={guardarPariente}>
-                              Guardar
-                        </Button>
-                        <Button className="adicionar_parentesco" onClick={cancelarPariente}>
-                              Cancelar
-                        </Button>
-                  </Col>
+
                 </Row>
             ))}
+              <Col xs={"12"} className="col_adicionar_parentesco">
+                    <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                          Guardar
+                    </Button>
+                    <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                          Cancelar
+                    </Button>
+              </Col>
           </Row>
           )
         :

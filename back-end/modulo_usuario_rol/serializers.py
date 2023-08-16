@@ -1,6 +1,6 @@
 # import serializers from the REST framework
 from rest_framework import serializers
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante, rol_permiso, permiso
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante, rol_permiso, permiso, firma_tratamiento_datos
 from django.contrib.auth.models import User
 
 # create a serializer class
@@ -153,4 +153,12 @@ class cohorte_estudiante_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = cohorte_estudiante
 		fields = '__all__'
-		
+
+
+class firma_tratamiento_datos_serializer(serializers.Serializer):
+	documento = serializers.IntegerField()
+	nombre_firma = serializers.CharField()
+	fecha_firma = serializers.DateField()
+	correo_firma = serializers.CharField()
+	tipo_id_estudiante = serializers.CharField()
+	autoriza = serializers.BooleanField()

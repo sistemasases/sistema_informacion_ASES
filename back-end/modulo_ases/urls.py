@@ -33,5 +33,6 @@ urlpatterns = [
     path('academico/', include('modulo_academico.routers')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('usuario_rol_firma/', include('modulo_usuario_rol.urls')),
 
 ]
