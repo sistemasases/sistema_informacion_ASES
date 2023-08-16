@@ -1,0 +1,66 @@
+.col_background {
+    background-image: url('../../images/inicio.jpg');
+    background-size: cover;
+    min-height: 300px;  
+    color: white;
+    opacity: 80%;
+}
+
+.fondo_inicio{
+}
+
+.estilo_bienvenido {
+    font-weight: bold;
+    font-size: 6rem; /* 2 veces el tamaño de fuente base (32px en este caso) */
+    color: white;
+    margin-top: 25%;
+  }
+  
+  /* Media query para pantallas más pequeñas */
+  @media (max-width: 992px) {
+    .estilo_bienvenido {
+      font-size: 2.5rem; /* Tamaño de fuente más pequeño en pantallas pequeñas */
+    }
+  }
+  
+
+  .estilo_sesion {
+    font-weight: bold;    
+    font-size: 3.5rem;
+    color: white;
+
+  }
+
+  .estilo_como {
+    font-weight: bold;
+    font-size: 3.5rem;
+    color: white;
+    margin-bottom: 20%;
+  }
+
+.botones-container {
+  display: flex;
+  flex-direction: column; /* Cambiar la dirección de los elementos a columna */
+  align-items: center;
+  margin-top: 6%; /* Centrar horizontalmente los elementos */
+}
+
+.boton {
+  height: 100%; /* Igual a la altura de la imagen */
+  width: 90%; /* Igual al ancho de la imagen */
+  cursor: pointer; /* Cambiar el cursor al pasar el ratón por encima */
+}
+
+.vertical{
+    width: 2px;
+    height: 100%;
+    background-color:#cb0007; /* Color de la línea */
+    margin: 0px; /* Espacio entre los elementos y la línea */
+}
+
+.vertical-line-col{
+  width: 2px !important;
+  min-width: 0 !important;
+  max-width: 2px !important;
+  padding-right: 25px;
+}

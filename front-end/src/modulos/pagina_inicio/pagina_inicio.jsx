@@ -8,16 +8,59 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { Container, Row, Button } from "react-bootstrap";
+import { Container, Row, Button, Col } from "react-bootstrap";
 import Carousel from "react-bootstrap/Carousel";
 import All_sede_service from "../../service/all_sede";
 import Select from "react-select";
+import incioima  from "../../images/inicio.jpg";
+import boton1 from '../../images/17.png';
+import boton2 from '../../images/18.png';
+import boton3 from '../../images/19.png';
+import boton4 from '../../images/20.png';
+import boton6 from '../../images/2.png';
+import boton7 from '../../images/3.png';
+import boton8 from '../../images/4.png';
+import boton9 from '../../images/5.png';
+import boton10 from '../../images/6.png';
+import boton11 from '../../images/7.png';
+import boton12 from '../../images/8.png';
+import boton13 from '../../images/9.png';
+import boton14 from '../../images/10.png';
+import boton15 from '../../images/11.png';
+import boton16 from '../../images/12.png';
+import boton17 from '../../images/13.png';
+import boton18 from '../../images/14.png';
+import boton19 from '../../images/15.png';
+import boton20 from '../../images/16.png';
+import boton21 from '../../images/21.png';
 
+import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 
 const Pagina_inicio = () => {
-  const userRole = localStorage.getItem("rol");
+  const userRole = sessionStorage.getItem("rol");
+  let desplegable;
 
+  if (sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'super_ases') {
+    desplegable = 'ADMIN';
+  } else if (sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'socioeducativo') {
+    desplegable = 'SOCIOEDUCATIVO';
+  } else if (sessionStorage.rol === 'dir_academico') {
+    desplegable = 'DIRECTOR ACÁDEMICO';
+  } else if (sessionStorage.rol === 'monitor') {
+    desplegable = 'MONITOR';
+  } else if (sessionStorage.rol === 'practicante') {
+    desplegable = 'PRACTICANTE';
+  } else if (sessionStorage.rol === 'dir_investigacion') {
+    desplegable = 'DIRECTOR INVES.';
+  }  else if (sessionStorage.rol === 'dir_programa') {
+    desplegable = 'DIRECTOR PROGRAMA';
+  } else if (sessionStorage.rol === 'vcd_academico') {
+    desplegable = 'VICERRECTOR ACADE.';
+  } else if (sessionStorage.rol === 'profesional') {
+    desplegable = 'PROFESIONAL';
+  } 
+  
   //Constante y variable que se usaran para el select
   const opciones = [];
   var bandera_option = true;
@@ -89,11 +132,7 @@ const Pagina_inicio = () => {
     );
     // });
   };
-
-  return (
-    <>
-      {userRole === "super_ases" || userRole === "sistemas" ? (
-        <div
+        /*<div
           className="banner"
           style={{ marginTop: 20, marginBottom: 20, marginLeft: 22 }}
         >
@@ -142,36 +181,69 @@ const Pagina_inicio = () => {
               </Container>
             }
           </>
-        </div>
-      ) : (
-        <div
-          className="banner"
-          style={{ marginTop: 20, marginBottom: 20, marginLeft: 22 }}
-        >
-          <Carousel>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src={"https://ases.univalle.edu.co/images/banners/1.png"}
-              />
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src={"https://ases.univalle.edu.co/images/banners/1.png"}
-              />
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src={"https://ases.univalle.edu.co/images/banners/1.png"}
-              />
-            </Carousel.Item>
-          </Carousel>
-        </div>
-      )}
-    </>
+          
+        </div>*/
+  return (
+        <Row className="fondo_inicio">
+            <Col xs={"12"} md={"6"} className="col_background">
+            <p className="estilo_bienvenido"> ¡Bienvenido!</p>  
+              <p className="estilo_sesion">INICIASTE SESIÓN </p>
+            <p className="estilo_como">COMO {desplegable}</p>
+            </Col>
+            <Col style={{ background:"white"}} xs={"12"} md={"6"}>
+              <Row> 
+                <Col xs={"12"} md={"5"} className="botones-container">
+                {(userRole === "super_ases" || userRole === "sistemas")&&(
+                <Link to={`/gestion_usuario_rol`}> 
+                  <img src={boton6} className="boton" alt='/'></img>
+                </Link>)}
+                {(userRole === 'dir_academico' || userRole === 'dir_programa' || userRole === 'vcd_academico' || userRole === 'practicante' || userRole === 'monitor' || userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' || userRole === "super_ases" || userRole === "sistemas")&& (
+                <Link to={`/ficha_estudiante/sin_seleccion`}> 
+                  <img src={boton9} className="boton" alt='/'></img>
+                </Link>)}
+                {(userRole === 'dir_academico' ||userRole === 'dir_programa' || userRole === 'vcd_academico' || userRole === 'practicante' || userRole === 'monitor' || userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' || userRole === "super_ases" || userRole === "sistemas")&& (
+                <Link to={`/reporte`}> 
+                  <img src={boton15} className="boton" alt='/'></img>
+                </Link>)}
+                {(userRole === "super_ases" || userRole === "sistemas")&& (
+                <Link to={`/carga_masiva`}> 
+                  <img src={boton21} className="boton" alt='/'></img>
+                </Link>)}
+                {(userRole === 'practicante' || userRole === 'monitor' || userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
+                <Link to={`/reporte_seguimientos`}> 
+                  <img src={boton17} className="boton" alt='/'></img>
+                </Link>)}
+                {(userRole === 'practicante' ||userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
+                <Link to={`/sin_seguimientos`}> 
+                  <img src={boton8} className="boton" alt='/'></img>
+                </Link>)}
+                {(userRole === 'dir_academico' )&& (
+                <Link to={`/academico`}> 
+                  <img src={boton20} className="boton" alt='/'></img>
+                </Link>)}
+                </Col>
+
+                <Col className="vertical-line-col"><div className="vertical"></div></Col>
+
+                <Col xs={"12"} md={"5"} className="botones-container">
+                <Link to={`https://sistemasases.github.io/rutasdeatencion/`}> 
+                  <img src={boton1} className="boton" alt='/'></img>
+                </Link>
+                <Link to={`https://asesinteractiva.univalle.edu.co/semaforoalertas/`}> 
+                  <img src={boton2} className="boton" alt='/'></img>
+                </Link>
+                <Link to={`https://caja-de-herramientas-univalle.vercel.app/`}> 
+                  <img src={boton3} className="boton" alt='/'></img>
+                </Link>
+                <Link to={`https://ases.univalle.edu.co/`}> 
+                  <img src={boton4} className="boton" alt='/'></img>
+                </Link>
+              </Col>
+              </Row>
+            </Col>
+        </Row>
   );
 };
 
 export default Pagina_inicio;
+
