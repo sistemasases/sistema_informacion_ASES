@@ -10,7 +10,20 @@ Luego, registra estos modelos para que sean accesibles desde la interfaz de admi
 from django.contrib import admin
 from modulo_instancia.models import *
 
-admin.site.register(semestre)
-admin.site.register(sede)
-admin.site.register(cohorte)
-admin.site.register(cohorte_sede)
+class semestre_admin(admin.ModelAdmin):
+    list_display = ('id','nombre', 'semestre_actual', 'id_sede')  
+
+class sede_admin(admin.ModelAdmin):
+    list_display = ('id', 'nombre')  
+
+class cohorte_admin(admin.ModelAdmin):
+    list_display = ('id','id_number', 'nombre')  
+
+class cohorte_sede_admin(admin.ModelAdmin):
+    list_display = ('id','id_cohorte', 'id_sede')  
+
+
+admin.site.register(semestre,semestre_admin)
+admin.site.register(sede,sede_admin)
+admin.site.register(cohorte,cohorte_admin)
+admin.site.register(cohorte_sede,cohorte_sede_admin)
