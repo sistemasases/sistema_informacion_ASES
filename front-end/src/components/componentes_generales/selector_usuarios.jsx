@@ -47,28 +47,28 @@ const Selector_usuarios = () =>{
   const [show, setShow] = useState(false);
   const columnas =[
     {
-      name: 'USERNAME',
-      selector: row => row.username,
+      name: 'USUARIO',
+      selector: row => row.user_username,
       sortable: true,
     },
     {
       name: 'NOMBRES',
-      selector: row => row.first_name,
+      selector: row => row.user_first_name,
       sortable: true,
     },
     {
       name: 'APELLIDOS',
-      selector: row => row.last_name,
+      selector: row => row.user_last_name,
       sortable: true,
     },
     {
       name: 'EMAIL',
-      selector: row => row.email,
+      selector: row => row.user_email,
       sortable: true,
     },
     {
       name: 'ROL',
-      selector: row => row.nombre,
+      selector: row => row.rol_nombre,
       sortable: true,
     },
   ]
@@ -103,20 +103,30 @@ const Selector_usuarios = () =>{
 
     
   }
-  const consulta_all_user_rol = (e)=>{
+  const consulta_all_user_rol = (e) => {
     let pk = sessionStorage.getItem('sede_id');
-
+  
     all_users_rols.all_users_rols(pk).then((res) => {
-      console.log(res)
-      set_state({
-        ...state,
-        data_user_rol : res
-      })
-    })
-
-    console.log(state.data_user_rol)
-
-  }
+      if (Array.isArray(res.data)) {
+        console.log("respuesta: ", res); // Verifica la respuesta de Axios
+  
+        // Almacena la respuesta temporalmente
+        const updatedData = res.data;
+  
+        set_state(prevState => ({
+          ...prevState,
+          data_user_rol: updatedData
+        }));
+  
+        console.log("verifica mierda:" + state.data_user_rol); // Verifica la versión actualizada del estado
+      } else {
+        console.log("La respuesta no es un array:", res);
+        // Puede que necesites manejar la respuesta en caso de que no sea un array
+      }
+    });
+  };
+  
+  
 
   const handle_user_selector = (e) => {
     if(bandera_option_user==true){
@@ -348,7 +358,7 @@ const Selector_usuarios = () =>{
                   paginationRowsPerPageOptions={[10,20,30,40,50,100]}
                   selectableRows
                   onSelectedRowsChange={handleChange}
-                  striped      
+                  striped
                   />
               </DataTableExtensions>
               <Button onClick={delete_user_rol}>Eliminar Rol</Button> 
