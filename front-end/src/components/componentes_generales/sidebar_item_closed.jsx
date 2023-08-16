@@ -12,7 +12,6 @@ const Sidebar_item_closed = (props) => {
             <Row className={open ? "sidebar-item-closed open" : "sidebar-item-closed"}>
                 <Col xs={12} n>
                     <span onClick={() => setOpen(!open)} className="tamaño_super_icon">
-                    kkk
                         { props.item.icon && <i className={props.item.icon} title={props.item.name}></i> }
                     </span> 
                 </Col>

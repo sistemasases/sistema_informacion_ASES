@@ -541,6 +541,13 @@ const agregarPariente = () => {
                                           <Col xs={"12"} md={"3"} className="row_flex_general">
                                                 <input name="nuevo_puntaje_icfes"
                                                       onChange={cambiar_datos} 
+                                                      onKeyPress={(e) => {
+                                                              const allowedCharacters = /^[0-9()+-]*$/;
+                                                              if (!allowedCharacters.test(e.key)) {
+                                                                  e.preventDefault();
+                                                                  }
+                                                              }}
+                                                      title="Solo números, paréntesis y guiones son permitidos"
                                                       defaultValue={state.puntaje_icfes}>
                                                 </input>
                                           </Col>
@@ -579,8 +586,17 @@ const agregarPariente = () => {
                                           state.editar ?
                                           (
                                           <Col xs={"12"} md={"3"} className="row_flex_general">
-                                                <input name="nuevo_telefono_res" defaultValue={state.telefono_res}
-                                                      onChange={cambiar_datos}></input>
+                                                <input name="nuevo_telefono_res" 
+                                                      defaultValue={state.telefono_res}
+                                                      onKeyPress={(e) => {
+                                                          const allowedCharacters = /^[0-9()+-]*$/;
+                                                          if (!allowedCharacters.test(e.key)) {
+                                                              e.preventDefault();
+                                                          }
+                                                      }}
+                                                      title="Solo números, paréntesis y guiones son permitidos"
+                                                      onChange={cambiar_datos}>
+                                                </input>
                                           </Col>
                                           ):
                                           (
@@ -598,8 +614,16 @@ const agregarPariente = () => {
                                                 state.editar ?
                                                 (
                                                 <Col xs={"12"} md={"3"} className="row_flex_general">
-                                                      <input name="nuevo_celular" defaultValue={state.celular}
-                                                      onChange={cambiar_datos}
+                                                      <input name="nuevo_celular" 
+                                                            defaultValue={state.celular}
+                                                            onKeyPress={(e) => {
+                                                              const allowedCharacters = /^[0-9()+-]*$/;
+                                                              if (!allowedCharacters.test(e.key)) {
+                                                                  e.preventDefault();
+                                                                  }
+                                                              }}
+                                                            title="Solo números, paréntesis y guiones son permitidos"
+                                                            onChange={cambiar_datos}
                                                       ></input>
                                                       
                                                 </Col>
@@ -728,7 +752,7 @@ const agregarPariente = () => {
 
 
                                     <Col xs={"12"} md={"3"} className="row_flex_general">
-                                          <h4 className="texto_pequeño_gris">Identidad de género</h4>
+                                          <h4 className="texto_pequeño_gris">Sexo</h4>
                                     </Col>
                                     {
                                           state.editar ?
@@ -751,7 +775,7 @@ const agregarPariente = () => {
 
 
                                     <Col xs={"12"} md={"3"} className="row_flex_general">
-                                          <h4 className="texto_pequeño_gris">Sexo</h4>
+                                          <h4 className="texto_pequeño_gris">Identidad de género</h4>
                                     </Col>
                                     {
                                           state.editar ?
@@ -943,16 +967,17 @@ const agregarPariente = () => {
                     ></input>
                   </Col>
 
-                  <Col xs={"12"} className="col_adicionar_parentesco">
-                        <Button className="adicionar_parentesco" onClick={guardarPariente}>
-                              Guardar
-                        </Button>
-                        <Button className="adicionar_parentesco" onClick={cancelarPariente}>
-                              Cancelar
-                        </Button>
-                  </Col>
+
                 </Row>
             ))}
+              <Col xs={"12"} className="col_adicionar_parentesco">
+                    <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                          Guardar
+                    </Button>
+                    <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                          Cancelar
+                    </Button>
+              </Col>
           </Row>
           )
         :
