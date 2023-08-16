@@ -10,6 +10,7 @@ from modulo_programa.models import programa_estudiante, programa, historial_esta
 from modulo_instancia.models import semestre, cohorte
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
+from modulo_usuario_rol.models import firma_tratamiento_datos
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -523,17 +524,27 @@ class actual_usuario_rol_viewsets (viewsets.ModelViewSet):
     queryset = usuario_rol_serializer.Meta.model.objects.all()
     
 
-    def retrieve(self, request,pk=None):
-        list_user_rol = list()
-        var_semestre = get_object_or_404(semestre, semestre_actual = True,id_sede=pk)
-        for user_rol in usuario_rol.objects.filter(id_semestre =var_semestre.id, estado = "ACTIVO").values():
-            rols= rol.objects.filter(id =user_rol['id_rol_id']).annotate(id_rol=F('id')).values('id_rol','nombre')[0]
-            usuarios= User.objects.filter(id =user_rol['id_usuario_id']).values('id','username','first_name','last_name', 'email')[0]
-            usuarios.update(rols)
-            list_user_rol.append(usuarios)
+    def retrieve(self, request, pk=None):
+        var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=pk)
 
-        
-        return Response (list_user_rol)
+        user_rols = usuario_rol.objects.filter(
+            id_semestre=var_semestre.id,
+            estado="ACTIVO"
+        ).select_related('id_rol', 'id_usuario').annotate(
+            rol_id=F('id_rol__id'),
+            rol_nombre=F('id_rol__nombre'),
+            user_id=F('id_usuario__id'),
+            user_username=F('id_usuario__username'),
+            user_first_name=F('id_usuario__first_name'),
+            user_last_name=F('id_usuario__last_name'),
+            user_email=F('id_usuario__email')
+        ).values(
+            'user_id', 'user_username', 'user_first_name', 'user_last_name', 'user_email', 'rol_id', 'rol_nombre'
+        )
+
+        user_rols_list = list(user_rols)
+
+        return Response(user_rols_list)
     
     def update(self, request, pk=None):
         try:
@@ -1820,3 +1831,21 @@ class cohorte_estudiante_info_viewsets (viewsets.ModelViewSet):
         return Response(result, status=status.HTTP_200_OK)
 
 
+class firma_tratamiento_datos_view(APIView):
+    def post(self, request):
+        serializer = firma_tratamiento_datos_serializer(data=request.data)
+        if serializer.is_valid():
+            print(serializer.data["documento"])
+            if (estudiante.objects.filter(num_doc = serializer.data["documento"]).first()):
+                consulta_estudiante = estudiante.objects.filter(num_doc = request.data["documento"]).first()
+                Firma = firma_tratamiento_datos.objects.create(
+                    id_estudiante = consulta_estudiante,
+                    fecha_firma = serializer.data["fecha_firma"],
+                    nombre_firma = serializer.data["nombre_firma"],
+                    autoriza = bool(serializer.data["autoriza"])
+                    )
+                return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'Respuesta': 'No existe un estudiante con ese documento'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
