@@ -465,9 +465,10 @@ const agregarPariente = () => {
     return (
           <Container className="container_informacion_general" xs={"12"} sm={"6"} >
             <Col xs={"12"}>
-            <li >{JSON.stringify(state.nuevo_personas_con_quien_vive)}</li>
-            <li >{JSON.stringify(state.personas_con_quien_vive)}</li>
-
+            {/*
+                  <li >{JSON.stringify(state.nuevo_personas_con_quien_vive)}</li>
+                  <li >{JSON.stringify(state.personas_con_quien_vive)}</li>
+            */}
             {
                           state.editar ?
                           (
