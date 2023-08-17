@@ -9,8 +9,8 @@ class seguimiento_individual (models.Model):
     lugar = models.CharField(max_length=100)
     hora_inicio = models.TimeField()
     hora_finalización= models.TimeField()
-    objetivos= models.CharField(null=True,max_length=1500)
-    individual= models.CharField(null=True,max_length=1500)
+    objetivos= models.CharField(null=True,blank=True,max_length=1500)
+    individual= models.CharField(null=True,blank=True,max_length=1500)
     riesgo_individual= models.IntegerField(null=True)
     autoconocimiento= models.BooleanField()
     rasgos_de_personalidad=models.BooleanField()
@@ -22,21 +22,21 @@ class seguimiento_individual (models.Model):
     historia_de_vida=models.BooleanField()
     relación_eriótico_afectivas=models.BooleanField()
     diversidad_sexual=models.BooleanField()
-    familiar=models.CharField(null=True,max_length=1500)
+    familiar=models.CharField(null=True,blank=True,max_length=1500)
     riesgo_familiar=models.IntegerField(null=True)
     dinamica_familiar=models.BooleanField()
-    academico=models.CharField(null=True,max_length=1500)
+    academico=models.CharField(null=True,blank=True,max_length=1500)
     riesgo_academico= models.IntegerField(null=True)
     desempeño_académico=models.BooleanField()
     elección_vocacional=models.BooleanField()
     manejo_del_tiempo =models.BooleanField()
-    economico=models.CharField(null=True,max_length=1500)
+    economico=models.CharField(null=True,blank=True,max_length=1500)
     riesgo_economico=models.IntegerField(null=True)
     apoyos_económicos_institucionales=models.BooleanField()
     manejo_finanzas=models.BooleanField()
     apoyo_económico_familiar=models.BooleanField()
     situación_laboral_ocupacional=models.BooleanField()
-    vida_universitaria_ciudad=models.CharField(null=True,max_length=1500)
+    vida_universitaria_ciudad=models.CharField(null=True,blank=True,max_length=1500)
     riesgo_vida_universitaria_ciudad=models.IntegerField(null=True)
     motivación_compañamiento=models.BooleanField()
     referencia_geográfica=models.BooleanField()
@@ -62,7 +62,7 @@ class seguimiento_individual (models.Model):
     rem_externa = models.BooleanField(default=False)
     Ninguna_acción_realizada = models.BooleanField(default=False)
 
-    observaciones=models.CharField(null=True,max_length=1500)
+    observaciones=models.CharField(null=True,blank=True,max_length=1500)
     revisado_profesional = models.BooleanField(default=False)
     revisado_practicante = models.BooleanField(default=False)
     primer_acercamiento =models.BooleanField(default=False)
@@ -76,8 +76,7 @@ class seguimiento_individual (models.Model):
 
     class Meta:
         db_table = "seguimiento_individual"
-    def __str__(self):
-        return self.fecha
+
 
 class inasistencia (models.Model):
 

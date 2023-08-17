@@ -67,7 +67,7 @@ const Seguimiento_individual = (props) =>{
             revisado_practicante: false,
             primer_acercamiento: false,
             cierre: false,
-            id_creador: null,
+            id_creador: parseInt(sessionStorage.getItem("id_usuario")),
             id_modificador: null,
             id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
         }
@@ -89,82 +89,385 @@ const Seguimiento_individual = (props) =>{
         props.handleModalIn()
     }
 
+    const [form, set_form] = useState({
+        riesgo_individual_bajo: false,
+        riesgo_individual_medio: false,
+        riesgo_individual_alto: false,
+        riesgo_familiar_bajo: false,
+        riesgo_familiar_medio: false,
+        riesgo_familiar_alto: false,
+        riesgo_academico_bajo: false,
+        riesgo_academico_medio: false,
+        riesgo_academico_alto: false,
+        riesgo_economico_bajo: false,
+        riesgo_economico_medio: false,
+        riesgo_economico_alto: false,
+        riesgo_vida_universitaria_ciudad_bajo: false,
+        riesgo_vida_universitaria_ciudad_medio: false,
+        riesgo_vida_universitaria_ciudad_alto: false,
+    })
+
     const handleForm = (e) => {
-        if(e.target.name === "riesgo_individual_bajo" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_individual"]: 0
-            })
-        } else if(e.target.name === "riesgo_individual_medio" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_individual"]: 1
-            })
-        } else if(e.target.name === "riesgo_individual_alto" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_individual"]: 2
-            })
-        } else if(e.target.name === "riesgo_familiar_bajo" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_familiar"]: 0
-            })
-        } else if(e.target.name === "riesgo_familiar_medio" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_familiar"]: 1
-            })
-        } else if(e.target.name === "riesgo_familiar_alto" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_familiar"]: 2
-            })
-        } else if(e.target.name === "riesgo_academico_bajo" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_academico"]: 0
-            })
-        } else if(e.target.name === "riesgo_academico_medio" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_academico"]: 1
-            })
-        } else if(e.target.name === "riesgo_academico_alto" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_academico"]: 2
-            })
-        } else if(e.target.name === "riesgo_economico_bajo" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_economico"]: 0
-            })
-        } else if(e.target.name === "riesgo_economico_medio" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_economico"]: 1
-            })
-        } else if(e.target.name === "riesgo_economico_alto" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_economico"]: 2
-            })
-        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_bajo" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_vida_universitaria_ciudad"]: 0
-            })
-        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_medio" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_vida_universitaria_ciudad"]: 1
-            })
-        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_alto" && e.target.checked === true){
-            set_state({
-                ...state,
-                ["riesgo_vida_universitaria_ciudad"]: 2
-            })
+        if(e.target.name === "riesgo_individual_bajo"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_individual"]: 0
+                })
+                set_form({
+                    ...form,
+                    riesgo_individual_bajo: true,
+                    riesgo_individual_medio: false,
+                    riesgo_individual_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_individual"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_individual_bajo: false,
+                    riesgo_individual_medio: false,
+                    riesgo_individual_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_individual_medio"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_individual"]: 1
+                })
+                set_form({
+                    ...form,
+                    riesgo_individual_bajo: false,
+                    riesgo_individual_medio: true,
+                    riesgo_individual_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_individual"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_individual_bajo: false,
+                    riesgo_individual_medio: false,
+                    riesgo_individual_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_individual_alto"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_individual"]: 2
+                })
+                set_form({
+                    ...form,
+                    riesgo_individual_bajo: false,
+                    riesgo_individual_medio: false,
+                    riesgo_individual_alto: true,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_individual"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_individual_bajo: false,
+                    riesgo_individual_medio: false,
+                    riesgo_individual_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_familiar_bajo"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_familiar"]: 0
+                })
+                set_form({
+                    ...form,
+                    riesgo_familiar_bajo: true,
+                    riesgo_familiar_medio: false,
+                    riesgo_familiar_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_familiar"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_familiar_bajo: false,
+                    riesgo_familiar_medio: false,
+                    riesgo_familiar_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_familiar_medio"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_familiar"]: 1
+                })
+                set_form({
+                    ...form,
+                    riesgo_familiar_bajo: false,
+                    riesgo_familiar_medio: true,
+                    riesgo_familiar_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_familiar"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_familiar_bajo: false,
+                    riesgo_familiar_medio: false,
+                    riesgo_familiar_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_familiar_alto"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_familiar"]: 2
+                })
+                set_form({
+                    ...form,
+                    riesgo_familiar_bajo: false,
+                    riesgo_familiar_medio: false,
+                    riesgo_familiar_alto: true,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_familiar"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_familiar_bajo: false,
+                    riesgo_familiar_medio: false,
+                    riesgo_familiar_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_academico_bajo"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_academico"]: 0
+                })
+                set_form({
+                    ...form,
+                    riesgo_academico_bajo: true,
+                    riesgo_academico_medio: false,
+                    riesgo_academico_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_academico"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_academico_bajo: false,
+                    riesgo_academico_medio: false,
+                    riesgo_academico_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_academico_medio"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_academico"]: 1
+                })
+                set_form({
+                    ...form,
+                    riesgo_academico_bajo: false,
+                    riesgo_academico_medio: true,
+                    riesgo_academico_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_academico"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_academico_bajo: false,
+                    riesgo_academico_medio: false,
+                    riesgo_academico_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_academico_alto"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_academico"]: 2
+                })
+                set_form({
+                    ...form,
+                    riesgo_academico_bajo: false,
+                    riesgo_academico_medio: false,
+                    riesgo_academico_alto: true,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_academico"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_academico_bajo: false,
+                    riesgo_academico_medio: false,
+                    riesgo_academico_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_economico_bajo"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_economico"]: 0
+                })
+                set_form({
+                    ...form,
+                    riesgo_economico_bajo: true,
+                    riesgo_economico_medio: false,
+                    riesgo_economico_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_economico"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_economico_bajo: false,
+                    riesgo_economico_medio: false,
+                    riesgo_economico_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_economico_medio"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_economico"]: 1
+                })
+                set_form({
+                    ...form,
+                    riesgo_economico_bajo: false,
+                    riesgo_economico_medio: true,
+                    riesgo_economico_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_economico"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_economico_bajo: false,
+                    riesgo_economico_medio: false,
+                    riesgo_economico_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_economico_alto"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_economico"]: 2
+                })
+                set_form({
+                    ...form,
+                    riesgo_economico_bajo: false,
+                    riesgo_economico_medio: false,
+                    riesgo_economico_alto: true,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_economico"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_economico_bajo: false,
+                    riesgo_economico_medio: false,
+                    riesgo_economico_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_bajo"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_vida_universitaria_ciudad"]: 0
+                })
+                set_form({
+                    ...form,
+                    riesgo_vida_universitaria_ciudad_bajo: true,
+                    riesgo_vida_universitaria_ciudad_medio: false,
+                    riesgo_vida_universitaria_ciudad_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_vida_universitaria_ciudad"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_vida_universitaria_ciudad_bajo: false,
+                    riesgo_vida_universitaria_ciudad_medio: false,
+                    riesgo_vida_universitaria_ciudad_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_medio"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_vida_universitaria_ciudad"]: 1
+                })
+                set_form({
+                    ...form,
+                    riesgo_vida_universitaria_ciudad_bajo: false,
+                    riesgo_vida_universitaria_ciudad_medio: true,
+                    riesgo_vida_universitaria_ciudad_alto: false,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_vida_universitaria_ciudad"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_vida_universitaria_ciudad_bajo: false,
+                    riesgo_vida_universitaria_ciudad_medio: false,
+                    riesgo_vida_universitaria_ciudad_alto: false,
+                })
+            }
+        } else if(e.target.name === "riesgo_vida_universitaria_ciudad_alto"){
+            if(e.target.checked === true){
+                set_state({
+                    ...state,
+                    ["riesgo_vida_universitaria_ciudad"]: 2
+                })
+                set_form({
+                    ...form,
+                    riesgo_vida_universitaria_ciudad_bajo: false,
+                    riesgo_vida_universitaria_ciudad_medio: false,
+                    riesgo_vida_universitaria_ciudad_alto: true,
+                })
+            } else {
+                set_state({
+                    ...state,
+                    ["riesgo_vida_universitaria_ciudad"]: null
+                })
+                set_form({
+                    ...form,
+                    riesgo_vida_universitaria_ciudad_bajo: false,
+                    riesgo_vida_universitaria_ciudad_medio: false,
+                    riesgo_vida_universitaria_ciudad_alto: false,
+                })
+            }
         } else {
             set_state({
                 ...state,
@@ -172,6 +475,8 @@ const Seguimiento_individual = (props) =>{
             })
         }
     }
+
+    const userRole = sessionStorage.getItem('rol');
 
     return (
         
@@ -235,13 +540,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_individual_bajo" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Bajo" checked={form.riesgo_individual_bajo}  name="riesgo_individual_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_individual_medio" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Medio" checked={form.riesgo_individual_medio} name="riesgo_individual_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_individual_alto" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Alto" checked={form.riesgo_individual_alto} name="riesgo_individual_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -299,13 +604,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_familiar_bajo" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Bajo" checked={form.riesgo_familiar_bajo} name="riesgo_familiar_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_familiar_medio" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Medio" checked={form.riesgo_familiar_medio} name="riesgo_familiar_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_familiar_alto" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Alto" checked={form.riesgo_familiar_alto} name="riesgo_familiar_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -330,13 +635,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_academico_bajo" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Bajo" checked={form.riesgo_academico_bajo} name="riesgo_academico_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_academico_medio" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Medio" checked={form.riesgo_academico_medio} name="riesgo_academico_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_academico_alto" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Alto" checked={form.riesgo_academico_alto} name="riesgo_academico_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -367,13 +672,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_economico_bajo" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Bajo" checked={form.riesgo_economico_bajo} name="riesgo_economico_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_economico_medio" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Medio" checked={form.riesgo_economico_medio} name="riesgo_economico_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_economico_alto" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Alto" checked={form.riesgo_economico_alto} name="riesgo_economico_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -409,13 +714,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Bajo" name="riesgo_vida_universitaria_ciudad_bajo" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Bajo" checked={form.riesgo_vida_universitaria_ciudad_bajo} name="riesgo_vida_universitaria_ciudad_bajo" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Medio" name="riesgo_vida_universitaria_ciudad_medio" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Medio" checked={form.riesgo_vida_universitaria_ciudad_medio} name="riesgo_vida_universitaria_ciudad_medio" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Alto" name="riesgo_vida_universitaria_ciudad_alto" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Alto" checked={form.riesgo_vida_universitaria_ciudad_alto} name="riesgo_vida_universitaria_ciudad_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
                         <Button variant="secondary">
@@ -520,14 +825,6 @@ const Seguimiento_individual = (props) =>{
                     <Form.Control as="textarea"  rows={3} name="observaciones" onChange={handleForm}/>
                 </Row>
                 <hr></hr>
-                <Row>
-                    <Col>
-                        <Form.Check type="checkbox" label="Revisado profesional" name="revisado_profesional" onChange={handleForm}/>        
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Revisado practicante" name="revisado_practicante" onChange={handleForm}/>        
-                    </Col>
-                </Row>
             </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={set_info}>
