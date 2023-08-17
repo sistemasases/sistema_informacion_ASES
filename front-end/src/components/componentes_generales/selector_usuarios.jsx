@@ -48,30 +48,30 @@ const Selector_usuarios = () =>{
   const columnas =[
     {
       name: 'USUARIO',
-      selector: row => row.user_username,
+      selector: 'user_username',
       sortable: true,
     },
     {
       name: 'NOMBRES',
-      selector: row => row.user_first_name,
+      selector: 'user_first_name',
       sortable: true,
     },
     {
       name: 'APELLIDOS',
-      selector: row => row.user_last_name,
+      selector: 'user_last_name',
       sortable: true,
     },
     {
       name: 'EMAIL',
-      selector: row => row.user_email,
+      selector: 'user_email',
       sortable: true,
     },
     {
       name: 'ROL',
-      selector: row => row.rol_nombre,
+      selector: 'rol_nombre',
       sortable: true,
-    },
-  ]
+    },
+  ]
   /*
     UseEffect: se ejecuta al iniciar la pestaña. En el está alojada la función de traer todos los usuarios
     necesaria para el selector de usuarios.
