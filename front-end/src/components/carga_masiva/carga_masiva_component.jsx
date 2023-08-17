@@ -105,14 +105,14 @@ const Carga_masiva_component = () =>{
                 <Form.Select name= "option" onChange={handle_options} >
                   <option value="Estudiante">Estudiante</option>
                   <option value="Programa_estudiante">Programa estudiante</option>
-                  <option value="Estudiante_cohorte">Cohorte estudiante</option>
+                  <option value="Estudiante_Cohorte">Cohorte estudiante</option>
                   <option value="Usuario">Usuario</option>
                   <option value="Programa">Programa</option>
                   <option value="Materia">Materia</option>
                   <option value="Matricula">Matricula</option>
-                  <option value="Estudiante_condicion_excep">Condición excepción</option>
                   <option value="Retiro">Retiro</option>
-                  <option value="Ficha">Ficha</option>
+                  <option value="Ficha">Ficha de seguimiento</option>
+                  <option value="Inasistencia">Inasistencia</option>
                   <option value="Dir_programa">Director de programa</option>
                   <option value="Vcd_academico">Vicedecano</option>
                 </Form.Select>
