@@ -25,7 +25,6 @@ from modulo_instancia.serializers import semestre_serializer
 from django.shortcuts import render, get_object_or_404
 
 
-# Create your views here.
 class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
     """
     Viewset para la creación y eliminación de asginaciones entre usuarios y estudiantes.
@@ -33,42 +32,6 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
     permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
-
-    def retrieve(self, request, pk):
-
-        """
-        DESCRIPCIÓN:El retrieve maneja las llamadas GET que incluyen un ID. Esta función trata el caso de eliminación de
-        una asignación entre un estudiante y un monitor.
-
-        INPUT:
-
-        OUTPUT:
-
-        """
-        serializer = asignacion_estudiante_serializer(data=request.data)
-        if (serializer.is_valid()):
-            id_sede_request = serializer.data['id_sede']
-            var_estudiante =estudiante.objects.get(id=pk)
-            serializer_estudiante= estudiante_serializer(var_estudiante)
-            var_semestre =semestre.objects.get(semestre_actual = True,id_sede= id_sede_request)
-            serializer_semestre= semestre_serializer(var_semestre)
-            try:
-                var_old_asignacion = asignacion.objects.get(id_estudiante = serializer_estudiante.data['id'],  id_semestre = serializer_semestre.data['id'],estado = True)
-
-            except:
-                return Response(
-                status=status.HTTP_404_NOT_FOUND
-                )
-
-            var_asignacion = var_old_asignacion
-            var_asignacion.estado = False
-            var_asignacion.save()
-
-            return Response({'Respuesta': 'Asignación eliminada'},status=status.HTTP_200_OK)
-        return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-        )
 
     def create(self, request,pk=None):
 

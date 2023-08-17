@@ -149,14 +149,16 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
     else if (item.tipo_dato === 'profesor'){
         return (
         <Row>
-        <Col className={open ? "fichas_academico3 open" : "fichas_academico3"}>
-            <Row className="link_academico1" onClick={() => {setOpen(!open); alumnos_del_profesor(item.curso_del_profesor, item.id)}}>
-                <Col className="link_text_academico1" >
-                    <Row className="link_text_academico_hover3">
-                        {item.first_name} {item.last_name} -- {item.curso_del_profesor} --- {franja}
-                    </Row>
+        <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
+            <Row className="link_academico1_sin_borde" >
+                <Col className="contenido_fichas_academico2" >
+                        <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
+                        target="_blank" rel="noopener noreferrer" className="link_text_academico_hover4">
+                            {item.first_name} {item.last_name}  
+                        </a>
                 </Col>
             </Row>
+
             <Row className="content_academico">
                 <Col className="contenido_fichas_academico2" xs={4}>
                 </Col>

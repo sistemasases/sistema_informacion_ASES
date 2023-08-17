@@ -238,6 +238,7 @@ const Info_basica = (props) =>{
 
 
     const handle_option_user = (e) => {
+      sessionStorage.setItem('id_estudiante_seleccionado', e.value)
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` + e.value + "/";
       axios({
         url: url_axios,

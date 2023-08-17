@@ -79,7 +79,7 @@
             },
             {
                 "id":8,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/reporte",
                 "name":"Reporte general",
                 "icon":"bi bi-file-ruled-fill"
             },
@@ -101,13 +101,6 @@
                 "path":"/ficha_estudiante/sin_seleccion",
                 "name":"Reporte grupal",
                 "icon":"bi bi-ui-checks-grid"
-            }
-            ,
-            {
-                "id":12,
-                "path":"/reporte",
-                "name":"reporte",
-                "icon":"bi-people-fill"
             }
         ]
     },

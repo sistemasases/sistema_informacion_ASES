@@ -37,16 +37,14 @@ class dir_programa(models.Model):
     id_usuario_rol= models.ForeignKey(usuario_rol,on_delete=models.CASCADE,null=True)
     
     db_table = "dir_programa"
-    def __str__(self):
-        return str(self.id_programa)
+
 
 class vcd_academico (models.Model):
     id_facultad= models.ForeignKey(facultad,on_delete=models.CASCADE,null=True)
     id_usuario_rol= models.ForeignKey(usuario_rol,on_delete=models.CASCADE,null=True)
 
     db_table = "vcd_academico"
-    def __str__(self):
-        return str(self.id_programa)
+
 
 class historial_estado_programa_estudiante (models.Model):
     id_programa= models.ForeignKey(programa,on_delete=models.CASCADE,default=0)
