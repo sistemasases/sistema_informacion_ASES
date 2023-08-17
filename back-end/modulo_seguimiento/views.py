@@ -15,18 +15,20 @@ from rest_framework.permissions import IsAuthenticated
 
 class seguimiento_individual_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def partial_update(self, request, pk=None):
-        seguimiento_individual = self.get_object() 
-        
+        seguimiento_individual = self.get_object()
+
         for field_name in request.data:
             if hasattr(seguimiento_individual, field_name):
-                setattr(seguimiento_individual, field_name, request.data[field_name])
+                field_value = request.data[field_name]
+                if field_value is not None:  # Verificar si el valor es nulo
+                    setattr(seguimiento_individual, field_name, field_value)
         
-        seguimiento_individual.save() 
-        
+        seguimiento_individual.save()
+
         return Response({'message': 'Seguimiento individual actualizado parcialmente'})
 
 class inasistencia_viewsets (viewsets.ModelViewSet):
