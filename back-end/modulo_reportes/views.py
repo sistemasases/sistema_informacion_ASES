@@ -53,7 +53,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             return Response(list_estudiantes)
             # return Response("caso no encontrado")
 
-        elif data_usuario_rol == "Practicante":
+        elif data_usuario_rol == "practicante":
             
             # print("entro a practicante")
             # print(pk)
@@ -82,7 +82,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
         
             # return Response("caso no encontrado")
 
-        elif data_usuario_rol == "Profesional":
+        elif data_usuario_rol == "profesional":
             # print("entro a profesional")
             # print(pk)
             for obj_practicante in usuario_rol.objects.filter(id_jefe = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
@@ -387,7 +387,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             
             return Response(final_list_estudiantes)
         
-        elif data_usuario_rol == "Practicante":
+        elif data_usuario_rol == "practicante":
             list_estudiantes = list()
             final_list_estudiantes = list()
             for obj_monitor in usuario_rol.objects.filter(id_jefe = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
@@ -578,7 +578,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 
             return Response(final_list_estudiantes)
       
-        elif data_usuario_rol == "Profesional":
+        elif data_usuario_rol == "profesional":
             list_estudiantes  = list()
             final_list_estudiantes = list()
             for obj_practicante in usuario_rol.objects.filter(id_jefe = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():

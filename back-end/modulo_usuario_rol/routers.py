@@ -16,6 +16,8 @@ router.register(r'monitor_info_extra',monitor_info_extra_viewsets,basename = 'mo
 
 router.register(r'estudiante_selected',estudiante_selected_viewsets,basename = 'estudiante_selected')
 router.register(r'estudiante_actualizacion',estudiante_actualizacion_viewsets,basename = 'estudiante_actualizacion')
+router.register(r'monitor_actualizacion',monitor_actualizacion_viewsets,basename = 'monitor_actualizacion')
+
 router.register(r'user_actualizacion',user_actualizacion_viewsets,basename = 'user_actualizacion')
 router.register(r'mas_con_quien_vive',mas_con_quien_vive_viewsets,basename = 'mas_con_quien_vive')
 router.register(r'trayectoria',trayectoria_viewsets,basename = 'trayectoria')

@@ -18,10 +18,10 @@
                 "icon":"bi bi-search"
             },
             {
-                "id":12,
+                "id":8,
                 "path":"/reporte",
-                "name":"reporte",
-                "icon":"bi-people-fill"
+                "name":"Reporte general",
+                "icon":"bi bi-file-ruled-fill"
             }
         ]
     }

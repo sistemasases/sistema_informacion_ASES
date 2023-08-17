@@ -99,16 +99,13 @@ const Profesores = ({item}) => {
     }
     else if(item.cod_materia) {
         return (
-            <Row>
-                <Col className={open ? "fichas_academico3 open" : "fichas_academico3"}>
-                    <Row className="link_academico1" onClick={() => { setOpen(!open) }}>
-                        <Col className="link_text_academico1">
-                            <Row className="link_text_academico_hover3">
-                                <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} target="_blank" rel="noopener noreferrer" className="fichas_academico plain">
-                                    {item.nombre} -- {item.cod_materia} -- {item.franja} 
-                                </a>
-                            </Row>
-                        </Col>
+            <Row >
+                <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
+                    <Row className="link_text_academico_hover4" onClick={() => { setOpen(!open) }}>
+                        <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
+                            target="_blank" rel="noopener noreferrer" className="link_text_academico_hover4">
+                            {item.nombre} -- {item.cod_materia} -- {item.franja} 
+                        </a>
                     </Row>
                     <Row className="content_academico">
                         {/* <Col className="contenido_fichas_academico3">

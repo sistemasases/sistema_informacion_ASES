@@ -93,6 +93,34 @@ class cursos_facultad_viewsets(viewsets.ModelViewSet):
     #permission_classes = (IsAuthenticated,)
     queryset = materia_serializer.Meta.model.objects.all()
 
+    def list(self, request):
+        list_cursos = []
+
+        cursos_de_la_facultad = materia.objects.all().order_by('cod_materia', 'franja')
+        materias_dict = {}
+
+        for curso_obj in cursos_de_la_facultad:
+            # Crea una clave única para cada materia usando cod_materia y franja
+            clave_unica = f"{curso_obj.cod_materia}"
+            # Si la materia ya ha sido agregada al diccionario, omítela
+            if clave_unica in materias_dict:
+                continue
+            serializer = materia_serializer(curso_obj)
+            diccionario_curso = {
+                "id": serializer.data['id'],
+                "cod_materia": serializer.data['cod_materia'],
+                "nombre": serializer.data['nombre'],
+                "franja": serializer.data['franja'],
+                "id_sede": serializer.data['id_sede'],
+                "id_facultad": serializer.data['id_facultad'],
+                "tipo_dato": "curso"
+            }
+            list_cursos.append(diccionario_curso)
+            # Agrega la clave única al diccionario auxiliar
+            materias_dict[clave_unica] = True
+
+        return Response(list_cursos)
+
     def retrieve(self, request, pk=None):
         list_cursos = []
         cursos_de_la_facultad = materia.objects.filter(id_facultad=pk).order_by('cod_materia', 'franja')
@@ -217,7 +245,7 @@ class profesores_del_curso_viewsets(viewsets.ModelViewSet):
         curso_param = request.GET.get('curso')
         franja_param = request.GET.get('franja')
 
-        profesores_ids = list(materia.objects.filter(cod_materia=curso_param, franja=franja_param).values('id_profesor', 'id'))
+        profesores_ids = list(materia.objects.filter(cod_materia=curso_param).values('id_profesor', 'id'))
 
         for i in profesores_ids:
             profesor_id = i['id_profesor']

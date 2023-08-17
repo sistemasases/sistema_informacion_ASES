@@ -71,6 +71,7 @@ const SideBar = (props) =>{
         sessionStorage.removeItem('sede_id');
         sessionStorage.removeItem('sede');
         sessionStorage.removeItem('lastVisitedRoutes');
+        sessionStorage.removeItem('id_estudiante_seleccionado');
         setShow(false);
         window.location.reload();
     }
