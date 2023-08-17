@@ -269,9 +269,9 @@ const Listas = (props) => {
                         <Modal.Title>Importante</Modal.Title>
                     </Modal.Header>
                     <Modal.Body> 
-                        Para continuar con el proceso de cambio de monitor : <Button onClick={()=>quitar_usuario()} >Quitar del monitor</Button>
+                        Para continuar con el proceso de cambio de monitor : <Button onClick={()=>quitar_estudiante()} >Quitar del monitor</Button>
                         <br/>
-                        Para retirar el estudiante : <Button onClick={()=>quitar_usuario()} >Retirar estudiante</Button>
+                        Para retirar el estudiante : <Button onClick={()=>quitar_estudiante()} >Retirar estudiante</Button>
                     </Modal.Body>                    
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
