@@ -67,7 +67,7 @@ const Seguimiento_individual = (props) =>{
             revisado_practicante: false,
             primer_acercamiento: false,
             cierre: false,
-            id_creador: null,
+            id_creador: parseInt(sessionStorage.getItem("id_usuario")),
             id_modificador: null,
             id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
         }
@@ -172,6 +172,8 @@ const Seguimiento_individual = (props) =>{
             })
         }
     }
+
+    const userRole = sessionStorage.getItem('rol');
 
     return (
         
@@ -522,10 +524,10 @@ const Seguimiento_individual = (props) =>{
                 <hr></hr>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado profesional" name="revisado_profesional" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Revisado profesional" disabled={!(userRole === 'profesional')} name="revisado_profesional" onChange={handleForm}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado practicante" name="revisado_practicante" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Revisado practicante" disabled={!(userRole === 'practicante' || userRole === 'profesional')} name="revisado_practicante" onChange={handleForm}/>        
                     </Col>
                 </Row>
             </Modal.Body>
