@@ -1604,7 +1604,7 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
         list_estudiante_selected = []
         total_estudiantes = 0
 
-        val_rol = rol.objects.get(nombre='Practicante')
+        val_rol = rol.objects.get(nombre='practicante')
         id_rol_practicante = (rol_serializer(val_rol)).data['id']
 
         list_semestre = list(semestre.objects.all().filter(semestre_actual=True))
