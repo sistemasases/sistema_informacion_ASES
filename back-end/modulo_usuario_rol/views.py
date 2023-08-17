@@ -266,7 +266,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
 
 class estudiante_selected_viewsets(viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def list(self, request):

@@ -188,7 +188,10 @@ const isTabSelected_monitor = (username) => {
 
   function practicante_seleccion(name){
 
-    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+name+'/', config)
+    let formData = new FormData();
+    formData.append('id_sede', sessionStorage.getItem('sede_id'));
+
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+name+'/', formData ,config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -212,11 +215,10 @@ const isTabSelected_monitor = (username) => {
 
   function monitor_seleccion(name){
 
-    //poner el de los estudiantes
     let formData = new FormData();
     formData.append('id_sede', sessionStorage.getItem('sede_id'));
 
-    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', config)
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', formData,config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
