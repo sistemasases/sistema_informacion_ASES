@@ -37,7 +37,7 @@
             },
             {
                 "id":8,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/reporte",
                 "name":"Reporte general",
                 "icon":"bi bi-file-ruled-fill"
             },
@@ -46,12 +46,6 @@
                 "path":"/reporte_seguimientos",
                 "name":"Consulta de seguimientos", 
                 "icon":"bi bi-search"
-            },
-            {
-                "id":12,
-                "path":"/reporte",
-                "name":"reporte",
-                "icon":"bi-people-fill"
             }
         ]
     }
