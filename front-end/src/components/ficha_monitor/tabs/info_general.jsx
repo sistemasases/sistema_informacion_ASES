@@ -54,10 +54,29 @@ const Info_general = (props) =>{
             nombres : props.datos['first_name'],
             apellidos : props.datos['last_name'],
             correo : props.datos['email_address'],
+
+            estrato:props.datos['estrato'],                                         
+            direccion_residencia:props.datos['dir_res'],                            
+            barrio:props.datos['barrio_res'],
+            municipio_actual:props.datos['ciudad_res'],     
+            observaciones : props.datos['observacion'],     
+                  telefono_res:props.datos['telefono_res'],                         // BigIntegerField
+                  celular:props.datos['celular'],                                   // BigIntegerField
+
+            ultima_actualizacion:'sin dato',   
+
+
+
+
             
             nuevo_nombres:props.datos['first_name'],
             nuevo_apellidos:props.datos['last_name'],
             nuevo_correo:'',
+            nuevo_telefono_res:props.datos['telefono_res'],
+            nuevo_celular:props.datos['celular'],  
+
+            nuevo_personas_con_quien_vive : props.datos['vive_con'],  
+            nuevo_observaciones : props.datos['observacion']
           })
       
     },[]
@@ -111,7 +130,9 @@ const Info_general = (props) =>{
   
               editar : false,
               })
-              alert("el monitor fue editado correctamente")
+
+        handle_upload_info_extra()
+
         })
         .catch(err=>{
               
@@ -123,16 +144,55 @@ const Info_general = (props) =>{
         
                     editar : false,
                     })
-                    console.log("pero que esta pasando ??? :  "  +  err)
                     alert("el monitor no fue editado correctamente")
                     
-              //console.log("entra al malo")
-              //alert("error al editar el estudiante : " + props.datos.id);
         })
   
     }
 
 
+const handle_upload_info_extra = (e) => {
+      const fechaHoraActual = new Date().toISOString();
+
+    let formData = new FormData();
+      formData.append('telefono_res', state.nuevo_telefono_res)
+      formData.append('celular', state.nuevo_celular)
+      formData.append("observacion", state.nuevo_observaciones);
+      formData.append("ult_modificacion", fechaHoraActual);
+
+
+      axios({
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_actualizacion/`+props.datos.id+'/',
+      method: "POST",
+      data: formData,
+      headers: config,
+      })
+      .then((res)=>{
+            console.log("este es el response : " + res)
+            set_state({
+            ...state,
+            telefono_res:state.nuevo_telefono_res,
+            celular:state.nuevo_celular,
+
+            editar : false,
+            })
+              alert("el monitor fue editado correctamente")
+      })
+      .catch(err=>{
+            
+            set_state({
+                  ...state,
+                  telefono_res:state.nuevo_telefono_res,
+                  celular:state.nuevo_celular,
+                  
+                  editar : false,
+                  })
+              alert("el monitor fue editado correctamente")
+                  
+            //console.log("entra al malo")
+            //alert("error al editar el estudiante : " + props.datos.id);
+      })
+    }
 
 
 
@@ -241,8 +301,106 @@ const Info_general = (props) =>{
                                           }
                                     </Row>
                                     
-                                    
+
+
+                                    <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_gris">Teléfono residencia</h4>
+                                    </Col>
+                                    {
+                                          state.editar ?
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <input name="nuevo_telefono_res" 
+                                                      defaultValue={state.telefono_res}
+                                                      onKeyPress={(e) => {
+                                                          const allowedCharacters = /^[0-9()+-]*$/;
+                                                          if (!allowedCharacters.test(e.key)) {
+                                                              e.preventDefault();
+                                                          }
+                                                      }}
+                                                      title="Solo números, paréntesis y guiones son permitidos"
+                                                      onChange={cambiar_dato}>
+                                                </input>
+                                          </Col>
+                                          ):
+                                          (
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                <h4 className="texto_pequeño_12pt" >{state.telefono_res}</h4>
+                                          </Col>
+                                          )
+                                    }
+
+
+
+                                          <Col xs={"12"} md={"3"} className="row_flex_general">
+                                          <h4 className="texto_pequeño_gris">Celular</h4>
+                                          </Col>
+                                          {
+                                                state.editar ?
+                                                (
+                                                <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                      <input name="nuevo_celular" 
+                                                            defaultValue={state.celular}
+                                                            onKeyPress={(e) => {
+                                                              const allowedCharacters = /^[0-9()+-]*$/;
+                                                              if (!allowedCharacters.test(e.key)) {
+                                                                  e.preventDefault();
+                                                                  }
+                                                              }}
+                                                            title="Solo números, paréntesis y guiones son permitidos"
+                                                            onChange={cambiar_dato}
+                                                      ></input>
+                                                      
+                                                </Col>
+                                                ):
+                                                (
+                                                <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                      <h4 className="texto_pequeño_12pt" >{state.celular}</h4>
+                                                </Col>
+                                                )
+                                          }
+
+
+
+                                            <Col xs={"12"} md={"3"} className="row_flex_general">
+                                            <h4 className="texto_pequeño_gris">Estrato</h4>
+                                            </Col>
+                                            
+                                            <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                  <h4 className="texto_pequeño_12pt" >{state.estrato}</h4>
+                                            </Col>
+
+
+
+
+                                            <Col xs={"12"} md={"3"} className="row_flex_general">
+                                            <h4 className="texto_pequeño_gris">Dirección residencia</h4>
+                                            </Col>
+                                            <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                  <h4 className="texto_pequeño_12pt" >{state.direccion_residencia}</h4>
+                                            </Col>
+
+
+                                            <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                  <h4 className="texto_pequeño_gris">Barrio</h4>
+                                            </Col>
+                                            <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                  <h4 className="texto_pequeño_12pt" >{state.barrio}</h4>
+                                            </Col>
+
+                                            <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                  <h4 className="texto_pequeño_gris">Municipio actual</h4>
+                                            </Col>
+                                            <Col xs={"12"} md={"3"} className="row_flex_general">
+                                                  <h4 className="texto_pequeño_12pt" >{state.municipio_actual}</h4>
+                                            </Col>
+
                               </Row>
+
+                            <Row>
+                                <h1 className="texto_subtitulo">Observaciones</h1>
+                                <h4 className="texto_pequeño_12pt">texto</h4>
+                            </Row>
                         </Col>
                   </Row>
 
