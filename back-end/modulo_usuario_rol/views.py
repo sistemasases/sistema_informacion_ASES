@@ -11,7 +11,7 @@ from modulo_instancia.models import semestre, cohorte
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
 from modulo_usuario_rol.models import firma_tratamiento_datos
-
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -29,6 +29,8 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
 from rest_framework.decorators import action
+from django.core import serializers
+
 
 from rest_framework.viewsets import ModelViewSet
 import pandas as pd
@@ -262,53 +264,31 @@ class estudiante_viewsets(viewsets.ModelViewSet):
 
 
 
-class estudiante_selected_viewsets (viewsets.ModelViewSet):
+class estudiante_selected_viewsets(viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
     permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def list(self, request):
-        list_estudiantes = []
-
-        list_all_estudiantes = list(estudiante.objects.all())
-        for i in list_all_estudiantes: 
-            serializer_estudiante =estudiante_serializer(i)
-            list_estudiantes.append(serializer_estudiante.data)
-
-        return Response(list_estudiantes,status=status.HTTP_200_OK)
+        list_all_estudiantes = estudiante.objects.all()
+        serialized_estudiantes = serializers.serialize('python', list_all_estudiantes)
+        list_estudiantes = [item['fields'] for item in serialized_estudiantes]
+        return Response(list_estudiantes, status=status.HTTP_200_OK)
 
     def update(self, request, pk):
-        list_estudiantes = []
-        list_estudiantes_selected = []
-        list_estudiantes_selected_by_anyone = []
-        var_semestre = get_object_or_404(semestre, semestre_actual = True,id_sede=request.data["id_sede"])
-        serializer_semestre= semestre_serializer(var_semestre)
+        var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=request.data["id_sede"])
+        serializer_semestre = semestre_serializer(var_semestre)
 
-        consulta_estudiantes = list(estudiante.objects.all())
-        for i in consulta_estudiantes: 
-            serializer_estudiante =estudiante_serializer(i)
-            list_estudiantes.append(serializer_estudiante.data)
+        estudiantes_asignados = estudiante.objects.filter(asignacion__id_usuario=pk, asignacion__estado=True, asignacion__id_semestre=serializer_semestre.data['id']).distinct()
+        estudiantes_no_asignados = estudiante.objects.filter(~Q(asignacion__id_semestre=serializer_semestre.data['id']) | Q(asignacion__estado=False)).distinct()
 
-        lista_asignacion = list(asignacion.objects.filter(id_usuario = pk, estado=True, id_semestre=serializer_semestre.data['id']))
+        list_estudiantes_selected = [estudiante_serializer(est).data for est in estudiantes_asignados]
+        list_estudiantes = [estudiante_serializer(est).data for est in estudiantes_no_asignados]
 
-        for i in lista_asignacion:
-            serializer_asignacion =asignacion_serializer(i)
-            estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
-            serializer_estudiante =estudiante_serializer(estudiante_selected)
-            list_estudiantes_selected.append(serializer_estudiante.data)
-                    
-        lista_estudiantes_asignados = list(asignacion.objects.filter(id_semestre=serializer_semestre.data['id'], estado=True))
-        for i in lista_estudiantes_asignados:
-            serializer_asignacion2 =asignacion_serializer(i)
-            estudiante_selected_by_anyone =estudiante.objects.get(id = serializer_asignacion2.data['id_estudiante']) 
-            serializer_estudiante2 =estudiante_serializer(estudiante_selected_by_anyone)
-            list_estudiantes_selected_by_anyone.append(serializer_estudiante2.data)
-            for j in list_estudiantes_selected_by_anyone:
-                if j['id'] == serializer_estudiante2.data['id'] :
-                    list_estudiantes.remove(j)
+        datos = [list_estudiantes_selected, list_estudiantes]
+        return Response(datos, status=status.HTTP_200_OK)
 
-        datos = [list_estudiantes_selected,list_estudiantes]
-        return Response(datos,status=status.HTTP_200_OK)
+
 
 class estudiante_selected2_viewsets (viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer

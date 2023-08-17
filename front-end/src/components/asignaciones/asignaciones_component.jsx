@@ -12,7 +12,7 @@ const Asignaciones_component = (props) =>{
 
   const config = {
     headers: {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
     }
   };
 
@@ -188,7 +188,7 @@ const isTabSelected_monitor = (username) => {
 
   function practicante_seleccion(name){
 
-    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+name+'/', config)
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -216,7 +216,7 @@ const isTabSelected_monitor = (username) => {
     let formData = new FormData();
     formData.append('id_sede', sessionStorage.getItem('sede_id'));
 
-    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', config)
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
