@@ -108,7 +108,20 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             # print(list_estudiantes)
             return Response(list_estudiantes)
 
-        elif data_usuario_rol == "Dir_socioed":
+        elif data_usuario_rol == "dir_socioed":
+            list_estudiantes = list()
+            final_list_estudiantes = list()
+            for obj_programa in programa.objects.filter(id_sede = data_sede).values():
+                for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
+                        # print(obj_programa_estudiante)
+                        for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
+                            serializer_estudiante = estudiante_serializer(obj_estudiante)
+                            list_estudiantes.append(serializer_estudiante.data)
+                            
+            return Response (list_estudiantes )
+        
+        elif data_usuario_rol == "dir_socioed_reg":
+
             list_estudiantes = []
             for obj_programa in programa.objects.filter(id_sede = data_sede).values():
                 for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
@@ -116,21 +129,10 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
                         for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
                             serializer_estudiante = estudiante_serializer(obj_estudiante)
                             list_estudiantes.append(serializer_estudiante.data)
-            return Response (list_estudiantes, )
-        
-        elif data_usuario_rol == "Dir_socioed_reg":
-
-            list_estudiantes = []
-            for obj_programa in programa.objects.filter(id_sede = 1).values():
-                for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
-                        print("hola")
-                        for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
-                            serializer_estudiante = estudiante_serializer(obj_estudiante)
-                            list_estudiantes.append(serializer_estudiante.data)
-            return Response (list_estudiantes, )
+            return Response (list_estudiantes)
         
         
-        elif data_usuario_rol == "Dir_programa":
+        elif data_usuario_rol == "dir_programa":
             # Ve todos los estudiantes del programa y la sede
 
             list_estudiantes = []
@@ -147,7 +149,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
         
             # return Response("caso no encontrado")
 
-        elif data_usuario_rol == "Vc_academico":
+        elif data_usuario_rol == "vc_academico":
             
             list_estudiantes = []
             # for obj_usuario_rol in usuario_rol.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
@@ -780,12 +782,12 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
   
             return Response(final_list_estudiantes)
         
-        elif data_usuario_rol == "Dir_socioed":
+        elif data_usuario_rol == "dir_socioed":
             list_estudiantes = list()
             final_list_estudiantes = list()
             for obj_programa in programa.objects.filter(id_sede = data_sede).values():
                 for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
-                        print(obj_programa_estudiante)
+                        # print(obj_programa_estudiante)
                         for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
                             serializer_estudiante = estudiante_serializer(obj_estudiante)
                             list_estudiantes.append(serializer_estudiante.data)
