@@ -29,10 +29,8 @@ const Listas_no_seleccion = (props) => {
         .then((res)=>{
         console.log(res)
             childClicked2(props.monitor_seleccionado)
-            alert("estudiante "+props.item.id+" fue asignado correctamente a :"+props.monitor_seleccionado)
         })
         .catch(err=>{
-            alert("error al asignar el estudiante : "+props.item.id);
         })
 
     }
@@ -55,10 +53,8 @@ const Listas_no_seleccion = (props) => {
         .then((res)=>{
             console.log(res)
             childClicked(props.practicante_seleccionado)
-            alert("estudiante "+props.item.id+" fue asignado correctamente a :"+props.practicante_seleccionado)
         })
         .catch(err=>{
-            alert("error al asignar el estudiante : "+props.item.id+" al practicante : " + props.practicante_seleccionado);
         })
     }
 
@@ -80,10 +76,8 @@ const Listas_no_seleccion = (props) => {
         })
         .then((res)=>{
         console.log(res)
-            alert("estudiante "+props.item.id+" fue asignado correctamente a :"+props.profesional_seleccionado)
         })
         .catch(err=>{
-            alert("error al asignar el estudiante : "+props.item.id);
         })
     }
 
