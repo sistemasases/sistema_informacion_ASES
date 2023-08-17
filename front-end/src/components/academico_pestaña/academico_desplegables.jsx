@@ -13,88 +13,7 @@ const Academico_desplegable = () => {
     }
   };
 
-  const estudiantes_prueba = [
-    {
-      estudiantes: [
-        { nombre: 'estudiante1' },
-        { nombre: 'estudiante2' },
-        { nombre: 'estudiante3' },
-        { nombre: 'estudiante4' },
-        { nombre: 'estudiante5' }
-      ]
-    }
-  ];
 
-
-    const profesores_ejemplo =
-    [
-    {
-        "id": 3,
-        "cod_materia": "1324M",
-        "nombre": "Intro a la ing",
-        "franja": "01",
-        "id_semestre": 6,
-        "id_sede": 14,
-        "id_facultad": 1,
-        "id_profesor": 1,
-        "tipo_dato": "curso"
-    },
-    {
-        "id": 2,
-        "cod_materia": "1872942M",
-        "nombre": "Vida artificial",
-        "franja": "01",
-        "id_semestre": 6,
-        "id_sede": 14,
-        "id_facultad": 3,
-        "id_profesor": 1,
-        "tipo_dato": "curso"
-    },
-    {
-        "id": 4,
-        "cod_materia": "323232M",
-        "nombre": "Termica",
-        "franja": "01",
-        "id_semestre": 6,
-        "id_sede": 14,
-        "id_facultad": 1,
-        "id_profesor": 1,
-        "tipo_dato": "curso"
-    },
-    {
-        "id": 5,
-        "cod_materia": "323232M",
-        "nombre": "Termica",
-        "franja": "02",
-        "id_semestre": 6,
-        "id_sede": 14,
-        "id_facultad": 1,
-        "id_profesor": 1,
-        "tipo_dato": "curso"
-    },
-    {
-        "id": 6,
-        "cod_materia": "333232M",
-        "nombre": "Fluidos",
-        "franja": "01",
-        "id_semestre": 6,
-        "id_sede": 14,
-        "id_facultad": 1,
-        "id_profesor": 1,
-        "tipo_dato": "curso"
-    },
-    {
-        "id": 13,
-        "cod_materia": "434343M",
-        "nombre": "Algoritmia",
-        "franja": "03",
-        "id_semestre": 6,
-        "id_sede": 14,
-        "id_facultad": 1,
-        "id_profesor": 1,
-        "tipo_dato": "curso"
-    }
-]
 
 
   const [switchChecked, setChecked] = useState(false);
@@ -137,7 +56,7 @@ const Academico_desplegable = () => {
     }
     else
     {
-        traer_facultades();
+        traer_cursos_de_facultad();
     }
   }, []);
 
@@ -154,6 +73,22 @@ const Academico_desplegable = () => {
       console.log('Error al obtener facultades:', error);
     }
   };
+
+    const traer_cursos_de_facultad = async (index)=>{
+    try{
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/cursos_facultad/`, config);
+      set_state({
+        facultades: response.data,
+        tiene_facultades: true
+      })
+      console.log("entra aqui ssisisisiisj")
+    }
+    catch (error){
+      console.log("no capto el dato")
+    }
+  }
+
+
 
   const traer_facultades = async () => {
     try {
@@ -225,7 +160,7 @@ const Academico_desplegable = () => {
         <Row className="academico_seguimientos_pares">Academico</Row>
         <Row className="academico_fondo">
           <Col className={'facultades' === activeTabIndex ? 'academico_deplegable open' : 'academico_deplegable'}>
-            <Row className="academico_deplegable_seleccionar" onClick={() => { activeTab('facultades'); traer_facultades(); }}>
+            <Row className="academico_deplegable_seleccionar" onClick={() => { activeTab('facultades');  traer_cursos_de_facultad();}}>
               <Col className="academico_deplegable_seleccionar_text">
                 <Row className="academico_deplegable_seleccionar_hover">
                   <Col className="col_academico_deplegable_seleccionar_text">
