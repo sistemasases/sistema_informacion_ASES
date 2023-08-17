@@ -69,7 +69,6 @@ const Info_general = (props) =>{
             estado_civil:props.datos['el_id_de_estado_civil'],                      // Tabla estado_civil
             condicion_de_excepcion:props.datos['el_id_de_cond_excepcion'],    // Tabla cond_excepcion
 
-
       ultima_actualizacion:'sin dato',                                         
 
 

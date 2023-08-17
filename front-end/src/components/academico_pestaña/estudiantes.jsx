@@ -63,7 +63,7 @@ const Estudiantes = ({item}) => {
                 <Row className="link_academico1_sin_borde">
                     <Col className="link_text_academico1_sin_borde" >
                         <Row className="link_text_academico_hover4">
-                            <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                            <Link to={`/ficha_estudiante/${item.id}`} className="link_text_academico_hover4">
                                 {item.nombre} {item.apellido} - {item.cod_univalle}
                             </Link>
                         </Row>

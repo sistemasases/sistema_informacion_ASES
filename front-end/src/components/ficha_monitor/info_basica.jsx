@@ -42,6 +42,8 @@ const Info_basica_monitor = (props) =>{
       apellidos: '',
       codigo:'',
       correo:'',
+      profesional:'',
+      practicante:''
     })
   
     useEffect(()=>{
@@ -125,7 +127,7 @@ const Info_basica_monitor = (props) =>{
         axios({
           // Endpoint to send files
           url:  url_axios,
-          method: "POST",
+          method: "GET",
           headers: config,
         })
         .then((respuesta)=>{
@@ -139,7 +141,9 @@ const Info_basica_monitor = (props) =>{
           codigo : state.data_user[e.id]['username'],
           correo : state.data_user[e.id]['email_address'],
           data_a_enviar: state.data_user[e.id],
-          programas: respuesta.data.programas
+          programas: respuesta.data.programas,
+          profseional: respuesta.data.profesional,
+          practicante: respuesta.data.practicante
           })
         })
         .catch(err=>{
@@ -215,19 +219,7 @@ const Info_basica_monitor = (props) =>{
                                                   <select></select>
                                                 </Col>
                                               </Row>
-                                              <Row> 
-                                                <h4 className="texto_mas_pequeño">
-                                                  <br/>
-                                                  Profesional: 
-                                                  <br/>
-                                                  Practicante: 
-                                                  <br/>
-                                                  Monitor: 
-                                                  <br/> 
-                                                  Ultima actualización:
-                                                  <br/> 
-                                                </h4>
-                                              </Row>
+                                             
                                             </Col>
 
                                             <div class="d-none d-md-block col-md-3">
@@ -283,7 +275,7 @@ const Info_basica_monitor = (props) =>{
                                         <Row> 
                                               <h4 className="texto_mas_pequeño">
                                               <br/>
-                                                  profesional: 
+                                                  profesional: {state.profesional['first_name']}
                                                   <br/>
                                                   Practicante: 
                                               <br/> 
@@ -301,6 +293,25 @@ const Info_basica_monitor = (props) =>{
 
                                     <Row className="infoRow2">
                                       <Col md={"9"}>
+
+                                        <Row className="infoRow2">
+                                          <Col xs={"12"} md={"9"}>
+
+                                            <Row> 
+                                                  <h4 className="texto_mas_pequeño">
+                                                  <br/>
+                                                      profesional:  {state.profesional['first_name']}
+                                                      <br/>
+                                                      Practicante: {state.profesional.first_name}kk
+                                                  <br/> 
+                                                  Ultima astualización:
+                                                  <br/> 
+                                                  </h4>
+                                            </Row>
+                                          </Col>
+                                          
+                                        </Row>
+
 
                                         <Row> 
                                               <h4 className="texto_mas_pequeño">
