@@ -8,7 +8,7 @@ const Update_seguimiento = async (formData) => {
                 Authorization: 'Bearer ' + sessionStorage.getItem('token')
             }
         };
-        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimiento_individual/` + formData.id_estudiante + "/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimiento_individual/` + formData.id + "/";
 
         const seguimiento = {
             "fecha": formData.fecha,
