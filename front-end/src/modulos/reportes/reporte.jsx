@@ -11,6 +11,8 @@ import axios from "axios";
 import { CSVLink } from "react-csv";
 import writeXlsxFile from "write-excel-file";
 import myGif from "../reportes/loading_data.gif";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 var columns = [
   {
@@ -34,7 +36,6 @@ var columns = [
     value: "apellido",
     sortable: true,
     isCheck: true,
-    
   },
   {
     name: "Documento",
@@ -187,6 +188,7 @@ const Reporte = () => {
   };
 
   const [columnas, set_columnas] = useState({ cabeceras: columns });
+
   const cabecerasFiltros = [
     { name: "Contacto", isCheck: false },
     { name: "Estados", isCheck: false },
@@ -1533,8 +1535,8 @@ const Reporte = () => {
   const tableCustomStyles = {
     headRow: {
       style: {
-        color:'#223336',
-        backgroundColor: '#e7eef0'
+        color: "#223336",
+        backgroundColor: "#e7eef0",
       },
     },
     // rows: {
@@ -1547,12 +1549,12 @@ const Reporte = () => {
     //     backgroundColor: "#F5DDDD "
     //   }
     // },
-    // border: { 
+    // border: {
     //   style: {
     //     color: "#0000",
     //   }
     // }
-  }
+  };
 
   const imprimir_excel = () => {
     let new_data_excel = [];
@@ -1575,6 +1577,10 @@ const Reporte = () => {
       // filePath: '../dowloads/file.xlsx'
     });
   };
+
+  let navigate = useNavigate();
+
+  // console.log(proc_link_estudiante(state.estudiante));
 
   return (
     <>
@@ -1743,6 +1749,11 @@ const Reporte = () => {
               fixedHeader
               fixedHeaderScrollHeight="400px"
               highlightOnHover
+              onRowClicked={(row) => {
+                // redirect(`/ficha_estudiante/${row.id}`);
+                navigate(`/ficha_estudiante/${row.id}`);
+                // console.log(row);
+              }}
               responsive
               striped
               filter={true}

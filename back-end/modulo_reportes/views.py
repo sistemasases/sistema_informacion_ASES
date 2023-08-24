@@ -85,28 +85,30 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
         elif data_usuario_rol == "profesional":
             # print("entro a profesional")
             # print(pk)
-            for obj_practicante in usuario_rol.objects.filter(id_jefe = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
-                # print("entro a for")
-                # var_practicante_data = User.objects.get(id = obj_practicante['id_usuario_id'])
-                # serializer_practicante = user_selected(var_practicante_data)
-                # list_practicantes.append(serializer_practicante.data)
-                for obj_monitor in usuario_rol.objects.filter(id_jefe = obj_practicante['id_usuario_id'], id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
-                    # print("entro a for2")
-                    # var_monitor_data = User.objects.get(id = obj_monitor['id_usuario_id'])
-                    # serializer_monitor = user_selected(var_monitor_data)
-                    # list_monitores.append(serializer_monitor.data)
-                    for id_estudiante in asignacion.objects.filter(id_usuario = obj_monitor['id_usuario_id'], id_semestre = var_semestre.id, estado = True ).values():
-                        # print("entro a for3")
-                        var_estudiante = estudiante.objects.get(id = id_estudiante['id_estudiante_id'])
-                        serializer_estudiante = estudiante_serializer(var_estudiante)
-                        list_estudiantes.append(serializer_estudiante.data)
-            # print("Practicantes Asignados al profesional:")
-            # print(list_practicantes)    
-            # print("Monitores Asignados a practicantes del profesional:")
-            # print(list_monitores)
-            # print("Estudiantes Asignados a monitores del profesional:")
-            # print(list_estudiantes)
-            return Response(list_estudiantes)
+            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
+            # for obj_practicante in usuario_rol.objects.filter(id_jefe = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
+            #     # print("entro a for")
+            #     # var_practicante_data = User.objects.get(id = obj_practicante['id_usuario_id'])
+            #     # serializer_practicante = user_selected(var_practicante_data)
+            #     # list_practicantes.append(serializer_practicante.data)
+            #     for obj_monitor in usuario_rol.objects.filter(id_jefe = obj_practicante['id_usuario_id'], id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
+            #         # print("entro a for2")
+            #         # var_monitor_data = User.objects.get(id = obj_monitor['id_usuario_id'])
+            #         # serializer_monitor = user_selected(var_monitor_data)
+            #         # list_monitores.append(serializer_monitor.data)
+            #         for id_estudiante in asignacion.objects.filter(id_usuario = obj_monitor['id_usuario_id'], id_semestre = var_semestre.id, estado = True ).values():
+            #             # print("entro a for3")
+            #             var_estudiante = estudiante.objects.get(id = id_estudiante['id_estudiante_id'])
+            #             serializer_estudiante = estudiante_serializer(var_estudiante)
+            #             list_estudiantes.append(serializer_estudiante.data)
+            # # print("Practicantes Asignados al profesional:")
+            # # print(list_practicantes)    
+            # # print("Monitores Asignados a practicantes del profesional:")
+            # # print(list_monitores)
+            # # print("Estudiantes Asignados a monitores del profesional:")
+            # # print(list_estudiantes)
+            
+            return Response(serializer_estudiante.data)
 
         elif data_usuario_rol == "dir_socioed":
             list_estudiantes = list()
@@ -161,7 +163,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             #                     serializer_estudiante = estudiante_serializer(var_estudiante)
             #                     list_estudiantes.append(serializer_estudiante.data)
 
-            return Response (list_estudiantes, )
+            return Response (list_estudiantes )
             # return Response("caso no encontrado")
 
         elif data_usuario_rol == "super_ases":
