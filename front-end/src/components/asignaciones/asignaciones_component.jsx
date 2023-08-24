@@ -206,7 +206,6 @@ const isTabSelected_monitor = (username) => {
       ...state,
       practicante_seleccionado : name
     })
-    alert(name)
 
     console.log("estos son los monitores separados : " + state.separacion_monitores)
   }
@@ -233,7 +232,6 @@ const isTabSelected_monitor = (username) => {
       ...state,
       monitor_seleccionado : name
     })
-        alert(name)
 
     console.log("estos son los monitores separados : " + state.separacion_estudiantes)
   }

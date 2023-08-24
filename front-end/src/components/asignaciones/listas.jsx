@@ -26,8 +26,14 @@ const Listas = (props) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow2 = () => setShow2(true);
 
-    
+    const [show3, setShow3] = useState(false);
+    const handleClose3 = () => setShow3(false);
+    const handleShow3 = () => setShow3(true);
+
     const quitar_estudiante = (e) =>{
         let formData = new FormData();
 
@@ -44,10 +50,9 @@ const Listas = (props) => {
         })
         .then(response => {
             childClicked2(props.monitor_seleccionado)
-            alert("estudiante "+props.item.id+" eliminado correctamente")
         })
         .catch(error => {
-            alert("error al eliminar el estudiante : "+props.item.id);
+            console.log("siii")
         });
     }
 
@@ -68,10 +73,9 @@ const Listas = (props) => {
         .then((res)=>{
         console.log(res)
         childClicked(props.practicante_seleccionado)
-            alert("el monitor "+props.item.id+" fue eliminado correctamente de :"+props.practicante_seleccionado)
         })
         .catch(err=>{
-            alert("error al eliminar el usuario : "+props.item.id+" del practicante : "+props.practicante_seleccionado);
+            console.log("sdafw")
         })
 
     }
@@ -92,10 +96,9 @@ const Listas = (props) => {
         })
         .then((res)=>{
         console.log(res)
-            alert("practicante "+props.item.id+" fue eliminado correctamente de :"+props.profesional_seleccionado)
         })
         .catch(err=>{
-            alert("error al eliminar el usuario : "+props.item.id);
+            console.log("sdara")
         })
 
     }
@@ -266,15 +269,48 @@ const Listas = (props) => {
             }
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Importante</Modal.Title>
+                        <Modal.Title></Modal.Title>
                     </Modal.Header>
                     <Modal.Body> 
-                        Para continuar con el proceso de cambio de monitor : <Button onClick={()=>quitar_estudiante()} >Quitar del monitor</Button>
+                        Seleccione accion : 
+                        <br/><Button onClick={()=>quitar_estudiante()} >Quitar del monitor</Button>
                         <br/>
-                        Para retirar el estudiante : <Button onClick={()=>quitar_estudiante()} >Retirar estudiante</Button>
+                        <Button onClick={handleShow2} >Retirar estudiante</Button>
                     </Modal.Body>                    
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={show2} onHide={handleClose2}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Retiros</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body> 
+                        Causa del retiro : <textarea></textarea>
+                        <br/>
+                        
+
+                    </Modal.Body>                    
+                    <Modal.Footer>
+                        <Button onClick={handleShow3} >aceptar</Button>
+                        <Button variant="secondary" onClick={handleClose2}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={show3} onHide={handleClose3}>
+                    <Modal.Header closeButton>
+                        <Modal.Title></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body> 
+                        Causa de retiro agregada correctamente
+                    </Modal.Body>                    
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => {handleClose3();handleClose2();handleClose();quitar_estudiante()}}>
                             Close
                         </Button>
                     </Modal.Footer>
