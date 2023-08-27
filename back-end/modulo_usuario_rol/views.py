@@ -513,7 +513,7 @@ class actual_usuario_rol_viewsets (viewsets.ModelViewSet):
             user_last_name=F('id_usuario__last_name'),
             user_email=F('id_usuario__email')
         ).values(
-            'user_id', 'user_username', 'user_first_name', 'user_last_name', 'user_email', 'rol_id', 'rol_nombre'
+            'id','user_id', 'user_username', 'user_first_name', 'user_last_name', 'user_email', 'rol_id', 'rol_nombre'
         )
 
         user_rols_list = list(user_rols)
@@ -521,18 +521,16 @@ class actual_usuario_rol_viewsets (viewsets.ModelViewSet):
         return Response(user_rols_list)
     
     def update(self, request, pk=None):
+        id_sede_request = request.data.get("id_sede")
         try:
-            id_sede_request = request.data["id_sede"]
-            var_semestre = get_object_or_404(semestre, semestre_actual = True,id_sede =id_sede_request)
-            var_user_rol =usuario_rol.objects.get(id_usuario=pk,id_semestre =var_semestre.id,estado = "ACTIVO")
-            serializer_user_rol= usuario_rol_serializer(var_user_rol)
-            var_rol = rol.objects.get(id =serializer_user_rol.data['id_rol'])
-            serializer_rol= rol_serializer(var_rol)
-            return Response(serializer_rol.data['nombre'])
-        except:
+            var_semestre = semestre.objects.get(semestre_actual=True, id_sede=id_sede_request)
+            var_user_rol = usuario_rol.objects.get(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO")
+            var_rol = var_user_rol.id_rol
+            return Response({var_rol.nombre})
+        except (semestre.DoesNotExist, usuario_rol.DoesNotExist, rol.DoesNotExist):
             return Response(
-            {'mensaje':'Este usuario no tiene rol.'},
-            status=status.HTTP_404_NOT_FOUND
+                {'mensaje': 'Este usuario no tiene rol.'},
+                status=status.HTTP_404_NOT_FOUND
             )
 
 class usuario_rol_viewsets (viewsets.ModelViewSet):
@@ -570,30 +568,11 @@ class usuario_rol_viewsets (viewsets.ModelViewSet):
     #         )
 
     def update(self, request, pk=None):
-        # serializer = self.serializer_class(data=request.data)
-        # print('esta es la info: '+ str(request.data))
-        # if (serializer.is_valid()):
-            var_usuario =User.objects.get(id=pk)
-            id_sede_request = request.data["id_sede"]
-            serializer_usuario= user_serializer(var_usuario)
-            var_semestre =semestre.objects.get(semestre_actual = True,id_sede=id_sede_request)
-            serializer_semestre= semestre_serializer(var_semestre)
-            print(serializer_usuario.data['id'])
-            print(serializer_semestre.data['id'])
-
-            # try:
-            var_old_user_rol = usuario_rol.objects.get(id_usuario = serializer_usuario.data['id'],  id_semestre = serializer_semestre.data['id'],estado = 'ACTIVO')
-
-            # except:
-            #     return Response(
-            #     status=status.HTTP_404_NOT_FOUND
-            #     )
-
-            var_user_rol= var_old_user_rol
-            var_user_rol.estado = "INACTIVO"
-            var_user_rol.save()
-
-            return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
+        var_old_user_rol = usuario_rol.objects.get(id=pk,estado = 'ACTIVO')
+        var_user_rol= var_old_user_rol
+        var_user_rol.estado = "INACTIVO"
+        var_user_rol.save()
+        return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
 
     def create(self, request,pk=None):
         serializer = User_rol_sede(data=request.data)
@@ -610,10 +589,6 @@ class usuario_rol_viewsets (viewsets.ModelViewSet):
                 var_old_user_rol = get_object_or_404(usuario_rol, id_usuario = var_usuario,  id_semestre = var_semestre)
             except:
                 var_old_user_rol = Empty
-            # print(var_semestre.id)
-            # print(var_old_user_rol.id_semestre)
-            # print(var_semestre.id)
-            # print(var_old_user_rol.estado)
             if(var_old_user_rol != Empty and var_old_user_rol.estado == "ACTIVO"):
                 print("entre a 1")
                 var_user_rol= var_old_user_rol
@@ -777,48 +752,34 @@ class practicante_viewsets (viewsets.ModelViewSet):
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def retrieve(self, request,pk):
-        list_practicante = []
-        var_semestre = get_object_or_404(semestre, semestre_actual = True,id_sede=pk)
-        val_rol = rol.objects.get(nombre = 'practicante')
-        id_rol_practicante = (rol_serializer(val_rol)).data['id']
+        var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=pk)
+        val_rol = rol.objects.get(nombre='practicante')
+        id_rol_practicante = val_rol.id
 
-        consulta_id_practicante = list(usuario_rol.objects.filter(id_rol = id_rol_practicante,estado = 'ACTIVO',id_semestre = var_semestre))
-        for i in consulta_id_practicante:
-            serializer_usuario_rol =usuario_rol_serializer(i)
-            consulta_practicante = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
-            serializer_practicante= user_selected(consulta_practicante)
-            list_practicante.append(serializer_practicante.data)
+        consulta_practicantes = usuario_rol.objects.filter(id_rol=id_rol_practicante, estado='ACTIVO', id_semestre=var_semestre)
+        users_practicantes = [ur.id_usuario for ur in consulta_practicantes]
 
-        return Response(list_practicante,status=status.HTTP_200_OK)
+        serializer_practicantes = user_selected(users_practicantes, many=True)
+        return Response(serializer_practicantes.data, status=status.HTTP_200_OK)
 
 
     def update(self, request, pk):
-        list_practicante = []
-        list_practicante_selected = []
-        var_semestre = get_object_or_404(semestre, semestre_actual = True,id_sede=request.data["id_sede"])
-        serializer_semestre= semestre_serializer(var_semestre)
-        val_rol = rol.objects.get(nombre = 'practicante')
-        id_rol_practicante = (rol_serializer(val_rol)).data['id']
+        id_sede = request.data.get("id_sede")
+        id_rol_practicante = rol.objects.get(nombre='practicante').id
 
-        consulta_id_practicante = list(usuario_rol.objects.filter(id_rol = id_rol_practicante,estado = 'ACTIVO',id_semestre = serializer_semestre.data['id']))
-        for i in consulta_id_practicante:
-            serializer_usuario_rol =usuario_rol_serializer(i)
-            consulta_practicante = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
-            serializer_practicante = user_selected(consulta_practicante)
-            list_practicante.append(serializer_practicante.data)
+        practicantes = usuario_rol.objects.filter(id_rol=id_rol_practicante, estado='ACTIVO', id_semestre__semestre_actual=True, id_semestre__id_sede=id_sede)
+        practicantes_selected = usuario_rol.objects.filter(id_jefe=pk, id_rol=id_rol_practicante, estado='ACTIVO', id_semestre__semestre_actual=True, id_semestre__id_sede=id_sede)
 
-        consulta_id_practicante_selected = list(usuario_rol.objects.filter(id_jefe = pk, id_rol = id_rol_practicante,id_semestre = serializer_semestre.data['id'],estado='ACTIVO'))
+        ids_practicantes_selected = practicantes_selected.values_list('id_usuario', flat=True)
 
-        for i in consulta_id_practicante_selected:
-            serializer_usuario_rol_selected =usuario_rol_serializer(i)
-            consulta_practicante_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
-            serializer_practicante_selected  = user_selected(consulta_practicante_selected )
-            list_practicante_selected.append(serializer_practicante_selected.data)
-            for i in list_practicante:
-                if i['id'] == serializer_practicante_selected.data['id']:
-                    list_practicante.remove(i)
-        datos = [list_practicante_selected,list_practicante]
-        return Response(datos,status=status.HTTP_200_OK)
+        practicantes_assigned = practicantes.filter(id_usuario__in=ids_practicantes_selected)
+        practicantes_not_assigned = practicantes.exclude(id_usuario__in=ids_practicantes_selected)
+
+        serializer_practicantes_assigned = user_selected([p.id_usuario for p in practicantes_assigned], many=True)
+        serializer_practicantes_not_assigned = user_selected([p.id_usuario for p in practicantes_not_assigned], many=True)
+
+        data = [serializer_practicantes_assigned.data,serializer_practicantes_not_assigned.data]
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class reporte_seguimientos_practicante_viewsets (viewsets.ModelViewSet):
@@ -1604,7 +1565,7 @@ class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
         list_estudiante_selected = []
         total_estudiantes = 0
 
-        val_rol = rol.objects.get(nombre='Practicante')
+        val_rol = rol.objects.get(nombre='practicante')
         id_rol_practicante = (rol_serializer(val_rol)).data['id']
 
         list_semestre = list(semestre.objects.all().filter(semestre_actual=True))

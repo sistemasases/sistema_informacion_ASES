@@ -206,7 +206,6 @@ const isTabSelected_monitor = (username) => {
       ...state,
       practicante_seleccionado : name
     })
-    alert(name)
 
     console.log("estos son los monitores separados : " + state.separacion_monitores)
   }
@@ -233,7 +232,6 @@ const isTabSelected_monitor = (username) => {
       ...state,
       monitor_seleccionado : name
     })
-        alert(name)
 
     console.log("estos son los monitores separados : " + state.separacion_estudiantes)
   }
@@ -317,6 +315,7 @@ const isTabSelected_monitor = (username) => {
                     (
                     <Col className="scroll_listas">
                           <br></br> 
+                          <Scrollbars>
                       { state.separacion_practicantes['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
@@ -331,11 +330,11 @@ const isTabSelected_monitor = (username) => {
                           key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
                           childClicked={(name)=>practicante_seleccion(name)}/>
                         </Col>
-                      
+                       
 
                     ) }
 
-
+                    
                     <Row className="separador_asignaciones"></Row>
                       { state.separacion_practicantes['1'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
@@ -347,10 +346,12 @@ const isTabSelected_monitor = (username) => {
                     key={index} item={item} rol={rol} 
                     profesional_seleccionado={state.profesional_seleccionado}
                     childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    </Scrollbars>
                     </Col>
+                    
                     )
                   }
-
+                  
               </Row>
 
             </Col>

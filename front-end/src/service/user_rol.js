@@ -5,17 +5,17 @@ const user_rol = (formData) => {
         Authorization: 'Bearer ' + sessionStorage.getItem('token')
     };
     const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/usuario_rol/`;
-    axios({
-        url:  url_axios,
-        method: "POST",
-        data: formData,
-        headers: config,
-    })
-    .catch(err=>{
-        console.log(err);
-    })
+
+    return axios.post(url_axios, formData, { headers: config })
+        .then(response => {
+            return response.data; // Devuelve los datos de respuesta
+        })
+        .catch(error => {
+            console.log(error);
+            throw error; // Relanza el error para que se maneje donde se llama a la función
+        });
 }
-  
+
 export default {
     user_rol
 }

@@ -12,23 +12,17 @@
                 "icon":"bi bi-file-earmark-person-fill"
             },
             {
+                "id":10,
+                "path":"/reporte_seguimientos",
+                "name":"Consulta de seguimientos", 
+                "icon":"bi bi-search"
+            }
+            ,
+            {
                 "id":8,
                 "path":"/reporte",
                 "name":"Reporte general",
                 "icon":"bi bi-file-ruled-fill"
-            }
-        ]
-    },
-    {
-        "id":"3",
-        "path":"/",
-        "name":"academico",
-        "icon":"bi-mortarboard-fill",
-        "childrens":[
-            {
-                "path":"/academico",
-                "name":"Calificador",
-                "icon":"bi bi-calculator-fill"
             }
         ]
     }
