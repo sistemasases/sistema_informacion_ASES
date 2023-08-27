@@ -11,6 +11,7 @@ import Menu4 from './menus/monitor.json';
 import Menu5 from './menus/dir_investigacion.json';
 import Menu6 from './menus/ente_academico.json';
 import Menu7 from './menus/sin_rol.json';
+import Menu8 from './menus/practicante.json';
 import Ficha_estudiante from "../../modulos/ficha_estudiante/ficha_estudiante.jsx";
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
@@ -36,8 +37,9 @@ const SideBar = (props) =>{
         desplegable : sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'super_ases' ? Menu : 
         sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'profesional' || sessionStorage.rol === 'socioeducativo' ? Menu2 :
         sessionStorage.rol === 'dir_academico' ? Menu3 : 
-        sessionStorage.rol === 'monitor' || sessionStorage.rol === 'practicante' ? Menu4 :
+        sessionStorage.rol === 'monitor' ? Menu4 :
         sessionStorage.rol === 'dir_investigacion' ? Menu5 : 
+        sessionStorage.rol === 'practicante' ? Menu8 : 
         sessionStorage.rol === 'dir_programa' || sessionStorage.rol === 'vcd_academico' ? Menu6 : Menu7
       })
 

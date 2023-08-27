@@ -209,11 +209,11 @@ const Pagina_inicio = () => {
                 <Link to={`/carga_masiva`}> 
                   <img src={boton21} className="boton" alt='/'></img>
                 </Link>)}
-                {(userRole === 'practicante' || userRole === 'monitor' || userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
+                {(userRole === 'practicante'|| userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
                 <Link to={`/reporte_seguimientos`}> 
                   <img src={boton17} className="boton" alt='/'></img>
                 </Link>)}
-                {(userRole === 'practicante' ||userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
+                {(userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
                 <Link to={`/sin_seguimientos`}> 
                   <img src={boton8} className="boton" alt='/'></img>
                 </Link>)}
@@ -232,9 +232,9 @@ const Pagina_inicio = () => {
                 <Link to={`https://asesinteractiva.univalle.edu.co/semaforoalertas/`}> 
                   <img src={boton2} className="boton" alt='/'></img>
                 </Link>
-                <Link to={`https://caja-de-herramientas-univalle.vercel.app/`}> 
+                {/* <Link to={`https://caja-de-herramientas-univalle.vercel.app/`}> 
                   <img src={boton3} className="boton" alt='/'></img>
-                </Link>
+                </Link> */}
                 <Link to={`https://ases.univalle.edu.co/`}> 
                   <img src={boton4} className="boton" alt='/'></img>
                 </Link>
