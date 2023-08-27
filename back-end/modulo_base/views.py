@@ -54,6 +54,7 @@ class Login(TokenObtainPairView):
                     extra_info = {'nombre_completo' : user_serializer.data.get('first_name') +" "+ user_serializer.data.get('last_name'),
                                 'rol' : serializer_rol.data['nombre'],
                                 'semestre_actual': serializer_semestre.data['nombre'],
+                                'id_semestre_actual': serializer_semestre.data['id'],
                                 'sede':serializer_sede.data['nombre'],
                                 'sede_id':serializer_sede.data['id'],
                                 'permisos': list_permisos,
