@@ -12,6 +12,13 @@
                 "icon":"bi bi-file-earmark-person-fill"
             },
             {
+                "id":10,
+                "path":"/reporte_seguimientos",
+                "name":"Consulta de seguimientos", 
+                "icon":"bi bi-search"
+            }
+            ,
+            {
                 "id":8,
                 "path":"/reporte",
                 "name":"Reporte general",
