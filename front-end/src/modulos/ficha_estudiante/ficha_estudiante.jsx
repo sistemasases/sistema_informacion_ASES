@@ -22,10 +22,15 @@ const Ficha_estudiante = (props) =>{
 
 
     useEffect(() => {
+        let rol = sessionStorage.getItem("rol");
+        let sede = sessionStorage.getItem("sede_id");
+        let id_usuario = sessionStorage.getItem("id_usuario");
         axios({
             // Endpoint to send files
-            url:  `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`,
+            url:  `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
+            id_usuario.toString() +"/",
             method: "GET",
+            params: { usuario_rol: rol, sede: sede },
             headers: config,
           })
           .then((respuesta)=>{
@@ -39,7 +44,6 @@ const Ficha_estudiante = (props) =>{
           })
   
       }, []);
-    
 
     return (
         <>{userRole.includes('view_ficha_estudiantes') ? <Row>

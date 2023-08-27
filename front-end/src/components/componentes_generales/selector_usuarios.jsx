@@ -124,7 +124,7 @@ const Selector_usuarios = () =>{
     if(bandera_option_user==true){
 
       for (var i = 0; i < state.data_user['length'] ; i++) {
-        const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
+        const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['username']+" - "+ state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
         datos_option_user.push(dato)
       }
       console.log([datos_option_user]);
@@ -230,7 +230,6 @@ const Selector_usuarios = () =>{
 
 
   const set_info = (e) => {
-    bandera_option_user = true;
     bandera_option_rol = true;
     bandera_consulta_rol = true;
     setShow(false)

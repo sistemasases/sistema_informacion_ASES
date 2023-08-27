@@ -213,7 +213,7 @@ const Pagina_inicio = () => {
                 <Link to={`/reporte_seguimientos`}> 
                   <img src={boton17} className="boton" alt='/'></img>
                 </Link>)}
-                {(userRole === 'practicante' ||userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
+                {(userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
                 <Link to={`/sin_seguimientos`}> 
                   <img src={boton8} className="boton" alt='/'></img>
                 </Link>)}

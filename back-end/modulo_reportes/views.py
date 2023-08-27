@@ -83,44 +83,24 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             # return Response("caso no encontrado")
 
         elif data_usuario_rol == "profesional":
-            # print("entro a profesional")
-            # print(pk)
-            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
-            # for obj_practicante in usuario_rol.objects.filter(id_jefe = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
-            #     # print("entro a for")
-            #     # var_practicante_data = User.objects.get(id = obj_practicante['id_usuario_id'])
-            #     # serializer_practicante = user_selected(var_practicante_data)
-            #     # list_practicantes.append(serializer_practicante.data)
-            #     for obj_monitor in usuario_rol.objects.filter(id_jefe = obj_practicante['id_usuario_id'], id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
-            #         # print("entro a for2")
-            #         # var_monitor_data = User.objects.get(id = obj_monitor['id_usuario_id'])
-            #         # serializer_monitor = user_selected(var_monitor_data)
-            #         # list_monitores.append(serializer_monitor.data)
-            #         for id_estudiante in asignacion.objects.filter(id_usuario = obj_monitor['id_usuario_id'], id_semestre = var_semestre.id, estado = True ).values():
-            #             # print("entro a for3")
-            #             var_estudiante = estudiante.objects.get(id = id_estudiante['id_estudiante_id'])
-            #             serializer_estudiante = estudiante_serializer(var_estudiante)
-            #             list_estudiantes.append(serializer_estudiante.data)
-            # # print("Practicantes Asignados al profesional:")
-            # # print(list_practicantes)    
-            # # print("Monitores Asignados a practicantes del profesional:")
-            # # print(list_monitores)
-            # # print("Estudiantes Asignados a monitores del profesional:")
-            # # print(list_estudiantes)
-            
-            return Response(serializer_estudiante.data)
-
-        elif data_usuario_rol == "dir_socioed":
             list_estudiantes = list()
-            final_list_estudiantes = list()
             for obj_programa in programa.objects.filter(id_sede = data_sede).values():
                 for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
-                        # print(obj_programa_estudiante)
                         for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
                             serializer_estudiante = estudiante_serializer(obj_estudiante)
                             list_estudiantes.append(serializer_estudiante.data)
                             
-            return Response (list_estudiantes )
+            return Response (list_estudiantes)
+
+        elif data_usuario_rol == "socioeducativo":
+            # ven todo
+            list_estudiantes = []
+            # list_programas = []
+            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
+
+            return Response(serializer_estudiante.data)
+
+            # return Response("caso no encontrado")
         
         elif data_usuario_rol == "dir_socioed_reg":
 
@@ -583,24 +563,14 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             return Response(final_list_estudiantes)
       
         elif data_usuario_rol == "profesional":
-            list_estudiantes  = list()
+            list_estudiantes = list()
             final_list_estudiantes = list()
-            for obj_practicante in usuario_rol.objects.filter(id_jefe = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
-                # print("entro a for")
-                # var_practicante_data = User.objects.get(id = obj_practicante['id_usuario_id'])
-                # serializer_practicante = user_selected(var_practicante_data)
-                # list_practicantes.append(serializer_practicante.data)
-                for obj_monitor in usuario_rol.objects.filter(id_jefe = obj_practicante['id_usuario_id'], id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
-                    # print("entro a for2")
-                    # var_monitor_data = User.objects.get(id = obj_monitor['id_usuario_id'])
-                    # serializer_monitor = user_selected(var_monitor_data)
-                    # list_monitores.append(serializer_monitor.data)
-                    for id_estudiante in asignacion.objects.filter(id_usuario = obj_monitor['id_usuario_id'], id_semestre = var_semestre.id, estado = True ).values():
-                        # print("entro a for3")
-                        var_estudiante = estudiante.objects.get(id = id_estudiante['id_estudiante_id'])
-                        serializer_estudiante = estudiante_serializer(var_estudiante)
-                        list_estudiantes.append(serializer_estudiante.data)
-            # Añadiendo datos de consultas externas a los estudiantes
+            for obj_programa in programa.objects.filter(id_sede = data_sede).values():
+                for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
+                        # print(obj_programa_estudiante)
+                        for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
+                            serializer_estudiante = estudiante_serializer(obj_estudiante)
+                            list_estudiantes.append(serializer_estudiante.data)
             
             for i in list_estudiantes: 
                 # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
@@ -784,17 +754,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
   
             return Response(final_list_estudiantes)
         
-        elif data_usuario_rol == "dir_socioed":
+        elif data_usuario_rol == "socioeducativo":
             list_estudiantes = list()
-            final_list_estudiantes = list()
-            for obj_programa in programa.objects.filter(id_sede = data_sede).values():
-                for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
-                        # print(obj_programa_estudiante)
-                        for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
-                            serializer_estudiante = estudiante_serializer(obj_estudiante)
-                            list_estudiantes.append(serializer_estudiante.data)
+            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
 
-            for i in list_estudiantes: 
+            for i in serializer_estudiante.data: 
                 # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
@@ -972,13 +936,12 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
                 
-                final_list_estudiantes.append(data)
+                list_estudiantes.append(data)
               
-            return Response (final_list_estudiantes)
+            return Response (list_estudiantes)
           
         elif data_usuario_rol == "super_ases":
             list_estudiantes = list()
-            # list_programas = list()
             serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
 
             # Añadiendo datos de consultas externas a los estudiantes
