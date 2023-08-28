@@ -18,18 +18,18 @@ class seguimiento_individual_viewsets (viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
-    def partial_update(self, request, pk=None):
-        seguimiento_individual = self.get_object()
+    # def partial_update(self, request, pk=None):
+    #     seguimiento_individual = self.get_object()
 
-        for field_name in request.data:
-            if hasattr(seguimiento_individual, field_name):
-                field_value = request.data[field_name]
-                if field_value is not None:  # Verificar si el valor es nulo
-                    setattr(seguimiento_individual, field_name, field_value)
+    #     for field_name in request.data:
+    #         if hasattr(seguimiento_individual, field_name):
+    #             field_value = request.data[field_name]
+    #             if field_value is not None:  # Verificar si el valor es nulo
+    #                 setattr(seguimiento_individual, field_name, field_value)
         
-        seguimiento_individual.save()
+    #     seguimiento_individual.save()
 
-        return Response({'message': 'Seguimiento individual actualizado parcialmente'})
+    #     return Response({'message': 'Seguimiento individual actualizado parcialmente'})
 
 class inasistencia_viewsets (viewsets.ModelViewSet):
     serializer_class = inasistencia_serializer
@@ -43,17 +43,17 @@ class inasistencia_viewsets (viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+    # def update(self, request, *args, **kwargs):
+    #     partial = kwargs.pop('partial', False)
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance, data=request.data, partial=partial)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_update(serializer)
+    #     return Response(serializer.data)
 
-    def partial_update(self, request, *args, **kwargs):
-        kwargs['partial'] = True
-        return self.update(request, *args, **kwargs)
+    # def partial_update(self, request, *args, **kwargs):
+    #     kwargs['partial'] = True
+    #     return self.update(request, *args, **kwargs)
 
 class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
