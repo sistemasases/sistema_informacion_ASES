@@ -41,7 +41,10 @@ import pandas as pd
 
 
 
-
+class retiro_viewsets (viewsets.ModelViewSet):
+    serializer_class = retiro_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = retiro_serializer.Meta.model.objects.all()
 
 
 
@@ -280,10 +283,12 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         serializer_semestre = semestre_serializer(var_semestre)
 
         estudiantes_asignados = estudiante.objects.filter(asignacion__id_usuario=pk, asignacion__estado=True, asignacion__id_semestre=serializer_semestre.data['id']).distinct()
-        estudiantes_no_asignados = estudiante.objects.filter(~Q(asignacion__id_semestre=serializer_semestre.data['id']) | Q(asignacion__estado=False)).distinct()
-
+        estudiantes_totales = estudiante.objects.all()
+        estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
+        print(estudiantes_no_asignados)
+        estudiantes_totales = estudiantes_totales.exclude(id__in=estudiantes_no_asignados.values_list('id', flat=True))
         list_estudiantes_selected = [estudiante_serializer(est).data for est in estudiantes_asignados]
-        list_estudiantes = [estudiante_serializer(est).data for est in estudiantes_no_asignados]
+        list_estudiantes = [estudiante_serializer(est).data for est in estudiantes_totales]
 
         datos = [list_estudiantes_selected, list_estudiantes]
         return Response(datos, status=status.HTTP_200_OK)
@@ -1278,7 +1283,6 @@ class mas_con_quien_vive_viewsets (viewsets.ModelViewSet):
         # if (serializer.is_valid()):
         serializer = self.serializer_class(data=request.data)
 
-        print('este es jajaja : ' + str(serializer))
         if serializer.is_valid():
 
             puntaje_icfes_request = serializer.data['puntaje_icfes']
@@ -1347,10 +1351,7 @@ class mas_con_quien_vive_viewsets (viewsets.ModelViewSet):
                 var_estudiante.save()
                 return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
             except estudiante.DoesNotExist:
-                print('primer print')
                 return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        print('segundo print')
-        print(serializer.errors)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

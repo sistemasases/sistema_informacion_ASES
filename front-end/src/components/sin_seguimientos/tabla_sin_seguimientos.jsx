@@ -15,7 +15,7 @@ const Tabla_sin_Seguimientos = (props) =>{
   };
 
   const [state,set_state] = useState({
-    id_semestre : 6,
+    id_semestre : sessionStorage.getItem('id_semestre_actual'),
     la_info_de_la_tabla : [],
   })
 
