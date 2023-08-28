@@ -4,6 +4,7 @@ from modulo_usuario_rol.views import *
 router = DefaultRouter()
 
 router.register(r'user',user_viewsets,basename = 'user')
+router.register(r'retiro',retiro_viewsets,basename = 'retiro')
 router.register(r'estudiante',estudiante_viewsets,basename = 'estudiante')
 router.register(r'rol',rol_viewsets,basename = 'rol')
 router.register(r'usuario_rol',usuario_rol_viewsets,basename = 'usuario_rol')

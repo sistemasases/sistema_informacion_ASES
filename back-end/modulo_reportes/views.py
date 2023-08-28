@@ -18,6 +18,7 @@ from modulo_seguimiento.models import inasistencia, seguimiento_individual
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.db.models import F, OuterRef, Subquery
 
 
 # Create your views here.
@@ -83,12 +84,17 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             # return Response("caso no encontrado")
 
         elif data_usuario_rol == "profesional":
-            list_estudiantes = list()
-            for obj_programa in programa.objects.filter(id_sede = data_sede).values():
-                for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
-                        for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
-                            serializer_estudiante = estudiante_serializer(obj_estudiante)
-                            list_estudiantes.append(serializer_estudiante.data)
+            # Obtén una lista de IDs de programas en la sede CALI
+            programas_sede = programa.objects.filter(id_sede=data_sede).values_list('id', flat=True)
+
+            # Obtén una lista de IDs de estudiantes asociados a programas en la sede CALI
+            estudiantes_asociados = programa_estudiante.objects.filter(id_programa__in=programas_sede).values_list('id_estudiante_id', flat=True)
+
+            # Obtén información de estudiantes usando Subquery para filtrar por IDs de estudiantes asociados
+            estudiantes_info = estudiante.objects.filter(id__in=Subquery(estudiantes_asociados))
+
+            # Convierte el queryset en una lista de diccionarios
+            list_estudiantes = list(estudiantes_info.values())
                             
             return Response (list_estudiantes)
 
@@ -758,7 +764,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             list_estudiantes = list()
             serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
 
-            for i in serializer_estudiante.data: 
+            for i in list_estudiantes: 
                 # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
@@ -936,9 +942,9 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
                 
-                list_estudiantes.append(data)
+                final_list_estudiantes.append(data)
               
-            return Response (list_estudiantes)
+            return Response (final_list_estudiantes)
           
         elif data_usuario_rol == "super_ases":
             list_estudiantes = list()

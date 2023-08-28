@@ -50,6 +50,8 @@ class Validador_carga(APIView):
                 return carga_vcd_academicos(file)
             elif(tipo == "Dir_programa"):
                 return carga_dir_programa(file)
+            elif(tipo == "Cambio_contrasena"):
+                return cambio_contrasena(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
 
@@ -847,4 +849,32 @@ def carga_dir_programa(file):
             list_dict_result.append(dict_result)
 
     dir_programa.objects.bulk_create(lista_dir_programa)
+    return Response(list_dict_result)
+
+def cambio_contrasena(file):
+    list_dict_result = []
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+        if (User.objects.filter(username = datos.iat[i,0])):
+            try:
+                User.objects.filter(username = datos.iat[i,0]).update(password=make_password(datos.iat[i,1]))
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'Cambio de contraseña realizado.'
+                }
+                list_dict_result.append(dict_result)
+            except:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'Error al cambiar la contraseña.'
+                }
+                list_dict_result.append(dict_result)
+        else:
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'No existe un usuario con este username.'
+            }
+            list_dict_result.append(dict_result)
+
+        
     return Response(list_dict_result)

@@ -4,6 +4,8 @@ import  {useEffect} from 'react';
 import Logos from './LOGO BLANCORecurso 1.png';
 import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
+import Modal from 'react-bootstrap/Modal';
+import {Button, ListGroupItem} from "react-bootstrap";
 
 const Navbar = (props) =>{
 
@@ -47,6 +49,12 @@ const Navbar = (props) =>{
         window.location.replace('');
       };
 
+
+    const [show, setShow] = useState(false);
+    const handleModal = () => setShow(true);
+    const handleClose = () => setShow(false);
+
+
       const getTitleFromUrl = (url) => {
   const segments = url.split('/');
   const lastSegment = segments.slice(1)[2]; // Obtener el último segmento
@@ -54,6 +62,16 @@ const Navbar = (props) =>{
 };
 
 
+const [newPassword, setNewPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
+
+const handleNewPasswordChange = (event) => {
+    setNewPassword(event.target.value);
+};
+
+const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+};
 
 
     const[isOpen, setIsOpen] = useState(false);
@@ -105,21 +123,6 @@ const Navbar = (props) =>{
 
 
 
-{/* 
-            <Col className="ulDropdown" xs={"5"} md={"4"}>            
-                <Row >
-                    <div class="d-none d-md-inline">
-                        <Col xs={"12"} md={"7"} className="row_modulo_activo">
-                            <label>{url}</label>
-                        </Col>
-                    </div>
-                    <div class="d-inline d-md-none">
-                        <Col xs={"12"} md={"5"} className="row_modulo_activo_pequeño">
-                            {props.path_actual}
-                        </Col>
-                    </div>
-                </Row>
-            </Col> */}
 
 
             <Col className="boton_perfil" xs={"7"} md={"4"}>
@@ -161,10 +164,10 @@ const Navbar = (props) =>{
                             isOpen ?
                             (
                                 <Row className="opciones_usuario">
-                                    <Col xs={"12"}>
-                                        PERFIL
+                                    <Col xs={"12"} className="opciones_usuario_contrase" onClick={handleModal}>
+                                        CAMBIAR CONTRASEÑA
                                     </Col>
-                                    <Col xs={"12"} onClick={handleSalir}>
+                                    <Col xs={"12"} className="opciones_usuario_salir" onClick={handleSalir}>
                                         SALIR
                                     </Col>
                                 </Row>
@@ -180,7 +183,38 @@ const Navbar = (props) =>{
 
         </Row>
             
-            
+        <Modal show={show} onHide={handleClose} size={'lg'}>
+          <Modal.Header closeButton>
+            <Modal.Title>Importante</Modal.Title>
+          </Modal.Header>
+            <Modal.Body>
+              Contraseña actual : <input></input>
+              <br></br>
+              <br></br>
+              <br></br>
+              Nueva contraseña : <input onChange={handleNewPasswordChange} type="password"></input>
+              <br></br>
+              <br></br>
+              Confirme contraseña : <input onChange={handleConfirmPasswordChange} type="password"></input>
+              {newPassword !== confirmPassword && (
+                <p style={{ color: "red" }}>Las contraseñas no coinciden</p>
+              )}
+            </Modal.Body>
+
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={handleClose}
+                disabled={newPassword !== confirmPassword}
+              >
+                Aceptar
+              </Button>
+              <Button variant="secondary" onClick={handleClose}>
+                Cerrar
+              </Button>
+            </Modal.Footer>
+
+        </Modal>
     </Container>
     )
 }
