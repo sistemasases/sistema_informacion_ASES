@@ -100,7 +100,7 @@ const Selector = (props) =>{
             id:2,
             name:"socioeducativo",
             contenido:"hola",
-            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante"],
+            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","monitor"],
             component:<Socieducativa 
                         id={props.id} 
                         data_user_socioedu={state.data_user_socioedu} 
