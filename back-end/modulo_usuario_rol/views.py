@@ -1246,7 +1246,7 @@ class monitor_actualizacion_viewsets (viewsets.ModelViewSet):
                 var_monitor.observacion = observacion_request
                 var_monitor.ult_modificacion = ult_modificacion_request
 
-                var_estudiante.save()
+                var_monitor.save()
                 return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
             except estudiante.DoesNotExist:
                 print('primer print')

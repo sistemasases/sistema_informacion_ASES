@@ -118,6 +118,7 @@ const Info_basica = (props) =>{
       cedula:'',
       correo:'',
       telefono:3122131542,
+      celular:3023675789,
       ptogramas:[],
       monitor : [],
       practicante : [],
@@ -142,6 +143,7 @@ const Info_basica = (props) =>{
           tipo_doc : state.total_datos_estudiantes['tipo_doc'],
           cedula :state.total_datos_estudiantes['num_doc'],
           telefono :state.total_datos_estudiantes['telefono_res'],
+          celular: state.total_datos_estudiantes['celular'],
           programas : state.total_datos_estudiantes['programas'],
           monitor : state.total_datos_estudiantes['info_monitor'],
           practicante : state.total_datos_estudiantes['practicante'],
@@ -256,7 +258,7 @@ const Info_basica = (props) =>{
     
           // Calcular la diferencia de años entre la fecha actual y la fecha de nacimiento
           const edad = differenceInYears(fechaActual, fechaNacimiento);
-    
+
           // Actualizar el estado con los datos y la edad calculada
           set_state({
             ...state,
@@ -275,10 +277,12 @@ const Info_basica = (props) =>{
 
 
     const handleWhatsapp = (e) =>{
-      if (state.telefono) {
-        const url = `https://api.whatsapp.com/send?phone=${state.telefono}`;
+      const celular_numerico = parseInt(state.celular)
+      if (celular_numerico) {
+        const url = `https://api.whatsapp.com/send?phone=${celular_numerico}`;
         window.open(url, "_blank");
       }
+      else{alert("problema con el celular_numerico")}
     }
 
 
@@ -345,7 +349,7 @@ const Info_basica = (props) =>{
                                           </Col>
                                           <Col className="info_texto" xs={"12"} md={"5"}>
                                             <h4 className="texto_mas_pequeño">
-                                              {state.correo}
+                                              <a href={`mailto:${state.correo}`}>{state.correo}</a>
                                             </h4>
                                           </Col>
                                           <Col className="info_texto" xs={"12"} md={"2"}>
@@ -355,7 +359,7 @@ const Info_basica = (props) =>{
                                           </Col>
                                           <Col className="info_texto" xs={"12"} md={"2"}>
                                             <h4 className="texto_mas_pequeño">
-                                              {state.telefono}
+                                              {state.celular}
                                             </h4>
                                           </Col>
                                         </Row>
@@ -384,9 +388,6 @@ const Info_basica = (props) =>{
                                               {state.codigo} 
                                             </h4>
                                           </Col>
-                                          <Col xs={"3"} md={"4"}> 
-                                            <select></select>
-                                          </Col>
                                         </Row>
                                         <Row> 
                                           <h4 className="texto_mas_pequeño">
@@ -409,7 +410,7 @@ const Info_basica = (props) =>{
                                             <i>TRAYECTORIA</i>
                                           </button> 
                                           <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
-                                            <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                            <i class="bi bi-whatsapp"> + 57 {state.celular}</i>
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">{state.nombre_cohorte} <br/></h4>
@@ -448,14 +449,6 @@ const Info_basica = (props) =>{
                                           </h4>
                                         </Row>
 
-                                        <Row>  
-                                          <h4 className="texto_mas_pequeño">
-                                            <br/> 
-                                            <a href="https://campusvirtual.univalle.edu.co/" target="_blank" rel="noonpener noreferrer">
-                                              Documento de Autorización de Tratamiento de Datos
-                                            </a>
-                                          </h4>
-                                        </Row>
                                       </Col>
 
                                       <div class="d-none d-md-block col-md-3">
@@ -463,8 +456,8 @@ const Info_basica = (props) =>{
                                           <button className="boton_editar_info_basica"  onClick={traer_graficos}>
                                             <i>TRAYECTORIA</i>
                                           </button> 
-                                          <button className="boton_editar_info_basica">
-                                            <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                          <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
+                                            <i class="bi bi-whatsapp"> + 57 {state.celular}</i>
                                           </button>
                                           <Row className="texto_estatico">
                                             <h4 className="texto_mas_pequeño">
@@ -530,8 +523,8 @@ const Info_basica = (props) =>{
                             
                             <Col xs={"7"} sm={"4"}>
                                   <Row className="botones_info_basica_pequeña">
-                                    <button className="boton_editar_info_basica">
-                                      <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                    <button className="boton_editar_info_basica" onClick={handleWhatsapp}>
+                                      <i class="bi bi-whatsapp"> + 57 {state.celular}</i>
                                     </button>
                                   </Row>
                                   <Row className="texto_estatico_pequeño">
@@ -565,7 +558,7 @@ const Info_basica = (props) =>{
                             <Row className="botones_info_basica_pequeña">
 
                                 <button className="boton_editar_info_basica">
-                                  <i class="bi bi-whatsapp"> + 57 {state.telefono}</i>
+                                  <i class="bi bi-whatsapp"> + 57 {state.celular}</i>
                                 </button>
                                 </Row>
                                 <Row className="texto_estatico_pequeño">
@@ -609,7 +602,10 @@ const Info_basica = (props) =>{
                                 (
                                   <Row className="info_pequeño"> 
                                     <Col className="info_texto_pequeño" xs={"12"} md={"12"}>
-                                      <h4 className="texto_mas_pequeño">{state.correo}</h4>
+                                    
+                                      <h4 className="texto_mas_pequeño">
+                                        <a href={`mailto:${state.correo}`}>{state.correo}</a>
+                                      </h4>
                                     </Col>
                                     <Col  xs={"5"} sm={"1"} className="info_texto_cedula_pequeño">
                                       <h4 className="texto_mas_pequeño">{state.tipo_doc}
@@ -620,7 +616,7 @@ const Info_basica = (props) =>{
                                       <h4 className="texto_mas_pequeño">{state.edad} años</h4>
                                     </Col>
                                     <Col className="info_texto" xs={"3"} md={"2"}>
-                                      <h4 className="texto_mas_pequeño">{state.telefono}</h4>
+                                      <h4 className="texto_mas_pequeño">{state.celular}</h4>
                                     </Col>
                                   </Row>
                                 )
@@ -685,9 +681,7 @@ const Info_basica = (props) =>{
                       seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
                       handleOptionUser={handle_option_user}/>
           </Row>
-          <Row>
-            <Ficha_footer></Ficha_footer>
-          </Row>
+
         </div>
         </Col>
 
