@@ -115,6 +115,7 @@ const Carga_masiva_component = () =>{
                   <option value="Inasistencia">Inasistencia</option>
                   <option value="Dir_programa">Director de programa</option>
                   <option value="Vcd_academico">Vicedecano</option>
+                  <option value="Cambio_contrasena">Contraseña</option>
                 </Form.Select>
               </Col>
             </Row>

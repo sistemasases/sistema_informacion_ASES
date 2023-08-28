@@ -16,6 +16,10 @@ from django.contrib.auth.models import User
 
 from modulo_instancia.models import semestre, sede
 from modulo_usuario_rol.models import rol, usuario_rol, rol_permiso, permiso
+from django.contrib.auth.hashers import make_password
+from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from modulo_usuario_rol.serializers import  *
 
 
 
@@ -60,7 +64,6 @@ class Login(TokenObtainPairView):
                                 'permisos': list_permisos,
                                 }
                     data = dict(user_serializer.data, **extra_info)
-                    print(data)
                     
                     return Response({
                         'token': login_serializer.validated_data.get('access'),
@@ -96,3 +99,19 @@ class Refresh(TokenObtainPairView):
             
             except Exception as e:
                 return Response({'error': 'El token de refresco no es válido.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+class change_password(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        usuario = get_object_or_404(User,id=request.data.get('user_id'))
+        password=request.data.get('contraseña')
+        user = authenticate(
+            username=usuario.username,
+            password=password
+        )
+        if user:
+            usuario.password = make_password(request.data.get('new_contraseña'))
+            usuario.save()
+            return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
+        return Response({'mensaje': 'La contraseña enviada no es válida.'}, status=status.HTTP_400_BAD_REQUEST)

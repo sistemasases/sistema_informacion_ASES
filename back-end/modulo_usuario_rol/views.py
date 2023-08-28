@@ -41,7 +41,10 @@ import pandas as pd
 
 
 
-
+class retiro_viewsets (viewsets.ModelViewSet):
+    serializer_class = retiro_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = retiro_serializer.Meta.model.objects.all()
 
 
 
