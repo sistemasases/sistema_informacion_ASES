@@ -6,11 +6,17 @@ import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import {Button, ListGroupItem} from "react-bootstrap";
+import axios from 'axios';
 
 const Navbar = (props) =>{
 
     const location = useLocation();
     const [lastVisitedRoutes, setLastVisitedRoutes] = useState([]);
+    const config = {
+      headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      }
+    };
   
     useEffect(() => {
       const currentUrl = window.location.href;
@@ -64,6 +70,11 @@ const Navbar = (props) =>{
 
 const [newPassword, setNewPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
+const [password, setActualPassword] = useState("");
+
+const actualPassword = (event) => {
+  setActualPassword(event.target.value);
+};
 
 const handleNewPasswordChange = (event) => {
     setNewPassword(event.target.value);
@@ -92,7 +103,21 @@ const handleConfirmPasswordChange = (event) => {
     //     sessionStorage.removeItem('message')
     //     window.location.replace('');
     // }    
-
+    const cambiar_contra_funcion = () => {
+    
+      const url = `${process.env.REACT_APP_API_URL}/change_password`
+      const data = {
+        "user_id": sessionStorage.getItem('id_usuario'),
+        "contraseña": password,
+        "new_contraseña": newPassword,
+    }  
+    axios.post(url, data,config)
+    .then(res=>{
+      alert("Contraseña actualizada.")
+      handleClose()
+    })
+    .catch(err=>alert("ERROR en la actualización."))
+    };
     return (
     <Container  >
         <Row className="nav">
@@ -188,7 +213,7 @@ const handleConfirmPasswordChange = (event) => {
             <Modal.Title>Importante</Modal.Title>
           </Modal.Header>
             <Modal.Body>
-              Contraseña actual : <input></input>
+              Contraseña actual : <input onChange={actualPassword} type="password"></input>
               <br></br>
               <br></br>
               <br></br>
@@ -204,7 +229,7 @@ const handleConfirmPasswordChange = (event) => {
             <Modal.Footer>
               <Button
                 variant="secondary"
-                onClick={handleClose}
+                onClick={cambiar_contra_funcion}
                 disabled={newPassword !== confirmPassword}
               >
                 Aceptar
