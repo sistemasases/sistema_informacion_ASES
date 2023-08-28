@@ -129,9 +129,19 @@ body {
     margin-top: 10px;
     border-radius: 10px;
     background: rgba(235,30,0,255);
+    font-size: 9pt;
 }
-
-
+.opciones_usuario_contrase{
+    width: 90%;
+    margin-left: 5%;
+}
+.opciones_usuario_salir{
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid white;
+    width: 90%;
+    margin-left: 5%;
+}
 
 
 

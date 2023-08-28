@@ -4,6 +4,7 @@ import { Container, Row, Col, Button, } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
+import Modal from 'react-bootstrap/Modal';
 
 const Login_component = () => {
 
@@ -75,7 +76,9 @@ const Login_component = () => {
       handleSendNewData();
     }
   };
-
+    const [show, setShow] = useState(false);
+    const handleModal = () => setShow(true);
+    const handleClose = () => setShow(false);
   return (
     <Row>
       {sessionStorage.token === undefined ? (
@@ -115,7 +118,7 @@ const Login_component = () => {
                     <label className='form_label_login' htmlFor="pass">Contraseña</label>
                   </div>
                   <div>
-                    <label href="https://www.google.com">Olvidé mi contraseña</label>
+                    <label href="https://www.google.com" onClick={handleModal}>Olvidé mi contraseña</label>
                   </div>
                 </div>
                 <Row>
@@ -124,6 +127,25 @@ const Login_component = () => {
               </div>
             </Col>
           </Row>
+
+        <Modal show={show} onHide={handleClose} size={'lg'}>
+          <Modal.Header closeButton>
+            <Modal.Title>Importante</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Para reportar algún problema al iniciar sesión, comuníquese al correo:
+            <br></br>
+            <a href="mailto:sistemas.ases@correounivalle.edu.co">sistemas.ases@correounivalle.edu.co</a>
+          </Modal.Body>
+
+
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Cerrar
+              </Button>
+            </Modal.Footer>
+
+        </Modal>
         </Container>
       ) : (
         <App />
