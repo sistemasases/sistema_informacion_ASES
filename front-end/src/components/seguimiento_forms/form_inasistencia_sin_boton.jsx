@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Update_Inasistencia from '../../service/update_inasistencia';
-import Delete_Inasistencia from '../../service/delete_inasistencia';
+import Delete_inasistencia from '../../service/delete_inasistencia';
+import { CSVLink } from 'react-csv';
 
 
 const Inasistencia = (props) =>{
@@ -29,7 +30,7 @@ const Inasistencia = (props) =>{
 
     const delete_info = (e) => {
         if(window.confirm("¿Está seguro que desea eliminar la inasistencia?")){
-            Delete_Inasistencia.Delete_Inasistencia(form.id).then(res=>{
+            Delete_inasistencia.Delete_inasistencia(form.id).then(res=>{
                 if(res){
                     props.handleCloseIn()
                 } else {

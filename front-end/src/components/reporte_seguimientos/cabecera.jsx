@@ -345,6 +345,9 @@ const Cabecera = (props) => {
           </Col>
         )}
 
+        {
+        (sessionStorage.getItem('rol')=='sistemas' || sessionStorage.getItem('rol')=='super_ases' || sessionStorage.getItem('rol')=='socieducativo') ? 
+        (        
         <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
           <Row>
             <h4 className="texto_subtitulo2">Selector persona</h4>
@@ -353,6 +356,9 @@ const Cabecera = (props) => {
             <Select options={datos_option_user} onMenuOpen={handle_users_persona} onChange={handle_option_user} />
           </Row>
         </Col>
+        )
+        :(<Col></Col>)
+        }
       </Row>
 
       <Row className="prueba_seguimintos">
