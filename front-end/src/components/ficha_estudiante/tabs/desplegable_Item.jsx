@@ -4,7 +4,7 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import Modal from 'react-bootstrap/Modal';
 import Seguimiento_individual from '../../seguimiento_forms/form_seguimiento_individual_sin_boton';
-import Seguimiento_inasistencia from '../../seguimiento_forms/form_inasistencia';
+import Seguimiento_inasistencia from '../../seguimiento_forms/form_inasistencia_sin_boton';
 
 const Desplegable_item = ({item}) => {
 
@@ -15,7 +15,7 @@ const Desplegable_item = ({item}) => {
     const handleShow = () => setShow(true);
 
     const [show2, setShow2] = useState(false);
-    const handleClose2 = () => setShow2(false);
+    const handleCloseIn = () => setShow2(false);
     const handleShow2 = () => setShow2(true);
 
     const userRole = sessionStorage.getItem('rol');
@@ -57,7 +57,7 @@ const Desplegable_item = ({item}) => {
                     </Row>
                 </Col>
                 
-                <Seguimiento_inasistencia show={show2} onHide={handleClose2} handleClose={handleClose2} item={item} size="lg"/>
+                <Seguimiento_inasistencia show={show2} onHide={handleCloseIn} handleCloseIn={handleCloseIn} item={item} size="lg"/>
 
                 <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} item={item} size="lg"/>
             </Row>
