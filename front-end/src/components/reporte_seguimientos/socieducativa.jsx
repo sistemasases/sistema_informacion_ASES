@@ -27,8 +27,8 @@ const Socieducativa = (props) =>{
     return (
         <Container className="socioeducativa_container">
                             
-                        <li>{JSON.stringify(props.data_user_socioedu)}</li>
-                        <li>{JSON.stringify(props.data_user_socioedu[0])}</li>
+                        {/* <li>{JSON.stringify(props.data_user_socioedu)}</li>
+                        <li>{JSON.stringify(props.data_user_socioedu[0])}</li> */}
 
                             
 

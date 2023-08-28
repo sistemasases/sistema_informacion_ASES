@@ -55,7 +55,7 @@ import Reporte from "./modulos/reportes/reporte.jsx";
 const App = () => {
   const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / ");
   const[rolUsuario] = useState("superSistemas");
-  const[periodo] = useState("2022-2");
+  const[periodo] = useState("2023-2");
   const[area] = useState('1');
 
     return (
