@@ -34,7 +34,11 @@ const Desplegable_item = ({item}) => {
                     </Row>
                 </Col>
 
+<<<<<<< HEAD
                 <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} size="lg" item={item}/>
+=======
+                <Seguimiento_individual item ={item} show={show} onHide={handleClose} handleClose={handleClose} size="lg"/>
+>>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
             </Row>
         )
     }

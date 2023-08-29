@@ -49,6 +49,7 @@ const Login_component = () => {
         sessionStorage.setItem('nombre_completo', res.data.user.nombre_completo);
         sessionStorage.setItem('sede_id', res.data.user.sede_id);
         sessionStorage.setItem('rol', res.data.user.rol);
+        sessionStorage.setItem('id_semestre_actual', res.data.user.id_semestre_actual);
         sessionStorage.setItem('semestre_actual', res.data.user.semestre_actual);
         sessionStorage.setItem('username', res.data.user.username);
         sessionStorage.setItem('permisos', res.data.user.permisos);

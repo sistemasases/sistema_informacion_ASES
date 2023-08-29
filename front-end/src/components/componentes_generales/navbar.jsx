@@ -6,11 +6,20 @@ import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import {Button, ListGroupItem} from "react-bootstrap";
+<<<<<<< HEAD
+=======
+import axios from 'axios';
+>>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
 
 const Navbar = (props) =>{
 
     const location = useLocation();
     const [lastVisitedRoutes, setLastVisitedRoutes] = useState([]);
+    const config = {
+      headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      }
+    };
   
     useEffect(() => {
       const currentUrl = window.location.href;
@@ -64,6 +73,14 @@ const Navbar = (props) =>{
 
 const [newPassword, setNewPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
+<<<<<<< HEAD
+=======
+const [password, setActualPassword] = useState("");
+
+const actualPassword = (event) => {
+  setActualPassword(event.target.value);
+};
+>>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
 
 const handleNewPasswordChange = (event) => {
     setNewPassword(event.target.value);
@@ -92,7 +109,21 @@ const handleConfirmPasswordChange = (event) => {
     //     sessionStorage.removeItem('message')
     //     window.location.replace('');
     // }    
-
+    const cambiar_contra_funcion = () => {
+    
+      const url = `${process.env.REACT_APP_API_URL}/change_password`
+      const data = {
+        "user_id": sessionStorage.getItem('id_usuario'),
+        "contraseña": password,
+        "new_contraseña": newPassword,
+    }  
+    axios.post(url, data,config)
+    .then(res=>{
+      alert("Contraseña actualizada.")
+      handleClose()
+    })
+    .catch(err=>alert("ERROR en la actualización."))
+    };
     return (
     <Container  >
         <Row className="nav">
@@ -123,21 +154,6 @@ const handleConfirmPasswordChange = (event) => {
 
 
 
-{/* 
-            <Col className="ulDropdown" xs={"5"} md={"4"}>            
-                <Row >
-                    <div class="d-none d-md-inline">
-                        <Col xs={"12"} md={"7"} className="row_modulo_activo">
-                            <label>{url}</label>
-                        </Col>
-                    </div>
-                    <div class="d-inline d-md-none">
-                        <Col xs={"12"} md={"5"} className="row_modulo_activo_pequeño">
-                            {props.path_actual}
-                        </Col>
-                    </div>
-                </Row>
-            </Col> */}
 
 
             <Col className="boton_perfil" xs={"7"} md={"4"}>
@@ -179,10 +195,14 @@ const handleConfirmPasswordChange = (event) => {
                             isOpen ?
                             (
                                 <Row className="opciones_usuario">
+<<<<<<< HEAD
                                     <Col xs={"12"} onClick={handleModal}>
+=======
+                                    <Col xs={"12"} className="opciones_usuario_contrase" onClick={handleModal}>
+>>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
                                         CAMBIAR CONTRASEÑA
                                     </Col>
-                                    <Col xs={"12"} onClick={handleSalir}>
+                                    <Col xs={"12"} className="opciones_usuario_salir" onClick={handleSalir}>
                                         SALIR
                                     </Col>
                                 </Row>
@@ -203,7 +223,11 @@ const handleConfirmPasswordChange = (event) => {
             <Modal.Title>Importante</Modal.Title>
           </Modal.Header>
             <Modal.Body>
+<<<<<<< HEAD
               Contraseña actual : <input></input>
+=======
+              Contraseña actual : <input onChange={actualPassword} type="password"></input>
+>>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
               <br></br>
               <br></br>
               <br></br>
@@ -219,7 +243,11 @@ const handleConfirmPasswordChange = (event) => {
             <Modal.Footer>
               <Button
                 variant="secondary"
+<<<<<<< HEAD
                 onClick={handleClose}
+=======
+                onClick={cambiar_contra_funcion}
+>>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
                 disabled={newPassword !== confirmPassword}
               >
                 Aceptar
