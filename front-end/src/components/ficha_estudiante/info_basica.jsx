@@ -29,7 +29,6 @@ const Info_basica = (props) =>{
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-
   
     const [loading, setLoading2] = useState(false);
     const [fechas, setFechas] = useState([]);
