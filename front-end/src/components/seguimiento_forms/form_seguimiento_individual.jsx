@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Seguimiento from '../../service/create_seguimiento';
+
 
 
 const Seguimiento_individual = (props) =>{
@@ -67,11 +68,18 @@ const Seguimiento_individual = (props) =>{
             revisado_practicante: false,
             primer_acercamiento: false,
             cierre: false,
+            id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado")),
             id_creador: parseInt(sessionStorage.getItem("id_usuario")),
             id_modificador: null,
-            id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
         }
     )
+    useEffect(()=>{
+        set_state({
+            ...state,
+            id_estudiante : parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
+
+        })
+    }, [state.fecha]);
 
     const set_info = () => {
         console.log(state);
