@@ -85,7 +85,7 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","monitor"],
+            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","monitor","dir_academico"],
             component:<Info_general 
                         id={props.id} 
                         seleccionado={props.seleccionado} 
@@ -98,7 +98,7 @@ const Selector = (props) =>{
         },
         {
             id:2,
-            name:"socioeducativo",
+            name:"SOCIEDUCATIVO",
             contenido:"hola",
             permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","monitor"],
             component:<Socieducativa 
@@ -112,7 +112,7 @@ const Selector = (props) =>{
             id:3,
             name:"ACADEMICO",
             contenido:"hola",
-            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante"],
+            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","dir_academico"],
             component:<Academico data_user_academico={state.data_user_academico}
                         id={props.id}/>,
         },
