@@ -8,7 +8,6 @@ import Seguimiento_inasistencia from '../../seguimiento_forms/form_inasistencia_
 
 const Desplegable_item = ({item}) => {
 
-    const [open, setOpen] = useState(false)
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);

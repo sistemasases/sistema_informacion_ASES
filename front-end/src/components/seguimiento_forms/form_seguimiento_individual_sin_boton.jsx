@@ -9,6 +9,19 @@ import { CSVLink } from 'react-csv';
 
 const Seguimiento_individual = (props) =>{
 
+
+    const recargarPagina = () => {
+        if (form.id_estudiante) {
+            // Cambiar la URL a la página con el ID del estudiante seleccionado
+            window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
+        } else {
+            console.error('No hay un ID de estudiante disponible para recargar la página.');
+        }
+    };
+
+
+
+
     const [form, set_form] = useState({
         id: props.item.id,
         fecha: props.item.fecha,
@@ -849,6 +862,7 @@ const Seguimiento_individual = (props) =>{
             >
                 <Button variant="link">Descargar CSV</Button>
             </CSVLink>
+            {/*
             <Button variant="danger" onClick={delete_info} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
               Eliminar
             </Button>
@@ -858,6 +872,19 @@ const Seguimiento_individual = (props) =>{
             <Button variant="secondary" onClick={()=>props.handleClose()}>
               Cerrar
             </Button>
+             */}
+
+
+            <Button variant="danger" onClick={() => { delete_info(); recargarPagina(); }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
+              Eliminar
+            </Button>
+            <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
+                Aceptar cambios
+            </Button>
+            <Button variant="secondary" onClick={() => { props.handleClose() }}>
+                Cerrar
+            </Button>
+
           </Modal.Footer>
         </Modal>
     )

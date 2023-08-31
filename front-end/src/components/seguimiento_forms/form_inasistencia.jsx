@@ -6,6 +6,21 @@ import Create_Inasistencia from '../../service/create_inasistencia';
 const Inasistencia = (props) => {
     const idEstudianteSeleccionado = sessionStorage.getItem("id_estudiante_seleccionado");
 
+
+
+
+    const recargarPagina = () => {
+        if (state.id_estudiante) {
+            // Cambiar la URL a la página con el ID del estudiante seleccionado
+            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+        } else {
+            console.error('No hay un ID de estudiante disponible para recargar la página.');
+        }
+    };
+
+
+
+
     const [state, set_state] = useState({
         fecha: null,
         observaciones: "",
@@ -91,12 +106,13 @@ const Inasistencia = (props) => {
                 <br/>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={set_info}>
+                <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
                     Registrar
                 </Button>
-                <Button variant="secondary" onClick={() => props.handleCloseIn()}>
+                <Button variant="secondary" onClick={() => { props.handleCloseIn(); recargarPagina(); }}>
                     Cerrar
                 </Button>
+
             </Modal.Footer>
         </Modal>
     );
