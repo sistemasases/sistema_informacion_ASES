@@ -63,7 +63,7 @@ const Selector = (props) =>{
 
       const loadInfo = (e) => {
 
-        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.id+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,
@@ -71,13 +71,36 @@ const Selector = (props) =>{
             headers: config,
             })
             .then((respuesta)=>{
-            state.data_user_socioedu.push(respuesta.data)
+                set_state({
+                    ...state,
+                    data_user_socioedu: respuesta.data
+                  })
             })
             .catch(err=>{
                 return (err)
             })
 
     }
+
+    useEffect(() => {
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            method: "GET",
+            headers: config,
+            })
+            .then((respuesta)=>{
+                set_state({
+                    ...state,
+                    data_user_socioedu: respuesta.data
+                  })
+            })
+            .catch(err=>{
+                return (err)
+            })
+        activeTab('') 
+    }, [props.seleccionado]);
 
 
     const tabs=[

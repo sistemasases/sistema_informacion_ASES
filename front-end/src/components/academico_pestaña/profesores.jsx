@@ -35,7 +35,6 @@ const Profesores = ({item}) => {
           set_state({
             cursos_profesor : response.data
           })
-          console.log("entra aqui ssisisisiisj")
         }
         catch (error){
           console.log("no capto el dato")

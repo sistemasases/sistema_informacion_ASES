@@ -27,7 +27,6 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
           set_state({
             cursos_de_la_facultad : response.data
           })
-          console.log("entra aqui ssisisisiisj")
         }
         catch (error){
           console.log("no capto el dato")
@@ -41,7 +40,6 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
           set_state({
             franjas_de_curso : response.data
           })
-          console.log("entra aqui ssisisisiisj")
         }
         catch (error){
           console.log("no capto el dato")
@@ -55,7 +53,6 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
           set_state({
             profesores_de_la_franja : response.data
           })
-          console.log("entra aqui ssisisisiisj")
         }
         catch (error){
           console.log("no capto el dato")
@@ -69,7 +66,6 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
           set_state({
             alumnos_del_profesor : response.data
           })
-          console.log("entra aqui ssisisisiisj")
         }
         catch (error){
           console.log("no capto el dato")

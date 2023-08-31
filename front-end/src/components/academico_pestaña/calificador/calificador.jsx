@@ -75,7 +75,6 @@ const Cabecera = () => {
           tiene_alumnos_del_profesor: true,
         });
         setAlumnos_del_profesor(response.data);
-        console.log('Datos de alumnos capturados correctamente');
       } catch (error) {
         console.log('Error al obtener los datos de alumnos');
       }
