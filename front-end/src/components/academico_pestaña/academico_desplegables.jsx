@@ -44,7 +44,6 @@ const Academico_desplegable = () => {
       ...state,
       [e.target.name]: e.target.value
     });
-    console.log(e.target.value);
   };
 
   useEffect(() => {
@@ -68,7 +67,6 @@ const Academico_desplegable = () => {
       set_state({
         traer_materias_del_profesor: response.data,
       });
-      console.log('Facultades:', response.data);
     } catch (error) {
       console.log('Error al obtener facultades:', error);
     }
@@ -81,7 +79,7 @@ const Academico_desplegable = () => {
         facultades: response.data,
         tiene_facultades: true
       })
-      console.log("entra aqui ssisisisiisj")
+
     }
     catch (error){
       console.log("no capto el dato")
@@ -97,7 +95,6 @@ const Academico_desplegable = () => {
         facultades: response.data,
         tiene_facultades: true
       });
-      console.log('Facultades:', response.data);
     } catch (error) {
       console.log('Error al obtener facultades:', error);
     }
