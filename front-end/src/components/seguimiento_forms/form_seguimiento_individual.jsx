@@ -1,10 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Seguimiento from '../../service/create_seguimiento';
 
 
+
 const Seguimiento_individual = (props) =>{
+
+
+    const recargarPagina = () => {
+        if (state.id_estudiante) {
+            // Cambiar la URL a la página con el ID del estudiante seleccionado
+            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+        } else {
+            console.error('No hay un ID de estudiante disponible para recargar la página.');
+        }
+    };
+
+
 
     const [state, set_state] = useState({
             fecha: null,
@@ -67,11 +80,18 @@ const Seguimiento_individual = (props) =>{
             revisado_practicante: false,
             primer_acercamiento: false,
             cierre: false,
+            id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado")),
             id_creador: parseInt(sessionStorage.getItem("id_usuario")),
             id_modificador: null,
-            id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
         }
     )
+    useEffect(()=>{
+        set_state({
+            ...state,
+            id_estudiante : parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
+
+        })
+    }, [state.fecha]);
 
     const set_info = () => {
         console.log(state);
@@ -827,11 +847,13 @@ const Seguimiento_individual = (props) =>{
                 <hr></hr>
             </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={set_info}>
-              Registrar
+
+
+            <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
+                Registrar
             </Button>
-            <Button variant="secondary" onClick={()=>props.handleClose()}>
-              Cerrar
+            <Button variant="secondary" onClick={() => { props.handleClose(); recargarPagina(); }}>
+                Cerrar
             </Button>
           </Modal.Footer>
         </Modal>

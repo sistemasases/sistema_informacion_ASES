@@ -27,7 +27,6 @@ const Listas_no_seleccion = (props) => {
       data: formData,
         })
         .then((res)=>{
-        console.log(res)
             childClicked2(props.monitor_seleccionado)
         })
         .catch(err=>{
@@ -51,7 +50,6 @@ const Listas_no_seleccion = (props) => {
       data: formData,
         })
         .then((res)=>{
-            console.log(res)
             childClicked(props.practicante_seleccionado)
         })
         .catch(err=>{

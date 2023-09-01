@@ -24,6 +24,7 @@ from modulo_programa.serializers import  programa_estudiante_serializer, program
 from modulo_instancia.serializers import semestre_serializer, cohorte_serializer
 from modulo_asignacion.serializers import asignacion_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer, inasistencia_serializer
+from django.core.exceptions import MultipleObjectsReturned
 
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
@@ -41,7 +42,10 @@ import pandas as pd
 
 
 
-
+class retiro_viewsets (viewsets.ModelViewSet):
+    serializer_class = retiro_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = retiro_serializer.Meta.model.objects.all()
 
 
 
@@ -173,12 +177,20 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             diccionario_estudiante.update(diccionarion_identidad_gen)
         except identidad_gen.DoesNotExist:
             diccionario_estudiante['id_identidad_gen'] = None
+        except MultipleObjectsReturned:
+            identidad_gen_obj = identidad_gen.objects.filter(opcion_general=identidad_gen_id).first()
+            diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
+            diccionario_estudiante.update(diccionarion_identidad_gen)
         try:
             etnia_obj = etnia.objects.get(opcion_general=etnia_id)
             diccionarion_etnia = {'el_id_de_etnia':etnia_obj.etnia}
             diccionario_estudiante.update(diccionarion_etnia)
         except etnia.DoesNotExist:
             diccionario_estudiante['id_etnia'] = None
+        except MultipleObjectsReturned:
+            etnia_obj = etnia.objects.filter(opcion_general=etnia_id).first()
+            diccionarion_etnia = {'el_id_de_etnia':etnia_obj.etnia}
+            diccionario_estudiante.update(diccionarion_etnia)
         try:
             estado_civil_obj = estado_civil.objects.get(id=estado_civil_id)
             diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_obj.estado_civil}
@@ -280,10 +292,11 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         serializer_semestre = semestre_serializer(var_semestre)
 
         estudiantes_asignados = estudiante.objects.filter(asignacion__id_usuario=pk, asignacion__estado=True, asignacion__id_semestre=serializer_semestre.data['id']).distinct()
-        estudiantes_no_asignados = estudiante.objects.filter(~Q(asignacion__id_semestre=serializer_semestre.data['id']) | Q(asignacion__estado=False)).distinct()
-
+        estudiantes_totales = estudiante.objects.all()
+        estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
+        estudiantes_totales = estudiantes_totales.exclude(id__in=estudiantes_no_asignados.values_list('id', flat=True))
         list_estudiantes_selected = [estudiante_serializer(est).data for est in estudiantes_asignados]
-        list_estudiantes = [estudiante_serializer(est).data for est in estudiantes_no_asignados]
+        list_estudiantes = [estudiante_serializer(est).data for est in estudiantes_totales]
 
         datos = [list_estudiantes_selected, list_estudiantes]
         return Response(datos, status=status.HTTP_200_OK)
@@ -416,7 +429,7 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
                     print('no hiz act_simultanea')
 
                 try:
-                    identidad_gen_obj = identidad_gen.objects.get(id=identidad_gen_request)
+                    identidad_gen_obj = identidad_gen.objects.filter(id=identidad_gen_request).first()
                     var_estudiante.id_identidad_gen = identidad_gen_obj
                 except:
                     print('no hiz identidad_gen')
@@ -436,10 +449,8 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
                 var_estudiante.save()
                 return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
             except estudiante.DoesNotExist:
-                print('primer print')
                 return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        print('segundo print')
-        print(serializer.errors)
+
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -541,7 +552,6 @@ class usuario_rol_viewsets (viewsets.ModelViewSet):
 
     # def list(self, request):
     #     list_user_rol = list()
-    #     print(request.data)
     #     var_semestre = get_object_or_404(semestre, semestre_actual = True)
     #     for user_rol in usuario_rol.objects.filter(id_semestre =var_semestre.id, estado = "ACTIVO").values():
     #         rols= rol.objects.filter(id =user_rol['id_rol_id']).annotate(id_rol=F('id')).values('id_rol','nombre')[0]
@@ -590,21 +600,19 @@ class usuario_rol_viewsets (viewsets.ModelViewSet):
             except:
                 var_old_user_rol = Empty
             if(var_old_user_rol != Empty and var_old_user_rol.estado == "ACTIVO"):
-                print("entre a 1")
+
                 var_user_rol= var_old_user_rol
                 var_user_rol.id_usuario= var_usuario
                 var_user_rol.id_rol = var_rol
                 var_user_rol.id_semestre = var_semestre
                 var_user_rol.save()
             elif(var_old_user_rol == Empty) :
-                print("entre a 2")
                 var_user_rol= usuario_rol()
                 var_user_rol.id_usuario= var_usuario
                 var_user_rol.id_rol = var_rol
                 var_user_rol.id_semestre = var_semestre
                 var_user_rol.save()
             elif(var_old_user_rol != Empty and var_old_user_rol.estado == "INACTIVO"):
-                print("entre a 3")
                 var_user_rol= var_old_user_rol
                 var_user_rol.id_usuario= var_usuario
                 var_user_rol.id_rol = var_rol
@@ -636,7 +644,6 @@ class usuario_rol_old_viewsets (viewsets.ModelViewSet):
     def list(self, request):
         list_user_rol = list()
         var_semestre = semestre.objects.filter(semestre_actual = False).order_by('-fecha_inicio').first()
-        print(var_semestre.nombre)
         for user_rol in usuario_rol.objects.filter(id_semestre =var_semestre.id, estado = "ACTIVO").values():
             rols= rol.objects.filter(id =user_rol['id_rol_id']).annotate(id_rol=F('id')).values('id_rol','nombre')[0]
             usuarios= User.objects.filter(id =user_rol['id_usuario_id']).values('id','username','first_name','last_name', 'email')[0]
@@ -958,7 +965,6 @@ class monitor_viewsets (viewsets.ModelViewSet):
         val_rol = rol.objects.get(nombre = 'monitor')
         id_rol_monitor = (rol_serializer(val_rol)).data['id']
         consulta_id_monitores = list(usuario_rol.objects.filter(id_rol = id_rol_monitor,estado = 'ACTIVO',id_semestre=var_semestre))
-        print(consulta_id_monitores)
         for i in consulta_id_monitores:
             serializer_usuario_rol =usuario_rol_serializer(i)
             consulta_monitor = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
@@ -1141,9 +1147,6 @@ class monitor_info_extra_viewsets(viewsets.ModelViewSet):
             for id_monitor_programa in ids_del_monitor_para_sus_progamas:
                 programa_seleccionado = programa_monitor.objects.filter(id_monitor=id_monitor_programa['id']).first()                
                 var_programa = programa.objects.filter(id=programa_seleccionado.id_programa_id).values()
-                print(var_programa)
-
-                print( id_monitor_programa)
 
                 dic_programa = {'nombre_programa': var_programa[0]['nombre'], 
                                 'cod_univalle': var_programa[0]['codigo_univalle'],
@@ -1151,10 +1154,10 @@ class monitor_info_extra_viewsets(viewsets.ModelViewSet):
                                 'id_estado_id': programa_seleccionado.id_estado_id,
                                 'traker': programa_seleccionado.traker
                                 }  # Agregar el estado del curso al diccionario
-                print(dic_programa)
+
 
                 dic = id_monitor_programa
-                print(dic)
+
                 dic.update(dic_programa)
                 lista_programas.append(dic)
             diccionario_programas = {'programas': lista_programas}
@@ -1241,13 +1244,12 @@ class monitor_actualizacion_viewsets (viewsets.ModelViewSet):
                 var_monitor.observacion = observacion_request
                 var_monitor.ult_modificacion = ult_modificacion_request
 
-                var_estudiante.save()
+                var_monitor.save()
                 return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
             except estudiante.DoesNotExist:
-                print('primer print')
+
                 return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        print('segundo print')
-        print(serializer.errors)
+
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -1274,11 +1276,9 @@ class mas_con_quien_vive_viewsets (viewsets.ModelViewSet):
 
     def post(self, request, pk=None):
         # serializer = self.serializer_class(data=request.data)
-        # print('esta es la info: '+ str(request.data))
         # if (serializer.is_valid()):
         serializer = self.serializer_class(data=request.data)
 
-        print('este es jajaja : ' + str(serializer))
         if serializer.is_valid():
 
             puntaje_icfes_request = serializer.data['puntaje_icfes']
@@ -1327,7 +1327,7 @@ class mas_con_quien_vive_viewsets (viewsets.ModelViewSet):
                     print('no hiz act_simultanea')
 
                 try:
-                    identidad_gen_obj = identidad_gen.objects.get(id=identidad_gen_request)
+                    identidad_gen_obj = identidad_gen.objects.filter(id=identidad_gen_request).first()
                     var_estudiante.id_identidad_gen = identidad_gen_obj
                 except:
                     print('no hiz identidad_gen')
@@ -1347,10 +1347,7 @@ class mas_con_quien_vive_viewsets (viewsets.ModelViewSet):
                 var_estudiante.save()
                 return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
             except estudiante.DoesNotExist:
-                print('primer print')
                 return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        print('segundo print')
-        print(serializer.errors)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -1465,7 +1462,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
         consulta_id_profesional = list(usuario_rol.objects.filter(id_rol = id_rol_profesional, id_semestre=pk))
         
         for i in consulta_id_profesional:
-            print('entra a los profesionales, son :' + str(consulta_id_profesional))
+
             serializer_usuario_rol = usuario_rol_serializer(i)
             consulta_profesional = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
             serializer_profesional = user_selected(consulta_profesional)
@@ -1475,7 +1472,6 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
             consulta_id_practicante_selected = list(usuario_rol.objects.filter(id_semestre=pk, id_jefe = serializer_profesional.data['id'], id_rol = id_rol_practicante))
 
             for j in consulta_id_practicante_selected:
-                print('entra a los practicantes, son :' + str(consulta_id_practicante_selected))
                 serializer_usuario_rol_selected =usuario_rol_serializer(j)
                 consulta_practicante_selected  = User.objects.get(id = serializer_usuario_rol_selected.data['id_usuario'])
                 serializer_practicante_selected  = user_selected(consulta_practicante_selected )
@@ -1484,7 +1480,6 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
                 consulta_id_monitores_selected = list(usuario_rol.objects.filter(id_semestre=pk, id_jefe = serializer_practicante_selected.data['id'], id_rol = id_rol_monitor))
 
                 for k in consulta_id_monitores_selected:
-                    print('entra a los monitores, son :' + str(consulta_id_monitores_selected))
                     serializer_usuario_rol_selected =usuario_rol_serializer(k)
                     consulta_monitor_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
                     serializer_monitor_selected  = user_selected(consulta_monitor_selected )
@@ -1494,7 +1489,6 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
                     lista_asignacion = list(asignacion.objects.filter(id_usuario = serializer_monitor_selected.data['id'], estado=True, id_semestre=pk))
 
                     for l in lista_asignacion:
-                        print('entra a los estudiantes, son :' + str(lista_asignacion))
                         serializer_asignacion =asignacion_serializer(l)
                         estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
                         serializer_estudiante =estudiante_serializer(estudiante_selected)
@@ -1502,8 +1496,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
                         cedula = serializer_estudiante.data['num_doc']
                         nombres = serializer_estudiante.data['nombre']
                         apellidos = serializer_estudiante.data['apellido']
-                        print('datos estudiante : ')
-                        print(id)
+
 
                         list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = id))
                         list_inasistencia_individual = list(inasistencia.objects.filter(id_estudiante = id))
@@ -1750,7 +1743,6 @@ class cohortes_lista_viewsets (viewsets.ModelViewSet):
         list_final = []
 
         list_estudiantes_de_la_cohorte = cohorte.objects.all()
-        print(list_estudiantes_de_la_cohorte)
         for i in list_estudiantes_de_la_cohorte:
             serializer_usuario_rol =cohorte_serializer(i)
             list_final.append(serializer_usuario_rol.data)
@@ -1768,7 +1760,7 @@ class cohorte_estudiante_info_viewsets (viewsets.ModelViewSet):
         list_final = []
 
         list_estudiantes_de_la_cohorte = cohorte_estudiante.objects.all()
-        print(list_estudiantes_de_la_cohorte)
+
         for i in list_estudiantes_de_la_cohorte:
             serializer_usuario_rol =cohorte_estudiante_serializer(i)
             list_final.append(serializer_usuario_rol.data)
@@ -1815,7 +1807,7 @@ class firma_tratamiento_datos_view(APIView):
     def post(self, request):
         serializer = firma_tratamiento_datos_serializer(data=request.data)
         if serializer.is_valid():
-            print(serializer.data["documento"])
+
             if (estudiante.objects.filter(num_doc = serializer.data["documento"]).first()):
                 consulta_estudiante = estudiante.objects.filter(num_doc = request.data["documento"]).first()
                 try:

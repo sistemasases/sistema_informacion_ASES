@@ -51,7 +51,7 @@ const Info_general = (props) =>{
       personas_con_quien_vive : props.datos['vive_con'],                                        
       acudiente_emergencia : props.datos['acudiente'], 
       tel_acudiente_emergencia : props.datos['telefono_acudiente'],                                                                           
-      observaciones : 'none',     
+      observaciones : props.datos['observacion'],     
             puntaje_icfes:props.datos['puntaje_icfes'],                       // Integer
             telefono_res:props.datos['telefono_res'],                         // BigIntegerField
             celular:props.datos['celular'],                                   // BigIntegerField
@@ -71,7 +71,7 @@ const Info_general = (props) =>{
 
       ultima_actualizacion:'sin dato',                                         
 
-
+      nuevo_observaciones : props.datos['observacion'],     
       nuevo_puntaje_icfes:props.datos['puntaje_icfes'],
       nuevo_año_ingreso_univalle:props.datos['anio_ingreso'],
       nuevo_telefono_res:props.datos['telefono_res'],
@@ -308,7 +308,6 @@ const agregarPariente = () => {
             nuevo_personas_con_quien_vive: newPersonasConQuienVive,
             };
       });
-      console.log("este esl personas con quie viv :  " + state.nuevo_personas_con_quien_vive)
       } else {
       // Si no, actualiza los demás campos normalmente
       set_state({
@@ -393,7 +392,6 @@ const agregarPariente = () => {
       headers: config2,
       })
       .then((res)=>{
-            console.log("este es el response : " + res)
             set_state({
             ...state,
             puntaje_icfes:state.nuevo_puntaje_icfes,
@@ -416,7 +414,6 @@ const agregarPariente = () => {
 
             editar : false,
             })
-            console.log("pero que esta pasando ???" )
             alert("estudiante fue editado correctamente a :" + props.datos.id)
       })
       .catch(err=>{
@@ -443,7 +440,6 @@ const agregarPariente = () => {
 
                   editar : true,
                   })
-                  console.log("pero que esta pasando ???" )
                   alert("error al editar el estudiante :" + err)
                   
             //console.log("entra al malo")
@@ -980,12 +976,37 @@ const agregarPariente = () => {
           </Row>
           )
         :
-        (<Row>
-          <Col xs={"12"} className="col_adicionar_parentesco">
-                <Button className="adicionar_parentesco" onClick={agregarPariente}>
-                <i class="bi bi-plus-circle"></i>
-                </Button>
-          </Col>
+        (
+      <Row>
+            <Col xs={"12"} className="col_adicionar_parentesco">
+            <Col>
+                  <Row>
+                        <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+                        <input
+                        className="texto_pequeño_12pt"
+                        name={`nuevo_personas_con_quien_vive[${0}].nombre`}
+                        onChange={cambiar_datos}
+                        ></input>
+                        </Col>
+                        <Col xs={"6"} md={"6"} className="texto_pequeño_12pt">
+                        <input
+                        className="texto_pequeño_12pt"
+                        name={`nuevo_personas_con_quien_vive[${0}].pariente`}
+                        onChange={cambiar_datos}
+                        ></input>
+                        </Col>    
+                  </Row>
+            </Col>
+
+                  <Col xs={"12"} className="col_adicionar_parentesco">
+                    <Button className="adicionar_parentesco" onClick={guardarPariente}>
+                          Guardar
+                    </Button>
+                    <Button className="adicionar_parentesco" onClick={cancelarPariente}>
+                          Cancelar
+                    </Button>
+              </Col>
+              </Col>
         </Row>)
       }
         
@@ -1115,10 +1136,25 @@ const agregarPariente = () => {
                       )
                       }
                 </Row>
-                <Row>
+                {state.editar ? 
+                (
+                  <Row>
+                    <h1 className="texto_subtitulo">Observaciones</h1>
+                    <input className="texto_pequeño_12pt"
+                                          name="nuevo_observaciones" 
+                                          onChange={cambiar_datos} 
+                                          defaultValue={state.observaciones}></input>
+                </Row>
+                )
+                :
+                (
+                  <Row>
                     <h1 className="texto_subtitulo">Observaciones</h1>
                     <h4 className="texto_pequeño_12pt">texto</h4>
                 </Row>
+                )
+                }
+
 
             </Col>    
             
