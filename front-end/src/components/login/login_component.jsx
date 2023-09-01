@@ -38,7 +38,6 @@ const Login_component = () => {
   const handleSendNewData = () => {
     axios.post(url, data)
       .then(res => {
-        console.log(res.data)
         sessionStorage.setItem('token', res.data.token);
         sessionStorage.setItem('refresh-token', res.data['refresh-token']);
         sessionStorage.setItem('id_usuario', res.data.user.id);
@@ -61,7 +60,6 @@ const Login_component = () => {
         });
       })
       .catch(err => {
-        console.log(err)
         if (err.response.status === 400){
           set_state({
             ...state,

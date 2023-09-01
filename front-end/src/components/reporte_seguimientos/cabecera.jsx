@@ -180,8 +180,6 @@ const Cabecera = (props) => {
           .catch((err) => {});
       }
       bandera_option_user = false;
-    } else {
-      console.log('bandera off');
     }
   };
 

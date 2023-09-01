@@ -58,9 +58,6 @@ const Cabecera = (props) =>{
           }
           bandera_option_user = false;
         }
-        else{
-          console.log("bandera off");
-        }
       }
 
 

@@ -29,7 +29,6 @@ const Info_basica = (props) =>{
     Authorization: 'Bearer ' + sessionStorage.getItem('token')
   };
 
-
   
     const [loading, setLoading2] = useState(false);
     const [fechas, setFechas] = useState([]);
@@ -97,9 +96,13 @@ const Info_basica = (props) =>{
 
     const userRole = sessionStorage.getItem('rol');
 
+
+
+
     var bandera_option_user = true;
     const [state,set_state] = useState({
 
+      actualizar:0,
       total_datos_estudiante_seleccionado:[],
       editar : false,
       usuario : '',
@@ -130,7 +133,6 @@ const Info_basica = (props) =>{
     })
 
     useEffect(() => {
-      console.log('entra al useeffct xd')
       if (state.total_datos_estudiantes['nombre'] && isLoading) {
         set_state({
           ...state,
@@ -152,9 +154,6 @@ const Info_basica = (props) =>{
           total_datos_estudiante_seleccionado : state.total_datos_estudiantes
         })
       }
-      else{
-      console.log(state.total_datos_estudiantes.length)
-      }
 
     }, [state.total_datos_estudiantes]);
 
@@ -162,6 +161,13 @@ const Info_basica = (props) =>{
     const [selectedOption, setSelectedOption] = useState("");
 
     const { id } = useParams();
+
+      function nuevo_actualizar(name){
+        set_state({
+          ...state,
+          actualizar:state.actualizar+name
+        })
+      }
 
 
     useEffect(() => {
@@ -183,10 +189,8 @@ const Info_basica = (props) =>{
       try{
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config);
         state.total_datos_estudiantes.push(response.data)
-        console.log("entra aqui ssisisisiisj")
       }
       catch (error){
-        console.log("no capto el dato")
         fetchData(index);
       }
     }
@@ -231,9 +235,6 @@ const Info_basica = (props) =>{
           }
         }
         bandera_option_user = false;
-      }
-      else{
-        console.log("bandera off");
       }
 
     }
@@ -312,6 +313,7 @@ const Info_basica = (props) =>{
                         <Row className="rowJustFlex" >
                             <Col className="colInfo1" xs={"12"}>
                                 <Row className="infoRow1">
+                                
                                   <Col md={"12"}>
                                     {
                                       (state.seleccionado) === '' ?
@@ -319,7 +321,7 @@ const Info_basica = (props) =>{
                                         <Row className="info"> 
                                             <Col className="info_texto" xs={"5"} md={"3"}>
                                               <h4 className="texto_mas_pequeño">{state.tipo_doc}
-                                                cédula
+                                                cédula 
                                               </h4>
                                             </Col>
                                             <Col className="info_texto" md={"5"}>
@@ -678,7 +680,7 @@ const Info_basica = (props) =>{
         <div class="d-none d-md-block col-12">
           <Row>
             <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
-                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
+                      seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} 
                       handleOptionUser={handle_option_user}/>
           </Row>
 
@@ -695,7 +697,7 @@ const Info_basica = (props) =>{
 
         <div class="d-block d-md-none col-12">
           <Col>
-          <Selector id={state.id_usuario} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
+          <Selector id={state.id_usuario} actualizar={state.actualizar} rolUsuario={props.rolUsuario} datos={state.total_datos_estudiante_seleccionado} 
                     seleccionado={state.seleccionado} editar={state.editar} codigo={state.id_usuario} tab_abierto={state.tab_abierto}
                     handleOptionUser={handle_option_user}/>
           </Col>
