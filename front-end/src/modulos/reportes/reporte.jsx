@@ -4,6 +4,7 @@ import { Container, Col, Row, Button, Form, Alert } from "react-bootstrap";
 // import all_estudiantes_reportes from "../../service/all_estudiantes_reportes";
 // import Select from "react-select";
 import DataTable from "react-data-table-component";
+import DataTableExtensions from "react-data-table-component-extensions";
 // import Checkbox from "react-bootstrap/FormCheck";
 // import Modal from "react-bootstrap/Modal";
 // import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
@@ -1580,6 +1581,68 @@ const Reporte = () => {
 
   let navigate = useNavigate();
 
+  // const Filtering = () => {
+  //   const [filterText, setFilterText] = React.useState("");
+  //   const [resetPaginationToggle, setResetPaginationToggle] =
+  //     React.useState(false);
+  //   const filteredItems = fakeUsers.filter(
+  //     (item) =>
+  //       item.name && item.name.toLowerCase().includes(filterText.toLowerCase())
+  //   );
+
+  //   const subHeaderComponentMemo = React.useMemo(() => {
+  //     const handleClear = () => {
+  //       if (filterText) {
+  //         setResetPaginationToggle(!resetPaginationToggle);
+  //         setFilterText("");
+  //       }
+  //     };
+
+  //     return (
+  //       <FilterComponent
+  //         onFilter={(e) => setFilterText(e.target.value)}
+  //         onClear={handleClear}
+  //         filterText={filterText}
+  //       />
+  //     );
+  //   }, [filterText, resetPaginationToggle]);
+  // };
+
+  const filterBox = () => {
+    return (
+      <>
+        {/* Buscador */}
+        <Row>
+          <Col
+            sm={1}
+            xs={1}
+            style={{ paddingRight: "0.1em", marginRight: "0.1em" }}
+          >
+            <Form.Control
+              type="text"
+              placeholder="Buscar "
+              // value={}
+              onChange={(e) => onSearch(e)}
+              style={{ width: "6em" }}
+            />
+          </Col>
+
+          <Col
+            sm={1}
+            xs={1}
+            style={{
+              textAlign: "left",
+              paddingLeft: "0.1em",
+              marginleft: "0.1em",
+            }}
+          >
+            <Button>X</Button>
+          </Col>
+        </Row>
+      </>
+    );
+  };
+
   // console.log(proc_link_estudiante(state.estudiante));
 
   return (
@@ -1590,7 +1653,7 @@ const Reporte = () => {
             <div>
               <h1>Reporte General</h1>
             </div>
-
+            {filterBox()}
             <br />
             {/* Cabeceras de Filtros */}
             <Row>
@@ -1726,6 +1789,18 @@ const Reporte = () => {
             />
             <br />
 
+            {/* <DataTableExtensions
+                columns={columnas}
+                data={state.data_user_rol}
+                filter={true}
+                filterPlaceHolder={2}
+                filterDigit={1}
+                exportHeaders={true}
+                ></DataTableExtensions> */}
+
+            {columnas.cabeceras.map((item, index) => (
+              <div key={index}>{filterBox()}</div>
+            ))}
             {/* Tabla */}
             <DataTable
               id="tabla_Reporte"
