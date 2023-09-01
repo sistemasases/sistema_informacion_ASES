@@ -3,10 +3,24 @@ import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, Fo
 import Form from 'react-bootstrap/Form';
 import Update_seguimiento from '../../service/update_seguimiento';
 import Delete_seguimiento from '../../service/delete_seguimiento';
+import { CSVLink } from 'react-csv';
 
 
 
 const Seguimiento_individual = (props) =>{
+
+
+    const recargarPagina = () => {
+        if (form.id_estudiante) {
+            // Cambiar la URL a la página con el ID del estudiante seleccionado
+            window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
+        } else {
+            console.error('No hay un ID de estudiante disponible para recargar la página.');
+        }
+    };
+
+
+
 
     const [form, set_form] = useState({
         id: props.item.id,
@@ -86,7 +100,7 @@ const Seguimiento_individual = (props) =>{
     }
 
     const delete_info = (e) => {
-        if(window.confirm("¿Está seguro que desea eleminar el seguimiento?")){
+        if(window.confirm("¿Está seguro que desea eliminar el seguimiento?")){
             Delete_seguimiento.Delete_seguimiento(form.id).then(res=>{
                 if(res){
                     props.handleClose()
@@ -580,11 +594,6 @@ const Seguimiento_individual = (props) =>{
                     <Col>
                         <Form.Check type="checkbox" label="Alto" checked={state.riesgo_individual_alto} name="riesgo_individual_alto" onChange={handleForm}/>
                     </Col>
-                    <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
-                    </Col>
                 </Row>
                 <Row>
                     <h6><b>Temáticas (individual)</b></h6>
@@ -644,11 +653,6 @@ const Seguimiento_individual = (props) =>{
                     <Col>
                         <Form.Check type="checkbox" label="Alto" checked={state.riesgo_familiar_alto} name="riesgo_familiar_alto" onChange={handleForm}/>
                     </Col>
-                    <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
-                    </Col>
                 </Row>
                 <Row>
                     <h6><b>Temáticas (Familiar)</b></h6>
@@ -674,11 +678,6 @@ const Seguimiento_individual = (props) =>{
                     </Col>
                     <Col>
                         <Form.Check type="checkbox" label="Alto" checked={state.riesgo_academico_alto} name="riesgo_academico_alto" onChange={handleForm}/>
-                    </Col>
-                    <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
                     </Col>
                 </Row>
                 <Row>
@@ -711,11 +710,6 @@ const Seguimiento_individual = (props) =>{
                     </Col>
                     <Col>
                         <Form.Check type="checkbox" label="Alto" checked={state.riesgo_economico_alto} name="riesgo_economico_alto" onChange={handleForm}/>
-                    </Col>
-                    <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
                     </Col>
                 </Row>
                 <Row>
@@ -753,11 +747,6 @@ const Seguimiento_individual = (props) =>{
                     </Col>
                     <Col>
                         <Form.Check type="checkbox" label="Alto" checked={state.riesgo_vida_universitaria_ciudad_alto} name="riesgo_vida_universitaria_ciudad_alto" onChange={handleForm}/>
-                    </Col>
-                    <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
                     </Col>
                 </Row>
                 <Row>
@@ -867,6 +856,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
             </Modal.Body>
           <Modal.Footer>
+            <CSVLink
+                data={[props.item]}
+                filename={"Seguimiento Individual " + props.item.fecha}
+            >
+                <Button variant="link">Descargar CSV</Button>
+            </CSVLink>
+            {/*
             <Button variant="danger" onClick={delete_info} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
               Eliminar
             </Button>
@@ -876,6 +872,19 @@ const Seguimiento_individual = (props) =>{
             <Button variant="secondary" onClick={()=>props.handleClose()}>
               Cerrar
             </Button>
+             */}
+
+
+            <Button variant="danger" onClick={() => { delete_info(); recargarPagina(); }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
+              Eliminar
+            </Button>
+            <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
+                Aceptar cambios
+            </Button>
+            <Button variant="secondary" onClick={() => { props.handleClose() }}>
+                Cerrar
+            </Button>
+
           </Modal.Footer>
         </Modal>
     )

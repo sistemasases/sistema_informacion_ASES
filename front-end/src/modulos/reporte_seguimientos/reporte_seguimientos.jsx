@@ -28,7 +28,7 @@ const Reporte_seguimientos = (props) =>{
 
     useEffect(()=>{
       
-      if (sessionStorage.getItem('rol') === 'super_ases')
+      if (sessionStorage.getItem('rol') === 'super_ases' || sessionStorage.getItem('rol') === 'socioeducativo'|| sessionStorage.getItem('rol') === 'socioeducativo_reg' )
       {
         axios({
           // Endpoint to send files
@@ -41,13 +41,12 @@ const Reporte_seguimientos = (props) =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+respuesta.data)
         })
         .catch(err=>{
           console.log("error" + err)
         })
       }
-      else if (sessionStorage.getItem('rol') === 'Profesional')
+      else if (sessionStorage.getItem('rol') === 'profesional')
       {
         axios({
           // Endpoint to send files
@@ -60,14 +59,13 @@ const Reporte_seguimientos = (props) =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+respuesta.data)
         })
         .catch(err=>{
           console.log("error" + err)
         })
 
       }
-      else if (sessionStorage.getItem('rol') === 'Practicante')
+      else if (sessionStorage.getItem('rol') === 'practicante')
       {
         axios({
           // Endpoint to send files
@@ -80,7 +78,6 @@ const Reporte_seguimientos = (props) =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+respuesta.data)
         })
         .catch(err=>{
           console.log("error" + err)

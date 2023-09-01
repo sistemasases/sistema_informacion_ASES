@@ -51,7 +51,6 @@ const Selector = (props) =>{
         (setActiveTabIndex(0))
         :
         setActiveTabIndex(index)
-        console.log("estos son los datos generales2")
                     console.log(props.datos)
     }
 

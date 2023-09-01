@@ -23,7 +23,6 @@ const Profesores = ({item}) => {
               ...state,
               [e.target.name] : e.target.value
         })
-        console.log(e.target.value)
   }
 
     const [open, setOpen] = useState(false)
@@ -35,7 +34,6 @@ const Profesores = ({item}) => {
           set_state({
             cursos_profesor : response.data
           })
-          console.log("entra aqui ssisisisiisj")
         }
         catch (error){
           console.log("no capto el dato")

@@ -100,7 +100,7 @@ const isTabSelected_monitor = (username) => {
 
     if(state.data_profesionales.length > state.opciones_profesionales.length)
     {
-      console.log("entra una vez")
+
       for (var i = 0; i < state.data_profesionales.length ; i++) {
           const dato = 
           { value: state.data_profesionales[i]['id'], 
@@ -109,14 +109,9 @@ const isTabSelected_monitor = (username) => {
           id:state.data_profesionales[i]['id'] }
 
           state.opciones_profesionales.push(dato)
-          console.log("entra 1")
-          console.log(state.opciones_profesionales[i])
+
         }
-        console.log("entra2")
-        console.log(state.opciones_profesionales)
-    }
-    {
-      console.log("entra dos veces")
+
     }
 
         
@@ -180,7 +175,6 @@ const isTabSelected_monitor = (username) => {
       ...state,
       [e.target.name] : e.target.value
     })
-    console.log(e.target.value)
     }
 
 
@@ -207,7 +201,6 @@ const isTabSelected_monitor = (username) => {
       practicante_seleccionado : name
     })
 
-    console.log("estos son los monitores separados : " + state.separacion_monitores)
   }
 
 
@@ -233,7 +226,6 @@ const isTabSelected_monitor = (username) => {
       monitor_seleccionado : name
     })
 
-    console.log("estos son los monitores separados : " + state.separacion_estudiantes)
   }
 
 
@@ -315,6 +307,7 @@ const isTabSelected_monitor = (username) => {
                     (
                     <Col className="scroll_listas">
                           <br></br> 
+                          <Scrollbars>
                       { state.separacion_practicantes['0'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
                         : 
@@ -329,11 +322,11 @@ const isTabSelected_monitor = (username) => {
                           key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
                           childClicked={(name)=>practicante_seleccion(name)}/>
                         </Col>
-                      
+                       
 
                     ) }
 
-
+                    
                     <Row className="separador_asignaciones"></Row>
                       { state.separacion_practicantes['1'].filter((item)=>{
                         return state.practicante_filtro.toLowerCase() === '' ? item 
@@ -345,10 +338,12 @@ const isTabSelected_monitor = (username) => {
                     key={index} item={item} rol={rol} 
                     profesional_seleccionado={state.profesional_seleccionado}
                     childClicked={(name)=>practicante_seleccion(name)}/>) }
+                    </Scrollbars>
                     </Col>
+                    
                     )
                   }
-
+                  
               </Row>
 
             </Col>

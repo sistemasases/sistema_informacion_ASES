@@ -8,7 +8,9 @@ class rol_admin(admin.ModelAdmin):
     list_display = ('id','nombre') 
 
 class estudiante_admin(admin.ModelAdmin):
-    list_display = ('id','nombre', 'apellido','cod_univalle','num_doc') 
+    list_display = ('id','nombre', 'apellido','cod_univalle','num_doc')
+    list_filter = ('nombre', 'apellido','cod_univalle','num_doc')
+    search_fields = ('nombre', 'apellido','cod_univalle','num_doc')
 
 class monitor_admin(admin.ModelAdmin):
     list_display = ('id','id_user', 'cod_univalle','num_doc') 

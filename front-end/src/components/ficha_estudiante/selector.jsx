@@ -42,7 +42,6 @@ const Selector = (props) =>{
 
 
     useEffect(() => {
-        console.log('entra al useeffct xd : ' + props.tab_abierto)
         setActiveTabIndex(props.tab_abierto)
 
       }, [props.tab_abierto]);
@@ -63,7 +62,7 @@ const Selector = (props) =>{
 
       const loadInfo = (e) => {
 
-        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.id+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,
@@ -71,7 +70,10 @@ const Selector = (props) =>{
             headers: config,
             })
             .then((respuesta)=>{
-            state.data_user_socioedu.push(respuesta.data)
+                set_state({
+                    ...state,
+                    data_user_socioedu: respuesta.data
+                  })
             })
             .catch(err=>{
                 return (err)
@@ -79,13 +81,33 @@ const Selector = (props) =>{
 
     }
 
+    useEffect(() => {
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            method: "GET",
+            headers: config,
+            })
+            .then((respuesta)=>{
+                set_state({
+                    ...state,
+                    data_user_socioedu: respuesta.data
+                  })
+            })
+            .catch(err=>{
+                return (err)
+            })
+        activeTab('') 
+    }, [props.seleccionado]);
+
 
     const tabs=[
         {
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante","monitor"],
+            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","monitor","dir_academico"],
             component:<Info_general 
                         id={props.id} 
                         seleccionado={props.seleccionado} 
@@ -100,7 +122,7 @@ const Selector = (props) =>{
             id:2,
             name:"SOCIEDUCATIVO",
             contenido:"hola",
-            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante"],
+            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","monitor"],
             component:<Socieducativa 
                         id={props.id} 
                         data_user_socioedu={state.data_user_socioedu} 
@@ -112,7 +134,7 @@ const Selector = (props) =>{
             id:3,
             name:"ACADEMICO",
             contenido:"hola",
-            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante"],
+            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","dir_academico"],
             component:<Academico data_user_academico={state.data_user_academico}
                         id={props.id}/>,
         },
@@ -120,7 +142,7 @@ const Selector = (props) =>{
             id:4,
             name:"GEOGRAFICO",
             contenido:"bloqueado",
-            permitidos: ["sistemas","super_ases","socieducativo","profesional","practicante","monitor"],
+            permitidos: ["sistemas","super_ases","socioeducativo","profesional","practicante","monitor"],
             component:<Info_general />,
         },
 

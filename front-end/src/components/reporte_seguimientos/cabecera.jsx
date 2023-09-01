@@ -77,7 +77,7 @@ const Cabecera = (props) => {
         return err;
       });
 
-    if (sessionStorage.getItem('rol') === 'Profesional')
+    if (sessionStorage.getItem('rol') === 'profesional')
       {
         axios({
           url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + sessionStorage.getItem('id_usuario') + '/',
@@ -97,7 +97,7 @@ const Cabecera = (props) => {
           });
 
       }
-      else if (sessionStorage.getItem('rol') === 'Practicante')
+      else if (sessionStorage.getItem('rol') === 'practicante')
       {
         axios({
           url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos_practicante/` + sessionStorage.getItem('id_usuario') + '/',
@@ -180,8 +180,6 @@ const Cabecera = (props) => {
           .catch((err) => {});
       }
       bandera_option_user = false;
-    } else {
-      console.log('bandera off');
     }
   };
 
@@ -328,7 +326,7 @@ const Cabecera = (props) => {
         <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
           <h1>Séguimientos</h1>
         </Col>
-        {props.rolUsuario === 'superSistemas' ? (
+        {props.rolUsuario === 'super_ases' ? (
           <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
             período actual
             <Select
@@ -345,6 +343,9 @@ const Cabecera = (props) => {
           </Col>
         )}
 
+        {
+        (sessionStorage.getItem('rol')=='sistemas' || sessionStorage.getItem('rol')=='super_ases' || sessionStorage.getItem('rol')=='socieducativo') ? 
+        (        
         <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
           <Row>
             <h4 className="texto_subtitulo2">Selector persona</h4>
@@ -353,6 +354,9 @@ const Cabecera = (props) => {
             <Select options={datos_option_user} onMenuOpen={handle_users_persona} onChange={handle_option_user} />
           </Row>
         </Col>
+        )
+        :(<Col></Col>)
+        }
       </Row>
 
       <Row className="prueba_seguimintos">

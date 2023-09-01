@@ -11,7 +11,6 @@ const carga_masiva = (file,option) => {
     //Adding files to the formdata
     formData.append("tipo_de_carga", option);
     formData.append("file", file);
-    console.log ("ARCHIVO: "+formData.get("file"))
   
     axios({
       // Endpoint to send files

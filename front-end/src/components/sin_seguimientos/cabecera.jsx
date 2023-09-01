@@ -53,7 +53,7 @@ useEffect(()=>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+state.data_user)
+
         })
         .catch(err=>{
           console.log("estos son los primeros datos :"+state.data_user)
@@ -62,7 +62,7 @@ useEffect(()=>{
       },[]);
 
       const handle_users = (e) => {
-        console.log("estos son los segundos datos :"+state.data_user)  
+ 
         // Getting the files from the input
         if(bandera_option_user==true){
     
@@ -73,9 +73,6 @@ useEffect(()=>{
             datos_option_user.push(dato)
           }
           bandera_option_user = false;
-        }
-        else{
-          console.log("bandera off");
         }
       }
 
