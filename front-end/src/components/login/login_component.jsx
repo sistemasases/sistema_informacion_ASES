@@ -3,9 +3,12 @@ import axios from 'axios';
 import { Container, Row, Col, Button, } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
+import CryptoJS from 'crypto-js';
 import Footer from '../componentes_generales/footer.jsx';
 
 const Login_component = () => {
+
+  const secretKey = process.env.REACT_APP_SECRET_KEY;
 
   const [state, set_state] = useState({
     usuario: '',
@@ -33,8 +36,42 @@ const Login_component = () => {
       contrasena: [e.target.value],
     });
   };
-
+  
   const handleSendNewData = () => {
+
+     // Encriptar los datos antes de almacenarlos en sessionStorage
+    const encryptedUsuario = CryptoJS.AES.encrypt(state.usuario, secretKey).toString();
+    const encryptedContrasena = CryptoJS.AES.encrypt(state.contrasena, secretKey).toString();
+
+    sessionStorage.setItem('usuario', encryptedUsuario);
+    sessionStorage.setItem('contrasena', encryptedContrasena);
+
+    const data = {
+      'username': state.usuario,
+      'password': state.contrasena
+    };
+
+    const handleRetrieveData = () => {
+      // Desencriptar los datos almacenados en sessionStorage
+    const encryptedUsuario = sessionStorage.getItem('usuario');
+    const encryptedContrasena = sessionStorage.getItem('contrasena');
+      
+      if (encryptedUsuario && encryptedContrasena) {
+        const decryptedUsuario = CryptoJS.AES.decrypt(sessionStorage.usuario, secretKey).toString(CryptoJS.enc.Utf8);
+        const decryptedContrasena = CryptoJS.AES.decrypt(sessionStorage.contrasena, secretKey).toString(CryptoJS.enc.Utf8);
+
+       // Utiliza los datos descifrados como necesites
+       
+      }
+    };
+
+
+
+
+    //const encryptedRequest = {
+      //encryptedData: encryptedData
+    //};
+    
     axios.post(url, data)
       .then(res => {
         console.log(res.data)
