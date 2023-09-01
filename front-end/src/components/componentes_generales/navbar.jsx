@@ -6,10 +6,8 @@ import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import {Button, ListGroupItem} from "react-bootstrap";
-<<<<<<< HEAD
-=======
+
 import axios from 'axios';
->>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
 
 const Navbar = (props) =>{
 
@@ -73,14 +71,12 @@ const Navbar = (props) =>{
 
 const [newPassword, setNewPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
-<<<<<<< HEAD
-=======
+
 const [password, setActualPassword] = useState("");
 
 const actualPassword = (event) => {
   setActualPassword(event.target.value);
 };
->>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
 
 const handleNewPasswordChange = (event) => {
     setNewPassword(event.target.value);
@@ -195,11 +191,7 @@ const handleConfirmPasswordChange = (event) => {
                             isOpen ?
                             (
                                 <Row className="opciones_usuario">
-<<<<<<< HEAD
-                                    <Col xs={"12"} onClick={handleModal}>
-=======
                                     <Col xs={"12"} className="opciones_usuario_contrase" onClick={handleModal}>
->>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
                                         CAMBIAR CONTRASEÑA
                                     </Col>
                                     <Col xs={"12"} className="opciones_usuario_salir" onClick={handleSalir}>
@@ -223,11 +215,7 @@ const handleConfirmPasswordChange = (event) => {
             <Modal.Title>Importante</Modal.Title>
           </Modal.Header>
             <Modal.Body>
-<<<<<<< HEAD
-              Contraseña actual : <input></input>
-=======
               Contraseña actual : <input onChange={actualPassword} type="password"></input>
->>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
               <br></br>
               <br></br>
               <br></br>
@@ -243,11 +231,7 @@ const handleConfirmPasswordChange = (event) => {
             <Modal.Footer>
               <Button
                 variant="secondary"
-<<<<<<< HEAD
-                onClick={handleClose}
-=======
                 onClick={cambiar_contra_funcion}
->>>>>>> fdb736b8ba27ed665ac1a4435312c60fda64adee
                 disabled={newPassword !== confirmPassword}
               >
                 Aceptar

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Inasistencia from '../../service/create_inasistencia';
+import {useEffect} from 'react';
 
 
 const Inasistencia = (props) =>{
@@ -16,6 +17,14 @@ const Inasistencia = (props) =>{
         id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
         }
     )
+
+    useEffect(() => {
+        set_state({
+          ...state,
+          id_estudiante : parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
+        })
+
+    }, [state.fecha]);
 
     const set_info = () => {
         console.log(state);
