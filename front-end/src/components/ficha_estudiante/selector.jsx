@@ -42,7 +42,6 @@ const Selector = (props) =>{
 
 
     useEffect(() => {
-        console.log('entra al useeffct xd : ' + props.tab_abierto)
         setActiveTabIndex(props.tab_abierto)
 
       }, [props.tab_abierto]);

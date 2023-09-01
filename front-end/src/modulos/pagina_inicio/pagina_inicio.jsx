@@ -121,15 +121,8 @@ const Pagina_inicio = () => {
   //Cambia las sedes para visualizarse
   const handle_storage = () => {
     localStorage.setItem("sede", temp.value);
-    // console.log(nombre_sede);
     localStorage.setItem("sede_id", temp.id);
-    // console.log(temp.value + " fue Seleccionada");
-    console.log(
-      "la sede seleccionada es: " +
-        localStorage.getItem("sede") +
-        " con ID: " +
-        localStorage.getItem("sede_id")
-    );
+
     // });
   };
         /*<div

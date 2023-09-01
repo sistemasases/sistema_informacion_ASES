@@ -69,7 +69,6 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                 { calificacion: nuevoValor }, // Datos a enviar en el cuerpo de la solicitud (nueva calificación)
                 config
             );
-            console.log('Nota actualizada correctamente:', response.data);
         } catch (error) {
             console.log('Error al actualizar la nota:', error);
             // En caso de error, se puede mostrar un mensaje de error en la interfaz o realizar otras acciones necesarias.

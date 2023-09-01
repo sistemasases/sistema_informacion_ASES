@@ -40,12 +40,10 @@ const Carga_masiva_component = () =>{
 
   const handle_file = (e) => {
 
-    console.log(e.target.files)
     set_archivo(e.target.files[0])
   }
   const handle_options = (e) => {
-    // Getting the files from the input
-    console.log(e.target.value)
+
     set_state({
       ...state,
       [e.target.name] : [e.target.value]
@@ -54,7 +52,7 @@ const Carga_masiva_component = () =>{
   const handle_upload=(e)=> {
     let option = [state.option];
     let formData = new FormData();
-    console.log(archivo)
+
   
     //Adding files to the formdata
     formData.append("tipo_de_carga", option);
@@ -81,8 +79,6 @@ const Carga_masiva_component = () =>{
         respuesta: "ocurrio un error"
     })})
     setShow(true)
-    console.log(state.mensaje)
-    console.log(state.respuesta)
 
   }
   const set_info = (e) => {

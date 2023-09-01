@@ -40,15 +40,12 @@ const Inasistencia = (props) => {
 
     const set_info = async () => {
         const idEstudiante = !isNaN(idEstudianteSeleccionado) ? parseInt(idEstudianteSeleccionado) : null;
-        console.log("Antes de asignar:", idEstudiante);
+
         // Llamada a la función set_state para actualizar el estado
         set_state(prevState => ({
             ...prevState,
             id_estudiante: idEstudiante
         }));
-        console.log("ID del estudiante seleccionado lo que se asigna:", idEstudiante);
-        console.log("ID del estudiante seleccionado enviado es:", state.id_estudiante);
-        console.log(state);
 
         // Llamada a la función Create_Inasistencia.create_inasistencia solo cuando se hace clic en el botón Registrar
         try {
