@@ -110,9 +110,6 @@ const Info_basica_monitor = (props) =>{
         }
         bandera_option_user = false;
       }
-      else{
-        console.log("bandera off");
-      }
 
     }
 

@@ -308,7 +308,6 @@ const agregarPariente = () => {
             nuevo_personas_con_quien_vive: newPersonasConQuienVive,
             };
       });
-      console.log("este esl personas con quie viv :  " + state.nuevo_personas_con_quien_vive)
       } else {
       // Si no, actualiza los demás campos normalmente
       set_state({
@@ -393,7 +392,6 @@ const agregarPariente = () => {
       headers: config2,
       })
       .then((res)=>{
-            console.log("este es el response : " + res)
             set_state({
             ...state,
             puntaje_icfes:state.nuevo_puntaje_icfes,
@@ -416,7 +414,6 @@ const agregarPariente = () => {
 
             editar : false,
             })
-            console.log("pero que esta pasando ???" )
             alert("estudiante fue editado correctamente a :" + props.datos.id)
       })
       .catch(err=>{
@@ -443,7 +440,6 @@ const agregarPariente = () => {
 
                   editar : true,
                   })
-                  console.log("pero que esta pasando ???" )
                   alert("error al editar el estudiante :" + err)
                   
             //console.log("entra al malo")

@@ -218,7 +218,6 @@ class profesores_del_curso_sin_separar_por_franja_viewsets(viewsets.ModelViewSet
             profesor_obj = User.objects.get(id=profesor_id)
             serializer = user_serializer(profesor_obj)
             parcelacion = items_semestre.objects.filter(id_curso=curso_del_profesor, id_profesor=profesor_id)
-            print(parcelacion)
             for j in parcelacion:
                 serialiazer_items = items_semestre_serializer(j)
                 items_a_pintar.append(serialiazer_items.data)
@@ -253,7 +252,6 @@ class profesores_del_curso_viewsets(viewsets.ModelViewSet):
             profesor_obj = User.objects.get(id=profesor_id)
             serializer = user_serializer(profesor_obj)
             parcelacion = items_semestre.objects.filter(id_curso=curso_del_profesor, id_profesor=profesor_id)
-            print(parcelacion)
             for j in parcelacion:
                 serialiazer_items = items_semestre_serializer(j)
                 items_a_pintar.append(serialiazer_items.data)
@@ -329,8 +327,6 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
     def list(self, request):
         curso_param = request.GET.get('curso')
         proferos_param = request.GET.get('profesor')
-        print(curso_param)
-        print(proferos_param)
         list_estudiantes = []
         list_notas = []
         estudiantes_ids = matricula.objects.filter(id_curso=curso_param)

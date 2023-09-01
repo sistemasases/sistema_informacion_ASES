@@ -71,7 +71,6 @@ const Listas = (props) => {
       data: formData,
         })
         .then((res)=>{
-        console.log(res)
         childClicked(props.practicante_seleccionado)
         })
         .catch(err=>{

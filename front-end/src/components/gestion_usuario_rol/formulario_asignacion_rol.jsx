@@ -18,7 +18,6 @@ const Formulario_asginacion_rol = () =>{
   })
   const handle_file = (e) => {
     // Getting the files from the input
-    console.log(e.target.files[0])
     set_state({
       ...state,
       [e.target.name] : [e.target.files[0]],
@@ -26,7 +25,6 @@ const Formulario_asginacion_rol = () =>{
   }
   const handle_options = (e) => {
     // Getting the files from the input
-    console.log(e.target.value)
     set_state({
       ...state,
       [e.target.name] : [e.target.value],

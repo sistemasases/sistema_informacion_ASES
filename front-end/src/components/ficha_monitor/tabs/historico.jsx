@@ -61,7 +61,6 @@ const Academico = (props) =>{
                 tiene_datos_cargados : true
             })
             setActiveTabIndex(respuesta.data[0]['id_semestre'])
-            console.log('entra a la respuesta : ' + respuesta.data[0]['id_semestre'])
         })
         .catch(err=>{
             return ('entra al error : ' + err)

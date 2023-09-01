@@ -41,7 +41,6 @@ const Reporte_seguimientos = (props) =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+respuesta.data)
         })
         .catch(err=>{
           console.log("error" + err)
@@ -60,7 +59,6 @@ const Reporte_seguimientos = (props) =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+respuesta.data)
         })
         .catch(err=>{
           console.log("error" + err)
@@ -80,7 +78,6 @@ const Reporte_seguimientos = (props) =>{
             ...state,
             data_user : respuesta.data
           })
-          console.log("estos son los primeros datos :"+respuesta.data)
         })
         .catch(err=>{
           console.log("error" + err)

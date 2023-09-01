@@ -214,7 +214,6 @@ const handleDeleteItem = async () => {
         `${process.env.REACT_APP_API_URL}/academico/borrar_nota/${nota.id}/`,
         config
       );
-      console.log('Nota borrada correctamente');
     }
 
     // Borrar el ítem
@@ -222,7 +221,6 @@ const handleDeleteItem = async () => {
       `${process.env.REACT_APP_API_URL}/academico/borrar_item/${editingItem.id}/`,
       config
     );
-    console.log('Ítem borrado correctamente');
 
     // Actualizamos el estado para refrescar la lista de ítems
     setFlag_de_actualizacion(!flag_de_actualizacion);

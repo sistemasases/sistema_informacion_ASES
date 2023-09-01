@@ -121,7 +121,6 @@ const Info_general = (props) =>{
         headers: config,
         })
         .then((res)=>{
-              console.log("este es el response : " + res)
               set_state({
               ...state,
               nombres:state.nuevo_nombres,
@@ -168,7 +167,6 @@ const handle_upload_info_extra = (e) => {
       headers: config,
       })
       .then((res)=>{
-            console.log("este es el response : " + res)
             set_state({
             ...state,
             telefono_res:state.nuevo_telefono_res,
@@ -201,7 +199,6 @@ const handle_upload_info_extra = (e) => {
                 ...state,
                 [e.target.name] : e.target.value
           })
-          console.log(e.target.value)
     }
 
     const handleClose = () => {

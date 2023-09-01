@@ -133,7 +133,6 @@ const Info_basica = (props) =>{
     })
 
     useEffect(() => {
-      console.log('entra al useeffct xd')
       if (state.total_datos_estudiantes['nombre'] && isLoading) {
         set_state({
           ...state,
@@ -154,9 +153,6 @@ const Info_basica = (props) =>{
           nombre_cohorte : state.total_datos_estudiantes['nombre_cohorte'],
           total_datos_estudiante_seleccionado : state.total_datos_estudiantes
         })
-      }
-      else{
-      console.log(state.total_datos_estudiantes.length)
       }
 
     }, [state.total_datos_estudiantes]);
@@ -193,10 +189,8 @@ const Info_basica = (props) =>{
       try{
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config);
         state.total_datos_estudiantes.push(response.data)
-        console.log("entra aqui ssisisisiisj")
       }
       catch (error){
-        console.log("no capto el dato")
         fetchData(index);
       }
     }
@@ -241,9 +235,6 @@ const Info_basica = (props) =>{
           }
         }
         bandera_option_user = false;
-      }
-      else{
-        console.log("bandera off");
       }
 
     }

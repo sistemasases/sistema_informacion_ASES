@@ -27,14 +27,11 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
     queryset = estudiante_serializer.Meta.model.objects.all()
     # permission_classes = (IsAuthenticated,)
 
-    # print("entro a estudiante_por_rol_viewsets") 
     def retrieve(self, request, pk):
-        # print("entro a retrieve")
-        # print(pk)
+
         data_usuario_rol = request.GET.get('usuario_rol')
         data_sede = request.GET.get('sede')
-        # print("Este usuario_rol es:")
-        # print(data_usuario_rol)
+
         
         # var_semestre = get_object_or_404(semestre, semestre_actual = True)
         var_semestre = get_object_or_404(semestre, semestre_actual = True, id_sede = data_sede)
@@ -45,7 +42,6 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
         list_profesionales = list()
         
         if data_usuario_rol == "monitor":
-            print(pk)
 
             for id_estudiante in asignacion.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = True ).values():
                 var_estudiante = estudiante.objects.get(id = id_estudiante['id_estudiante_id'])
@@ -56,29 +52,22 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
 
         elif data_usuario_rol == "practicante":
             
-            # print("entro a practicante")
-            # print(pk)
+
             
             for obj_monitor in usuario_rol.objects.filter(id_jefe = pk, id_semestre = var_semestre.id, estado = "ACTIVO" ).values():
-                # print("entro a for")
+
                 # var_monitor_data = User.objects.get(id = obj_monitor['id_usuario_id'])
                 # serializer_monitor = user_selected(var_monitor_data)
                 # list_monitores.append(serializer_monitor.data)
                 # var_id_usuario_monitor = obj_monitor['id_usuario_id']
-                # print(var_id_usuario_monitor)
-                # print(list_monitores)
+
                 for id_estudiante in asignacion.objects.filter(id_usuario = obj_monitor['id_usuario_id'], id_semestre = var_semestre.id, estado = True ).values():
-                    # print("entro a for2")
-                    # print(id_estudiante)
+
                     var_estudiante = estudiante.objects.get(id = id_estudiante['id_estudiante_id'])
                     serializer_estudiante = estudiante_serializer(var_estudiante)
                     list_estudiantes.append(serializer_estudiante.data)
 
-            # print(var_final)
-            # print("Monitores Asignados al practicante:")
-            # print(list_monitores)
-            # print("Estudiantes Asignados a monitores del Practicante:")
-            # # print(list_estudiantes)
+
             return Response(list_estudiantes)
         
             # return Response("caso no encontrado")
@@ -113,7 +102,6 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             list_estudiantes = []
             for obj_programa in programa.objects.filter(id_sede = data_sede).values():
                 for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
-                        print("hola")
                         for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
                             serializer_estudiante = estudiante_serializer(obj_estudiante)
                             list_estudiantes.append(serializer_estudiante.data)
@@ -186,7 +174,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             final_list_estudiantes = list()
             # serializer_estudiante = estudiante_serializer(asignacion.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = True ), many=True)
             # serializer_estudiante = asignacion.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = True).select_related('id_estudiante').values()
-            # print(serializer_estudiante)
+
             for id_estudiante in asignacion.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = True ).values():
                 var_estudiante = estudiante.objects.get(id = id_estudiante['id_estudiante_id'])
                 serializer_estudiante = estudiante_serializer(var_estudiante)
@@ -196,11 +184,9 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             # Añadiendo datos de consultas externas a los estudiantes
 
             for i in list_estudiantes: 
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
-                    # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
                     seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha')
                     # Crear un diccionario con los datos de riesgo del seguimiento
@@ -221,12 +207,10 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'N/A',
                         'riesgo_vida_universitaria_ciudad': 'N/A'
                     }
-                    # print('no riesgos')
                 
                 try:
                     programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
                     var_programa = programa.objects.filter(id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
                     # list_programas.append(var_programa)
                     id_sede_programa = var_programa[0]['id_sede_id']
                     sede_programa = sede.objects.filter(id = id_sede_programa).values()
@@ -295,11 +279,9 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     }
                     # pass
 
-                # print(riesgo)
 
                 try:
                     
-                    # print(cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
                     var_excepcion = cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values()
                     
                     
@@ -389,11 +371,9 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             # Añadiendo datos de consultas externas a los estudiantes
                     
             for i in list_estudiantes: 
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
-                    # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
                     seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha')
                     # Crear un diccionario con los datos de riesgo del seguimiento
@@ -414,12 +394,10 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'N/A',
                         'riesgo_vida_universitaria_ciudad': 'N/A'
                     }
-                    # print('no riesgos')
                 
                 try:
                     programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante = i['id']).first()
                     var_programa = programa.objects.filter(id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
                     # list_programas.append(var_programa)
                     id_sede_programa = var_programa[0]['id_sede_id']
                     sede_programa = sede.objects.filter(id = id_sede_programa).values()
@@ -488,11 +466,10 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     }
                     # pass
 
-                # print(riesgo)
 
                 try:
                     
-                    # print(cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
+
                     var_excepcion = cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values()
                     
                     # TRY #2
@@ -573,13 +550,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             final_list_estudiantes = list()
             for obj_programa in programa.objects.filter(id_sede = data_sede).values():
                 for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa = obj_programa['id']).values():
-                        # print(obj_programa_estudiante)
                         for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
                             serializer_estudiante = estudiante_serializer(obj_estudiante)
                             list_estudiantes.append(serializer_estudiante.data)
             
             for i in list_estudiantes: 
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
@@ -868,7 +843,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
                 try:
                     
-                    # print(cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
+                    # (cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
                     var_excepcion = cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values()
                     
                     
