@@ -97,8 +97,6 @@ const Selector_usuarios = () =>{
         })
       })
       bandera_consulta_rol++;
-      console.log(bandera_consulta_rol)
-      console.log(state.data_user_rol)
     }
 
     
@@ -127,11 +125,8 @@ const Selector_usuarios = () =>{
         const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['username']+" - "+ state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
         datos_option_user.push(dato)
       }
-      console.log([datos_option_user]);
+
       bandera_option_user = false;
-    }
-    else{
-        console.log([datos_option_user]);
     }
   }
   
@@ -143,12 +138,9 @@ const Selector_usuarios = () =>{
         const dato2 = { value: state.data_rol[i]['nombre'], label: state.data_rol[i]['nombre'],id:state.data_rol[i]['id'] }
         datos_option_rol.push(dato2)
       }
-      console.log([datos_option_rol]);
       bandera_option_rol = false;
     }
-    else{
-      console.log([datos_option_rol]);
-    }
+
   }
   
 
@@ -186,12 +178,9 @@ const Selector_usuarios = () =>{
         rol_actual: "" 
       })}
     )
-    console.log(state.usuario)
-    console.log(state.rol_actual)
 
   }
   const handle_option_rol = (e) => {
-    console.log(e)
     set_state({
       ...state,
       rol : [e.value],
@@ -201,8 +190,6 @@ const Selector_usuarios = () =>{
 
   const handle_upload = (e) => {
     // Getting the files from the input
-    console.log([state.id_rol[0]])
-    console.log([state.id_usuario[0]])
     let formData = new FormData();
   
     //Adding files to the formdata

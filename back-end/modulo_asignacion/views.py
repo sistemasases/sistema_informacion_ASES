@@ -62,13 +62,11 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
                     var_old_asignacion = Empty
 
                 if(var_old_asignacion != Empty and var_old_asignacion.estado == True):
-                    print("entre a 1")
                     Response(
                         {'Respuesta': 'El estudiante ya está asignado a alguien este semestre.'},
                         status=status.HTTP_406_NOT_ACCEPTABLE
                     )
                 elif(var_old_asignacion == Empty or(var_old_asignacion != Empty and var_old_asignacion.estado == False) ) :
-                    print("entre a 2")
                     var_asignacion= asignacion()
                     var_asignacion.id_usuario= var_usuario
                     var_asignacion.id_estudiante = var_estudiante

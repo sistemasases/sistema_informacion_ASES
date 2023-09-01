@@ -19,7 +19,6 @@ const Estudiantes = ({item}) => {
               ...state,
               [e.target.name] : e.target.value
         })
-        console.log(e.target.value)
   }
 
     const [open, setOpen] = useState(true)

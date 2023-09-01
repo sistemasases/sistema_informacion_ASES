@@ -346,7 +346,6 @@ def carga_programas(file):
     return Response(list_dict_result)
     
 def carga_materias(file):
-    print("entro al carga_materias")
     list_dict_result = []
     lista_materias =[]
     datos = pd.read_csv(file,header=0)
@@ -544,7 +543,6 @@ def carga_fichas(file):
     list_fichas = []
     datos = pd.read_csv(file,header=0)
     for i in range(datos.shape[0]):
-        print(datos.iat[i,60])
         if (User.objects.filter(id = datos.iat[i,60]).values()):
             consulta_creador= User.objects.get(id =datos.iat[i,60])
 
