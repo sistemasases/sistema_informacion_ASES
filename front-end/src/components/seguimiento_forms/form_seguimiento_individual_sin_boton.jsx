@@ -86,7 +86,7 @@ const Seguimiento_individual = (props) =>{
         cierre: props.item.cierre,
         id_creador: props.item.id_creador,
         id_modificador: parseInt(sessionStorage.getItem("id_usuario")),
-        id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
+        id_estudiante: props.item.id_estudiante
     })
 
     const set_info = (e) => {
