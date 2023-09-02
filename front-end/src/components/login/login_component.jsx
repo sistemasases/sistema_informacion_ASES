@@ -5,6 +5,9 @@ import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
 import Modal from 'react-bootstrap/Modal';
+import CryptoJS from 'crypto-js';
+
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 const Login_component = () => {
 
@@ -38,24 +41,41 @@ const Login_component = () => {
   const handleSendNewData = () => {
     axios.post(url, data)
       .then(res => {
-        sessionStorage.setItem('token', res.data.token);
-        sessionStorage.setItem('refresh-token', res.data['refresh-token']);
-        sessionStorage.setItem('id_usuario', res.data.user.id);
-        sessionStorage.setItem('email', res.data.user.email);
-        sessionStorage.setItem('first_name', res.data.user.first_name);
-        sessionStorage.setItem('sede', res.data.user.sede);
-        sessionStorage.setItem('last_name', res.data.user.last_name);
-        sessionStorage.setItem('nombre_completo', res.data.user.nombre_completo);
-        sessionStorage.setItem('sede_id', res.data.user.sede_id);
-        sessionStorage.setItem('rol', res.data.user.rol);
-        sessionStorage.setItem('id_semestre_actual', res.data.user.id_semestre_actual);
-        sessionStorage.setItem('semestre_actual', res.data.user.semestre_actual);
-        sessionStorage.setItem('username', res.data.user.username);
-        sessionStorage.setItem('permisos', res.data.user.permisos);
-        sessionStorage.setItem('message', res.data.user.message);
+
+        const encryptedToken = CryptoJS.AES.encrypt(res.data.token, secretKey).toString();
+        const encryptedRefreshToken = CryptoJS.AES.encrypt(res.data['refresh-token'], secretKey).toString();
+        const encryptedIdUsuario = CryptoJS.AES.encrypt(res.data.user.id.toString(), secretKey).toString();
+        const encryptedEmail = CryptoJS.AES.encrypt(res.data.user.email, secretKey).toString();
+        const encryptedFirstName = CryptoJS.AES.encrypt(res.data.user.first_name, secretKey).toString();
+        const encryptedSede = CryptoJS.AES.encrypt(res.data.user.sede, secretKey).toString();
+        const encryptedLastName = CryptoJS.AES.encrypt(res.data.user.last_name, secretKey).toString();
+        const encryptedNombreCompleto = CryptoJS.AES.encrypt(res.data.user.nombre_completo, secretKey).toString();
+        const encryptedSedeId = CryptoJS.AES.encrypt(res.data.user.sede_id.toString(), secretKey).toString();
+        const encryptedRol = CryptoJS.AES.encrypt(res.data.user.rol, secretKey).toString();
+        const encryptedIdSemestreActual = CryptoJS.AES.encrypt(res.data.user.id_semestre_actual.toString(), secretKey).toString();
+        const encryptedSemestreActual = CryptoJS.AES.encrypt(res.data.user.semestre_actual, secretKey).toString();
+        const encryptedUsername = CryptoJS.AES.encrypt(res.data.user.username, secretKey).toString();
+        const encryptedPermisos = CryptoJS.AES.encrypt(JSON.stringify(res.data.user.permisos), secretKey).toString();
+        const encryptedMessage = CryptoJS.AES.encrypt(res.data.user.message, secretKey).toString();
+
+        sessionStorage.setItem('token', encryptedToken);
+        sessionStorage.setItem('refresh-token',encryptedRefreshToken);
+        sessionStorage.setItem('id_usuario', encryptedIdUsuario);
+        sessionStorage.setItem('email', encryptedEmail);
+        sessionStorage.setItem('first_name', encryptedFirstName);
+        sessionStorage.setItem('sede', encryptedSede);
+        sessionStorage.setItem('last_name', encryptedLastName);
+        sessionStorage.setItem('nombre_completo', encryptedNombreCompleto);
+        sessionStorage.setItem('sede_id', encryptedSedeId);
+        sessionStorage.setItem('rol', encryptedRol);
+        sessionStorage.setItem('id_semestre_actual', encryptedIdSemestreActual);
+        sessionStorage.setItem('semestre_actual', encryptedSemestreActual);
+        sessionStorage.setItem('username', encryptedUsername);
+        sessionStorage.setItem('permisos', encryptedPermisos);
+        sessionStorage.setItem('message', encryptedMessage);
         set_state({
           ...state,
-          logged: sessionStorage.token,
+          logged: encryptedToken,
           temporal: true
         });
       })

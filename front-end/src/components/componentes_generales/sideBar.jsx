@@ -18,6 +18,9 @@ import Footer from './footer';
 import Sidebar_item_closed from './sidebar_item_closed';
 import {Scrollbars} from 'react-custom-scrollbars'; 
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
+
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 
 
@@ -42,8 +45,22 @@ const SideBar = (props) =>{
         sessionStorage.rol === 'practicante' ? Menu8 : 
         sessionStorage.rol === 'dir_programa' || sessionStorage.rol === 'vcd_academico' ? Menu6 : Menu7
       })
-
-    function path_actual(name){
+      
+      const decryptTokenFromSessionStorage = () => {
+        const encryptedToken = sessionStorage.getItem('token');
+        if (!encryptedToken) {
+          return null; // No hay token en sessionStorage
+        }
+      
+        // Desencriptar el token usando la clave secreta
+        const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
+        const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
+      
+        return decryptedToken;
+      };
+      
+      
+      function path_actual(name){
         set_state({
           ...state,
           path_actual : name,
@@ -92,7 +109,7 @@ const SideBar = (props) =>{
 
     const config = {
         headers: {
-              Authorization: 'Bearer ' + sessionStorage.getItem('token')
+              Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
         }
     };
 
