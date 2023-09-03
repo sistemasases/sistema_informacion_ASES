@@ -17,9 +17,16 @@ const Desplegable_item = ({item}) => {
         data_user_socioedu:[],
         tiene_reportes_cargados:false
       })
+
+
+    const [data_user_socioedu, set_data_user_socioedu] = useState([]);
+
+
     const traer_reportes = (e) => {
 
+
             set_state({
+                ...state,
                 tiene_reportes_cargados:false
             })
 
@@ -31,14 +38,40 @@ const Desplegable_item = ({item}) => {
             headers: config,
             })
             .then((respuesta)=>{
-            set_state({
-                data_user_socioedu:respuesta.data,
-                tiene_reportes_cargados:true
-            })
+                set_state({
+                    ...state,
+                    data_user_socioedu:respuesta.data,
+                    tiene_reportes_cargados:true
+                })
+
+            set_data_user_socioedu(respuesta.data)
             })
             .catch(err=>{
                 return (err)
             })
+
+
+
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            method: "GET",
+            headers: config,
+            })
+            .then((respuesta)=>{
+                set_state({
+                    ...state,
+                    data_user_socioedu:respuesta.data,
+                    tiene_reportes_cargados:true
+                })
+
+            set_data_user_socioedu(respuesta.data)
+            })
+            .catch(err=>{
+                return (err)
+            })
+
+            sessionStorage.setItem('id_estudiante_seleccionado', e)
 
     }
 
@@ -405,6 +438,7 @@ const Desplegable_item = ({item}) => {
                         </Row>
                     </Col>
                 </Row>
+                
                 {state.tiene_reportes_cargados ?
                 (
                     <Row className="fichas-content">
