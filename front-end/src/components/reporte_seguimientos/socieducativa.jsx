@@ -24,6 +24,12 @@ const Socieducativa = (props) =>{
 
 
 
+      const enviar_datos = (e) => {
+        // Actualiza state.data_user_socioedu con los nuevos datos
+                props.updateDataUserSocioedu(e);
+      };
+
+
     return (
         <Container className="socioeducativa_container">
                             
@@ -51,7 +57,7 @@ const Socieducativa = (props) =>{
                                 :
                                 (
                                     <Row className="periodo_asignaciones_contenido">
-                                        <Desplegable_item key={index} item={item} /> 
+                                        <Desplegable_item key={index} item={item} updateDataUserSocioedu={enviar_datos}/> 
                                     </Row>
                                 )
                             }

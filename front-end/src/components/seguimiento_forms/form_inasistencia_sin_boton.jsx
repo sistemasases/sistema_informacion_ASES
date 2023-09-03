@@ -10,13 +10,16 @@ const Inasistencia = (props) =>{
 
 
     const recargarPagina = () => {
-        if (form.id_estudiante) {
+        
+        if (props.recarga_ficha_estudiante) {
             // Cambiar la URL a la página con el ID del estudiante seleccionado
             window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
         } else {
-            console.error('No hay un ID de estudiante disponible para recargar la página.');
+            props.updateDataUserSocioedu(form.id_estudiante);
         }
+
     };
+
 
 
 

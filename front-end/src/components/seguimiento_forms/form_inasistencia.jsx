@@ -2,24 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, Button, Col, Row } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Inasistencia from '../../service/create_inasistencia';
-import {useEffect} from 'react';
 
 const Inasistencia = (props) => {
     const idEstudianteSeleccionado = sessionStorage.getItem("id_estudiante_seleccionado");
-
-
-
-
-    const recargarPagina = () => {
-        if (state.id_estudiante) {
-            // Cambiar la URL a la página con el ID del estudiante seleccionado
-            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
-        } else {
-            console.error('No hay un ID de estudiante disponible para recargar la página.');
-        }
-    };
-
-
 
 
     const [state, set_state] = useState({
@@ -38,6 +23,20 @@ const Inasistencia = (props) => {
 
         })
     }, [state.fecha]);
+
+
+
+    const recargarPagina = () => {
+        
+            // Cambiar la URL a la página con el ID del estudiante seleccionado
+            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+
+    };
+
+
+
+
+
 
     const set_info = async () => {
         const idEstudiante = !isNaN(idEstudianteSeleccionado) ? parseInt(idEstudianteSeleccionado) : null;

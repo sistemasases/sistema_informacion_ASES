@@ -121,7 +121,7 @@ const Info_basica = (props) =>{
       cedula:'',
       correo:'',
       telefono:3122131542,
-      celular:3023675789,
+      celular:0,
       ptogramas:[],
       monitor : [],
       practicante : [],
@@ -290,8 +290,8 @@ const Info_basica = (props) =>{
 
     return (
       <Row className="row_prueba">
-        <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
-        <Inasistencia estudiante={state.total_datos_estudiantes['id']} show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
+        <Seguimiento_individual recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
+        <Inasistencia recarga_ficha_estudiante={true}  show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
         {/* {!loading && fechas.length > 0 && Object.keys(riesgos).length > 0 && (
           <GraphComponent fechas={fechas} riesgos={riesgos} />
         )} */}
