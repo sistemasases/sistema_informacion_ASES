@@ -49,11 +49,15 @@ const Academico = (props) =>{
 
 
     useEffect(() => {
+        const paramsget = {
+            id_sede: sessionStorage.getItem('sede_id'),
+          };
         
         const url_axios = `${process.env.REACT_APP_API_URL}/academico/lista_historiales_academicos/`+props.id+"/";
         axios({
         // Endpoint to send files
         url:  url_axios,
+        params : paramsget,
         method: "GET",
         headers: config,
         })
