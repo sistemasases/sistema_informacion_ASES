@@ -93,6 +93,7 @@ const Seguimiento_individual = (props) =>{
         Update_seguimiento.Update_seguimiento(form).then(res=>{
             if(res){
                 props.handleClose()
+                recargarPagina();
             } else {
                 window.alert("Hubo un error al momento de actualizar el seguimiento, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.")
             }
@@ -104,6 +105,7 @@ const Seguimiento_individual = (props) =>{
             Delete_seguimiento.Delete_seguimiento(form.id).then(res=>{
                 if(res){
                     props.handleClose()
+                    recargarPagina();
                 } else {
                     window.alert("Hubo un error al momento de eliminar el seguimiento.")
                 }
@@ -875,10 +877,10 @@ const Seguimiento_individual = (props) =>{
              */}
 
 
-            <Button variant="danger" onClick={() => { delete_info(); recargarPagina(); }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
+            <Button variant="danger" onClick={() => { delete_info()}} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
               Eliminar
             </Button>
-            <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
+            <Button variant="secondary" onClick={() => { set_info() }}>
                 Aceptar cambios
             </Button>
             <Button variant="secondary" onClick={() => { props.handleClose() }}>
