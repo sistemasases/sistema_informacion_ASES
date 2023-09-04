@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, Button, Col, Row } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Inasistencia from '../../service/create_inasistencia';
+import { CSVLink } from 'react-csv';
 
 const Inasistencia = (props) => {
     const idEstudianteSeleccionado = sessionStorage.getItem("id_estudiante_seleccionado");
@@ -51,6 +52,7 @@ const Inasistencia = (props) => {
         try {
             const res = await Create_Inasistencia.create_inasistencia(state);
             if (res) {
+                recargarPagina();
                 props.handleCloseIn();
             } else {
                 window.confirm("Hubo un error al momento de crear el seguimiento, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.");
@@ -103,10 +105,16 @@ const Inasistencia = (props) => {
                 <br/>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
-                    Registrar
-                </Button>
-                <Button variant="secondary" onClick={() => { props.handleCloseIn(); recargarPagina(); }}>
+                <CSVLink
+                    data={[state]}
+                    filename={"Seguimiento Individual " + state.fecha}
+                >   
+                    <Button variant="secondary" onClick={() => { set_info()}}>
+                        Registrar
+                    </Button>
+                </CSVLink>
+                
+                <Button variant="secondary" onClick={() => { props.handleCloseIn() }}>
                     Cerrar
                 </Button>
 
