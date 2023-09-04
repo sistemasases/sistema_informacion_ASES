@@ -47,7 +47,7 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
                         item.hora_inicio ?
                         (
                         <Col onClick={handleShow}>
-                            Seguimeinto individual : {item.fecha}
+                            Seguimiento individual : {item.fecha}
                         </Col>
                         )
                         :

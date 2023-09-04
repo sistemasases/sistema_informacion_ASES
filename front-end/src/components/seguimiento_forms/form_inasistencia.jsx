@@ -108,7 +108,7 @@ const Inasistencia = (props) => {
             <Modal.Footer>
                 <CSVLink
                     data={[state]}
-                    filename={"Seguimiento Individual " + state.fecha}
+                    filename={"Inasistencia Individual " + state.fecha}
                 >   
                     <Button variant="secondary" onClick={() => { set_info()}}>
                         Registrar
