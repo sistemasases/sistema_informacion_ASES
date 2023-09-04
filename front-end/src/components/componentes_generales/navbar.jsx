@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import {Button, ListGroupItem} from "react-bootstrap";
+
 import axios from 'axios';
 
 const Navbar = (props) =>{
@@ -70,6 +71,7 @@ const Navbar = (props) =>{
 
 const [newPassword, setNewPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
+
 const [password, setActualPassword] = useState("");
 
 const actualPassword = (event) => {

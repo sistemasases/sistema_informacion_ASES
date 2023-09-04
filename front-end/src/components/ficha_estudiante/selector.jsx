@@ -100,7 +100,8 @@ const Selector = (props) =>{
             .then((respuesta)=>{
                 set_state({
                     ...state,
-                    data_user_socioedu: respuesta.data
+                    data_user_socioedu: respuesta.data,
+                    tiene_datos_cargados: true
                   })
             })
             .catch(err=>{
@@ -136,7 +137,8 @@ const Selector = (props) =>{
                         data_user_socioedu={state.data_user_socioedu} 
                         seleccionado={props.seleccionado} datos={props.datos} 
                         rolUsuario={props.rolUsuario} editar={props.editar} 
-                        codigo={props.codigo}/>,
+                        codigo={props.codigo}
+                        tiene_datos_cargados={state.tiene_datos_cargados}/>,
         },
         {
             id:3,
@@ -170,7 +172,7 @@ const Selector = (props) =>{
                                 ( props.seleccionado !== '' && tab.contenido !== 'bloqueado' && tab.permitidos.includes(sessionStorage.getItem('rol')) ) ?
 
                                 (<Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
-                                    <Row onClick={() => activeTab(tab.id)} onMouseEnter={()=>loadInfo()}>
+                                    <Row onClick={() => activeTab(tab.id)} >
                                         <label key={index} className={tab.id === activeTabIndex ? "activeTab" : "tab"}>
                                             {tab.name}
                                         </label>

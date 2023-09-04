@@ -475,24 +475,25 @@ const isTabSelected_monitor = (username) => {
                       <Row className="asignaciones_no_seleccion">
                         Monitor no seleccionado 
                       </Row>
-                    <Scrollbars>
-                      { state.data_estudiantes.filter((item)=>{
-                        return state.estudiante_filtro.toLowerCase() === '' ? item 
-                        : 
-                        item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
-                        item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
-                        item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
-                      }).map((item, index) => 
-                    <Col className='asignaciones_hover_no_seleccionado'>
+                      
+                        <Scrollbars>
+                          { state.data_estudiantes.filter((item)=>{
+                            return state.estudiante_filtro.toLowerCase() === '' ? item 
+                            : 
+                            item.nombre.toLowerCase().includes(state.estudiante_filtro) ||
+                            item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
+                            item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
+                          }).map((item, index) => 
+                        <Col className='asignaciones_hover_no_seleccionado'>
 
-                      <Listas 
-                      key={index} item={item} rol={rol3} 
-                      monitor_seleccionado={state.monitor_seleccionado}
-                      filtro={state.estudiante_filtro}
-                      />
+                          <Listas 
+                          key={index} item={item} rol={rol3} 
+                          monitor_seleccionado={state.monitor_seleccionado}
+                          filtro={state.estudiante_filtro}
+                          />
 
-                    </Col>) }
-                    </Scrollbars>
+                        </Col>) }
+                        </Scrollbars>
                     </Col>
                   )
                   :
