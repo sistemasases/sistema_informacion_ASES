@@ -2,6 +2,7 @@ import React, {useState,useEffect} from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Seguimiento from '../../service/create_seguimiento';
+import { CSVLink } from 'react-csv';
 
 
 
@@ -94,10 +95,10 @@ const Seguimiento_individual = (props) =>{
     }, [state.fecha]);
 
     const set_info = () => {
-        console.log(state);
         Create_Seguimiento.create_seguimiento(state).then(res=>{
             if(res){
-                props.handleClose()
+                recargarPagina();
+                props.handleClose();
             } else {
                 window.confirm("Hubo un error al momento de crear el seguimiento, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.")
             }
@@ -848,11 +849,16 @@ const Seguimiento_individual = (props) =>{
             </Modal.Body>
           <Modal.Footer>
 
+            <CSVLink
+                    data={[state]}
+                    filename={"Seguimiento Individual " + state.fecha}
+                >
+                <Button variant="secondary" onClick={() => { set_info() }}>
+                    Registrar
+                </Button>
+            </CSVLink>
 
-            <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
-                Registrar
-            </Button>
-            <Button variant="secondary" onClick={() => { props.handleClose(); recargarPagina(); }}>
+            <Button variant="secondary" onClick={() => { props.handleClose() }}>
                 Cerrar
             </Button>
           </Modal.Footer>
