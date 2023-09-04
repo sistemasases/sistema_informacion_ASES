@@ -18,11 +18,15 @@ const Desplegable_item = ({item}) => {
         tiene_reportes_cargados:false
       })
     const traer_reportes = (e) => {
+        const paramsget = {
+            id_sede: sessionStorage.getItem('sede_id'),
+        };
 
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante_solo_semestre_actual/`+e+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,
+            params : paramsget,
             method: "GET",
             headers: config,
             })

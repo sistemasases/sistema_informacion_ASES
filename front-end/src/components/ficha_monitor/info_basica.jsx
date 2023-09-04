@@ -119,11 +119,14 @@ const Info_basica_monitor = (props) =>{
 
 
     const handle_option_user = (e) => {
-        
+        const paramsget = {
+        id_sede: sessionStorage.getItem('sede_id'),
+        };
         const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_info_extra/`+state.data_user[e.id]['id']+"/";
         axios({
           // Endpoint to send files
           url:  url_axios,
+          params : paramsget,
           method: "GET",
           headers: config,
         })

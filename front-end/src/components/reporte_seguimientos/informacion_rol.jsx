@@ -76,13 +76,13 @@ const Informacion_rol = (props) =>{
                             <br/>
                             <Row lassName="margin_top_info_rol"> 
                                 <Col xs={"12"} md={"3"} >
-                                <b>Fichás: </b> 
+                                <b>Fichas: </b> 
                                 </Col>
                                 <Col xs={"5"} md={"3"}>
-                                Révisado: {props.fichas_revisado_prof}
+                                Revisado: {props.fichas_revisado_prof}
                                 </Col>
                                 <Col xs={"6"} md={"3"}>
-                                No révisado: {props.fichas_no_revisado_prof}
+                                No revisado: {props.fichas_no_revisado_prof}
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : {props.total_fichas_prof}
@@ -94,10 +94,10 @@ const Informacion_rol = (props) =>{
                                 <b>Inasistencías: </b>
                                 </Col>
                                 <Col xs={"5"} md={"3"}>
-                                Révisado: {props.inasistencias_revisado_prof}
+                                Revisado: {props.inasistencias_revisado_prof}
                                 </Col>
                                 <Col xs={"6"} md={"3"}>
-                                No révisado: {props.inasistencias_no_revisado_prof}
+                                No revisado: {props.inasistencias_no_revisado_prof}
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : {props.total_inasistencias_prof}
@@ -120,13 +120,13 @@ const Informacion_rol = (props) =>{
                             <Row className="margin_top_info_rol">
 
                                 <Col  xs={"12"} md={"3"}>
-                                <b>Fichás:</b>
+                                <b>Fichas:</b>
                                 </Col>
                                 <Col xs={"5"} md={"3"}>
-                                Révisado : {props.fichas_revisado_prac}
+                                Revisado : {props.fichas_revisado_prac}
                                 </Col>
                                 <Col xs={"6"} md={"3"}>
-                                No révisado : {props.fichas_no_revisado_prac}
+                                No revisado : {props.fichas_no_revisado_prac}
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : {props.total_fichas_prac}
@@ -138,10 +138,10 @@ const Informacion_rol = (props) =>{
                                 <b>Inasistencías:</b>
                                 </Col>
                                 <Col xs={"5"} md={"3"}>
-                                Révisado : {props.inasistencias_revisado_prac}
+                                Revisado : {props.inasistencias_revisado_prac}
                                 </Col>
                                 <Col xs={"6"} md={"3"}>
-                                No révisado : {props.inasistencias_no_revisado_prac}
+                                No revisado : {props.inasistencias_no_revisado_prac}
                                 </Col>
                                 <Col xs={"8"} md={"3"}>
                                 Total : {props.total_inasistencias_prac}
