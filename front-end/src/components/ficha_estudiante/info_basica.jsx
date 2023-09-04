@@ -36,9 +36,17 @@ const Info_basica = (props) =>{
 
     const traer_graficos = () => {
       setLoading2(true);
-    
-      axios
-        .get(`${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/')
+      const paramsget = {
+        id_sede: sessionStorage.getItem('sede_id'),
+      };
+      const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/';
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            params : paramsget,
+            method: "GET",
+            headers: config2,
+            })
         .then((response) => {
           setFechas(response.data[0].fechas);
           const riesgos = response.data.slice(1);
@@ -187,7 +195,10 @@ const Info_basica = (props) =>{
 
     const fetchData = async (index)=>{
       try{
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config);
+        const paramsget = {
+          id_sede: sessionStorage.getItem('sede_id'),
+        };
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config,{paramsget});
         state.total_datos_estudiantes.push(response.data)
       }
       catch (error){
@@ -214,10 +225,14 @@ const Info_basica = (props) =>{
           //este if lo pongo para que abra academico de una
           if (url_estudiante == dato.value && state.ya_selecciono_automatico){
             setSelectedOption(dato)
+            const paramsget = {
+              id_sede: sessionStorage.getItem('sede_id'),
+            };
             const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+dato.value+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
+              params : paramsget,
               method: "GET",
               headers: config2,
             })
@@ -241,10 +256,14 @@ const Info_basica = (props) =>{
 
 
     const handle_option_user = (e) => {
+      const paramsget = {
+        id_sede: sessionStorage.getItem('sede_id'),
+      };
       sessionStorage.setItem('id_estudiante_seleccionado', e.value)
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` + e.value + "/";
       axios({
         url: url_axios,
+        params: paramsget,
         method: "GET",
         headers: config2,
       })

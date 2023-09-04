@@ -414,7 +414,8 @@ class lista_historiales_academicos_viewsets(viewsets.ModelViewSet):
 
     def list(self, request):
         list_semestres_total = []
-        semestres_ids = semestre.objects.all().order_by('-id')
+        request_sede = int(request.GET.get('id_sede'))
+        semestres_ids = semestre.objects.all().filter(id_sede = request_sede).order_by('-id')
 
         for i in semestres_ids:
             serializer = semestre_serializer(i)
@@ -429,8 +430,9 @@ class lista_historiales_academicos_viewsets(viewsets.ModelViewSet):
         return Response(list_semestres_total)
 
     def retrieve(self, request, pk=None):
+        request_sede = int(request.GET.get('id_sede'))
         list_semestres_total = []
-        semestres_ids = semestre.objects.all().order_by('-id')
+        semestres_ids = semestre.objects.all().filter(id_sede = request_sede).order_by('-id')
 
         for i in semestres_ids:
             serializer = semestre_serializer(i)

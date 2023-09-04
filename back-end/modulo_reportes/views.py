@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from modulo_usuario_rol.serializers import  user_serializer, estudiante_serializer, usuario_rol_serializer, user_selected
 from modulo_seguimiento.serializers import seguimiento_individual_serializer
+from django.core import serializers
 
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, cond_excepcion
 from modulo_asignacion.models import asignacion
@@ -73,19 +74,11 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             # return Response("caso no encontrado")
 
         elif data_usuario_rol == "profesional":
-            # Obtén una lista de IDs de programas en la sede CALI
-            programas_sede = programa.objects.filter(id_sede=data_sede).values_list('id', flat=True)
-
-            # Obtén una lista de IDs de estudiantes asociados a programas en la sede CALI
-            estudiantes_asociados = programa_estudiante.objects.filter(id_programa__in=programas_sede).values_list('id_estudiante_id', flat=True)
-
-            # Obtén información de estudiantes usando Subquery para filtrar por IDs de estudiantes asociados
-            estudiantes_info = estudiante.objects.filter(id__in=Subquery(estudiantes_asociados))
-
-            # Convierte el queryset en una lista de diccionarios
-            list_estudiantes = list(estudiantes_info.values())
+            programas_sede = programa.objects.filter(id_sede=data_sede)
+            estudiantes_sede = estudiante.objects.filter(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede).distinct()
+            serialized_estudiantes = estudiante_serializer(estudiantes_sede,many=True)
+            return Response(serialized_estudiantes.data, status=status.HTTP_200_OK)
                             
-            return Response (list_estudiantes)
 
         elif data_usuario_rol == "socioeducativo":
             # ven todo
@@ -553,6 +546,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         for obj_estudiante in estudiante.objects.filter(id = obj_programa_estudiante['id_estudiante_id']).values():
                             serializer_estudiante = estudiante_serializer(obj_estudiante)
                             list_estudiantes.append(serializer_estudiante.data)
+            
             
             for i in list_estudiantes: 
                 # serializer_estudiante_2 = estudiante_serializer(i)

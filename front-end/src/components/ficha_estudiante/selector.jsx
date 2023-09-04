@@ -61,11 +61,15 @@ const Selector = (props) =>{
     }
 
       const loadInfo = (e) => {
+        const paramsget = {
+            id_sede: sessionStorage.getItem('sede_id'),
+        };
 
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,
+            params : paramsget,
             method: "GET",
             headers: config,
             })
@@ -82,10 +86,14 @@ const Selector = (props) =>{
     }
 
     useEffect(() => {
+        const paramsget = {
+            id_sede: sessionStorage.getItem('sede_id'),
+        };
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
             axios({
             // Endpoint to send files
             url:  url_axios,
+            params : paramsget,
             method: "GET",
             headers: config,
             })

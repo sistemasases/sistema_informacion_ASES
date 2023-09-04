@@ -115,7 +115,10 @@ const Academico_desplegable = () => {
 
   const traer_estudiantes = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`, config);
+      const paramsget = {
+        id_sede: sessionStorage.getItem('sede_id'),
+      };
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`, config,{paramsget});
       set_state({
         estudiantes_a_consultar: [{ estudiantes: response.data }],
         tiene_estudiantes: true
