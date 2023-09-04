@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual_sin_boton';
 import Seguimiento_inasistencia from '../seguimiento_forms/form_inasistencia_sin_boton';
 
-const Desplegable_item = ({item}) => {
+const Desplegable_item = ({item, updateDataUserSocioedu}) => {
 
 
     const [show, setShow] = useState(false);
@@ -18,6 +18,13 @@ const Desplegable_item = ({item}) => {
     const handleShow2 = () => setShow2(true);
 
     const userRole = sessionStorage.getItem('rol');
+
+
+      const enviar_datos = (e) => {
+        // Actualiza state.data_user_socioedu con los nuevos datos
+                updateDataUserSocioedu(e);
+      };
+
 
     if(item.nombre){
         return (
@@ -38,11 +45,12 @@ const Desplegable_item = ({item}) => {
 
                 <Col className="col_reportes" >
                     <Row className="col_reportes_hover">
+
                     {
                         item.hora_inicio ?
                         (
                         <Col onClick={handleShow}>
-                            Seguimeinto individual : {item.fecha}
+                            Seguimiento individual : {item.fecha}
                         </Col>
                         )
                         :
@@ -56,9 +64,9 @@ const Desplegable_item = ({item}) => {
                     </Row>
                 </Col>
                 
-                <Seguimiento_inasistencia show={show2} onHide={handleCloseIn} handleCloseIn={handleCloseIn} item={item} size="lg"/>
+                <Seguimiento_inasistencia updateDataUserSocioedu={enviar_datos} show={show2} onHide={handleCloseIn} handleCloseIn={handleCloseIn} item={item} size="lg"/>
 
-                <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} item={item} size="lg"/>
+                <Seguimiento_individual updateDataUserSocioedu={enviar_datos} show={show} onHide={handleClose} handleClose={handleClose} item={item} size="lg"/>
             </Row>
             }</>
         )
