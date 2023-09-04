@@ -17,9 +17,45 @@ const Desplegable_item = ({item}) => {
         data_user_socioedu:[],
         tiene_reportes_cargados:false
       })
+
+
+    const [data_user_socioedu, set_data_user_socioedu] = useState([]);
+
+
     const traer_reportes = (e) => {
+        const paramsget = {
+            id_sede: sessionStorage.getItem('sede_id'),
+        };
+
+
+            set_state({
+                ...state,
+                tiene_reportes_cargados:false
+            })
 
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante_solo_semestre_actual/`+e+"/";
+            axios({
+            // Endpoint to send files
+            url:  url_axios,
+            params : paramsget,
+            method: "GET",
+            headers: config,
+            })
+            .then((respuesta)=>{
+                set_state({
+                    ...state,
+                    data_user_socioedu:respuesta.data,
+                    tiene_reportes_cargados:true
+                })
+
+            set_data_user_socioedu(respuesta.data)
+            })
+            .catch(err=>{
+                return (err)
+            })
+
+
+
             axios({
             // Endpoint to send files
             url:  url_axios,
@@ -27,17 +63,23 @@ const Desplegable_item = ({item}) => {
             headers: config,
             })
             .then((respuesta)=>{
-            state.data_user_socioedu.push(respuesta.data)
-            set_state({
-                data_user_socioedu:respuesta.data,
-                tiene_reportes_cargados:true
-            })
+                set_state({
+                    ...state,
+                    data_user_socioedu:respuesta.data,
+                    tiene_reportes_cargados:true
+                })
+
+            set_data_user_socioedu(respuesta.data)
             })
             .catch(err=>{
                 return (err)
             })
 
+            sessionStorage.setItem('id_estudiante_seleccionado', e)
+
     }
+
+
     if(item.tipo_usuario === "practicante"){
         return (
             <Row>
@@ -400,19 +442,20 @@ const Desplegable_item = ({item}) => {
                         </Row>
                     </Col>
                 </Row>
+                
                 {state.tiene_reportes_cargados ?
                 (
                     <Row className="fichas-content">
                     <div class="d-none d-md-inline col-12">
                         <Col className="contenido_fichas">
-                            <Socieducativa data_user_socioedu={state.data_user_socioedu[0]}  />
+                            <Socieducativa data_user_socioedu={state.data_user_socioedu[0]} updateDataUserSocioedu={traer_reportes}  />
                         </Col>
                     
 
                     </div>
                     <div class="d-inline d-md-none col-12">
                         <Col className="contenido_fichas_pequeño">
-                            <Socieducativa data_user_socioedu={state.data_user_socioedu[0]}  />
+                            <Socieducativa data_user_socioedu={state.data_user_socioedu[0] } updateDataUserSocioedu={traer_reportes}  />
 
                         </Col>
                     </div>

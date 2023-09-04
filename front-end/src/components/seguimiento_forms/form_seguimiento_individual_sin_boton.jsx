@@ -11,12 +11,14 @@ const Seguimiento_individual = (props) =>{
 
 
     const recargarPagina = () => {
-        if (form.id_estudiante) {
+        
+        if (props.recarga_ficha_estudiante) {
             // Cambiar la URL a la página con el ID del estudiante seleccionado
-            window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
+            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
         } else {
-            console.error('No hay un ID de estudiante disponible para recargar la página.');
+            props.updateDataUserSocioedu(state.id_estudiante);
         }
+
     };
 
 
@@ -86,13 +88,14 @@ const Seguimiento_individual = (props) =>{
         cierre: props.item.cierre,
         id_creador: props.item.id_creador,
         id_modificador: parseInt(sessionStorage.getItem("id_usuario")),
-        id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
+        id_estudiante: props.item.id_estudiante
     })
 
     const set_info = (e) => {
         Update_seguimiento.Update_seguimiento(form).then(res=>{
             if(res){
                 props.handleClose()
+                recargarPagina();
             } else {
                 window.alert("Hubo un error al momento de actualizar el seguimiento, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.")
             }
@@ -104,6 +107,7 @@ const Seguimiento_individual = (props) =>{
             Delete_seguimiento.Delete_seguimiento(form.id).then(res=>{
                 if(res){
                     props.handleClose()
+                    recargarPagina();
                 } else {
                     window.alert("Hubo un error al momento de eliminar el seguimiento.")
                 }
@@ -875,10 +879,10 @@ const Seguimiento_individual = (props) =>{
              */}
 
 
-            <Button variant="danger" onClick={() => { delete_info(); recargarPagina(); }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
+            <Button variant="danger" onClick={() => { delete_info()}} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
               Eliminar
             </Button>
-            <Button variant="secondary" onClick={() => { set_info(); recargarPagina(); }}>
+            <Button variant="secondary" onClick={() => { set_info() }}>
                 Aceptar cambios
             </Button>
             <Button variant="secondary" onClick={() => { props.handleClose() }}>

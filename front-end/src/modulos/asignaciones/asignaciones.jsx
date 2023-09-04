@@ -62,8 +62,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-
-      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`, config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_sede/`+sessionStorage.getItem('sede_id')+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

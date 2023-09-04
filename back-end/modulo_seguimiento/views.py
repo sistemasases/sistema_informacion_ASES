@@ -34,6 +34,7 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         list_seguimientos = []
         list_final =[]
+        request_sede = int(request.GET.get('id_sede'))
         list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = pk))
         list_inasistencia = list(inasistencia.objects.filter(id_estudiante = pk))
 
@@ -44,7 +45,7 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
             serializer_seguimiento_individual =seguimiento_individual_serializer(i)
             list_seguimientos.append(serializer_seguimiento_individual.data)
         list_seguimientos.sort(key=lambda s: s['fecha'],reverse=True)
-        list_semestre = list(semestre.objects.all().order_by('-fecha_inicio'),)
+        list_semestre = list(semestre.objects.all().filter(id_sede=request_sede).order_by('-fecha_inicio'),)
         for i in list_semestre:
             lista_semestre = []
             serializer_semestre =semestre_serializer(i)
@@ -61,12 +62,13 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
 
 class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
         list_seguimientos = []
         list_final =[]
+        request_sede = int(request.GET.get('id_sede'))
         list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = pk))
         list_inasistencia = list(inasistencia.objects.filter(id_estudiante = pk))
 
@@ -78,7 +80,7 @@ class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewS
             list_seguimientos.append(serializer_seguimiento_individual.data)
         list_seguimientos.sort(key=lambda s: s['fecha'],reverse=True)
 
-        list_semestre = list(semestre.objects.all().filter(semestre_actual = True))
+        list_semestre = list(semestre.objects.all().filter(semestre_actual = True,id_sede=request_sede))
         
         for i in list_semestre:
             lista_semestre = []
