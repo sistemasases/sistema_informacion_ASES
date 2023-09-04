@@ -8,20 +8,6 @@ const Inasistencia = (props) => {
     const idEstudianteSeleccionado = sessionStorage.getItem("id_estudiante_seleccionado");
 
 
-
-
-    const recargarPagina = () => {
-        if (state.id_estudiante) {
-            // Cambiar la URL a la página con el ID del estudiante seleccionado
-            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
-        } else {
-            console.error('No hay un ID de estudiante disponible para recargar la página.');
-        }
-    };
-
-
-
-
     const [state, set_state] = useState({
         fecha: null,
         observaciones: "",
@@ -39,6 +25,20 @@ const Inasistencia = (props) => {
         })
     }, [state.fecha]);
 
+
+
+    const recargarPagina = () => {
+        
+            // Cambiar la URL a la página con el ID del estudiante seleccionado
+            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+
+    };
+
+
+
+
+
+
     const set_info = async () => {
         const idEstudiante = !isNaN(idEstudianteSeleccionado) ? parseInt(idEstudianteSeleccionado) : null;
 
@@ -47,6 +47,7 @@ const Inasistencia = (props) => {
             ...prevState,
             id_estudiante: idEstudiante
         }));
+
 
         // Llamada a la función Create_Inasistencia.create_inasistencia solo cuando se hace clic en el botón Registrar
         try {
@@ -107,7 +108,7 @@ const Inasistencia = (props) => {
             <Modal.Footer>
                 <CSVLink
                     data={[state]}
-                    filename={"Seguimiento Individual " + state.fecha}
+                    filename={"Inasistencia Individual " + state.fecha}
                 >   
                     <Button variant="secondary" onClick={() => { set_info()}}>
                         Registrar
