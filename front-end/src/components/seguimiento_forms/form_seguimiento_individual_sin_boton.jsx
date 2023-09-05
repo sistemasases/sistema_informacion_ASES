@@ -16,7 +16,8 @@ const Seguimiento_individual = (props) =>{
             // Cambiar la URL a la página con el ID del estudiante seleccionado
             window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
         } else {
-            props.updateDataUserSocioedu(state.id_estudiante);
+            props.updateDataUserSocioedu(form.id_estudiante);
+            window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
         }
 
     };
