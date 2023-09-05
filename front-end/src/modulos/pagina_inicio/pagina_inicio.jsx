@@ -33,31 +33,51 @@ import boton18 from '../../images/14.png';
 import boton19 from '../../images/15.png';
 import boton20 from '../../images/16.png';
 import boton21 from '../../images/21.png';
+import CryptoJS from "crypto-js";
+
 
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 
+//Clave secreta para desencriptar el rol del usuario
+const secretKey = process.env.REACT_APP_SECRET_KEY;
+
+
 const Pagina_inicio = () => {
-  const userRole = sessionStorage.getItem("rol");
+   // Función para desencriptar el rol del usuario desde el sessionStorage
+   const decryptRolFromSessionStorage = () => {
+    const encryptedRol = sessionStorage.getItem('rol');
+    if (!encryptedRol) {
+        return null; // No hay rol en sessionStorage
+    }
+
+    // Desencriptar el rol usando la clave secreta (utiliza el mismo método que para el token)
+    const bytes = CryptoJS.AES.decrypt(encryptedRol, secretKey);
+    const decryptedRol = bytes.toString(CryptoJS.enc.Utf8);
+
+    return decryptedRol;
+};
+
+  const userRole = decryptRolFromSessionStorage();
   let desplegable;
 
-  if (sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'super_ases') {
+  if (userRole === 'sistemas' || userRole === 'super_ases') {
     desplegable = 'ADMIN';
-  } else if (sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'socioeducativo') {
+  } else if (userRole === 'socioeducativo_reg' || userRole === 'socioeducativo') {
     desplegable = 'SOCIOEDUCATIVO';
-  } else if (sessionStorage.rol === 'dir_academico') {
+  } else if (userRole === 'dir_academico') {
     desplegable = 'DIRECTOR ACÁDEMICO';
-  } else if (sessionStorage.rol === 'monitor') {
+  } else if (userRole === 'monitor') {
     desplegable = 'MONITOR';
-  } else if (sessionStorage.rol === 'practicante') {
+  } else if (userRole === 'practicante') {
     desplegable = 'PRACTICANTE';
-  } else if (sessionStorage.rol === 'dir_investigacion') {
+  } else if (userRole === 'dir_investigacion') {
     desplegable = 'DIRECTOR INVES.';
-  }  else if (sessionStorage.rol === 'dir_programa') {
+  }  else if (userRole === 'dir_programa') {
     desplegable = 'DIRECTOR PROGRAMA';
-  } else if (sessionStorage.rol === 'vcd_academico') {
+  } else if (userRole === 'vcd_academico') {
     desplegable = 'VICERRECTOR ACADE.';
-  } else if (sessionStorage.rol === 'profesional') {
+  } else if (userRole === 'profesional') {
     desplegable = 'PROFESIONAL';
   } 
   

@@ -6,11 +6,28 @@ import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import carga_masiva_service from '../../service/carga_masiva';
 import DataTable, {createTheme} from 'react-data-table-component';
+import CryptoJS from 'crypto-js';
+
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 const Carga_masiva_component = () =>{
 
+  const decryptTokenFromSessionStorage = () => {
+    const encryptedToken = sessionStorage.getItem('rol');
+    if (!encryptedToken) {
+      return null; // No hay token en sessionStorage
+    }
+  
+    // Desencriptar el token usando la clave secreta
+    const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
+    const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
+  
+    return decryptedToken;
+  };
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+     
+    Authorization: 'Bearer ' +  decryptTokenFromSessionStorage()
+   
   };
 
   const[switchChecked, setChecked] = useState(false);

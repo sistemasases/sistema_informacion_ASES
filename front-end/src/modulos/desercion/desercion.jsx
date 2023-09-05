@@ -11,15 +11,45 @@ import Tabla_desercion from "../../components/desercion/tabla_desercion";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import  {useEffect} from 'react';
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
+
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 const Desercion = () =>{
 
-  const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+  const decryptTokenFromSessionStorage = () => {
+    const encryptedToken = sessionStorage.getItem('token');
+    if (!encryptedToken) {
+      return null; // No hay token en sessionStorage
+    }
+  
+    // Desencriptar el token usando la clave secreta
+    const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
+    const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
+  
+    return decryptedToken;
+  };
+  
+
+  const decryptPermissionsFromSessionStorage = () => {
+    const encryptedPermissions = sessionStorage.getItem('permisos');
+    if (!encryptedPermissions) {
+      return null; // No hay permisos en sessionStorage
+    }
+  
+    // Desencriptar los permisos usando la clave secreta
+    const bytes = CryptoJS.AES.decrypt(encryptedPermissions, secretKey);
+    const decryptedPermissions = bytes.toString(CryptoJS.enc.Utf8);
+  
+    return decryptedPermissions;
   };
 
-    const userRole = sessionStorage.getItem('permisos');
+  const config = {
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
+  };
 
+    //const userRole = sessionStorage.getItem('permisos');
+    const userRole = decryptPermissionsFromSessionStorage();
     const [state,set_state] = useState({
         periodo : '',
     

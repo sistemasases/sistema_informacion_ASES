@@ -9,11 +9,26 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
+import CryptoJS from 'crypto-js';
+//Llave secreta para desencriptar.
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 
 const Gestion_usuario_rol = () =>{
-
-    const userRole = sessionStorage.getItem('permisos');
+    //Función para desencriptar el rol del usuario desde el sessionStorage
+    const decryptPermissionsFromSessionStorage = () => {
+        const encryptedPermissions = sessionStorage.getItem('permisos');
+        if (!encryptedPermissions) {
+          return null; // No hay permisos en sessionStorage
+        }
+      
+        // Desencriptar los permisos usando la clave secreta
+        const bytes = CryptoJS.AES.decrypt(encryptedPermissions, secretKey);
+        const decryptedPermissions = bytes.toString(CryptoJS.enc.Utf8);
+      
+        return decryptedPermissions;
+      };
+    const userRole = decryptPermissionsFromSessionStorage();
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);

@@ -11,10 +11,23 @@ import React from 'react';
 import Inicio_semestre_component from "../../components/inicio_semestre_sistemas/inicio_semestre_component";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import {Container, Row, Col} from "react-bootstrap";
+import CryptoJS from 'crypto-js';
 
+//Llave secreta para desencriptar.
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 const Inicio_semestre_sistemas_instancia = () =>{
+    //Desencriptar el rol del usuario desde el sessionStorage
+    const decryptPermissionsFromSessionStorage = () => {
+        const encryptedPermissions = sessionStorage.getItem('permisos');
+        if (!encryptedPermissions) {
+            return null; // No hay permisos en sessionStorage
+        }
+        const bytes = CryptoJS.AES.decrypt(encryptedPermissions, secretKey);
+        const decryptedPermissions = bytes.toString(CryptoJS.enc.Utf8);
+        return decryptedPermissions;
+    }; 
 
-    const userRole = sessionStorage.getItem('permisos');
+    const userRole = decryptPermissionsFromSessionStorage();
 
     return (
     <>{ userRole.includes('view_inicio_semestre') ? <Col className="contenido_children">
