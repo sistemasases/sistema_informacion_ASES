@@ -5,9 +5,7 @@ import Create_Inasistencia from '../../service/create_inasistencia';
 import { CSVLink } from 'react-csv';
 
 const Inasistencia = (props) => {
-    const idEstudianteSeleccionado = sessionStorage.getItem("id_estudiante_seleccionado");
-
-
+    const id_estudiantecons = props.estudiante_seleccionado
     const [state, set_state] = useState({
         fecha: null,
         observaciones: "",
@@ -15,15 +13,8 @@ const Inasistencia = (props) => {
         revisado_practicante: false,
         id_creador: parseInt(sessionStorage.getItem("id_usuario")),
         id_modificador: null,
-        id_estudiante: !isNaN(idEstudianteSeleccionado) ? parseInt(idEstudianteSeleccionado) : null
-    });
-    useEffect(()=>{
-        set_state({
-            ...state,
-            id_estudiante : parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
 
-        })
-    }, [state.fecha]);
+    });
 
 
 
@@ -35,18 +26,19 @@ const Inasistencia = (props) => {
     };
 
 
-
+    useEffect(() => {
+        set_state(prevState => ({
+            ...prevState,
+            id_estudiante: id_estudiantecons,
+        }))
+    },[state])
 
 
 
     const set_info = async () => {
-        const idEstudiante = !isNaN(idEstudianteSeleccionado) ? parseInt(idEstudianteSeleccionado) : null;
 
         // Llamada a la función set_state para actualizar el estado
-        set_state(prevState => ({
-            ...prevState,
-            id_estudiante: idEstudiante
-        }));
+        
 
 
         // Llamada a la función Create_Inasistencia.create_inasistencia solo cuando se hace clic en el botón Registrar
@@ -110,7 +102,7 @@ const Inasistencia = (props) => {
                     data={[state]}
                     filename={"Inasistencia Individual " + state.fecha}
                 >   
-                    <Button variant="secondary" onClick={() => { set_info()}}>
+                    <Button variant="secondary" onClick={() => {set_info()}}>
                         Registrar
                     </Button>
                 </CSVLink>
