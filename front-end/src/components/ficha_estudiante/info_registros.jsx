@@ -51,8 +51,8 @@ const Info_registros = (props) =>{
 
     return (
         <Row className="container_info_registro">
-            <Seguimiento_individual show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
-            <Inasistencia show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
+            <Seguimiento_individual estudiante_seleccionado={props.id_estudiante} recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn}  size="lg"/>
+            <Inasistencia estudiante_seleccionado={props.id_estudiante} recarga_ficha_estudiante={true}  show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
             {}
             <div class="d-none d-lg-block col-1">
                 <Col>
