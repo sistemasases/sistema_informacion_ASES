@@ -1653,7 +1653,6 @@ const Reporte = () => {
             <div>
               <h1>Reporte General</h1>
             </div>
-            {filterBox()}
             <br />
             {/* Cabeceras de Filtros */}
             <Row>
@@ -1798,9 +1797,6 @@ const Reporte = () => {
                 exportHeaders={true}
                 ></DataTableExtensions> */}
 
-            {columnas.cabeceras.map((item, index) => (
-              <div key={index}>{filterBox()}</div>
-            ))}
             {/* Tabla */}
             <DataTable
               id="tabla_Reporte"
@@ -1815,7 +1811,18 @@ const Reporte = () => {
                       item.num_doc
                         .toString()
                         .toLowerCase()
-                        .includes(search.busqueda);
+                        .includes(search.busqueda) ||
+                      item.asignacion_profesional
+                        .toLowerCase()
+                        .includes(search.busqueda) ||
+                      //    ||
+                      // item.asignacion_practicante
+                      //   .toLowerCase()
+                      //   .includes(search.busqueda) ||
+                      // item.asignacion_monitores
+                      //   .toLowerCase()
+                      //   .includes(search.busqueda)
+                      item.sede.toLowerCase().includes(search.busqueda);
               })}
               // data={state.estudiante}
               noDataComponent="Cargando Información..."
