@@ -8,7 +8,6 @@ import { CSVLink } from 'react-csv';
 
 const Seguimiento_individual = (props) =>{
 
-
     const recargarPagina = () => {
         
             // Cambiar la URL a la página con el ID del estudiante seleccionado
@@ -80,7 +79,7 @@ const Seguimiento_individual = (props) =>{
             revisado_practicante: false,
             primer_acercamiento: false,
             cierre: false,
-            id_estudiante: parseInt(sessionStorage.getItem("id_estudiante_seleccionado")),
+            id_estudiante: props.estudiante_seleccionado,
             id_creador: parseInt(sessionStorage.getItem("id_usuario")),
             id_modificador: null,
         }
@@ -88,7 +87,7 @@ const Seguimiento_individual = (props) =>{
     useEffect(()=>{
         set_state({
             ...state,
-            id_estudiante : parseInt(sessionStorage.getItem("id_estudiante_seleccionado"))
+            id_estudiante : props.estudiante_seleccionado
 
         })
     }, [state.fecha]);

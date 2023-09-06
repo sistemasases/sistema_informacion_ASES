@@ -19,6 +19,7 @@ import GraphComponent from './trayectoria.jsx';
 
 const Info_basica = (props) =>{
 
+
   const config = {
     headers: {
         Authorization: 'Bearer ' + sessionStorage.getItem('token')
@@ -139,7 +140,7 @@ const Info_basica = (props) =>{
       nueva_cedula:'',
       edad:'',
     })
-
+    console.log("holi"+state.seleccionado)
     useEffect(() => {
       if (state.total_datos_estudiantes['nombre'] && isLoading) {
         set_state({
@@ -309,8 +310,8 @@ const Info_basica = (props) =>{
 
     return (
       <Row className="row_prueba">
-        <Seguimiento_individual recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
-        <Inasistencia recarga_ficha_estudiante={true}  show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
+        <Seguimiento_individual estudiante_seleccionado={state.seleccionado} recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn} size="lg"/>
+        <Inasistencia estudiante_seleccionado={state.seleccionado} recarga_ficha_estudiante={true}  show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
         {/* {!loading && fechas.length > 0 && Object.keys(riesgos).length > 0 && (
           <GraphComponent fechas={fechas} riesgos={riesgos} />
         )} */}
