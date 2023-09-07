@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from modulo_carga_masiva import serializers
 from datetime import datetime
+import math
 from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
@@ -542,37 +543,88 @@ def carga_fichas(file):
     list_dict_result = []
     list_fichas = []
     datos = pd.read_csv(file,header=0)
+    print(datos)
     for i in range(datos.shape[0]):
-        if (User.objects.filter(id = datos.iat[i,60]).values()):
-            consulta_creador= User.objects.get(id =datos.iat[i,60])
+        if (User.objects.filter(id = datos.iat[i,61]).values()):
+            consulta_creador= User.objects.get(id =datos.iat[i,61])
 
-            if (User.objects.filter(id = datos.iat[i,61]).values()):
-                consulta_editor= User.objects.get(id =datos.iat[i,61])
 
-                if (estudiante.objects.filter(id = datos.iat[i,62]).values()):
-                    consulta_estudiante= estudiante.objects.get(id =datos.iat[i,62])
-                    if (seguimiento_individual.objects.filter(fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
-                                                            hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M %p'),
-                                                            hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M %p'),
-                                                            id_creador = consulta_creador,
-                                                            id_modificador = consulta_editor,
-                                                            id_estudiante =  consulta_estudiante,).first()):
-                        dict_result = {
-                            'dato' : datos.iat[i,0],
-                            'mensaje' : 'Ya existe esta ficha.'
-                        }
-                        list_dict_result.append(dict_result)
-                    else:
+
+            if (estudiante.objects.filter(id = datos.iat[i,60]).values()):
+                consulta_estudiante= estudiante.objects.get(id =datos.iat[i,60])
+                if (seguimiento_individual.objects.filter(fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
+                                                        hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M'),
+                                                        hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M'),
+                                                        id_creador = consulta_creador,
+                                                        id_estudiante =  consulta_estudiante,).first()):
+                    dict_result = {
+                        'dato' : datos.iat[i,0],
+                        'mensaje' : 'Ya existe esta ficha.'
+                    }
+                    list_dict_result.append(dict_result)
+                else:
+                        if math.isnan(datos.iat[i,6]):
+                            riesgo_individual_dato = int('-1')
+                        else:
+                            riesgo_individual_dato =  int(datos.iat[i,6]) 
+                        if math.isnan(datos.iat[i,18]):
+                            riesgo_familiar_dato = int('-1')
+                        else:
+                            riesgo_familiar_dato =  int(datos.iat[i,18])  
+                        if math.isnan(datos.iat[i,21]):
+                            riesgo_academico_dato = int('-1')
+                        else:
+                            riesgo_academico_dato =  int(datos.iat[i,21]) 
+                        if math.isnan(datos.iat[i,26]):
+                            riesgo_economico_dato = int('-1')
+                        else:
+                            riesgo_economico_dato =  int(datos.iat[i,26]) 
+                        if math.isnan(datos.iat[i,32]):
+                            riesgo_vida_universitaria_ciudad_dato = int('-1')
+                        else:
+                            riesgo_vida_universitaria_ciudad_dato =  int(datos.iat[i,32]) 
+
+                        if str(datos.iat[i,4]) == "nan":
+                            objetivo_dato = str("")
+                        else:
+                            objetivo_dato =  str(datos.iat[i,4])
+
+                        if str(datos.iat[i,5]) == "nan":
+                            individual_dato = str("")
+                        else:
+                            individual_dato =  str(datos.iat[i,5]) 
+
+                        if str(datos.iat[i,17])== "nan":
+                            familiar_dato = str("")
+                        else:
+                            familiar_dato =  str(datos.iat[i,17]) 
+                        if str(datos.iat[i,20])=="nan":
+                            academico_dato = str("")
+                        else:
+                            academico_dato =  str(datos.iat[i,20]) 
+                        if str(datos.iat[i,25])=="nan":
+                            economico_dato = str("")
+                        else:
+                            economico_dato =  str(datos.iat[i,25]) 
+                        if str(datos.iat[i,31]) == "nan":
+                            vida_universitaria_ciudad_dato = str("")
+                        else:
+                            vida_universitaria_ciudad_dato =  str(datos.iat[i,31]) 
+                        if str(datos.iat[i,55]) == "nan":
+                            observaciones_dato = str("")
+                        else:
+                            observaciones_dato =  str(datos.iat[i,55]) 
+
 
                         try:
                             Seguimiento_individual =seguimiento_individual(
-                                fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
+                                fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
                                 lugar = str(datos.iat[i,1]),
-                                hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M %p'),
-                                hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M %p'),
-                                objetivos= str(datos.iat[i,4]),
-                                individual= str(datos.iat[i,5]),
-                                riesgo_individual= int(datos.iat[i,6]),
+                                hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M'),
+                                hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M'),
+                                objetivos= objetivo_dato,
+                                individual= individual_dato,
+                                riesgo_individual= riesgo_individual_dato,
                                 autoconocimiento= bool(datos.iat[i,7]),
                                 rasgos_de_personalidad=bool(datos.iat[i,8]),
                                 identificación=bool(datos.iat[i,9]),
@@ -583,22 +635,22 @@ def carga_fichas(file):
                                 historia_de_vida=bool(datos.iat[i,14]),
                                 relación_eriótico_afectivas=bool(datos.iat[i,15]),
                                 diversidad_sexual=bool(datos.iat[i,16]),
-                                familiar=str(datos.iat[i,17]),
-                                riesgo_familiar=int(datos.iat[i,18]),
+                                familiar=familiar_dato,
+                                riesgo_familiar=riesgo_familiar_dato,
                                 dinamica_familiar=bool(datos.iat[i,19]),
-                                academico=str(datos.iat[i,20]),
-                                riesgo_academico= int(datos.iat[i,21]),
+                                academico=academico_dato,
+                                riesgo_academico= riesgo_academico_dato,
                                 desempeño_académico=bool(datos.iat[i,22]),
                                 elección_vocacional=bool(datos.iat[i,23]),
                                 manejo_del_tiempo =bool(datos.iat[i,24]),
-                                economico=str(datos.iat[i,25]),
-                                riesgo_economico=int(datos.iat[i,26]),
+                                economico=economico_dato,
+                                riesgo_economico=riesgo_economico_dato,
                                 apoyos_económicos_institucionales=bool(datos.iat[i,27]),
                                 manejo_finanzas=bool(datos.iat[i,28]),
                                 apoyo_económico_familiar=bool(datos.iat[i,29]),
                                 situación_laboral_ocupacional=bool(datos.iat[i,30]),
-                                vida_universitaria_ciudad=str(datos.iat[i,31]),
-                                riesgo_vida_universitaria_ciudad=int(datos.iat[i,32]),
+                                vida_universitaria_ciudad=vida_universitaria_ciudad_dato,
+                                riesgo_vida_universitaria_ciudad=riesgo_vida_universitaria_ciudad_dato,
                                 motivación_compañamiento=bool(datos.iat[i,33]),
                                 referencia_geográfica=bool(datos.iat[i,34]),
                                 adaptación_ciudad_Universidad=bool(datos.iat[i,35]),
@@ -623,39 +675,33 @@ def carga_fichas(file):
                                 rem_externa = bool(datos.iat[i,53]),
                                 Ninguna_acción_realizada = bool(datos.iat[i,54]),
 
-                                observaciones=str(datos.iat[i,55]),
+                                observaciones=observaciones_dato,
                                 revisado_profesional = bool(datos.iat[i,56]),
                                 revisado_practicante = bool(datos.iat[i,57]),
                                 primer_acercamiento =bool(datos.iat[i,58]),
                                 cierre =bool(datos.iat[i,59]),
 
                                 id_creador = consulta_creador,
-                                id_modificador = consulta_editor,
+                                id_modificador = None,
                                 id_estudiante =  consulta_estudiante,
 
                             )
                             list_fichas.append(Seguimiento_individual)
                             dict_result = {
                                 'dato' : datos.iat[i,0],
-                                'mensaje' : 'Se cargó correctamente la ficha del estudiante con id: '+str(datos.iat[i,62])+'.'
+                                'mensaje' : 'Se cargó correctamente la fichaW del estudiante con id: '+str(datos.iat[i,60])+'.'
                             }
                             list_dict_result.append(dict_result)
                         except:
                             dict_result = {
                                 'dato' : datos.iat[i,0],
-                                'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,62])+'.'
+                                'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,60])+'.'
                             }
                             list_dict_result.append(dict_result)
-                else:
-                    dict_result = {
-                        'dato' : datos.iat[i,0],
-                        'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,62])+'.'
-                    }
-                    list_dict_result.append(dict_result)
             else:
                 dict_result = {
                     'dato' : datos.iat[i,0],
-                    'mensaje' : 'El usuario suministrado como editor de la ficha no existe.'
+                    'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,60])+'.'
                 }
                 list_dict_result.append(dict_result)
         else:
@@ -675,59 +721,56 @@ def carga_inasistencias(file):
         if (User.objects.filter(id = datos.iat[i,4]).values()):
             consulta_creador= User.objects.get(id =datos.iat[i,4])
 
-            if (User.objects.filter(id = datos.iat[i,5]).values()):
-                consulta_editor= User.objects.get(id =datos.iat[i,5])
 
-                if (estudiante.objects.filter(id = datos.iat[i,6]).values()):
-                    consulta_estudiante= estudiante.objects.get(id =datos.iat[i,6])
+            if (estudiante.objects.filter(id = datos.iat[i,6]).values()):
+                consulta_estudiante= estudiante.objects.get(id =datos.iat[i,6])
 
-                    if (inasistencia.objects.filter(fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
-                                                            id_creador = consulta_creador,
-                                                            id_modificador = consulta_editor,
-                                                            id_estudiante =  consulta_estudiante,).first()):
-                        dict_result = {
-                            'dato' : datos.iat[i,0],
-                            'mensaje' : 'Ya existe esta inasistencia.'
-                        }
-                        list_dict_result.append(dict_result)
-                    else:
-
-                        try:
-                            Inasistencia =inasistencia(
-                                fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
-                                observaciones=str(datos.iat[i,1]),
-                                revisado_profesional = bool(datos.iat[i,2]),
-                                revisado_practicante = bool(datos.iat[i,3]),
-
-                                id_creador = consulta_creador,
-                                id_modificador = consulta_editor,
-                                id_estudiante =  consulta_estudiante,
-
-                            )
-                            list_inasistencia.append(Inasistencia)
-                            dict_result = {
-                                'dato' : datos.iat[i,0],
-                                'mensaje' : 'Se cargó correctamente la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
-                            }
-                            list_dict_result.append(dict_result)
-                        except:
-                            dict_result = {
-                                'dato' : datos.iat[i,0],
-                                'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
-                            }
-                            list_dict_result.append(dict_result)
-                else:
+                if (inasistencia.objects.filter(fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
+                                                        id_creador = consulta_creador,
+                                                        id_estudiante =  consulta_estudiante,).first()):
                     dict_result = {
                         'dato' : datos.iat[i,0],
-                        'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
+                        'mensaje' : 'Ya existe esta inasistencia.'
                     }
                     list_dict_result.append(dict_result)
+                else:
+
+                    try:
+                        if str(datos.iat[i,1]) == "nan":
+                            observacion_dato = str("")
+                        else:
+                            observacion_dato =  str(datos.iat[i,1])
+
+                        Inasistencia =inasistencia(
+                            fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
+                            observaciones=observacion_dato,
+                            revisado_profesional = bool(datos.iat[i,2]),
+                            revisado_practicante = bool(datos.iat[i,3]),
+
+                            id_creador = consulta_creador,
+                            id_modificador = None,
+                            id_estudiante =  consulta_estudiante,
+
+                        )
+                        list_inasistencia.append(Inasistencia)
+                        dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Se cargó correctamente la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
+                        }
+                        list_dict_result.append(dict_result)
+                    except:
+                        dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
+                        }
+                        list_dict_result.append(dict_result)
             else:
                 dict_result = {
                     'dato' : datos.iat[i,0],
-                    'mensaje' : 'El usuario suministrado como editor de la ficha no existe.'
+                    'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
                 }
                 list_dict_result.append(dict_result)
+
         else:
             dict_result = {
                 'dato' : datos.iat[i,0],
