@@ -79,8 +79,13 @@ const Cabecera = (props) => {
 
     if (sessionStorage.getItem('rol') === 'profesional')
       {
+        const paramsget = {
+          id_sede: sessionStorage.getItem('sede_id'),
+        };
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + sessionStorage.getItem('id_usuario') + '/';
         axios({
-          url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + sessionStorage.getItem('id_usuario') + '/',
+          url: url_axios,
+          params: paramsget,
           method: 'GET',
           headers: config,
         })
@@ -99,8 +104,12 @@ const Cabecera = (props) => {
       }
       else if (sessionStorage.getItem('rol') === 'practicante')
       {
+        const paramsget = {
+          id_sede: sessionStorage.getItem('sede_id'),
+        };
         axios({
           url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos_practicante/` + sessionStorage.getItem('id_usuario') + '/',
+          params : paramsget,
           method: 'GET',
           headers: config,
         })
@@ -195,8 +204,12 @@ const Cabecera = (props) => {
       id_usuario: props.data_user[e.id]['id'],
       total_datos_estudiante_seleccionado: total_datos_estudiantes[e.id],
     });
+    const paramsget = {
+      id_sede: sessionStorage.getItem('sede_id'),
+    };
     axios({
       url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + props.data_user[e.id]['id'] + '/',
+      params : paramsget,
       method: 'GET',
       headers: config,
     })
@@ -268,9 +281,9 @@ const Cabecera = (props) => {
     state.ids_practicantes_del_profesional.forEach((practicante) => {
 
       conteo_total_fichas_prof += practicante.cantidad_reportes.count_seguimientos;
-      conteo_total_inasistencias_prof += practicante.cantidad_reportes.count_seguimientos;
+      conteo_total_inasistencias_prof += practicante.cantidad_reportes.count_inasistencias;
       conteo_total_fichas_prac += practicante.cantidad_reportes.count_seguimientos;
-      conteo_total_inasistencias_prac += practicante.cantidad_reportes.count_seguimientos;
+      conteo_total_inasistencias_prac += practicante.cantidad_reportes.count_inasistencias;
 
       conteo_fichas_no_revisado_prof += practicante.cantidad_reportes.count_seguimientos_pendientes_profesional;
       conteo_inasistencias_no_revisado_prof += practicante.cantidad_reportes.count_inasistencias_pendientes_profesional;
@@ -280,7 +293,7 @@ const Cabecera = (props) => {
       conteo_inasistencias_no_revisado_prac += practicante.cantidad_reportes.count_inasistencias_pendientes_practicante;
 
     });
-
+    
     conteo_fichas_revisado_prof = conteo_total_fichas_prof - conteo_fichas_no_revisado_prof;
     conteo_inasistencias_revisado_prof = conteo_total_inasistencias_prof - conteo_inasistencias_no_revisado_prof;
 
