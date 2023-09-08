@@ -16,7 +16,6 @@ const Inasistencia = (props) =>{
             window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
         } else {
             props.updateDataUserSocioedu(form.id_estudiante);
-            window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
         }
 
     };
