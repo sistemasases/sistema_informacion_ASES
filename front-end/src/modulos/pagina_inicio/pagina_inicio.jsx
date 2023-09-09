@@ -9,6 +9,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Container, Row, Button, Col } from "react-bootstrap";
+import Select from 'react-select'  
 import Carousel from "react-bootstrap/Carousel";
 import All_sede_service from "../../service/all_sede";
 import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
@@ -120,8 +121,9 @@ const Pagina_inicio = () => {
 
   //Cambia las sedes para visualizarse
   const handle_storage = () => {
-    localStorage.setItem("sede", temp.value);
-    localStorage.setItem("sede_id", temp.id);
+    sessionStorage.setItem("sede", temp.value);
+    sessionStorage.setItem("sede_id", temp.id);
+    window.location.reload();
 
     // });
   };
@@ -179,10 +181,49 @@ const Pagina_inicio = () => {
   return (
         <Row className="fondo_inicio">
             <Col xs={"12"} md={"6"} className="col_background">
+              <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                <Modal.Title>Importante</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  ¿Está seguro qué desea seleccionar otra sede?
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="primary"
+                    onClick={handle_storage}
+                    onClickCapture={handleClose}
+                    autoFocus
+                  >
+                    Cambiar de Sede
+                  </Button>
+                  <Button variant="secondary" onClick={handleClose}>
+                    Close
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+              <Row className="rowJustFlex">
+                <h4>Para cambiar de sede:</h4>
+              </Row>)}
+              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+              <Row className="rowJustFlex">
+              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+                <Select
+                  name="def"
+                  class="option"
+                  options={opciones}
+                  onMenuOpen={handle_sedes}
+                  onChange={handleShow}
+                  className="option"
+                  placeholder="Selecione una sede"
+                />)}
+              </Row>)}
             <p className="estilo_bienvenido"> ¡Bienvenido!</p>  
               <p className="estilo_sesion">INICIASTE SESIÓN </p>
             <p className="estilo_como">COMO {desplegable}</p>
             </Col>
+
             <Col style={{ background:"white"}} xs={"12"} md={"6"}>
               <Row> 
                 <Col xs={"12"} md={"5"} className="botones-container">

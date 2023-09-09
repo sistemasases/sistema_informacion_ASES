@@ -31,7 +31,7 @@ const Inasistencia = (props) => {
             ...prevState,
             id_estudiante: id_estudiantecons,
         }))
-    },[state])
+    },[state.fecha])
 
 
 
