@@ -25,6 +25,7 @@ const Inasistencia = (props) =>{
 
     const [form, set_form] = useState({
         id: props.item.id,
+        fecha: props.item.fecha,
         observaciones: props.item.observaciones,
         revisado_profesional: props.item.revisado_profesional,
         revisado_practicante: props.item.revisado_practicante,
@@ -86,7 +87,7 @@ const Inasistencia = (props) =>{
                             <h6>Fecha*:</h6>
                         </Row>
                         <Row className="g-2">
-                            <Form.Control type="date" defaultValue={props.item.fecha} name="hora_inicio" onChange={handleForm}/>
+                            <Form.Control type="date" defaultValue={props.item.fecha} name="fecha" onChange={handleForm}/>
                         </Row>
                     </Col>
                 </Row>
