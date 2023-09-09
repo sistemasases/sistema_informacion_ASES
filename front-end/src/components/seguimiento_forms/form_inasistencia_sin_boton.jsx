@@ -58,6 +58,14 @@ const Inasistencia = (props) =>{
         }
     }
 
+    const handleFormChecks = (e) => {
+        set_form({
+            ...form,
+            [e.target.name]: e.target.checked
+        })
+
+    }
+
     const handleForm = (e) => {
         set_form({
             ...form,
@@ -101,10 +109,10 @@ const Inasistencia = (props) =>{
                 <br/> 
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional')} name="revisado_profesional" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional')} name="revisado_profesional" onChange={handleFormChecks}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional')} name="revisado_practicante" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional')} name="revisado_practicante" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
             </Modal.Body>
