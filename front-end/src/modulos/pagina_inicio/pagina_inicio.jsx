@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Button, Col } from "react-bootstrap";
 import Carousel from "react-bootstrap/Carousel";
 import All_sede_service from "../../service/all_sede";
-
+import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 import boton1 from '../../images/BOTONES_SVG 18.svg';
 import boton2 from '../../images/BOTONES_SVG 19.svg';
 
@@ -33,26 +33,12 @@ import CryptoJS from "crypto-js";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 
-//Clave secreta para desencriptar el rol del usuario
-const secretKey = process.env.REACT_APP_SECRET_KEY;
-
 
 const Pagina_inicio = () => {
-   // Función para desencriptar el rol del usuario desde el sessionStorage
-   const decryptRolFromSessionStorage = () => {
-    const encryptedRol = sessionStorage.getItem('rol');
-    if (!encryptedRol) {
-        return null; // No hay rol en sessionStorage
-    }
-
-    // Desencriptar el rol usando la clave secreta (utiliza el mismo método que para el token)
-    const bytes = CryptoJS.AES.decrypt(encryptedRol, secretKey);
-    const decryptedRol = bytes.toString(CryptoJS.enc.Utf8);
-
-    return decryptedRol;
-};
-
-  const userRole = decryptRolFromSessionStorage();
+   
+  
+  const decryptRol = desencriptar(sessionStorage.getItem('rol'));
+  const userRole = decryptRol
   let desplegable;
 
   if (userRole === 'sistemas' || userRole === 'super_ases') {

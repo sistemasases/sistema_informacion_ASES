@@ -7,31 +7,16 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import CryptoJS from 'crypto-js';
+import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
-const secretKey = process.env.REACT_APP_SECRET_KEY;
+
 
 
 
 const Carga_masiva = () =>{
 
-
-    const decryptPermissionsFromSessionStorage = () => {
-        const encryptedPermissions = sessionStorage.getItem('permisos');
-        if (!encryptedPermissions) {
-          return null; // No hay permisos en sessionStorage
-        }
-      
-        // Desencriptar los permisos usando la clave secreta
-        const bytes = CryptoJS.AES.decrypt(encryptedPermissions, secretKey);
-        const decryptedPermissions = bytes.toString(CryptoJS.enc.Utf8);
-      
-        return decryptedPermissions;
-      };
-      
-
-    //const userRole = sessionStorage.getItem('permisos');
-      const userRole = decryptPermissionsFromSessionStorage();
+  //Desencriptar los permisos del usuario desde el sessionStorage
+  const userRole = desencriptar(sessionStorage.getItem('permisos'));
     return (
         <>{ userRole.includes('view_carga_masiva') ? <Col className="contenido_children">
             <Row className="justify-content-md-center">

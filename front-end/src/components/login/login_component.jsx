@@ -5,9 +5,9 @@ import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
 import Modal from 'react-bootstrap/Modal';
-import CryptoJS from 'crypto-js';
+import { encriptar, desencriptar, encriptarJson, encriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
-const secretKey = process.env.REACT_APP_SECRET_KEY;
+
 
 const Login_component = () => {
 
@@ -42,21 +42,21 @@ const Login_component = () => {
     axios.post(url, data)
       .then(res => {
 
-        const encryptedToken = CryptoJS.AES.encrypt(res.data.token, secretKey).toString();
-        const encryptedRefreshToken = CryptoJS.AES.encrypt(res.data['refresh-token'], secretKey).toString();
-        const encryptedIdUsuario = CryptoJS.AES.encrypt(res.data.user.id.toString(), secretKey).toString();
-        const encryptedEmail = CryptoJS.AES.encrypt(res.data.user.email, secretKey).toString();
-        const encryptedFirstName = CryptoJS.AES.encrypt(res.data.user.first_name, secretKey).toString();
-        const encryptedSede = CryptoJS.AES.encrypt(res.data.user.sede, secretKey).toString();
-        const encryptedLastName = CryptoJS.AES.encrypt(res.data.user.last_name, secretKey).toString();
-        const encryptedNombreCompleto = CryptoJS.AES.encrypt(res.data.user.nombre_completo, secretKey).toString();
-        const encryptedSedeId = CryptoJS.AES.encrypt(res.data.user.sede_id.toString(), secretKey).toString();
-        const encryptedRol = CryptoJS.AES.encrypt(res.data.user.rol, secretKey).toString();
-        const encryptedIdSemestreActual = CryptoJS.AES.encrypt(res.data.user.id_semestre_actual.toString(), secretKey).toString();
-        const encryptedSemestreActual = CryptoJS.AES.encrypt(res.data.user.semestre_actual, secretKey).toString();
-        const encryptedUsername = CryptoJS.AES.encrypt(res.data.user.username, secretKey).toString();
-        const encryptedPermisos = CryptoJS.AES.encrypt(JSON.stringify(res.data.user.permisos), secretKey).toString();
-        const encryptedMessage = CryptoJS.AES.encrypt(res.data.user.message, secretKey).toString();
+        const encryptedToken = encriptar(res.data.token);
+        const encryptedRefreshToken = encriptar(res.data.refresh_token);
+        const encryptedIdUsuario = encriptar(res.data.user.id_usuario);
+        const encryptedEmail = encriptar(res.data.user.email);
+        const encryptedFirstName = encriptar(res.data.user.first_name);
+        const encryptedSede = encriptar(res.data.user.sede);
+        const encryptedLastName = encriptar(res.data.user.last_name);
+        const encryptedNombreCompleto = encriptar(res.data.user.nombre_completo);
+        const encryptedSedeId = encriptarInt(res.data.user.sede_id);
+        const encryptedRol = encriptar(res.data.user.rol);
+        const encryptedIdSemestreActual = encriptarInt(res.data.user.id_semestre_actual);
+        const encryptedSemestreActual = encriptar(res.data.user.semestre_actual);
+        const encryptedUsername = encriptar(res.data.user.username);
+        const encryptedPermisos = encriptarJson(res.data.user.permisos);
+        const encryptedMessage = encriptar(res.data.message);
 
         sessionStorage.setItem('token', encryptedToken);
         sessionStorage.setItem('refresh-token',encryptedRefreshToken);

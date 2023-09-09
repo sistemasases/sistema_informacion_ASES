@@ -16,6 +16,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
 import DataTable, {createTheme} from 'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
+import { desencriptar, desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 var bandera_consulta_rol = 0;
 var bandera_option_user = true;
@@ -29,7 +30,7 @@ const Selector_usuarios = () =>{
     constantes
   */
   const config = {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + desencriptar(sessionStorage.getItem('token'))
   };
 
   const [state,set_state] = useState({
@@ -102,7 +103,8 @@ const Selector_usuarios = () =>{
     
   }
   const consulta_all_user_rol = (e) => {
-    let pk = sessionStorage.getItem('sede_id');
+    console.log('Valor de pk:', pk);
+    let pk = desencriptar(sessionStorage.getItem('sede_id'));
   
     all_users_rols.all_users_rols(pk).then((res) => {
       if (Array.isArray(res.data)) {
@@ -119,11 +121,16 @@ const Selector_usuarios = () =>{
   
 
   const handle_user_selector = (e) => {
-    if(bandera_option_user==true){
+    console.log('Valor de state.data_user:', state.data_user);
+    if(bandera_option_user === true){
 
-      for (var i = 0; i < state.data_user['length'] ; i++) {
-        const dato = { value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'], label: state.data_user[i]['username']+" - "+ state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],id:state.data_user[i]['id'] }
-        datos_option_user.push(dato)
+      for (var i = 0; i < state.data_user.'length'; i++) {
+        const dato = { 
+        value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],
+         label: state.data_user[i]['username']+" - "+ state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],
+         id:state.data_user[i]['id'] 
+        }
+         datos_option_user.push(dato)
       }
 
       bandera_option_user = false;
@@ -154,7 +161,7 @@ const Selector_usuarios = () =>{
   
     //Adding files to the formdata
     formData.append('id', e.id);
-    formData.append('id_sede', sessionStorage.getItem('sede_id'));
+    formData.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
     axios({
       // Endpoint to send files
       //FALTA ORGANIZAR PK
@@ -195,7 +202,7 @@ const Selector_usuarios = () =>{
     //Adding files to the formdata
     formData.append('id_rol', state.id_rol[0]);
     formData.append('id_user', state.id_usuario[0]);
-    formData.append('id_sede', sessionStorage.getItem('sede_id'));
+    formData.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
     user_rol.user_rol(formData)
         .then(() => {
             // Actualizar el estado después de asignar el rol
