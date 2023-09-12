@@ -17,7 +17,6 @@ const Seguimiento_individual = (props) =>{
             window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
         } else {
             props.updateDataUserSocioedu(form.id_estudiante);
-            window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
         }
 
     };
@@ -115,8 +114,15 @@ const Seguimiento_individual = (props) =>{
             })
         }
     }
+    const handleFormChecks = (e) => {
+        set_form({
+            ...form,
+            [e.target.name]: e.target.checked
+        })
 
+    }
     const handleForm = (e) => {
+        console.log(e.target.checked)
         if(e.target.name === "riesgo_individual_bajo"){
             if(e.target.checked === true){
                 set_form({
@@ -546,7 +552,7 @@ const Seguimiento_individual = (props) =>{
                             <h6>Fecha*:</h6>
                         </Row>
                         <Row className="g-2">
-                            <Form.Control type="date" defaultValue={props.item.fecha} name="hora_inicio" onChange={handleForm}/>
+                            <Form.Control type="date" defaultValue={props.item.fecha} name="fecha" onChange={handleForm}/>
                         </Row>
                     </Col>
                     <Col>
@@ -605,40 +611,40 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Autoconocimiento" defaultChecked={props.item.autoconocimiento} name="autoconocimiento" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Autoconocimiento" defaultChecked={props.item.autoconocimiento} name="autoconocimiento" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Proyecto de vida" defaultChecked={props.item.proyecto_de_vida} name="proyecto_de_vida" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Proyecto de vida" defaultChecked={props.item.proyecto_de_vida} name="proyecto_de_vida" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Historia de vida" defaultChecked={props.item.historia_de_vida} name="historia_de_vida" onChange={handleForm}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rasgos de personalidad" defaultChecked={props.item.rasgos_de_personalidad} name="rasgos_de_personalidad" onChange={handleForm}/>        
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Salud" defaultChecked={props.item.salud} name="salud" onChange={handleForm}/>
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Relación eriótico-afectivas" defaultChecked={props.item.relación_eriótico_afectivas} name="relación_eriótico_afectivas" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Historia de vida" defaultChecked={props.item.historia_de_vida} name="historia_de_vida" onChange={handleFormChecks}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Identificación" defaultChecked={props.item.identificación} name="identificación" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Rasgos de personalidad" defaultChecked={props.item.rasgos_de_personalidad} name="rasgos_de_personalidad" onChange={handleFormChecks}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Aspectos motivacionales" defaultChecked={props.item.aspectos_motivacionales} name="aspectos_motivacionales" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Salud" defaultChecked={props.item.salud} name="salud" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Diversidad sexual" defaultChecked={props.item.diversidad_sexual} name="diversidad_sexual" onChange={handleForm}/>      
+                        <Form.Check type="checkbox" label="Relación eriótico-afectivas" defaultChecked={props.item.relación_eriótico_afectivas} name="relación_eriótico_afectivas" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Red de apoyo" defaultChecked={props.item.red_de_apoyo} name="red_de_apoyo" onChange={handleForm}/> 
+                        <Form.Check type="checkbox" label="Identificación" defaultChecked={props.item.identificación} name="identificación" onChange={handleFormChecks}/>
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Aspectos motivacionales" defaultChecked={props.item.aspectos_motivacionales} name="aspectos_motivacionales" onChange={handleFormChecks}/>
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Diversidad sexual" defaultChecked={props.item.diversidad_sexual} name="diversidad_sexual" onChange={handleFormChecks}/>      
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Check type="checkbox" label="Red de apoyo" defaultChecked={props.item.red_de_apoyo} name="red_de_apoyo" onChange={handleFormChecks}/> 
                     </Col>
                 </Row>
                 <hr></hr>
@@ -664,7 +670,7 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Dinámica Familiar" defaultChecked={props.item.dinamica_familiar} name="dinamica_familiar" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Dinámica Familiar" defaultChecked={props.item.dinamica_familiar} name="dinamica_familiar" onChange={handleFormChecks}/>
                     </Col>
                 </Row>
                 <hr></hr>
@@ -690,13 +696,13 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Desempeño académico" defaultChecked={props.item.desempeño_académico} name="desempeño_académico" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Desempeño académico" defaultChecked={props.item.desempeño_académico} name="desempeño_académico" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Elección vocacional" defaultChecked={props.item.elección_vocacional} name="elección_vocacional" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Elección vocacional" defaultChecked={props.item.elección_vocacional} name="elección_vocacional" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Manejo del tiempo" defaultChecked={props.item.manejo_del_tiempo} name="manejo_del_tiempo" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Manejo del tiempo" defaultChecked={props.item.manejo_del_tiempo} name="manejo_del_tiempo" onChange={handleFormChecks}/>
                     </Col>
                 </Row>
                 <hr></hr>
@@ -722,18 +728,18 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Apoyos económicos institucionales" defaultChecked={props.item.apoyos_económicos_institucionales} name="apoyos_económicos_institucionales" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Apoyos económicos institucionales" defaultChecked={props.item.apoyos_económicos_institucionales} name="apoyos_económicos_institucionales" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Manejo de sus finanzas" defaultChecked={props.item.manejo_finanzas} name="manejo_finanzas" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Manejo de sus finanzas" defaultChecked={props.item.manejo_finanzas} name="manejo_finanzas" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Apoyo económico familiar" defaultChecked={props.item.apoyo_económico_familiar} name="apoyo_económico_familiar" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Apoyo económico familiar" defaultChecked={props.item.apoyo_económico_familiar} name="apoyo_económico_familiar" onChange={handleFormChecks}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Situación laboral y ocupacional" defaultChecked={props.item.situación_laboral_ocupacional} name="situación_laboral_ocupacional" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Situación laboral y ocupacional" defaultChecked={props.item.situación_laboral_ocupacional} name="situación_laboral_ocupacional" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
                 <hr></hr>
@@ -759,24 +765,24 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Motivación para el acompañamiento" defaultChecked={props.item.motivación_compañamiento} name="motivación_compañamiento" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Motivación para el acompañamiento" defaultChecked={props.item.motivación_compañamiento} name="motivación_compañamiento" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Referencia geográfica" defaultChecked={props.item.referencia_geográfica} name="referencia_geográfica" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Referencia geográfica" defaultChecked={props.item.referencia_geográfica} name="referencia_geográfica" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Adaptación a la ciudad y Universidad" defaultChecked={props.item.adaptación_ciudad_Universidad} name="adaptación_ciudad_Universidad" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Adaptación a la ciudad y Universidad" defaultChecked={props.item.adaptación_ciudad_Universidad} name="adaptación_ciudad_Universidad" onChange={handleFormChecks}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Oferta de servicios" defaultChecked={props.item.oferta_servicios} name="oferta_servicios" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Oferta de servicios" defaultChecked={props.item.oferta_servicios} name="oferta_servicios" onChange={handleFormChecks}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Vivienda" defaultChecked={props.item.vivienda} name="vivienda" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Vivienda" defaultChecked={props.item.vivienda} name="vivienda" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Vinculación a grupos y realización de actividades extracurriculares" defaultChecked={props.item.vinculación_grupos_actividades_extracurriculares} name="vinculación_grupos_actividades_extracurriculare" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Vinculación a grupos y realización de actividades extracurriculares" defaultChecked={props.item.vinculación_grupos_actividades_extracurriculares} name="vinculación_grupos_actividades_extracurriculare" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
                 <hr></hr>
@@ -785,62 +791,62 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Apoyo académico" defaultChecked={props.item.apoyo_académico} name="apoyo_académico" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Apoyo académico" defaultChecked={props.item.apoyo_académico} name="apoyo_académico" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Actividades grupales" defaultChecked={props.item.rem_actividades_grupales} name="rem_actividades_grupales" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Rem. Actividades grupales" defaultChecked={props.item.rem_actividades_grupales} name="rem_actividades_grupales" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Matrícula financiera" defaultChecked={props.item.rem_matrícula_financiera} name="rem_matrícula_financiera" onChange={handleForm}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Check type="checkbox" label="Taller par-par" defaultChecked={props.item.taller_par_par} name="taller_par_par" onChange={handleForm}/>        
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Monitorías académicas" defaultChecked={props.item.rem_monitorías_académicas} name="rem_monitorías_académicas" onChange={handleForm}/>
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Desarrollo humano y promoción SE" defaultChecked={props.item.rem_desarrollo_humano_promoción_SE} name="rem_desarrollo_humano_promoción_SE" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Rem. Matrícula financiera" defaultChecked={props.item.rem_matrícula_financiera} name="rem_matrícula_financiera" onChange={handleFormChecks}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Reconocimiento ciudad y U." defaultChecked={props.item.reconocimiento_ciudad_U} name="reconocimiento_ciudad_U" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Taller par-par" defaultChecked={props.item.taller_par_par} name="taller_par_par" onChange={handleFormChecks}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Proyectos de la Universidad" defaultChecked={props.item.rem_proyectos_Universidad} name="rem_proyectos_Universidad" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Rem. Monitorías académicas" defaultChecked={props.item.rem_monitorías_académicas} name="rem_monitorías_académicas" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Directores de programa" defaultChecked={props.item.rem_directores_programa} name="rem_directores_programa" onChange={handleForm}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Profesional SE" defaultChecked={props.item.rem_profesional_SE} name="rem_profesional_SE" onChange={handleForm}/>        
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Servicio de salud" defaultChecked={props.item.rem_servicio_salud} name="rem_servicio_salud" onChange={handleForm}/>
-                    </Col>
-                    <Col>
-                        <Form.Check type="checkbox" label="Rem. Grupos de la Universidad" defaultChecked={props.item.rem_grupos_universidad} name="rem_grupos_universidad" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Rem. Desarrollo humano y promoción SE" defaultChecked={props.item.rem_desarrollo_humano_promoción_SE} name="rem_desarrollo_humano_promoción_SE" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Practicante SE" defaultChecked={props.item.rem_racticante_SE} name="rem_racticante_SE" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Reconocimiento ciudad y U." defaultChecked={props.item.reconocimiento_ciudad_U} name="reconocimiento_ciudad_U" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Registro académico" defaultChecked={props.item.rem_registro_académico} name="rem_registro_académico" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Rem. Proyectos de la Universidad" defaultChecked={props.item.rem_proyectos_Universidad} name="rem_proyectos_Universidad" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Rem. Externa" defaultChecked={props.item.rem_externa} name="rem_externa" onChange={handleForm}/>
+                        <Form.Check type="checkbox" label="Rem. Directores de programa" defaultChecked={props.item.rem_directores_programa} name="rem_directores_programa" onChange={handleFormChecks}/>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Ninguna acción realizada" defaultChecked={props.item.Ninguna_acción_realizada} name="Ninguna_acción_realizada" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Rem. Profesional SE" defaultChecked={props.item.rem_profesional_SE} name="rem_profesional_SE" onChange={handleFormChecks}/>        
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Servicio de salud" defaultChecked={props.item.rem_servicio_salud} name="rem_servicio_salud" onChange={handleFormChecks}/>
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Grupos de la Universidad" defaultChecked={props.item.rem_grupos_universidad} name="rem_grupos_universidad" onChange={handleFormChecks}/>        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Practicante SE" defaultChecked={props.item.rem_racticante_SE} name="rem_racticante_SE" onChange={handleFormChecks}/>
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Registro académico" defaultChecked={props.item.rem_registro_académico} name="rem_registro_académico" onChange={handleFormChecks}/>
+                    </Col>
+                    <Col>
+                        <Form.Check type="checkbox" label="Rem. Externa" defaultChecked={props.item.rem_externa} name="rem_externa" onChange={handleFormChecks}/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Check type="checkbox" label="Ninguna acción realizada" defaultChecked={props.item.Ninguna_acción_realizada} name="Ninguna_acción_realizada" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
                 <hr></hr>
@@ -853,10 +859,10 @@ const Seguimiento_individual = (props) =>{
                 <hr></hr>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional')} name="revisado_profesional" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional')} name="revisado_profesional" onChange={handleFormChecks}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional')} name="revisado_practicante" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional')} name="revisado_practicante" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
             </Modal.Body>

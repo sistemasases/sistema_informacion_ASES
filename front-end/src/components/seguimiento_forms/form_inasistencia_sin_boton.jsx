@@ -16,7 +16,6 @@ const Inasistencia = (props) =>{
             window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
         } else {
             props.updateDataUserSocioedu(form.id_estudiante);
-            window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
         }
 
     };
@@ -26,6 +25,7 @@ const Inasistencia = (props) =>{
 
     const [form, set_form] = useState({
         id: props.item.id,
+        fecha: props.item.fecha,
         observaciones: props.item.observaciones,
         revisado_profesional: props.item.revisado_profesional,
         revisado_practicante: props.item.revisado_practicante,
@@ -58,6 +58,14 @@ const Inasistencia = (props) =>{
         }
     }
 
+    const handleFormChecks = (e) => {
+        set_form({
+            ...form,
+            [e.target.name]: e.target.checked
+        })
+
+    }
+
     const handleForm = (e) => {
         set_form({
             ...form,
@@ -87,7 +95,7 @@ const Inasistencia = (props) =>{
                             <h6>Fecha*:</h6>
                         </Row>
                         <Row className="g-2">
-                            <Form.Control type="date" defaultValue={props.item.fecha} name="hora_inicio" onChange={handleForm}/>
+                            <Form.Control type="date" defaultValue={props.item.fecha} name="fecha" onChange={handleForm}/>
                         </Row>
                     </Col>
                 </Row>
@@ -101,10 +109,10 @@ const Inasistencia = (props) =>{
                 <br/> 
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional')} name="revisado_profesional" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional')} name="revisado_profesional" onChange={handleFormChecks}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional')} name="revisado_practicante" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional')} name="revisado_practicante" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
             </Modal.Body>
