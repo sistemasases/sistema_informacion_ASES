@@ -70,7 +70,7 @@ const Inasistencia = (props) => {
     const userRole = sessionStorage.getItem('rol');
 
     return (
-        <Modal {...props}>
+        <Modal {...props} backdrop="static">
             <Modal.Header closeButton>
                 <Modal.Title>Inasistencia</Modal.Title>
                 <Button onClick={handleChange}>Registrar Seguimiento</Button>
