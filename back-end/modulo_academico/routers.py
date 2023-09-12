@@ -6,6 +6,7 @@ router = DefaultRouter()
 router.register(r'lista_de_facultades',lista_de_facultades_viewsets,basename = 'lista_de_facultades')
 router.register(r'lista_de_profesores',lista_de_profesores_viewsets,basename = 'lista_de_profesores')
 router.register(r'traer_cursos_del_profesor',traer_cursos_del_profesor_viewsets,basename = 'traer_cursos_del_profesor')
+router.register(r'traer_cursos_del_estudiante',traer_cursos_del_estudiante_viewsets,basename = 'traer_cursos_del_estudiante')
 router.register(r'notas_estudiantes_calificador',notas_estudiantes_calificador_viewsets,basename = 'notas_estudiantes_calificador')
 
 router.register(r'curso_datos_generales',curso_datos_generales_viewsets,basename = 'curso_datos_generales')
