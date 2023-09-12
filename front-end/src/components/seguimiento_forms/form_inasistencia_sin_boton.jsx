@@ -82,7 +82,7 @@ const Inasistencia = (props) =>{
 
     return (
         
-        <Modal {...props}>
+        <Modal {...props} backdrop="static">
             <Modal.Header closeButton>
                 <Modal.Title>Inasistencia</Modal.Title>
             </Modal.Header>
