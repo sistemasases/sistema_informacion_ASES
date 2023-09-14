@@ -177,6 +177,28 @@ class traer_cursos_del_profesor_viewsets(viewsets.ModelViewSet):
         return Response(list_cursos)
 
 
+class traer_cursos_del_estudiante_viewsets(viewsets.ModelViewSet):
+    serializer_class = matricula_serializer
+    #permission_classes = (IsAuthenticated,)
+    queryset = matricula_serializer.Meta.model.objects.all()
+
+    def retrieve(self, request, pk=None):
+        list_cursos = []
+        cursos_del_estudiante = matricula.objects.filter(id_estudiante=pk)
+
+        for curso_obj in cursos_del_estudiante:
+            serializer = matricula_serializer(curso_obj)
+            curso_id = curso_obj.id_curso.id
+            curso_data_obj = materia.objects.get(id=curso_id)
+            serializer_curso = materia_serializer(curso_data_obj)
+            # serialized_curso = serializer.data
+            diccionario_curso = {"tipo_dato":"curso", "curso_data" : serializer_curso.data}
+            data_curso = dict(serializer.data, **diccionario_curso)
+            list_cursos.append(data_curso)
+
+        return Response(list_cursos)
+
+
 
 class franja_curso_viewsets(viewsets.ModelViewSet):
     serializer_class = materia_serializer
@@ -185,16 +207,20 @@ class franja_curso_viewsets(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
         list_cursos = []
-        cursos_de_la_facultad = materia.objects.filter(cod_materia = pk).distinct('franja')
+        cursos_de_la_facultad = materia.objects.filter(cod_materia=pk).distinct('franja')
 
         for curso_obj in cursos_de_la_facultad:
             serializer = materia_serializer(curso_obj)
-            # serialized_curso = serializer.data
-            diccionario_franja = {"tipo_dato":"franja",}
+            # Obtén el ID numérico del profesor
+            profesor_id = curso_obj.id_profesor.id
+            profesor_obj = User.objects.get(id=profesor_id)
+            serializer_profesor = user_serializer(profesor_obj)
+            diccionario_franja = {"tipo_dato": "franja", "profesor_data": serializer_profesor.data}
             data_franja = dict(serializer.data, **diccionario_franja)
             list_cursos.append(data_franja)
 
         return Response(list_cursos)
+
 
 
 
@@ -244,7 +270,7 @@ class profesores_del_curso_viewsets(viewsets.ModelViewSet):
         curso_param = request.GET.get('curso')
         franja_param = request.GET.get('franja')
 
-        profesores_ids = list(materia.objects.filter(cod_materia=curso_param).values('id_profesor', 'id'))
+        profesores_ids = list(materia.objects.filter(cod_materia=curso_param, franja=franja_param).values('id_profesor', 'id'))
 
         for i in profesores_ids:
             profesor_id = i['id_profesor']
@@ -462,7 +488,6 @@ class todo_nota_viewsets(viewsets.ModelViewSet):
 class todo_item_viewsets(viewsets.ModelViewSet):
     queryset = items_semestre.objects.all()
     serializer_class = items_semestre_serializer
-
 
 
 

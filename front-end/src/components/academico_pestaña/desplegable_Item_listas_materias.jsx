@@ -73,7 +73,7 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
       }
 
 
-    if(item.codigo_univalle){
+    /*if(item.codigo_univalle){
         return (
             <Row>
                 <Col className={open ? "fichas_academico open" : "fichas_academico"}>
@@ -93,22 +93,20 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
                 </Col>
             </Row>
         )
-    }else if(item.tipo_dato === 'curso') {
+    }else */if(item.tipo_dato === 'curso') {
         return (
             <Row>
                 <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
-                    <Row className="link_academico1" onClick={() => {setOpen(!open); profesores_de_la_franja(item.cod_materia, item.franja)}}>
+                    <Row className="link_academico1" onClick={() => {setOpen(!open); franjas_del_curso(item.cod_materia)}}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover2">
-                                {item.nombre} --
-                                {item.cod_materia} --
-                                {item.franja}
-                            </Row>
+                                {item.nombre}     --     {item.cod_materia}
+                            </Row> 
                         </Col>
                     </Row>
                     <Row className="content_academico">
-                        <Col className="contenido_fichas_academico2">
-                            { state.profesores_de_la_franja.map((child, index) => 
+                        <Col className="contenido_fichas_academico3">
+                            { state.franjas_de_curso.map((child, index) => 
                                 <Desplegable_item_listas_materias key={index} item={child} franja={item.franja}/>) 
                             }
                         </Col>
@@ -117,39 +115,42 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
             </Row>
         )
     }
-    /*else if(item.tipo_dato === 'franja') {
+    else if(item.tipo_dato === 'franja') {
         return (
             <Row>
 
-                <Col className={open ? "fichas_academico2 open" : "fichas_academico2"}>
-                    <Row className="link_academico1" onClick={() => {setOpen(!open); profesores_de_la_franja(item.cod_materia, item.franja)}}>
-                        <Col className="link_text_academico1" >
-                            <Row className="link_text_academico_hover2">
-                                {item.nombre} - {item.codigo} - {item.franja}  
-                            </Row>
-                        </Col>
+                <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
+                    <Row className="link_text_academico_hover4" >
+                        <a href={`/calificador/${encodeURIComponent(franja)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
+                        rel="noopener noreferrer" className="link_text_academico_hover4">
+                            Grupo {item.franja}     :     {item.profesor_data.first_name}   {item.profesor_data.last_name} 
+                        </a>
                     </Row>
+
+
+
+                    {/*
                     <Row className="content_academico">
                             <Col className="contenido_fichas_academico2">
                                 { state.profesores_de_la_franja.map((child, index) => 
-                                    <Desplegable_item_listas_materias key={index} item={child} franja={item.franja}/>) 
+                                    <Desplegable_item_listas_materias key={index} item={child} franja={item.id}/>) 
                                 }
                             </Col>
                         </Row>
-
+                    */}
                 </Col>
             </Row>
         )
     }
-    */
+    
     else if (item.tipo_dato === 'profesor'){
         return (
         <Row>
         <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
             <Row className="link_academico1_sin_borde" >
                 <Col className="contenido_fichas_academico2" >
-                        <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
-                        target="_blank" rel="noopener noreferrer" className="link_text_academico_hover4">
+                        <a href={`/calificador/${encodeURIComponent(franja)}/${encodeURIComponent(item.id)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
+                        rel="noopener noreferrer" className="link_text_academico_hover4">
                             {item.first_name} {item.last_name}  
                         </a>
                 </Col>
@@ -204,6 +205,5 @@ const Desplegable_item_listas_materias = ({item, franja}) => {
 }
 
 export default Desplegable_item_listas_materias
-
 
 

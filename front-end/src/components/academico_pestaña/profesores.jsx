@@ -82,7 +82,7 @@ const Profesores = ({item}) => {
                         <Row className="link_academico1" onClick={() => {setOpen(!open); traer_cursos(item.id)}}>
                             <Col className="link_text_academico1" >
                                 <Row className="link_text_academico_hover3">
-                                    {item.first_name} --  {item.last_name}
+                                    <a>{item.first_name} --  {item.last_name}   correo : <a href={`mailto:${item.email}`} className="email-link">{item.email}</a></a>
                                 </Row>
                             </Col>
                         </Row>
@@ -101,8 +101,8 @@ const Profesores = ({item}) => {
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_text_academico_hover4" onClick={() => { setOpen(!open) }}>
                         <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
-                            target="_blank" rel="noopener noreferrer" className="link_text_academico_hover4">
-                            {item.nombre} -- {item.cod_materia} -- {item.franja} 
+                            rel="noopener noreferrer" className="link_text_academico_hover4">
+                            {item.nombre} -- {item.cod_materia} -- {item.franja}
                         </a>
                     </Row>
                     <Row className="content_academico">
@@ -134,6 +134,5 @@ const Profesores = ({item}) => {
 }
 
 export default Profesores
-
 
 
