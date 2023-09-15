@@ -568,9 +568,6 @@ const Seguimiento_individual = (props) =>{
                         <Form.Check type="checkbox" label="Alto" checked={form.riesgo_individual_alto} name="riesgo_individual_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
                     </Col>
                 </Row>
                 <Row>
@@ -632,9 +629,6 @@ const Seguimiento_individual = (props) =>{
                         <Form.Check type="checkbox" label="Alto" checked={form.riesgo_familiar_alto} name="riesgo_familiar_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
                     </Col>
                 </Row>
                 <Row>
@@ -663,9 +657,6 @@ const Seguimiento_individual = (props) =>{
                         <Form.Check type="checkbox" label="Alto" checked={form.riesgo_academico_alto} name="riesgo_academico_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
                     </Col>
                 </Row>
                 <Row>
@@ -700,9 +691,7 @@ const Seguimiento_individual = (props) =>{
                         <Form.Check type="checkbox" label="Alto" checked={form.riesgo_economico_alto} name="riesgo_economico_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
+
                     </Col>
                 </Row>
                 <Row>
@@ -742,9 +731,6 @@ const Seguimiento_individual = (props) =>{
                         <Form.Check type="checkbox" label="Alto" checked={form.riesgo_vida_universitaria_ciudad_alto} name="riesgo_vida_universitaria_ciudad_alto" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Button variant="secondary">
-                            Limpiar
-                        </Button>
                     </Col>
                 </Row>
                 <Row>

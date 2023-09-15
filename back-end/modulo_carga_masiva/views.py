@@ -428,7 +428,7 @@ def carga_matricula(file):
                 consulta_estudiante= estudiante.objects.filter(cod_univalle =datos.iat[i,0]).first()
 
                 if (materia.objects.filter(cod_materia = datos.iat[i,1],id_profesor=consulta_profesor,franja=datos.iat[i,2]).first()):
-                    consulta_materia=materia.objects.filter(cod_materia = datos.iat[i,1]).first()
+                    consulta_materia=materia.objects.filter(cod_materia = datos.iat[i,1],id_profesor=consulta_profesor,franja=datos.iat[i,2]).first()
 
                     if(matricula.objects.filter(id_curso =consulta_materia,id_estudiante = consulta_estudiante).first()):
 
