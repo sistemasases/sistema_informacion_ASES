@@ -241,6 +241,11 @@ const handleDeleteItem = async () => {
           {curso_datos_generales.nombre}
         </Col>
       </Row>
+      <Row>
+        <Col xs={'12'} md={'8'} className="texto_subtitulo2">
+          {curso_datos_generales.cod_materia+'-'+curso_datos_generales.franja}
+        </Col>
+      </Row>
 
       <br/>
       <Row>
