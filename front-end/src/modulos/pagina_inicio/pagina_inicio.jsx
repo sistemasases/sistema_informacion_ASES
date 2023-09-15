@@ -203,7 +203,7 @@ const Pagina_inicio = () => {
                 <h4>Para cambiar de sede:</h4>
               </Row>)}
               {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
-              <Row className="rowJustFlex">
+              <Row className="selector_reg">
               {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
                 <Select
                   name="def"
@@ -243,10 +243,10 @@ const Pagina_inicio = () => {
                 <Link to={`/reporte_seguimientos`}> 
                   <img src={boton17} className="boton" alt='/'></img>
                 </Link>)}
-                {(userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
+                {/* {(userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
                 <Link to={`/sin_seguimientos`}> 
                   <img src={boton8} className="boton" alt='/'></img>
-                </Link>)}
+                </Link>)} */}
                 {(userRole === 'dir_academico' )&& (
                 <Link to={`/academico`}> 
                   <img src={boton20} className="boton" alt='/'></img>

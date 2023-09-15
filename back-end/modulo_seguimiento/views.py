@@ -54,7 +54,10 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
             for j in list_seguimientos:
                 if j['fecha'] > serializer_semestre.data['fecha_inicio'] and j['fecha'] < serializer_semestre.data['fecha_fin']:
                     lista_semestre.append(j)
-            list_final.append(lista_semestre)  
+            if(len(lista_semestre) >= 2):
+                list_final.append(lista_semestre)
+            else:
+                list_semestre.remove(i)  
         return Response(list_final,status=status.HTTP_200_OK)
         
 
