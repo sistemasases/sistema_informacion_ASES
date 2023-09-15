@@ -208,7 +208,7 @@ const isTabSelected_monitor = (username) => {
   function monitor_seleccion(name){
 
     let formData = new FormData();
-    formData.append('id_sede', sessionStorage.getItem('sede_id'));
+    formData.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
 
     axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', formData,config)
       .then(response => {

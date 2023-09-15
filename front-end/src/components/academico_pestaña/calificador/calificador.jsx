@@ -52,8 +52,8 @@ const Cabecera = () => {
   useEffect(() => {
     const currentUrl = window.location.href;
     const urlParts = currentUrl.split('/');
-    const profesorParam = urlParts[5]; // Obtiene el valor del profesor
     const cursoParam = urlParts[4]; // Obtiene el valor del curso
+    const profesorParam = urlParts[5]; // Obtiene el valor del profesor
     const codParam = urlParts[6]; // Obtiene el valor del curso
     const franjaParam = urlParts[7]; // Obtiene el valor del curso
 
@@ -236,7 +236,7 @@ const handleDeleteItem = async () => {
 
 
   return (
-    <Container>
+    <Container className="container_academico_para_footer">
       <Row>
         <Col xs={'12'} md={'8'} className="texto_titulo_bold">
           {curso_datos_generales.nombre}

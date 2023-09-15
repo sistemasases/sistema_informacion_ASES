@@ -6,12 +6,6 @@
         "icon":"bi-journal-bookmark-fill",
         "childrens":[
             {
-                "id":1,
-                "path":"/sin_seguimientos",
-                "name":"Reporte general de seguimientos",
-                "icon":"bi bi-file-earmark-ruled-fill"
-            },
-            {
                 "id":2,
                 "path":"/ficha_estudiante/sin_seleccion",
                 "name":"Ficha de estudiantes",

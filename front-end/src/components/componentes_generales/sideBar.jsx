@@ -12,6 +12,7 @@ import Menu5 from './menus/dir_investigacion.json';
 import Menu6 from './menus/ente_academico.json';
 import Menu7 from './menus/sin_rol.json';
 import Menu8 from './menus/practicante.json';
+import Menu9 from './menus/profesor.json';
 import Ficha_estudiante from "../../modulos/ficha_estudiante/ficha_estudiante.jsx";
 import SidebarItem from './sidebarItem';
 import Footer from './footer';
@@ -35,22 +36,23 @@ const SideBar = (props) =>{
             setIsOpen(false)
         }
     }
-    // Función para desencriptar el rol del usuario desde el sessionStorage
-    const decryptRolFromSessionStorage = () => {
-        const encryptedRol = sessionStorage.getItem('rol');
-        if (!encryptedRol) {
-            return null; // No hay rol en sessionStorage
-        }
 
-        // Desencriptar el rol usando la clave secreta (utiliza el mismo método que para el token)
-        const bytes = CryptoJS.AES.decrypt(encryptedRol, secretKey);
-        const decryptedRol = bytes.toString(CryptoJS.enc.Utf8);
+    const [state,set_state] = useState({
+        desplegable : sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'super_ases' ? Menu : 
+        sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'profesional' || sessionStorage.rol === 'socioeducativo' ? Menu2 :
+        sessionStorage.rol === 'dir_academico' ? Menu3 : 
+        sessionStorage.rol === 'monitor' ? Menu4 :
+        sessionStorage.rol === 'dir_investigacion' ? Menu5 : 
+        sessionStorage.rol === 'practicante' ? Menu8 : 
+        sessionStorage.rol === 'dir_programa' || sessionStorage.rol === 'vcd_academico' ? Menu6 :
+        sessionStorage.rol === 'profesor' ? Menu9 : Menu7
+      })
 
         return decryptedRol;
     };
     const [state, set_state] = useState(() => {
         // Desencripta el rol desde el sessionStorage y usa el valor para determinar qué contenido mostrar
-        const decryptedRol = decryptRolFromSessionStorage();
+        //const decryptedRol = decryptRolFromSessionStorage();
         return {
             desplegable: decryptedRol === 'sistemas' || decryptedRol === 'super_ases' ? Menu :
                 decryptedRol === 'socioeducativo_reg' || decryptedRol === 'profesional' || decryptedRol === 'socioeducativo' ? Menu2 :
@@ -62,20 +64,7 @@ const SideBar = (props) =>{
         };
     });
       
-      const decryptTokenFromSessionStorage = () => {
-        const encryptedToken = sessionStorage.getItem('token');
-        if (!encryptedToken) {
-          return null; // No hay token en sessionStorage
-        }
-      
-        // Desencriptar el token usando la clave secreta
-        const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
-        const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
-      
-        return decryptedToken;
-      };
-      
-      
+
       function path_actual(name){
         set_state({
           ...state,
@@ -215,6 +204,7 @@ const SideBar = (props) =>{
                 <Footer></Footer>
         </Container>
     )
-}
+            }
+
 
 export default SideBar 
