@@ -47,15 +47,12 @@ const Pagina_inicio = () => {
     desplegable = 'SOCIOEDUCATIVO';
   } else if (userRole === 'dir_academico') {
     desplegable = 'DIRECTOR ACÁDEMICO';
-<<<<<<< HEAD
   } else if (userRole === 'monitor') {
     desplegable = 'MONITOR';
   } else if (userRole === 'practicante') {
-=======
   } else if (sessionStorage.rol === 'monitor') {
     desplegable = 'MONITOR'; 
   } else if (sessionStorage.rol === 'practicante') {
->>>>>>> f496b857ab772fbb16580f5401325ecd58dfec86
     desplegable = 'PRACTICANTE';
   } else if (userRole === 'dir_investigacion') {
     desplegable = 'DIRECTOR INVES.';
