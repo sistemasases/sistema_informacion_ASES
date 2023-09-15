@@ -2,12 +2,13 @@ import React, {useMemo, useState} from 'react';
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import {decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Desplegable_item_listas_materias = ({item, franja}) => {
 
     const config = {
         headers: {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
       };
 

@@ -69,5 +69,29 @@ export const desencriptarInt = (valorEncriptado) => {
   }
 };
 
-    
+// Función para desencriptar tokens.
+export const decryptTokenFromSessionStorage = () => {
+  const encryptedToken = sessionStorage.getItem('token');
+  if (!encryptedToken) {
+    return null; // No hay token en sessionStorage
+  }
+
+  // Desencriptar el token usando la clave secreta
+  const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
+  const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
+
+  return decryptedToken;
+};
+
+// Función para desencriptar Json's
+export const desencriptarJson = (valorEncriptado) => {
+  try {
+    const bytes = CryptoJS.AES.decrypt(valorEncriptado, secretKey);
+    const valorDesencriptado = bytes.toString(CryptoJS.enc.Utf8);
+    return JSON.parse(valorDesencriptado);
+  } catch (error) {
+    console.error('Error al desencriptar el json:', error);
+    return null;
+  }
+}
 

@@ -7,11 +7,12 @@ import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_indivi
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
 import {useEffect} from 'react';
 import axios from 'axios';
+import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 const Info_registros = (props) =>{
 
     const config = {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     };
 
     const [show, setShow] = useState(false);

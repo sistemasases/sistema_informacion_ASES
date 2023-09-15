@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const all_profesionales = async () => {
     try {
         const config = {
             headers: {
-                Authorization: 'Bearer ' + sessionStorage.getItem('token')
+                Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
             }
         };
         const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+sessionStorage.getItem('sede_id')+"/";

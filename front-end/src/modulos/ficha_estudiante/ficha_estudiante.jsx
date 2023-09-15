@@ -5,26 +5,27 @@ import {useEffect} from 'react';
 import Info_basica from "../../components/ficha_estudiante/info_basica";
 import {Container, Row, Col, Dropdown, Button} from "styled-bootstrap-grid";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
+import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt} from '../utilidades_seguridad/utilidades_seguridad';
 
 
 
 const Ficha_estudiante = (props) =>{
 
   const config = {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
 
     const [state,set_state] = useState({
         data_user : [],
       })
 
-    const userRole = sessionStorage.getItem('permisos');
+    const userRole = desencriptar(sessionStorage.getItem('permisos'));
 
 
     useEffect(() => {
-        let rol = sessionStorage.getItem("rol");
-        let sede = sessionStorage.getItem("sede_id");
-        let id_usuario = sessionStorage.getItem("id_usuario");
+        let rol = desencriptar(sessionStorage.getItem("rol"));
+        let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+        let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
         axios({
             // Endpoint to send files
             url:  `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +

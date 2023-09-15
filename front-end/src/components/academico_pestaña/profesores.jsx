@@ -3,12 +3,13 @@ import {useState } from "react";
 import {Row, Col} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import {decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Profesores = ({item}) => {
 
     const config = {
         headers: {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
       };
 

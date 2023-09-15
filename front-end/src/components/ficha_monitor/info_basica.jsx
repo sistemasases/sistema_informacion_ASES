@@ -7,6 +7,7 @@ import Programas_academicos from './programas_academicos'
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Selector from "./selector";
+import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -14,7 +15,7 @@ import Selector from "./selector";
 const Info_basica_monitor = (props) =>{
 
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
   };
    
 

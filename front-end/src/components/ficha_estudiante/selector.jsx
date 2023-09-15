@@ -6,13 +6,14 @@ import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
 import {Dropdown, Button} from "react-bootstrap";
 import {useEffect} from 'react';
+import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 import axios from 'axios';
 
 const Selector = (props) =>{
 
     const config = {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     };
 
     const[switchChecked, setChecked] = useState(false);
@@ -62,7 +63,7 @@ const Selector = (props) =>{
 
       const loadInfo = (e) => {
         const paramsget = {
-            id_sede: sessionStorage.getItem('sede_id'),
+            id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         };
 
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
@@ -87,7 +88,7 @@ const Selector = (props) =>{
 
     useEffect(() => {
         const paramsget = {
-            id_sede: sessionStorage.getItem('sede_id'),
+            id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         };
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
             axios({

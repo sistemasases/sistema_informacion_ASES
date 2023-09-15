@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Update_Inasistencia from '../../service/update_inasistencia';
 import Delete_inasistencia from '../../service/delete_inasistencia';
 import { CSVLink } from 'react-csv';
+import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 
 const Inasistencia = (props) =>{
@@ -30,7 +31,7 @@ const Inasistencia = (props) =>{
         revisado_profesional: props.item.revisado_profesional,
         revisado_practicante: props.item.revisado_practicante,
         id_creador: props.item.id_creador,
-        id_modificador: parseInt(sessionStorage.getItem("id_usuario")),
+        id_modificador: parseInt(desencriptarInt(sessionStorage.getItem("id_usuario"))),
         id_estudiante: props.item.id_estudiante
     })
 
@@ -73,7 +74,7 @@ const Inasistencia = (props) =>{
         })
     }
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = desencriptar(sessionStorage.getItem('rol'));
 
     const handleChange = () => {
         props.handleCloseIn()

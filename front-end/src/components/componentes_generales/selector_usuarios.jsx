@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import  {useEffect} from 'react';
-import axios from 'axios';
+import axios from 'axios'; 
 import Select from 'react-select'  ;
 import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody} from "react-bootstrap";
@@ -16,7 +16,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Table from 'react-bootstrap/Table';
 import DataTable, {createTheme} from 'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
-import { desencriptar, desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { decryptTokenFromSessionStorage, desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 var bandera_consulta_rol = 0;
 var bandera_option_user = true;
@@ -30,7 +30,7 @@ const Selector_usuarios = () =>{
     constantes
   */
   const config = {
-        Authorization: 'Bearer ' + desencriptar(sessionStorage.getItem('token'))
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
 
   const [state,set_state] = useState({
@@ -103,9 +103,9 @@ const Selector_usuarios = () =>{
     
   }
   const consulta_all_user_rol = (e) => {
-    console.log('Valor de pk:', pk);
+   // console.log('Valor de pk:', pk);
     let pk = desencriptar(sessionStorage.getItem('sede_id'));
-  
+    console.log('Valor de pk:', pk);
     all_users_rols.all_users_rols(pk).then((res) => {
       if (Array.isArray(res.data)) {
         const updatedData = res.data;
@@ -124,7 +124,7 @@ const Selector_usuarios = () =>{
     console.log('Valor de state.data_user:', state.data_user);
     if(bandera_option_user === true){
 
-      for (var i = 0; i < state.data_user.'length'; i++) {
+      for (var i = 0; i < state.data_user['length']; i++) {
         const dato = { 
         value: state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],
          label: state.data_user[i]['username']+" - "+ state.data_user[i]['first_name']+" "+state.data_user[i]['last_name'],

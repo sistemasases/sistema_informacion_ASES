@@ -4,6 +4,7 @@ import Desplegable_item_academico from "./desplegable_Item_Academico";
 import Modal from 'react-bootstrap/Modal';
 import {useEffect} from 'react';
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 /*
 Tabla Conteo de Seguimientos:
@@ -24,7 +25,7 @@ Tabla Conteo de Seguimientos:
 const Academico = (props) =>{
 
     const config = {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     };
     
     const[switchChecked, setChecked] = useState(false);

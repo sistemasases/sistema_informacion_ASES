@@ -3,6 +3,7 @@ import Select from 'react-select'  ;
 import {Container, Row, Col, Button} from "react-bootstrap";
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
+import { decryptTokenFromSessionStorage } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 //import DatePicker from 'react-datepicker';
 
@@ -12,12 +13,12 @@ const Info_general = (props) =>{
 
       const config = {
             headers: {
-                  Authorization: 'Bearer ' + sessionStorage.getItem('token')
+                  Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
             }
       };
 
       const config2 = {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
       };
 
 

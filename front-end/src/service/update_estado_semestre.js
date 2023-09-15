@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const update_estado = async (semestre_id) => {
     try {
       const config = {
         headers: {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
       };
       const url_axios = `${process.env.REACT_APP_API_URL}/wizard/semestre/` + semestre_id.toString()+"/";

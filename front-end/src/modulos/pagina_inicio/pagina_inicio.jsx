@@ -28,8 +28,6 @@ import boton17 from '../../images/BOTONES_SVG 14.svg';
 
 import boton20 from '../../images/BOTONES_SVG 17.svg';
 import boton21 from '../../images/BOTONES_SVG 1.svg';
-import CryptoJS from "crypto-js";
-
 
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
@@ -38,8 +36,9 @@ import Modal from "react-bootstrap/Modal";
 const Pagina_inicio = () => {
    
   
-  const decryptRol = desencriptar(sessionStorage.getItem('rol'));
-  const userRole = decryptRol
+  //const decryptRol = desencriptar(sessionStorage.getItem('rol'));
+  //Desencriptar los permisos del usuario desde el sessionStorage y los asignamos a userRole
+  const userRole = desencriptar(sessionStorage.getItem('rol'));
   let desplegable;
 
   if (userRole === 'sistemas' || userRole === 'super_ases') {
@@ -74,18 +73,33 @@ const Pagina_inicio = () => {
 
   //Conexion con el back para extraer todas las sedes
   useEffect(() => {
-    All_sede_service.all_sede().then((res) => {
-      set_state({
-        ...state,
-        tabs: res,
-      });
-    });
+    if (bandera_option === true && state.tabs.length === 0) {
+      All_sede_service.all_sede()
+        .then((res) => {
+          console.log("Respuesta de la API:", res);
+          if (res && Array.isArray(res)) {
+            set_state({
+              ...state,
+              tabs: res,
+            });
+          } else {
+            console.error("Respuesta de la API no es un arreglo válido:", res);
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener datos de la API:", error);
+        });
+      bandera_option = false;
+    }
   }, []);
+  
 
   /**
    * Prop que toma las sedes y las transforma en opciones para el select
    */
   const handle_sedes = () => {
+    console.log("ENTRO");
+    console.log(state.tabs);
     if (bandera_option === true) {
       for (var i = 0; i < state.tabs["length"]; i++) {
         const dato = {

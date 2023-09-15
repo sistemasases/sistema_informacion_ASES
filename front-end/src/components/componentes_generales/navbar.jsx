@@ -8,11 +8,11 @@ import Modal from 'react-bootstrap/Modal';
 import {Button, ListGroupItem} from "react-bootstrap";
 
 import axios from 'axios';
-import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { encriptar, desencriptar, decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 const Navbar = (props) =>{
-    const decryptToken = desencriptar(sessionStorage.getItem('token'));
+    const decryptToken = decryptTokenFromSessionStorage();
     const location = useLocation();
     const [lastVisitedRoutes, setLastVisitedRoutes] = useState([]);
     const config = {
