@@ -159,6 +159,17 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
     queryset = estudiante_serializer.Meta.model.objects.all()
     # permission_classes = (IsAuthenticated,)
 
+    def get_nivel_riesgo (self, riesgo):
+            if riesgo == 0:
+                return 'BAJO'
+            if riesgo == 1:
+                return 'MEDIO'
+            elif riesgo == 2:
+                return 'ALTO'
+            elif riesgo == None:
+                return 'SIN RIESGO'
+            
+            
     def retrieve(self, request, pk):
 
         data_usuario_rol = request.GET.get('usuario_rol')
@@ -1207,22 +1218,24 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     seguimiento_reciente = seguimiento_individual.objects.filter(
                         id_estudiante=i['id']).latest('fecha')
                     # Crear un diccionario con los datos de riesgo del seguimiento
+                    
                     riesgo = {
-                        'riesgo_individual': seguimiento_reciente.riesgo_individual,
-                        'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
-                        'riesgo_academico': seguimiento_reciente.riesgo_academico,
-                        'riesgo_economico': seguimiento_reciente.riesgo_economico,
-                        'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+                        'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual),
+                        'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar),
+                        'riesgo_academico': self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico),
+                        'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico),
+                        'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)
                     }
+                    
                     # Devolver el riesgo en la respuesta
                 except seguimiento_individual.DoesNotExist:
                     # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
                     riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A'
+                        'riesgo_individual': 'SIN RIESGO',
+                        'riesgo_familiar': 'SIN RIESGO',
+                        'riesgo_academico': 'SIN RIESGO',
+                        'riesgo_economico': 'SIN RIESGO',
+                        'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
                     }
                     # print('no riesgos')
 
@@ -1387,3 +1400,5 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 list_estudiantes.append(data)
 
             return Response(list_estudiantes)
+     
+    

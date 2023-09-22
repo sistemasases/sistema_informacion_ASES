@@ -4,6 +4,7 @@ import { Container, Col, Row, Button, Form, Alert } from "react-bootstrap";
 // import all_estudiantes_reportes from "../../service/all_estudiantes_reportes";
 // import Select from "react-select";
 import DataTable from "react-data-table-component";
+import DataTableExtensions from "react-data-table-component-extensions";
 // import Checkbox from "react-bootstrap/FormCheck";
 // import Modal from "react-bootstrap/Modal";
 // import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
@@ -16,6 +17,17 @@ import { useNavigate } from "react-router-dom";
 
 var columns = [
   {
+    // name: (
+    //   <Row className="center_tabla_sin_seguimientos">
+    //     <h4 className="texto_mas_pequeño">Código</h4>
+    //     <input
+    //       name="num_doc"
+    //       onChange={(e) => {
+    //         console.log(e.target.name);
+    //       }}
+    //     />
+    //   </Row>
+    // ),
     name: "Código",
     selector: (row) => row.cod_univalle,
     value: "cod_univalle",
@@ -24,6 +36,17 @@ var columns = [
     width: "110px",
   },
   {
+    // name: (
+    //   <Row className="center_tabla_sin_seguimientos">
+    //     <h4 className="texto_mas_pequeño">Nombre</h4>
+    //     <input
+    //       name="num_doc"
+    //       onChange={(e) => {
+    //         console.log(e.target.name);
+    //       }}
+    //     />
+    //   </Row>
+    // ),
     name: "Nombre",
     selector: (row) => row.nombre,
     value: "nombre",
@@ -31,6 +54,17 @@ var columns = [
     isCheck: true,
   },
   {
+    // name: (
+    //   <Row className="center_tabla_sin_seguimientos">
+    //     <h4 className="texto_mas_pequeño">Apellido</h4>
+    //     <input
+    //       name="num_doc"
+    //       onChange={(e) => {
+    //         console.log(e.target.name);
+    //       }}
+    //     />
+    //   </Row>
+    // ),
     name: "Apellido",
     selector: (row) => row.apellido,
     value: "apellido",
@@ -38,6 +72,17 @@ var columns = [
     isCheck: true,
   },
   {
+    // name: (
+    //   <Row className="center_tabla_sin_seguimientos">
+    //     <h4 className="texto_mas_pequeño">Documento</h4>
+    //     <input
+    //       name="num_doc"
+    //       onChange={(e) => {
+    //         console.log(e.target.name);
+    //       }}
+    //     />
+    //   </Row>
+    // ),
     name: "Documento",
     selector: (row) => row.num_doc,
     value: "num_doc",
@@ -78,6 +123,9 @@ var schema = [
 
 const Reporte = () => {
   const [state, set_state] = useState({ estudiante: [] });
+  const [search, set_Search] = useState({
+    busqueda: "",
+  });
 
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
@@ -101,6 +149,7 @@ const Reporte = () => {
           ...state,
           estudiante: response.data,
         });
+        setFiltered(response.data);
       } catch (error) {
         console.log("no capto el dato");
       }
@@ -127,6 +176,7 @@ const Reporte = () => {
           ...state,
           estudiante: response.data,
         });
+        setFiltered(response.data);
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
       } catch (error) {
@@ -135,10 +185,6 @@ const Reporte = () => {
     };
     riesgos_estudiante();
   }, []);
-
-  const [search, set_Search] = useState({
-    busqueda: "",
-  });
 
   const csv_conversion = (item) => {
     var label = item.name;
@@ -159,9 +205,10 @@ const Reporte = () => {
     if (
       item.name === "Código univalle" ||
       // item.name === "Celular" ||
-      item.name === "Código programa académico" ||
+      item.name === "Código programa académico" 
+      // ||
       // item.name === "Promedio acumulado" ||
-      item.name === "Riesgo geográfico"
+      // item.name === "Riesgo geográfico"
     ) {
       tipo = Number;
     } else {
@@ -352,13 +399,13 @@ const Reporte = () => {
       sortable: true,
       isCheck: false,
     },
-    {
-      name: "Riesgo geográfico",
-      selector: (row) => row.ciudad_res,
-      value: "ciudad_res",
-      sortable: true,
-      isCheck: false,
-    },
+    // {
+    //   name: "Riesgo geográfico",
+    //   selector: (row) => row.ciudad_res,
+    //   value: "ciudad_res",
+    //   sortable: true,
+    //   isCheck: false,
+    // },
   ];
 
   const filtros_Condicion_Excepcion = [
@@ -496,15 +543,6 @@ const Reporte = () => {
       isCheck: false,
       width: "80px",
     },
-    // {
-    //   name: "P.D",
-    //   value: "p_d",
-    //   selector: (row) => row.p_d,
-    //   sortable: true,
-    //   isCheck: false,
-    //   width: "80px"
-
-    // },
     {
       name: "V.C",
       value: "v_c",
@@ -519,6 +557,7 @@ const Reporte = () => {
       selector: (row) => row.a_r,
       sortable: true,
       isCheck: false,
+      width: "80px",
     },
     {
       name: "n/a",
@@ -526,15 +565,34 @@ const Reporte = () => {
       selector: (row) => row.n_a,
       sortable: true,
       isCheck: false,
+      width: "80px",
     },
   ];
 
+  const columns_searchable = columns;
+
   useEffect(() => {
-    // set_columnas({
-    //   ...columnas,
-    //   cabeceras: columns,
-    // });
-    set_columnas((prevState) => ({ ...prevState, cabeceras: columns }));
+    set_columnas((prevState) => ({
+      ...prevState,
+      cabeceras: columns,
+      // .forEach((item) => {
+      //   item.name = (
+      //     <Row className="center_tabla_sin_seguimientos">
+      //       <h4 className="texto_mas_pequeño">{item.name}</h4>
+      //       <input
+      //         name={item.name}
+      //         onChange={(e) => {
+      //           console.log(e.target.name);
+      //         }}
+      //       />
+      //     </Row>
+      //   );
+      //   item.value = item.value;
+      //   item.selector = item.selector;
+      //   // item.sortable = true;
+      //   item.isCheck = item.isCheck;
+      // }),
+    }));
   }, []);
 
   // function usePrevious(columnas) {
@@ -548,6 +606,93 @@ const Reporte = () => {
   // const columnaPrevia = usePrevious(columnas);
   // var antiguoArray = [];
   // const emptyArray = [];
+
+  const [filtered, setFiltered] = useState(state.estudiante);
+  const [noResults, setNoResults] = useState(false);
+
+  const handle_column_search = (e) => {
+    console.log(e.target.name);
+    console.log(e.target.value);
+    if (e.target.name === "undefined") {
+      console.log("no hay nada");
+      const data_filtered = state.estudiante;
+      setFiltered(data_filtered);
+    }
+    if (e.target.name === "Tipo documento") {
+      const data_filtered = filtered.filter((row) =>
+        row.tipo_doc.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Correo electrónico") {
+      // console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.email.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Celular") {
+      // console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.celular.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Dirección") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.dir_res.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    console.log(filtered);
+  };
+
+  const add_search_bar = (selected) => {
+    console.log(filtered);
+    const new_search_bar_data = [];
+    new_search_bar_data.push({
+      name: (
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">{selected.name}</h4>
+          <input
+            name={selected.name}
+            internal_name={selected.value}
+            onChange={(e) => {
+              handle_column_search(e);
+            }}
+          />
+        </Row>
+      ),
+      value: selected.value,
+      selector: selected.selector,
+      sortable: true,
+      isCheck: selected.isCheck,
+    });
+    // columns.push(new_search_bar_data);
+    return new_search_bar_data;
+  };
+
+  const cambiazo = (new_data) => {
+    console.log(filtered);
+    if (state == []) {
+      setFiltered(state.estudiante);
+    } else {
+      setFiltered(new_data);
+    }
+  };
 
   const handleChange = (e) => {
     // console.log(columnaPrevia.cabeceras);
@@ -585,11 +730,12 @@ const Reporte = () => {
       (seleccionado_contacto.name === "Correo electrónico" &&
         e.target.checked === true) ||
       (seleccionado_contacto.name === "Celular" && e.target.checked === true) ||
-      (seleccionado_contacto.name === "Prueba" && e.target.checked === true) ||
       (seleccionado_contacto.name === "Dirección" && e.target.checked === true)
     ) {
       seleccionado_contacto.isCheck = true;
-      columns.push(seleccionado_contacto);
+      var new_psuh = add_search_bar(seleccionado_contacto);
+      // console.log(new_psuh);
+      columns.push(new_psuh[0]);
       csv_conversion(seleccionado_contacto);
       schema_push(seleccionado_contacto);
     } else if (
@@ -599,13 +745,12 @@ const Reporte = () => {
         e.target.checked === false) ||
       (seleccionado_contacto.name === "Celular" &&
         e.target.checked === false) ||
-      (seleccionado_contacto.name === "Prueba" && e.target.checked === false) ||
       (seleccionado_contacto.name === "Dirección" && e.target.checked === false)
     ) {
       seleccionado_contacto.isCheck = false;
       document.getElementsByName("Contacto")[0].checked = false;
       columns.map((item, index) => {
-        if (item.name === seleccionado_contacto.name) {
+        if (item.value === seleccionado_contacto.value) {
           columns.splice(index, 1);
         }
       });
@@ -734,9 +879,10 @@ const Reporte = () => {
       (seleccionado_riesgos.name === "Riesgo económico" &&
         e.target.checked === true) ||
       (seleccionado_riesgos.name === "Riesgo vida universitaria" &&
-        e.target.checked === true) ||
-      (seleccionado_riesgos.name === "Riesgo geográfico" &&
-        e.target.checked === true)
+        e.target.checked === true) 
+      // ||
+      // (seleccionado_riesgos.name === "Riesgo geográfico" &&
+      //   e.target.checked === true)
     ) {
       seleccionado_riesgos.isCheck = true;
       columns.push(seleccionado_riesgos);
@@ -752,9 +898,10 @@ const Reporte = () => {
       (seleccionado_riesgos.name === "Riesgo económico" &&
         e.target.checked === false) ||
       (seleccionado_riesgos.name === "Riesgo vida universitaria" &&
-        e.target.checked === false) ||
-      (seleccionado_riesgos.name === "Riesgo geográfico" &&
         e.target.checked === false)
+        //  ||
+      // (seleccionado_riesgos.name === "Riesgo geográfico" &&
+      //   e.target.checked === false)
     ) {
       seleccionado_riesgos.isCheck = false;
       document.getElementsByName("Riesgos")[0].checked = false;
@@ -885,6 +1032,7 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Contacto" &&
         e.target.checked === true
       ) {
+        console.log(seleccionado_cabeceras_filtros);
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("Tipo de documento")[0].checked = false;
         document.getElementsByName("Correo electrónico")[0].checked = false;
@@ -897,20 +1045,22 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "Tipo de documento" ||
-            columns[i].name === "Correo electrónico" ||
-            columns[i].name === "Celular" ||
-            columns[i].name === "Dirección"
+            columns[i].value === "tipo_doc" ||
+            columns[i].value === "email" ||
+            columns[i].value === "celular" ||
+            columns[i].value === "dir_res"
           ) {
+            console.log("HOLA");
             columns[i].isCheck = false;
           }
         }
+        // console.log(columns);
         columns.map((item, index) => {
           if (
-            (item.name === "Tipo de documento" && item.isCheck === false) ||
-            (item.name === "Correo electrónico" && item.isCheck === false) ||
-            (item.name === "Celular" && item.isCheck === false) ||
-            (item.name === "Dirección" && item.isCheck === false)
+            (item.value === "tipo_doc" && item.isCheck === false) ||
+            (item.value === "email" && item.isCheck === false) ||
+            (item.value === "celular" && item.isCheck === false) ||
+            (item.value === "dir_res" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -918,8 +1068,10 @@ const Reporte = () => {
 
         for (let i = 0; i < filtros_Contacto.length; i++) {
           const element = filtros_Contacto[i];
+          console.log(element);
           element.isCheck = true;
-          columns.push(element);
+          var data_var = add_search_bar(element);
+          columns.push(data_var[0]);
         }
 
         for (let i = 0; i < filtros_Contacto.length; i++) {
@@ -927,7 +1079,7 @@ const Reporte = () => {
           csv_conversion(element);
           schema_push(element);
         }
-        // console.log(columns);
+        console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Estados" &&
         e.target.checked === true
@@ -1080,7 +1232,7 @@ const Reporte = () => {
         document.getElementsByName(
           "Riesgo vida universitaria"
         )[0].checked = false;
-        document.getElementsByName("Riesgo geográfico")[0].checked = false;
+        // document.getElementsByName("Riesgo geográfico")[0].checked = false;
         document.getElementsByName("Riesgo individual")[0].checked = true;
         document.getElementsByName("Riesgo familiar")[0].checked = true;
         document.getElementsByName("Riesgo académico")[0].checked = true;
@@ -1088,7 +1240,7 @@ const Reporte = () => {
         document.getElementsByName(
           "Riesgo vida universitaria"
         )[0].checked = true;
-        document.getElementsByName("Riesgo geográfico")[0].checked = true;
+        // document.getElementsByName("Riesgo geográfico")[0].checked = true;
 
         for (let i = 0; i < columns.length; i++) {
           if (
@@ -1096,8 +1248,9 @@ const Reporte = () => {
             columns[i].name === "Riesgo familiar" ||
             columns[i].name === "Riesgo académico" ||
             columns[i].name === "Riesgo económico" ||
-            columns[i].name === "Riesgo vida universitaria" ||
-            columns[i].name === "Riesgo geográfico"
+            columns[i].name === "Riesgo vida universitaria" 
+            // ||
+            // columns[i].name === "Riesgo geográfico"
           ) {
             columns[i].isCheck = false;
           }
@@ -1109,8 +1262,9 @@ const Reporte = () => {
             (item.name === "Riesgo académico" && item.isCheck === false) ||
             (item.name === "Riesgo económico" && item.isCheck === false) ||
             (item.name === "Riesgo vida universitaria" &&
-              item.isCheck === false) ||
-            (item.name === "Riesgo geográfico" && item.isCheck === false)
+              item.isCheck === false) 
+              // ||
+            // (item.name === "Riesgo geográfico" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1239,54 +1393,51 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Contacto" &&
         e.target.checked === false
       ) {
+        console.log("WE'RE OVER HERE!");
+        console.log(columns);
         seleccionado_cabeceras_filtros.isCheck = false;
         document.getElementsByName("Tipo de documento")[0].checked = false;
         document.getElementsByName("Correo electrónico")[0].checked = false;
         document.getElementsByName("Celular")[0].checked = false;
         document.getElementsByName("Dirección")[0].checked = false;
 
+        console.log(columns);
+
         for (let i = 0; i < columns.length; i++) {
           if (
-            (columns[i].name === "Tipo de documento" &&
-              columns[i].isCheck === true) ||
-            (columns[i].name === "Correo electrónico" &&
-              columns[i].isCheck === true) ||
-            (columns[i].name === "Celular" && columns[i].isCheck === true) ||
-            (columns[i].name === "Dirección" && columns[i].isCheck === true)
+            (columns[i].value === "tipo_doc" && columns[i].isCheck === true) ||
+            (columns[i].value === "email" && columns[i].isCheck === true) ||
+            (columns[i].value === "celular" && columns[i].isCheck === true) ||
+            (columns[i].value === "dir_res" && columns[i].isCheck === true)
           ) {
+            console.log("is HeRe!!");
             columns[i].isCheck = false;
             // columns.splice(i, 1);
           }
         }
-        for (let i = 0; i < columns.length; i++) {
+        console.log(columns);
+        console.log("IS DEAD THSI SH**");
+
+        columns.map((item, index) => {
           if (
-            (columns[i].name === "Tipo de documento" &&
-              columns[i].isCheck === false) ||
-            (columns[i].name === "Correo electrónico" &&
-              columns[i].isCheck === false) ||
-            (columns[i].name === "Celular" && columns[i].isCheck === false) ||
-            (columns[i].name === "Dirección" && columns[i].isCheck === false)
+            (item.value === "tipo_doc" && item.isCheck === false) ||
+            (item.value === "email" && item.isCheck === false) ||
+            (item.value === "celular" && item.isCheck === false) ||
+            (item.value === "dir_res" && item.isCheck === false)
           ) {
-            columns.splice(i, 1);
+            columns.splice(index, 1);
           }
-        }
-        // columns.map((item, index) => {
-        //   if (
-        //     (item.name === "Tipo de documento" && item.isCheck === false) ||
-        //     (item.name === "Correo electrónico" && item.isCheck === false) ||
-        //     (item.name === "Celular" && item.isCheck === false) ||
-        //     (item.name === "Dirección" && item.isCheck === false)
-        //   ) {
-        //     columns.splice(index, 1);
-        //   }
-        // });
+        });
+
         for (let i = 0; i < filtros_Contacto.length; i++) {
           filtros_Contacto[i].isCheck = false;
           const element = filtros_Contacto[i];
           csv_pop(element);
           schema_pop(element);
         }
-        // console.log(columns);
+
+        console.log("After Unselect All");
+        console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Estados" &&
         e.target.checked === false
@@ -1409,7 +1560,7 @@ const Reporte = () => {
         document.getElementsByName(
           "Riesgo vida universitaria"
         )[0].checked = false;
-        document.getElementsByName("Riesgo geográfico")[0].checked = false;
+        // document.getElementsByName("Riesgo geográfico")[0].checked = false;
 
         for (let i = 0; i < columns.length; i++) {
           if (
@@ -1417,8 +1568,9 @@ const Reporte = () => {
             columns[i].name === "Riesgo familiar" ||
             columns[i].name === "Riesgo académico" ||
             columns[i].name === "Riesgo económico" ||
-            columns[i].name === "Riesgo vida universitaria" ||
-            columns[i].name === "Riesgo geográfico"
+            columns[i].name === "Riesgo vida universitaria" 
+            // ||
+            // columns[i].name === "Riesgo geográfico"
           ) {
             columns[i].isCheck = false;
           }
@@ -1430,8 +1582,9 @@ const Reporte = () => {
             (item.name === "Riesgo académico" && item.isCheck === false) ||
             (item.name === "Riesgo económico" && item.isCheck === false) ||
             (item.name === "Riesgo vida universitaria" &&
-              item.isCheck === false) ||
-            (item.name === "Riesgo geográfico" && item.isCheck === false)
+              item.isCheck === false) 
+              // ||
+            // (item.name === "Riesgo geográfico" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1580,6 +1733,68 @@ const Reporte = () => {
 
   let navigate = useNavigate();
 
+  // const Filtering = () => {
+  //   const [filterText, setFilterText] = React.useState("");
+  //   const [resetPaginationToggle, setResetPaginationToggle] =
+  //     React.useState(false);
+  //   const filteredItems = fakeUsers.filter(
+  //     (item) =>
+  //       item.name && item.name.toLowerCase().includes(filterText.toLowerCase())
+  //   );
+
+  //   const subHeaderComponentMemo = React.useMemo(() => {
+  //     const handleClear = () => {
+  //       if (filterText) {
+  //         setResetPaginationToggle(!resetPaginationToggle);
+  //         setFilterText("");
+  //       }
+  //     };
+
+  //     return (
+  //       <FilterComponent
+  //         onFilter={(e) => setFilterText(e.target.value)}
+  //         onClear={handleClear}
+  //         filterText={filterText}
+  //       />
+  //     );
+  //   }, [filterText, resetPaginationToggle]);
+  // };
+
+  const filterBox = () => {
+    return (
+      <>
+        {/* Buscador */}
+        <Row>
+          <Col
+            sm={1}
+            xs={1}
+            style={{ paddingRight: "0.1em", marginRight: "0.1em" }}
+          >
+            <Form.Control
+              type="text"
+              placeholder="Buscar "
+              // value={}
+              onChange={(e) => onSearch(e)}
+              style={{ width: "6em" }}
+            />
+          </Col>
+
+          <Col
+            sm={1}
+            xs={1}
+            style={{
+              textAlign: "left",
+              paddingLeft: "0.1em",
+              marginleft: "0.1em",
+            }}
+          >
+            <Button>X</Button>
+          </Col>
+        </Row>
+      </>
+    );
+  };
+
   // console.log(proc_link_estudiante(state.estudiante));
 
   return (
@@ -1590,7 +1805,6 @@ const Reporte = () => {
             <div>
               <h1>Reporte General</h1>
             </div>
-
             <br />
             {/* Cabeceras de Filtros */}
             <Row>
@@ -1688,6 +1902,7 @@ const Reporte = () => {
               </Col>
               {/* Columna Filtros Condicion de Excepcion */}
 
+              {/* OCULTAS ESTAS DOS COLUMNAS DEL AVERNO */}
               <Col sm={1} xs={1}>
                 {filtros_Condicion_Excepcion.map((Item, index) => (
                   <div key={index}>
@@ -1726,12 +1941,21 @@ const Reporte = () => {
             />
             <br />
 
+            {/* <DataTableExtensions
+                columns={columnas}
+                data={state.data_user_rol}
+                filter={true}
+                filterPlaceHolder={2}
+                filterDigit={1}
+                exportHeaders={true}
+                ></DataTableExtensions> */}
+
             {/* Tabla */}
             <DataTable
               id="tabla_Reporte"
               title="Reporte"
               columns={columnas.cabeceras}
-              data={state.estudiante.filter((item) => {
+              data={filtered.filter((item) => {
                 return search.busqueda.toLowerCase() === ""
                   ? item
                   : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
@@ -1740,8 +1964,20 @@ const Reporte = () => {
                       item.num_doc
                         .toString()
                         .toLowerCase()
-                        .includes(search.busqueda);
+                        .includes(search.busqueda) ||
+                      item.asignacion_profesional
+                        .toLowerCase()
+                        .includes(search.busqueda) ||
+                      //    ||
+                      // item.asignacion_practicante
+                      //   .toLowerCase()
+                      //   .includes(search.busqueda) ||
+                      // item.asignacion_monitores
+                      //   .toLowerCase()
+                      //   .includes(search.busqueda)
+                      item.sede.toLowerCase().includes(search.busqueda);
               })}
+              // data = {filtered}
               // data={state.estudiante}
               noDataComponent="Cargando Información..."
               pagination
