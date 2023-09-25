@@ -70,7 +70,7 @@ const Reporte_seguimientos = (props) =>{
       {
         axios({
           // Endpoint to send files
-          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/",
           method: "GET",
           headers: config,
         })

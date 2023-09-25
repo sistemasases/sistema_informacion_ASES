@@ -8,7 +8,7 @@ const all_monitores = async () => {
                 Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
             }
         };
-        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarId(sessionStorage.getItem('sede_id'))+"/";
         const res = await axios.get(url_axios, config)
         return res.data;
         

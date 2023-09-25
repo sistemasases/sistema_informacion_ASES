@@ -16,6 +16,8 @@ const Selector = (props) =>{
         Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     };
 
+    const userRol = desencriptar(sessionStorage.getItem('rol'));
+
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
 
@@ -170,7 +172,7 @@ const Selector = (props) =>{
 
                             <Col xs={12}>
                             {
-                                ( props.seleccionado !== '' && tab.contenido !== 'bloqueado' && tab.permitidos.includes(sessionStorage.getItem('rol')) ) ?
+                                ( props.seleccionado !== '' && tab.contenido !== 'bloqueado' && tab.permitidos.includes(userRol) ) ?
 
                                 (<Col xs={"12"} className={tab.id === activeTabIndex ? "tab_separador" : "tabs_border"} >
                                     <Row onClick={() => activeTab(tab.id)} >

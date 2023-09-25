@@ -7,7 +7,7 @@ import Programas_academicos from './programas_academicos'
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Selector from "./selector";
-import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { decryptTokenFromSessionStorage, desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -50,7 +50,7 @@ const Info_basica_monitor = (props) =>{
     useEffect(()=>{
       axios({
         // Endpoint to send files
-        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/",
+        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/",
         method: "GET",
         headers: config,
       })
@@ -69,7 +69,7 @@ const Info_basica_monitor = (props) =>{
           datos_option_user.push(dato)
           let formData = new FormData();
           formData.append('id_sede', sessionStorage.getItem('sede_id'));
-          const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+state.data_user[i]['id']+"/";
+          const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarInt(state.data_user[i]['id'])+"/";
             axios({
               // Endpoint to send files
               url:  url_axios,
@@ -123,7 +123,8 @@ const Info_basica_monitor = (props) =>{
         const paramsget = {
         id_sede: sessionStorage.getItem('sede_id'),
         };
-        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_info_extra/`+state.data_user[e.id]['id']+"/";
+        console.log(e.id)
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_info_extra/`+desencriptarInt(state.data_user[e.id]['id'])+"/";
         axios({
           // Endpoint to send files
           url:  url_axios,

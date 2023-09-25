@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
 import Modal from 'react-bootstrap/Modal';
-import { encriptar, desencriptar, encriptarJson, encriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { encriptar, desencriptar, encriptarJson, encriptarInt, encriptarBigInt, desencriptarBigInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -41,10 +41,10 @@ const Login_component = () => {
   const handleSendNewData = () => {
     axios.post(url, data)
       .then(res => {
-
+        console.log(res.data);
         const encryptedToken = encriptar(res.data.token);
         const encryptedRefreshToken = encriptar(res.data.refresh_token);
-        const encryptedIdUsuario = encriptar(res.data.user.id_usuario);
+        const encryptedIdUsuario = encriptarBigInt(res.data.user.id);
         const encryptedEmail = encriptar(res.data.user.email);
         const encryptedFirstName = encriptar(res.data.user.first_name);
         const encryptedSede = encriptar(res.data.user.sede);

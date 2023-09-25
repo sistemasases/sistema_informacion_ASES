@@ -1,5 +1,6 @@
 // utilidades_seguridad.js
 import CryptoJS from 'crypto-js';
+const { BigInt } = global;
 
 
 // Clave secreta para la encriptación (debes gestionarla de forma segura)
@@ -94,4 +95,52 @@ export const desencriptarJson = (valorEncriptado) => {
     return null;
   }
 }
+// Función para desencriptar el ID de usuario.
+export const decryptUserIdFromSessionStorage = () => {
+  const encryptedUserId = sessionStorage.getItem('id_usuario');
+  if (!encryptedUserId) {
+    return null; // No hay un id de usuario en el sessionStorage.
+  }
 
+  // Desencriptar el id de usuario usando la clave secreta.
+  const bytes = CryptoJS.AES.decrypt(encryptedUserId, secretKey);
+  const decryptedUserId = bytes.toString(CryptoJS.enc.Utf8);
+
+  return decryptedUserId;
+};
+// Función para encriptar campos de tipo BigInt.
+export const encriptarBigInt = (valor) => {
+  console.log('valor'+valor)
+  try {
+    // Convertir BigInt a cadena y luego encriptar la cadena.
+    const valorComoCadena = valor.toString();
+    const valorEncriptado = CryptoJS.AES.encrypt(valorComoCadena, secretKey).toString();
+    return valorEncriptado;
+  } catch (error) {
+    console.error('Error al encriptar el valor seleccionado:', error);
+    return null;
+  }
+};
+
+//Función para desencriptar campos de tipo BigInt.
+export const desencriptarBigInt = (valorEncriptado) => {
+  console.log('valorEncriptado'+valorEncriptado)
+  try {
+    // Desencriptar la cadena y luego convertirla a BigInt.
+    const decryptedValue = CryptoJS.AES.decrypt(valorEncriptado, secretKey).toString(CryptoJS.enc.Utf8);
+    return BigInt(decryptedValue);
+  } catch (error) {
+    console.error('Error al desencriptar el valor:', error);
+    return null;
+  }
+};
+
+export const desencriptarIdEstudianteSeleccionado = (idEstudianteSeleccionado) => {
+  const encryptedIdEstudianteSeleccionado = sessionStorage.getItem('id_estudiante_seleccionado');
+  if (!encryptedIdEstudianteSeleccionado) {
+    return null; // No hay un estudiante seleccionado en el sessionStorage.
+  }
+  idEstudianteSeleccionado = CryptoJS.AES.decrypt(encryptedIdEstudianteSeleccionado, secretKey);
+  const decryptedIdEstudianteSeleccionado = idEstudianteSeleccionado.toString(CryptoJS.enc.Utf8);
+  return decryptedIdEstudianteSeleccionado;
+};  

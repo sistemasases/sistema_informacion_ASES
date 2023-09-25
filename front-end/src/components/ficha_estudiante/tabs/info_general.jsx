@@ -3,7 +3,7 @@ import Select from 'react-select'  ;
 import {Container, Row, Col, Button} from "react-bootstrap";
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
-import { decryptTokenFromSessionStorage } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { desencriptar, decryptTokenFromSessionStorage, desencriptarIdEstudianteSeleccionado, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 //import DatePicker from 'react-datepicker';
 
@@ -387,7 +387,7 @@ const agregarPariente = () => {
 
 
       axios({
-      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+props.datos.id+'/',
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+ props +'/',
       method: "POST",
       data: formData,
       headers: config2,
@@ -443,6 +443,7 @@ const agregarPariente = () => {
                   })
                   alert("error al editar el estudiante :" + err)
                   
+            console.log('celular'+state.celular)
             //console.log("entra al malo")
             //alert("error al editar el estudiante : " + props.datos.id);
       })

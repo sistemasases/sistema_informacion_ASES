@@ -5,7 +5,7 @@ import {useEffect} from 'react';
 import Info_basica from "../../components/ficha_estudiante/info_basica";
 import {Container, Row, Col, Dropdown, Button} from "styled-bootstrap-grid";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
-import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt} from '../utilidades_seguridad/utilidades_seguridad';
+import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt, decryptUserIdFromSessionStorage, desencriptarBigInt} from '../utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -20,12 +20,14 @@ const Ficha_estudiante = (props) =>{
       })
 
     const userRole = desencriptar(sessionStorage.getItem('permisos'));
+    
 
 
     useEffect(() => {
         let rol = desencriptar(sessionStorage.getItem("rol"));
-        let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
-        let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+        let sede = desencriptarInt(sessionStorage.getItem("sede_id"));  
+        let id_usuario = desencriptarBigInt(sessionStorage.getItem("id_usuario"));
+        
         axios({
             // Endpoint to send files
             url:  `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +

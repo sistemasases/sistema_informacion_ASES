@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Update_seguimiento from '../../service/update_seguimiento';
 import Delete_seguimiento from '../../service/delete_seguimiento';
 import { CSVLink } from 'react-csv';
+import { desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -87,7 +88,7 @@ const Seguimiento_individual = (props) =>{
         primer_acercamiento: props.item.primer_acercamiento,
         cierre: props.item.cierre,
         id_creador: props.item.id_creador,
-        id_modificador: parseInt(sessionStorage.getItem("id_usuario")),
+        id_modificador: desencriptarInt(parseInt(sessionStorage.getItem("id_usuario"))),
         id_estudiante: props.item.id_estudiante
     })
 

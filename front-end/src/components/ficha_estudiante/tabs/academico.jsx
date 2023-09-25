@@ -4,7 +4,7 @@ import Desplegable_item_academico from "./desplegable_Item_Academico";
 import Modal from 'react-bootstrap/Modal';
 import {useEffect} from 'react';
 import axios from 'axios';
-import { decryptTokenFromSessionStorage } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 /*
 Tabla Conteo de Seguimientos:
@@ -51,7 +51,7 @@ const Academico = (props) =>{
 
     useEffect(() => {
         const paramsget = {
-            id_sede: sessionStorage.getItem('sede_id'),
+            id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
           };
         
         const url_axios = `${process.env.REACT_APP_API_URL}/academico/lista_historiales_academicos/`+props.id+"/";
@@ -85,7 +85,8 @@ const Academico = (props) =>{
     setActiveTabIndex(index)
   }
 
-  const userRole = sessionStorage.getItem('rol');
+  const userRole = desencriptar(sessionStorage.getItem('rol'));
+  console.log('userRole : ' + userRole)
 
     return (
         <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' ? <></> :

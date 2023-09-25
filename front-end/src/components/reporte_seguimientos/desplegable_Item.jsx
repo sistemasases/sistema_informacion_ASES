@@ -5,7 +5,7 @@ import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import Socieducativa from "./socieducativa"
 import  {useEffect} from 'react';
 import axios from 'axios';
-import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt, encriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Desplegable_item = ({item}) => {
 
@@ -77,7 +77,7 @@ const Desplegable_item = ({item}) => {
                 return (err)
             })
 
-            sessionStorage.setItem('id_estudiante_seleccionado', e)
+            encriptarInt(sessionStorage.setItem('id_estudiante_seleccionado', e))
 
     }
 
