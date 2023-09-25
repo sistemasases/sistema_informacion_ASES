@@ -89,7 +89,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
 
             return Response(serializer_estudiante.data)
 
-        elif data_usuario_rol == "dir_socioed_reg":
+        elif data_usuario_rol == "socioeducativo_reg":
             # Ve todos los estudiantes que no son de la sede "Melendez"
             list_estudiantes = []
             # for obj_programa in programa.objects.exclude(Q(id_sede=data_sede)).values():
@@ -768,10 +768,12 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
         elif data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "sistemas":
             list_estudiantes = list()
+            final_list_estudiantes = list()
             serializer_estudiante = estudiante_serializer(
                 estudiante.objects.all(), many=True)
 
-            for i in list_estudiantes:
+            for i in serializer_estudiante.data:
+                
                 # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
@@ -963,7 +965,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
             return Response(final_list_estudiantes)
 
-        elif data_usuario_rol == "dir_socioed_reg":
+        elif data_usuario_rol == "socioeducativo_reg":
             list_estudiantes = []
             final_list_estudiantes = list()
             # for obj_programa in programa.objects.exclude(Q(id_sede=data_sede)).values():

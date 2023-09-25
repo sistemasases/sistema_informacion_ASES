@@ -9,7 +9,7 @@ import { desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_s
 
 
 const Seguimiento_individual = (props) =>{
-
+       
 
     const recargarPagina = () => {
         
@@ -860,10 +860,10 @@ const Seguimiento_individual = (props) =>{
                 <hr></hr>
                 <Row>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional')} name="revisado_profesional" onChange={handleFormChecks}/>        
+                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional'||userRole === 'super_ases')} name="revisado_profesional" onChange={handleFormChecks}/>        
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional')} name="revisado_practicante" onChange={handleFormChecks}/>        
+                        <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional'|| userRole === 'super_ases')} name="revisado_practicante" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
             </Modal.Body>
@@ -886,13 +886,16 @@ const Seguimiento_individual = (props) =>{
             </Button>
              */}
 
-
+            {(!(props.item.revisado_profesional=== true && !(userRole === 'profesional'||userRole === 'super_ases'))) ? (
+            <>
             <Button variant="danger" onClick={() => { delete_info()}} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
               Eliminar
             </Button>
-            <Button variant="secondary" onClick={() => { set_info() }}>
+            <Button variant="secondary" onClick={() => { set_info() }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
                 Aceptar cambios
             </Button>
+            </>
+            ) : null}
             <Button variant="secondary" onClick={() => { props.handleClose() }}>
                 Cerrar
             </Button>

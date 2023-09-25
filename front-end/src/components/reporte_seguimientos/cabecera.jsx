@@ -338,7 +338,7 @@ const Cabecera = (props) => {
     <Container>
       <Row className="row_presentacion_reportes_seguimientos">
         <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
-          <h1>Séguimientos</h1>
+          <h1>Seguimientos</h1>
         </Col>
         {props.rolUsuario === 'super_ases' ? (
           <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>

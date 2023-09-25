@@ -43,7 +43,10 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
             <Row>
 
                 <Col className="col_reportes" >
-                    <Row className="col_reportes_hover">
+                { item.revisado_profesional === true ?
+                (
+                    <Row className="col_reportes_hover_block">
+
                     {
                         item.hora_inicio ?
                         (
@@ -58,8 +61,28 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
                         </Col>
                         )
                     }
-
                     </Row>
+                ):
+                (
+                    <Row className="col_reportes_hover">
+
+                    {
+                        item.hora_inicio ?
+                        (
+                        <Col onClick={handleShow}>
+                            Seguimiento individual : {item.fecha}
+                        </Col>
+                        )
+                        :
+                        (
+                        <Col onClick={handleShow2}>
+                            Inasistencia : {item.fecha}
+                        </Col>
+                        )
+                    }
+                    </Row>
+                )
+                }
                 </Col>
                 
                 <Seguimiento_inasistencia recarga_ficha_estudiante={true} show={show2} onHide={handleCloseIn} handleCloseIn={handleCloseIn} item={item} size="lg"/>
@@ -74,6 +97,5 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
 }
 
 export default Desplegable_item
-
 
 

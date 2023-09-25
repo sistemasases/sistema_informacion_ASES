@@ -141,7 +141,6 @@ const Info_basica = (props) =>{
       nueva_cedula:'',
       edad:'',
     })
-    console.log("holi"+state.seleccionado)
     useEffect(() => {
       if (state.total_datos_estudiantes['nombre'] && isLoading) {
         set_state({
