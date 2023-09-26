@@ -361,7 +361,7 @@ def carga_materias(file):
                     consulta_profesor= User.objects.filter(username =datos.iat[i,3]).first()
 
 
-                    if (materia.objects.filter(cod_materia = datos.iat[i,0],id_sede=datos.iat[i,5],id_semestre=datos.iat[i,4],id_profesor = consulta_profesor).first()):
+                    if (materia.objects.filter(cod_materia = datos.iat[i,0],franja = datos.iat[i,2],id_sede=datos.iat[i,5],id_semestre=datos.iat[i,4],id_profesor = consulta_profesor).first()):
                         dict_result = {
                             'dato' : datos.iat[i,0],
                             'mensaje' : 'Ya existe una materia con este codigo, en este semestre, en la sede suministrada.'
