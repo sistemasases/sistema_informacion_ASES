@@ -1440,6 +1440,8 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         for obj_programa in programa.objects.filter(id_facultad=obj_facultad['id']).values():
                             # print(obj_programa)
                             # INDICA QUE ESTUDIANTES DE FINANZAS Y ADINISTRACION PUBLICA ENTRE OTROS PERTENECEN A LA FACULTAD 8
+                            # Culpemos a la base de datos
+                            # Saludos.
                             for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
                                 # print(obj_programa_estudiante)
                                 for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
