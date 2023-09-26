@@ -1268,7 +1268,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     # Solo printea aquellos cuyo traker es True
                     # VERIFICAR EN DB: SELECT * FROM modulo_programa_programa_estudiante where id_estudiante_id = 21702
                     programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).last()
+                        id_estudiante=i['id'], traker = True).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
                     # print(programa_del_estudiante)
@@ -1435,12 +1435,13 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             for obj_usuario_rol in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
                 for obj_vcd_academico in vcd_academico.objects.filter(id_usuario_rol=obj_usuario_rol['id']).values():
                     for obj_facultad in facultad.objects.filter(id=obj_vcd_academico['id_facultad_id']).values():
-                        print(obj_facultad)
+                        # print(obj_facultad)
                         # R/    {'id': 8, 'codigo_univalle': '7', 'nombre': 'INGENIERÍA'}
                         for obj_programa in programa.objects.filter(id_facultad=obj_facultad['id']).values():
                             # print(obj_programa)
-                            # INDICA QUE ESTUDIANTES DE FINANZAS Y ADINISTRACION PUNLICA ENTRE OTROS PERTENECES A LA FACULTAD 8
+                            # INDICA QUE ESTUDIANTES DE FINANZAS Y ADINISTRACION PUBLICA ENTRE OTROS PERTENECEN A LA FACULTAD 8
                             for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
+                                # print(obj_programa_estudiante)
                                 for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
                                     serializer_estudiante = estudiante_serializer(
                                         obj_estudiantes)
