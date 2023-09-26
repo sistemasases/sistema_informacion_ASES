@@ -30,7 +30,7 @@ const Carga_masiva = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+desencriptarInt(desencriptarInt(sessionStorage.getItem('sede_id')))+"/", config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -41,7 +41,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+desencriptarInt(desencriptarInt(sessionStorage.getItem('sede_id')))+"/", config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

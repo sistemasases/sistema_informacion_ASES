@@ -14,6 +14,7 @@ import writeXlsxFile from "write-excel-file";
 import myGif from "../reportes/loading_data.gif";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { desencriptar, desencriptarInt, decryptTokenFromSessionStorage } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 
 var columns = [
   {
@@ -82,12 +83,12 @@ const Reporte = () => {
 
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
-    let rol = sessionStorage.getItem("rol");
-    let sede = sessionStorage.getItem("sede_id");
-    let id_usuario = sessionStorage.getItem("id_usuario");
+    let rol =  desencriptar(sessionStorage.getItem("rol"));
+    let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
 
     const config = {
-      Authorization: "Bearer " + sessionStorage.getItem("token"),
+      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
     };
 
     const estudiantes_por_rol = async () => {
@@ -111,9 +112,9 @@ const Reporte = () => {
   }, []);
 
   useEffect(() => {
-    let rol = sessionStorage.getItem("rol");
-    let sede = sessionStorage.getItem("sede_id");
-    let id_usuario = sessionStorage.getItem("id_usuario");
+    let rol = desencriptar(sessionStorage.getItem("rol"));
+    let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
 
     const riesgos_estudiante = async () => {
       try {

@@ -27,7 +27,7 @@ const Ficha_estudiante = (props) =>{
         let rol = desencriptar(sessionStorage.getItem("rol"));
         let sede = desencriptarInt(sessionStorage.getItem("sede_id"));  
         let id_usuario = desencriptarBigInt(sessionStorage.getItem("id_usuario"));
-        
+        console.log("id_usuario: "+id_usuario)
         axios({
             // Endpoint to send files
             url:  `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +

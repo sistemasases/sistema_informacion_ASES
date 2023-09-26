@@ -40,7 +40,9 @@ const Info_basica = (props) =>{
       setLoading2(true);
       const paramsget = {
         id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
+        
       };
+      console.log("id_sede: " + paramsget.id_sede);
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/';
             axios({
             // Endpoint to send files
@@ -287,6 +289,7 @@ const Info_basica = (props) =>{
               ...json,
             },
             edad: edad
+            
           });
         })
         .catch((err) => {

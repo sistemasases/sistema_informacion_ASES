@@ -7,7 +7,7 @@ import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_indivi
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
 import {useEffect} from 'react';
 import axios from 'axios';
-import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 import { id } from 'date-fns/locale';
 
 const Info_registros = (props) =>{
@@ -31,9 +31,10 @@ const Info_registros = (props) =>{
       })
 
       useEffect(()=>{
-        axios({
+        console.log("supuesta id_estudiante:"+props.id_estudiante)
+      axios({
           // Endpoint to send files
-          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/ultimo_seguimiento_individual/` +props.id_estudiante+ "/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/ultimo_seguimiento_individual/` + props.id_estudiante+ "/",
           method: "GET",
           headers: config,
         })
