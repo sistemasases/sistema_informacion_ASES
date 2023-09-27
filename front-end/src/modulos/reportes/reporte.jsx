@@ -17,17 +17,6 @@ import { useNavigate } from "react-router-dom";
 
 var columns = [
   {
-    // name: (
-    //   <Row className="center_tabla_sin_seguimientos">
-    //     <h4 className="texto_mas_pequeño">Código</h4>
-    //     <input
-    //       name="num_doc"
-    //       onChange={(e) => {
-    //         console.log(e.target.name);
-    //       }}
-    //     />
-    //   </Row>
-    // ),
     name: "Código",
     selector: (row) => row.cod_univalle,
     value: "cod_univalle",
@@ -36,17 +25,6 @@ var columns = [
     width: "110px",
   },
   {
-    // name: (
-    //   <Row className="center_tabla_sin_seguimientos">
-    //     <h4 className="texto_mas_pequeño">Nombre</h4>
-    //     <input
-    //       name="num_doc"
-    //       onChange={(e) => {
-    //         console.log(e.target.name);
-    //       }}
-    //     />
-    //   </Row>
-    // ),
     name: "Nombre",
     selector: (row) => row.nombre,
     value: "nombre",
@@ -54,17 +32,6 @@ var columns = [
     isCheck: true,
   },
   {
-    // name: (
-    //   <Row className="center_tabla_sin_seguimientos">
-    //     <h4 className="texto_mas_pequeño">Apellido</h4>
-    //     <input
-    //       name="num_doc"
-    //       onChange={(e) => {
-    //         console.log(e.target.name);
-    //       }}
-    //     />
-    //   </Row>
-    // ),
     name: "Apellido",
     selector: (row) => row.apellido,
     value: "apellido",
@@ -72,17 +39,6 @@ var columns = [
     isCheck: true,
   },
   {
-    // name: (
-    //   <Row className="center_tabla_sin_seguimientos">
-    //     <h4 className="texto_mas_pequeño">Documento</h4>
-    //     <input
-    //       name="num_doc"
-    //       onChange={(e) => {
-    //         console.log(e.target.name);
-    //       }}
-    //     />
-    //   </Row>
-    // ),
     name: "Documento",
     selector: (row) => row.num_doc,
     value: "num_doc",
@@ -151,7 +107,7 @@ const Reporte = () => {
         });
         setFiltered(response.data);
       } catch (error) {
-        console.log("no capto el dato");
+        // console.log("no capto el dato");
       }
     };
 
@@ -180,7 +136,7 @@ const Reporte = () => {
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
       } catch (error) {
-        console.log("no capto el dato");
+        // console.log("no capto el dato");
       }
     };
     riesgos_estudiante();
@@ -231,7 +187,7 @@ const Reporte = () => {
 
   const onSearch = (e) => {
     set_Search({ ...search, busqueda: e.target.value });
-    // console.log(search);
+    // // console.log(search);
   };
 
   const [columnas, set_columnas] = useState({ cabeceras: columns });
@@ -582,7 +538,7 @@ const Reporte = () => {
       //       <input
       //         name={item.name}
       //         onChange={(e) => {
-      //           console.log(e.target.name);
+      //           // console.log(e.target.name);
       //         }}
       //       />
       //     </Row>
@@ -611,14 +567,14 @@ const Reporte = () => {
   const [noResults, setNoResults] = useState(false);
 
   const handle_column_search = (e, selected) => {
-    console.log(e.target.name);
-    console.log("HOLASSS");
-    console.log(selected);
-    console.log(e.target.value);
+    // console.log(e.target.name);
+    // console.log("HOLASSS");
+    // console.log(selected);
+    // console.log(e.target.value);
 
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === "undefined") {
-      console.log("no hay nada");
+      // console.log("no hay nada");
       const data_filtered = state.estudiante;
       setFiltered(data_filtered);
     }
@@ -628,37 +584,37 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.tipo_doc.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Correo electrónico") {
-      // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.email.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Celular") {
-      // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.celular.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Dirección") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.dir_res.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -666,23 +622,23 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL POR FILTRO: ESTADOS
     if (e.target.name === "ASES") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.estado_ases.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Registro Académico") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.registro_academico
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -690,34 +646,34 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL POR FILTRO: ACADÉMICO
     if (e.target.name === "Código programa académico") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.id_programa.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Programa académico") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.programa_academico
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
-      console.log(filtered);
+      // // // console.log(filtered);
     }
     if (e.target.name === "Sede") {
-      console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.sede.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -725,37 +681,37 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL DE FILTRO: ASIGNACIONES
     if (e.target.name === "Profesional") {
-      console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.asignacion_profesional
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Practicante") {
-      console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.asignacion_practicante
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Monitor") {
-      console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.asignacion_monitores
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -763,59 +719,59 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL DE FILTRO: RIESGOS
     if (e.target.name === "Riesgo individual") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_individual
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo familiar") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_familiar.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo académico") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_academico
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo económico") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_economico
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo vida universitaria") {
-      console.log(state.estudiante);
+      // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_vida_universitaria_ciudad
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      console.log(data_filtered);
+      // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -825,35 +781,35 @@ const Reporte = () => {
     // BÚSQUEDA INDIVIDUAL DE FILTRO: CONDICIONES DE EXCEPCIÓN
     // Búsqueda de Condiciones de Excepción
     // if (e.target.name === "") {
-    //   console.log(state.estudiante);
+    //   // // console.log(state.estudiante);
     //   const data_filtered = filtered.filter((row) =>
     //     row.asignacion_monitores
     //       .toLowerCase()
     //       .includes(e.target.value.toLowerCase())
     //   );
-    //   console.log(data_filtered);
+    //   // // console.log(data_filtered);
     //   const filtered_data =
     //     data_filtered.length > 0 ? data_filtered : state.estudiante;
     //   setFiltered(filtered_data);
     // }
     // if (e.target.name === "") {
-    //   console.log(state.estudiante);
+    //   // // console.log(state.estudiante);
     //   const data_filtered = filtered.filter((row) =>
     //     row.asignacion_monitores
     //       .toLowerCase()
     //       .includes(e.target.value.toLowerCase())
     //   );
-    //   console.log(data_filtered);
+    //   // // console.log(data_filtered);
     //   const filtered_data =
     //     data_filtered.length > 0 ? data_filtered : state.estudiante;
     //   setFiltered(filtered_data);
     // }
 
-    console.log(filtered);
+    // // console.log(filtered);
   };
 
   const add_search_bar = (selected) => {
-    console.log(filtered);
+    // // console.log(filtered);
     const new_search_bar_data = [];
     new_search_bar_data.push({
       name: (
@@ -878,7 +834,7 @@ const Reporte = () => {
   };
 
   const cambiazo = (new_data) => {
-    console.log(filtered);
+    // // console.log(filtered);
     if (state == []) {
       setFiltered(state.estudiante);
     } else {
@@ -887,7 +843,7 @@ const Reporte = () => {
   };
 
   const handleChange = (e) => {
-    // console.log(columnaPrevia.cabeceras);
+    // // console.log(columnaPrevia.cabeceras);
 
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
@@ -926,7 +882,7 @@ const Reporte = () => {
     ) {
       seleccionado_contacto.isCheck = true;
       var searchable_columns = add_search_bar(seleccionado_contacto);
-      // console.log(new_psuh);
+      // // console.log(new_psuh);
       columns.push(searchable_columns[0]);
       csv_conversion(seleccionado_contacto);
       schema_push(seleccionado_contacto);
@@ -1228,7 +1184,7 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Contacto" &&
         e.target.checked === true
       ) {
-        console.log(seleccionado_cabeceras_filtros);
+        // console.log(seleccionado_cabeceras_filtros);
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("Tipo de documento")[0].checked = false;
         document.getElementsByName("Correo electrónico")[0].checked = false;
@@ -1246,11 +1202,11 @@ const Reporte = () => {
             columns[i].value === "celular" ||
             columns[i].value === "dir_res"
           ) {
-            console.log("HOLA");
+            // console.log("HOLA");
             columns[i].isCheck = false;
           }
         }
-        // console.log(columns);
+        // // console.log(columns);
         columns.map((item, index) => {
           if (
             (item.value === "tipo_doc" && item.isCheck === false) ||
@@ -1264,7 +1220,7 @@ const Reporte = () => {
 
         for (let i = 0; i < filtros_Contacto.length; i++) {
           const element = filtros_Contacto[i];
-          console.log(element);
+          // console.log(element);
           element.isCheck = true;
           var data_var = add_search_bar(element);
           columns.push(data_var[0]);
@@ -1275,7 +1231,7 @@ const Reporte = () => {
           csv_conversion(element);
           schema_push(element);
         }
-        console.log(columns);
+        // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Estados" &&
         e.target.checked === true
@@ -1316,7 +1272,7 @@ const Reporte = () => {
           csv_conversion(element);
           schema_push(element);
         }
-        // console.log(columns);
+        // // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Académico" &&
         e.target.checked === true
@@ -1607,15 +1563,15 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Contacto" &&
         e.target.checked === false
       ) {
-        console.log("WE'RE OVER HERE!");
-        console.log(columns);
+        // console.log("WE'RE OVER HERE!");
+        // console.log(columns);
         seleccionado_cabeceras_filtros.isCheck = false;
         document.getElementsByName("Tipo de documento")[0].checked = false;
         document.getElementsByName("Correo electrónico")[0].checked = false;
         document.getElementsByName("Celular")[0].checked = false;
         document.getElementsByName("Dirección")[0].checked = false;
 
-        console.log(columns);
+        // console.log(columns);
 
         for (let i = 0; i < columns.length; i++) {
           if (
@@ -1624,13 +1580,13 @@ const Reporte = () => {
             (columns[i].value === "celular" && columns[i].isCheck === true) ||
             (columns[i].value === "dir_res" && columns[i].isCheck === true)
           ) {
-            console.log("is HeRe!!");
+            // console.log("is HeRe!!");
             columns[i].isCheck = false;
             // columns.splice(i, 1);
           }
         }
-        console.log(columns);
-        console.log("IS DEAD THSI SH**");
+        // console.log(columns);
+        // console.log("IS DEAD THSI SH**");
 
         columns.map((item, index) => {
           if (
@@ -1650,8 +1606,8 @@ const Reporte = () => {
           schema_pop(element);
         }
 
-        console.log("After Unselect All");
-        console.log(columns);
+        // console.log("After Unselect All");
+        // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Estados" &&
         e.target.checked === false
@@ -1683,7 +1639,7 @@ const Reporte = () => {
           schema_pop(element);
         }
 
-        // console.log(columns);
+        // // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Académico" &&
         e.target.checked === false
@@ -1950,33 +1906,6 @@ const Reporte = () => {
 
   let navigate = useNavigate();
 
-  // const Filtering = () => {
-  //   const [filterText, setFilterText] = React.useState("");
-  //   const [resetPaginationToggle, setResetPaginationToggle] =
-  //     React.useState(false);
-  //   const filteredItems = fakeUsers.filter(
-  //     (item) =>
-  //       item.name && item.name.toLowerCase().includes(filterText.toLowerCase())
-  //   );
-
-  //   const subHeaderComponentMemo = React.useMemo(() => {
-  //     const handleClear = () => {
-  //       if (filterText) {
-  //         setResetPaginationToggle(!resetPaginationToggle);
-  //         setFilterText("");
-  //       }
-  //     };
-
-  //     return (
-  //       <FilterComponent
-  //         onFilter={(e) => setFilterText(e.target.value)}
-  //         onClear={handleClear}
-  //         filterText={filterText}
-  //       />
-  //     );
-  //   }, [filterText, resetPaginationToggle]);
-  // };
-
   const filterBox = () => {
     return (
       <>
@@ -2012,7 +1941,7 @@ const Reporte = () => {
     );
   };
 
-  // console.log(proc_link_estudiante(state.estudiante));
+  // // console.log(proc_link_estudiante(state.estudiante));
 
   return (
     <>
@@ -2205,7 +2134,7 @@ const Reporte = () => {
               onRowClicked={(row) => {
                 // redirect(`/ficha_estudiante/${row.id}`);
                 navigate(`/ficha_estudiante/${row.id}`);
-                // console.log(row);
+                // // console.log(row);
               }}
               responsive
               striped
