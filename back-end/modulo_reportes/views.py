@@ -1833,7 +1833,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         "p_d": '',
                         "v_c": '',
                         "a_r": '',
-                        "n_a": 'N/A',
+                        "n_a": '',
                     }
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **

@@ -205,7 +205,7 @@ const Reporte = () => {
     if (
       item.name === "Código univalle" ||
       // item.name === "Celular" ||
-      item.name === "Código programa académico" 
+      item.name === "Código programa académico"
       // ||
       // item.name === "Promedio acumulado" ||
       // item.name === "Riesgo geográfico"
@@ -610,14 +610,20 @@ const Reporte = () => {
   const [filtered, setFiltered] = useState(state.estudiante);
   const [noResults, setNoResults] = useState(false);
 
-  const handle_column_search = (e) => {
+  const handle_column_search = (e, selected) => {
     console.log(e.target.name);
+    console.log("HOLASSS");
+    console.log(selected);
     console.log(e.target.value);
+
+    // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === "undefined") {
       console.log("no hay nada");
       const data_filtered = state.estudiante;
       setFiltered(data_filtered);
     }
+
+    // BÚSQUEDA INDIVIDUAL POR FILTRO: CONTACTO
     if (e.target.name === "Tipo documento") {
       const data_filtered = filtered.filter((row) =>
         row.tipo_doc.toLowerCase().includes(e.target.value.toLowerCase())
@@ -657,6 +663,192 @@ const Reporte = () => {
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
+
+    // BÚSQUEDA INDIVIDUAL POR FILTRO: ESTADOS
+    if (e.target.name === "ASES") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.estado_ases.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Registro Académico") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.registro_academico
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+
+    // BÚSQUEDA INDIVIDUAL POR FILTRO: ACADÉMICO
+    if (e.target.name === "Código programa académico") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.id_programa.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Programa académico") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.programa_academico
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+      console.log(filtered);
+    }
+    if (e.target.name === "Sede") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.sede.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+
+    // BÚSQUEDA INDIVIDUAL DE FILTRO: ASIGNACIONES
+    if (e.target.name === "Profesional") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.asignacion_profesional
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Practicante") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.asignacion_practicante
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Monitor") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.asignacion_monitores
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+
+    // BÚSQUEDA INDIVIDUAL DE FILTRO: RIESGOS
+    if (e.target.name === "Riesgo individual") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.riesgo_individual
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Riesgo familiar") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.riesgo_familiar.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Riesgo académico") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.riesgo_academico
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Riesgo económico") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.riesgo_economico
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Riesgo vida universitaria") {
+      console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.riesgo_vida_universitaria_ciudad
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+
+    // EN CASO DE QUÉ SE NECESITE
+    // BÚSQUEDA INDIVIDUAL DE FILTRO: CONDICIONES DE EXCEPCIÓN
+    // Búsqueda de Condiciones de Excepción
+    // if (e.target.name === "") {
+    //   console.log(state.estudiante);
+    //   const data_filtered = filtered.filter((row) =>
+    //     row.asignacion_monitores
+    //       .toLowerCase()
+    //       .includes(e.target.value.toLowerCase())
+    //   );
+    //   console.log(data_filtered);
+    //   const filtered_data =
+    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
+    //   setFiltered(filtered_data);
+    // }
+    // if (e.target.name === "") {
+    //   console.log(state.estudiante);
+    //   const data_filtered = filtered.filter((row) =>
+    //     row.asignacion_monitores
+    //       .toLowerCase()
+    //       .includes(e.target.value.toLowerCase())
+    //   );
+    //   console.log(data_filtered);
+    //   const filtered_data =
+    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
+    //   setFiltered(filtered_data);
+    // }
+
     console.log(filtered);
   };
 
@@ -671,7 +863,7 @@ const Reporte = () => {
             name={selected.name}
             internal_name={selected.value}
             onChange={(e) => {
-              handle_column_search(e);
+              handle_column_search(e, selected);
             }}
           />
         </Row>
@@ -733,9 +925,9 @@ const Reporte = () => {
       (seleccionado_contacto.name === "Dirección" && e.target.checked === true)
     ) {
       seleccionado_contacto.isCheck = true;
-      var new_psuh = add_search_bar(seleccionado_contacto);
+      var searchable_columns = add_search_bar(seleccionado_contacto);
       // console.log(new_psuh);
-      columns.push(new_psuh[0]);
+      columns.push(searchable_columns[0]);
       csv_conversion(seleccionado_contacto);
       schema_push(seleccionado_contacto);
     } else if (
@@ -769,7 +961,8 @@ const Reporte = () => {
         e.target.checked === true)
     ) {
       seleccionado_estados.isCheck = true;
-      columns.push(seleccionado_estados);
+      var searchable_columns = add_search_bar(seleccionado_estados);
+      columns.push(searchable_columns[0]);
       csv_conversion(seleccionado_estados);
       schema_push(seleccionado_estados);
     } else if (
@@ -780,7 +973,7 @@ const Reporte = () => {
       seleccionado_estados.isCheck = false;
       document.getElementsByName("Estados")[0].checked = false;
       columns.map((item, index) => {
-        if (item.name === seleccionado_estados.name) {
+        if (item.value === seleccionado_estados.value) {
           columns.splice(index, 1);
         }
       });
@@ -805,7 +998,8 @@ const Reporte = () => {
         e.target.checked === true)
     ) {
       seleccionado_academico.isCheck = true;
-      columns.push(seleccionado_academico);
+      var searchable_columns = add_search_bar(seleccionado_academico);
+      columns.push(searchable_columns[0]);
       csv_conversion(seleccionado_academico);
       schema_push(seleccionado_academico);
     } else if (
@@ -824,7 +1018,7 @@ const Reporte = () => {
       seleccionado_academico.isCheck = false;
       document.getElementsByName("Académico")[0].checked = false;
       columns.map((item, index) => {
-        if (item.name === seleccionado_academico.name) {
+        if (item.value === seleccionado_academico.value) {
           columns.splice(index, 1);
         }
       });
@@ -844,7 +1038,8 @@ const Reporte = () => {
         e.target.checked === true)
     ) {
       seleccionado_asignaciones.isCheck = true;
-      columns.push(seleccionado_asignaciones);
+      var searchable_columns = add_search_bar(seleccionado_asignaciones);
+      columns.push(searchable_columns[0]);
       csv_conversion(seleccionado_asignaciones);
       schema_push(seleccionado_asignaciones);
     } else if (
@@ -858,7 +1053,7 @@ const Reporte = () => {
       seleccionado_asignaciones.isCheck = false;
       document.getElementsByName("Asignaciones")[0].checked = false;
       columns.map((item, index) => {
-        if (item.name === seleccionado_asignaciones.name) {
+        if (item.value === seleccionado_asignaciones.value) {
           columns.splice(index, 1);
         }
       });
@@ -879,13 +1074,14 @@ const Reporte = () => {
       (seleccionado_riesgos.name === "Riesgo económico" &&
         e.target.checked === true) ||
       (seleccionado_riesgos.name === "Riesgo vida universitaria" &&
-        e.target.checked === true) 
+        e.target.checked === true)
       // ||
       // (seleccionado_riesgos.name === "Riesgo geográfico" &&
       //   e.target.checked === true)
     ) {
       seleccionado_riesgos.isCheck = true;
-      columns.push(seleccionado_riesgos);
+      var searchable_columns = add_search_bar(seleccionado_riesgos);
+      columns.push(searchable_columns[0]);
       csv_conversion(seleccionado_riesgos);
       schema_push(seleccionado_riesgos);
     } else if (
@@ -899,14 +1095,14 @@ const Reporte = () => {
         e.target.checked === false) ||
       (seleccionado_riesgos.name === "Riesgo vida universitaria" &&
         e.target.checked === false)
-        //  ||
+      //  ||
       // (seleccionado_riesgos.name === "Riesgo geográfico" &&
       //   e.target.checked === false)
     ) {
       seleccionado_riesgos.isCheck = false;
       document.getElementsByName("Riesgos")[0].checked = false;
       columns.map((item, index) => {
-        if (item.name === seleccionado_riesgos.name) {
+        if (item.value === seleccionado_riesgos.value) {
           columns.splice(index, 1);
         }
       });
@@ -1010,7 +1206,7 @@ const Reporte = () => {
     }
 
     // **
-    // condiciones para cabeceras de filtros
+    // Condiciones para cabeceras de filtros
     // **
 
     if (seleccionado_cabeceras_filtros === undefined) {
@@ -1092,16 +1288,16 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "ASES" ||
-            columns[i].name === "Registro Académico"
+            columns[i].value === "estado_ases" ||
+            columns[i].value === "registro_academico"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.name === "ASES" && item.isCheck === false) ||
-            (item.name === "Registro Académico" && item.isCheck === false)
+            (item.value === "estado_ases" && item.isCheck === false) ||
+            (item.value === "registro_academico" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1110,7 +1306,9 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Estados.length; i++) {
           const element = filtros_Estados[i];
           element.isCheck = true;
-          columns.push(element);
+          var data_var = add_search_bar(element);
+          columns.push(data_var[0]);
+          // columns.push(element);
         }
 
         for (let i = 0; i < filtros_Estados.length; i++) {
@@ -1143,25 +1341,26 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "Código programa académico" ||
-            columns[i].name === "Programa académico" ||
-            columns[i].name === "Sede" ||
-            columns[i].name === "Promedio acumulado" ||
-            columns[i].name === "Estimulos" ||
-            columns[i].name === "Bajo rendimiento"
+            columns[i].value === "id_programa" ||
+            columns[i].value === "programa_academico" ||
+            columns[i].value === "sede"
+            //  ||
+            // columns[i].value === "Promedio acumulado" ||
+            // columns[i].value === "Estimulos" ||
+            // columns[i].value === "Bajo rendimiento"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.name === "Código programa académico" &&
-              item.isCheck === false) ||
-            (item.name === "Programa académico" && item.isCheck === false) ||
-            (item.name === "Sede" && item.isCheck === false) ||
-            (item.name === "Promedio acumulado" && item.isCheck === false) ||
-            (item.name === "Estimulos" && item.isCheck === false) ||
-            (item.name === "Bajo rendimiento" && item.isCheck === false)
+            (item.value === "id_programa" && item.isCheck === false) ||
+            (item.value === "programa_academico" && item.isCheck === false) ||
+            (item.value === "sede" && item.isCheck === false)
+            // ||
+            // (item.name === "Promedio acumulado" && item.isCheck === false) ||
+            // (item.name === "Estimulos" && item.isCheck === false) ||
+            // (item.name === "Bajo rendimiento" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1170,7 +1369,9 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Academico.length; i++) {
           const element = filtros_Academico[i];
           element.isCheck = true;
-          columns.push(element);
+          var data_var = add_search_bar(element);
+          columns.push(data_var[0]);
+          // columns.push(element);
         }
 
         for (let i = 0; i < filtros_Academico.length; i++) {
@@ -1192,18 +1393,20 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "Profesional" ||
-            columns[i].name === "Practicante" ||
-            columns[i].name === "Monitor"
+            columns[i].value === "asignacion_profesional" ||
+            columns[i].value === "asignacion_practicante" ||
+            columns[i].value === "asignacion_monitores"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.name === "Profesional" && item.isCheck === false) ||
-            (item.name === "Practicante" && item.isCheck === false) ||
-            (item.name === "Monitor" && item.isCheck === false)
+            (item.value === "asignacion_profesional" &&
+              item.isCheck === false) ||
+            (item.value === "asignacion_practicante" &&
+              item.isCheck === false) ||
+            (item.value === "asignacion_monitores" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1212,7 +1415,9 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Asignaciones.length; i++) {
           const element = filtros_Asignaciones[i];
           element.isCheck = true;
-          columns.push(element);
+          var data_var = add_search_bar(element);
+          columns.push(data_var[0]);
+          // columns.push(element);
         }
 
         for (let i = 0; i < filtros_Asignaciones.length; i++) {
@@ -1244,11 +1449,11 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "Riesgo individual" ||
-            columns[i].name === "Riesgo familiar" ||
-            columns[i].name === "Riesgo académico" ||
-            columns[i].name === "Riesgo económico" ||
-            columns[i].name === "Riesgo vida universitaria" 
+            columns[i].value === "riesgo_individuall" ||
+            columns[i].value === "riesgo_familiar" ||
+            columns[i].value === "riesgo_academico" ||
+            columns[i].value === "riesgo_economico" ||
+            columns[i].value === "riesgo_vida_universitaria_ciudad"
             // ||
             // columns[i].name === "Riesgo geográfico"
           ) {
@@ -1257,13 +1462,13 @@ const Reporte = () => {
         }
         columns.map((item, index) => {
           if (
-            (item.name === "Riesgo individual" && item.isCheck === false) ||
-            (item.name === "Riesgo familiar" && item.isCheck === false) ||
-            (item.name === "Riesgo académico" && item.isCheck === false) ||
-            (item.name === "Riesgo económico" && item.isCheck === false) ||
-            (item.name === "Riesgo vida universitaria" &&
-              item.isCheck === false) 
-              // ||
+            (item.value === "riesgo_individuall" && item.isCheck === false) ||
+            (item.value === "riesgo_familiar" && item.isCheck === false) ||
+            (item.value === "riesgo_academico" && item.isCheck === false) ||
+            (item.value === "riesgo_economico" && item.isCheck === false) ||
+            (item.value === "riesgo_vida_universitaria_ciudad" &&
+              item.isCheck === false)
+            // ||
             // (item.name === "Riesgo geográfico" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
@@ -1273,7 +1478,9 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Riesgos.length; i++) {
           const element = filtros_Riesgos[i];
           element.isCheck = true;
-          columns.push(element);
+          var data_var = add_search_bar(element);
+          columns.push(data_var[0]);
+          // columns.push(element);
         }
 
         for (let i = 0; i < filtros_Riesgos.length; i++) {
@@ -1315,38 +1522,38 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "I.N" ||
-            columns[i].name === "M.A.P" ||
-            columns[i].name === "C.A" ||
-            columns[i].name === "C.A.C" ||
-            columns[i].name === "C.U" ||
-            columns[i].name === "P.R" ||
-            columns[i].name === "M.P.M" ||
-            columns[i].name === "D.N.I" ||
-            columns[i].name === "M.D.P" ||
-            columns[i].name === "P.D" ||
-            columns[i].name === "V.C" ||
-            columns[i].name === "A.R" ||
-            columns[i].name === "n/a"
+            columns[i].value === "i_n" ||
+            columns[i].value === "m_a_p" ||
+            columns[i].value === "c_a" ||
+            columns[i].value === "c_a_c" ||
+            columns[i].value === "c_u" ||
+            columns[i].value === "p_r" ||
+            columns[i].value === "m_p_m" ||
+            columns[i].value === "d_n_i" ||
+            columns[i].value === "m_d_p" ||
+            columns[i].value === "p_d" ||
+            columns[i].value === "v_c" ||
+            columns[i].value === "a_r" ||
+            columns[i].value === "n_a"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.name === "I.N" && item.isCheck === false) ||
-            (item.name === "M.A.P" && item.isCheck === false) ||
-            (item.name === "C.A" && item.isCheck === false) ||
-            (item.name === "C.A.C" && item.isCheck === false) ||
-            (item.name === "C.U" && item.isCheck === false) ||
-            (item.name === "P.R" && item.isCheck === false) ||
-            (item.name === "M.P.M" && item.isCheck === false) ||
-            (item.name === "D.N.I" && item.isCheck === false) ||
-            (item.name === "M.D.P" && item.isCheck === false) ||
-            (item.name === "P.D" && item.isCheck === false) ||
-            (item.name === "V.C" && item.isCheck === false) ||
-            (item.name === "A.R" && item.isCheck === false) ||
-            (item.name === "n/a" && item.isCheck === false)
+            (item.value === "i_n" && item.isCheck === false) ||
+            (item.value === "m_a_p" && item.isCheck === false) ||
+            (item.value === "c_a" && item.isCheck === false) ||
+            (item.value === "c_a_c" && item.isCheck === false) ||
+            (item.value === "c_u" && item.isCheck === false) ||
+            (item.value === "p_r" && item.isCheck === false) ||
+            (item.value === "m_p_m" && item.isCheck === false) ||
+            (item.value === "d_n_i" && item.isCheck === false) ||
+            (item.value === "m_d_p" && item.isCheck === false) ||
+            (item.value === "p_d" && item.isCheck === false) ||
+            (item.value === "v_c" && item.isCheck === false) ||
+            (item.value === "a_r" && item.isCheck === false) ||
+            (item.value === "n_a" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1355,12 +1562,16 @@ const Reporte = () => {
         for (let i = 0; i < filtros_Condicion_Excepcion.length; i++) {
           const element = filtros_Condicion_Excepcion[i];
           element.isCheck = true;
-          columns.push(element);
+          var data_var = add_search_bar(element);
+          columns.push(data_var[0]);
+          // columns.push(element);
         }
         for (let i = 0; i < filtros_Condicion_Excepcion_2.length; i++) {
           const element = filtros_Condicion_Excepcion_2[i];
           element.isCheck = true;
-          columns.push(element);
+          var data_var = add_search_bar(element);
+          columns.push(data_var[0]);
+          // columns.push(element);
         }
 
         for (let i = 0; i < filtros_Condicion_Excepcion.length; i++) {
@@ -1375,6 +1586,9 @@ const Reporte = () => {
           schema_push(element);
         }
       }
+      // **
+      //    Bloque de eliminación de la tabla
+      // **
     } else if (
       (seleccionado_cabeceras_filtros.name === "Contacto" &&
         e.target.checked === false) ||
@@ -1448,16 +1662,16 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "ASES" ||
-            columns[i].name === "Registro Académico"
+            columns[i].value === "estado_ases" ||
+            columns[i].value === "registro_academico"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.name === "ASES" && item.isCheck === false) ||
-            (item.name === "Registro Académico" && item.isCheck === false)
+            (item.value === "estado_ases" && item.isCheck === false) ||
+            (item.value === "registro_academico" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1486,25 +1700,26 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "Código programa académico" ||
-            columns[i].name === "Programa académico" ||
-            columns[i].name === "Sede" ||
-            columns[i].name === "Promedio acumulado" ||
-            columns[i].name === "Estimulos" ||
-            columns[i].name === "Bajo rendimiento"
+            columns[i].value === "id_programa" ||
+            columns[i].value === "programa_academico" ||
+            columns[i].value === "sede"
+            // ||
+            // columns[i].value === "" ||
+            // columns[i].value === "" ||
+            // columns[i].value === ""
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.name === "Código programa académico" &&
-              item.isCheck === false) ||
-            (item.name === "Programa académico" && item.isCheck === false) ||
-            (item.name === "Sede" && item.isCheck === false) ||
-            (item.name === "Promedio acumulado" && item.isCheck === false) ||
-            (item.name === "Estimulos" && item.isCheck === false) ||
-            (item.name === "Bajo rendimiento" && item.isCheck === false)
+            (item.value === "id_programa" && item.isCheck === false) ||
+            (item.value === "programa_academico" && item.isCheck === false) ||
+            (item.value === "sede" && item.isCheck === false)
+            //  ||
+            // (item.value === "" && item.isCheck === false) ||
+            // (item.value === "" && item.isCheck === false) ||
+            // (item.value === "" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1526,18 +1741,20 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "Profesional" ||
-            columns[i].name === "Practicante" ||
-            columns[i].name === "Monitor"
+            columns[i].value === "asignacion_profesional" ||
+            columns[i].value === "asignacion_practicante" ||
+            columns[i].value === "asignacion_monitores"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.name === "Profesional" && item.isCheck === false) ||
-            (item.name === "Practicante" && item.isCheck === false) ||
-            (item.name === "Monitor" && item.isCheck === false)
+            (item.value === "asignacion_profesional" &&
+              item.isCheck === false) ||
+            (item.value === "asignacion_practicante" &&
+              item.isCheck === false) ||
+            (item.value === "asignacion_monitores" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1564,11 +1781,11 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "Riesgo individual" ||
-            columns[i].name === "Riesgo familiar" ||
-            columns[i].name === "Riesgo académico" ||
-            columns[i].name === "Riesgo económico" ||
-            columns[i].name === "Riesgo vida universitaria" 
+            columns[i].value === "riesgo_individual" ||
+            columns[i].value === "riesgo_familiar" ||
+            columns[i].value === "riesgo_academico" ||
+            columns[i].value === "riesgo_economico" ||
+            columns[i].value === "riesgo_vida_universitaria_ciudad"
             // ||
             // columns[i].name === "Riesgo geográfico"
           ) {
@@ -1577,13 +1794,13 @@ const Reporte = () => {
         }
         columns.map((item, index) => {
           if (
-            (item.name === "Riesgo individual" && item.isCheck === false) ||
-            (item.name === "Riesgo familiar" && item.isCheck === false) ||
-            (item.name === "Riesgo académico" && item.isCheck === false) ||
-            (item.name === "Riesgo económico" && item.isCheck === false) ||
-            (item.name === "Riesgo vida universitaria" &&
-              item.isCheck === false) 
-              // ||
+            (item.value === "riesgo_individual" && item.isCheck === false) ||
+            (item.value === "riesgo_familiar" && item.isCheck === false) ||
+            (item.value === "riesgo_academico" && item.isCheck === false) ||
+            (item.value === "riesgo_economico" && item.isCheck === false) ||
+            (item.value === "riesgo_vida_universitaria_ciudad" &&
+              item.isCheck === false)
+            // ||
             // (item.name === "Riesgo geográfico" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
@@ -1616,38 +1833,38 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].name === "I.N" ||
-            columns[i].name === "M.A.P" ||
-            columns[i].name === "C.A" ||
-            columns[i].name === "C.A.C" ||
-            columns[i].name === "C.U" ||
-            columns[i].name === "P.R" ||
-            columns[i].name === "M.P.M" ||
-            columns[i].name === "D.N.I" ||
-            columns[i].name === "M.D.P" ||
-            columns[i].name === "P.D" ||
-            columns[i].name === "V.C" ||
-            columns[i].name === "A.R" ||
-            columns[i].name === "n/a"
+            columns[i].value === "i_n" ||
+            columns[i].value === "m_a_p" ||
+            columns[i].value === "c_a" ||
+            columns[i].value === "c_a_c" ||
+            columns[i].value === "c_u" ||
+            columns[i].value === "p_r" ||
+            columns[i].value === "m_p_m" ||
+            columns[i].value === "d_n_i" ||
+            columns[i].value === "m_d_p" ||
+            columns[i].value === "p_d" ||
+            columns[i].value === "v_c" ||
+            columns[i].value === "a_r" ||
+            columns[i].value === "n_a"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.name === "I.N" && item.isCheck === false) ||
-            (item.name === "M.A.P" && item.isCheck === false) ||
-            (item.name === "C.A" && item.isCheck === false) ||
-            (item.name === "C.A.C" && item.isCheck === false) ||
-            (item.name === "C.U" && item.isCheck === false) ||
-            (item.name === "P.R" && item.isCheck === false) ||
-            (item.name === "M.P.M" && item.isCheck === false) ||
-            (item.name === "D.N.I" && item.isCheck === false) ||
-            (item.name === "M.D.P" && item.isCheck === false) ||
-            (item.name === "P.D" && item.isCheck === false) ||
-            (item.name === "V.C" && item.isCheck === false) ||
-            (item.name === "A.R" && item.isCheck === false) ||
-            (item.name === "n/a" && item.isCheck === false)
+            (item.value === "i_n" && item.isCheck === false) ||
+            (item.value === "m_a_p" && item.isCheck === false) ||
+            (item.value === "c_a" && item.isCheck === false) ||
+            (item.value === "c_a_c" && item.isCheck === false) ||
+            (item.value === "c_u" && item.isCheck === false) ||
+            (item.value === "p_r" && item.isCheck === false) ||
+            (item.value === "m_p_m" && item.isCheck === false) ||
+            (item.value === "d_n_i" && item.isCheck === false) ||
+            (item.value === "m_d_p" && item.isCheck === false) ||
+            (item.value === "p_d" && item.isCheck === false) ||
+            (item.value === "v_c" && item.isCheck === false) ||
+            (item.value === "a_r" && item.isCheck === false) ||
+            (item.value === "n_a" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
