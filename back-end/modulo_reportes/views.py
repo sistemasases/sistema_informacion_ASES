@@ -138,7 +138,22 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
         elif data_usuario_rol == "vcd_academico":
 
             list_estudiantes = []
+            # usuario = usuario_rol.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = "ACTIVO").values()
+            # # prueba_estudiante = estudiante.objects.filter(id_estudiante_in_programa_estudiante__id_in_programa__id_in_facultad__id_facultad_in_vcd_academico__id_in = usuario).distinct()
+            # vc_decano = vcd_academico.objects.filter(id_usuario_rol = usuario[0]['id']).values()
+            # # print(vc_decano)
+            # facultad_decano = facultad.objects.filter(id = vc_decano[0]['id_facultad_id']).values()
+            # # print(facultad_decano)
+            # programa_decano = programa.objects.filter(id_facultad = facultad_decano[0]['id']).values()
+            # # print(programa_decano)
+            # for obj_programa in programa_decano:
+            #     for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
+            #         for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
+            #             serializer_estudiante = estudiante_serializer(
+            #                 obj_estudiantes)
+            #             list_estudiantes.append(serializer_estudiante.data)
             
+            # 791 estudiantes
             for obj_usuario_rol in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
                 for obj_vcd_academico in vcd_academico.objects.filter(id_usuario_rol=obj_usuario_rol['id']).values():
                     for obj_facultad in facultad.objects.filter(id=obj_vcd_academico['id_facultad_id']).values():
@@ -147,7 +162,8 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
                                 for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
                                     serializer_estudiante = estudiante_serializer(
                                         obj_estudiantes)
-                                    list_estudiantes.append(serializer_estudiante.data)
+                                    list_estudiantes.append(
+                                        serializer_estudiante.data)
 
             return Response(list_estudiantes)
 
@@ -1223,7 +1239,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                             serializer_estudiante = estudiante_serializer(
                                 obj_estudiantes)
                             list_estudiantes.append(serializer_estudiante.data)
-                            
+
                         # serialized_estudiantes = estudiante_serializer(obj_estudiantes, many=True)
 
             # Añadiendo datos de consultas externas a los estudiantes
@@ -1268,7 +1284,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     # Solo printea aquellos cuyo traker es True
                     # VERIFICAR EN DB: SELECT * FROM modulo_programa_programa_estudiante where id_estudiante_id = 21702
                     programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id'], traker = True).first()
+                        id_estudiante=i['id'], traker=True).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
                     # print(programa_del_estudiante)
@@ -1447,7 +1463,8 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                                 for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
                                     serializer_estudiante = estudiante_serializer(
                                         obj_estudiantes)
-                                    list_estudiantes.append(serializer_estudiante.data)
+                                    list_estudiantes.append(
+                                        serializer_estudiante.data)
 
             for i in list_estudiantes:
                 # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
@@ -1482,7 +1499,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
                 try:
                     programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
+                        id_estudiante=i['id'], traker=True).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
                     # print(programa_del_estudiante)
