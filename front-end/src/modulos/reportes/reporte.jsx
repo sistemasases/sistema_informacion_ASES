@@ -1714,19 +1714,12 @@ const Reporte = () => {
         columns.map((item, index) => {
           if (item.value === "condicion_excepcion" && item.isCheck === false) {
             columns.splice(index, 1);
+            console.log("HOLA?");
           }
         });
 
-        for (
-          let i = 0;
-          i < seleccionado_condiciones_excepcion_prueba.length;
-          i++
-        ) {
-          seleccionado_condiciones_excepcion_prueba[i].isCheck = false;
-          const element = seleccionado_condiciones_excepcion_prueba[i];
-          csv_pop(element);
-          schema_pop(element);
-        }
+        csv_pop(element);
+        schema_pop(element);
       }
     }
 
