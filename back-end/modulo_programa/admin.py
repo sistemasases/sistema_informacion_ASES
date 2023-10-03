@@ -3,9 +3,11 @@ from modulo_programa.models import *
 
 class programa_admin(admin.ModelAdmin):
     list_display = ('id','codigo_univalle', 'nombre', 'jornada','id_sede') 
+    search_fields = ('id','codigo_univalle', 'nombre', 'jornada') 
 
 class programa_estudiante_admin(admin.ModelAdmin):
     list_display = ('id','obtener_programa', 'obtener_estudiante') 
+    list_filter = ('id', 'id_programa','id_estudiante')
 
     def obtener_programa(self, obj):
         return obj.id_programa.codigo_univalle
