@@ -152,7 +152,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             #             serializer_estudiante = estudiante_serializer(
             #                 obj_estudiantes)
             #             list_estudiantes.append(serializer_estudiante.data)
-            
+
             # 791 estudiantes
             for obj_usuario_rol in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
                 for obj_vcd_academico in vcd_academico.objects.filter(id_usuario_rol=obj_usuario_rol['id']).values():
@@ -333,73 +333,15 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     # pass
 
                 try:
-
                     var_excepcion = cond_excepcion.objects.filter(
                         id=i['id_cond_excepcion']).values()
-
-                    # TRY #2
-
+                    # one Column
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "P.D": '',
-                        "P.D": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
+                        "condicion_excepcion": var_excepcion[0]['alias']
                     }
-
-                    if var_excepcion[0]['alias'] == "I.N":
-                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.A.P":
-                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A":
-                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A.C":
-                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.U":
-                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.R":
-                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.P.M":
-                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "D.N.I":
-                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.D.P":
-                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.D":
-                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "V.C":
-                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "A.R":
-                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "N/A":
-                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
-                    # else:
-                    #     pass
-
                 except:
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "p_d": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": 'N/A',
+                        "condicion_excepcion": ''
                     }
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **
@@ -531,73 +473,15 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     # pass
 
                 try:
-
                     var_excepcion = cond_excepcion.objects.filter(
                         id=i['id_cond_excepcion']).values()
-
-                    # TRY #2
-
+                    # one Column
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "P.D": '',
-                        "P.D": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
+                        "condicion_excepcion": var_excepcion[0]['alias']
                     }
-
-                    if var_excepcion[0]['alias'] == "I.N":
-                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.A.P":
-                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A":
-                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A.C":
-                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.U":
-                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.R":
-                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.P.M":
-                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "D.N.I":
-                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.D.P":
-                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.D":
-                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "V.C":
-                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "A.R":
-                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "N/A":
-                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
-                    # else:
-                    #     pass
-
                 except:
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "p_d": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": 'N/A',
+                        "condicion_excepcion": ''
                     }
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **
@@ -731,74 +615,15 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 # print(riesgo)
 
                 try:
-
-                    # print(cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
                     var_excepcion = cond_excepcion.objects.filter(
                         id=i['id_cond_excepcion']).values()
-
-                    # TRY #2
-
+                    # one Column
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "P.D": '',
-                        "P.D": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
+                        "condicion_excepcion": var_excepcion[0]['alias']
                     }
-
-                    if var_excepcion[0]['alias'] == "I.N":
-                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.A.P":
-                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A":
-                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A.C":
-                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.U":
-                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.R":
-                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.P.M":
-                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "D.N.I":
-                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.D.P":
-                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.D":
-                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "V.C":
-                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "A.R":
-                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "N/A":
-                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
-                    # else:
-                    #     pass
-
                 except:
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "p_d": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": 'N/A',
+                        "condicion_excepcion": ''
                     }
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **
@@ -1368,74 +1193,15 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 # print(riesgo)
 
                 try:
-
-                    # print(cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
                     var_excepcion = cond_excepcion.objects.filter(
                         id=i['id_cond_excepcion']).values()
-
-                    # TRY #2
-
+                    # one Column
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "P.D": '',
-                        "P.D": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
+                        "condicion_excepcion": var_excepcion[0]['alias']
                     }
-
-                    if var_excepcion[0]['alias'] == "I.N":
-                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.A.P":
-                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A":
-                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A.C":
-                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.U":
-                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.R":
-                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.P.M":
-                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "D.N.I":
-                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.D.P":
-                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.D":
-                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "V.C":
-                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "A.R":
-                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "N/A":
-                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
-                    # else:
-                    #     pass
-
                 except:
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "p_d": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": 'N/A',
+                        "condicion_excepcion": ''
                     }
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **
@@ -1583,74 +1349,15 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 # print(riesgo)
 
                 try:
-
-                    # print(cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
                     var_excepcion = cond_excepcion.objects.filter(
                         id=i['id_cond_excepcion']).values()
-
-                    # TRY #2
-
+                    # one Column
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "P.D": '',
-                        "P.D": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
+                        "condicion_excepcion": var_excepcion[0]['alias']
                     }
-
-                    if var_excepcion[0]['alias'] == "I.N":
-                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.A.P":
-                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A":
-                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A.C":
-                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.U":
-                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.R":
-                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.P.M":
-                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "D.N.I":
-                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.D.P":
-                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.D":
-                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "V.C":
-                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "A.R":
-                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "N/A":
-                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
-                    # else:
-                    #     pass
-
                 except:
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "p_d": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": 'N/A',
+                        "condicion_excepcion": ''
                     }
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **
@@ -1783,74 +1490,15 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 # print(riesgo)
 
                 try:
-
-                    # print(cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
                     var_excepcion = cond_excepcion.objects.filter(
                         id=i['id_cond_excepcion']).values()
-
-                    # TRY #2
-
+                    # one Column
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "P.D": '',
-                        "P.D": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
+                        "condicion_excepcion": var_excepcion[0]['alias']
                     }
-
-                    if var_excepcion[0]['alias'] == "I.N":
-                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.A.P":
-                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A":
-                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A.C":
-                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.U":
-                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.R":
-                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.P.M":
-                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "D.N.I":
-                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.D.P":
-                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.D":
-                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "V.C":
-                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "A.R":
-                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "N/A":
-                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
-                    # else:
-                    #     pass
-
                 except:
                     dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "p_d": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
+                        "condicion_excepcion": ''
                     }
 
                 data = dict(i, **riesgo, **dic_programa, **dic_estados, **

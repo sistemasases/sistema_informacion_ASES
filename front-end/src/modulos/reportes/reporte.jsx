@@ -107,7 +107,7 @@ const Reporte = () => {
         });
         setFiltered(response.data);
       } catch (error) {
-        // console.log("no capto el dato");
+        // // console.log("no capto el dato");
       }
     };
 
@@ -136,7 +136,7 @@ const Reporte = () => {
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
       } catch (error) {
-        // console.log("no capto el dato");
+        // // console.log("no capto el dato");
       }
     };
     riesgos_estudiante();
@@ -187,7 +187,7 @@ const Reporte = () => {
 
   const onSearch = (e) => {
     set_Search({ ...search, busqueda: e.target.value });
-    // // console.log(search);
+    // // // console.log(search);
   };
 
   const [columnas, set_columnas] = useState({ cabeceras: columns });
@@ -364,167 +364,177 @@ const Reporte = () => {
     // },
   ];
 
-  const filtros_Condicion_Excepcion = [
-    {
-      name: "I.N",
-      value: "i_n",
-      selector: (row) => row.i_n,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "M.A.P",
-      value: "m_a_p",
-      selector: (row) => row.m_a_p,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-      padding: "0px 0px 0px 0px",
-      margin: "0px 0px 0px 0px",
-    },
-    {
-      name: "C.A",
-      value: "c_a",
-      selector: (row) => row.c_a,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "C.A.C",
-      value: "c_a_c",
-      selector: (row) => row.c_a_c,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "C.U",
-      value: "c_u",
-      selector: (row) => row.c_u,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "P.R",
-      value: "p_r",
-      selector: (row) => row.p_r,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "M.P.M",
-      value: "m_p_m",
-      selector: (row) => row.m_p_m,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    // {
-    //   name: "D.N.I",
-    //   value: "",
-    //   selector: (row) => row,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-    // {
-    //   name: "M.D.P",
-    //   value: "",
-    //   selector: (row) => row,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-    // {
-    //   name: "P.D",
-    //   value: "",
-    //   selector: (row) => row,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-    // {
-    //   name: "P.D",
-    //   value: "",
-    //   selector: (row) => row,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-    // {
-    //   name: "V.C",
-    //   value: "",
-    //   selector: (row) => row,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-    // {
-    //   name: "A.R",
-    //   value: "",
-    //   selector: (row) => row,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-    // {
-    //   name: "n/a",
-    //   value: "",
-    //   selector: (row) => row,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-  ];
+  // const filtros_Condicion_Excepcion = [
+  //   {
+  //     name: "I.N",
+  //     value: "i_n",
+  //     selector: (row) => row.i_n,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "M.A.P",
+  //     value: "m_a_p",
+  //     selector: (row) => row.m_a_p,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //     padding: "0px 0px 0px 0px",
+  //     margin: "0px 0px 0px 0px",
+  //   },
+  //   {
+  //     name: "C.A",
+  //     value: "c_a",
+  //     selector: (row) => row.c_a,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "C.A.C",
+  //     value: "c_a_c",
+  //     selector: (row) => row.c_a_c,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "C.U",
+  //     value: "c_u",
+  //     selector: (row) => row.c_u,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "P.R",
+  //     value: "p_r",
+  //     selector: (row) => row.p_r,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "M.P.M",
+  //     value: "m_p_m",
+  //     selector: (row) => row.m_p_m,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   // {
+  //   //   name: "D.N.I",
+  //   //   value: "",
+  //   //   selector: (row) => row,
+  //   //   sortable: true,
+  //   //   isCheck: false,
+  //   // },
+  //   // {
+  //   //   name: "M.D.P",
+  //   //   value: "",
+  //   //   selector: (row) => row,
+  //   //   sortable: true,
+  //   //   isCheck: false,
+  //   // },
+  //   // {
+  //   //   name: "P.D",
+  //   //   value: "",
+  //   //   selector: (row) => row,
+  //   //   sortable: true,
+  //   //   isCheck: false,
+  //   // },
+  //   // {
+  //   //   name: "P.D",
+  //   //   value: "",
+  //   //   selector: (row) => row,
+  //   //   sortable: true,
+  //   //   isCheck: false,
+  //   // },
+  //   // {
+  //   //   name: "V.C",
+  //   //   value: "",
+  //   //   selector: (row) => row,
+  //   //   sortable: true,
+  //   //   isCheck: false,
+  //   // },
+  //   // {
+  //   //   name: "A.R",
+  //   //   value: "",
+  //   //   selector: (row) => row,
+  //   //   sortable: true,
+  //   //   isCheck: false,
+  //   // },
+  //   // {
+  //   //   name: "n/a",
+  //   //   value: "",
+  //   //   selector: (row) => row,
+  //   //   sortable: true,
+  //   //   isCheck: false,
+  //   // },
+  // ];
 
-  const filtros_Condicion_Excepcion_2 = [
+  // const filtros_Condicion_Excepcion_2 = [
+  //   {
+  //     name: "D.N.I",
+  //     value: "d_n_i",
+  //     selector: (row) => row.d_n_i,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "M.D.P",
+  //     value: "m_d_p",
+  //     selector: (row) => row.m_d_p,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "P.D",
+  //     value: "p_d",
+  //     selector: (row) => row.p_d,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "V.C",
+  //     value: "v_c",
+  //     selector: (row) => row.v_c,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "A.R",
+  //     value: "a_r",
+  //     selector: (row) => row.a_r,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  //   {
+  //     name: "n/a",
+  //     value: "n_a",
+  //     selector: (row) => row.n_a,
+  //     sortable: true,
+  //     isCheck: false,
+  //     width: "80px",
+  //   },
+  // ];
+
+  const filtros_Condicion_Excepcion_prueba = [
     {
-      name: "D.N.I",
-      value: "d_n_i",
-      selector: (row) => row.d_n_i,
+      name: "Condición de Excepción",
+      value: "condicion_excepcion",
+      selector: (row) => row.condicion_excepcion,
       sortable: true,
       isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "M.D.P",
-      value: "m_d_p",
-      selector: (row) => row.m_d_p,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "P.D",
-      value: "p_d",
-      selector: (row) => row.p_d,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "V.C",
-      value: "v_c",
-      selector: (row) => row.v_c,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "A.R",
-      value: "a_r",
-      selector: (row) => row.a_r,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
-    },
-    {
-      name: "n/a",
-      value: "n_a",
-      selector: (row) => row.n_a,
-      sortable: true,
-      isCheck: false,
-      width: "80px",
+      width: "180px",
     },
   ];
-
   const columns_searchable = columns;
 
   useEffect(() => {
@@ -538,7 +548,7 @@ const Reporte = () => {
       //       <input
       //         name={item.name}
       //         onChange={(e) => {
-      //           // console.log(e.target.name);
+      //           // // console.log(e.target.name);
       //         }}
       //       />
       //     </Row>
@@ -567,14 +577,14 @@ const Reporte = () => {
   const [noResults, setNoResults] = useState(false);
 
   const handle_column_search = (e, selected) => {
-    // console.log(e.target.name);
-    // console.log("HOLASSS");
-    // console.log(selected);
-    // console.log(e.target.value);
+    // // console.log(e.target.name);
+    // // console.log("HOLASSS");
+    // // console.log(selected);
+    // // console.log(e.target.value);
 
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === "undefined") {
-      // console.log("no hay nada");
+      // // console.log("no hay nada");
       const data_filtered = state.estudiante;
       setFiltered(data_filtered);
     }
@@ -584,37 +594,37 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.tipo_doc.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Correo electrónico") {
-      // // // console.log(state.estudiante);
+      // // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.email.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Celular") {
-      // // // console.log(state.estudiante);
+      // // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.celular.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Dirección") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.dir_res.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -622,23 +632,23 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL POR FILTRO: ESTADOS
     if (e.target.name === "ASES") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.estado_ases.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Registro Académico") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.registro_academico
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -646,34 +656,34 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL POR FILTRO: ACADÉMICO
     if (e.target.name === "Código programa académico") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.id_programa.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Programa académico") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.programa_academico
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // // console.log(data_filtered);
+      // // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
-      // // // console.log(filtered);
+      // // // // console.log(filtered);
     }
     if (e.target.name === "Sede") {
-      // // // console.log(state.estudiante);
+      // // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.sede.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      // // // console.log(data_filtered);
+      // // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -681,37 +691,37 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL DE FILTRO: ASIGNACIONES
     if (e.target.name === "Profesional") {
-      // // // console.log(state.estudiante);
+      // // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.asignacion_profesional
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // // console.log(data_filtered);
+      // // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Practicante") {
-      // // // console.log(state.estudiante);
+      // // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.asignacion_practicante
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // // console.log(data_filtered);
+      // // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Monitor") {
-      // // // console.log(state.estudiante);
+      // // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.asignacion_monitores
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // // console.log(data_filtered);
+      // // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -719,59 +729,59 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL DE FILTRO: RIESGOS
     if (e.target.name === "Riesgo individual") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_individual
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo familiar") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_familiar.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo académico") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_academico
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo económico") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_economico
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo vida universitaria") {
-      // // console.log(state.estudiante);
+      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_vida_universitaria_ciudad
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
-      // // console.log(data_filtered);
+      // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
@@ -781,35 +791,35 @@ const Reporte = () => {
     // BÚSQUEDA INDIVIDUAL DE FILTRO: CONDICIONES DE EXCEPCIÓN
     // Búsqueda de Condiciones de Excepción
     // if (e.target.name === "") {
-    //   // // console.log(state.estudiante);
+    //   // // // console.log(state.estudiante);
     //   const data_filtered = filtered.filter((row) =>
     //     row.asignacion_monitores
     //       .toLowerCase()
     //       .includes(e.target.value.toLowerCase())
     //   );
-    //   // // console.log(data_filtered);
+    //   // // // console.log(data_filtered);
     //   const filtered_data =
     //     data_filtered.length > 0 ? data_filtered : state.estudiante;
     //   setFiltered(filtered_data);
     // }
     // if (e.target.name === "") {
-    //   // // console.log(state.estudiante);
+    //   // // // console.log(state.estudiante);
     //   const data_filtered = filtered.filter((row) =>
     //     row.asignacion_monitores
     //       .toLowerCase()
     //       .includes(e.target.value.toLowerCase())
     //   );
-    //   // // console.log(data_filtered);
+    //   // // // console.log(data_filtered);
     //   const filtered_data =
     //     data_filtered.length > 0 ? data_filtered : state.estudiante;
     //   setFiltered(filtered_data);
     // }
 
-    // // console.log(filtered);
+    // // // console.log(filtered);
   };
 
   const add_search_bar = (selected) => {
-    // // console.log(filtered);
+    // // // console.log(filtered);
     const new_search_bar_data = [];
     new_search_bar_data.push({
       name: (
@@ -833,17 +843,8 @@ const Reporte = () => {
     return new_search_bar_data;
   };
 
-  const cambiazo = (new_data) => {
-    // // console.log(filtered);
-    if (state == []) {
-      setFiltered(state.estudiante);
-    } else {
-      setFiltered(new_data);
-    }
-  };
-
   const handleChange = (e) => {
-    // // console.log(columnaPrevia.cabeceras);
+    // // // console.log(columnaPrevia.cabeceras);
 
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
@@ -860,15 +861,20 @@ const Reporte = () => {
     const seleccionado_asignaciones = filtros_Asignaciones.find(
       (item) => item.name === e.target.name
     );
-    const seleccionado_condiciones_excepcion = filtros_Condicion_Excepcion.find(
-      (item) => item.name === e.target.name
-    );
-    const seleccionado_condiciones_excepcion_2 =
-      filtros_Condicion_Excepcion_2.find((item) => item.name === e.target.name);
+    // const seleccionado_condiciones_excepcion = filtros_Condicion_Excepcion.find(
+    //   (item) => item.name === e.target.name
+    // );
+    // const seleccionado_condiciones_excepcion_2 =
+    //   filtros_Condicion_Excepcion_2.find((item) => item.name === e.target.name);
 
     const seleccionado_cabeceras_filtros = cabecerasFiltros.find(
       (item) => item.name === e.target.name
     );
+    const seleccionado_condiciones_excepcion_prueba =
+      filtros_Condicion_Excepcion_prueba.find(
+        (item) => item.name === "Condición de Excepción"
+      );
+
     //  condiciones Para Filtros de Contacto
 
     if (seleccionado_contacto === undefined) {
@@ -882,7 +888,6 @@ const Reporte = () => {
     ) {
       seleccionado_contacto.isCheck = true;
       var searchable_columns = add_search_bar(seleccionado_contacto);
-      // // console.log(new_psuh);
       columns.push(searchable_columns[0]);
       csv_conversion(seleccionado_contacto);
       schema_push(seleccionado_contacto);
@@ -1067,99 +1072,99 @@ const Reporte = () => {
     }
 
     // condiciones para Filtros de Excepcion
-    if (seleccionado_condiciones_excepcion === undefined) {
-    } else if (
-      (seleccionado_condiciones_excepcion.name === "I.N" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion.name === "M.A.P" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion.name === "C.A" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion.name === "C.A.C" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion.name === "C.U" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion.name === "P.R" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion.name === "M.P.M" &&
-        e.target.checked === true)
-    ) {
-      seleccionado_condiciones_excepcion.isCheck = true;
-      document.getElementsByName("Condición de Excepción")[0].checked = false;
-      columns.push(seleccionado_condiciones_excepcion);
-      csv_conversion(seleccionado_condiciones_excepcion);
-      schema_push(seleccionado_condiciones_excepcion);
-    } else if (
-      (seleccionado_condiciones_excepcion.name === "I.N" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion.name === "M.A.P" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion.name === "C.A" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion.name === "C.A.C" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion.name === "C.U" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion.name === "P.R" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion.name === "M.P.M" &&
-        e.target.checked === false)
-    ) {
-      seleccionado_condiciones_excepcion.isCheck = false;
-      document.getElementsByName("Condición de Excepción")[0].checked = false;
-      columns.map((item, index) => {
-        if (item.name === seleccionado_condiciones_excepcion.name) {
-          columns.splice(index, 1);
-        }
-      });
-      csv_pop(seleccionado_condiciones_excepcion);
-      schema_pop(seleccionado_condiciones_excepcion);
-    }
+    // if (seleccionado_condiciones_excepcion === undefined) {
+    // } else if (
+    //   (seleccionado_condiciones_excepcion.name === "I.N" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion.name === "M.A.P" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion.name === "C.A" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion.name === "C.A.C" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion.name === "C.U" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion.name === "P.R" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion.name === "M.P.M" &&
+    //     e.target.checked === true)
+    // ) {
+    //   seleccionado_condiciones_excepcion.isCheck = true;
+    //   document.getElementsByName("Condición de Excepción")[0].checked = false;
+    //   columns.push(seleccionado_condiciones_excepcion);
+    //   csv_conversion(seleccionado_condiciones_excepcion);
+    //   schema_push(seleccionado_condiciones_excepcion);
+    // } else if (
+    //   (seleccionado_condiciones_excepcion.name === "I.N" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion.name === "M.A.P" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion.name === "C.A" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion.name === "C.A.C" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion.name === "C.U" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion.name === "P.R" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion.name === "M.P.M" &&
+    //     e.target.checked === false)
+    // ) {
+    //   seleccionado_condiciones_excepcion.isCheck = false;
+    //   document.getElementsByName("Condición de Excepción")[0].checked = false;
+    //   columns.map((item, index) => {
+    //     if (item.name === seleccionado_condiciones_excepcion.name) {
+    //       columns.splice(index, 1);
+    //     }
+    //   });
+    //   csv_pop(seleccionado_condiciones_excepcion);
+    //   schema_pop(seleccionado_condiciones_excepcion);
+    // }
 
     // condiciones para Filtros de Excepcion 2
-    if (seleccionado_condiciones_excepcion_2 === undefined) {
-    } else if (
-      (seleccionado_condiciones_excepcion_2.name === "D.N.I" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion_2.name === "M.D.P" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion_2.name === "P.D" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion_2.name === "V.C" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion_2.name === "A.R" &&
-        e.target.checked === true) ||
-      (seleccionado_condiciones_excepcion_2.name === "n/a" &&
-        e.target.checked === true)
-    ) {
-      seleccionado_condiciones_excepcion_2.isCheck = true;
-      columns.push(seleccionado_condiciones_excepcion_2);
-      csv_conversion(seleccionado_condiciones_excepcion_2);
-      schema_push(seleccionado_condiciones_excepcion_2);
-    } else if (
-      (seleccionado_condiciones_excepcion_2.name === "D.N.I" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion_2.name === "M.D.P" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion_2.name === "P.D" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion_2.name === "V.C" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion_2.name === "A.R" &&
-        e.target.checked === false) ||
-      (seleccionado_condiciones_excepcion_2.name === "n/a" &&
-        e.target.checked === false)
-    ) {
-      seleccionado_condiciones_excepcion_2.isCheck = false;
-      document.getElementsByName("Condición de Excepción")[0].checked = false;
-      columns.map((item, index) => {
-        if (item.name === seleccionado_condiciones_excepcion_2.name) {
-          columns.splice(index, 1);
-        }
-      });
-      csv_pop(seleccionado_condiciones_excepcion_2);
-      schema_pop(seleccionado_condiciones_excepcion_2);
-    }
+    // if (seleccionado_condiciones_excepcion_2 === undefined) {
+    // } else if (
+    //   (seleccionado_condiciones_excepcion_2.name === "D.N.I" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "M.D.P" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "P.D" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "V.C" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "A.R" &&
+    //     e.target.checked === true) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "n/a" &&
+    //     e.target.checked === true)
+    // ) {
+    //   seleccionado_condiciones_excepcion_2.isCheck = true;
+    //   columns.push(seleccionado_condiciones_excepcion_2);
+    //   csv_conversion(seleccionado_condiciones_excepcion_2);
+    //   schema_push(seleccionado_condiciones_excepcion_2);
+    // } else if (
+    //   (seleccionado_condiciones_excepcion_2.name === "D.N.I" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "M.D.P" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "P.D" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "V.C" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "A.R" &&
+    //     e.target.checked === false) ||
+    //   (seleccionado_condiciones_excepcion_2.name === "n/a" &&
+    //     e.target.checked === false)
+    // ) {
+    //   seleccionado_condiciones_excepcion_2.isCheck = false;
+    //   document.getElementsByName("Condición de Excepción")[0].checked = false;
+    //   columns.map((item, index) => {
+    //     if (item.name === seleccionado_condiciones_excepcion_2.name) {
+    //       columns.splice(index, 1);
+    //     }
+    //   });
+    //   csv_pop(seleccionado_condiciones_excepcion_2);
+    //   schema_pop(seleccionado_condiciones_excepcion_2);
+    // }
 
     // **
     // Condiciones para cabeceras de filtros
@@ -1184,7 +1189,7 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Contacto" &&
         e.target.checked === true
       ) {
-        // console.log(seleccionado_cabeceras_filtros);
+        // // console.log(seleccionado_cabeceras_filtros);
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("Tipo de documento")[0].checked = false;
         document.getElementsByName("Correo electrónico")[0].checked = false;
@@ -1202,11 +1207,11 @@ const Reporte = () => {
             columns[i].value === "celular" ||
             columns[i].value === "dir_res"
           ) {
-            // console.log("HOLA");
+            // // console.log("HOLA");
             columns[i].isCheck = false;
           }
         }
-        // // console.log(columns);
+        // // // console.log(columns);
         columns.map((item, index) => {
           if (
             (item.value === "tipo_doc" && item.isCheck === false) ||
@@ -1220,7 +1225,7 @@ const Reporte = () => {
 
         for (let i = 0; i < filtros_Contacto.length; i++) {
           const element = filtros_Contacto[i];
-          // console.log(element);
+          // // console.log(element);
           element.isCheck = true;
           var data_var = add_search_bar(element);
           columns.push(data_var[0]);
@@ -1231,7 +1236,7 @@ const Reporte = () => {
           csv_conversion(element);
           schema_push(element);
         }
-        // console.log(columns);
+        // // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Estados" &&
         e.target.checked === true
@@ -1272,7 +1277,7 @@ const Reporte = () => {
           csv_conversion(element);
           schema_push(element);
         }
-        // // console.log(columns);
+        // // // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Académico" &&
         e.target.checked === true
@@ -1436,7 +1441,6 @@ const Reporte = () => {
           element.isCheck = true;
           var data_var = add_search_bar(element);
           columns.push(data_var[0]);
-          // columns.push(element);
         }
 
         for (let i = 0; i < filtros_Riesgos.length; i++) {
@@ -1448,99 +1452,13 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
         e.target.checked === true
       ) {
-        seleccionado_cabeceras_filtros.isCheck = true;
-        document.getElementsByName("I.N")[0].checked = false;
-        document.getElementsByName("M.A.P")[0].checked = false;
-        document.getElementsByName("C.A")[0].checked = false;
-        document.getElementsByName("C.A.C")[0].checked = false;
-        document.getElementsByName("C.U")[0].checked = false;
-        document.getElementsByName("P.R")[0].checked = false;
-        document.getElementsByName("M.P.M")[0].checked = false;
-        document.getElementsByName("D.N.I")[0].checked = false;
-        document.getElementsByName("M.D.P")[0].checked = false;
-        document.getElementsByName("P.D")[0].checked = false;
-        document.getElementsByName("V.C")[0].checked = false;
-        document.getElementsByName("A.R")[0].checked = false;
-        document.getElementsByName("n/a")[0].checked = false;
-        document.getElementsByName("I.N")[0].checked = true;
-        document.getElementsByName("M.A.P")[0].checked = true;
-        document.getElementsByName("C.A")[0].checked = true;
-        document.getElementsByName("C.A.C")[0].checked = true;
-        document.getElementsByName("C.U")[0].checked = true;
-        document.getElementsByName("P.R")[0].checked = true;
-        document.getElementsByName("M.P.M")[0].checked = true;
-        document.getElementsByName("D.N.I")[0].checked = true;
-        document.getElementsByName("M.D.P")[0].checked = true;
-        document.getElementsByName("P.D")[0].checked = true;
-        document.getElementsByName("V.C")[0].checked = true;
-        document.getElementsByName("A.R")[0].checked = true;
-        document.getElementsByName("n/a")[0].checked = true;
+        const element = seleccionado_condiciones_excepcion_prueba;
+        element.isCheck = true;
+        var data_var = add_search_bar(element);
+        columns.push(data_var[0]);
 
-        for (let i = 0; i < columns.length; i++) {
-          if (
-            columns[i].value === "i_n" ||
-            columns[i].value === "m_a_p" ||
-            columns[i].value === "c_a" ||
-            columns[i].value === "c_a_c" ||
-            columns[i].value === "c_u" ||
-            columns[i].value === "p_r" ||
-            columns[i].value === "m_p_m" ||
-            columns[i].value === "d_n_i" ||
-            columns[i].value === "m_d_p" ||
-            columns[i].value === "p_d" ||
-            columns[i].value === "v_c" ||
-            columns[i].value === "a_r" ||
-            columns[i].value === "n_a"
-          ) {
-            columns[i].isCheck = false;
-          }
-        }
-        columns.map((item, index) => {
-          if (
-            (item.value === "i_n" && item.isCheck === false) ||
-            (item.value === "m_a_p" && item.isCheck === false) ||
-            (item.value === "c_a" && item.isCheck === false) ||
-            (item.value === "c_a_c" && item.isCheck === false) ||
-            (item.value === "c_u" && item.isCheck === false) ||
-            (item.value === "p_r" && item.isCheck === false) ||
-            (item.value === "m_p_m" && item.isCheck === false) ||
-            (item.value === "d_n_i" && item.isCheck === false) ||
-            (item.value === "m_d_p" && item.isCheck === false) ||
-            (item.value === "p_d" && item.isCheck === false) ||
-            (item.value === "v_c" && item.isCheck === false) ||
-            (item.value === "a_r" && item.isCheck === false) ||
-            (item.value === "n_a" && item.isCheck === false)
-          ) {
-            columns.splice(index, 1);
-          }
-        });
-
-        for (let i = 0; i < filtros_Condicion_Excepcion.length; i++) {
-          const element = filtros_Condicion_Excepcion[i];
-          element.isCheck = true;
-          var data_var = add_search_bar(element);
-          columns.push(data_var[0]);
-          // columns.push(element);
-        }
-        for (let i = 0; i < filtros_Condicion_Excepcion_2.length; i++) {
-          const element = filtros_Condicion_Excepcion_2[i];
-          element.isCheck = true;
-          var data_var = add_search_bar(element);
-          columns.push(data_var[0]);
-          // columns.push(element);
-        }
-
-        for (let i = 0; i < filtros_Condicion_Excepcion.length; i++) {
-          const element = filtros_Condicion_Excepcion[i];
-          csv_conversion(element);
-          schema_push(element);
-        }
-
-        for (let i = 0; i < filtros_Condicion_Excepcion_2.length; i++) {
-          const element = filtros_Condicion_Excepcion_2[i];
-          csv_conversion(element);
-          schema_push(element);
-        }
+        csv_conversion(element);
+        schema_push(element);
       }
       // **
       //    Bloque de eliminación de la tabla
@@ -1563,15 +1481,15 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Contacto" &&
         e.target.checked === false
       ) {
-        // console.log("WE'RE OVER HERE!");
-        // console.log(columns);
+        // // console.log("WE'RE OVER HERE!");
+        // // console.log(columns);
         seleccionado_cabeceras_filtros.isCheck = false;
         document.getElementsByName("Tipo de documento")[0].checked = false;
         document.getElementsByName("Correo electrónico")[0].checked = false;
         document.getElementsByName("Celular")[0].checked = false;
         document.getElementsByName("Dirección")[0].checked = false;
 
-        // console.log(columns);
+        // // console.log(columns);
 
         for (let i = 0; i < columns.length; i++) {
           if (
@@ -1580,13 +1498,13 @@ const Reporte = () => {
             (columns[i].value === "celular" && columns[i].isCheck === true) ||
             (columns[i].value === "dir_res" && columns[i].isCheck === true)
           ) {
-            // console.log("is HeRe!!");
+            // // console.log("is HeRe!!");
             columns[i].isCheck = false;
             // columns.splice(i, 1);
           }
         }
-        // console.log(columns);
-        // console.log("IS DEAD THSI SH**");
+        // // console.log(columns);
+        // // console.log("IS DEAD THSI SH**");
 
         columns.map((item, index) => {
           if (
@@ -1606,8 +1524,8 @@ const Reporte = () => {
           schema_pop(element);
         }
 
-        // console.log("After Unselect All");
-        // console.log(columns);
+        // // console.log("After Unselect All");
+        // // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Estados" &&
         e.target.checked === false
@@ -1639,7 +1557,7 @@ const Reporte = () => {
           schema_pop(element);
         }
 
-        // // console.log(columns);
+        // // // console.log(columns);
       } else if (
         seleccionado_cabeceras_filtros.name === "Académico" &&
         e.target.checked === false
@@ -1772,68 +1690,29 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
         e.target.checked === false
       ) {
+        // console.log("NA");
         seleccionado_cabeceras_filtros.isCheck = false;
-        document.getElementsByName("I.N")[0].checked = false;
-        document.getElementsByName("M.A.P")[0].checked = false;
-        document.getElementsByName("C.A")[0].checked = false;
-        document.getElementsByName("C.A.C")[0].checked = false;
-        document.getElementsByName("C.U")[0].checked = false;
-        document.getElementsByName("P.R")[0].checked = false;
-        document.getElementsByName("M.P.M")[0].checked = false;
-        document.getElementsByName("D.N.I")[0].checked = false;
-        document.getElementsByName("M.D.P")[0].checked = false;
-        document.getElementsByName("P.D")[0].checked = false;
-        document.getElementsByName("V.C")[0].checked = false;
-        document.getElementsByName("A.R")[0].checked = false;
-        document.getElementsByName("n/a")[0].checked = false;
+        const element = seleccionado_condiciones_excepcion_prueba;
 
+        element.isCheck = false;
         for (let i = 0; i < columns.length; i++) {
-          if (
-            columns[i].value === "i_n" ||
-            columns[i].value === "m_a_p" ||
-            columns[i].value === "c_a" ||
-            columns[i].value === "c_a_c" ||
-            columns[i].value === "c_u" ||
-            columns[i].value === "p_r" ||
-            columns[i].value === "m_p_m" ||
-            columns[i].value === "d_n_i" ||
-            columns[i].value === "m_d_p" ||
-            columns[i].value === "p_d" ||
-            columns[i].value === "v_c" ||
-            columns[i].value === "a_r" ||
-            columns[i].value === "n_a"
-          ) {
+          if (columns[i].value === "condicion_excepcion") {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
-          if (
-            (item.value === "i_n" && item.isCheck === false) ||
-            (item.value === "m_a_p" && item.isCheck === false) ||
-            (item.value === "c_a" && item.isCheck === false) ||
-            (item.value === "c_a_c" && item.isCheck === false) ||
-            (item.value === "c_u" && item.isCheck === false) ||
-            (item.value === "p_r" && item.isCheck === false) ||
-            (item.value === "m_p_m" && item.isCheck === false) ||
-            (item.value === "d_n_i" && item.isCheck === false) ||
-            (item.value === "m_d_p" && item.isCheck === false) ||
-            (item.value === "p_d" && item.isCheck === false) ||
-            (item.value === "v_c" && item.isCheck === false) ||
-            (item.value === "a_r" && item.isCheck === false) ||
-            (item.value === "n_a" && item.isCheck === false)
-          ) {
+          if (item.value === "condicion_excepcion" && item.isCheck === false) {
             columns.splice(index, 1);
           }
         });
-        for (let i = 0; i < filtros_Condicion_Excepcion.length; i++) {
-          filtros_Condicion_Excepcion[i].isCheck = false;
-          const element = filtros_Condicion_Excepcion[i];
-          csv_pop(element);
-          schema_pop(element);
-        }
-        for (let i = 0; i < filtros_Condicion_Excepcion_2.length; i++) {
-          filtros_Condicion_Excepcion_2[i].isCheck = false;
-          const element = filtros_Condicion_Excepcion_2[i];
+
+        for (
+          let i = 0;
+          i < seleccionado_condiciones_excepcion_prueba.length;
+          i++
+        ) {
+          seleccionado_condiciones_excepcion_prueba[i].isCheck = false;
+          const element = seleccionado_condiciones_excepcion_prueba[i];
           csv_pop(element);
           schema_pop(element);
         }
@@ -1941,7 +1820,7 @@ const Reporte = () => {
     );
   };
 
-  // // console.log(proc_link_estudiante(state.estudiante));
+  // // // console.log(proc_link_estudiante(state.estudiante));
 
   return (
     <>
@@ -2050,7 +1929,7 @@ const Reporte = () => {
 
               {/* OCULTAS ESTAS DOS COLUMNAS DEL AVERNO */}
               <Col sm={1} xs={1}>
-                {filtros_Condicion_Excepcion.map((Item, index) => (
+                {/* {filtros_Condicion_Excepcion.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
                       name={Item.name}
@@ -2060,11 +1939,12 @@ const Reporte = () => {
                       onChange={(e) => handleChange(e)}
                     />
                   </div>
-                ))}
+                ))} */}
+                <p> </p>
               </Col>
 
               <Col sm={1} xs={1}>
-                {filtros_Condicion_Excepcion_2.map((Item, index) => (
+                {/* {filtros_Condicion_Excepcion_2.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
                       name={Item.name}
@@ -2074,7 +1954,8 @@ const Reporte = () => {
                       onChange={(e) => handleChange(e)}
                     />
                   </div>
-                ))}
+                ))} */}
+                <p> </p>
               </Col>
             </Row>
 
@@ -2134,7 +2015,7 @@ const Reporte = () => {
               onRowClicked={(row) => {
                 // redirect(`/ficha_estudiante/${row.id}`);
                 navigate(`/ficha_estudiante/${row.id}`);
-                // // console.log(row);
+                // // // console.log(row);
               }}
               responsive
               striped
