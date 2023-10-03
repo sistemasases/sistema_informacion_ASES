@@ -23,7 +23,7 @@ def carga_test(request):
     return render(request, "prueba_carga.html")
 
 class Validador_carga(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     def post(self,request):
             tipo = request.data.get('tipo_de_carga')
             file = request.data.get('FILES')
@@ -616,7 +616,7 @@ def carga_fichas(file):
                             observaciones_dato =  str(datos.iat[i,55]) 
 
 
-                        try:
+                        # try:
                             Seguimiento_individual =seguimiento_individual(
                                 fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
                                 lugar = str(datos.iat[i,1]),
@@ -692,12 +692,12 @@ def carga_fichas(file):
                                 'mensaje' : 'Se cargó correctamente la fichaW del estudiante con id: '+str(datos.iat[i,60])+'.'
                             }
                             list_dict_result.append(dict_result)
-                        except:
-                            dict_result = {
-                                'dato' : datos.iat[i,0],
-                                'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,60])+'.'
-                            }
-                            list_dict_result.append(dict_result)
+                        # except:
+                        #     dict_result = {
+                        #         'dato' : datos.iat[i,0],
+                        #         'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,60])+'.'
+                        #     }
+                        #     list_dict_result.append(dict_result)
             else:
                 dict_result = {
                     'dato' : datos.iat[i,0],

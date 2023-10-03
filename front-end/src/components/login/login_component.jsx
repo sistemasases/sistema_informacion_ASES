@@ -4,7 +4,7 @@ import { Container, Row, Col, Button, } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
-import Modal from 'react-bootstrap/Modal';
+import Modal from 'react-bootstrap/Modal'; 
 import { encriptar, desencriptar, encriptarJson, encriptarInt, encriptarBigInt, desencriptarBigInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
