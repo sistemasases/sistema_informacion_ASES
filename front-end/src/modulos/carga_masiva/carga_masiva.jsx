@@ -7,7 +7,7 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 
 
