@@ -31,7 +31,7 @@ const Info_registros = (props) =>{
       })
 
       useEffect(()=>{
-        console.log("supuesta id_estudiante:"+props.id_estudiante)
+       
       axios({
           // Endpoint to send files
           url:  `${process.env.REACT_APP_API_URL}/usuario_rol/ultimo_seguimiento_individual/` + props.id_estudiante+ "/",

@@ -110,7 +110,6 @@ export const decryptUserIdFromSessionStorage = () => {
 };
 // Función para encriptar campos de tipo BigInt.
 export const encriptarBigInt = (valor) => {
-  console.log('valor'+valor)
   try {
     // Convertir BigInt a cadena y luego encriptar la cadena.
     const valorComoCadena = valor.toString();
@@ -124,7 +123,7 @@ export const encriptarBigInt = (valor) => {
 
 //Función para desencriptar campos de tipo BigInt.
 export const desencriptarBigInt = (valorEncriptado) => {
-  console.log('valorEncriptado'+valorEncriptado)
+  
   try {
     // Desencriptar la cadena y luego convertirla a BigInt.
     const decryptedValue = CryptoJS.AES.decrypt(valorEncriptado, secretKey).toString(CryptoJS.enc.Utf8);
