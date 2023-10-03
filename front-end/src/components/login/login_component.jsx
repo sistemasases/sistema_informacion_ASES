@@ -5,6 +5,9 @@ import Form from 'react-bootstrap/Form';
 import App from '../../App.js'
 import Footer from '../componentes_generales/footer.jsx';
 import Modal from 'react-bootstrap/Modal';
+import { encriptar, desencriptar, encriptarJson, encriptarInt, encriptarBigInt, desencriptarBigInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+
+
 
 const Login_component = () => {
 
@@ -38,24 +41,41 @@ const Login_component = () => {
   const handleSendNewData = () => {
     axios.post(url, data)
       .then(res => {
-        sessionStorage.setItem('token', res.data.token);
-        sessionStorage.setItem('refresh-token', res.data['refresh-token']);
-        sessionStorage.setItem('id_usuario', res.data.user.id);
-        sessionStorage.setItem('email', res.data.user.email);
-        sessionStorage.setItem('first_name', res.data.user.first_name);
-        sessionStorage.setItem('sede', res.data.user.sede);
-        sessionStorage.setItem('last_name', res.data.user.last_name);
-        sessionStorage.setItem('nombre_completo', res.data.user.nombre_completo);
-        sessionStorage.setItem('sede_id', res.data.user.sede_id);
-        sessionStorage.setItem('rol', res.data.user.rol);
-        sessionStorage.setItem('id_semestre_actual', res.data.user.id_semestre_actual);
-        sessionStorage.setItem('semestre_actual', res.data.user.semestre_actual);
-        sessionStorage.setItem('username', res.data.user.username);
-        sessionStorage.setItem('permisos', res.data.user.permisos);
-        sessionStorage.setItem('message', res.data.user.message);
+        console.log(res.data);
+        const encryptedToken = encriptar(res.data.token);
+        const encryptedRefreshToken = encriptar(res.data.refresh_token);
+        const encryptedIdUsuario = encriptarBigInt(res.data.user.id);
+        const encryptedEmail = encriptar(res.data.user.email);
+        const encryptedFirstName = encriptar(res.data.user.first_name);
+        const encryptedSede = encriptar(res.data.user.sede);
+        const encryptedLastName = encriptar(res.data.user.last_name);
+        const encryptedNombreCompleto = encriptar(res.data.user.nombre_completo);
+        const encryptedSedeId = encriptarInt(res.data.user.sede_id);
+        const encryptedRol = encriptar(res.data.user.rol);
+        const encryptedIdSemestreActual = encriptarInt(res.data.user.id_semestre_actual);
+        const encryptedSemestreActual = encriptar(res.data.user.semestre_actual);
+        const encryptedUsername = encriptar(res.data.user.username);
+        const encryptedPermisos = encriptarJson(res.data.user.permisos);
+        const encryptedMessage = encriptar(res.data.message);
+
+        sessionStorage.setItem('token', encryptedToken);
+        sessionStorage.setItem('refresh-token',encryptedRefreshToken);
+        sessionStorage.setItem('id_usuario', encryptedIdUsuario);
+        sessionStorage.setItem('email', encryptedEmail);
+        sessionStorage.setItem('first_name', encryptedFirstName);
+        sessionStorage.setItem('sede', encryptedSede);
+        sessionStorage.setItem('last_name', encryptedLastName);
+        sessionStorage.setItem('nombre_completo', encryptedNombreCompleto);
+        sessionStorage.setItem('sede_id', encryptedSedeId);
+        sessionStorage.setItem('rol', encryptedRol);
+        sessionStorage.setItem('id_semestre_actual', encryptedIdSemestreActual);
+        sessionStorage.setItem('semestre_actual', encryptedSemestreActual);
+        sessionStorage.setItem('username', encryptedUsername);
+        sessionStorage.setItem('permisos', encryptedPermisos);
+        sessionStorage.setItem('message', encryptedMessage);
         set_state({
           ...state,
-          logged: sessionStorage.token,
+          logged: encryptedToken,
           temporal: true
         });
       })

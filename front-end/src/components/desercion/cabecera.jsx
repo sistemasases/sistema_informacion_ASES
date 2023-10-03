@@ -3,11 +3,12 @@ import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Select from 'react-select'  ;
+import {decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 
 const Cabecera = (props) =>{
     const config = {
-      Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     };
       const{childClicked} = props
 

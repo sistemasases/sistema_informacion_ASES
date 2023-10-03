@@ -12,12 +12,13 @@ import axios from 'axios';
 import {Container, Row, Col, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import DataTable from 'react-data-table-component';
+import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 const Carga_masiva_component = () =>{
 
   // constante para el header del axios
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
   };
 
   // Constante que guarda la dirección url utilizada por el axios

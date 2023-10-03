@@ -4,14 +4,15 @@ import Tabla_sin_seguimientos from "../../components/sin_seguimientos/tabla_sin_
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import  {useEffect} from 'react';
 import axios from 'axios';
+import { encriptar, desencriptar, decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 const Sin_seguimientos = () =>{
 
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
 
-    const userRole = sessionStorage.getItem('permisos');
+    const userRole = desencriptar(sessionStorage.getItem('permisos'));
     const [state,set_state] = useState({
         semestre_Seleccionado : '',
         semestre_activo : [],

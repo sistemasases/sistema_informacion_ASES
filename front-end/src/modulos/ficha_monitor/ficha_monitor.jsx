@@ -8,17 +8,20 @@ import {Container, Row, Col, Dropdown, Button} from "styled-bootstrap-grid";
 import {useEffect} from 'react';
 import axios from 'axios';
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../utilidades_seguridad/utilidades_seguridad';
 
 
 
 
 const Ficha_monitor = (props) =>{
+  //prueba
+
 
   const config = {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
 
-    const userRole = sessionStorage.getItem('permisos');
+    const userRole = desencriptar(sessionStorage.getItem('permisos'));
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);
@@ -30,7 +33,7 @@ const Ficha_monitor = (props) =>{
     useEffect(() => {
         axios({
             // Endpoint to send files
-            url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/",
+            url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/",
             method: "GET",
             headers: config,
           })

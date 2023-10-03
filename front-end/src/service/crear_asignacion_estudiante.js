@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad';
 
 const crear_asignacion = (formData) => {
     const config = {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     };
     const url_axios = `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante`;
     axios({

@@ -12,7 +12,7 @@ import { Container, Row, Button, Col } from "react-bootstrap";
 import Select from 'react-select'  
 import Carousel from "react-bootstrap/Carousel";
 import All_sede_service from "../../service/all_sede";
-
+import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 import boton1 from '../../images/BOTONES_SVG 18.svg';
 import boton2 from '../../images/BOTONES_SVG 19.svg';
 
@@ -32,27 +32,35 @@ import boton21 from '../../images/BOTONES_SVG 1.svg';
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 
+
 const Pagina_inicio = () => {
-  const userRole = sessionStorage.getItem("rol");
+   
+  
+  //const decryptRol = desencriptar(sessionStorage.getItem('rol'));
+  //Desencriptar los permisos del usuario desde el sessionStorage y los asignamos a userRole
+  const userRole = desencriptar(sessionStorage.getItem('rol'));
   let desplegable;
 
-  if (sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'super_ases') {
+  if (userRole === 'sistemas' || userRole === 'super_ases') {
     desplegable = 'ADMIN';
-  } else if (sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'socioeducativo') {
+  } else if (userRole === 'socioeducativo_reg' || userRole === 'socioeducativo') {
     desplegable = 'SOCIOEDUCATIVO';
-  } else if (sessionStorage.rol === 'dir_academico') {
+  } else if (userRole === 'dir_academico') {
     desplegable = 'DIRECTOR ACÁDEMICO';
+  } else if (userRole === 'monitor') {
+    desplegable = 'MONITOR';
+  } else if (userRole === 'practicante') {
   } else if (sessionStorage.rol === 'monitor') {
     desplegable = 'MONITOR'; 
   } else if (sessionStorage.rol === 'practicante') {
     desplegable = 'PRACTICANTE';
-  } else if (sessionStorage.rol === 'dir_investigacion') {
+  } else if (userRole === 'dir_investigacion') {
     desplegable = 'DIRECTOR INVES.';
-  }  else if (sessionStorage.rol === 'dir_programa') {
+  }  else if (userRole === 'dir_programa') {
     desplegable = 'DIRECTOR PROGRAMA';
-  } else if (sessionStorage.rol === 'vcd_academico') {
+  } else if (userRole === 'vcd_academico') {
     desplegable = 'VICERRECTOR ACADE.';
-  } else if (sessionStorage.rol === 'profesional') {
+  } else if (userRole === 'profesional') {
     desplegable = 'PROFESIONAL';
   } else if (sessionStorage.rol === 'profesor') {
     desplegable = 'PROFESOR';
@@ -70,18 +78,33 @@ const Pagina_inicio = () => {
 
   //Conexion con el back para extraer todas las sedes
   useEffect(() => {
-    All_sede_service.all_sede().then((res) => {
-      set_state({
-        ...state,
-        tabs: res,
-      });
-    });
+    if (bandera_option === true && state.tabs.length === 0) {
+      All_sede_service.all_sede()
+        .then((res) => {
+          console.log("Respuesta de la API:", res);
+          if (res && Array.isArray(res)) {
+            set_state({
+              ...state,
+              tabs: res,
+            });
+          } else {
+            console.error("Respuesta de la API no es un arreglo válido:", res);
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener datos de la API:", error);
+        });
+      bandera_option = false;
+    }
   }, []);
+  
 
   /**
    * Prop que toma las sedes y las transforma en opciones para el select
    */
   const handle_sedes = () => {
+    console.log("ENTRO");
+    console.log(state.tabs);
     if (bandera_option === true) {
       for (var i = 0; i < state.tabs["length"]; i++) {
         const dato = {

@@ -9,6 +9,7 @@ import  {useEffect, componentDidUpdate} from 'react';
 import axios from 'axios';
 import Desplegable_item from "./desplegable_Item";
 import Desplegable from "./desplegable";
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Socieducativa = (props) =>{
 
@@ -39,7 +40,7 @@ const activeTab = (index)=>
     setActiveTabIndex(index)
 }
 
-const userRole = sessionStorage.getItem('rol');
+const userRole = desencriptar(sessionStorage.getItem('rol'));
 
     return (
         <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> : 

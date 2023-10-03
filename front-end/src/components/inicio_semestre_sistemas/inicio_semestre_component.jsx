@@ -13,13 +13,30 @@ import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
 import All_sede_service from '../../service/all_sede';
+import CryptoJS from 'crypto-js';
+
+//Clave secreta para desencriptar el token
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 const Inicio_semestre_component = () =>{
 
+    const decryptTokenFromSessionStorage = () => {
+        const encryptedToken = sessionStorage.getItem('token');
+        if (!encryptedToken) {
+          return null; // No hay token en sessionStorage
+        }
+      
+        // Desencriptar el token usando la clave secreta
+        const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
+        const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
+      
+        return decryptedToken;
+      };
+      
     // Config para el fetch
     const config = {
         headers: {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage() 
         }
     };
 

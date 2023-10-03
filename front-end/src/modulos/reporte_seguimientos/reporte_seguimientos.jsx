@@ -11,11 +11,12 @@ import Informacion_rol from "../../components/reporte_seguimientos/informacion_r
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import  {useEffect} from 'react';
 import axios from 'axios';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../utilidades_seguridad/utilidades_seguridad';
 
 const Reporte_seguimientos = (props) =>{
 
   const config = {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
 
     const [state,set_state] = useState({
@@ -24,15 +25,15 @@ const Reporte_seguimientos = (props) =>{
 
       })
 
-    const userRole = sessionStorage.getItem('permisos');
+    const userRole = desencriptar(sessionStorage.getItem('permisos'));
 
     useEffect(()=>{
       
-      if (sessionStorage.getItem('rol') === 'super_ases' || sessionStorage.getItem('rol') === 'socioeducativo'|| sessionStorage.getItem('rol') === 'socioeducativo_reg' )
+      if (desencriptar(sessionStorage.getItem('rol')) === 'super_ases' || desencriptar(sessionStorage.getItem('rol')) === 'socioeducativo'|| desencriptar(sessionStorage.getItem('rol')) === 'socioeducativo_reg' )
       {
         axios({
           // Endpoint to send files
-          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+sessionStorage.getItem('sede_id')+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/",
           method: "GET",
           headers: config,
         })
@@ -46,11 +47,11 @@ const Reporte_seguimientos = (props) =>{
           console.log("error" + err)
         })
       }
-      else if (sessionStorage.getItem('rol') === 'profesional')
+      else if (desencriptar(sessionStorage.getItem('rol')) === 'profesional')
       {
         axios({
           // Endpoint to send files
-          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+sessionStorage.getItem('sede_id')+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/",
           method: "GET",
           headers: config,
         })
@@ -65,11 +66,11 @@ const Reporte_seguimientos = (props) =>{
         })
 
       }
-      else if (sessionStorage.getItem('rol') === 'practicante')
+      else if (desencriptar(sessionStorage.getItem('rol')) === 'practicante')
       {
         axios({
           // Endpoint to send files
-          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/",
+          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/",
           method: "GET",
           headers: config,
         })

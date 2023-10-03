@@ -3,10 +3,10 @@ import {useState } from "react";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import axios from 'axios';
-
+import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 const Listas_no_seleccion = (props) => {
     const config = {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     };
 
     const{childClicked, childClicked2} = props
@@ -17,7 +17,7 @@ const Listas_no_seleccion = (props) => {
         formData.append("llamada", "asignar");
         formData.append("id_usuario", props.monitor_seleccionado);
         formData.append("id_estudiante", props.item.id);
-        formData.append("id_sede",sessionStorage.getItem('sede_id'));
+        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
 
         axios({
       // Endpoint to send files
@@ -40,7 +40,7 @@ const Listas_no_seleccion = (props) => {
         formData.append("llamada", "asignar");
         formData.append("id_jefe", props.practicante_seleccionado);
         formData.append("id_usuario", props.item.id);
-        formData.append("id_sede",sessionStorage.getItem('sede_id'));
+        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
 
         axios({
       // Endpoint to send files
@@ -62,7 +62,7 @@ const Listas_no_seleccion = (props) => {
         formData.append("llamada", "asignar");
         formData.append("id_jefe", props.profesional_seleccionado);
         formData.append("id_usuario", props.item.id);
-        formData.append("id_sede",sessionStorage.getItem('sede_id'));
+        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
 
 
         axios({

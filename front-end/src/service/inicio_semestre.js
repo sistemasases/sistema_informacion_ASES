@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_nuevo) => {
 
   //URL para el axios
@@ -8,11 +8,11 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
 
   // header para la autorizacion con token
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
   const config2 = {
     headers: {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     }
   };
 

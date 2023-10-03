@@ -2,6 +2,7 @@ import React from 'react';
 import {Row, Col} from "react-bootstrap";
 import DataTable from'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
+import { decryptTokenFromSessionStorage, desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 const Desplegable_item_academico = ({item}) => {
 
 
@@ -52,7 +53,7 @@ const Desplegable_item_academico = ({item}) => {
   ]
 
 
-  const userRole = sessionStorage.getItem('rol');
+  const userRole = desencriptar(sessionStorage.getItem('rol'));
 
     
     if(item.nombre){
