@@ -3,6 +3,7 @@ import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, Fo
 import Form from 'react-bootstrap/Form';
 import Create_Seguimiento from '../../service/create_seguimiento';
 import { CSVLink } from 'react-csv';
+import { desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -80,7 +81,7 @@ const Seguimiento_individual = (props) =>{
             primer_acercamiento: false,
             cierre: false,
             id_estudiante: props.estudiante_seleccionado,
-            id_creador: parseInt(sessionStorage.getItem("id_usuario")),
+            id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
             id_modificador: null,
         }
     )

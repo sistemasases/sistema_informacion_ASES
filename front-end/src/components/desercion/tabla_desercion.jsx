@@ -7,10 +7,11 @@ import MOCK_DATA from './MOCK_DATA.json';
 import Cabecera from './cabecera.jsx';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Tabla_desercion = () => {
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token'),
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
   };
   const [state, set_state] = useState({
     periodo: '',

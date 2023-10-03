@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad';
 
 const all_estudiantes = async () => {
     try {
         const config = {
             headers: {
-                Authorization: 'Bearer ' + sessionStorage.getItem('token')
+                Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
             }
         };
         const paramsget = {

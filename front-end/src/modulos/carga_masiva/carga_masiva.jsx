@@ -7,12 +7,16 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+
+
+
 
 
 const Carga_masiva = () =>{
 
-    const userRole = sessionStorage.getItem('permisos');
-
+  //Desencriptar los permisos del usuario desde el sessionStorage
+  const userRole = desencriptar(sessionStorage.getItem('permisos'));
     return (
         <>{ userRole.includes('view_carga_masiva') ? <Col className="contenido_children">
             <Row className="justify-content-md-center">

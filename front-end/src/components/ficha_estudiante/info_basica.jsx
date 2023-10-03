@@ -10,24 +10,25 @@ import Ficha_footer from "./ficha_footer";
 import Info_registros from './info_registros';
 import Programas_academicos from './programas_academicos'
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom'; 
 import { useLocation } from 'react-router-dom';
 import { differenceInYears } from 'date-fns';
 import { parseISO } from 'date-fns';
 import Modal from 'react-bootstrap/Modal';
 import GraphComponent from './trayectoria.jsx';
+import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt, encriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Info_basica = (props) =>{
 
 
   const config = {
     headers: {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     }
   };
 
   const config2 = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
 
   
@@ -38,7 +39,8 @@ const Info_basica = (props) =>{
     const traer_graficos = () => {
       setLoading2(true);
       const paramsget = {
-        id_sede: sessionStorage.getItem('sede_id'),
+        id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
+        
       };
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/';
             axios({
@@ -103,7 +105,7 @@ const Info_basica = (props) =>{
     const datos_option_user = []
     const [isLoading, setIsLoading] = useState(true);
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = desencriptar(sessionStorage.getItem('rol'));
 
 
 
@@ -196,7 +198,7 @@ const Info_basica = (props) =>{
     const fetchData = async (index)=>{
       try{
         const paramsget = {
-          id_sede: sessionStorage.getItem('sede_id'),
+          id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         };
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+state.data_user[index]['id']+"/", config,{paramsget});
         state.total_datos_estudiantes.push(response.data)
@@ -226,7 +228,7 @@ const Info_basica = (props) =>{
           if (url_estudiante == dato.value && state.ya_selecciono_automatico){
             setSelectedOption(dato)
             const paramsget = {
-              id_sede: sessionStorage.getItem('sede_id'),
+              id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
             };
             const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+dato.value+"/";
             axios({
@@ -257,9 +259,10 @@ const Info_basica = (props) =>{
 
     const handle_option_user = (e) => {
       const paramsget = {
-        id_sede: sessionStorage.getItem('sede_id'),
+        id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
       };
-      sessionStorage.setItem('id_estudiante_seleccionado', e.value)
+      const id_estudiante_encriptada = encriptarInt(e.value)
+      sessionStorage.setItem('id_estudiante_seleccionado', id_estudiante_encriptada)
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` + e.value + "/";
       axios({
         url: url_axios,
@@ -286,6 +289,7 @@ const Info_basica = (props) =>{
               ...json,
             },
             edad: edad
+            
           });
         })
         .catch((err) => {
