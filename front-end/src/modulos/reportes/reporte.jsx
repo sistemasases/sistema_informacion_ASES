@@ -787,6 +787,17 @@ const Reporte = () => {
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
+    if (e.target.name === "Condición de Excepción") {
+      const data_filtered = filtered.filter((row) =>
+        row.condicion_excepcion
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      // // // console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
 
     // EN CASO DE QUÉ SE NECESITE
     // BÚSQUEDA INDIVIDUAL DE FILTRO: CONDICIONES DE EXCEPCIÓN
@@ -1785,72 +1796,6 @@ const Reporte = () => {
   };
 
   let navigate = useNavigate();
-
-  // const Filtering = () => {
-  //   const [filterText, setFilterText] = React.useState("");
-  //   const [resetPaginationToggle, setResetPaginationToggle] =
-  //     React.useState(false);
-  //   const filteredItems = fakeUsers.filter(
-  //     (item) =>
-  //       item.name && item.name.toLowerCase().includes(filterText.toLowerCase())
-  //   );
-
-  //   const subHeaderComponentMemo = React.useMemo(() => {
-  //     const handleClear = () => {
-  //       if (filterText) {
-  //         setResetPaginationToggle(!resetPaginationToggle);
-  //         setFilterText("");
-  //       }
-  //     };
-
-  //     return (
-  //       <FilterComponent
-  //         onFilter={(e) => setFilterText(e.target.value)}
-  //         onClear={handleClear}
-  //         filterText={filterText}
-  //       />
-  //     );
-  //   }, [filterText, resetPaginationToggle]);
-  // };
-
-  const filterBox = () => {
-    return (
-      <>
-        {/* Buscador */}
-        <Row>
-          <Col
-            sm={1}
-            xs={1}
-            style={{ paddingRight: "0.1em", marginRight: "0.1em" }}
-          >
-            <Form.Control
-              type="text"
-              placeholder="Buscar "
-              // value={}
-              onChange={(e) => onSearch(e)}
-              style={{ width: "6em" }}
-            />
-          </Col>
-
-          <Col
-            sm={1}
-            xs={1}
-            style={{
-              textAlign: "left",
-              paddingLeft: "0.1em",
-              marginleft: "0.1em",
-            }}
-          >
-            <Button>X</Button>
-          </Col>
-        </Row>
-      </>
-    );
-  };
-
-  
-
-  // // // console.log(proc_link_estudiante(state.estudiante));
 
   return (
     <>
