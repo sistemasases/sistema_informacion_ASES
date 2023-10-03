@@ -4,6 +4,8 @@ from modulo_asignacion.models import *
 
 class asignacion_admin(admin.ModelAdmin):
     list_display = ('id','obtener_estudiante', 'id_usuario','estado','obtener_semestre') 
+    list_filter = ('id_estudiante','id_usuario','estado')
+
 
     def obtener_estudiante(self, obj):
         return obj.id_estudiante.cod_univalle
