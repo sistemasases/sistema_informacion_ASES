@@ -167,7 +167,7 @@ const Info_basica = (props) =>{
 
     }, [state.total_datos_estudiantes]);
 
-    console.log("profesional: " + state.total_datos_estudiantes['profesional']);
+
     const [selectedOption, setSelectedOption] = useState("");
 
     const { id } = useParams();
