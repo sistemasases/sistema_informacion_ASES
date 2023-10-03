@@ -6,22 +6,24 @@ import DataTable, {selectFilter} from'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
 import  {useEffect} from 'react';
 import axios from 'axios';
+import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 const Tabla_sin_Seguimientos = (props) =>{
 
   const config = {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
 
   const [state,set_state] = useState({
-    id_semestre : sessionStorage.getItem('id_semestre_actual'),
+    id_semestre : desencriptarInt(sessionStorage.getItem('id_semestre_actual')),
+    console : console.log("id semestre actual: "+desencriptarInt(sessionStorage.getItem('id_semestre_actual'))),
     la_info_de_la_tabla : [],
   })
 
   useEffect(()=>{
       const paramsget = {
-        id_sede: sessionStorage.getItem('sede_id'),
+        id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
       };
       axios({
         // Endpoint to send files
@@ -45,7 +47,7 @@ const Tabla_sin_Seguimientos = (props) =>{
   const columnas2 = [
     {
       name:'ID',
-      selector:'id',
+      selector: 'id',
       sortable: true,
     },
 

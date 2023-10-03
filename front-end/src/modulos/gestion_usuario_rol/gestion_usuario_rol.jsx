@@ -9,11 +9,12 @@ import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
 import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
+import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 const Gestion_usuario_rol = () =>{
-
-    const userRole = sessionStorage.getItem('permisos');
+    //Desencriptar los permisos del usuario desde el sessionStorage
+    const userRole = desencriptar(sessionStorage.getItem('permisos'));
 
     const[switchChecked, setChecked] = useState(false);
     const handleChange = () => setChecked(!switchChecked);

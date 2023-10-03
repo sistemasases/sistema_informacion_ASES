@@ -6,11 +6,15 @@ import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import carga_masiva_service from '../../service/carga_masiva';
 import DataTable, {createTheme} from 'react-data-table-component';
+import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+
 
 const Carga_masiva_component = () =>{
 
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+     
+    Authorization: 'Bearer ' +  decryptTokenFromSessionStorage()
+   
   };
 
   const[switchChecked, setChecked] = useState(false);

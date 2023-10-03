@@ -3,11 +3,12 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Tabla_de_notas from './tabla_de_notas';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
+import { decryptTokenFromSessionStorage, desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx'
 
 const Cabecera = () => {
   const config = {
     headers: {
-      Authorization: 'Bearer ' + sessionStorage.getItem('token'),
+      Authorization: 'Bearer ' + decryptTokenFromSessionStorage(), 
     },
   };
 
@@ -292,7 +293,7 @@ const handleDeleteItem = async () => {
             <Col>No hay items registrados</Col>
           )}
 
-          {sessionStorage.rol !== 'profesor' ? (
+          {desencriptar(sessionStorage.rol) !== 'profesor' ? (
             <Col xs={'2'}>
               <Row>
                 <Col xs={"6"}>Promedio:</Col>

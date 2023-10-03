@@ -11,15 +11,20 @@ import Tabla_desercion from "../../components/desercion/tabla_desercion";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import  {useEffect} from 'react';
 import axios from 'axios';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../utilidades_seguridad/utilidades_seguridad';
+
 
 const Desercion = () =>{
 
+ 
+
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token')
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
 
-    const userRole = sessionStorage.getItem('permisos');
-
+    //const userRole = sessionStorage.getItem('permisos');
+    const userRole = desencriptar(sessionStorage.getItem('permisos'));
+    console.log("Estos son los permisos:"+userRole)
     const [state,set_state] = useState({
         periodo : '',
     

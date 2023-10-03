@@ -4,7 +4,7 @@ import {Container, Row, Col, Button} from "react-bootstrap";
 import Listas from './listas'
 import Listas_no_seleccion from './listas_no_seleccion';
 import axios from 'axios';
-
+import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 import {Scrollbars} from 'react-custom-scrollbars'; 
 
 
@@ -12,7 +12,7 @@ const Asignaciones_component = (props) =>{
 
   const config = {
     headers: {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     }
   };
 
@@ -150,7 +150,7 @@ const isTabSelected_monitor = (username) => {
   const cambiar_dato_select = (e) =>{
 
     let data = new FormData();
-    data.append('id_sede', sessionStorage.getItem('sede_id'));
+    data.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
 
     axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+e.id+'/', data,config)
     .then(response => {
@@ -161,6 +161,7 @@ const isTabSelected_monitor = (username) => {
     })
     .catch(error => {
       console.log(error);
+      console.log(e.id)
     });
 
     set_state({
@@ -183,7 +184,7 @@ const isTabSelected_monitor = (username) => {
   function practicante_seleccion(name){
 
     let formData = new FormData();
-    formData.append('id_sede', sessionStorage.getItem('sede_id'));
+    formData.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
 
     axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+name+'/', formData ,config)
       .then(response => {
@@ -208,7 +209,7 @@ const isTabSelected_monitor = (username) => {
   function monitor_seleccion(name){
 
     let formData = new FormData();
-    formData.append('id_sede', sessionStorage.getItem('sede_id'));
+    formData.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
 
     axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', formData,config)
       .then(response => {

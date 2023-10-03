@@ -4,18 +4,19 @@ import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
+import {decryptTokenFromSessionStorage, desencriptarInt, desencriptar} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Listas = (props) => {
 
 
     const config = {
         headers: {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
         }
     };
 
     const config2 = {
-        Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     };
 
     const{childClicked, childClicked2} = props
@@ -39,7 +40,7 @@ const Listas = (props) => {
 
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.monitor_seleccionado);
-        formData.append("id_sede",sessionStorage.getItem('sede_id'));
+        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
         formData.append("id_estudiante", props.item.id);
         axios({
             // Endpoint to send files
@@ -61,7 +62,7 @@ const Listas = (props) => {
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.item.id);
         formData.append("id_jefe", props.practicante_seleccionado);
-        formData.append("id_sede",sessionStorage.getItem('sede_id'));
+        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
 
       axios({
       // Endpoint to send files
@@ -84,7 +85,7 @@ const Listas = (props) => {
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.item.id);
         formData.append("id_jefe", props.profesional_seleccionado);
-        formData.append("id_sede",sessionStorage.getItem('sede_id'));
+        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
 
       axios({
       // Endpoint to send files

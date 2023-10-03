@@ -14,10 +14,11 @@ import Carga_estudiantes_component from "../../components/inicio_semestre_sistem
 import Carga_monitores_component from "../../components/inicio_semestre_sistemas/carga_monitores";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import {Container, Row, Accordion, Button, useAccordionButton, Col} from "react-bootstrap";
+import { desencriptar, decryptTokenFromSessionStorage } from '../utilidades_seguridad/utilidades_seguridad';
 
 const Inicio_semestre_sistemas = () =>{
 
-    const userRole = sessionStorage.getItem('permisos');
+    const userRole = desencriptar(sessionStorage.getItem('permisos'));
 
     // Constante para cerrar el acordión.
     const [show, setShow] = useState(true);
