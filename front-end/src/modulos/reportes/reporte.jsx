@@ -541,23 +541,6 @@ const Reporte = () => {
     set_columnas((prevState) => ({
       ...prevState,
       cabeceras: columns,
-      // .forEach((item) => {
-      //   item.name = (
-      //     <Row className="center_tabla_sin_seguimientos">
-      //       <h4 className="texto_mas_pequeño">{item.name}</h4>
-      //       <input
-      //         name={item.name}
-      //         onChange={(e) => {
-      //           // // console.log(e.target.name);
-      //         }}
-      //       />
-      //     </Row>
-      //   );
-      //   item.value = item.value;
-      //   item.selector = item.selector;
-      //   // item.sortable = true;
-      //   item.isCheck = item.isCheck;
-      // }),
     }));
   }, []);
 
@@ -583,7 +566,7 @@ const Reporte = () => {
     // // console.log(e.target.value);
 
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
-    if (e.target.name === "undefined") {
+    if (e.target.name === undefined) {
       // // console.log("no hay nada");
       const data_filtered = state.estudiante;
       setFiltered(data_filtered);
@@ -658,7 +641,7 @@ const Reporte = () => {
     if (e.target.name === "Código programa académico") {
       // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
-        row.id_programa.toLowerCase().includes(e.target.value.toLowerCase())
+        row.id_programa.toString().includes(e.target.value.toLowerCase())
       );
       // // // console.log(data_filtered);
       const filtered_data =
@@ -721,6 +704,7 @@ const Reporte = () => {
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
+      console.log(data_filtered);
       // // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
@@ -729,21 +713,21 @@ const Reporte = () => {
 
     // BÚSQUEDA INDIVIDUAL DE FILTRO: RIESGOS
     if (e.target.name === "Riesgo individual") {
-      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_individual
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
+      console.log(data_filtered);
+
       // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo familiar") {
-      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
-        row.riesgo_familiar.toLowerCase().includes(e.target.value.toLowerCase())
+        row.riesgo_familiar.includes(e.target.value.toLowerCase())
       );
       // // // console.log(data_filtered);
       const filtered_data =
@@ -751,7 +735,6 @@ const Reporte = () => {
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo académico") {
-      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_academico
           .toLowerCase()
@@ -763,7 +746,6 @@ const Reporte = () => {
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo económico") {
-      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_economico
           .toLowerCase()
@@ -775,7 +757,6 @@ const Reporte = () => {
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo vida universitaria") {
-      // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.riesgo_vida_universitaria_ciudad
           .toLowerCase()
@@ -786,6 +767,8 @@ const Reporte = () => {
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
+
+    // BÚSQUEDA INDIVIDUAL DE FILTRO: CONDICIONES DE EXCEPCIÓN
     if (e.target.name === "Condición de Excepción") {
       const data_filtered = filtered.filter((row) =>
         row.condicion_excepcion
@@ -797,36 +780,6 @@ const Reporte = () => {
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
-
-    // EN CASO DE QUÉ SE NECESITE
-    // BÚSQUEDA INDIVIDUAL DE FILTRO: CONDICIONES DE EXCEPCIÓN
-    // Búsqueda de Condiciones de Excepción
-    // if (e.target.name === "") {
-    //   // // // console.log(state.estudiante);
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.asignacion_monitores
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-    // if (e.target.name === "") {
-    //   // // // console.log(state.estudiante);
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.asignacion_monitores
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-
-    // // // console.log(filtered);
   };
 
   const add_search_bar = (selected) => {
@@ -1082,101 +1035,7 @@ const Reporte = () => {
       schema_pop(seleccionado_riesgos);
     }
 
-    // condiciones para Filtros de Excepcion
-    // if (seleccionado_condiciones_excepcion === undefined) {
-    // } else if (
-    //   (seleccionado_condiciones_excepcion.name === "I.N" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion.name === "M.A.P" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion.name === "C.A" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion.name === "C.A.C" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion.name === "C.U" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion.name === "P.R" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion.name === "M.P.M" &&
-    //     e.target.checked === true)
-    // ) {
-    //   seleccionado_condiciones_excepcion.isCheck = true;
-    //   document.getElementsByName("Condición de Excepción")[0].checked = false;
-    //   columns.push(seleccionado_condiciones_excepcion);
-    //   csv_conversion(seleccionado_condiciones_excepcion);
-    //   schema_push(seleccionado_condiciones_excepcion);
-    // } else if (
-    //   (seleccionado_condiciones_excepcion.name === "I.N" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion.name === "M.A.P" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion.name === "C.A" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion.name === "C.A.C" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion.name === "C.U" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion.name === "P.R" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion.name === "M.P.M" &&
-    //     e.target.checked === false)
-    // ) {
-    //   seleccionado_condiciones_excepcion.isCheck = false;
-    //   document.getElementsByName("Condición de Excepción")[0].checked = false;
-    //   columns.map((item, index) => {
-    //     if (item.name === seleccionado_condiciones_excepcion.name) {
-    //       columns.splice(index, 1);
-    //     }
-    //   });
-    //   csv_pop(seleccionado_condiciones_excepcion);
-    //   schema_pop(seleccionado_condiciones_excepcion);
-    // }
-
-    // condiciones para Filtros de Excepcion 2
-    // if (seleccionado_condiciones_excepcion_2 === undefined) {
-    // } else if (
-    //   (seleccionado_condiciones_excepcion_2.name === "D.N.I" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "M.D.P" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "P.D" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "V.C" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "A.R" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "n/a" &&
-    //     e.target.checked === true)
-    // ) {
-    //   seleccionado_condiciones_excepcion_2.isCheck = true;
-    //   columns.push(seleccionado_condiciones_excepcion_2);
-    //   csv_conversion(seleccionado_condiciones_excepcion_2);
-    //   schema_push(seleccionado_condiciones_excepcion_2);
-    // } else if (
-    //   (seleccionado_condiciones_excepcion_2.name === "D.N.I" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "M.D.P" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "P.D" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "V.C" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "A.R" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_condiciones_excepcion_2.name === "n/a" &&
-    //     e.target.checked === false)
-    // ) {
-    //   seleccionado_condiciones_excepcion_2.isCheck = false;
-    //   document.getElementsByName("Condición de Excepción")[0].checked = false;
-    //   columns.map((item, index) => {
-    //     if (item.name === seleccionado_condiciones_excepcion_2.name) {
-    //       columns.splice(index, 1);
-    //     }
-    //   });
-    //   csv_pop(seleccionado_condiciones_excepcion_2);
-    //   schema_pop(seleccionado_condiciones_excepcion_2);
-    // }
-
+    
     // **
     // Condiciones para cabeceras de filtros
     // **
@@ -1714,7 +1573,6 @@ const Reporte = () => {
         columns.map((item, index) => {
           if (item.value === "condicion_excepcion" && item.isCheck === false) {
             columns.splice(index, 1);
-            console.log("HOLA?");
           }
         });
 

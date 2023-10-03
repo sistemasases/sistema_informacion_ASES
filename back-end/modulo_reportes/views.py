@@ -233,11 +233,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         id_estudiante=i['id']).latest('fecha')
                     # Crear un diccionario con los datos de riesgo del seguimiento
                     riesgo = {
-                        'riesgo_individual': seguimiento_reciente.riesgo_individual,
-                        'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
-                        'riesgo_academico': seguimiento_reciente.riesgo_academico,
-                        'riesgo_economico': seguimiento_reciente.riesgo_economico,
-                        'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
                     }
                     # Devolver el riesgo en la respuesta
                 except seguimiento_individual.DoesNotExist:
@@ -373,11 +373,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         id_estudiante=i['id']).latest('fecha')
                     # Crear un diccionario con los datos de riesgo del seguimiento
                     riesgo = {
-                        'riesgo_individual': seguimiento_reciente.riesgo_individual,
-                        'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
-                        'riesgo_academico': seguimiento_reciente.riesgo_academico,
-                        'riesgo_economico': seguimiento_reciente.riesgo_economico,
-                        'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
                     }
                     # Devolver el riesgo en la respuesta
                 except seguimiento_individual.DoesNotExist:
@@ -511,11 +511,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         id_estudiante=i['id']).latest('fecha')
                     # Crear un diccionario con los datos de riesgo del seguimiento
                     riesgo = {
-                        'riesgo_individual': seguimiento_reciente.riesgo_individual,
-                        'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
-                        'riesgo_academico': seguimiento_reciente.riesgo_academico,
-                        'riesgo_economico': seguimiento_reciente.riesgo_economico,
-                        'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
                     }
                     # Devolver el riesgo en la respuesta
                 except seguimiento_individual.DoesNotExist:
@@ -651,11 +651,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         id_estudiante=i['id']).latest('fecha')
                     # Crear un diccionario con los datos de riesgo del seguimiento
                     riesgo = {
-                        'riesgo_individual': seguimiento_reciente.riesgo_individual,
-                        'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
-                        'riesgo_academico': seguimiento_reciente.riesgo_academico,
-                        'riesgo_economico': seguimiento_reciente.riesgo_economico,
-                        'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
                     }
                     # Devolver el riesgo en la respuesta
                 except seguimiento_individual.DoesNotExist:
@@ -857,11 +857,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         id_estudiante=i['id']).latest('fecha')
                     # Crear un diccionario con los datos de riesgo del seguimiento
                     riesgo = {
-                        'riesgo_individual': seguimiento_reciente.riesgo_individual,
-                        'riesgo_familiar': seguimiento_reciente.riesgo_familiar,
-                        'riesgo_academico': seguimiento_reciente.riesgo_academico,
-                        'riesgo_economico': seguimiento_reciente.riesgo_economico,
-                        'riesgo_vida_universitaria_ciudad': seguimiento_reciente.riesgo_vida_universitaria_ciudad
+                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
                     }
                     # Devolver el riesgo en la respuesta
                 except seguimiento_individual.DoesNotExist:
@@ -1081,11 +1081,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     # Crear un diccionario con los datos de riesgo del seguimiento
 
                     riesgo = {
-                        'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual),
-                        'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar),
-                        'riesgo_academico': self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico),
-                        'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico),
-                        'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)
+                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
                     }
 
                     # Devolver el riesgo en la respuesta
@@ -1244,11 +1244,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     # Crear un diccionario con los datos de riesgo del seguimiento
 
                     riesgo = {
-                        'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual),
-                        'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar),
-                        'riesgo_academico': self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico),
-                        'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico),
-                        'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)
+                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
                     }
 
                     # Devolver el riesgo en la respuesta
@@ -1385,11 +1385,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     # Crear un diccionario con los datos de riesgo del seguimiento
 
                     riesgo = {
-                        'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual),
-                        'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar),
-                        'riesgo_academico': self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico),
-                        'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico),
-                        'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)
+                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
                     }
 
                     # Devolver el riesgo en la respuesta
