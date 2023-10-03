@@ -152,6 +152,11 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             diccionario_estudiante.update(diccionarion_cond_excepcion)
         except cond_excepcion.DoesNotExist:
             diccionario_estudiante['id_cond_excepcion'] = None
+        except MultipleObjectsReturned:
+            cond_excepcion_obj = cond_excepcion.objects.filter(id=cond_excepcion_id).first()
+            # diccionario_estudiante['id_cond_excepcion'] = cond_excepcion_obj.alias
+            diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_obj.alias}
+            diccionario_estudiante.update(diccionarion_cond_excepcion)
         try:
             discap_men_obj = discap_men.objects.get(codigo_men=discap_men_id)
             diccionario_estudiante['id_discapacidad'] = discap_men_obj.nombre
@@ -198,12 +203,20 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             diccionario_estudiante.update(diccionarion_estado_civil)
         except estado_civil.DoesNotExist:
             diccionario_estudiante['id_estado_civil'] = None
+        except MultipleObjectsReturned:
+            estado_civil_obj = estado_civil.objects.filter(id=estado_civil_id).first()
+            diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_obj.estado_civil}
+            diccionario_estudiante.update(diccionarion_estado_civil)
         try:
             act_simultanea_obj = act_simultanea.objects.get(opcion_general=act_simultanea_id)
             diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_obj.actividad}
             diccionario_estudiante.update(diccionarion_act_simultanea)
         except act_simultanea.DoesNotExist:
             diccionario_estudiante['id_act_simultanea'] = None
+        except MultipleObjectsReturned:
+            act_simultanea_obj = act_simultanea.objects.filter(opcion_general=act_simultanea_id).first()
+            diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_obj.actividad}
+            diccionario_estudiante.update(diccionarion_act_simultanea)
 
         lista_programas = []
         try :
@@ -237,7 +250,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         try:
             semestre_activo = semestre.objects.get(semestre_actual=True, id_sede =request_sede)
             serializer_semestre = semestre_serializer(semestre_activo)
-            el_monitor_asignado = asignacion.objects.get(id_semestre=serializer_semestre.data['id'], id_estudiante=pk)
+            el_monitor_asignado = asignacion.objects.get(id_semestre=serializer_semestre.data['id'], id_estudiante=pk,estado=True)
             serializer_monitor_asignado = asignacion_serializer(el_monitor_asignado)
 
             info_monitor = usuario_rol.objects.get(id_usuario = serializer_monitor_asignado.data['id_usuario'], id_semestre=serializer_semestre.data['id'])
@@ -681,7 +694,6 @@ class trayectoria_viewsets(viewsets.ModelViewSet):
             listas.append(riesgo_academico_lista)
             listas.append(riesgo_economico_lista)
             listas.append(riesgo_vida_universitaria_ciudad_lista)
-            print(listas)
             return Response(listas)
         except seguimiento_individual.DoesNotExist:
             return Response({})
