@@ -1848,40 +1848,7 @@ const Reporte = () => {
     );
   };
 
-  const filterBox = () => {
-    return (
-      <>
-        {/* Buscador */}
-        <Row>
-          <Col
-            sm={1}
-            xs={1}
-            style={{ paddingRight: "0.1em", marginRight: "0.1em" }}
-          >
-            <Form.Control
-              type="text"
-              placeholder="Buscar "
-              // value={}
-              onChange={(e) => onSearch(e)}
-              style={{ width: "6em" }}
-            />
-          </Col>
-
-          <Col
-            sm={1}
-            xs={1}
-            style={{
-              textAlign: "left",
-              paddingLeft: "0.1em",
-              marginleft: "0.1em",
-            }}
-          >
-            <Button>X</Button>
-          </Col>
-        </Row>
-      </>
-    );
-  };
+  
 
   // // // console.log(proc_link_estudiante(state.estudiante));
 
