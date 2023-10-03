@@ -455,7 +455,7 @@ const cambiar_datos = (e) => {
       formData.append("ult_modificacion", fechaHoraActual);
 
       axios({
-      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+ props +'/',
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+ props.datos.id+'/',
       method: "POST",
       data: formData,
       headers: config2,

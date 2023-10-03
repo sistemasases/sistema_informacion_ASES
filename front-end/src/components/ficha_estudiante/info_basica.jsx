@@ -10,13 +10,13 @@ import Ficha_footer from "./ficha_footer";
 import Info_registros from './info_registros';
 import Programas_academicos from './programas_academicos'
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom'; 
 import { useLocation } from 'react-router-dom';
 import { differenceInYears } from 'date-fns';
 import { parseISO } from 'date-fns';
 import Modal from 'react-bootstrap/Modal';
 import GraphComponent from './trayectoria.jsx';
-import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt, encriptar, encriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt, encriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Info_basica = (props) =>{
 
@@ -42,7 +42,6 @@ const Info_basica = (props) =>{
         id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         
       };
-      console.log("id_sede: " + paramsget.id_sede);
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/';
             axios({
             // Endpoint to send files
@@ -168,7 +167,7 @@ const Info_basica = (props) =>{
 
     }, [state.total_datos_estudiantes]);
 
-
+    console.log("profesional: " + state.total_datos_estudiantes['profesional']);
     const [selectedOption, setSelectedOption] = useState("");
 
     const { id } = useParams();
@@ -262,7 +261,8 @@ const Info_basica = (props) =>{
       const paramsget = {
         id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
       };
-      encriptarInt(sessionStorage.setItem('id_estudiante_seleccionado', e.value))
+      const id_estudiante_encriptada = encriptarInt(e.value)
+      sessionStorage.setItem('id_estudiante_seleccionado', id_estudiante_encriptada)
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` + e.value + "/";
       axios({
         url: url_axios,

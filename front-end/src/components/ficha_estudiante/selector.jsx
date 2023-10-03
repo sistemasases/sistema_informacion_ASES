@@ -6,7 +6,7 @@ import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
 import {Dropdown, Button} from "react-bootstrap";
 import {useEffect} from 'react';
-import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 import axios from 'axios';
 

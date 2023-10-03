@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { decryptTokenFromSessionStorage, desencriptarInt } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const all_monitores = async () => {
     try {
@@ -8,7 +8,7 @@ const all_monitores = async () => {
                 Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
             }
         };
-        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarId(sessionStorage.getItem('sede_id'))+"/";
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/";
         const res = await axios.get(url_axios, config)
         return res.data;
         

@@ -17,7 +17,8 @@ const Info_basica_monitor = (props) =>{
   const config = {
     Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
   };
-   
+    const id_usuario_desencriptada = desencriptarInt(sessionStorage.getItem('id_usuario'));
+    const id_sede_desencriptada = desencriptarInt(sessionStorage.getItem('sede_id'));
 
     const datos_option_user = []
     const total_datos_monitors = []
@@ -121,7 +122,8 @@ const Info_basica_monitor = (props) =>{
 
     const handle_option_user = (e) => {
         const paramsget = {
-        id_sede: sessionStorage.getItem('sede_id'),
+        
+        id_sede: id_sede_desencriptada,
         };
         console.log(e.id)
         const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_info_extra/`+desencriptarInt(state.data_user[e.id]['id'])+"/";
