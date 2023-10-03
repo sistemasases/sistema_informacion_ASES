@@ -1,0 +1,44 @@
+ELIMINAR ARCHIVOS .ENV A LOS QUE SE LES HACE SEGUIMIENTO
+-
+git rm -r --cached '*.env
+
+
+GENERAR KEY DE DJANGO
+-
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+
+INSTALAR DEPENDENCIAS DJANGO
+-
+pip install -r requirements.txt
+
+
+ARCHIVO .env DJANGO: back-end/modulo_ases/.env
+-
+export DJANGO_SECRET_KEY=""
+export DJANGO_ALLOWED_HOSTS="127.0.0.1,localhost"
+export DJANGO_CORS_ALLOWED_ORIGINS="http://localhost:8000,http://localhost:3000"
+export DJANGO_CORS_ALLOWED_CREDENTIALS="True"
+export DJANGO_DB_NAME="mszacasn"
+export DJANGO_DB_USER="mszacasn"
+export DJANGO_DB_PASSWORD="BGCLKJM0p4fPlpbziUER8eupqcCM0HxJ"
+export DJANGO_DB_HOST="jelani.db.elephantsql.com"
+export DJANGO_DB_PORT="5432"
+export DJANGO_SECURE_SETTINGS="False
+export DJANGO_INSECURE_SETTINGS="True"
+
+
+ARCHIVO .env REACT: front-end/.env
+-
+SKIP_PREFLIGHT_CHECK=true
+REACT_APP_API_URL=http://localhost:8000
+
+
+
+
+
+
+
+
+
+

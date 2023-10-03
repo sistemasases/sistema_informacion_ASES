@@ -4,10 +4,11 @@ import Switch from 'react-switch';
 import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import Informacion_rol from '../../components/reporte_seguimientos/informacion_rol';
+import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 const Cabecera = (props) => {
   const config = {
-    Authorization: 'Bearer ' + sessionStorage.getItem('token'),
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
   };
 
   const [switchChecked, setChecked] = useState(false);
@@ -77,12 +78,12 @@ const Cabecera = (props) => {
         return err;
       });
 
-    if (sessionStorage.getItem('rol') === 'profesional')
+    if (desencriptar(sessionStorage.getItem('rol')) === 'profesional')
       {
         const paramsget = {
-          id_sede: sessionStorage.getItem('sede_id'),
+          id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         };
-        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + sessionStorage.getItem('id_usuario') + '/';
+        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + desencriptar(sessionStorage.getItem('id_usuario')) + '/';
         axios({
           url: url_axios,
           params: paramsget,
@@ -102,13 +103,13 @@ const Cabecera = (props) => {
           });
 
       }
-      else if (sessionStorage.getItem('rol') === 'practicante')
+      else if (desencriptar(sessionStorage.getItem('rol')) === 'practicante')
       {
         const paramsget = {
-          id_sede: sessionStorage.getItem('sede_id'),
+          id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         };
         axios({
-          url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos_practicante/` + sessionStorage.getItem('id_usuario') + '/',
+          url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos_practicante/` + desencriptar(sessionStorage.getItem('id_usuario')) + '/',
           params : paramsget,
           method: 'GET',
           headers: config,
@@ -205,7 +206,7 @@ const Cabecera = (props) => {
       total_datos_estudiante_seleccionado: total_datos_estudiantes[e.id],
     });
     const paramsget = {
-      id_sede: sessionStorage.getItem('sede_id'),
+      id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
     };
     axios({
       url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + props.data_user[e.id]['id'] + '/',
@@ -357,7 +358,7 @@ const Cabecera = (props) => {
         )}
 
         {
-        (sessionStorage.getItem('rol')=='socioeducativo_reg' || sessionStorage.getItem('rol')=='super_ases' || sessionStorage.getItem('rol')=='socieducativo') ? 
+        (desencriptar(sessionStorage.getItem('rol'))=='sistemas' || desencriptar(sessionStorage.getItem('rol'))=='super_ases' || desencriptar(sessionStorage.getItem('rol'))=='socieducativo') ? 
         (        
         <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
           <Row>

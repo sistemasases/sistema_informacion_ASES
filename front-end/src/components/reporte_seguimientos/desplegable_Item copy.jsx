@@ -5,6 +5,7 @@ import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import Modal from 'react-bootstrap/Modal';
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual_sin_boton';
 import Seguimiento_inasistencia from '../seguimiento_forms/form_inasistencia_sin_boton';
+import { encriptar, desencriptar, decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Desplegable_item = ({item, updateDataUserSocioedu}) => {
 
@@ -17,7 +18,7 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
     const handleCloseIn = () => setShow2(false);
     const handleShow2 = () => setShow2(true);
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = desencriptar(sessionStorage.getItem('rol'));
 
 
       const enviar_datos = (e) => {

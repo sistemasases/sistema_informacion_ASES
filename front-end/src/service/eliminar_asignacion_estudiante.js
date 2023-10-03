@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const eliminar_asignacion = async (id_estudiante) => {
     try {
       const config = {
         headers: {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
       };
       const url_axios = `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante` + id_estudiante.toString()+"/";

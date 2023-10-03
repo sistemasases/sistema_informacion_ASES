@@ -8,14 +8,16 @@ import Modal from 'react-bootstrap/Modal';
 import {Button, ListGroupItem} from "react-bootstrap";
 
 import axios from 'axios';
+import { encriptar, desencriptar, decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+
 
 const Navbar = (props) =>{
-
+    const decryptToken = decryptTokenFromSessionStorage();
     const location = useLocation();
     const [lastVisitedRoutes, setLastVisitedRoutes] = useState([]);
     const config = {
       headers: {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' +  decryptToken
       }
     };
   
@@ -106,10 +108,10 @@ const handleConfirmPasswordChange = (event) => {
     //     window.location.replace('');
     // }    
     const cambiar_contra_funcion = () => {
-    
+      const decryptedUserId = desencriptar(sessionStorage.getItem('id_usuario'));
       const url = `${process.env.REACT_APP_API_URL}/change_password`
       const data = {
-        "user_id": sessionStorage.getItem('id_usuario'),
+        "user_id": decryptedUserId,
         "contraseña": password,
         "new_contraseña": newPassword,
     }  
@@ -120,6 +122,9 @@ const handleConfirmPasswordChange = (event) => {
     })
     .catch(err=>alert("ERROR en la actualización."))
     };
+    const decryptNombreCompleto = desencriptar(sessionStorage.getItem('nombre_completo'));
+    const decryptRol = desencriptar(sessionStorage.getItem('rol'));
+    const decryptSede = desencriptar(sessionStorage.getItem('sede'));
     return (
     <Container  >
         <Row className="nav">
@@ -156,9 +161,9 @@ const handleConfirmPasswordChange = (event) => {
                 <Row >
 
                     <Col xs={"7"} md={"7"} className="info_perfil">
-                        <Row>{sessionStorage.nombre_completo} </Row>
-                        <Row>{sessionStorage.rol}</Row>
-                        <Row>{sessionStorage.sede}</Row>
+                        <Row>{decryptNombreCompleto} </Row>
+                        <Row>{decryptRol}</Row>
+                        <Row>{decryptSede}</Row>
                     </Col>
 
                     

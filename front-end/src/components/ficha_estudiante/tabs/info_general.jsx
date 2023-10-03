@@ -3,6 +3,7 @@ import Select from 'react-select'  ;
 import {Container, Row, Col, Button} from "react-bootstrap";
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
+import { desencriptar, decryptTokenFromSessionStorage, desencriptarIdEstudianteSeleccionado, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 //import DatePicker from 'react-datepicker';
 
@@ -12,12 +13,12 @@ const Info_general = (props) =>{
 
       const config = {
             headers: {
-                  Authorization: 'Bearer ' + sessionStorage.getItem('token')
+                  Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
             }
       };
 
       const config2 = {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
       };
 
 
@@ -454,7 +455,7 @@ const cambiar_datos = (e) => {
       formData.append("ult_modificacion", fechaHoraActual);
 
       axios({
-      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+props.datos.id+'/',
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+ props.datos.id+'/',
       method: "POST",
       data: formData,
       headers: config2,
@@ -510,6 +511,7 @@ const cambiar_datos = (e) => {
                   })
                   alert("error al editar el estudiante :" + err)
                   
+            console.log('celular'+state.celular)
             //console.log("entra al malo")
             //alert("error al editar el estudiante : " + props.datos.id);
       })

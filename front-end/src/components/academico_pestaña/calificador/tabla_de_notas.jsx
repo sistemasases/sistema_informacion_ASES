@@ -2,12 +2,13 @@ import React, { useMemo, useState } from 'react';
 import { Container, Row, Col, Dropdown, Button, Form } from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
 
     const config = {
         headers: {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
     };
 
@@ -83,7 +84,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
 
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
-                    {sessionStorage.getItem('rol') === 'profesor' ?
+                    {desencriptar(sessionStorage.getItem('rol')) === 'profesor' ?
                         (
                             <Col className="link_text_academico1_sin_borde" xs={2}>
                                     {item.nombre} {item.apellido}
@@ -98,7 +99,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                         )
                     }
 
-                    {sessionStorage.getItem('rol') === 'profesor' ?
+                    {desencriptar(sessionStorage.getItem('rol')) === 'profesor' ?
                         (
                         <Col className="link_text_academico1_sin_borde" xs={2}>
                                 {item.cod_univalle}

@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx'
 
 const create_inasistencia = async (formData) => {
     var respuesta = false;
     try {
         const config = {
             headers: {
-                Authorization: 'Bearer ' + sessionStorage.getItem('token')
+                Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
             }
         };
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/inasistencia/`;

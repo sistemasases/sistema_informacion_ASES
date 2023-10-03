@@ -1,11 +1,14 @@
 import axios from 'axios';
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva`;
+
+
 
 const carga_masiva = (file,option) => {
     let formData = new FormData();
     const config = {
-      Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      Authorization: 'Bearer ' +   decryptTokenFromSessionStorage()
     };
   
     //Adding files to the formdata

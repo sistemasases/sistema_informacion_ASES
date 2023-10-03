@@ -8,16 +8,17 @@ import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
 import { FaRegChartBar, FaThList, FaBars } from "react-icons/fa";
 import { DropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../utilidades_seguridad/utilidades_seguridad';
 
 const Carga_masiva = () => {
 
   const config = {
     headers: {
-          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     }
   };
 
-  const userRole = sessionStorage.getItem('permisos');
+  const userRole = desencriptar(sessionStorage.getItem('permisos'));
 
   const [state, set_state] = useState({
     data1: [],
@@ -29,7 +30,7 @@ const Carga_masiva = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+sessionStorage.getItem('sede_id')+"/", config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -40,7 +41,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+sessionStorage.getItem('sede_id')+"/", config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -51,7 +52,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+sessionStorage.getItem('sede_id')+"/", config)
+    axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/monitor/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -62,7 +63,7 @@ const Carga_masiva = () => {
         console.log(error);
       });
 
-      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_sede/`+sessionStorage.getItem('sede_id')+"/", config)
+      axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_sede/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/", config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

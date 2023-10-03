@@ -3,6 +3,7 @@ import { Modal, ModalHeader, ModalBody, Button, Col, Row } from "react-bootstrap
 import Form from 'react-bootstrap/Form';
 import Create_Inasistencia from '../../service/create_inasistencia';
 import { CSVLink } from 'react-csv';
+import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Inasistencia = (props) => {
     const id_estudiantecons = props.estudiante_seleccionado
@@ -11,7 +12,7 @@ const Inasistencia = (props) => {
         observaciones: "",
         revisado_profesional: false,
         revisado_practicante: false,
-        id_creador: parseInt(sessionStorage.getItem("id_usuario")),
+        id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
         id_modificador: null,
 
     });
@@ -67,7 +68,7 @@ const Inasistencia = (props) => {
         });
     };
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = desencriptar(sessionStorage.getItem('rol'));
 
     return (
         <Modal {...props} backdrop="static">

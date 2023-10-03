@@ -9,7 +9,7 @@ import  {useEffect, componentDidUpdate} from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-
+import { decryptTokenFromSessionStorage } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 var today = new Date();
@@ -18,7 +18,7 @@ var now = today.toLocaleString();
 const Info_general = (props) =>{
 
       const config = {
-            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+            Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
       };
 
     const[switchChecked, setChecked] = useState(false);

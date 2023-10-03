@@ -19,6 +19,7 @@ import Footer from './footer';
 import Sidebar_item_closed from './sidebar_item_closed';
 import {Scrollbars} from 'react-custom-scrollbars'; 
 import axios from 'axios';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 
 
@@ -35,14 +36,14 @@ const SideBar = (props) =>{
     }
 
     const [state,set_state] = useState({
-        desplegable : sessionStorage.rol === 'sistemas' || sessionStorage.rol === 'super_ases' ? Menu : 
-        sessionStorage.rol === 'socioeducativo_reg' || sessionStorage.rol === 'profesional' || sessionStorage.rol === 'socioeducativo' ? Menu2 :
-        sessionStorage.rol === 'dir_academico' ? Menu3 : 
-        sessionStorage.rol === 'monitor' ? Menu4 :
-        sessionStorage.rol === 'dir_investigacion' ? Menu5 : 
-        sessionStorage.rol === 'practicante' ? Menu8 : 
-        sessionStorage.rol === 'dir_programa' || sessionStorage.rol === 'vcd_academico' ? Menu6 :
-        sessionStorage.rol === 'profesor' ? Menu9 : Menu7
+        desplegable : desencriptar(sessionStorage.rol) === 'sistemas' || desencriptar(sessionStorage.rol) === 'super_ases' ? Menu : 
+        desencriptar(sessionStorage.rol) === 'socioeducativo_reg' || desencriptar(sessionStorage.rol) === 'profesional' || desencriptar(sessionStorage.rol) === 'socioeducativo' ? Menu2 :
+        desencriptar(sessionStorage.rol) === 'dir_academico' ? Menu3 : 
+        desencriptar(sessionStorage.rol) === 'monitor' ? Menu4 :
+        desencriptar(sessionStorage.rol) === 'dir_investigacion' ? Menu5 : 
+        desencriptar(sessionStorage.rol) === 'practicante' ? Menu8 : 
+        desencriptar(sessionStorage.rol) === 'dir_programa' || desencriptar(sessionStorage.rol) === 'vcd_academico' ? Menu6 :
+        desencriptar(sessionStorage.rol) === 'profesor' ? Menu9 : Menu7
       })
 
     function path_actual(name){
@@ -53,7 +54,7 @@ const SideBar = (props) =>{
       }
 
     const [data, setData] = useState(
-        {refreshtoken: sessionStorage.getItem('refresh-token')}
+        {refreshtoken: desencriptar(sessionStorage.getItem('refresh-token'))}
     )
     const [show, setShow] = useState(false);
 
@@ -94,7 +95,7 @@ const SideBar = (props) =>{
 
     const config = {
         headers: {
-              Authorization: 'Bearer ' + sessionStorage.getItem('token')
+              Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
         }
     };
 

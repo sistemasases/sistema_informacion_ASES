@@ -16,6 +16,10 @@ import All_Users_Rols from '../../service/all_users_rol_old';
 import Create_User from '../../service/create_user';
 import Delete_User from '../../service/delete_user';
 import user_rol from '../../service/user_rol';
+import CryptoJS from 'crypto-js';
+
+// Clave secreta para encriptar los datos
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 // variable que guarda los roles disponibles en la BD.
 var datos_option_rol = [];
@@ -24,10 +28,24 @@ var bandera_option_rol = true;
 
 const Semestre_sistemas_component = () =>{
 
+    // Función para desencriptar el token del usuario desde el sessionStorage
+    const decryptTokenFromSessionStorage = () => {
+        const encryptedToken = sessionStorage.getItem('token');
+        if (!encryptedToken) {
+          return null; // No hay token en sessionStorage
+        }
+      
+        // Desencriptar el token usando la clave secreta
+        const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
+        const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
+      
+        return decryptedToken;
+      };
+      
     // constante para el headers del axios
     const config = {
         headers: {
-              Authorization: 'Bearer ' + sessionStorage.getItem('token')
+              Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
     };
 

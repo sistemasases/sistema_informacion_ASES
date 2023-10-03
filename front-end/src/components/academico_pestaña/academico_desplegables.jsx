@@ -5,11 +5,12 @@ import Modal from 'react-bootstrap/Modal';
 import Estudiantes from './estudiantes';
 import Profesores from './profesores';
 import axios from 'axios';
+import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Academico_desplegable = () => {
   const config = {
     headers: {
-      Authorization: 'Bearer ' + sessionStorage.getItem('token')
+      Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     }
   };
 
@@ -49,7 +50,7 @@ const Academico_desplegable = () => {
   useEffect(() => {
     // Aquí puedes realizar las llamadas iniciales si es necesario
     // Por ejemplo, si necesitas obtener facultades al cargar el componente
-    if(sessionStorage.getItem('rol') === 'profesor')
+    if(desencriptar(sessionStorage.getItem('rol') === 'profesor'))
     {
       traer_materias_del_profesor()
     }
@@ -63,7 +64,7 @@ const Academico_desplegable = () => {
 
   const traer_materias_del_profesor = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/traer_materias_del_profesor/`+sessionStorage.getItem('id_usuario')+'/', config);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/traer_materias_del_profesor/`+desencriptar(sessionStorage.getItem('id_usuario'))+'/', config);
       set_state({
         traer_materias_del_profesor: response.data,
       });
@@ -116,7 +117,7 @@ const Academico_desplegable = () => {
   const traer_estudiantes = async () => {
     try {
       const paramsget = {
-        id_sede: sessionStorage.getItem('sede_id'),
+        id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
       };
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`, config,{paramsget});
       set_state({
