@@ -130,7 +130,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                                         />
                                     </Col>
                                 ))}
-                                {sessionStorage.rol !== 'profesor' ?
+                                {desencriptar(sessionStorage.rol) !== 'profesor' ?
                                     (
                                         <Col xs={"2"} >
                                             <Row>
