@@ -54,13 +54,17 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
                         item.hora_inicio ?
                         (
                         <Col onClick={handleShow}>
-                            Seguimiento individual : {item.fecha}
+                            Seguimiento individual : {item.fecha} 
+                            { item.revisado_practicante === true ? 
+                            <b>✔</b>: <b></b>}
                         </Col>
                         )
                         :
                         (
                         <Col onClick={handleShow2}>
                             Inasistencia : {item.fecha}
+                            { item.revisado_practicante === true ? 
+                            <b>✔</b>: <b></b>}
                         </Col>
                         )
                     }
@@ -73,13 +77,17 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
                         item.hora_inicio ?
                         (
                         <Col onClick={handleShow}>
-                            Seguimiento individual : {item.fecha}
+                            Seguimiento individual : {item.fecha} 
+                            { item.revisado_practicante === true ? 
+                            <b>✔</b>: <b></b>}
                         </Col>
                         )
                         :
                         (
                         <Col onClick={handleShow2}>
                             Inasistencia : {item.fecha}
+                            { item.revisado_practicante === true ? 
+                            <b>✔</b>: <b></b>}
                         </Col>
                         )
                     }

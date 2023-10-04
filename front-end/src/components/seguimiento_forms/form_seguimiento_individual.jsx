@@ -93,22 +93,254 @@ const Seguimiento_individual = (props) =>{
         })
     }, [state.fecha]);
 
+    const verificador_datos_basicos = () => {
+        if(!!state.fecha){
+            if(!!state.lugar){
+                if(!!state.hora_inicio){
+                    if(!!state.hora_finalización){
+                        if(!!state.objetivos){
+                            verificador_tematicas();
+                        }
+                        else{
+                            window.confirm("Debes diligenciar el campo 'Objetivos', por favor verifica este campo.")
+                        }
+                    }
+                    else{
+                        window.confirm("Debes introducir una Hora de finalización válida, por favor verifica este dato.")
+                    }
+                }
+                else{
+                    window.confirm("Debes introducir una Hora de inicio válida, por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes introducir un lugar de encuentro válido, por favor verifica este dato.")
+            }
+        }
+        else{
+            window.confirm("Debes introducir una fecha válida, por favor verifica este dato.")
+        }
+    }
+    const verificador_tematicas = () => {
+        if(!!state.individual || !!state.familiar || !!state.academico || !!state.economico || !!state.vida_universitaria_ciudad){
+            verificador_individual()
+        }
+        else{
+            window.confirm("Debes diligenciar al menos una dimesión, por favor verifica estos campos.")
+        }
+            
+    }
+    const verificador_individual = () => {
+        if(!!state.individual){ 
+            if(state.riesgo_individual==0 ||state.riesgo_individual==1 || state.riesgo_individual==2){
+                if(!!state.autoconocimiento || !!state.rasgos_de_personalidad || !!state.identificación
+                    || !!state.red_de_apoyo || !!state.proyecto_de_vida || !!state.salud
+                    || !!state.aspectos_motivacionales || !!state.historia_de_vida || !!state.relación_eriótico_afectivas
+                    || !!state.diversidad_sexual){
+                    verificador_familiar()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Individual', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Individual', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_familiar()
+        }
+            
+    }
+
+    const verificador_familiar = () => {
+        if(!!state.familiar){ 
+            if(state.riesgo_familiar==0 ||state.riesgo_familiar==1 || state.riesgo_familiar==2){
+                
+                if(!!state.dinamica_familiar){
+                    verificador_academico()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Familiar', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Familiar', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_academico()
+        }
+            
+    }
+
+    const verificador_academico = () => {
+        if(!!state.academico){ 
+            if(state.riesgo_academico==0 ||state.riesgo_academico==1 || state.riesgo_academico==2){
+                if(!!state.desempeño_académico || !!state.elección_vocacional || !!state.manejo_del_tiempo){
+                    verificador_economico()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Académico', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Académico', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_economico()
+        }
+            
+    }
+
+    const verificador_economico = () => {
+        if(!!state.economico){ 
+            if(state.riesgo_economico==0 ||state.riesgo_economico==1 || state.riesgo_economico==2){
+                if(!!state.apoyos_económicos_institucionales || !!state.apoyo_económico_familiar || !!state.manejo_finanzas
+                    || !!state.situación_laboral_ocupacional){
+                    verificador_vida()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Económico', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Económico', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_vida()
+        }
+            
+    }
+
+    const verificador_vida = () => {
+        if(!!state.vida_universitaria_ciudad){ 
+            if(state.riesgo_vida_universitaria_ciudad==0 ||state.riesgo_vida_universitaria_ciudad==1 || state.riesgo_vida_universitaria_ciudad==2){
+                if(!!state.motivación_compañamiento || !!state.referencia_geográfica || !!state.adaptación_ciudad_Universidad
+                    || !!state.oferta_servicios || !!state.vivienda || !!state.vinculación_grupos_actividades_extracurriculares){
+                    verificador_acciones()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Vida Universitaria', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Vida Universitaria', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_acciones()
+        }
+            
+    }
+
+    const verificador_acciones = () => {
+
+        if(!!state.apoyo_académico || !!state.taller_par_par || !!state.reconocimiento_ciudad_U
+            || !!state.rem_profesional_SE || !!state.rem_racticante_SE || !!state.rem_actividades_grupales
+            || !!state.rem_monitorías_académicas || !!state.rem_proyectos_Universidad || !!state.rem_servicio_salud
+            || !!state.rem_registro_académico || !!state.rem_matrícula_financiera || !!state.rem_desarrollo_humano_promoción_SE
+            || !!state.rem_directores_programa || !!state.rem_grupos_universidad || !!state.rem_externa
+            || !!state.Ninguna_acción_realizada ){
+            set_info()
+        }
+        else{
+            window.confirm("Debes marcar al menos una acción realizada o en su defecto marcar 'Ninguna acción realizada', por favor verifica este dato.")
+        }
+    }
+
+    
     const set_info = () => {
         Create_Seguimiento.create_seguimiento(state).then(res=>{
             if(res){
                 recargarPagina();
                 props.handleClose();
             } else {
-                window.confirm("Hubo un error al momento de crear el seguimiento, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.")
+                window.confirm("Hubo un error con el servidor al momento de crear el seguimiento, por favor envianos el documento CSV o vuelve a intentar el registro.")
             }
         })
     }
 
     const handleChange = () => {
+        reset_info()
         props.handleClose()
         props.handleModalIn()
     }
-
+    const reset_info = () => {
+        set_state({
+            ...state,
+            fecha: null,
+            lugar: "",
+            hora_inicio: null,
+            hora_finalización: null,
+            objetivos: "",
+            individual: "",
+            riesgo_individual: null,
+            autoconocimiento: false,
+            rasgos_de_personalidad: false,
+            identificación: false,
+            red_de_apoyo: false,
+            proyecto_de_vida: false,
+            salud: false,
+            aspectos_motivacionales: false,
+            historia_de_vida: false,
+            relación_eriótico_afectivas: false,
+            diversidad_sexual: false,
+            familiar: "",
+            riesgo_familiar: null,
+            dinamica_familiar: false,
+            academico: "",
+            riesgo_academico: null,
+            desempeño_académico: false,
+            elección_vocacional: false,
+            manejo_del_tiempo: false,
+            economico: "",
+            riesgo_economico: null,
+            apoyos_económicos_institucionales: false,
+            manejo_finanzas: false,
+            apoyo_económico_familiar: false,
+            situación_laboral_ocupacional: false,
+            vida_universitaria_ciudad: "",
+            riesgo_vida_universitaria_ciudad: null,
+            motivación_compañamiento: false,
+            referencia_geográfica: false,
+            adaptación_ciudad_Universidad: false,
+            oferta_servicios: false,
+            vivienda: false,
+            vinculación_grupos_actividades_extracurriculares: false,
+            apoyo_académico: false,
+            taller_par_par: false,
+            reconocimiento_ciudad_U: false,
+            rem_profesional_SE: false,
+            rem_racticante_SE: false,
+            rem_actividades_grupales: false,
+            rem_monitorías_académicas: false,
+            rem_proyectos_Universidad: false,
+            rem_servicio_salud: false,
+            rem_registro_académico: false,
+            rem_matrícula_financiera: false,
+            rem_desarrollo_humano_promoción_SE: false,
+            rem_directores_programa: false,
+            rem_grupos_universidad: false,
+            rem_externa: false,
+            Ninguna_acción_realizada: false,
+            observaciones: "",
+            revisado_profesional: false,
+            revisado_practicante: false,
+            primer_acercamiento: false,
+            cierre: false,
+            id_estudiante: props.estudiante_seleccionado,
+            id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
+            id_modificador: null,
+        })
+    }
     const [form, set_form] = useState({
         riesgo_individual_bajo: false,
         riesgo_individual_medio: false,
@@ -838,12 +1070,12 @@ const Seguimiento_individual = (props) =>{
                     data={[state]}
                     filename={"Seguimiento Individual " + state.fecha}
                 >
-                <Button variant="secondary" onClick={() => { set_info() }}>
+                <Button variant="secondary" onClick={() => { verificador_datos_basicos() }}>
                     Registrar
                 </Button>
             </CSVLink>
 
-            <Button variant="secondary" onClick={() => { props.handleClose() }}>
+            <Button variant="secondary" onClick={() => { props.handleClose(); reset_info()}}>
                 Cerrar
             </Button>
           </Modal.Footer>
