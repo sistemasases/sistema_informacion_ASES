@@ -50,6 +50,7 @@ import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
 import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia.jsx";
 import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas.jsx";
 import Reporte from "./modulos/reportes/reporte.jsx";
+import Alertas from './modulos/alertas/alertas.jsx';
 // import Footer from './components/componentes_generales/footer.jsx';
 
 const App = () => {
@@ -76,6 +77,7 @@ const App = () => {
                         <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
                         <Route path="/reporte"element={<Reporte/>}/>
+                        <Route path="/alertas"element={<Alertas/>}/>
                         <Route path="/"element={<Inicio/>}/>
                     </Routes>
                 </SideBar>
