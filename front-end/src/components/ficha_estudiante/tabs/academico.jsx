@@ -68,7 +68,6 @@ const Academico = (props) =>{
                 tiene_datos_cargados : true
             })
             setActiveTabIndex(respuesta.data[0][0]['nombre'])
-            console.log('entra a la respuesta : ' + respuesta.data[0][0]['nombre'])
         })
         .catch(err=>{
             return ('entra al error : ' + err)
@@ -86,7 +85,7 @@ const Academico = (props) =>{
   }
 
   const userRole = desencriptar(sessionStorage.getItem('rol'));
-  console.log('userRole : ' + userRole)
+
 
     return (
         <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' ? <></> :
