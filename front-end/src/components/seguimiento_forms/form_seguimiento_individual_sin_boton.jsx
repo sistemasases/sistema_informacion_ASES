@@ -92,6 +92,172 @@ const Seguimiento_individual = (props) =>{
         id_estudiante: props.item.id_estudiante
     })
 
+    const hora_creacion = new Date(props.item.creacion)
+    const hora_edicion = new Date(props.item.modificacion)
+    
+    const verificador_datos_basicos = () => {
+        if(!!form.fecha){
+            if(!!form.lugar){
+                if(!!form.hora_inicio){
+                    if(!!form.hora_finalización){
+                        if(!!form.objetivos){
+                            verificador_tematicas();
+                        }
+                        else{
+                            window.confirm("Debes diligenciar el campo 'Objetivos', por favor verifica este campo.")
+                        }
+                    }
+                    else{
+                        window.confirm("Debes introducir una Hora de finalización válida, por favor verifica este dato.")
+                    }
+                }
+                else{
+                    window.confirm("Debes introducir una Hora de inicio válida, por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes introducir un lugar de encuentro válido, por favor verifica este dato.")
+            }
+        }
+        else{
+            window.confirm("Debes introducir una fecha válida, por favor verifica este dato.")
+        }
+    }
+    const verificador_tematicas = () => {
+        if(!!form.individual || !!form.familiar || !!form.academico || !!form.economico || !!form.vida_universitaria_ciudad){
+            verificador_individual()
+        }
+        else{
+            window.confirm("Debes diligenciar al menos una dimesión, por favor verifica estos campos.")
+        }
+            
+    }
+    const verificador_individual = () => {
+        if(!!form.individual){ 
+            if(form.riesgo_individual==0 ||form.riesgo_individual==1 || form.riesgo_individual==2){
+                if(!!form.autoconocimiento || !!form.rasgos_de_personalidad || !!form.identificación
+                    || !!form.red_de_apoyo || !!form.proyecto_de_vida || !!form.salud
+                    || !!form.aspectos_motivacionales || !!form.historia_de_vida || !!form.relación_eriótico_afectivas
+                    || !!form.diversidad_sexual){
+                    verificador_familiar()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Individual', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Individual', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_familiar()
+        }
+            
+    }
+
+    const verificador_familiar = () => {
+        if(!!form.familiar){ 
+            if(form.riesgo_familiar==0 ||form.riesgo_familiar==1 || form.riesgo_familiar==2){
+                
+                if(!!form.dinamica_familiar){
+                    verificador_academico()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Familiar', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Familiar', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_academico()
+        }
+            
+    }
+
+    const verificador_academico = () => {
+        if(!!form.academico){ 
+            if(form.riesgo_academico==0 ||form.riesgo_academico==1 || form.riesgo_academico==2){
+                if(!!form.desempeño_académico || !!form.elección_vocacional || !!form.manejo_del_tiempo){
+                    verificador_economico()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Académico', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Académico', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_economico()
+        }
+            
+    }
+
+    const verificador_economico = () => {
+        if(!!form.economico){ 
+            if(form.riesgo_economico==0 ||form.riesgo_economico==1 || form.riesgo_economico==2){
+                if(!!form.apoyos_económicos_institucionales || !!form.apoyo_económico_familiar || !!form.manejo_finanzas
+                    || !!form.situación_laboral_ocupacional){
+                    verificador_vida()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Económico', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Económico', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_vida()
+        }
+            
+    }
+
+    const verificador_vida = () => {
+        if(!!form.vida_universitaria_ciudad){ 
+            if(form.riesgo_vida_universitaria_ciudad==0 ||form.riesgo_vida_universitaria_ciudad==1 || form.riesgo_vida_universitaria_ciudad==2){
+                if(!!form.motivación_compañamiento || !!form.referencia_geográfica || !!form.adaptación_ciudad_Universidad
+                    || !!form.oferta_servicios || !!form.vivienda || !!form.vinculación_grupos_actividades_extracurriculares){
+                    verificador_acciones()
+                }
+                else{
+                    window.confirm("Debes marcar al menos una temática de la dimensión 'Vida Universitaria', por favor verifica este dato.")
+                }
+            }
+            else{
+                window.confirm("Debes diligenciar el riesgo de la dimensión 'Vida Universitaria', por favor verifica este dato.")
+            }
+            
+        }
+        else{
+            verificador_acciones()
+        }
+            
+    }
+
+    const verificador_acciones = () => {
+
+        if(!!form.apoyo_académico || !!form.taller_par_par || !!form.reconocimiento_ciudad_U
+            || !!form.rem_profesional_SE || !!form.rem_racticante_SE || !!form.rem_actividades_grupales
+            || !!form.rem_monitorías_académicas || !!form.rem_proyectos_Universidad || !!form.rem_servicio_salud
+            || !!form.rem_registro_académico || !!form.rem_matrícula_financiera || !!form.rem_desarrollo_humano_promoción_SE
+            || !!form.rem_directores_programa || !!form.rem_grupos_universidad || !!form.rem_externa
+            || !!form.Ninguna_acción_realizada ){
+            set_info()
+        }
+        else{
+            window.confirm("Debes marcar al menos una acción realizada o en su defecto marcar 'Ninguna acción realizada', por favor verifica este dato.")
+        }
+    }
+
     const set_info = (e) => {
         Update_seguimiento.Update_seguimiento(form).then(res=>{
             if(res){
@@ -866,6 +1032,13 @@ const Seguimiento_individual = (props) =>{
                         <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional'|| userRole === 'super_ases')} name="revisado_practicante" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
+                <hr></hr>
+                <Row className="g-2">
+                    <h6><b>Creación: </b> fecha: {hora_creacion.toLocaleDateString()} hora: {hora_creacion.toLocaleTimeString()} </h6>
+                </Row>
+                <Row className="g-2">
+                    <h6><b>Última modificación: </b>fecha: {hora_edicion.toLocaleDateString()} hora: {hora_edicion.toLocaleTimeString()} </h6>
+                </Row>
             </Modal.Body>
           <Modal.Footer>
             <CSVLink
@@ -891,7 +1064,7 @@ const Seguimiento_individual = (props) =>{
             <Button variant="danger" onClick={() => { delete_info()}} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
               Eliminar
             </Button>
-            <Button variant="secondary" onClick={() => { set_info() }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
+            <Button variant="secondary" onClick={() => { verificador_datos_basicos() }} disable={props.item.revisado_profesional || props.item.revisado_practicante}>
                 Aceptar cambios
             </Button>
             </>

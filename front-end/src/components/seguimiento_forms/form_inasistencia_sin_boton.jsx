@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React,  { useState}  from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Update_Inasistencia from '../../service/update_inasistencia';
@@ -32,9 +32,11 @@ const Inasistencia = (props) =>{
         revisado_practicante: props.item.revisado_practicante,
         id_creador: props.item.id_creador,
         id_modificador: parseInt(desencriptarInt(sessionStorage.getItem("id_usuario"))),
-        id_estudiante: props.item.id_estudiante
+        id_estudiante: props.item.id_estudiante,
     })
-
+    const hora_creacion = new Date(props.item.creacion)
+    const hora_edicion = new Date(props.item.modificacion)
+    console.log(hora_creacion)
     const set_info = (e) => {
         Update_Inasistencia.Update_inasistencia(form).then(res=>{
             if(res){
@@ -115,6 +117,13 @@ const Inasistencia = (props) =>{
                     <Col>
                         <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional'|| userRole === 'super_ases')} name="revisado_practicante" onChange={handleFormChecks}/>        
                     </Col>
+                </Row>
+                <hr></hr>
+                <Row className="g-2">
+                    <h6><b>Creación: </b> fecha: {hora_creacion.toLocaleDateString()} hora: {hora_creacion.toLocaleTimeString()} </h6>
+                </Row>
+                <Row className="g-2">
+                    <h6><b>Última modificación: </b>fecha: {hora_edicion.toLocaleDateString()} hora: {hora_edicion.toLocaleTimeString()} </h6>
                 </Row>
             </Modal.Body>
           <Modal.Footer>
