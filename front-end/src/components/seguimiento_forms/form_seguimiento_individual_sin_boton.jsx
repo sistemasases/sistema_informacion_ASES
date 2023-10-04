@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Update_seguimiento from '../../service/update_seguimiento';
 import Delete_seguimiento from '../../service/delete_seguimiento';
 import { CSVLink } from 'react-csv';
-import { desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -658,7 +658,7 @@ const Seguimiento_individual = (props) =>{
         }
     }
 
-    const userRole = sessionStorage.getItem('rol');
+    const userRole = desencriptar(sessionStorage.getItem('rol'));
 
     const [state, setState] = useState({
         riesgo_individual_bajo: false,
