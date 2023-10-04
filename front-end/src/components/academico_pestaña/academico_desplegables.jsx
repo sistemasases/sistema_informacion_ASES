@@ -50,7 +50,7 @@ const Academico_desplegable = () => {
   useEffect(() => {
     // Aquí puedes realizar las llamadas iniciales si es necesario
     // Por ejemplo, si necesitas obtener facultades al cargar el componente
-    if(desencriptar(sessionStorage.getItem('rol') === 'profesor'))
+    if(desencriptar(sessionStorage.getItem('rol')) === 'profesor')
     {
       traer_materias_del_profesor()
     }
@@ -134,7 +134,7 @@ const Academico_desplegable = () => {
 
   const prueba = 'profesor';
  //sessionStorage.rol
-  if (sessionStorage.rol === 'profesor') {
+  if (desencriptar(sessionStorage.rol) === 'profesor') {
     return (
       <Container className="academico_container">
         <Row className="academico_fondo">
