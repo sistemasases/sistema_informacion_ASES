@@ -12,7 +12,7 @@ import { Container, Row, Button, Col } from "react-bootstrap";
 import Select from 'react-select'  
 import Carousel from "react-bootstrap/Carousel";
 import All_sede_service from "../../service/all_sede";
-import { encriptar, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { encriptar, desencriptar, encriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 import boton1 from '../../images/BOTONES_SVG 18.svg';
 import boton2 from '../../images/BOTONES_SVG 19.svg';
 
@@ -140,8 +140,8 @@ const Pagina_inicio = () => {
 
   //Cambia las sedes para visualizarse
   const handle_storage = () => {
-    sessionStorage.setItem("sede", temp.value);
-    sessionStorage.setItem("sede_id", temp.id);
+    sessionStorage.setItem("sede", encriptar(temp.value));
+    sessionStorage.setItem("sede_id", encriptarInt(temp.id));
     window.location.reload();
 
     // });
