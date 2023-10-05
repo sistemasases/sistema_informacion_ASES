@@ -988,7 +988,7 @@ const Seguimiento_individual = (props) =>{
                         <Form.Check type="checkbox" label="Vivienda" name="vivienda" onChange={handleForm}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Vinculación a grupos y realización de actividades extracurriculares" name="vinculación_grupos_actividades_extracurriculare" onChange={handleForm}/>        
+                        <Form.Check type="checkbox" label="Vinculación a grupos y realización de actividades extracurriculares" name="vinculación_grupos_actividades_extracurriculares" onChange={handleForm}/>        
                     </Col>
                 </Row>
                 <hr></hr>
