@@ -95,6 +95,12 @@
                 "path":"/ficha_estudiante/sin_seleccion",
                 "name":"Reporte grupal",
                 "icon":"bi bi-ui-checks-grid"
+            },
+            {
+                "id": 12,
+                "path":"/alertas",
+                "name":"Alertas",
+                "icon":"bi bi-exclamation-triangle-fill"
             }
         ]
     },
