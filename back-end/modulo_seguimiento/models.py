@@ -81,7 +81,7 @@ class seguimiento_individual (models.Model):
 class inasistencia (models.Model):
 
     fecha= models.DateField(auto_now_add=False)
-    observaciones=models.CharField(max_length=1500)
+    observaciones=models.CharField(max_length=7000)
     revisado_profesional = models.BooleanField(default=False)
     revisado_practicante = models.BooleanField(default=False)
 
