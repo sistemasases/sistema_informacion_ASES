@@ -177,6 +177,13 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             diccionario_estudiante.update(diccionarion_cohorte)
         except cohorte_estudiante.DoesNotExist:
             diccionario_estudiante['nombre_cohorte'] = None
+        except MultipleObjectsReturned:
+            cohorte_obj = cohorte_estudiante.objects.filter(id_estudiante=pk).first()
+            serializer_id_cohorte = cohorte_estudiante_serializer(cohorte_obj)
+            id_cohorte = serializer_id_cohorte.data['id_cohorte']
+            nombre_cohorte = cohorte.objects.get(id=id_cohorte)
+            diccionarion_cohorte = {'nombre_cohorte':nombre_cohorte.nombre}
+            diccionario_estudiante.update(diccionarion_cohorte)
         try:
             identidad_gen_obj = identidad_gen.objects.get(opcion_general=identidad_gen_id)
             diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
