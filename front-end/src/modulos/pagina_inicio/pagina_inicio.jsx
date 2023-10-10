@@ -64,6 +64,8 @@ const Pagina_inicio = () => {
     desplegable = 'PROFESIONAL';
   } else if (sessionStorage.rol === 'profesor') {
     desplegable = 'PROFESOR';
+  } else if (sessionStorage.rol === 'CAMPUS DIVERSO'){
+    desplegable = 'campus diverso';
   }
   
   //Constante y variable que se usaran para el select
@@ -276,6 +278,10 @@ const Pagina_inicio = () => {
                 </Link>)}
                 {(userRole === 'profesor' )&& (
                 <meta http-equiv="Refresh" content="0; url='/academico'" />)}
+                {(userRole === "CAMPUS DIVERSO")&&(
+                <Link to={`/campus_diverso/registro`}> 
+                  <img src={boton15} className="boton" alt='/'></img>
+                </Link>)}
                 </Col>
 
                 <Col className="vertical-line-col"><div className="vertical"></div></Col>

@@ -1,0 +1,16 @@
+[
+    {
+        "id":"2",
+        "path":"/ficha_estudiante/sin_seleccion",
+        "name":"Registro",
+        "icon":"bi-journal-bookmark-fill",
+        "childrens":[
+            {
+                "id":2,
+                "path":"/ficha_estudiante/sin_seleccion",
+                "name":"Registro de estudiante",
+                "icon":"bi bi-file-earmark-person-fill"
+            }
+        ]
+    }
+]
