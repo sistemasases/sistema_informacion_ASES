@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'modulo_usuario_rol',
     'modulo_geografico',
     'modulo_asignacion',
+    'modulo_campus_diverso',
     'modulo_base',
     'modulo_carga_masiva',
     'modulo_instancia',
