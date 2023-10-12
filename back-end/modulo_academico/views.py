@@ -384,7 +384,21 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
             data_estudiante = dict(serializer.data, **diccionario_estudiante)
             list_estudiantes.append(data_estudiante)
 
-        return Response(list_estudiantes)
+        estudiante_por_apellido = {}  # Creamos un diccionario vacío para organizar los estudiantes.
+
+        for x in list_estudiantes:
+            apellido = x['apellido']  # Obtenemos el apellido del estudiante.
+            if apellido in estudiante_por_apellido:
+                estudiante_por_apellido[apellido].append(x)
+            else:
+                estudiante_por_apellido[apellido] = [x]
+        estudiantes_organizados = []
+        for y in sorted(estudiante_por_apellido):
+            lista_estudiantes = estudiante_por_apellido[y]
+            for e in lista_estudiantes:
+
+                estudiantes_organizados.append(e)
+        return Response(estudiantes_organizados)
 
 
 
