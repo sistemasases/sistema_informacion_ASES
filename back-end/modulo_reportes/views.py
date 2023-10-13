@@ -104,8 +104,8 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
         elif data_usuario_rol == "dir_programa":
             # Ve todos los estudiantes del programa y la sede
             # ven todo
-            # print(data_sede)
-            # print(var_semestre.id)
+            # # print(data_sede)
+            # # print(var_semestre.id)
             list_estudiantes = []
             for obj_dir in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
                 for obj_dir_programa in dir_programa.objects.filter(id_usuario_rol=obj_dir['id']).values():
@@ -141,11 +141,11 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             # usuario = usuario_rol.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = "ACTIVO").values()
             # # prueba_estudiante = estudiante.objects.filter(id_estudiante_in_programa_estudiante__id_in_programa__id_in_facultad__id_facultad_in_vcd_academico__id_in = usuario).distinct()
             # vc_decano = vcd_academico.objects.filter(id_usuario_rol = usuario[0]['id']).values()
-            # # print(vc_decano)
+            # # # print(vc_decano)
             # facultad_decano = facultad.objects.filter(id = vc_decano[0]['id_facultad_id']).values()
-            # # print(facultad_decano)
+            # # # print(facultad_decano)
             # programa_decano = programa.objects.filter(id_facultad = facultad_decano[0]['id']).values()
-            # # print(programa_decano)
+            # # # print(programa_decano)
             # for obj_programa in programa_decano:
             #     for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
             #         for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
@@ -198,7 +198,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             return 'MEDIO'
         elif riesgo == 2:
             return 'ALTO'
-        elif riesgo == None:
+        elif riesgo == None or riesgo == 'None':
             return 'SIN RIESGO'
 
     def retrieve(self, request, pk):
@@ -505,7 +505,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
-                    # print(i.data)
+                    # # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
                     seguimiento_reciente = seguimiento_individual.objects.filter(
                         id_estudiante=i['id']).latest('fecha')
@@ -527,14 +527,14 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'N/A',
                         'riesgo_vida_universitaria_ciudad': 'N/A'
                     }
-                    # print('no riesgos')
+                    # # print('no riesgos')
 
                 try:
                     programa_del_estudiante = programa_estudiante.objects.filter(
                         id_estudiante=i['id']).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
+                    # # print(programa_del_estudiante)
                     # list_programas.append(var_programa)
                     id_sede_programa = var_programa[0]['id_sede_id']
                     sede_programa = sede.objects.filter(
@@ -612,7 +612,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     }
                     # pass
 
-                # print(riesgo)
+                # # print(riesgo)
 
                 try:
                     var_excepcion = cond_excepcion.objects.filter(
@@ -641,11 +641,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
             for i in serializer_estudiante.data:
 
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
+                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
-                    # print(i.data)
+                    # # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
                     seguimiento_reciente = seguimiento_individual.objects.filter(
                         id_estudiante=i['id']).latest('fecha')
@@ -667,14 +667,14 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'N/A',
                         'riesgo_vida_universitaria_ciudad': 'N/A'
                     }
-                    # print('no riesgos')
+                    # # print('no riesgos')
 
                 try:
                     programa_del_estudiante = programa_estudiante.objects.filter(
                         id_estudiante=i['id']).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
+                    # # print(programa_del_estudiante)
                     # list_programas.append(var_programa)
                     id_sede_programa = var_programa[0]['id_sede_id']
                     sede_programa = sede.objects.filter(
@@ -752,7 +752,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     }
                     # pass
 
-                # print(riesgo)
+                # # print(riesgo)
 
                 try:
 
@@ -847,11 +847,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             # serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
 
             for i in list_estudiantes:
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
+                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
-                    # print(i.data)
+                    # # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
                     seguimiento_reciente = seguimiento_individual.objects.filter(
                         id_estudiante=i['id']).latest('fecha')
@@ -873,14 +873,14 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'N/A',
                         'riesgo_vida_universitaria_ciudad': 'N/A'
                     }
-                    # print('no riesgos')
+                    # # print('no riesgos')
 
                 try:
                     programa_del_estudiante = programa_estudiante.objects.filter(
                         id_estudiante=i['id']).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
+                    # # print(programa_del_estudiante)
                     # list_programas.append(var_programa)
                     id_sede_programa = var_programa[0]['id_sede_id']
                     sede_programa = sede.objects.filter(
@@ -958,7 +958,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     }
                     # pass
 
-                # print(riesgo)
+                # # print(riesgo)
 
                 try:
 
@@ -1041,24 +1041,24 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
         elif data_usuario_rol == "dir_programa":
            # Ve todos los estudiantes del programa y la sede
             # ven todo
-            # print(data_sede)
-            # print(var_semestre.id)
+            # # print(data_sede)
+            # # print(var_semestre.id)
             list_estudiantes = []
             final_list_estudiantes = []
             for obj_dir in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
-                # print("obj_dir")
-                # print(obj_dir)
+                # # print("obj_dir")
+                # # print(obj_dir)
                 for obj_dir_programa in dir_programa.objects.filter(id_usuario_rol=obj_dir['id']).values():
-                    # print("WTF")
-                    # print(obj_dir_programa)
+                    # # print("WTF")
+                    # # print(obj_dir_programa)
                     # PROGRAMA PRUEBA 2724 -> id_programa = 257
                     # TRACKER = OPTIONAL ?
                     for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_dir_programa['id_programa_id']).values():
-                        # print("HELLO ?")
-                        # print(obj_programa_estudiante)
+                        # # print("HELLO ?")
+                        # # print(obj_programa_estudiante)
                         for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-                            # print("hola, esto de Pute*")
-                            # print(obj_estudiantes)
+                            # # print("hola, esto de Pute*")
+                            # # print(obj_estudiantes)
                             # var_estudiante = estudiante.objects.get(
                             #     id=obj_estudiantes['id'])
                             serializer_estudiante = estudiante_serializer(
@@ -1070,11 +1070,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             # Añadiendo datos de consultas externas a los estudiantes
 
             for i in list_estudiantes:
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
+                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
-                    # print(i.data)
+                    # # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
                     seguimiento_reciente = seguimiento_individual.objects.filter(
                         id_estudiante=i['id']).latest('fecha')
@@ -1098,21 +1098,21 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'SIN RIESGO',
                         'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
                     }
-                    # print('no riesgos')
+                    # # print('no riesgos')
 
                 try:
                     # Trabaja Parcialmente
                     # ISSUE NOMBRE PROGRAMA
                     # programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante=i['id']).first()
-                    # Printea el primer programa del estudiante, aunque tenga varios
-                    # print(programa_estudiante.objects.filter(id_estudiante = i['id'], traker=True).values())
-                    # Solo printea aquellos cuyo traker es True
+                    # # printea el primer programa del estudiante, aunque tenga varios
+                    # # print(programa_estudiante.objects.filter(id_estudiante = i['id'], traker=True).values())
+                    # Solo # printea aquellos cuyo traker es True
                     # VERIFICAR EN DB: SELECT * FROM modulo_programa_programa_estudiante where id_estudiante_id = 21702
                     programa_del_estudiante = programa_estudiante.objects.filter(
                         id_estudiante=i['id'], traker=True).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
+                    # # print(programa_del_estudiante)
                     # list_programas.append(var_programa)
                     id_sede_programa = var_programa[0]['id_sede_id']
                     sede_programa = sede.objects.filter(
@@ -1190,7 +1190,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     }
                     # pass
 
-                # print(riesgo)
+                # # print(riesgo)
 
                 try:
                     var_excepcion = cond_excepcion.objects.filter(
@@ -1217,15 +1217,15 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             for obj_usuario_rol in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
                 for obj_vcd_academico in vcd_academico.objects.filter(id_usuario_rol=obj_usuario_rol['id']).values():
                     for obj_facultad in facultad.objects.filter(id=obj_vcd_academico['id_facultad_id']).values():
-                        # print(obj_facultad)
+                        # # print(obj_facultad)
                         # R/    {'id': 8, 'codigo_univalle': '7', 'nombre': 'INGENIERÍA'}
                         for obj_programa in programa.objects.filter(id_facultad=obj_facultad['id']).values():
-                            # print(obj_programa)
+                            # # print(obj_programa)
                             # INDICA QUE ESTUDIANTES DE FINANZAS Y ADINISTRACION PUBLICA ENTRE OTROS PERTENECEN A LA FACULTAD 8
                             # Culpemos a la base de datos
                             # Saludos.
                             for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
-                                # print(obj_programa_estudiante)
+                                # # print(obj_programa_estudiante)
                                 for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
                                     serializer_estudiante = estudiante_serializer(
                                         obj_estudiantes)
@@ -1233,11 +1233,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                                         serializer_estudiante.data)
 
             for i in list_estudiantes:
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
+                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
-                    # print(i.data)
+                    # # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
                     seguimiento_reciente = seguimiento_individual.objects.filter(
                         id_estudiante=i['id']).latest('fecha')
@@ -1261,14 +1261,14 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'SIN RIESGO',
                         'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
                     }
-                    # print('no riesgos')
+                    # # print('no riesgos')
 
                 try:
                     programa_del_estudiante = programa_estudiante.objects.filter(
                         id_estudiante=i['id'], traker=True).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
+                    # # print(programa_del_estudiante)
                     # list_programas.append(var_programa)
                     id_sede_programa = var_programa[0]['id_sede_id']
                     sede_programa = sede.objects.filter(
@@ -1346,7 +1346,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     }
                     # pass
 
-                # print(riesgo)
+                # # print(riesgo)
 
                 try:
                     var_excepcion = cond_excepcion.objects.filter(
@@ -1374,11 +1374,11 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             # Añadiendo datos de consultas externas a los estudiantes
 
             for i in serializer_estudiante.data:
-                # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
+                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
                 # serializer_estudiante_2 = estudiante_serializer(i)
 
                 try:
-                    # print(i.data)
+                    # # print(i.data)
                     # Obtener el seguimiento más reciente del estudiante especificado
                     seguimiento_reciente = seguimiento_individual.objects.filter(
                         id_estudiante=i['id']).latest('fecha')
@@ -1402,14 +1402,14 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'SIN RIESGO',
                         'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
                     }
-                    # print('no riesgos')
+                    # # print('no riesgos')
 
                 try:
                     programa_del_estudiante = programa_estudiante.objects.filter(
                         id_estudiante=i['id']).first()
                     var_programa = programa.objects.filter(
                         id=programa_del_estudiante.id_programa_id).values()
-                    # print(programa_del_estudiante)
+                    # # print(programa_del_estudiante)
                     # list_programas.append(var_programa)
                     id_sede_programa = var_programa[0]['id_sede_id']
                     sede_programa = sede.objects.filter(
@@ -1487,7 +1487,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                     }
                     # pass
 
-                # print(riesgo)
+                # # print(riesgo)
 
                 try:
                     var_excepcion = cond_excepcion.objects.filter(
