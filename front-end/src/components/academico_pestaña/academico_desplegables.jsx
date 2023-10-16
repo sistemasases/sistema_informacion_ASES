@@ -77,7 +77,7 @@ const Academico_desplegable = () => {
     try{
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/cursos_facultad/`, config);
       set_state({
-        facultades: response.data,
+        facultades: [{ materias: response.data }],
         tiene_facultades: true
       })
 
@@ -108,7 +108,6 @@ const Academico_desplegable = () => {
         profesores: [{ profesores: response.data }],
         tiene_profesores: true
       });
-      console.log('Profesores:', response.data);
     } catch (error) {
       console.log('Error al obtener profesores:', error);
     }
@@ -124,7 +123,6 @@ const Academico_desplegable = () => {
         estudiantes_a_consultar: [{ estudiantes: response.data }],
         tiene_estudiantes: true
       });
-      console.log('Estudiantes:', response.data);
     } catch (error) {
       console.log('Error al obtener estudiantes:', error);
     }
