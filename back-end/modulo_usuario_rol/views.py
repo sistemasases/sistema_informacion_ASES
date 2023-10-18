@@ -177,6 +177,13 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             diccionario_estudiante.update(diccionarion_cohorte)
         except cohorte_estudiante.DoesNotExist:
             diccionario_estudiante['nombre_cohorte'] = None
+        except MultipleObjectsReturned:
+            cohorte_obj = cohorte_estudiante.objects.filter(id_estudiante=pk).first()
+            serializer_id_cohorte = cohorte_estudiante_serializer(cohorte_obj)
+            id_cohorte = serializer_id_cohorte.data['id_cohorte']
+            nombre_cohorte = cohorte.objects.get(id=id_cohorte)
+            diccionarion_cohorte = {'nombre_cohorte':nombre_cohorte.nombre}
+            diccionario_estudiante.update(diccionarion_cohorte)
         try:
             identidad_gen_obj = identidad_gen.objects.get(opcion_general=identidad_gen_id)
             diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
@@ -222,20 +229,25 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         try :
             ids_del_estudiante_para_sus_progamas = estudiante.objects.filter(num_doc=serializer_estudiante.data['num_doc']).values('id', 'cod_univalle')
             for id_estudiante_programa in ids_del_estudiante_para_sus_progamas:
-                programa_seleccionado = programa_estudiante.objects.filter(id_estudiante=id_estudiante_programa['id']).first()
-                var_programa = programa.objects.filter(id=programa_seleccionado.id_programa_id).values()
-                dic_programa = {'nombre_programa': var_programa[0]['nombre'], 
-                                'cod_univalle': var_programa[0]['codigo_univalle'],
-                                'codigo_estudiante': id_estudiante_programa['cod_univalle'],
-                                'id_estado_id': programa_seleccionado.id_estado_id,
-                                'traker': programa_seleccionado.traker
-                                }  # Agregar el estado del curso al diccionario
+                programa_seleccionado = programa_estudiante.objects.filter(id_estudiante=id_estudiante_programa['id']).values('id_programa','id_estado','traker')
+                for programa_id in programa_seleccionado :
+                    var_programa = programa.objects.filter(id=programa_id['id_programa']).values()
+                    dic_programa = {'id': id_estudiante_programa['id'], 
+                                    'nombre_programa': var_programa[0]['nombre'], 
+                                    'cod_univalle': var_programa[0]['codigo_univalle'],
+                                    'codigo_estudiante': id_estudiante_programa['cod_univalle'],
+                                    'id_estado_id': programa_id['id_estado'],
+                                    'traker': programa_id['traker']
+                                    }  # Agregar el estado del curso al diccionario
+                    dic = {}
+                    dic.update(dic_programa)
+                    lista_programas.append(dic)
 
-                dic = id_estudiante_programa
-                dic.update(dic_programa)
-                lista_programas.append(dic)
             diccionario_programas = {'programas': lista_programas}
+
             diccionario_estudiante.update(diccionario_programas)
+
+        
 
         except :
             dic_programa = {'error': 'sin programa asignado o no se encontraro coincidencias'
@@ -245,6 +257,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             dic.update(dic_programa)
             lista_programas.append(dic)
             diccionario_programas = {'programas': lista_programas}
+            print(diccionario_programas)
             diccionario_estudiante.update(diccionario_programas)
 
         try:
@@ -285,6 +298,8 @@ class estudiante_viewsets(viewsets.ModelViewSet):
                     }
 
         diccionario_estudiante.update(datos_encargados)
+
+
 
         return Response(diccionario_estudiante)
 
