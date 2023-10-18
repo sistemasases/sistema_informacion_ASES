@@ -562,7 +562,11 @@ const Info_basica = (props) =>{
                                     </button>
                                   </Row>
                               </Col>
-                                  <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
+                              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg"
+                              ||userRole === "socioeducativo" || userRole === "profesional"|| userRole === "practicante"
+                              ||userRole === "monitor")&&(
+                                <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
+                              )}
                             </Row>
                           </Col>
                       )
@@ -596,8 +600,12 @@ const Info_basica = (props) =>{
                                 </button>
                                 </Row>
                             </Col>
-                                  <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
-                            </Row>
+                            {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg"
+                              ||userRole === "socioeducativo" || userRole === "profesional"|| userRole === "practicante"
+                              ||userRole === "monitor")&&(
+                                <Button className="boton_nuevo_registro_pequeño" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
+                              )}
+                             </Row>
                           
                           </Col>
                       )
