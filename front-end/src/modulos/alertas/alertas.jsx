@@ -11,6 +11,7 @@ import {
   Alert,
   Dropdown,
 } from "react-bootstrap";
+import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import {
   desencriptar,
@@ -135,26 +136,6 @@ const Alertas = () => {
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
     );
-    // const seleccionado_riesgos = filtros_Riesgos.find(
-    //   (item) => item.name === e.target.name
-    // );
-    // const seleccionado_estados = filtros_Estados.find(
-    //   (item) => item.name === e.target.name
-    // );
-    // const seleccionado_academico = filtros_Academico.find(
-    //   (item) => item.name === e.target.name
-    // );
-    // const seleccionado_asignaciones = filtros_Asignaciones.find(
-    //   (item) => item.name === e.target.name
-    // );
-
-    // const seleccionado_cabeceras_filtros = cabecerasFiltros.find(
-    //   (item) => item.name === e.target.name
-    // );
-    // const seleccionado_condiciones_excepcion_prueba =
-    //   filtros_Condicion_Excepcion_prueba.find(
-    //     (item) => item.name === "Condición de Excepción"
-    //   );
 
     //  condiciones Para Filtros de Contacto
 
@@ -241,11 +222,33 @@ const Alertas = () => {
   const recorrer_estudiante = () => {
     for (let index = 0; index < state.estudiante.length; index++) {}
   };
-  const { dropdown, setDropdown } = useState(false);
+  const { dropdown, setDropdown } = useState(true);
 
   const abrirCerrarDropdown = () => {
     setDropdown(!dropdown);
   };
+
+  var bandera_option_user = true;
+
+  const alertas = () => {
+    if (bandera_option_user === true) {
+      for (let i = 0; i < state.estudiante.length; i++) {
+        const element = {
+          value: state.estudiante[i]["nombre"],
+          label:
+            state.estudiante[i]["cod_univalle"] +
+            " " +
+            state.estudiante[i]["nombre"],
+          id: state.estudiante[i]["id"],
+        };
+        // element.toString();
+        opciones_selector.push(element);
+      }
+    }
+    bandera_option_user = false;
+  };
+
+  const opciones_selector = [];
 
   return (
     <>
@@ -300,25 +303,6 @@ const Alertas = () => {
               customStyles={tableCustomStyles}
             />
 
-            <Dropdown isOpen={dropdown} Toggle={abrirCerrarDropdown}>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Alertas académicas: {state.estudiante.length}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                {/* {filtros_Contacto.map((Item, index) => {
-                  <Dropdown.Item key={index} >
-                    {Item.name}
-                  </Dropdown.Item>;
-                })} */}
-                {/* {filtros_Contacto.forEach((element) => {
-                  <Dropdown.Item key={element.value}>
-                    {element.name}
-                  </Dropdown.Item>;
-                })} */}
-              </Dropdown.Menu>
-            </Dropdown>
 
             {/* GIF DE CARGA */}
             <img
@@ -343,3 +327,4 @@ const Alertas = () => {
 };
 
 export default Alertas;
+
