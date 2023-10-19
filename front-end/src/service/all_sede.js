@@ -1,22 +1,26 @@
 import axios from 'axios';
+import verificar_token from './verificar_token.js'
+import close_session from './close_session.js';
 import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 
 const all_sede = async () => {
-
-    try {
-        const config = {
-            headers: {
-                Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
-            }
-        };
-        const url_axios = `${process.env.REACT_APP_API_URL}/wizard/instancia/`;
-        console.log("URL de la API:", url_axios); // Agrega este log para verificar la URL
-        const resInst = await axios.get(url_axios, config)
-        return resInst.data;
-        
-    } catch (error) {
-        console.log(error);
+    if(await verificar_token.verificar_token()){
+        try {
+            const config = {
+                headers: {
+                    Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
+                }
+            };
+            const url_axios = `${process.env.REACT_APP_API_URL}/wizard/instancia/`;
+            const resInst = await axios.get(url_axios, config)
+            return resInst.data;
+        } catch (error) {
+            console.log(error);
+        }
+    } else {
+        window.alert('Ocurrió un error, debes ingresar nuevamente');
+        close_session.close_session()
     }
 }
 
