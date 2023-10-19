@@ -51,6 +51,9 @@ import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_
 import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas.jsx";
 import Reporte from "./modulos/reportes/reporte.jsx";
 import Alertas from './modulos/alertas/alertas.jsx';
+import FichaEstudianteDiscapacidad from './modulos/discapacidad/ficha_estudiante/FichaEstudianteDiscapacidad.jsx';
+import ReporteDiscapacidad from './modulos/discapacidad/reporte/ReporteDiscapacidad.jsx';
+import { Registro } from './modulos/discapacidad/registro/Registro.jsx';
 // import Footer from './components/componentes_generales/footer.jsx';
 
 const App = () => {
@@ -65,6 +68,7 @@ const App = () => {
                 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
                     <Routes>
                         <Route path="/ficha_estudiante/:id" element={<Ficha_estudiante path_actual={"Ficha Estudiante"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
+                        <Route path="/ficha_estudiante_discapacidad/:id" element={<FichaEstudianteDiscapacidad path_actual={"Ficha Estudiante Discapacidad"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/ficha_monitor" element={<Ficha_monitor path_actual={"Ficha Monitor"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/reporte_seguimientos"element={<Reporte_seguimientos path_actual={"Reporte seguimientos"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
@@ -76,9 +80,11 @@ const App = () => {
                         <Route path="/asignaciones" element={<Asignaciones/>}/>
                         <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
-                        <Route path="/reporte"element={<Reporte/>}/>
-                        <Route path="/alertas"element={<Alertas/>}/>
-                        <Route path="/"element={<Inicio/>}/>
+                        <Route path="/reporte" element={<Reporte/>}/>
+                        <Route path="/reporte_discapacidad" element={<ReporteDiscapacidad/>}/>
+                        <Route path="/alertas" element={<Alertas/>}/>
+                        <Route path="/" element={<Inicio/>}/>
+                        <Route path="/registro_discapacidad" element={<Registro/>}/>
                     </Routes>
                 </SideBar>
             </Row>

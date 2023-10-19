@@ -120,6 +120,7 @@ const Reporte = () => {
     let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
     let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
 
+    // Funcion que busca el reporte del estudiante logueado.
     const riesgos_estudiante = async () => {
       try {
         const response = await axios.get(

@@ -13,7 +13,7 @@
             },
             {
                 "id":3,
-                "path":"/ficha_monitor",
+                "path":"/ficha_monitors",
                 "name":"Ficha de monitores",
                 "icon":"bi bi-file-earmark-person"
             },
