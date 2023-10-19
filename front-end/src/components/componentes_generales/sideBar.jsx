@@ -20,7 +20,7 @@ import Sidebar_item_closed from './sidebar_item_closed';
 import {Scrollbars} from 'react-custom-scrollbars'; 
 import axios from 'axios';
 import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
-
+import close_session from '../../service/close_session';
 
 
 const SideBar = (props) =>{
@@ -61,24 +61,8 @@ const SideBar = (props) =>{
     const handleShow = () => setShow(true);
 
     const handleClose = () => {
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('refresh-token');
-        sessionStorage.removeItem('email');
-        sessionStorage.removeItem('first_name');
-        sessionStorage.removeItem('instancia');
-        sessionStorage.removeItem('last_name');
-        sessionStorage.removeItem('nombre_completo');
-        sessionStorage.removeItem('instancia_id');
-        sessionStorage.removeItem('rol');
-        sessionStorage.removeItem('semestre_actual');
-        sessionStorage.removeItem('username');
-        sessionStorage.removeItem('message');
-        sessionStorage.removeItem('sede_id');
-        sessionStorage.removeItem('sede');
-        sessionStorage.removeItem('lastVisitedRoutes');
-        sessionStorage.removeItem('id_estudiante_seleccionado');
+        close_session.close_session()
         setShow(false);
-        window.location.reload();
     }
 
     const handleContinue = () => {
@@ -101,10 +85,20 @@ const SideBar = (props) =>{
 
     const tiempoEspera = 1 * 1 * 60 * 1000;
 
-    const timeoutId = setTimeout(async () => {
-        await axios.get(`${process.env.REACT_APP_API_URL}/wizard/instancia/`, config).then(res=>{})
+    const token = {
+        "token": sessionStorage.getItem('token')
+    }
+
+    setTimeout(async () => {
+        await axios.post(`${process.env.REACT_APP_API_URL}/validate`, token, config)
+        .then(res=>{
+            if (res.data['hours'] < 1) {
+                handleShow()
+            }
+        })
         .catch(err => {
-            handleShow()
+            window.alert('Ocurrió un error, debes ingresar nuevamente');
+            close_session.close_session()
         })
     }, tiempoEspera);
 

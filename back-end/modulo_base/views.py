@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, Token, AccessToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from modulo_base.serializers import (
@@ -21,6 +21,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from modulo_usuario_rol.serializers import  *
 
+from datetime import datetime
 
 
 class Login(TokenObtainPairView):
@@ -115,3 +116,38 @@ class change_password(GenericAPIView):
             usuario.save()
             return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
         return Response({'mensaje': 'La contraseña enviada no es válida.'}, status=status.HTTP_400_BAD_REQUEST)
+
+class Validate(GenericAPIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+
+        token = request.data.get('token')
+
+        if not token:
+            return Response({'error': 'Token no proporcionado.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            try:
+                token_obj = AccessToken(token)
+                current_time = datetime.utcnow()
+                expiration_time = token_obj['exp']
+                expiration_time_day = datetime.fromtimestamp(expiration_time).day
+                expiration_time_hour = datetime.fromtimestamp(expiration_time).hour
+                current_time_day = datetime.fromtimestamp(current_time.timestamp() - 18000).day
+                current_time_hour = datetime.fromtimestamp(current_time.timestamp() - 18000).hour
+                hours = 0
+                if expiration_time_day == current_time_day:
+                    hours = expiration_time_hour - current_time_hour
+                else:
+                    hours = expiration_time_hour + 24 - current_time_hour
+
+                return Response({
+                    'message': 'Tienes un token activo',
+                    'hours': hours
+                    },
+                    status=status.HTTP_200_OK
+                )
+
+            except Exception as e:
+                return Response({'error': 'El token no es válido.'}, status=status.HTTP_400_BAD_REQUEST)
