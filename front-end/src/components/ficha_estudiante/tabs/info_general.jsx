@@ -24,7 +24,7 @@ const Info_general = (props) =>{
 
     // Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ 
 
-
+    const userRole = desencriptar(sessionStorage.getItem('rol'));
     const [state,set_state] = useState({
 
       editar : false,
@@ -554,17 +554,26 @@ const cambiar_datos = (e) => {
                                   props.rolUsuario === 'superSistemas' ?
                                   (
                                     <Col xs={"12"} sm={"12"}>
-                                      <Button className="boton_editar_info_basica" onClick={esta_editando}>
+                                    {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg"
+                                    ||userRole === "socioeducativo" || userRole === "profesional"|| userRole === "practicante"
+                                    ||userRole === "monitor")&&(
+                                    <Button className="boton_editar_info_basica" onClick={esta_editando}>
                                         EDITAR INFORMACIÓN
                                       </Button>
+                                    )}
                                     </Col>
                                   )
                                   :
                                   (
                                     <Col xs={"12"} sm={"12"}>
-                                      <Button className="boton_editar_info_basica" >
+                                    {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg"
+                                    ||userRole === "socioeducativo" || userRole === "profesional"|| userRole === "practicante"
+                                    ||userRole === "monitor")&&(
+                                    <Button className="boton_editar_info_basica">
                                         EDITAR INFORMACIÓN
                                       </Button>
+                                    )}
+                                      
                                     </Col>
                                   )
                                 }
