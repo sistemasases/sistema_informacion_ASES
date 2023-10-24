@@ -15,7 +15,7 @@ const Info_registros = (props) =>{
     const config = {
         Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     };
-
+    const userRole = desencriptar(sessionStorage.getItem('rol'));
     const [show, setShow] = useState(false);
     const handleModal = () => setShow(true);
     const handleClose = () => setShow(false);
@@ -64,9 +64,15 @@ const Info_registros = (props) =>{
             <Col xs={12} lg={11}>
                 
                 <div class="d-none d-md-block l-20px">
-                <Row className="generar_nuevo_reporte">
-                    <Button className="boton_nuevo_registro" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
-                </Row>
+                
+                {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg"
+                ||userRole === "socioeducativo" || userRole === "profesional"|| userRole === "practicante"
+                ||userRole === "monitor")&&(
+                    <Row className="generar_nuevo_reporte">
+                        <Button className="boton_nuevo_registro" onClick={handleModal}>NUEVO SEGUIMIENTO</Button>
+                    </Row>
+                )}
+                    
                 <Row className="riesgos">
                     <Col>
                         <Row xs={"12"} className="titulo_riesgos">

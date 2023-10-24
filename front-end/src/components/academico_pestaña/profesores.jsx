@@ -41,7 +41,6 @@ const Profesores = ({item}) => {
         }
       }
 
-
     if(item.profesores) {
         return (
             <Row>
@@ -61,10 +60,12 @@ const Profesores = ({item}) => {
                     <Row>
                         <Col className="contenido_fichas_academico2">
                         { item.profesores.filter((item)=>{
+                            console.log(state.filtro.toLowerCase())
                                 return state.filtro.toLowerCase() === '' ? item 
                                 : 
-                                item.first_name.toLowerCase().includes(state.filtro);  
-                                item.last_name.toLowerCase().includes(state.filtro);                                          
+                                item.first_name.toLowerCase().includes(state.filtro.toLowerCase()) ||  
+                                item.last_name.toLowerCase().includes(state.filtro.toLowerCase())  ||
+                                item.email.toLowerCase().includes(state.filtro.toLowerCase)                                          
                                 }).map((item, index) => <Profesores 
                                 key={index} item={item} 
                             />) }
