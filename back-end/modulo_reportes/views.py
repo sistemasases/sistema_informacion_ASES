@@ -56,13 +56,11 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
-        elif data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "super_ases":
-            serializer_estudiante = estudiante_serializer(
-                estudiante.objects.all(), many=True)
+        elif data_usuario_rol == "super_ases":
+            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
             return Response(serializer_estudiante.data)
 
-        elif data_usuario_rol == "socioeducativo_reg":
-
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
             list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
@@ -136,16 +134,19 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
-        elif data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "super_ases":
+            
+        elif data_usuario_rol == "super_ases":
             final_list_estudiantes = list()
             list_estudiantes = estudiante.objects.all()
             serializer_estudiantes = estudiante_serializer(estudiante.objects.all(), many=True)
-        elif data_usuario_rol == "socioeducativo_reg":
+            
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
             final_list_estudiantes = list()
             list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+
         elif data_usuario_rol == "dir_programa":
             final_list_estudiantes = []
             obj_dir = usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id')
@@ -153,6 +154,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa=obj_dir_programa[0]['id_programa_id']).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+
         elif data_usuario_rol == "vcd_academico":
             final_list_estudiantes = []
             obj_usuario_rol = usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id')
