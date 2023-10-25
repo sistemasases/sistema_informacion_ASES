@@ -61,6 +61,7 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
                 list_semestre.remove(i)  
         return Response(list_final,status=status.HTTP_200_OK)
         
+        
 
 class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
@@ -68,7 +69,7 @@ class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewS
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
-        list_seguimientos = []
+        list_final_list = []
         list_final =[]
         request_sede = int(request.GET.get('id_sede'))
         list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = pk))
@@ -94,3 +95,4 @@ class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewS
                     lista_semestre.append(j)
             list_final.append(lista_semestre)
         return Response(list_final,status=status.HTTP_200_OK)
+
