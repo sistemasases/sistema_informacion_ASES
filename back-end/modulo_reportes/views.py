@@ -121,12 +121,14 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             list_id_estudiantes = asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            
         elif data_usuario_rol == "practicante":
             final_list_estudiantes = list()
             list_id_monitores= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
             list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            
         elif data_usuario_rol == "profesional":
             final_list_estudiantes = list()
             list_id_practicantes= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
