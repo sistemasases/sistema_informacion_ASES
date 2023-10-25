@@ -6,7 +6,6 @@ router.register(r'seguimiento_individual',seguimiento_individual_viewsets,basena
 router.register(r'inasistencia',inasistencia_viewsets,basename = 'inasistencia')
 router.register(r'seguimientos_estudiante',seguimientos_estudiante_viewsets,basename = 'seguimientos_estudiante')
 router.register(r'seguimientos_estudiante_solo_semestre_actual',seguimientos_estudiante_solo_semestre_actual_viewsets,basename = 'seguimientos_estudiante_solo_semestre_actual')
-router.register(r'conteo_seguimientos_estudiante',conteo_seguimientos_estudiante_viewsets,basename = 'conteo_seguimientos_estudiante')
 
 seguimientos_estudiante_viewsets
 
