@@ -11,6 +11,7 @@ import {
   Alert,
   Dropdown,
 } from "react-bootstrap";
+import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import {
   desencriptar,
@@ -48,6 +49,291 @@ var columns = [
     sortable: true,
     isCheck: true,
   },
+  {
+    name: "Acuerdo de tratamiento de datos",
+    selector: (row) => row.firma_tratamiento_datos,
+    value: "acuerdo_tratamiento_datos",
+    sortable: true,
+    isCheck: false,
+    width: "190px",
+    conditionalCellStyles: [
+      {
+        when: (row) => row.firma_tratamiento_datos == "SIN FIRMAR",
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.firma_tratamiento_datos == "NO AUTORIZA",
+        style: {
+          backgroundColor: "yellow",
+          color: "#552CC4",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+    ],
+  },
+  // {
+  //   name: "Encuesta de admitidos",
+  //   selector: (row) => row.encuesta_admitidos,
+  //   value: "encuesta_admitidos",
+  //   sortable: true,
+  //   isCheck: false,
+  //   width: "190px",
+  // },
+  {
+    name: "Ficha Semana Anterior",
+    selector: (row) => row.fecha_seguimiento,
+    value: "fecha_seguimiento",
+    sortable: true,
+    isCheck: false,
+    conditionalCellStyles: [
+      {
+        when: (row) => row.fecha_seguimiento == "FICHA FALTANTE",
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+    ],
+    width: "190px",
+  },
+  {
+    name: "Riesgo individual",
+    selector: (row) => row.riesgo_individual,
+    value: "riesgo_individual",
+    sortable: true,
+    isCheck: false,
+    conditionalCellStyles: [
+      {
+        when: (row) => row.riesgo_individual == "ALTO",
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_individual == "MEDIO",
+        style: {
+          backgroundColor: "yellow",
+          color: "#552CC4",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_individual == "BAJO",
+        style: {
+          backgroundColor: "#4BF619",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+    ],
+  },
+  {
+    name: "Riesgo familiar",
+    selector: (row) => row.riesgo_familiar,
+    value: "riesgo_familiar",
+    sortable: true,
+    isCheck: false,
+    conditionalCellStyles: [
+      {
+        when: (row) => row.riesgo_familiar == "ALTO",
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_familiar == "MEDIO",
+        style: {
+          backgroundColor: "yellow",
+          color: "#552CC4",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_familiar == "BAJO",
+        style: {
+          backgroundColor: "#4BF619",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+    ],
+  },
+  {
+    name: "Riesgo académico",
+    selector: (row) => row.riesgo_academico,
+    value: "riesgo_academico",
+    sortable: true,
+    isCheck: false,
+    conditionalCellStyles: [
+      {
+        when: (row) => row.riesgo_academico == "ALTO",
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_academico == "MEDIO",
+        style: {
+          backgroundColor: "yellow",
+          color: "#552CC4",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_academico == "BAJO",
+        style: {
+          backgroundColor: "#4BF619",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+    ],
+  },
+  {
+    name: "Riesgo económico",
+    selector: (row) => row.riesgo_economico,
+    value: "riesgo_economico",
+    sortable: true,
+    isCheck: false,
+    conditionalCellStyles: [
+      {
+        when: (row) => row.riesgo_economico == "ALTO",
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_economico == "MEDIO",
+        style: {
+          backgroundColor: "yellow",
+          color: "#552CC4",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_economico == "BAJO",
+        style: {
+          backgroundColor: "#4BF619",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+    ],
+  },
+  {
+    name: "Riesgo vida universitaria",
+    selector: (row) => row.riesgo_vida_universitaria_ciudad,
+    value: "riesgo_vida_universitaria_ciudad",
+    sortable: true,
+    isCheck: false,
+    conditionalCellStyles: [
+      {
+        when: (row) => row.riesgo_vida_universitaria_ciudad == "ALTO",
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_vida_universitaria_ciudad == "MEDIO",
+        style: {
+          backgroundColor: "yellow",
+          color: "#552CC4",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.riesgo_vida_universitaria_ciudad == "BAJO",
+        style: {
+          backgroundColor: "#4BF619",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+    ],
+  },
+  // {
+  //   name: "Riesgo geográfico",
+  //   selector: (row) => row.ciudad_res,
+  //   value: "ciudad_res",
+  //   sortable: true,
+  //   isCheck: false,
+  // },
+
+  // {
+  //   name: "Mensaje del profesional",
+  //   selector: (row) => row.mensaje_profesional,
+  //   value: "mensaje_profesional",
+  //   sortable: true,
+  //   isCheck: false,
+  //   width: "190px",
+  // },
+  // {
+  //   name: "Mensaje del practicante",
+  //   selector: (row) => row.mensaje_practicante,
+  //   value: "mensaje_practicante",
+  //   sortable: true,
+  //   isCheck: false,
+  //   width: "190px",
+  // },
+  // {
+  //   name: "Alerta académica",
+  //   selector: (row) => row.alerta_academica,
+  //   value: "alerta_academica",
+  //   sortable: true,
+  //   isCheck: false,
+  //   width: "190px",
+  // },
 ];
 
 const Alertas = () => {
@@ -102,7 +388,7 @@ const Alertas = () => {
     const datos_estudiantes = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/alertas/estudiantes_prueba/` +
+          `${process.env.REACT_APP_API_URL}/alertas/estudiantes_info/` +
             id_usuario.toString() +
             "/",
           { params: { usuario_rol: rol, sede: sede } }
@@ -111,13 +397,53 @@ const Alertas = () => {
           ...state,
           estudiante: response.data,
         });
-        document.getElementsByName("loading_data")[0].style.visibility =
-          "hidden";
+        // console.log(response.data);
+        // document.getElementsByName("loading_data")[0].style.visibility =
+        //   "hidden";
         setFiltered(response.data);
       } catch (error) {}
     };
 
     datos_estudiantes();
+  }, []);
+
+  useEffect(() => {
+    let rol = desencriptar(sessionStorage.getItem("rol"));
+    let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+    const config = {
+      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+    };
+
+    const datos_estudiantes_extra = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/alertas/estudiante_datos_alertas/` +
+            id_usuario.toString() +
+            "/",
+          { params: { usuario_rol: rol, sede: sede } }
+        );
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        // console.log(response.data);
+        document.getElementsByName("loading_data")[0].style.visibility =
+          "hidden";
+        setFiltered(response.data);
+      } catch (error) {
+        // console.log(error);
+        if (error.message == "Network Error") {
+          alert(
+            "No se ha podido establecer conexión con el servidor. Se refrescará la página."
+          );
+          window.location.reload();
+        }
+      }
+    };
+
+    datos_estudiantes_extra();
   }, []);
 
   const [filtered, setFiltered] = useState(state.estudiante);
@@ -131,30 +457,10 @@ const Alertas = () => {
 
   // Añadir columnas por Checks
   const handleChange = (e) => {
-    console.log(e.target.name);
+    // console.log(e.target.name);
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
     );
-    // const seleccionado_riesgos = filtros_Riesgos.find(
-    //   (item) => item.name === e.target.name
-    // );
-    // const seleccionado_estados = filtros_Estados.find(
-    //   (item) => item.name === e.target.name
-    // );
-    // const seleccionado_academico = filtros_Academico.find(
-    //   (item) => item.name === e.target.name
-    // );
-    // const seleccionado_asignaciones = filtros_Asignaciones.find(
-    //   (item) => item.name === e.target.name
-    // );
-
-    // const seleccionado_cabeceras_filtros = cabecerasFiltros.find(
-    //   (item) => item.name === e.target.name
-    // );
-    // const seleccionado_condiciones_excepcion_prueba =
-    //   filtros_Condicion_Excepcion_prueba.find(
-    //     (item) => item.name === "Condición de Excepción"
-    //   );
 
     //  condiciones Para Filtros de Contacto
 
@@ -210,6 +516,7 @@ const Alertas = () => {
         backgroundColor: "#e7eef0",
       },
     },
+
     // rows: {
     //   style: {
     //     color: "#000000",
@@ -238,15 +545,6 @@ const Alertas = () => {
   //   vVariable de navegación para
   let navigate = useNavigate();
 
-  const recorrer_estudiante = () => {
-    for (let index = 0; index < state.estudiante.length; index++) {}
-  };
-  const { dropdown, setDropdown } = useState(false);
-
-  const abrirCerrarDropdown = () => {
-    setDropdown(!dropdown);
-  };
-
   return (
     <>
       <>
@@ -256,26 +554,6 @@ const Alertas = () => {
               <h1>Alertas Académicas</h1>
             </div>
             {/* Columna Filtros de Contacto */}
-            <Row>
-              <br></br>
-              <h3 style={{ fontStyle: "bold" }}>Filtro de Contacto</h3>
-            </Row>
-            {/* Filtros Contacto */}
-            <Row>
-              <Col>
-                {filtros_Contacto.map((Item, index) => (
-                  <div key={index}>
-                    <Form.Check
-                      name={Item.name}
-                      type="checkbox"
-                      label={Item.name}
-                      className="mb-2"
-                      onChange={(e) => handleChange(e)}
-                    />
-                  </div>
-                ))}
-              </Col>
-            </Row>
 
             {/* Tabla */}
             <DataTable
@@ -300,25 +578,7 @@ const Alertas = () => {
               customStyles={tableCustomStyles}
             />
 
-            <Dropdown isOpen={dropdown} Toggle={abrirCerrarDropdown}>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Alertas académicas: {state.estudiante.length}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                {/* {filtros_Contacto.map((Item, index) => {
-                  <Dropdown.Item key={index} >
-                    {Item.name}
-                  </Dropdown.Item>;
-                })} */}
-                {/* {filtros_Contacto.forEach((element) => {
-                  <Dropdown.Item key={element.value}>
-                    {element.name}
-                  </Dropdown.Item>;
-                })} */}
-              </Dropdown.Menu>
-            </Dropdown>
+            <br></br>
 
             {/* GIF DE CARGA */}
             <img
