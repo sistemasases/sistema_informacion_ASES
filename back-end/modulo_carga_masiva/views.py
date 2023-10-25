@@ -53,6 +53,8 @@ class Validador_carga(APIView):
                 return carga_dir_programa(file)
             elif(tipo == "Cambio_contrasena"):
                 return cambio_contrasena(file)
+            elif(tipo == "Eliminar_matricula"):
+                return eliminar_matricula(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
 
@@ -480,6 +482,59 @@ def carga_matricula(file):
 
         
     matricula.objects.bulk_create(list_matricula)
+    return Response(list_dict_result)
+
+
+def eliminar_matricula(file):
+    list_dict_result = []
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+        if(User.objects.filter(username =datos.iat[i,3]).first()):
+            consulta_profesor= User.objects.filter(username =datos.iat[i,3]).first()
+            
+            if(estudiante.objects.filter(cod_univalle =datos.iat[i,0]).first()):
+                consulta_estudiante= estudiante.objects.filter(cod_univalle =datos.iat[i,0]).first()
+
+                if (materia.objects.filter(cod_materia = datos.iat[i,1],id_profesor=consulta_profesor,franja=datos.iat[i,2]).first()):
+                    consulta_materia=materia.objects.filter(cod_materia = datos.iat[i,1],id_profesor=consulta_profesor,franja=datos.iat[i,2]).first()
+
+                    if(matricula.objects.filter(id_curso =consulta_materia,id_estudiante = consulta_estudiante).first()):
+
+                        matricula.objects.filter(id_curso =consulta_materia,id_estudiante = consulta_estudiante).delete()
+                        dict_result = {
+                                'dato' : datos.iat[i,0],
+                                'mensaje' : 'Se borró correctamente la matricula del estudiante '+str(datos.iat[i,0])
+                            }
+                        list_dict_result.append(dict_result)
+
+                    else:
+
+                        dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'El estudiante no está matriculado en este curso: '+str(datos.iat[i,1])
+                        }
+                        list_dict_result.append(dict_result)
+                        
+                else:
+                    dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'No existe la materia suministrada: '+str(datos.iat[i,1])
+                        }
+                    list_dict_result.append(dict_result)
+            else:
+                dict_result = {
+                        'dato' : datos.iat[i,0],
+                        'mensaje' : 'No existe este estudiante.'
+                    }
+                list_dict_result.append(dict_result)
+        else:
+            dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'No existe el profesor relacionado con el correo suministrado: '+ str(datos.iat[i,3])
+                }
+            list_dict_result.append(dict_result)
+
+
     return Response(list_dict_result)
 
 
