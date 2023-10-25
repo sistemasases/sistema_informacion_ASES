@@ -61,9 +61,6 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
                 list_semestre.remove(i)  
         return Response(list_final,status=status.HTTP_200_OK)
         
-        
-
-
 
 class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
@@ -71,126 +68,29 @@ class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewS
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk=None):
-        list_final_list = []
+        list_seguimientos = []
         list_final =[]
         request_sede = int(request.GET.get('id_sede'))
-        var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=request_sede)
-        list_seguimientos_individual = seguimiento_individual.objects.filter(id_estudiante = pk, creacion__range= (var_semestre.fecha_inicio, var_semestre.fecha_fin)).values()
-        list_inasistencia = inasistencia.objects.filter(id_estudiante = pk,creacion__range= (var_semestre.fecha_inicio, var_semestre.fecha_fin)).values()
-        lista_segumientos = list(list_seguimientos_individual) + list(list_inasistencia)
-        lista_segumientos.sort(key=lambda s: s['fecha'],reverse=True)
-        dicccionario = {"nombre":var_semestre.nombre,"Actual": var_semestre.semestre_actual}
-        list_final.append(dicccionario)
-        for i in lista_segumientos:
-            list_final.append(i)
-        list_final_list.append(list_final)
-        return Response(list_final_list,status=status.HTTP_200_OK)
+        list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = pk))
+        list_inasistencia = list(inasistencia.objects.filter(id_estudiante = pk))
 
+        for i in list_inasistencia: 
+            serializer_inasistencia =inasistencia_serializer(i)
+            list_seguimientos.append(serializer_inasistencia.data)
+        for i in list_seguimientos_individual: 
+            serializer_seguimiento_individual =seguimiento_individual_serializer(i)
+            list_seguimientos.append(serializer_seguimiento_individual.data)
+        list_seguimientos.sort(key=lambda s: s['fecha'],reverse=True)
 
-
+        list_semestre = list(semestre.objects.all().filter(semestre_actual = True,id_sede=request_sede))
         
-
-
-# class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewSet):
-#     serializer_class = seguimiento_individual_serializer
-#     permission_classes = (IsAuthenticated,)
-#     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
-
-#     def retrieve(self, request, pk=None):
-#         list_seguimientos = []
-#         list_final =[]
-#         request_sede = int(request.GET.get('id_sede'))
-#         list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = pk))
-#         list_inasistencia = list(inasistencia.objects.filter(id_estudiante = pk))
-
-#         for i in list_inasistencia: 
-#             serializer_inasistencia =inasistencia_serializer(i)
-#             list_seguimientos.append(serializer_inasistencia.data)
-#         for i in list_seguimientos_individual: 
-#             serializer_seguimiento_individual =seguimiento_individual_serializer(i)
-#             list_seguimientos.append(serializer_seguimiento_individual.data)
-#         list_seguimientos.sort(key=lambda s: s['fecha'],reverse=True)
-
-#         list_semestre = list(semestre.objects.all().filter(semestre_actual = True,id_sede=request_sede))
-        
-#         for i in list_semestre:
-#             lista_semestre = []
-#             serializer_semestre =semestre_serializer(i)
-#             dicccionario = {"nombre":serializer_semestre.data['nombre'],"Actual": serializer_semestre.data['semestre_actual']}
-#             lista_semestre.append(dicccionario)
-#             for j in list_seguimientos:
-#                 if j['fecha'] > serializer_semestre.data['fecha_inicio'] and j['fecha'] < serializer_semestre.data['fecha_fin']:
-#                     lista_semestre.append(j)
-#             list_final.append(lista_semestre)
-#         print(list_final)
-#         return Response(list_final,status=status.HTTP_200_OK)
-
-
-
-
-
-
-
-
-
-
-
-
-# class conteo_seguimientos_estudiante_viewsets(viewsets.ModelViewSet):
-#     serializer_class = seguimiento_individual_serializer
-#     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
-
-#     def retrieve(self, request, pk=None):
-#         list_inasistencia = list(inasistencia.objects.filter(id_estudiante=pk))
-#         list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante=pk))
-
-#         count_inasistencias = len(list_inasistencia)
-#         count_seguimientos = len(list_seguimientos_individual)
-
-#         count_inasistencias_revisados_practicante = len([s for s in list_inasistencia if s.revisado_practicante])
-#         count_inasistencias_revisados_profesional = len([s for s in list_inasistencia if s.revisado_profesional])
-
-#         count_seguimientos_revisados_practicante = len([s for s in list_seguimientos_individual if s.revisado_practicante])
-#         count_seguimientos_revisados_profesional = len([s for s in list_seguimientos_individual if s.revisado_profesional])
-
-#         counts = {
-#             'count_inasistencias': count_inasistencias,
-#             'count_seguimientos': count_seguimientos,
-#             'count_inasistencias_revisados_practicante': count_inasistencias_revisados_practicante,
-#             'count_inasistencias_revisados_profesional': count_inasistencias_revisados_profesional,
-#             'count_seguimientos_revisados_practicante': count_seguimientos_revisados_practicante,
-#             'count_seguimientos_revisados_profesional': count_seguimientos_revisados_profesional,
-#         }
-
-#         return Response(counts, status=status.HTTP_200_OK)
-
-
-
-
-# class conteo_seguimientos_estudiante_viewsets(viewsets.ModelViewSet):
-#     serializer_class = seguimiento_individual_serializer
-#     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
-
-#     @action(detail=False, methods=['get'])
-#     def counts(self, request):
-#         pk = request.query_params.get('pk')
-#         if not pk:
-#             return Response({'error': 'Missing student ID'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         list_inasistencia = list(inasistencia.objects.filter(id_estudiante=pk))
-#         list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante=pk))
-
-#         count_inasistencias = len(list_inasistencia)
-#         count_seguimientos = len(list_seguimientos_individual)
-
-#         count_revisados_practicante = len([s for s in list_seguimientos_individual if s.revisado_practicante])
-#         count_revisados_profesional = len([s for s in list_seguimientos_individual if s.revisado_profesional])
-
-#         counts = {
-#             'count_inasistencias': count_inasistencias,
-#             'count_seguimientos': count_seguimientos,
-#             'count_revisados_practicante': count_revisados_practicante,
-#             'count_revisados_profesional': count_revisados_profesional
-#         }
-
-#         return Response(counts, status=status.HTTP_200_OK)
+        for i in list_semestre:
+            lista_semestre = []
+            serializer_semestre =semestre_serializer(i)
+            dicccionario = {"nombre":serializer_semestre.data['nombre'],"Actual": serializer_semestre.data['semestre_actual']}
+            lista_semestre.append(dicccionario)
+            for j in list_seguimientos:
+                if j['fecha'] > serializer_semestre.data['fecha_inicio'] and j['fecha'] < serializer_semestre.data['fecha_fin']:
+                    lista_semestre.append(j)
+            list_final.append(lista_semestre)
+        return Response(list_final,status=status.HTTP_200_OK)
