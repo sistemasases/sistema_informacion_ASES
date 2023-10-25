@@ -121,7 +121,7 @@ const Desplegable_item = ({item}) => {
                                         (
                                             <Row className ="sub_col_link_text_reporte_seguimientos_info">
                                                 <Col xs={"4"}>
-                                                    <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</ Row>
+                                                    <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</Row>
                                                     <Row >Inasistencias : {item.cantidad_reportes.count_inasistencias}</Row>
                                                 </Col>
                                                 <Col xs={"4"}>
@@ -150,7 +150,7 @@ const Desplegable_item = ({item}) => {
                                         (
                                             <Row className ="sub_col_link_text_reporte_seguimientos_info">
                                                 <Col xs={"4"}>
-                                                    <Row >Fichas : N/A</ Row>
+                                                    <Row >Fichas : N/A</Row>
                                                     <Row >Inasistencias : N/A</Row>
                                                 </Col>
                                                 <Col xs={"4"}>
@@ -250,7 +250,7 @@ const Desplegable_item = ({item}) => {
                                                     (
                                                         <Row className ="sub_col_link_text_reporte_seguimientos_info">
                                                             <Col xs={"4"}>
-                                                                <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</ Row>
+                                                                <Row >Fichas : {item.cantidad_reportes.count_seguimientos}</Row>
                                                                 <Row >Inasistencias : {item.cantidad_reportes.count_inasistencias}</Row>
                                                             </Col>
                                                             <Col xs={"4"}>
@@ -279,7 +279,7 @@ const Desplegable_item = ({item}) => {
                                                     (
                                                         <Row className ="sub_col_link_text_reporte_seguimientos_info">
                                                             <Col xs={"4"}>
-                                                                <Row >Fichas : N/A</ Row>
+                                                                <Row >Fichas : N/A</Row>
                                                                 <Row >Inasistencias : N/A</Row>)
                                                             </Col>
                                                             <Col xs={"4"}>
