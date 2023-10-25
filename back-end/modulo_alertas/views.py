@@ -168,7 +168,6 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
-            # return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "practicante":
             list_id_monitores = usuario_rol.objects.filter(
@@ -179,8 +178,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
-            # return Response(serializer_estudiantes.data)
-
+            
         elif data_usuario_rol == "profesional":
             list_id_practicantes = usuario_rol.objects.filter(
                 id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
@@ -192,14 +190,14 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
-            # return Response(serializer_estudiantes.data)
+            
 
-        elif data_usuario_rol == "socioeducativo" or data_usuario_rol == "super_ases":
+        elif data_usuario_rol == "super_ases":
             serializer_estudiantes = estudiante_serializer(
                 estudiante.objects.all(), many=True)
-            # return Response(serializer_estudiantes.data)
+            
 
-        elif data_usuario_rol == "socioeducativo_reg":
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
             list_id_programas = programa.objects.filter(
                 id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(
@@ -208,10 +206,10 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
-            # return Response(serializer_estudiantes.data)
+            
 
         for i in serializer_estudiantes.data:
-            # print(i['id'])
+            
             try:
                 # Obtener el seguimiento más reciente del estudiante especificado
                 seguimiento_reciente = seguimiento_individual.objects.filter(
@@ -255,4 +253,3 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
         # print(list_conteo)
         cont_riesgos = self.get_counter_riesgo(list_conteo)
         return Response(cont_riesgos)
-
