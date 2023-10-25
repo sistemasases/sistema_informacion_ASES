@@ -95,6 +95,7 @@ class estudiante (models.Model):
     puntaje_icfes=models.IntegerField(default=None,null=True)
     id_etnia=models.ForeignKey(etnia,on_delete=models.CASCADE,default=None,null=True,related_name='etnia_in_estudiante')
     ult_modificacion=models.DateTimeField(auto_now_add=False,null=True)
+    es_discapacidad = models.BooleanField(default=False, null=True)
 
     class Meta:
         db_table = "estudiante"
