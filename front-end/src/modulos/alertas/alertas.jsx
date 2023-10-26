@@ -18,7 +18,10 @@ import {
   desencriptarInt,
   decryptTokenFromSessionStorage,
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
+import { CSVLink } from "react-csv";
+import writeXlsxFile from "write-excel-file";
 import myGif from "../reportes/loading_data.gif";
+
 var columns = [
   {
     name: "Código",
@@ -541,6 +544,145 @@ const Alertas = () => {
     selectAllRowsItem: true,
     selectAllRowsItemText: "Mostrar Todo",
   };
+  
+  var csv_headers = [
+    { label: "Código", key: "cod_univalle" },
+    { label: "Nombre", key: "nombre" },
+    { label: "Apellido", key: "apellido" },
+    { label: "Documento", key: "num_doc" },
+    { label: "Acuerdo de tratamiento de datos", key: "firma_tratamiento_datos" },
+    // { label: "Encuesta de admitidos", key: "encuesta_admitidos" },
+    { label: "Ficha Semana Anterior", key: "fecha_seguimiento" },
+    { label: "Riesgo individual", key: "riesgo_individual" },
+    { label: "Riesgo familiar", key: "riesgo_familiar" },
+    { label: "Riesgo académico", key: "riesgo_academico" },
+    { label: "Riesgo económico", key: "riesgo_economico" },
+    { label: "Riesgo vida universitaria", key: "riesgo_vida_universitaria_ciudad" },
+    // { label: "Riesgo geográfico", key: "ciudad_res" },
+    // { label: "Mensaje del profesional", key: "mensaje_profesional" },
+    // { label: "Mensaje del practicante", key: "mensaje_practicante" },
+    // { label: "Alerta académica", key: "alerta_academica" },
+  ];
+
+  var schema = [
+    {
+      column: "Código univalle",
+      type: String,
+      value: (student) => student.cod_univalle,
+    },
+    {
+      column: "Nombre",
+      type: String,
+      value: (student) => student.nombre,
+    },
+    {
+      column: "Apellido",
+      type: String,
+      value: (student) => student.apellido,
+    },
+    {
+      column: "Documento",
+      type: Number,
+      value: (student) => student.num_doc,
+    },
+    {
+      column: "Acuerdo de tratamiento de datos",
+      type: String,
+      value: (student) => student.firma_tratamiento_datos,
+    },
+    // {  
+    //   column: "Encuesta de admitidos",
+    //   type: String,
+    //   value: (student) => student.encuesta_admitidos,
+    // },
+    {
+      column: "Ficha Semana Anterior",
+      type: String,
+      value: (student) => student.fecha_seguimiento,
+    },
+    {
+      column: "Riesgo individual",
+      type: String,
+      value: (student) => student.riesgo_individual,
+    },
+    {
+      column: "Riesgo familiar",
+      type: String,
+      value: (student) => student.riesgo_familiar,
+    },
+    {
+      column: "Riesgo académico",
+      type: String,
+      value: (student) => student.riesgo_academico,
+    },
+    {
+      column: "Riesgo económico",
+      type: String,
+      value: (student) => student.riesgo_economico,
+    },
+    {
+      column: "Riesgo vida universitaria",
+      type: String,
+      value: (student) => student.riesgo_vida_universitaria_ciudad,
+    },
+    // {
+    //   column: "Riesgo geográfico",
+    //   type: String,
+    //   value: (student) => student.ciudad_res,
+    // },
+    // {
+    //   column: "Mensaje del profesional",
+    //   type: String,
+    //   value: (student) => student.mensaje_profesional,
+    // },
+    // {
+    //   column: "Mensaje del practicante",
+    //   type: String,
+    //   value: (student) => student.mensaje_practicante,
+    // },
+    // {
+    //   column: "Alerta académica",
+    //   type: String,
+    //   value: (student) => student.alerta_academica,
+    // },
+
+  ];
+
+
+  const imprimir_excel = () => {
+    let new_data_excel = [];
+
+    for (let i = 0; i < state.estudiante.length; i++) {
+      let new_data = [];
+      new_data.push({
+        cod_univalle: state.estudiante[i].cod_univalle,
+        nombre: state.estudiante[i].nombre,
+        apellido: state.estudiante[i].apellido,
+        num_doc: state.estudiante[i].num_doc,
+        firma_tratamiento_datos: state.estudiante[i].firma_tratamiento_datos,
+        // encuesta_admitidos: state.estudiante[i].encuesta_admitidos,
+        fecha_seguimiento: state.estudiante[i].fecha_seguimiento,
+        riesgo_individual: state.estudiante[i].riesgo_individual,
+        riesgo_familiar: state.estudiante[i].riesgo_familiar,
+        riesgo_academico: state.estudiante[i].riesgo_academico,
+        riesgo_economico: state.estudiante[i].riesgo_economico,
+        riesgo_vida_universitaria_ciudad: state.estudiante[i].riesgo_vida_universitaria_ciudad,
+        // ciudad_res: state.estudiante[i].ciudad_res,
+        // mensaje_profesional: state.estudiante[i].mensaje_profesional,
+        // mensaje_practicante: state.estudiante[i].mensaje_practicante,
+        // alerta_academica: state.estudiante[i].alerta_academica,
+        
+      });
+      new_data_excel.push(new_data);
+    }
+
+    writeXlsxFile(state.estudiante, {
+      schema, // (optional) column widths, etc.
+      fileName:
+        "Alertas Académicas.xlsx",
+      // filePath: '../dowloads/file.xlsx'
+    });
+  };
 
   //   vVariable de navegación para
   let navigate = useNavigate();
@@ -580,6 +722,26 @@ const Alertas = () => {
 
             <br></br>
 
+            <Row>
+              <Col sm={12} md={12} lg={12}>
+                <CSVLink
+                  headers={csv_headers}
+                  data={state.estudiante}
+                  filename="Alertas Académicas"
+                >
+                  {/* headers={columns} */}
+                  <Button style={{ margin: 5 }}> Imprimir CSV</Button>
+                </CSVLink>
+
+                <Button
+                  style={{ margin: 5 }}
+                  name="imprimir_excel"
+                  onClick={imprimir_excel}
+                >
+                  Imprimir Excel
+                </Button>
+              </Col>
+            </Row>
             {/* GIF DE CARGA */}
             <img
               src={myGif}
@@ -595,6 +757,7 @@ const Alertas = () => {
                 visibility: "visible",
               }}
             />
+            <br></br>
           </Container>
         }
       </>
