@@ -9,7 +9,7 @@ from modulo_geografico.models import barrio, departamento, municipio
 from modulo_programa.models import programa_estudiante, programa, historial_estado_programa_estudiante, programa_monitor
 from modulo_instancia.models import semestre, cohorte
 from modulo_asignacion.models import asignacion
-from modulo_seguimiento.models import inasistencia, seguimiento_individual
+from modulo_seguimiento.models import inasistencia, seguimiento_individual, riesgo_individual
 from modulo_usuario_rol.models import firma_tratamiento_datos
 from django.db.models import Q
 from rest_framework.views import APIView
@@ -503,7 +503,7 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
 
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
-            seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk).latest('fecha')
+            seguimiento_reciente = riesgo_individual.objects.get(id_estudiante=pk)
 
             # Crear un diccionario con los datos de riesgo del seguimiento
             riesgo = {
@@ -515,19 +515,44 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
             }
             # Devolver el riesgo en la respuesta
             return Response(riesgo)
-        except seguimiento_individual.DoesNotExist:
+        except riesgo_individual.DoesNotExist:
             # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
             return Response({})
 
 
+class create_riesgo_individual_ViewSet(viewsets.ModelViewSet):
+    serializer_class = seguimiento_individual_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
 
 
+    def retrieve(self, request, pk):
+        # estudiante_id = request.query_params.get('estudiante_id')
 
+        try:
+            # Obtener el seguimiento más reciente del estudiante especificado
+            queryset = seguimiento_individual.objects.all().order_by('fecha')
 
+            for object in queryset:
+                seguimiento_reciente, create = riesgo_individual.objects.get_or_create(id_estudiante=object.id_estudiante)
+                seguimiento_reciente.fecha = object.fecha
+                if object.riesgo_individual != None:
+                    seguimiento_reciente.riesgo_individual = object.riesgo_individual
+                if object.riesgo_familiar != None:
+                    seguimiento_reciente.riesgo_familiar = object.riesgo_familiar
+                if object.riesgo_academico != None:
+                    seguimiento_reciente.riesgo_academico = object.riesgo_academico
+                if object.riesgo_economico != None:
+                    seguimiento_reciente.riesgo_economico = object.riesgo_economico
+                if object.riesgo_vida_universitaria_ciudad != None:
+                    seguimiento_reciente.riesgo_vida_universitaria_ciudad = object.riesgo_vida_universitaria_ciudad
+                seguimiento_reciente.save()
 
-
-
-
+            # Devolver el riesgo en la respuesta
+            return Response({'Alberto': 'lo chupa'})
+        except seguimiento_individual.DoesNotExist:
+            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+            return Response({})
 
 
 # Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol ///
