@@ -29,6 +29,7 @@ urlpatterns = [
     path('usuario_rol/', include('modulo_usuario_rol.routers')),
     path('seguimiento/', include('modulo_seguimiento.routers')),
     path('asignacion/', include('modulo_asignacion.routers')),
+    path('campus_diverso/', include('modulo_campus_diverso.routers')),
     path('reportes/', include('modulo_reportes.routers')),
     path('alertas/', include('modulo_alertas.routers')),
     path('academico/', include('modulo_academico.routers')),

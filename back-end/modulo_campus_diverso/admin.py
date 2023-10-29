@@ -15,6 +15,8 @@ from modulo_campus_diverso.models import *
 # ====================== Módulo Persona ====================== #
 admin.site.register(campus_diverso_pertenencia_grupo_poblacional)
 admin.site.register(campus_diverso_persona)
+admin.site.register(campus_diverso_relacion_persona_de_confianza)
+admin.site.register(campus_diverso_identidad_etnico_racial)
 
 
 # ====================== Módulo Diversidad Sexual ====================== #

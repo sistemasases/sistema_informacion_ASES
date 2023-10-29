@@ -64,7 +64,7 @@ const Pagina_inicio = () => {
     desplegable = 'PROFESIONAL';
   } else if (sessionStorage.rol === 'profesor') {
     desplegable = 'PROFESOR';
-  } else if (sessionStorage.rol === 'CAMPUS DIVERSO'){
+  } else if (userRole === 'CAMPUS DIVERSO'){
     desplegable = 'campus diverso';
   }
   
@@ -279,7 +279,7 @@ const Pagina_inicio = () => {
                 {(userRole === 'profesor' )&& (
                 <meta http-equiv="Refresh" content="0; url='/academico'" />)}
                 {(userRole === "CAMPUS DIVERSO")&&(
-                <Link to={`/campus_diverso/registro`}> 
+                <Link to={`/campus_diverso/registro_estudiante`}> 
                   <img src={boton15} className="boton" alt='/'></img>
                 </Link>)}
                 </Col>

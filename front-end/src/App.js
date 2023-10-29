@@ -41,6 +41,7 @@ import Ficha_monitor from "./modulos/ficha_monitor/ficha_monitor.jsx";
 import Reporte_seguimientos from "./modulos/reporte_seguimientos/reporte_seguimientos.jsx";
 import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
 import Desercion from "./modulos/desercion/desercion.jsx";
+import Regristo_estudiante from "./modulos/campus_diverso/registro_estudiante.jsx"
 import Academico_pestaña from "./modulos/academico_pestaña/academico_pestaña.jsx";
 import Calificador from "./modulos/academico_pestaña/calificador.jsx";
 import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
@@ -78,6 +79,7 @@ const App = () => {
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
                         <Route path="/reporte"element={<Reporte/>}/>
                         <Route path="/alertas"element={<Alertas/>}/>
+                        <Route path="/campus_diverso/registro_estudiante" element={<Regristo_estudiante/>}/>
                         <Route path="/"element={<Inicio/>}/>
                     </Routes>
                 </SideBar>

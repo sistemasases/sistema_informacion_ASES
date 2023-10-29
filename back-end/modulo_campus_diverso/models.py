@@ -38,7 +38,7 @@ class campus_diverso_identidad_etnico_racial(models.Model):
     """
     Esta clase es una tabla diccionario del modelo Persona
     """
-    nombre_grupo_poblacional = models.CharField(max_length=300, unique=True) 
+    nombre_identidad_etnico_racial = models.CharField(max_length=300, unique=True) 
 
     class Meta:
         db_table = "campus_diverso_identidad_etnico_racial"
@@ -48,16 +48,23 @@ class campus_diverso_relacion_persona_de_confianza(models.Model):
     """
     Esta clase es una tabla diccionario del modelo Persona
     """
-    nombre_grupo_poblacional = models.CharField(max_length=300, unique=True) 
+    nombre_persona_confianza = models.CharField(max_length=300, unique=True) 
 
     class Meta:
         db_table = "campus_diverso_relacion_persona_de_confianza"
-    
+
 
 
 class campus_diverso_persona(models.Model):
     incluir_correo_en_respuesta = models.BooleanField(default=False)
     nombre_identitario = models.CharField(max_length=150)
+    nombre = models.CharField(max_length=150, default="No da nombre")
+    apellido = models.CharField(max_length=150, default="Sin apellido")
+    tipo_doc = models.CharField(max_length=150, default=None)
+    num_doc = models.IntegerField(unique=True, default=None)
+    telefono_res = models.IntegerField(default=None)
+    cod_univalle = models.IntegerField(null=True)
+    fecha_nac = models.DateTimeField(auto_now_add=False,null=True)
     estrato_socioeconomico = models.IntegerField()
     ciudad_nacimiento = models.CharField(max_length=100, default="Ciudad no especificada")
     corregimiento_nacimiento = models.CharField(max_length=100, default="Corregimiento no especificado")
@@ -66,14 +73,15 @@ class campus_diverso_persona(models.Model):
     ciudad_residencia = models.CharField(max_length=100, default="Ciudad no especificada")
     corregimiento_residencia = models.CharField(max_length=100, default="Corregimiento no especificado")
     zona_residencial = models.CharField(max_length=100)
-    direccion_residencia = models.CharField(max_length=200)
+    direccion_residencia = models.CharField(max_length=200),
+    estado_civil = models.CharField(max_length=100, default="Sin respuesta")
     barrio_residencia = models.CharField(max_length=150)
     comuna_barrio = models.CharField(max_length=20)
-    identidad_etnico_racial = models.ForeignKey(campus_diverso_identidad_etnico_racial,on_delete=models.CASCADE, default=None, null=True, related_name="identidad_etnico_racial_in_campus_diverso_persona") #este
+    identidad_etnico_racial = models.ManyToManyField(campus_diverso_identidad_etnico_racial,max_length=300, related_name="identidad_etnico_racial_in_campus_diverso_persona",blank=False, default="no responde") #este
     nombre_persona_de_confianza = models.CharField(max_length=100)
-    relacion_persona_de_confianza = models.ForeignKey(campus_diverso_relacion_persona_de_confianza,on_delete=models.CASCADE, default=None, null=True, related_name="relacion_persona_de_confianza_in_campus_diverso_persona") #este
+    relacion_persona_de_confianza = models.ManyToManyField(campus_diverso_relacion_persona_de_confianza,max_length=300, related_name="relacion_persona_de_confianza_in_campus_diverso_persona",blank=False,default="no responde") #este
     telefono_persona_de_confianza = models.CharField(max_length=100)
-    pertenencia_grupo_poblacional = models.ManyToManyField(campus_diverso_pertenencia_grupo_poblacional,max_length=300, related_name="pertenencia_grupo_poblacional_in_campus_diverso_persona", blank=False) 
+    pertenencia_grupo_poblacional = models.ManyToManyField(campus_diverso_pertenencia_grupo_poblacional,max_length=300, related_name="pertenencia_grupo_poblacional_in_campus_diverso_persona", blank=False,default="no responde") 
     
     class Meta:
         db_table = "campus_diverso_persona"
@@ -139,9 +147,9 @@ class campus_diverso_pronombre(models.Model):
         db_table = "campus_diverso_pronombre"
 
 class campus_diverso_diversidad_sexual(models.Model):
-    id_persona = models.OneToOneField(campus_diverso_persona, on_delete=models.CASCADE, null=False, blank=False, related_name="DiversidadSexual") 
-    cambio_nombre_sexo_documento = models.CharField(max_length=50)
-    recibir_orientacion_cambio_en_documento = models.BooleanField()
+    id_persona = models.OneToOneField(campus_diverso_persona, on_delete=models.CASCADE, null=False, blank=False, related_name="id_persona_in_campus_diverso_diversidad_sexual") 
+    cambio_nombre_sexo_documento = models.BooleanField(default=False)
+    recibir_orientacion_cambio_en_documento = models.BooleanField(default=False)
     pronombres = models.ManyToManyField(campus_diverso_pronombre, max_length=50)
     identidades_de_genero = models.ManyToManyField(campus_diverso_identidad_genero,max_length=200)
     expresiones_de_genero = models.ManyToManyField(campus_diverso_expresion_genero,max_length=200)
@@ -227,7 +235,7 @@ class campus_diverso_acompañamiento_recibido(models.Model):
 
 class campus_diverso_informacion_general(models.Model):
 
-    fecha= models.DateField(auto_now_add=False)
+    fecha= models.DateField(auto_now_add=False, null=True)
     id_persona = models.OneToOneField(campus_diverso_persona_estudiante, on_delete=models.CASCADE, null=False, blank=False, related_name="id_persona_in_campus_diverso_informacion_general")
     creacion= models.DateTimeField(auto_now_add=True)
     modificacion= models.DateTimeField(auto_now=True)

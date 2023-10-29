@@ -147,7 +147,7 @@ class DiversidadSexualSerializer(serializers.ModelSerializer):
         pronombres = validated_data.pop('pronombres', [])
         identidades_de_genero = validated_data.pop('identidades_de_genero')
         
-        persona = campus_diverso_persona.objects.get(numero_documento=id_persona) #! Así son más fáciles las consultas
+        persona = campus_diverso_persona.objects.get(num_doc=id_persona) #! Así son más fáciles las consultas
         
         # Creación del objeto DiversidadSexual
         diversidad_sexual = campus_diverso_diversidad_sexual.objects.create(id_persona=persona, **validated_data)
@@ -292,7 +292,7 @@ class InformacionGeneralSerializer(serializers.ModelSerializer):
         encuentro_dias_horas = validated_data.pop('encuentro_dias_horas',[])
         informacion_profesional = validated_data.pop('informacion_profesional', [])
         acompañamiento_recibido = validated_data.pop('acompañamiento_recibido', [])
-        persona = campus_diverso_persona.objects.get(numero_documento=id_persona)
+        persona = campus_diverso_persona.objects.get(num_doc=id_persona)
         
         informacion_general = campus_diverso_informacion_general.objects.create(id_persona=persona, **validated_data)
         
@@ -356,7 +356,7 @@ class EstamentoListingField(serializers.RelatedField):
 
 class InformacionAcademicaSerializer(serializers.ModelSerializer):
 
-    id_persona = serializers.CharField(max_length=30, required=True)
+    id_persona_estudiante = serializers.CharField(max_length=30, required=True)
     estamentos = EstamentoListingField(
         many=True,
         queryset= campus_diverso_estamento.objects.all(),
@@ -368,13 +368,13 @@ class InformacionAcademicaSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def create(self, validated_data):
-        id_persona = validated_data.pop('id_persona')
+        id_persona_estudiante = validated_data.pop('id_persona')
         
         estamentos = validated_data.pop('estamentos',[])
         
-        persona = campus_diverso_persona.objects.get(numero_documento=id_persona)
+        persona = campus_diverso_persona.objects.get(num_doc=id_persona_estudiante)
         
-        informacion_academica = campus_diverso_informacion_academica.objects.create(id_persona=persona, **validated_data)
+        informacion_academica = campus_diverso_informacion_academica.objects.create(id_persona_estudiante=persona, **validated_data)
         
         for nombre_estamento in estamentos:
             estamento,_ = campus_diverso_estamento.objects.get_or_create(nombre_estamento=nombre_estamento)
@@ -404,7 +404,7 @@ class DocumentosAutorizacionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         id_persona = validated_data.pop('id_persona')
         
-        persona = campus_diverso_persona.objects.get(numero_documento=id_persona)
+        persona = campus_diverso_persona.objects.get(num_doc=id_persona)
         documentos_autorizacion = campus_diverso_documentos_autorizacion.objects.create(id_persona=persona, **validated_data)
         
         return documentos_autorizacion
@@ -427,11 +427,25 @@ class SeguimientoSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         id_persona = validated_data.pop('id_persona')
         
-        persona = campus_diverso_persona.objects.get(numero_documento=id_persona)
+        persona = campus_diverso_persona.objects.get(num_doc=id_persona)
         seguimiento = campus_diverso_seguimiento.objects.create(id_persona=persona, **validated_data)
         return seguimiento
       
       
+# ====================== Módulo Persona-Estudiante ====================== #   
+class PersonaEstudianteSerializer(serializers.ModelSerializer):
+    id_persona = serializers.CharField(max_length=30, required=True)
+    
+    class Meta:
+        model = campus_diverso_persona_estudiante
+        fields = '__all__'
+        
+    def create(self, validated_data):
+        id_persona = validated_data.pop('id_persona')
+        
+        persona = campus_diverso_persona.objects.get(num_doc=id_persona)
+        personaestudiante = campus_diverso_persona_estudiante.objects.create(id_persona=persona, **validated_data)
+        return personaestudiante
       
       
 
@@ -444,6 +458,19 @@ class PertenenciaGrupoPoblacionalSerializer(serializers.ModelSerializer):
         model = campus_diverso_pertenencia_grupo_poblacional
         fields = '__all__'
 
+class IdentidadEtnicoRacialSerializer(serializers.ModelSerializer):
+    nombre_identidad_etnico_racial = serializers.CharField(max_length=300, required=True)
+    class Meta:
+        model = campus_diverso_identidad_etnico_racial
+        fields = '__all__'
+
+class RelacionPersonaConfianzaSerializer(serializers.ModelSerializer):
+    nombre_persona_confianza = serializers.CharField(max_length=300, required=True)
+    class Meta:
+        model = campus_diverso_relacion_persona_de_confianza
+        fields = '__all__'
+
+
 class PertenenciaGrupoPoblacionalListingField(serializers.RelatedField):
     def to_representation(self, value):
         return value.nombre_grupo_poblacional
@@ -454,7 +481,29 @@ class PertenenciaGrupoPoblacionalListingField(serializers.RelatedField):
         elif isinstance(data, dict) and 'nombre_grupo_poblacional' in data:
             return data['nombre_grupo_poblacional'].strip()
         raise serializers.ValidationError('Invalid input format.')
+
+class IdentidadEtnicoRaciallListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.nombre_identidad_etnico_racial
     
+    def to_internal_value(self, data):
+        if isinstance(data, str):
+            return data.strip()
+        elif isinstance(data, dict) and 'nombre_identidad_etnico_racial' in data:
+            return data['nombre_identidad_etnico_racial'].strip()
+        raise serializers.ValidationError('Invalid input format.')
+    
+class RelacionPersonaConfianzalListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.nombre_persona_confianza
+    
+    def to_internal_value(self, data):
+        if isinstance(data, str):
+            return data.strip()
+        elif isinstance(data, dict) and 'nombre_persona_confianza' in data:
+            return data['nombre_persona_confianza'].strip()
+        raise serializers.ValidationError('Invalid input format.')
+        
     
 
 class PersonaSerializer(serializers.ModelSerializer):
@@ -463,18 +512,27 @@ class PersonaSerializer(serializers.ModelSerializer):
     InformacionAcademica = InformacionAcademicaSerializer(required=False)
     InformacionGeneral = InformacionGeneralSerializer(required=False)
     DocumentosAutorizacion = DocumentosAutorizacionSerializer(required=False)
-    seguimientos = SeguimientoSerializer(many=True, required=False)
+    Seguimiento = SeguimientoSerializer(many=True, required=False)
     
     ciudad_nacimiento = serializers.CharField(max_length=100, default="Ciudad no especificada", required=False)
-    municipio_nacimiento = serializers.CharField(max_length=100, default="Municipio no especificado", required=False)
     corregimiento_nacimiento = serializers.CharField(max_length=100, default="Corregimiento no especificado", required=False)
     ciudad_residencia = serializers.CharField(max_length=100, default="Ciudad no especificada", required=False)
-    municipio_residencia = serializers.CharField(max_length=100, default="Municipio no especificado", required=False)
     corregimiento_residencia = serializers.CharField(max_length=100, default="Corregimiento no especificado", required=False)
     
     pertenencia_grupo_poblacional = PertenenciaGrupoPoblacionalListingField(
         many=True, 
         queryset=campus_diverso_pertenencia_grupo_poblacional.objects.all(),
+        required=False, 
+        )
+        
+    identidad_etnico_racial= IdentidadEtnicoRaciallListingField(
+        many=True, 
+        queryset=campus_diverso_identidad_etnico_racial.objects.all(),
+        required=False, 
+        ) 
+    relacion_persona_de_confianza= RelacionPersonaConfianzalListingField(
+        many=True, 
+        queryset=campus_diverso_relacion_persona_de_confianza.objects.all(),
         required=False, 
         ) 
     
@@ -484,16 +542,31 @@ class PersonaSerializer(serializers.ModelSerializer):
    
 
     def create(self, validated_data):
-        
         pertenencia_grupo_poblacional_names = validated_data.pop('pertenencia_grupo_poblacional',[]) 
+        identidad_etnico_racial_names = validated_data.pop('identidad_etnico_racial',[])
+        relacion_persona_confianza_names = validated_data.pop('relacion_persona_de_confianza',[])  # Corrección aquí
         persona = campus_diverso_persona.objects.create(**validated_data) 
         print(pertenencia_grupo_poblacional_names)
         
         for pertenencia_grupo_poblacional_name in pertenencia_grupo_poblacional_names:  
             try: 
-                pertenencia_grupo_poblacional = campus_diverso_pertenencia_grupo_poblacional.objects.get (nombre_grupo_poblacional=pertenencia_grupo_poblacional_name.strip()) 
+                pertenencia_grupo_poblacional = campus_diverso_pertenencia_grupo_poblacional.objects.get(nombre_grupo_poblacional=pertenencia_grupo_poblacional_name.strip()) 
             except campus_diverso_pertenencia_grupo_poblacional.DoesNotExist: 
                 pertenencia_grupo_poblacional = campus_diverso_pertenencia_grupo_poblacional.objects.create(nombre_grupo_poblacional=pertenencia_grupo_poblacional_name.strip())    
             persona.pertenencia_grupo_poblacional.add(pertenencia_grupo_poblacional)
-         
+
+        for identidad_etnico_racial_name in identidad_etnico_racial_names:  
+            try: 
+                identidad_etnico_racial = campus_diverso_identidad_etnico_racial.objects.get(nombre_identidad_etnico_racial=identidad_etnico_racial_name.strip()) 
+            except campus_diverso_identidad_etnico_racial.DoesNotExist:  # Corrección aquí
+                identidad_etnico_racial = campus_diverso_identidad_etnico_racial.objects.create(nombre_identidad_etnico_racial=identidad_etnico_racial_name.strip())    
+            persona.identidad_etnico_racial.add(identidad_etnico_racial)  # Corrección aquí
+
+        for relacion_persona_confianza_name in relacion_persona_confianza_names:  
+            try: 
+                relacion_persona_de_confianza = campus_diverso_relacion_persona_de_confianza.objects.get(nombre_persona_confianza=relacion_persona_confianza_name.strip()) 
+            except campus_diverso_relacion_persona_de_confianza.DoesNotExist: 
+                relacion_persona_de_confianza = campus_diverso_relacion_persona_de_confianza.objects.create(nombre_persona_confianza=relacion_persona_confianza_name.strip())    
+            persona.relacion_persona_de_confianza.add(relacion_persona_de_confianza)  # Corrección aquí
+
         return persona
