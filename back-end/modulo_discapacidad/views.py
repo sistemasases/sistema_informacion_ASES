@@ -23,7 +23,9 @@ class DatosExtraEstudiantesDiscapacidad(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
-        query_programa = programa_estudiante.objects.select_related('id_programa__id_sede')
+        query_programa = programa_estudiante.objects \
+            .select_related('id_programa__id_sede') \
+            .select_related('id_estado')
 
         prefetch = Prefetch(
             'id_estudiante_in_programa_estudiante',

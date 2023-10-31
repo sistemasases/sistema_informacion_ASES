@@ -35,5 +35,7 @@ class discapacidad_estudiante(models.Model):
         choices=TipoAdquisicion.choices,
         default=TipoAdquisicion.OTRA)
 
+    estado_discapacidad = models.BooleanField(default=True)
+
     class Meta:
         db_table = "discapacidad_estudiante"

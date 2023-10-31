@@ -13,6 +13,8 @@ class estudiante_extra_serializer(serializers.ModelSerializer):
     id_programa = serializers.SerializerMethodField()
     programa_academico = serializers.SerializerMethodField()
     sede = serializers.SerializerMethodField()
+    estado_discapacidad = serializers.SerializerMethodField()
+    registro_academico = serializers.SerializerMethodField()
 
     class Meta:
         model = estudiante
@@ -20,6 +22,17 @@ class estudiante_extra_serializer(serializers.ModelSerializer):
 
     def get_programa(self, obj):
         return (obj.programas or [None])[0]
+
+    def get_estado_discapacidad(self, obj):
+        if not obj.es_discapacidad:
+            return "N/A"
+        return 'ACTIVO/A' if obj.discapacidad.estado_discapacidad else 'NO ACTIVO/A'
+
+    def get_registro_academico(self, obj):
+        programa = self.get_programa(obj)
+        if not programa:
+            return "N/A"
+        return programa.id_estado.nombre
 
     def get_sede(self, obj):
         programa = self.get_programa(obj)
