@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'modulo_academico',
     'modulo_reportes',
     'modulo_alertas',
+    'modulo_discapacidad',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',
@@ -163,7 +164,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'modulo_base/templates/'),)
+STATICFILES_DIRS = ()
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
