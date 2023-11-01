@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-
+import time
 from modulo_usuario_rol.serializers import user_serializer, estudiante_serializer, usuario_rol_serializer, user_selected
 from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core import serializers
@@ -18,7 +18,7 @@ from modulo_seguimiento.models import inasistencia, seguimiento_individual
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.db.models import F, OuterRef, Subquery
+from django.db.models import F, OuterRef, Subquery, Max
 
 
 # Create your views here.
@@ -31,153 +31,61 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
 
         data_usuario_rol = request.GET.get('usuario_rol')
         data_sede = request.GET.get('sede')
-
-        # var_semestre = get_object_or_404(semestre, semestre_actual = True)
         var_semestre = get_object_or_404(
             semestre, semestre_actual=True, id_sede=data_sede)
-        # var_semestre = 0;
         list_estudiantes = list()
-        # list_monitores = list()
-        # list_practicantes = list()
-        # list_profesionales = list()
 
         if data_usuario_rol == "monitor":
 
-            for id_estudiante in asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values():
-                var_estudiante = estudiante.objects.get(
-                    id=id_estudiante['id_estudiante_id'])
-                serializer_estudiante = estudiante_serializer(var_estudiante)
-                list_estudiantes.append(serializer_estudiante.data)
-            return Response(list_estudiantes)
-            # return Response("caso no encontrado")
+            list_id_estudiantes = asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "practicante":
-
-            for obj_monitor in usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
-
-                # var_monitor_data = User.objects.get(id = obj_monitor['id_usuario_id'])
-                # serializer_monitor = user_selected(var_monitor_data)
-                # list_monitores.append(serializer_monitor.data)
-                # var_id_usuario_monitor = obj_monitor['id_usuario_id']
-
-                for id_estudiante in asignacion.objects.filter(id_usuario=obj_monitor['id_usuario_id'], id_semestre=var_semestre.id, estado=True).values():
-
-                    var_estudiante = estudiante.objects.get(
-                        id=id_estudiante['id_estudiante_id'])
-                    serializer_estudiante = estudiante_serializer(
-                        var_estudiante)
-                    list_estudiantes.append(serializer_estudiante.data)
-
-            return Response(list_estudiantes)
-
-            # return Response("caso no encontrado")
-
+            list_id_monitores= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
         elif data_usuario_rol == "profesional":
-            programas_sede = programa.objects.filter(id_sede=data_sede)
-            estudiantes_sede = estudiante.objects.filter(
-                id_estudiante_in_programa_estudiante__id_programa__in=programas_sede).distinct()
-            serialized_estudiantes = estudiante_serializer(
-                estudiantes_sede, many=True)
-            return Response(serialized_estudiantes.data, status=status.HTTP_200_OK)
-
-        elif data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "sistemas":
-            # ven todo
-            list_estudiantes = []
-            # list_programas = []
-            serializer_estudiante = estudiante_serializer(
-                estudiante.objects.all(), many=True)
-
-            return Response(serializer_estudiante.data)
-
-        elif data_usuario_rol == "socioeducativo_reg":
-            # Ve todos los estudiantes que no son de la sede "Melendez"
-            list_estudiantes = []
-            # for obj_programa in programa.objects.exclude(Q(id_sede=data_sede)).values():
-            for obj_programa in programa.objects.filter(id_sede=data_sede).values():
-                for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
-                    for obj_estudiante in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-                        serializer_estudiante = estudiante_serializer(
-                            obj_estudiante)
-                        list_estudiantes.append(serializer_estudiante.data)
-            return Response(list_estudiantes)
-
-        elif data_usuario_rol == "dir_programa":
-            # Ve todos los estudiantes del programa y la sede
-            # ven todo
-            # # print(data_sede)
-            # # print(var_semestre.id)
-            list_estudiantes = []
-            for obj_dir in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
-                for obj_dir_programa in dir_programa.objects.filter(id_usuario_rol=obj_dir['id']).values():
-                    # PROGRAMA PRUEBA 2724 -> id_programa = 257
-                    # TRACKER = OPTIONAL ?
-                    for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_dir_programa['id_programa_id']).values():
-                        for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-                            # var_estudiante = estudiante.objects.get(
-                            #     id=obj_estudiantes['id'])
-                            serializer_estudiante = estudiante_serializer(
-                                obj_estudiantes)
-                            list_estudiantes.append(serializer_estudiante.data)
-
-            return Response(list_estudiantes)
-
-            # for obj_usuario_rol in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
-            #     for obj_dir_programa in dir_programa.objects.filter(id_usuario_rol=obj_usuario_rol['id']).values():
-            #         for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_dir_programa['id_programa']).values():
-            #             for obj_estudiantes in estudiante.objects.filter(id_estudiante=obj_programa_estudiante['id_estudiante_id']).values():
-            #                 var_estudiante = estudiante.objects.get(obj_estudiantes = id)
-            #                 serializer_estudiante = estudiante_serializer(
-            #                     var_estudiante)
-            #                 list_estudiantes.append(serializer_estudiante.data)
-            #             # serialized_estudiantes = estudiante_serializer(obj_estudiantes, many=True)
-
-            # return Response(list_estudiantes)
-
-            # return Response("caso no encontrado")
-
-        elif data_usuario_rol == "vcd_academico":
-
-            list_estudiantes = []
-            # usuario = usuario_rol.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = "ACTIVO").values()
-            # # prueba_estudiante = estudiante.objects.filter(id_estudiante_in_programa_estudiante__id_in_programa__id_in_facultad__id_facultad_in_vcd_academico__id_in = usuario).distinct()
-            # vc_decano = vcd_academico.objects.filter(id_usuario_rol = usuario[0]['id']).values()
-            # # # print(vc_decano)
-            # facultad_decano = facultad.objects.filter(id = vc_decano[0]['id_facultad_id']).values()
-            # # # print(facultad_decano)
-            # programa_decano = programa.objects.filter(id_facultad = facultad_decano[0]['id']).values()
-            # # # print(programa_decano)
-            # for obj_programa in programa_decano:
-            #     for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
-            #         for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-            #             serializer_estudiante = estudiante_serializer(
-            #                 obj_estudiantes)
-            #             list_estudiantes.append(serializer_estudiante.data)
-
-            # 791 estudiantes
-            for obj_usuario_rol in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
-                for obj_vcd_academico in vcd_academico.objects.filter(id_usuario_rol=obj_usuario_rol['id']).values():
-                    for obj_facultad in facultad.objects.filter(id=obj_vcd_academico['id_facultad_id']).values():
-                        for obj_programa in programa.objects.filter(id_facultad=obj_facultad['id']).values():
-                            for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
-                                for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-                                    serializer_estudiante = estudiante_serializer(
-                                        obj_estudiantes)
-                                    list_estudiantes.append(
-                                        serializer_estudiante.data)
-
-            return Response(list_estudiantes)
+            list_id_practicantes= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores= usuario_rol.objects.filter(id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "super_ases":
 
-            # ven todo
-            list_estudiantes = []
-            # list_programas = []
-            serializer_estudiante = estudiante_serializer(
-                estudiante.objects.all(), many=True)
-
+            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
             return Response(serializer_estudiante.data)
 
-            # return Response("caso no encontrado")
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+
+            list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+
+        elif data_usuario_rol == "dir_programa":
+            obj_dir = usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id')
+            obj_dir_programa = dir_programa.objects.filter(id_usuario_rol=obj_dir[0]['id']).values()
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa=obj_dir_programa[0]['id_programa_id']).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+
+        elif data_usuario_rol == "vcd_academico":
+            obj_usuario_rol = usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id')
+            obj_facultad = vcd_academico.objects.filter(id_usuario_rol=obj_usuario_rol[0]['id']).values('id_facultad')
+            list_programas = programa.objects.filter(id_facultad = obj_facultad[0]['id_facultad']).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in =list_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+        
 
         elif data_usuario_rol == None:
             return Response("Comunicate con el administrador para que te asigne un rol", status=status.HTTP_400_BAD_REQUEST)
@@ -187,6 +95,8 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
 
 
 class estudiante_filtros_viewsets(viewsets.ModelViewSet):
+
+    
     serializer_class = estudiante_serializer
     queryset = estudiante_serializer.Meta.model.objects.all()
     # permission_classes = (IsAuthenticated,)
@@ -198,7 +108,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             return 'MEDIO'
         elif riesgo == 2:
             return 'ALTO'
-        elif riesgo == None or riesgo == 'None':
+        elif riesgo is None:
             return 'SIN RIESGO'
 
     def retrieve(self, request, pk):
@@ -207,1302 +117,173 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
         data_sede = request.GET.get('sede')
         var_semestre = get_object_or_404(
             semestre, semestre_actual=True, id_sede=data_sede)
-        # var_semestre = 0;
 
         if data_usuario_rol == "monitor":
-            list_estudiantes = list()
             final_list_estudiantes = list()
-            # serializer_estudiante = estudiante_serializer(asignacion.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = True ), many=True)
-            # serializer_estudiante = asignacion.objects.filter(id_usuario = pk, id_semestre = var_semestre.id, estado = True).select_related('id_estudiante').values()
-
-            for id_estudiante in asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values():
-                var_estudiante = estudiante.objects.get(
-                    id=id_estudiante['id_estudiante_id'])
-                serializer_estudiante = estudiante_serializer(var_estudiante)
-
-                list_estudiantes.append(serializer_estudiante.data)
-
-            # Añadiendo datos de consultas externas a los estudiantes
-
-            for i in list_estudiantes:
-                # serializer_estudiante_2 = estudiante_serializer(i)
-
-                try:
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
-                    }
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A'
-                    }
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    var_programa = programa.objects.filter(
-                        id=programa_del_estudiante.id_programa_id).values()
-                    # list_programas.append(var_programa)
-                    id_sede_programa = var_programa[0]['id_sede_id']
-                    sede_programa = sede.objects.filter(
-                        id=id_sede_programa).values()
-                    # renombrar dic_programa a dic_academico
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                        'programa_academico': var_programa[0]['nombre'],
-                        'sede': sede_programa[0]['nombre']
-
-                    }
-
-                except:
-                    dic_programa = {
-                        'id_programa': '',
-                        'programa_academico': 'N/A',
-                        'sede': 'N/A'
-                    }  # Agregar el estado del curso al diccionario
-
-                try:
-                    if asignacion.objects.filter(id_estudiante=i['id'], estado=True).exists():
-                        dic_estados = {
-                            'estado_ases': 'ACTIVO/A'
-                        }
-                    else:
-                        dic_estados = {
-                            'estado_ases': 'INACTIVO/A'
-                        }
-                except:
-                    # dic_estados = {
-                    #         'estado_ases': 'INACTIVO/A'
-                    #     }
-                    pass
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    estado_estudiante = estado_programa.objects.filter(
-                        id=programa_del_estudiante.id_estado_id).values()
-                    dic_reg_academico = {
-                        'registro_academico': estado_estudiante[0]['nombre']
-                    }
-                except:
-                    dic_reg_academico = {
-                        'registro_academico': 'N/A'
-                    }
-                    # pass
-
-                try:
-                    asignaciones_estudiante = asignacion.objects.filter(
-                        id_estudiante=i['id'], estado=True).first()
-                    data_monitor = User.objects.filter(
-                        id=asignaciones_estudiante.id_usuario_id).values()
-
-                    asignacion_monitor = usuario_rol.objects.filter(
-                        id_usuario=asignaciones_estudiante.id_usuario_id).values()
-                    data_practicante = User.objects.filter(
-                        id=asignacion_monitor[0]['id_jefe_id']).values()
-
-                    asignacion_practicante = usuario_rol.objects.filter(
-                        id_usuario=asignacion_monitor[0]['id_jefe_id']).values()
-                    data_profesional = User.objects.filter(
-                        id=asignacion_practicante[0]['id_jefe_id']).values()
-
-                    dic_asignaciones = {
-                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
-                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
-                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
-                    }
-                except:
-                    dic_asignaciones = {
-                        'asignacion_monitores': 'Sin Asignar',
-                        'asignacion_practicante': 'Sin Asignar',
-                        'asignacion_profesional': 'Sin Asignar'
-                    }
-                    # pass
-
-                try:
-                    var_excepcion = cond_excepcion.objects.filter(
-                        id=i['id_cond_excepcion']).values()
-                    # one Column
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": var_excepcion[0]['alias']
-                    }
-                except:
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": ''
-                    }
-
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **
-                            dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
-
-                final_list_estudiantes.append(data)
-
-            return Response(final_list_estudiantes)
-
+            list_id_estudiantes = asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            
         elif data_usuario_rol == "practicante":
-            list_estudiantes = list()
             final_list_estudiantes = list()
-            for obj_monitor in usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
-
-                for id_estudiante in asignacion.objects.filter(id_usuario=obj_monitor['id_usuario_id'], id_semestre=var_semestre.id, estado=True).values():
-                    var_estudiante = estudiante.objects.get(
-                        id=id_estudiante['id_estudiante_id'])
-                    serializer_estudiante = estudiante_serializer(
-                        var_estudiante)
-                    list_estudiantes.append(serializer_estudiante.data)
-            # Añadiendo datos de consultas externas a los estudiantes
-
-            for i in list_estudiantes:
-                # serializer_estudiante_2 = estudiante_serializer(i)
-
-                try:
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
-                    }
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A'
-                    }
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    var_programa = programa.objects.filter(
-                        id=programa_del_estudiante.id_programa_id).values()
-                    # list_programas.append(var_programa)
-                    id_sede_programa = var_programa[0]['id_sede_id']
-                    sede_programa = sede.objects.filter(
-                        id=id_sede_programa).values()
-                    # renombrar dic_programa a dic_academico
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                        'programa_academico': var_programa[0]['nombre'],
-                        'sede': sede_programa[0]['nombre']
-
-                    }
-
-                except:
-                    dic_programa = {
-                        'id_programa': '',
-                        'programa_academico': 'N/A',
-                        'sede': 'N/A'
-                    }  # Agregar el estado del curso al diccionario
-
-                try:
-                    if asignacion.objects.filter(id_estudiante=i['id'], estado=True).exists():
-                        dic_estados = {
-                            'estado_ases': 'ACTIVO/A'
-                        }
-                    else:
-                        dic_estados = {
-                            'estado_ases': 'INACTIVO/A'
-                        }
-                except:
-                    # dic_estados = {
-                    #         'estado_ases': 'INACTIVO/A'
-                    #     }
-                    pass
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    estado_estudiante = estado_programa.objects.filter(
-                        id=programa_del_estudiante.id_estado_id).values()
-                    dic_reg_academico = {
-                        'registro_academico': estado_estudiante[0]['nombre']
-                    }
-                except:
-                    dic_reg_academico = {
-                        'registro_academico': 'N/A'
-                    }
-                    # pass
-
-                try:
-                    asignaciones_estudiante = asignacion.objects.filter(
-                        id_estudiante=i['id'], estado=True).first()
-                    data_monitor = User.objects.filter(
-                        id=asignaciones_estudiante.id_usuario_id).values()
-
-                    asignacion_monitor = usuario_rol.objects.filter(
-                        id_usuario=asignaciones_estudiante.id_usuario_id).values()
-                    data_practicante = User.objects.filter(
-                        id=asignacion_monitor[0]['id_jefe_id']).values()
-
-                    asignacion_practicante = usuario_rol.objects.filter(
-                        id_usuario=asignacion_monitor[0]['id_jefe_id']).values()
-                    data_profesional = User.objects.filter(
-                        id=asignacion_practicante[0]['id_jefe_id']).values()
-
-                    dic_asignaciones = {
-                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
-                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
-                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
-                    }
-                except:
-                    dic_asignaciones = {
-                        'asignacion_monitores': 'Sin Asignar',
-                        'asignacion_practicante': 'Sin Asignar',
-                        'asignacion_profesional': 'Sin Asignar'
-                    }
-                    # pass
-
-                try:
-                    var_excepcion = cond_excepcion.objects.filter(
-                        id=i['id_cond_excepcion']).values()
-                    # one Column
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": var_excepcion[0]['alias']
-                    }
-                except:
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": ''
-                    }
-
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **
-                            dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
-
-                final_list_estudiantes.append(data)
-
-            return Response(final_list_estudiantes)
-
+            list_id_monitores= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            
         elif data_usuario_rol == "profesional":
-            list_estudiantes = list()
             final_list_estudiantes = list()
-            for obj_programa in programa.objects.filter(id_sede=data_sede).values():
-                for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
-                    for obj_estudiante in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-                        serializer_estudiante = estudiante_serializer(
-                            obj_estudiante)
-                        list_estudiantes.append(serializer_estudiante.data)
-
-            for i in list_estudiantes:
-                # serializer_estudiante_2 = estudiante_serializer(i)
-
-                try:
-                    # # print(i.data)
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
-                    }
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A'
-                    }
-                    # # print('no riesgos')
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    var_programa = programa.objects.filter(
-                        id=programa_del_estudiante.id_programa_id).values()
-                    # # print(programa_del_estudiante)
-                    # list_programas.append(var_programa)
-                    id_sede_programa = var_programa[0]['id_sede_id']
-                    sede_programa = sede.objects.filter(
-                        id=id_sede_programa).values()
-                    # renombrar dic_programa a dic_academico
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                        'programa_academico': var_programa[0]['nombre'],
-                        'sede': sede_programa[0]['nombre']
-
-                    }
-
-                except:
-                    dic_programa = {
-                        'id_programa': '',
-                        'programa_academico': 'N/A',
-                        'sede': 'N/A'
-                    }  # Agregar el estado del curso al diccionario
-
-                try:
-                    if asignacion.objects.filter(id_estudiante=i['id'], estado=True).exists():
-                        dic_estados = {
-                            'estado_ases': 'ACTIVO/A'
-                        }
-                    else:
-                        dic_estados = {
-                            'estado_ases': 'INACTIVO/A'
-                        }
-                except:
-                    # dic_estados = {
-                    #         'estado_ases': 'INACTIVO/A'
-                    #     }
-                    pass
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    estado_estudiante = estado_programa.objects.filter(
-                        id=programa_del_estudiante.id_estado_id).values()
-                    dic_reg_academico = {
-                        'registro_academico': estado_estudiante[0]['nombre']
-                    }
-                except:
-                    dic_reg_academico = {
-                        'registro_academico': 'N/A'
-                    }
-                    # pass
-
-                try:
-                    asignaciones_estudiante = asignacion.objects.filter(
-                        id_estudiante=i['id'], estado=True).first()
-                    data_monitor = User.objects.filter(
-                        id=asignaciones_estudiante.id_usuario_id).values()
-
-                    asignacion_monitor = usuario_rol.objects.filter(
-                        id_usuario=asignaciones_estudiante.id_usuario_id).values()
-                    data_practicante = User.objects.filter(
-                        id=asignacion_monitor[0]['id_jefe_id']).values()
-
-                    asignacion_practicante = usuario_rol.objects.filter(
-                        id_usuario=asignacion_monitor[0]['id_jefe_id']).values()
-                    data_profesional = User.objects.filter(
-                        id=asignacion_practicante[0]['id_jefe_id']).values()
-
-                    dic_asignaciones = {
-                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
-                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
-                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
-                    }
-                except:
-                    dic_asignaciones = {
-                        'asignacion_monitores': 'Sin Asignar',
-                        'asignacion_practicante': 'Sin Asignar',
-                        'asignacion_profesional': 'Sin Asignar'
-                    }
-                    # pass
-
-                # # print(riesgo)
-
-                try:
-                    var_excepcion = cond_excepcion.objects.filter(
-                        id=i['id_cond_excepcion']).values()
-                    # one Column
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": var_excepcion[0]['alias']
-                    }
-                except:
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": ''
-                    }
-
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **
-                            dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
-
-                final_list_estudiantes.append(data)
-
-            return Response(final_list_estudiantes)
-
-        elif data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "sistemas":
-            list_estudiantes = list()
-            final_list_estudiantes = list()
-            serializer_estudiante = estudiante_serializer(
-                estudiante.objects.all(), many=True)
-
-            for i in serializer_estudiante.data:
-
-                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
-                # serializer_estudiante_2 = estudiante_serializer(i)
-
-                try:
-                    # # print(i.data)
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
-                    }
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A'
-                    }
-                    # # print('no riesgos')
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    var_programa = programa.objects.filter(
-                        id=programa_del_estudiante.id_programa_id).values()
-                    # # print(programa_del_estudiante)
-                    # list_programas.append(var_programa)
-                    id_sede_programa = var_programa[0]['id_sede_id']
-                    sede_programa = sede.objects.filter(
-                        id=id_sede_programa).values()
-                    # renombrar dic_programa a dic_academico
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                        'programa_academico': var_programa[0]['nombre'],
-                        'sede': sede_programa[0]['nombre']
-
-                    }
-
-                except:
-                    dic_programa = {
-                        'id_programa': '',
-                        'programa_academico': 'N/A',
-                        'sede': 'N/A'
-                    }  # Agregar el estado del curso al diccionario
-
-                try:
-                    if asignacion.objects.filter(id_estudiante=i['id'], estado=True).exists():
-                        dic_estados = {
-                            'estado_ases': 'ACTIVO/A'
-                        }
-                    else:
-                        dic_estados = {
-                            'estado_ases': 'INACTIVO/A'
-                        }
-                except:
-                    # dic_estados = {
-                    #         'estado_ases': 'INACTIVO/A'
-                    #     }
-                    pass
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    estado_estudiante = estado_programa.objects.filter(
-                        id=programa_del_estudiante.id_estado_id).values()
-                    dic_reg_academico = {
-                        'registro_academico': estado_estudiante[0]['nombre']
-                    }
-                except:
-                    dic_reg_academico = {
-                        'registro_academico': 'N/A'
-                    }
-                    # pass
-
-                try:
-                    asignaciones_estudiante = asignacion.objects.filter(
-                        id_estudiante=i['id'], estado=True).first()
-                    data_monitor = User.objects.filter(
-                        id=asignaciones_estudiante.id_usuario_id).values()
-
-                    asignacion_monitor = usuario_rol.objects.filter(
-                        id_usuario=asignaciones_estudiante.id_usuario_id).values()
-                    data_practicante = User.objects.filter(
-                        id=asignacion_monitor[0]['id_jefe_id']).values()
-
-                    asignacion_practicante = usuario_rol.objects.filter(
-                        id_usuario=asignacion_monitor[0]['id_jefe_id']).values()
-                    data_profesional = User.objects.filter(
-                        id=asignacion_practicante[0]['id_jefe_id']).values()
-
-                    dic_asignaciones = {
-                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
-                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
-                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
-                    }
-                except:
-                    dic_asignaciones = {
-                        'asignacion_monitores': 'Sin Asignar',
-                        'asignacion_practicante': 'Sin Asignar',
-                        'asignacion_profesional': 'Sin Asignar'
-                    }
-                    # pass
-
-                # # print(riesgo)
-
-                try:
-
-                    # (cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
-                    var_excepcion = cond_excepcion.objects.filter(
-                        id=i['id_cond_excepcion']).values()
-
-                    # TRY #2
-
-                    dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "P.D": '',
-                        "P.D": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
-                    }
-
-                    if var_excepcion[0]['alias'] == "I.N":
-                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.A.P":
-                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A":
-                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A.C":
-                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.U":
-                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.R":
-                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.P.M":
-                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "D.N.I":
-                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.D.P":
-                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.D":
-                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "V.C":
-                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "A.R":
-                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "N/A":
-                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
-                    # else:
-                    #     pass
-
-                except:
-                    dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "p_d": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": 'N/A',
-                    }
-
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **
-                            dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
-
-                final_list_estudiantes.append(data)
-
-            return Response(final_list_estudiantes)
-
-        elif data_usuario_rol == "socioeducativo_reg":
-            list_estudiantes = []
-            final_list_estudiantes = list()
-            # for obj_programa in programa.objects.exclude(Q(id_sede=data_sede)).values():
-            for obj_programa in programa.objects.filter(id_sede=data_sede).values():
-                for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
-                    for obj_estudiante in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-                        serializer_estudiante = estudiante_serializer(
-                            obj_estudiante)
-                        list_estudiantes.append(serializer_estudiante.data)
-
-            # list_estudiantes = list()
-            # serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
-
-            for i in list_estudiantes:
-                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
-                # serializer_estudiante_2 = estudiante_serializer(i)
-
-                try:
-                    # # print(i.data)
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
-                    }
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A'
-                    }
-                    # # print('no riesgos')
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    var_programa = programa.objects.filter(
-                        id=programa_del_estudiante.id_programa_id).values()
-                    # # print(programa_del_estudiante)
-                    # list_programas.append(var_programa)
-                    id_sede_programa = var_programa[0]['id_sede_id']
-                    sede_programa = sede.objects.filter(
-                        id=id_sede_programa).values()
-                    # renombrar dic_programa a dic_academico
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                        'programa_academico': var_programa[0]['nombre'],
-                        'sede': sede_programa[0]['nombre']
-
-                    }
-
-                except:
-                    dic_programa = {
-                        'id_programa': '',
-                        'programa_academico': 'N/A',
-                        'sede': 'N/A'
-                    }  # Agregar el estado del curso al diccionario
-
-                try:
-                    if asignacion.objects.filter(id_estudiante=i['id'], estado=True).exists():
-                        dic_estados = {
-                            'estado_ases': 'ACTIVO/A'
-                        }
-                    else:
-                        dic_estados = {
-                            'estado_ases': 'INACTIVO/A'
-                        }
-                except:
-                    # dic_estados = {
-                    #         'estado_ases': 'INACTIVO/A'
-                    #     }
-                    pass
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    estado_estudiante = estado_programa.objects.filter(
-                        id=programa_del_estudiante.id_estado_id).values()
-                    dic_reg_academico = {
-                        'registro_academico': estado_estudiante[0]['nombre']
-                    }
-                except:
-                    dic_reg_academico = {
-                        'registro_academico': 'N/A'
-                    }
-                    # pass
-
-                try:
-                    asignaciones_estudiante = asignacion.objects.filter(
-                        id_estudiante=i['id'], estado=True).first()
-                    data_monitor = User.objects.filter(
-                        id=asignaciones_estudiante.id_usuario_id).values()
-
-                    asignacion_monitor = usuario_rol.objects.filter(
-                        id_usuario=asignaciones_estudiante.id_usuario_id).values()
-                    data_practicante = User.objects.filter(
-                        id=asignacion_monitor[0]['id_jefe_id']).values()
-
-                    asignacion_practicante = usuario_rol.objects.filter(
-                        id_usuario=asignacion_monitor[0]['id_jefe_id']).values()
-                    data_profesional = User.objects.filter(
-                        id=asignacion_practicante[0]['id_jefe_id']).values()
-
-                    dic_asignaciones = {
-                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
-                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
-                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
-                    }
-                except:
-                    dic_asignaciones = {
-                        'asignacion_monitores': 'Sin Asignar',
-                        'asignacion_practicante': 'Sin Asignar',
-                        'asignacion_profesional': 'Sin Asignar'
-                    }
-                    # pass
-
-                # # print(riesgo)
-
-                try:
-
-                    # (cond_excepcion.objects.filter(id = i['id_cond_excepcion']).values())
-                    var_excepcion = cond_excepcion.objects.filter(
-                        id=i['id_cond_excepcion']).values()
-
-                    # TRY #2
-
-                    dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "P.D": '',
-                        "P.D": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": '',
-                    }
-
-                    if var_excepcion[0]['alias'] == "I.N":
-                        dic_cond_excepcion["i_n"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.A.P":
-                        dic_cond_excepcion["m_a_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A":
-                        dic_cond_excepcion["c_a"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.A.C":
-                        dic_cond_excepcion["c_a_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "C.U":
-                        dic_cond_excepcion["c_u"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.R":
-                        dic_cond_excepcion["p_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.P.M":
-                        dic_cond_excepcion["m_p_m"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "D.N.I":
-                        dic_cond_excepcion["d_n_i"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "M.D.P":
-                        dic_cond_excepcion["m_d_p"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "P.D":
-                        dic_cond_excepcion["p_d"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "V.C":
-                        dic_cond_excepcion["v_c"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "A.R":
-                        dic_cond_excepcion["a_r"] = var_excepcion[0]['alias']
-                    elif var_excepcion[0]['alias'] == "N/A":
-                        dic_cond_excepcion["n_a"] = var_excepcion[0]['alias']
-                    # else:
-                    #     pass
-
-                except:
-                    dic_cond_excepcion = {
-                        "i_n": '',
-                        "m_a_p": '',
-                        "c_a": '',
-                        "c_a_c": '',
-                        "c_u": '',
-                        "p_r": '',
-                        "m_p_m": '',
-                        "d_n_i": '',
-                        "m_d_p": '',
-                        "p_d": '',
-                        "v_c": '',
-                        "a_r": '',
-                        "n_a": 'N/A',
-                    }
-
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **
-                            dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
-
-                final_list_estudiantes.append(data)
-
-            return Response(final_list_estudiantes)
-
-        elif data_usuario_rol == "dir_programa":
-           # Ve todos los estudiantes del programa y la sede
-            # ven todo
-            # # print(data_sede)
-            # # print(var_semestre.id)
-            list_estudiantes = []
-            final_list_estudiantes = []
-            for obj_dir in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
-                # # print("obj_dir")
-                # # print(obj_dir)
-                for obj_dir_programa in dir_programa.objects.filter(id_usuario_rol=obj_dir['id']).values():
-                    # # print("WTF")
-                    # # print(obj_dir_programa)
-                    # PROGRAMA PRUEBA 2724 -> id_programa = 257
-                    # TRACKER = OPTIONAL ?
-                    for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_dir_programa['id_programa_id']).values():
-                        # # print("HELLO ?")
-                        # # print(obj_programa_estudiante)
-                        for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-                            # # print("hola, esto de Pute*")
-                            # # print(obj_estudiantes)
-                            # var_estudiante = estudiante.objects.get(
-                            #     id=obj_estudiantes['id'])
-                            serializer_estudiante = estudiante_serializer(
-                                obj_estudiantes)
-                            list_estudiantes.append(serializer_estudiante.data)
-
-                        # serialized_estudiantes = estudiante_serializer(obj_estudiantes, many=True)
-
-            # Añadiendo datos de consultas externas a los estudiantes
-
-            for i in list_estudiantes:
-                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
-                # serializer_estudiante_2 = estudiante_serializer(i)
-
-                try:
-                    # # print(i.data)
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
-                    }
-
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'SIN RIESGO',
-                        'riesgo_familiar': 'SIN RIESGO',
-                        'riesgo_academico': 'SIN RIESGO',
-                        'riesgo_economico': 'SIN RIESGO',
-                        'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
-                    }
-                    # # print('no riesgos')
-
-                try:
-                    # Trabaja Parcialmente
-                    # ISSUE NOMBRE PROGRAMA
-                    # programa_del_estudiante = programa_estudiante.objects.filter(id_estudiante=i['id']).first()
-                    # # printea el primer programa del estudiante, aunque tenga varios
-                    # # print(programa_estudiante.objects.filter(id_estudiante = i['id'], traker=True).values())
-                    # Solo # printea aquellos cuyo traker es True
-                    # VERIFICAR EN DB: SELECT * FROM modulo_programa_programa_estudiante where id_estudiante_id = 21702
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id'], traker=True).first()
-                    var_programa = programa.objects.filter(
-                        id=programa_del_estudiante.id_programa_id).values()
-                    # # print(programa_del_estudiante)
-                    # list_programas.append(var_programa)
-                    id_sede_programa = var_programa[0]['id_sede_id']
-                    sede_programa = sede.objects.filter(
-                        id=id_sede_programa).values()
-                    # renombrar dic_programa a dic_academico
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                        'programa_academico': var_programa[0]['nombre'],
-                        'sede': sede_programa[0]['nombre']
-
-                    }
-
-                except:
-                    dic_programa = {
-                        'id_programa': '',
-                        'programa_academico': 'N/A',
-                        'sede': 'N/A'
-                    }  # Agregar el estado del curso al diccionario
-
-                try:
-                    if asignacion.objects.filter(id_estudiante=i['id'], estado=True).exists():
-                        dic_estados = {
-                            'estado_ases': 'ACTIVO/A'
-                        }
-                    else:
-                        dic_estados = {
-                            'estado_ases': 'INACTIVO/A'
-                        }
-                except:
-                    # dic_estados = {
-                    #         'estado_ases': 'INACTIVO/A'
-                    #     }
-                    pass
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    estado_estudiante = estado_programa.objects.filter(
-                        id=programa_del_estudiante.id_estado_id).values()
-                    dic_reg_academico = {
-                        'registro_academico': estado_estudiante[0]['nombre']
-                    }
-                except:
-                    dic_reg_academico = {
-                        'registro_academico': 'N/A'
-                    }
-                    # pass
-
-                try:
-                    asignaciones_estudiante = asignacion.objects.filter(
-                        id_estudiante=i['id'], estado=True).first()
-                    data_monitor = User.objects.filter(
-                        id=asignaciones_estudiante.id_usuario_id).values()
-
-                    asignacion_monitor = usuario_rol.objects.filter(
-                        id_usuario=asignaciones_estudiante.id_usuario_id).values()
-                    data_practicante = User.objects.filter(
-                        id=asignacion_monitor[0]['id_jefe_id']).values()
-
-                    asignacion_practicante = usuario_rol.objects.filter(
-                        id_usuario=asignacion_monitor[0]['id_jefe_id']).values()
-                    data_profesional = User.objects.filter(
-                        id=asignacion_practicante[0]['id_jefe_id']).values()
-
-                    dic_asignaciones = {
-                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
-                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
-                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
-                    }
-                except:
-                    dic_asignaciones = {
-                        'asignacion_monitores': 'Sin Asignar',
-                        'asignacion_practicante': 'Sin Asignar',
-                        'asignacion_profesional': 'Sin Asignar'
-                    }
-                    # pass
-
-                # # print(riesgo)
-
-                try:
-                    var_excepcion = cond_excepcion.objects.filter(
-                        id=i['id_cond_excepcion']).values()
-                    # one Column
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": var_excepcion[0]['alias']
-                    }
-                except:
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": ''
-                    }
-
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **
-                            dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
-                final_list_estudiantes.append(data)
-
-            return Response(final_list_estudiantes)
-
-        elif data_usuario_rol == "vcd_academico":
-
-            list_estudiantes = []
-            final_list_estudiantes = []
-            for obj_usuario_rol in usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values():
-                for obj_vcd_academico in vcd_academico.objects.filter(id_usuario_rol=obj_usuario_rol['id']).values():
-                    for obj_facultad in facultad.objects.filter(id=obj_vcd_academico['id_facultad_id']).values():
-                        # # print(obj_facultad)
-                        # R/    {'id': 8, 'codigo_univalle': '7', 'nombre': 'INGENIERÍA'}
-                        for obj_programa in programa.objects.filter(id_facultad=obj_facultad['id']).values():
-                            # # print(obj_programa)
-                            # INDICA QUE ESTUDIANTES DE FINANZAS Y ADINISTRACION PUBLICA ENTRE OTROS PERTENECEN A LA FACULTAD 8
-                            # Culpemos a la base de datos
-                            # Saludos.
-                            for obj_programa_estudiante in programa_estudiante.objects.filter(id_programa=obj_programa['id']).values():
-                                # # print(obj_programa_estudiante)
-                                for obj_estudiantes in estudiante.objects.filter(id=obj_programa_estudiante['id_estudiante_id']).values():
-                                    serializer_estudiante = estudiante_serializer(
-                                        obj_estudiantes)
-                                    list_estudiantes.append(
-                                        serializer_estudiante.data)
-
-            for i in list_estudiantes:
-                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
-                # serializer_estudiante_2 = estudiante_serializer(i)
-
-                try:
-                    # # print(i.data)
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
-                    }
-
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'SIN RIESGO',
-                        'riesgo_familiar': 'SIN RIESGO',
-                        'riesgo_academico': 'SIN RIESGO',
-                        'riesgo_economico': 'SIN RIESGO',
-                        'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
-                    }
-                    # # print('no riesgos')
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id'], traker=True).first()
-                    var_programa = programa.objects.filter(
-                        id=programa_del_estudiante.id_programa_id).values()
-                    # # print(programa_del_estudiante)
-                    # list_programas.append(var_programa)
-                    id_sede_programa = var_programa[0]['id_sede_id']
-                    sede_programa = sede.objects.filter(
-                        id=id_sede_programa).values()
-                    # renombrar dic_programa a dic_academico
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                        'programa_academico': var_programa[0]['nombre'],
-                        'sede': sede_programa[0]['nombre']
-
-                    }
-
-                except:
-                    dic_programa = {
-                        'id_programa': '',
-                        'programa_academico': 'N/A',
-                        'sede': 'N/A'
-                    }  # Agregar el estado del curso al diccionario
-
-                try:
-                    if asignacion.objects.filter(id_estudiante=i['id'], estado=True).exists():
-                        dic_estados = {
-                            'estado_ases': 'ACTIVO/A'
-                        }
-                    else:
-                        dic_estados = {
-                            'estado_ases': 'INACTIVO/A'
-                        }
-                except:
-                    # dic_estados = {
-                    #         'estado_ases': 'INACTIVO/A'
-                    #     }
-                    pass
-
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    estado_estudiante = estado_programa.objects.filter(
-                        id=programa_del_estudiante.id_estado_id).values()
-                    dic_reg_academico = {
-                        'registro_academico': estado_estudiante[0]['nombre']
-                    }
-                except:
-                    dic_reg_academico = {
-                        'registro_academico': 'N/A'
-                    }
-                    # pass
-
-                try:
-                    asignaciones_estudiante = asignacion.objects.filter(
-                        id_estudiante=i['id'], estado=True).first()
-                    data_monitor = User.objects.filter(
-                        id=asignaciones_estudiante.id_usuario_id).values()
-
-                    asignacion_monitor = usuario_rol.objects.filter(
-                        id_usuario=asignaciones_estudiante.id_usuario_id).values()
-                    data_practicante = User.objects.filter(
-                        id=asignacion_monitor[0]['id_jefe_id']).values()
-
-                    asignacion_practicante = usuario_rol.objects.filter(
-                        id_usuario=asignacion_monitor[0]['id_jefe_id']).values()
-                    data_profesional = User.objects.filter(
-                        id=asignacion_practicante[0]['id_jefe_id']).values()
-
-                    dic_asignaciones = {
-                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
-                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
-                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
-                    }
-                except:
-                    dic_asignaciones = {
-                        'asignacion_monitores': 'Sin Asignar',
-                        'asignacion_practicante': 'Sin Asignar',
-                        'asignacion_profesional': 'Sin Asignar'
-                    }
-                    # pass
-
-                # # print(riesgo)
-
-                try:
-                    var_excepcion = cond_excepcion.objects.filter(
-                        id=i['id_cond_excepcion']).values()
-                    # one Column
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": var_excepcion[0]['alias']
-                    }
-                except:
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": ''
-                    }
-
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **
-                            dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
-                final_list_estudiantes.append(data)
-
-            return Response(final_list_estudiantes)
+            list_id_practicantes= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores= usuario_rol.objects.filter(id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
         elif data_usuario_rol == "super_ases":
-            list_estudiantes = list()
-            serializer_estudiante = estudiante_serializer(
-                estudiante.objects.all(), many=True)
+            final_list_estudiantes = list()
+            list_estudiantes = estudiante.objects.all()
+            serializer_estudiantes = estudiante_serializer(estudiante.objects.all(), many=True)
 
-            # Añadiendo datos de consultas externas a los estudiantes
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+            final_list_estudiantes = list()
+            list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
-            for i in serializer_estudiante.data:
-                # # print(seguimiento_individual.objects.filter(id_estudiante = i['id']).latest('fecha'))
-                # serializer_estudiante_2 = estudiante_serializer(i)
+        elif data_usuario_rol == "dir_programa":
+            final_list_estudiantes = []
+            obj_dir = usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id')
+            obj_dir_programa = dir_programa.objects.filter(id_usuario_rol=obj_dir[0]['id']).values()
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa=obj_dir_programa[0]['id_programa_id']).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
-                try:
-                    # # print(i.data)
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
+        elif data_usuario_rol == "vcd_academico":
+            final_list_estudiantes = []
+            obj_usuario_rol = usuario_rol.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id')
+            obj_facultad = vcd_academico.objects.filter(id_usuario_rol=obj_usuario_rol[0]['id']).values('id_facultad')
+            list_programas = programa.objects.filter(id_facultad = obj_facultad[0]['id_facultad']).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in =list_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
+        estudiantes_ids = [data['id'] for data in serializer_estudiantes.data]
+
+        # Obtener los datos relacionados a las condiciones de excepción de una vez
+        condiciones_excepcion = cond_excepcion.objects.filter(id__in=[data['id_cond_excepcion'] for data in serializer_estudiantes.data])
+
+
+        # Obtener los datos relacionados a los programas y estados de una vez
+        programas_estudiantes = programa_estudiante.objects.filter(id_estudiante__in=list_estudiantes)
+        programa_data = programa.objects.in_bulk(programas_estudiantes.values_list('id_programa_id', flat=True))
+        estado_data = estado_programa.objects.in_bulk(programas_estudiantes.values_list('id_estado_id', flat=True))
+        sedes = sede.objects.in_bulk([programa_data[programa_id].id_sede_id for programa_id in programa_data])
+
+        # Obtener los datos relacionados con el último seguimiento de una vez
+        seguimientos_recientes = seguimiento_individual.objects.filter(id_estudiante__in=estudiantes_ids) \
+        .values('id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad') \
+        .annotate(latest_fecha=Max('fecha'))
+
+
+        for data_del_estudiante in serializer_estudiantes.data:
+            # serializer_estudiante_2 = estudiante_serializer(i)
+            estudiante_id = data_del_estudiante['id']
+
+            try:
+                seguimiento_reciente = next((s for s in seguimientos_recientes if s['id_estudiante'] == estudiante_id), None)
+                # Crear un diccionario con los datos de riesgo del seguimiento
+                if seguimiento_reciente:
                     riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
+                        'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
+                        'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente['riesgo_familiar']),
+                        'riesgo_academico': self.get_nivel_riesgo(seguimiento_reciente['riesgo_academico']),
+                        'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente['riesgo_economico']),
+                        'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad'])
                     }
-
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+                else:
                     riesgo = {
-                        'riesgo_individual': 'SIN RIESGO',
-                        'riesgo_familiar': 'SIN RIESGO',
-                        'riesgo_academico': 'SIN RIESGO',
-                        'riesgo_economico': 'SIN RIESGO',
-                        'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
+                    'riesgo_individual': 'SIN RIESGO',
+                    'riesgo_familiar': 'SIN RIESGO',
+                    'riesgo_academico': 'SIN RIESGO',
+                    'riesgo_economico': 'SIN RIESGO',
+                    'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
                     }
-                    # # print('no riesgos')
+            except seguimiento_individual.DoesNotExist:
+                # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+                riesgo = {
+                    'riesgo_individual': 'N/A',
+                    'riesgo_familiar': 'N/A',
+                    'riesgo_academico': 'N/A',
+                    'riesgo_economico': 'N/A',
+                    'riesgo_vida_universitaria_ciudad': 'N/A'
+                }
 
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    var_programa = programa.objects.filter(
-                        id=programa_del_estudiante.id_programa_id).values()
-                    # # print(programa_del_estudiante)
-                    # list_programas.append(var_programa)
-                    id_sede_programa = var_programa[0]['id_sede_id']
-                    sede_programa = sede.objects.filter(
-                        id=id_sede_programa).values()
-                    # renombrar dic_programa a dic_academico
-                    dic_programa = {
-                        'id_programa': var_programa[0]['codigo_univalle'],
-                        'programa_academico': var_programa[0]['nombre'],
-                        'sede': sede_programa[0]['nombre']
+            try:
+                programa_del_estudiante = programas_estudiantes.filter(id_estudiante=data_del_estudiante['id']).first()
 
-                    }
+                dic_programa = {
+                    'id_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
+                    'programa_academico': programa_data[programa_del_estudiante.id_programa_id].nombre,
+                    'sede': sedes[programa_data[programa_del_estudiante.id_programa_id].id_sede_id].nombre
+                }
 
-                except:
-                    dic_programa = {
-                        'id_programa': '',
-                        'programa_academico': 'N/A',
-                        'sede': 'N/A'
-                    }  # Agregar el estado del curso al diccionario
+                dic_reg_academico = {
+                    'registro_academico': estado_data[programa_del_estudiante.id_estado_id].nombre
+                }
 
-                try:
-                    if asignacion.objects.filter(id_estudiante=i['id'], estado=True).exists():
-                        dic_estados = {
-                            'estado_ases': 'ACTIVO/A'
-                        }
-                    else:
-                        dic_estados = {
-                            'estado_ases': 'INACTIVO/A'
-                        }
-                except:
-                    # dic_estados = {
-                    #         'estado_ases': 'INACTIVO/A'
-                    #     }
-                    pass
+            except:
+                dic_programa = {
+                    'id_programa': '',
+                    'programa_academico': 'N/A',
+                    'sede': 'N/A'
+                } 
+                dic_reg_academico = {
+                    'registro_academico': 'N/A'
+                }
 
-                try:
-                    programa_del_estudiante = programa_estudiante.objects.filter(
-                        id_estudiante=i['id']).first()
-                    estado_estudiante = estado_programa.objects.filter(
-                        id=programa_del_estudiante.id_estado_id).values()
-                    dic_reg_academico = {
-                        'registro_academico': estado_estudiante[0]['nombre']
-                    }
-                except:
-                    dic_reg_academico = {
-                        'registro_academico': 'N/A'
-                    }
-                    # pass
+            try:
+                id_monitor_estudiante = asignacion.objects.filter(id_estudiante=data_del_estudiante['id'], estado=True,id_semestre=var_semestre.id).values('id_usuario')
+                data_monitor = User.objects.filter(id=id_monitor_estudiante[0]['id_usuario']).values('id','first_name','last_name')
+                consulta_jefe_monitor = usuario_rol.objects.filter(id_usuario=data_monitor[0]['id'],id_semestre=var_semestre.id, estado="ACTIVO").values('id_jefe')
+                data_practicante = User.objects.filter(id=consulta_jefe_monitor[0]['id_jefe']).values('id','first_name','last_name')
+                consulta_jefe_practicante = usuario_rol.objects.filter(id_usuario=data_practicante[0]['id'],id_semestre=var_semestre.id, estado="ACTIVO").values('id_jefe')
+                data_profesional = User.objects.filter(id=consulta_jefe_practicante[0]['id_jefe']).values('first_name','last_name')
 
-                try:
-                    asignaciones_estudiante = asignacion.objects.filter(
-                        id_estudiante=i['id'], estado=True).first()
-                    data_monitor = User.objects.filter(
-                        id=asignaciones_estudiante.id_usuario_id).values()
+                dic_asignaciones = {
+                    'asignacion_monitores':data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
+                    'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
+                    'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
+                }
+                dic_estados = {
+                        'estado_ases': 'ACTIVO/A'
+                }
+            except:
+                dic_asignaciones = {
+                    'asignacion_monitores': 'Sin Asignar',
+                    'asignacion_practicante': 'Sin Asignar',
+                    'asignacion_profesional': 'Sin Asignar'
+                }
+                dic_estados = {
+                        'estado_ases': 'INACTIVO/A'
+                }
+                # pass
 
-                    asignacion_monitor = usuario_rol.objects.filter(
-                        id_usuario=asignaciones_estudiante.id_usuario_id).values()
-                    data_practicante = User.objects.filter(
-                        id=asignacion_monitor[0]['id_jefe_id']).values()
+            try:
+                cond_excepcion_data = [ce for ce in condiciones_excepcion if ce.id == data_del_estudiante['id_cond_excepcion']]
+                dic_cond_excepcion = {
+                "condicion_excepcion": cond_excepcion_data[0].alias
+                }
 
-                    asignacion_practicante = usuario_rol.objects.filter(
-                        id_usuario=asignacion_monitor[0]['id_jefe_id']).values()
-                    data_profesional = User.objects.filter(
-                        id=asignacion_practicante[0]['id_jefe_id']).values()
+            except:
+                dic_cond_excepcion = {
+                    "condicion_excepcion": ''
+                }   
 
-                    dic_asignaciones = {
-                        'asignacion_monitores': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
-                        'asignacion_practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
-                        'asignacion_profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name']
-                    }
-                except:
-                    dic_asignaciones = {
-                        'asignacion_monitores': 'Sin Asignar',
-                        'asignacion_practicante': 'Sin Asignar',
-                        'asignacion_profesional': 'Sin Asignar'
-                    }
-                    # pass
+            data = dict(data_del_estudiante, **riesgo, **dic_programa, **dic_estados, **
+                        dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
 
-                # # print(riesgo)
+            final_list_estudiantes.append(data)
 
-                try:
-                    var_excepcion = cond_excepcion.objects.filter(
-                        id=i['id_cond_excepcion']).values()
-                    # one Column
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": var_excepcion[0]['alias']
-                    }
-                except:
-                    dic_cond_excepcion = {
-                        "condicion_excepcion": ''
-                    }
+        return Response(final_list_estudiantes)
 
-                data = dict(i, **riesgo, **dic_programa, **dic_estados, **
-                            dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
-                list_estudiantes.append(data)
-
-            return Response(list_estudiantes)

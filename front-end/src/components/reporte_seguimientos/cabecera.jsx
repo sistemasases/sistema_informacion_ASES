@@ -358,7 +358,7 @@ const Cabecera = (props) => {
         )}
 
         {
-        (desencriptar(sessionStorage.getItem('rol'))=='sistemas' || desencriptar(sessionStorage.getItem('rol'))=='super_ases' || desencriptar(sessionStorage.getItem('rol'))=='socieducativo') ? 
+        (desencriptar(sessionStorage.getItem('rol'))=='socioeducativo_reg' || desencriptar(sessionStorage.getItem('rol'))=='super_ases' || desencriptar(sessionStorage.getItem('rol'))=='socieducativo') ? 
         (        
         <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
           <Row>

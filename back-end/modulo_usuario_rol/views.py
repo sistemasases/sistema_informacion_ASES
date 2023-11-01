@@ -229,20 +229,25 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         try :
             ids_del_estudiante_para_sus_progamas = estudiante.objects.filter(num_doc=serializer_estudiante.data['num_doc']).values('id', 'cod_univalle')
             for id_estudiante_programa in ids_del_estudiante_para_sus_progamas:
-                programa_seleccionado = programa_estudiante.objects.filter(id_estudiante=id_estudiante_programa['id']).first()
-                var_programa = programa.objects.filter(id=programa_seleccionado.id_programa_id).values()
-                dic_programa = {'nombre_programa': var_programa[0]['nombre'], 
-                                'cod_univalle': var_programa[0]['codigo_univalle'],
-                                'codigo_estudiante': id_estudiante_programa['cod_univalle'],
-                                'id_estado_id': programa_seleccionado.id_estado_id,
-                                'traker': programa_seleccionado.traker
-                                }  # Agregar el estado del curso al diccionario
+                programa_seleccionado = programa_estudiante.objects.filter(id_estudiante=id_estudiante_programa['id']).values('id_programa','id_estado','traker')
+                for programa_id in programa_seleccionado :
+                    var_programa = programa.objects.filter(id=programa_id['id_programa']).values()
+                    dic_programa = {'id': id_estudiante_programa['id'], 
+                                    'nombre_programa': var_programa[0]['nombre'], 
+                                    'cod_univalle': var_programa[0]['codigo_univalle'],
+                                    'codigo_estudiante': id_estudiante_programa['cod_univalle'],
+                                    'id_estado_id': programa_id['id_estado'],
+                                    'traker': programa_id['traker']
+                                    }  # Agregar el estado del curso al diccionario
+                    dic = {}
+                    dic.update(dic_programa)
+                    lista_programas.append(dic)
 
-                dic = id_estudiante_programa
-                dic.update(dic_programa)
-                lista_programas.append(dic)
             diccionario_programas = {'programas': lista_programas}
+
             diccionario_estudiante.update(diccionario_programas)
+
+        
 
         except :
             dic_programa = {'error': 'sin programa asignado o no se encontraro coincidencias'
@@ -252,6 +257,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             dic.update(dic_programa)
             lista_programas.append(dic)
             diccionario_programas = {'programas': lista_programas}
+            print(diccionario_programas)
             diccionario_estudiante.update(diccionario_programas)
 
         try:
@@ -292,6 +298,8 @@ class estudiante_viewsets(viewsets.ModelViewSet):
                     }
 
         diccionario_estudiante.update(datos_encargados)
+
+
 
         return Response(diccionario_estudiante)
 
@@ -662,7 +670,6 @@ class trayectoria_viewsets(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk):
         request_sede = int(request.GET.get('id_sede'))
-        estudiante_id = request.query_params.get('estudiante_id')
         list_semestre = semestre.objects.all().get(semestre_actual=True,id_sede = request_sede)
         fecha_inicio_semestre = list_semestre.fecha_inicio
 
@@ -677,8 +684,8 @@ class trayectoria_viewsets(viewsets.ModelViewSet):
         try:
             seguimiento_reciente = seguimiento_individual.objects.filter(
                 id_estudiante=pk, fecha__gt=fecha_inicio_semestre
-            )
-
+            ).order_by('fecha')
+            print (seguimiento_reciente)
             for i in seguimiento_reciente:
                 seguimiento = seguimiento_individual_serializer(i)
                 fechas.append(seguimiento.data['fecha'])
@@ -701,6 +708,7 @@ class trayectoria_viewsets(viewsets.ModelViewSet):
             listas.append(riesgo_academico_lista)
             listas.append(riesgo_economico_lista)
             listas.append(riesgo_vida_universitaria_ciudad_lista)
+            print(listas)
             return Response(listas)
         except seguimiento_individual.DoesNotExist:
             return Response({})
@@ -1383,133 +1391,57 @@ class Condicion_de_excepcion_viewsets(viewsets.ModelViewSet):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
 class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
     permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk):
+
         list_total_datos = []
-
-        list_estudiantes = []
-
-        list_inasistencia = []
-        list_seguimientos = []
         request_sede = int(request.GET.get('id_sede'))
-        id = '',
-        cedula = '',
-        nombres = '',
-        apellidos = '',
-        practicante = '',
-        profesional = '',
+        request_rol = request.GET.get('rol')
+        var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=request_sede)
+        if request_rol == "socioeducativo" or request_rol == "super_ases" or request_rol  == "socioeducativo_reg":
+            list_id_programas = programa.objects.filter(id_sede=request_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+        elif request_rol == "profesional":
+            list_id_practicantes= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores= usuario_rol.objects.filter(id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
-        list_semestre = list(semestre.objects.all().filter(semestre_actual = True,id_sede=request_sede))
-        # Realiza la lista de estudiantes y los serializa
-        consulta_estudiantes = list(estudiante.objects.all())
+        for data_del_estudiante in serializer_estudiantes.data:
+            try:
+                id_monitor_estudiante = asignacion.objects.filter(id_estudiante=data_del_estudiante['id'], estado=True,id_semestre=var_semestre.id).values('id_usuario')
+                data_monitor = User.objects.filter(id=id_monitor_estudiante[0]['id_usuario']).values('id','first_name','last_name')
+                consulta_jefe_monitor = usuario_rol.objects.filter(id_usuario=data_monitor[0]['id'],id_semestre=var_semestre.id, estado="ACTIVO").values('id_jefe')
+                data_practicante = User.objects.filter(id=consulta_jefe_monitor[0]['id_jefe']).values('id','first_name','last_name')
+                consulta_jefe_practicante = usuario_rol.objects.filter(id_usuario=data_practicante[0]['id'],id_semestre=var_semestre.id, estado="ACTIVO").values('id_jefe')
+                data_profesional = User.objects.filter(id=consulta_jefe_practicante[0]['id_jefe']).values('first_name','last_name')
+                count_seguimientos = seguimiento_individual.objects.filter(id_estudiante = data_del_estudiante['id'],creacion__range= (var_semestre.fecha_inicio, var_semestre.fecha_fin) ).count()
+                count_inasistencias = inasistencia.objects.filter(id_estudiante = data_del_estudiante['id'],creacion__range= (var_semestre.fecha_inicio, var_semestre.fecha_fin) ).count()
+                datos = {
+                    'id': data_del_estudiante['id'],
+                    'cedula': data_del_estudiante['num_doc'],
+                    'nombres': data_del_estudiante['nombre'],
+                    'apellidos': data_del_estudiante['apellido'],
+                    'cantidad_de_fichas': count_seguimientos,
+                    'cantidad_de_inasistencias': count_inasistencias,
+                    'total_fichas': count_seguimientos + count_inasistencias,
+                    'monitor': data_monitor[0]['first_name'] + " " + data_monitor[0]['last_name'],
+                    'practicante': data_practicante[0]['first_name'] + " " + data_practicante[0]['last_name'],
+                    'profesional': data_profesional[0]['first_name'] + " " + data_profesional[0]['last_name'],
+                    }
 
-        for i in consulta_estudiantes: 
-            serializer_estudiante =estudiante_serializer(i)
-            list_estudiantes.append(serializer_estudiante.data)
-
-        # Serializa el id del profesional
-        val_rol_profesional = rol.objects.get(nombre = 'profesional')
-        serializer_rol= rol_serializer(val_rol_profesional)
-        id_rol_profesional = serializer_rol.data['id']
-
-        # Serializa el id del practicante
-        val_rol_practicante = rol.objects.get(nombre = 'practicante')
-        id_rol_practicante = (rol_serializer(val_rol_practicante)).data['id']
-
-        # Serializa el id del monitor
-        val_rol_monitor = rol.objects.get(nombre = 'monitor')
-        id_rol_monitor = (rol_serializer(val_rol_monitor)).data['id']
-
-        consulta_id_profesional = list(usuario_rol.objects.filter(id_rol = id_rol_profesional, id_semestre=pk))
-        
-        for i in consulta_id_profesional:
-
-            serializer_usuario_rol = usuario_rol_serializer(i)
-            consulta_profesional = User.objects.get(id =serializer_usuario_rol.data['id_usuario'])
-            serializer_profesional = user_selected(consulta_profesional)
-            # profesional = serializer_profesional.data['first_name']
-            profesional = f"{serializer_profesional.data['first_name']} {serializer_profesional.data['last_name']}"
-
-            consulta_id_practicante_selected = list(usuario_rol.objects.filter(id_semestre=pk, id_jefe = serializer_profesional.data['id'], id_rol = id_rol_practicante))
-
-            for j in consulta_id_practicante_selected:
-                serializer_usuario_rol_selected =usuario_rol_serializer(j)
-                consulta_practicante_selected  = User.objects.get(id = serializer_usuario_rol_selected.data['id_usuario'])
-                serializer_practicante_selected  = user_selected(consulta_practicante_selected )
-                practicante = f"{serializer_practicante_selected.data['first_name']} {serializer_practicante_selected.data['last_name']}"
-
-                consulta_id_monitores_selected = list(usuario_rol.objects.filter(id_semestre=pk, id_jefe = serializer_practicante_selected.data['id'], id_rol = id_rol_monitor))
-
-                for k in consulta_id_monitores_selected:
-                    serializer_usuario_rol_selected =usuario_rol_serializer(k)
-                    consulta_monitor_selected  = User.objects.get(id =serializer_usuario_rol_selected.data['id_usuario'])
-                    serializer_monitor_selected  = user_selected(consulta_monitor_selected )
-                    # monitor = serializer_monitor_selected.data['first_name']
-                    monitor = f"{serializer_monitor_selected.data['first_name']} {serializer_monitor_selected.data['last_name']}"
-
-                    lista_asignacion = list(asignacion.objects.filter(id_usuario = serializer_monitor_selected.data['id'], estado=True, id_semestre=pk))
-
-                    for l in lista_asignacion:
-                        serializer_asignacion =asignacion_serializer(l)
-                        estudiante_selected =estudiante.objects.get(id = serializer_asignacion.data['id_estudiante']) 
-                        serializer_estudiante =estudiante_serializer(estudiante_selected)
-                        id = serializer_estudiante.data['id']
-                        cedula = serializer_estudiante.data['num_doc']
-                        nombres = serializer_estudiante.data['nombre']
-                        apellidos = serializer_estudiante.data['apellido']
-
-
-                        list_seguimientos_individual = list(seguimiento_individual.objects.filter(id_estudiante = id))
-                        list_inasistencia_individual = list(inasistencia.objects.filter(id_estudiante = id))
-
-                        for i in list_inasistencia_individual: 
-                            serializer_inasistencia =inasistencia_serializer(i)
-                            list_inasistencia.append(serializer_inasistencia.data)
-                        for i in list_seguimientos_individual: 
-                            serializer_seguimiento_individual =seguimiento_individual_serializer(i)
-                            list_seguimientos.append(serializer_seguimiento_individual.data)
-
-                        for m in list_semestre:
-                            lista_inasistencia = []
-                            lista_seguimientos = []
-
-                            serializer_semestre =semestre_serializer(m)
-
-                            for j in list_inasistencia:
-                                if j['fecha'] > serializer_semestre.data['fecha_inicio'] and j['fecha'] < serializer_semestre.data['fecha_fin']:
-                                    lista_inasistencia.append(j)        
-
-                            for j in list_seguimientos:
-                                if j['fecha'] > serializer_semestre.data['fecha_inicio'] and j['fecha'] < serializer_semestre.data['fecha_fin']:
-                                    lista_seguimientos.append(j)
-
-                            count_inasistencias = len(lista_inasistencia)
-                            count_seguimientos = len(lista_seguimientos)
-                            count_total_fichas = count_inasistencias + count_seguimientos
-
-                            datos = {
-                                'id': id,
-                                'cedula': cedula,
-                                'nombres': nombres,
-                                'apellidos': apellidos,
-                                'cantidad_de_fichas': count_seguimientos,
-                                'cantidad_de_inasistencias': count_inasistencias,
-                                'total_fichas': count_total_fichas,
-                                'monitor': monitor,
-                                'practicante': practicante,
-                                'profesional': profesional,
-                                }
-
-                            list_total_datos.append(datos)
+                list_total_datos.append(datos)
+            except:
+                pass
 
         return Response(list_total_datos,status=status.HTTP_200_OK)
-
-
 
 
 class reporte_seguimientos_viewsets (viewsets.ModelViewSet):
