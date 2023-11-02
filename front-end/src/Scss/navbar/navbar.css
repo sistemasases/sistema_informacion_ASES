@@ -47,6 +47,8 @@ body {
   height: 2.5rem;
   color: white;
   font-weight: bold;
+
+  text-decoration-line: none;
 }
 
 .row_modulo_activo {
@@ -148,6 +150,12 @@ body {
   /* cursor: pointer; */
   /* width: fit-content; */
 }
+.alert_icon {
+  transition: all 0.2s ease-in-out;
+}
+.alert_icon:hover {
+  transform: scale(1.1);
+}
 
 .alert_counter {
   position: absolute;
@@ -171,9 +179,11 @@ body {
 }
 .inner-counter {
   text-decoration-line: none;
+  
 }
 
 .alert_counter:hover {
   background: white;
   color: rgba(235, 30, 0, 255);
+  transition: all 0.2s ease-in-out;
 }

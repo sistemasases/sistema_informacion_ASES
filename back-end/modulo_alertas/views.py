@@ -1,75 +1,104 @@
 from django.shortcuts import render
-from rest_framework import viewsets
-from rest_framework import status
 from rest_framework.response import Response
-from rest_framework import generics
-
-from modulo_usuario_rol.models import estudiante
+from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+import time
 from modulo_usuario_rol.serializers import user_serializer, estudiante_serializer, usuario_rol_serializer, user_selected
+from modulo_seguimiento.serializers import seguimiento_individual_serializer
+from django.core import serializers
 
+from modulo_usuario_rol.models import estudiante, firma_tratamiento_datos, usuario_rol, rol
+from modulo_asignacion.models import asignacion
+from modulo_instancia.models import semestre, sede
+from modulo_programa.models import dir_programa, facultad, programa, programa_estudiante, estado_programa, vcd_academico
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
 
-from modulo_asignacion.models import asignacion
-
-from modulo_instancia.models import semestre, sede
 
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
+from django.db.models import Q
+from django.db.models import F, OuterRef, Subquery, Max
 
-import json
 import datetime
 
 # Create your views here.
 
+
 class info_estudiante_viewsets(viewsets.ModelViewSet):
-    
+
     serializer_class = estudiante_serializer
     queryset = estudiante_serializer.Meta.model.objects.all()
-    
-    def retrieve(self, request, pk, *args, **kwargs):
-        
+    # permission_classes = (IsAuthenticated,)
+
+    def retrieve(self, request, pk):
+
         data_usuario_rol = request.GET.get('usuario_rol')
         data_sede = request.GET.get('sede')
-
-        # var_semestre = get_object_or_404(semestre, semestre_actual = True)
         var_semestre = get_object_or_404(
             semestre, semestre_actual=True, id_sede=data_sede)
- 
         list_estudiantes = list()
-        
-        if data_usuario_rol == "super_ases":
 
-            # ven todo
-            list_estudiantes = []
-            # list_programas = []
+        if data_usuario_rol == "monitor":
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+
+        elif data_usuario_rol == "practicante":
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+
+        elif data_usuario_rol == "profesional":
+            list_id_practicantes = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+
+        elif data_usuario_rol == "super_ases":
             serializer_estudiante = estudiante_serializer(
                 estudiante.objects.all(), many=True)
-
             return Response(serializer_estudiante.data)
-        elif data_usuario_rol == "monitor":
 
-            for id_estudiante in asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values():
-                var_estudiante = estudiante.objects.get(
-                    id=id_estudiante['id_estudiante_id'])
-                serializer_estudiante = estudiante_serializer(var_estudiante)
-                list_estudiantes.append(serializer_estudiante.data)
-            return Response(list_estudiantes)
-      
-        
-        # print(estudiante_serializer(self.get_object()).data)
-        return Response(status=status.HTTP_200_OK, data=estudiante_serializer(self.get_object()).data)
-    
-    # 
-class alert_counter_viewsets(viewsets.ModelViewSet):
-    
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
+            list_id_programas = programa.objects.filter(
+                id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(
+                id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+
+        elif data_usuario_rol == None:
+            return Response("Comunicate con el administrador para que te asigne un rol", status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            return Response("caso no encontrado", status=status.HTTP_404_NOT_FOUND)
+
+
+class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
     queryset = estudiante_serializer.Meta.model.objects.all()
-    # Contador de:
-    # Riesgos - COMPLETADO
-    # Tratamiento de Datos - -STAND BY
-    # Encuesta de admitidos - STAND BY
-    # Semanal - Tabla de Inasistencias - WIP
-    # Academica - STAND BY
-    
+
     def get_nivel_riesgo(self, riesgo):
         if riesgo == 0:
             return 'BAJO'
@@ -79,37 +108,196 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
             return 'ALTO'
         elif riesgo == None or riesgo == 'None':
             return 'SIN RIESGO'
-        
+
     def get_fecha_seguimiento(self, fecha):
-        date_str = fecha
-        # print(date_str)
-        # date_format = ''
-        date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-        # print(date_obj)aa
+        # print(fecha)
+        if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
+            return "FICHA FALTANTE"
+        elif fecha:
+            fech_actual = datetime.datetime.now()
+            fecha_ = datetime.timedelta(days=7)
+            fecha_limite = fech_actual - fecha_
+            date_obj = datetime.datetime.strptime(
+                fecha, "%Y-%m-%d")
+            if date_obj.date() <= fecha_limite.date():
+                return "FICHA FALTANTE"
+            else:
+                return "SEGUIMIENTO RECIENTE"
+
+    def get_firma(self, firma):
+        # print(firma)
+        if firma:
+            for i in firma:
+                if i.autoriza == True:
+                    # print("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                    return 'AUTORIZA'
+                elif i.autoriza == False:
+                    # print("SEJODIOOOOOO")
+                    return 'NO AUTORIZA'
+        else:
+            return "SIN FIRMAR"
+
+    def retrieve(self, request, pk):
+        data_usuario_rol = request.GET.get('usuario_rol')
+        data_sede = request.GET.get('sede')
+        var_semestre = get_object_or_404(
+            semestre, semestre_actual=True, id_sede=data_sede)
+        list_conteo = list()
+        list_estudiantes = list()
+
+        if data_usuario_rol == "monitor":
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "practicante":
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "profesional":
+            list_id_practicantes = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "super_ases":
+            serializer_estudiante = estudiante_serializer(
+                estudiante.objects.all(), many=True)
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
+            list_id_programas = programa.objects.filter(
+                id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(
+                id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == None:
+            return Response("Comunicate con el administrador para que te asigne un rol", status=status.HTTP_400_BAD_REQUEST)
+
+        for i in serializer_estudiantes.data:
+
+            try:
+                # Obtener el seguimiento más reciente del estudiante especificado
+                seguimiento_reciente = seguimiento_individual.objects.filter(
+                    id_estudiante=i['id']).latest('fecha')
+
+                # Obtener firma de tratamiento de datos del estudiante
+                firma_tratamiento = firma_tratamiento_datos.objects.filter(
+                    id_estudiante=i['id'])
+                # print(firma_tratamiento_datos.objects.filter(
+                #     id_estudiante=i['id']))
+
+                # Crear un diccionario con los datos de riesgo del seguimiento
+                riesgo = {
+                    'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                    'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                    'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                    'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                    'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
+                    # 'fecha_seguimiento': self.get_fecha_seguimiento(str(seguimiento_reciente.fecha))
+                    'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha))),
+                    # 'fecha_seguimiento': seguimiento_reciente.fecha,
+                    # 'fecha_seguimiento': (seguimiento_reciente.fecha).strftime("%Y-%m-%d"),
+                    'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+
+                }
+
+                # Devolver el riesgo en la respuesta
+            except seguimiento_individual.DoesNotExist or firma_tratamiento_datos.DoesNotExist:
+                # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+                riesgo = {
+                    'riesgo_individual': 'SIN REGISTRAR',
+                    'riesgo_familiar': 'SIN REGISTRAR',
+                    'riesgo_academico': 'SIN REGISTRAR',
+                    'riesgo_economico': 'SIN REGISTRAR',
+                    'riesgo_vida_universitaria_ciudad': 'SIN REGISTRAR',
+                    'fecha_seguimiento': 'FICHA FALTANTE',
+                    'firma_tratamiento_datos': 'SIN FIRMAR'
+                }
+            data = dict(i, **riesgo)
+            # print(cont_riesgos)
+            # print(cont_riesgos)
+            list_conteo.append(data)
+        # # print(list_conteo)
+        # print(list_conteo)
+        # cont_riesgos = self.get_counter_riesgo(list_conteo)
+        return Response(list_conteo)
+
+
+class alert_counter_viewsets(viewsets.ModelViewSet):
+
+    serializer_class = estudiante_serializer
+    queryset = estudiante_serializer.Meta.model.objects.all()
+
+    # Contador de:
+    # Riesgos - *DONE
+    # Tratamiento de Datos - *DONE
+    # Encuesta de admitidos - STAND BY
+    # Semanal - Tabla de Inasistencias - *DONE
+    # Academica - STAND BY
+
+    def get_nivel_riesgo(self, riesgo):
+        if riesgo == 0:
+            return 'BAJO'
+        if riesgo == 1:
+            return 'MEDIO'
+        elif riesgo == 2:
+            return 'ALTO'
+        elif riesgo == None or riesgo == 'None':
+            return 'SIN RIESGO'
+
+    def get_fecha_seguimiento(self, fecha):
+        date_obj = datetime.datetime.strptime(fecha, "%Y-%m-%d").date
         return date_obj
-        
+
+    def get_firma(self, firma):
+        # print(firma)
+        for i in firma:
+            if i.autoriza == True:
+                # print("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                return 'AUTORIZA'
+            elif i is None:
+                # print("SEJODIOOOOOO")
+                return 'NO AUTORIZA'
+
     def get_counter_riesgo(self, riesgo):
         counter_riesgo_individual = 0
         counter_riesgo_familiar = 0
         counter_riesgo_academico = 0
         counter_riesgo_economico = 0
         counter_riesgo_vida_universitaria_ciudad = 0
-        
+
         counter_fecha_seguimiento = 0
-        none = list()
+
+        counter_empty_date = 0
+
+        counter_firma_datos = 0
+
         fech_actual = datetime.datetime.now()
         fecha_ = datetime.timedelta(days=7)
         fecha_limite = fech_actual - fecha_
-        # print(fech_actual - datetime.timedelta(days=7))
-        # print(fecha_limite)
-        
+
         for i in riesgo:
-            # date_format = '%Y-%m-%d'
-            # date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-            
-            
+
             if i['riesgo_individual'] == 'ALTO':
-                # print("HOLAAAAAA")
                 counter_riesgo_individual += 1
             if i['riesgo_familiar'] == 'ALTO':
                 counter_riesgo_familiar += 1
@@ -119,130 +307,131 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 counter_riesgo_economico += 1
             if i['riesgo_vida_universitaria_ciudad'] == 'ALTO':
                 counter_riesgo_vida_universitaria_ciudad += 1
-            # date_str = i['fecha_seguimiento']
-            # print(date_str)
-            
-            # print(date_obj)
-            # if date_obj < fecha_limite:
-            #     counter_fecha_seguimiento += 1
-            # print (counter_riesgo_individual)
-            # print(i['fecha_seguimiento'])
-            
-        contador_riesgo = {
-            'riesgo_individual': counter_riesgo_individual,   
-            'riesgo_familiar': counter_riesgo_familiar,
-            'riesgo_academico': counter_riesgo_academico,
-            'riesgo_economico': counter_riesgo_economico,
-            'riesgo_vida_universitaria_ciudad': counter_riesgo_vida_universitaria_ciudad
-        }
-        
-        contador_total = counter_riesgo_individual + counter_riesgo_familiar + counter_riesgo_academico + counter_riesgo_economico + counter_riesgo_vida_universitaria_ciudad + counter_fecha_seguimiento
+            if i['fecha_seguimiento'] == '' or i['fecha_seguimiento'] == None:
+                counter_empty_date += 1
+            else:
+                date_obj = datetime.datetime.strptime(
+                    i['fecha_seguimiento'], "%Y-%m-%d")
+                if date_obj.date() <= fecha_limite.date():
+                    counter_fecha_seguimiento += 1
+            if i['firma_tratamiento_datos'] == 'NO AUTORIZA' or i['firma_tratamiento_datos'] == None:
+                counter_firma_datos += 1
+
+        # contador_riesgo = {
+        #     'riesgo_individual': counter_riesgo_individual,
+        #     'riesgo_familiar': counter_riesgo_familiar,
+        #     'riesgo_academico': counter_riesgo_academico,
+        #     'riesgo_economico': counter_riesgo_economico,
+        #     'riesgo_vida_universitaria_ciudad': counter_riesgo_vida_universitaria_ciudad,
+        #     'fecha_seguimiento': counter_fecha_seguimiento,
+        #     'firma_tratamiento_datos': counter_firma_datos
+        # }
+
+        contador_total = counter_riesgo_individual + counter_riesgo_familiar + counter_riesgo_academico + counter_riesgo_economico + \
+            counter_riesgo_vida_universitaria_ciudad + \
+            counter_fecha_seguimiento + counter_empty_date + counter_firma_datos
         # print(riesgo)
         # print(contador_total)
         # print(contador_riesgo)
         return contador_total
 
     def retrieve(self, request, pk, *args, **kwargs):
-        
+
         data_usuario_rol = request.GET.get('usuario_rol')
         data_sede = request.GET.get('sede')
-        # print("Hola")
-
+        list_conteo = []
+        cont_riesgos = []
         # var_semestre = get_object_or_404(semestre, semestre_actual = True)
         var_semestre = get_object_or_404(
             semestre, semestre_actual=True, id_sede=data_sede)
- 
-        if data_usuario_rol == "super_ases":
-            # ven todo
-            list_estudiantes = []
-            cont_riesgos = []
-            serializer_estudiante = estudiante_serializer(
+        # list_estudiantes = list()
+
+        if data_usuario_rol == "monitor":
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "practicante":
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "profesional":
+            list_id_practicantes = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "super_ases":
+            serializer_estudiantes = estudiante_serializer(
                 estudiante.objects.all(), many=True)
-            
-            for i in serializer_estudiante.data:
-                # print(i['id'])
-                try:
-                    # print("Hola")
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # print(seguimiento_reciente.creacion)
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
-                        'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha)))
-                    }
-                    
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A',
-                        'fecha_seguimiento': ''
-                    }
-                data = dict(i, **riesgo)
-                # print(cont_riesgos)
-                # print(cont_riesgos)
-                list_estudiantes.append(data)
-            # print(list_estudiantes)
-            cont_riesgos = self.get_counter_riesgo(list_estudiantes)
-            return Response(cont_riesgos)
-        
-        elif data_usuario_rol == "monitor":
-            list_estudiantes = []
-            for id_estudiante in asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values():
-                var_estudiante = estudiante.objects.get(
-                    id=id_estudiante['id_estudiante_id'])
-                serializer_estudiante = estudiante_serializer(var_estudiante)
-                list_estudiantes.append(serializer_estudiante.data)
-                
-            for i in list_estudiantes:
-                # print(i['id'])
-                try:
-                    # print("Hola")
-                    # Obtener el seguimiento más reciente del estudiante especificado
-                    seguimiento_reciente = seguimiento_individual.objects.filter(
-                        id_estudiante=i['id']).latest('fecha')
-                    # Crear un diccionario con los datos de riesgo del seguimiento
-                    riesgo = {
-                        'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                        'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                        'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                        'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                        'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad))
-                    }
-                    
-                    # Devolver el riesgo en la respuesta
-                except seguimiento_individual.DoesNotExist:
-                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-                    riesgo = {
-                        'riesgo_individual': 'N/A',
-                        'riesgo_familiar': 'N/A',
-                        'riesgo_academico': 'N/A',
-                        'riesgo_economico': 'N/A',
-                        'riesgo_vida_universitaria_ciudad': 'N/A'
-                    }
-                data = dict(i, **riesgo)
-                # print(cont_riesgos)
-                # print(cont_riesgos)
-                list_estudiantes.append(data)
-            # print(list_estudiantes)
-            cont_riesgos = self.get_counter_riesgo(list_estudiantes)
-            return Response(cont_riesgos)
-            # return Response(list_estudiantes)
-      
-        
-        # print(estudiante_serializer(self.get_object()).data)
-        # return Response(status=status.HTTP_200_OK, data=estudiante_serializer(self.get_object()).data)
-    
-    #
-    
-    
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
+            list_id_programas = programa.objects.filter(
+                id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(
+                id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        for i in serializer_estudiantes.data:
+
+            try:
+                # Obtener el seguimiento más reciente del estudiante especificado
+                seguimiento_reciente = seguimiento_individual.objects.filter(
+                    id_estudiante=i['id']).latest('fecha')
+
+                # Obtener firma de tratamiento de datos del estudiante
+                firma_tratamiento = firma_tratamiento_datos.objects.filter(
+                    id_estudiante=i['id'])
+
+                # Crear un diccionario con los datos de riesgo del seguimiento
+                riesgo = {
+                    'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                    'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                    'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                    'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                    'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
+                    # 'fecha_seguimiento': self.get_fecha_seguimiento(str(seguimiento_reciente.fecha))
+                    'fecha_seguimiento': str(seguimiento_reciente.fecha),
+                    # 'fecha_seguimiento': seguimiento_reciente.fecha,
+                    # 'fecha_seguimiento': (seguimiento_reciente.fecha).strftime("%Y-%m-%d"),
+                    'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+
+                }
+
+                # Devolver el riesgo en la respuesta
+            except seguimiento_individual.DoesNotExist or firma_tratamiento_datos.DoesNotExist:
+                # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+                riesgo = {
+                    'riesgo_individual': 'N/A',
+                    'riesgo_familiar': 'N/A',
+                    'riesgo_academico': 'N/A',
+                    'riesgo_economico': 'N/A',
+                    'riesgo_vida_universitaria_ciudad': 'N/A',
+                    'fecha_seguimiento': '',
+                    'firma_tratamiento_datos': 'NO AUTORIZA'
+                }
+            data = dict(i, **riesgo)
+            # print(cont_riesgos)
+            # print(cont_riesgos)
+            list_conteo.append(data)
+        # print(list_conteo)
+        cont_riesgos = self.get_counter_riesgo(list_conteo)
+        return Response(cont_riesgos)

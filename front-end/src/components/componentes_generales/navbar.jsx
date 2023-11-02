@@ -144,7 +144,7 @@ const Navbar = (props) => {
               {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
               {lastVisitedRoutes.reverse().map((url, index) => (
                 <Col key={index} md={"4"} className="col_historial">
-                  <a href={url}>
+                  <a href={url} className="col_historial_item">
                     {getTitleFromUrl(url) === ""
                       ? "Inicio"
                       : getTitleFromUrl(url)}
@@ -158,7 +158,13 @@ const Navbar = (props) => {
 
         <Col md={"1"} xs={"1"} className="alert_icon">
           <Row>
-            {decryptRol === "super_ases" ? (
+            {decryptRol === "super_ases" ||
+            decryptRol === "sistemas" ||
+            decryptRol === "monitor" ||
+            decryptRol === "practicante" ||
+            decryptRol === "profesional" ||
+            decryptRol === "socioeducativo" ||
+            decryptRol === "socioeducativo_reg" ? (
               // <i class="bi bi-exclamation-diamond-fill"></i>
               <>
                 <Col md={"4"}>
@@ -183,8 +189,8 @@ const Navbar = (props) => {
           <Row>
             <Col xs={"7"} md={"7"} className="info_perfil">
               <Row>{decryptNombreCompleto} </Row>
-              <Row>{decryptRol}</Row>
-              <Row>{decryptSede}</Row>
+              <Row>{decryptRol + " - " + decryptSede}</Row>
+              {/* <Row>{}</Row> */}
             </Col>
 
             <Col xs={"5"} md={"5"}>
