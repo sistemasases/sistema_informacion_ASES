@@ -26,7 +26,7 @@ import datetime
 
 
 class info_estudiante_viewsets(viewsets.ModelViewSet):
-    
+
     serializer_class = estudiante_serializer
     queryset = estudiante_serializer.Meta.model.objects.all()
     # permission_classes = (IsAuthenticated,)
@@ -40,24 +40,36 @@ class info_estudiante_viewsets(viewsets.ModelViewSet):
         list_estudiantes = list()
 
         if data_usuario_rol == "monitor":
-            list_id_estudiantes = asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "practicante":
-            list_id_monitores= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
-            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
-        
+
         elif data_usuario_rol == "profesional":
-            list_id_practicantes= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
-            list_id_monitores= usuario_rol.objects.filter(id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
-            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            list_id_practicantes = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "super_ases":
@@ -66,22 +78,27 @@ class info_estudiante_viewsets(viewsets.ModelViewSet):
             return Response(serializer_estudiante.data)
 
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
-            list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
-            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            list_id_programas = programa.objects.filter(
+                id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(
+                id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
-        
+
         elif data_usuario_rol == None:
             return Response("Comunicate con el administrador para que te asigne un rol", status=status.HTTP_400_BAD_REQUEST)
 
         else:
             return Response("caso no encontrado", status=status.HTTP_404_NOT_FOUND)
-    
+
+
 class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
     queryset = estudiante_serializer.Meta.model.objects.all()
-    
+
     def get_nivel_riesgo(self, riesgo):
         if riesgo == 0:
             return 'BAJO'
@@ -91,7 +108,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             return 'ALTO'
         elif riesgo == None or riesgo == 'None':
             return 'SIN RIESGO'
-    
+
     def get_fecha_seguimiento(self, fecha):
         # print(fecha)
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
@@ -101,13 +118,12 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             fecha_ = datetime.timedelta(days=7)
             fecha_limite = fech_actual - fecha_
             date_obj = datetime.datetime.strptime(
-                    fecha, "%Y-%m-%d")
+                fecha, "%Y-%m-%d")
             if date_obj.date() <= fecha_limite.date():
                 return "FICHA FALTANTE"
             else:
                 return "SEGUIMIENTO RECIENTE"
-        
-        
+
     def get_firma(self, firma):
         # print(firma)
         if firma:
@@ -120,7 +136,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     return 'NO AUTORIZA'
         else:
             return "SIN FIRMAR"
-            
+
     def retrieve(self, request, pk):
         data_usuario_rol = request.GET.get('usuario_rol')
         data_sede = request.GET.get('sede')
@@ -128,14 +144,56 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             semestre, semestre_actual=True, id_sede=data_sede)
         list_conteo = list()
         list_estudiantes = list()
-        
-        if data_usuario_rol == "super_ases":
-            final_list_estudiantes = list()
-            list_estudiantes = estudiante.objects.all()
-            serializer_estudiantes = estudiante_serializer(estudiante.objects.all(), many=True)
+
+        if data_usuario_rol == "monitor":
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "practicante":
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "profesional":
+            list_id_practicantes = usuario_rol.objects.filter(
+                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores = usuario_rol.objects.filter(
+                id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(
+                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == "super_ases":
+            serializer_estudiante = estudiante_serializer(
+                estudiante.objects.all(), many=True)
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
+            list_id_programas = programa.objects.filter(
+                id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(
+                id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
+        elif data_usuario_rol == None:
+            return Response("Comunicate con el administrador para que te asigne un rol", status=status.HTTP_400_BAD_REQUEST)
 
         for i in serializer_estudiantes.data:
-            
+
             try:
                 # Obtener el seguimiento más reciente del estudiante especificado
                 seguimiento_reciente = seguimiento_individual.objects.filter(
@@ -146,7 +204,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     id_estudiante=i['id'])
                 # print(firma_tratamiento_datos.objects.filter(
                 #     id_estudiante=i['id']))
-                
+
                 # Crear un diccionario con los datos de riesgo del seguimiento
                 riesgo = {
                     'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
@@ -182,6 +240,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
         # print(list_conteo)
         # cont_riesgos = self.get_counter_riesgo(list_conteo)
         return Response(list_conteo)
+
 
 class alert_counter_viewsets(viewsets.ModelViewSet):
 
@@ -258,15 +317,15 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
             if i['firma_tratamiento_datos'] == 'NO AUTORIZA' or i['firma_tratamiento_datos'] == None:
                 counter_firma_datos += 1
 
-        contador_riesgo = {
-            'riesgo_individual': counter_riesgo_individual,
-            'riesgo_familiar': counter_riesgo_familiar,
-            'riesgo_academico': counter_riesgo_academico,
-            'riesgo_economico': counter_riesgo_economico,
-            'riesgo_vida_universitaria_ciudad': counter_riesgo_vida_universitaria_ciudad,
-            'fecha_seguimiento': counter_fecha_seguimiento,
-            'firma_tratamiento_datos': counter_firma_datos
-        }
+        # contador_riesgo = {
+        #     'riesgo_individual': counter_riesgo_individual,
+        #     'riesgo_familiar': counter_riesgo_familiar,
+        #     'riesgo_academico': counter_riesgo_academico,
+        #     'riesgo_economico': counter_riesgo_economico,
+        #     'riesgo_vida_universitaria_ciudad': counter_riesgo_vida_universitaria_ciudad,
+        #     'fecha_seguimiento': counter_fecha_seguimiento,
+        #     'firma_tratamiento_datos': counter_firma_datos
+        # }
 
         contador_total = counter_riesgo_individual + counter_riesgo_familiar + counter_riesgo_academico + counter_riesgo_economico + \
             counter_riesgo_vida_universitaria_ciudad + \
@@ -304,7 +363,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
-            
+
         elif data_usuario_rol == "profesional":
             list_id_practicantes = usuario_rol.objects.filter(
                 id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
@@ -316,12 +375,10 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
-            
 
         elif data_usuario_rol == "super_ases":
             serializer_estudiantes = estudiante_serializer(
                 estudiante.objects.all(), many=True)
-            
 
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
             list_id_programas = programa.objects.filter(
@@ -332,10 +389,9 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
-            
 
         for i in serializer_estudiantes.data:
-            
+
             try:
                 # Obtener el seguimiento más reciente del estudiante especificado
                 seguimiento_reciente = seguimiento_individual.objects.filter(
