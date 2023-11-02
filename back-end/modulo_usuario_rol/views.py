@@ -35,6 +35,7 @@ from django.core import serializers
 
 from rest_framework.viewsets import ModelViewSet
 import pandas as pd
+import datetime
 
 # Create your views here.
 
@@ -98,8 +99,50 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
     permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
+    
+    # Conversión nivel riesgos, de numerico a clasificacion textual
+    def get_nivel_riesgo(self, riesgo):
+        if riesgo == 0:
+            return 'BAJO'
+        if riesgo == 1:
+            return 'MEDIO'
+        elif riesgo == 2:
+            return 'ALTO'
+        elif riesgo == None or riesgo == 'None':
+            return 'SIN RIESGO'
+        
+    # Conversioón de fecha a formato datetime
+    def get_fecha_seguimiento(self, fecha):
+        # print(fecha)
+        if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
+            return "FICHA FALTANTE"
+        elif fecha:
+            fech_actual = datetime.datetime.now()
+            fecha_ = datetime.timedelta(days=7)
+            fecha_limite = fech_actual - fecha_
+            date_obj = datetime.datetime.strptime(
+                    fecha, "%Y-%m-%d")
+            if date_obj.date() <= fecha_limite.date():
+                return "FICHA FALTANTE"
+            else:
+                return "SEGUIMIENTO RECIENTE"
+            
+    # Verificamos si al firmar el tratamiento de datos autoriza o no autoriza
+    def get_firma(self, firma):
+        # print(firma)
+        if firma:
+            for i in firma:
+                if i.autoriza == True:
+                    # print("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                    return 'AUTORIZA'
+                elif i.autoriza == False:
+                    # print("SEJODIOOOOOO")
+                    return 'NO AUTORIZA'
+        else:
+            return "SIN FIRMAR"
 
     def retrieve(self, request, pk=None):
+        
         request_sede = int(request.GET.get('id_sede'))
         var_estudiante = estudiante.objects.get(id=pk)
         serializer_estudiante = estudiante_serializer(var_estudiante)
@@ -298,8 +341,47 @@ class estudiante_viewsets(viewsets.ModelViewSet):
                     }
 
         diccionario_estudiante.update(datos_encargados)
-
-
+        
+        try:
+            # print("Hola")
+            # Obtener el seguimiento más reciente del estudiante especificado
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk).latest('fecha')
+            # print(seguimiento_reciente.creacion)
+            # Crear un diccionario con los datos de riesgo del seguimiento
+            riesgo = {
+                'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
+                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha))),
+            }
+        except seguimiento_individual.DoesNotExist:
+            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+            riesgo = {
+                'riesgo_individual': 'SIN SEGUIMIENTO',
+                'riesgo_familiar': 'SIN SEGUIMIENTO',
+                'riesgo_academico': 'SIN SEGUIMIENTO',
+                'riesgo_economico': 'SIN SEGUIMIENTO',
+                'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
+                'fecha_seguimiento': 'FICHA FALTANTE'
+            }
+            
+        diccionario_estudiante.update(riesgo)
+        
+        try:
+            firma_tratamiento = firma_tratamiento_datos.objects.filter(
+                    id_estudiante=pk)
+            firma = {
+                'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+            }
+        except firma_tratamiento_datos.DoesNotExist:
+            firma = {
+                'firma_tratamiento_datos': 'SIN FIRMAR'
+            }
+            
+        diccionario_estudiante.update(firma)
 
         return Response(diccionario_estudiante)
 
