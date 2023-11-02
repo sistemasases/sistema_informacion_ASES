@@ -125,7 +125,12 @@ const Seguimiento_individual = (props) =>{
     }
     const verificador_tematicas = () => {
         if(!!form.individual || !!form.familiar || !!form.academico || !!form.economico || !!form.vida_universitaria_ciudad){
-            verificador_individual()
+            if(state.objetivos.length < 5000 && state.observaciones.length < 5000 && state.individual.length < 5000 && state.familiar.length < 5000  && state.academico.length < 5000  && state.economico.length < 5000  && state.vida_universitaria_ciudad.length < 5000 ){
+                verificador_individual()
+            }
+            else{
+                window.confirm("Recuerda que el límite máximo de caracteres, por cuadro de texto, es de 5000.")
+            }
         }
         else{
             window.confirm("Debes diligenciar al menos una dimesión, por favor verifica estos campos.")
@@ -753,14 +758,16 @@ const Seguimiento_individual = (props) =>{
                     <h6>Objetivos*:</h6>
                 </Row>
                 <Row className="g-2">
-                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.objetivos} name="objetivos" onChange={handleForm}/>
+                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.objetivos} name="objetivos" onChange={handleForm} title="Máximo 5000 caracteres."/>
                 </Row>
                 <hr></hr>
                 <Row className="g-2">
-                    <h6>Individual:</h6>
+                    <h6 title="Corresponde a la información que refiere el/la estudiante respecto a los aspectos personales.">
+                        Individual:
+                    </h6>
                 </Row>
                 <Row className="g-2">
-                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.individual} name="individual" onChange={handleForm}/>
+                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.individual} name="individual" onChange={handleForm} title="Máximo 5000 caracteres."/>
                 </Row>
                 <Row>
                     <Col>
@@ -795,7 +802,7 @@ const Seguimiento_individual = (props) =>{
                         <Form.Check type="checkbox" label="Salud" defaultChecked={props.item.salud} name="salud" onChange={handleFormChecks}/>
                     </Col>
                     <Col>
-                        <Form.Check type="checkbox" label="Relación eriótico-afectivas" defaultChecked={props.item.relación_eriótico_afectivas} name="relación_eriótico_afectivas" onChange={handleFormChecks}/>        
+                        <Form.Check type="checkbox" label="Relaciones erótico-afectivas" defaultChecked={props.item.relación_eriótico_afectivas} name="relación_eriótico_afectivas" onChange={handleFormChecks}/>        
                     </Col>
                 </Row>
                 <Row>
@@ -816,10 +823,12 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <hr></hr>
                 <Row className="g-2">
-                    <h6>Familiar:</h6>
+                    <h6 title="Corresponde a la descripción de la dinámica familiar y como esta dinámica, es una barrera o un facilitador en la elección y la permanencia en el programa académico.">
+                        Familiar:
+                    </h6>
                 </Row>
                 <Row className="g-2">
-                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.familiar} name="familiar" onChange={handleForm}/>
+                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.familiar} name="familiar" onChange={handleForm} title="Máximo 5000 caracteres."/>
                 </Row>
                 <Row>
                     <Col>
@@ -842,10 +851,12 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <hr></hr>
                 <Row className="g-2">
-                    <h6>Academico:</h6>
+                    <h6 title="Corresponde a la información que el/la estudiante le manifiesta al monitor; en relación a su desempeño académico; además del nivel desarrollo de habilidades que se han identificado en las actividades académicas que desarrolla cada uno de los estudiantes.">
+                        Academico:
+                    </h6>
                 </Row>
                 <Row className="g-2">
-                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.academico} name="academico" onChange={handleForm}/>
+                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.academico} name="academico" onChange={handleForm} title="Máximo 5000 caracteres."/>
                 </Row>
                 <Row>
                     <Col>
@@ -874,10 +885,12 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <hr></hr>
                 <Row className="g-2">
-                    <h6>Económico:</h6>
+                    <h6 title="Información relacionada con la situación económica de los estudiantes y el manejo del dinero.">
+                        Económico:
+                    </h6>
                 </Row>
                 <Row className="g-2">
-                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.economico} name="economico" onChange={handleForm}/>
+                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.economico} name="economico" onChange={handleForm} title="Máximo 5000 caracteres."/>
                 </Row>
                 <Row>
                     <Col>
@@ -911,10 +924,12 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <hr></hr>
                 <Row className="g-2">
-                    <h6>Vida universitaria y ciudad*:</h6>
+                    <h6 title="Corresponde a la información que refiere el/la estudiante respecto a la percepción que éste tiene de su vida en la Universidad y la ciudad. Además de la participación en los diferentes espacios de la Universidad (espacios extracurriculares, monitorías, , servicios de la Universidad, grupos universitarios, etc.) y la ciudad (vivienda, barrio, transporte, sitios representativos, espacios culturales, etc.).">
+                        Vida universitaria y ciudad*:
+                    </h6>
                 </Row>
                 <Row className="g-2">
-                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.vida_universitaria_ciudad} name="vida_universitaria_ciudad" onChange={handleForm}/>
+                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.vida_universitaria_ciudad} name="vida_universitaria_ciudad" onChange={handleForm} title="Máximo 5000 caracteres."/>
                 </Row>
                 <Row>
                     <Col>
@@ -1021,7 +1036,7 @@ const Seguimiento_individual = (props) =>{
                     <h6>Observaciones:</h6>
                 </Row>
                 <Row className="g-2">
-                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.observaciones} name="observaciones" onChange={handleForm}/>
+                    <Form.Control as="textarea"  rows={3} defaultValue={props.item.observaciones} name="observaciones" onChange={handleForm} title="Máximo 5000 caracteres."/>
                 </Row>
                 <hr></hr>
                 <Row>

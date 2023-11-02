@@ -23,4 +23,5 @@ class asignacion_estudiante_serializer(serializers.Serializer):
     id_usuario = serializers.IntegerField()   
     id_sede = serializers.IntegerField()
     llamada = serializers.CharField()
+    detalle = serializers.CharField()
 
