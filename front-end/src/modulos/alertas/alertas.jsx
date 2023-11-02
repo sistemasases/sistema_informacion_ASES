@@ -766,3 +766,4 @@ const Alertas = () => {
 };
 
 export default Alertas;
+
