@@ -142,6 +142,7 @@ const Reporte = () => {
           ...state,
           estudiante: response.data,
         });
+        console.log(response.data)
         setFiltered(response.data);
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
@@ -254,6 +255,13 @@ const Reporte = () => {
       name: "Registro Académico",
       value: "registro_academico",
       selector: (row) => row.registro_academico,
+      sortable: true,
+      isCheck: false,
+    },
+    {
+      name: "Es discapacidad",
+      value: "estado_discapacidad",
+      selector: (row) => row.estado_discapacidad,
       sortable: true,
       isCheck: false,
     },
@@ -389,6 +397,18 @@ const Reporte = () => {
       // // // console.log(state.estudiante);
       const data_filtered = filtered.filter((row) =>
         row.registro_academico
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      // // // console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Es discapacidad") {
+      // // // console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.estado_discapacidad
           .toLowerCase()
           .includes(e.target.value.toLowerCase())
       );
@@ -571,11 +591,10 @@ const Reporte = () => {
     // Si algunas de las opciones de estados is checked, haga lo siguiente
     else if (
       (seleccionado_estados.name === "ASES" && e.target.checked === true) ||
-      (seleccionado_estados.name === "Registro Académico" &&
-        e.target.checked === true) 
-      //   ||
-      // (seleccionado_estados.name === "Discapacidad" &&
-      //   e.target.checked === true)
+      (seleccionado_estados.name === "Registro Académico" && 
+        e.target.checked === true) ||
+      (seleccionado_estados.name === "Es discapacidad" &&
+        e.target.checked === true)
     ) {
       seleccionado_estados.isCheck = true;
       var searchable_columns = add_search_bar(seleccionado_estados);
@@ -587,10 +606,9 @@ const Reporte = () => {
     else if (
       (seleccionado_estados.name === "ASES" && e.target.checked === false) ||
       (seleccionado_estados.name === "Registro Académico" &&
-        e.target.checked === false) 
-      //   ||
-      // (seleccionado_estados.name === "Discapacidad" &&
-      //   e.target.checked === false)
+        e.target.checked === false)  ||
+      (seleccionado_estados.name === "Es discapacidad" &&
+        e.target.checked === false)
     ) {
       seleccionado_estados.isCheck = false;
       document.getElementsByName("Estados")[0].checked = false;
@@ -756,17 +774,16 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("ASES")[0].checked = false;
         document.getElementsByName("Registro Académico")[0].checked = false;
-        //document.getElementsByName("Discapacidad")[0].checked = false;
+        document.getElementsByName("Es discapacidad")[0].checked = false;
         document.getElementsByName("ASES")[0].checked = true;
         document.getElementsByName("Registro Académico")[0].checked = true;
-        //document.getElementsByName("Discapacidad")[0].checked = true;
+        document.getElementsByName("Es discapacidad")[0].checked = true;
 
         for (let i = 0; i < columns.length; i++) {
           if (
             columns[i].value === "estado_ases" ||
-            columns[i].value === "registro_academico" 
-            //||
-            //columns[i].value === "discapacidad"
+            columns[i].value === "registro_academico" ||
+            columns[i].value === "estado_discapacidad"
           ) {
             columns[i].isCheck = false;
           }
@@ -774,9 +791,8 @@ const Reporte = () => {
         columns.map((item, index) => {
           if (
             (item.value === "estado_ases" && item.isCheck === false) ||
-            (item.value === "registro_academico" && item.isCheck === false) 
-            //||
-            //(item.value === "discapacidad" && item.isCheck === false)
+            (item.value === "registro_academico" && item.isCheck === false) ||
+            (item.value === "estado_discapacidad" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -975,14 +991,13 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.isCheck = false;
         document.getElementsByName("ASES")[0].checked = false;
         document.getElementsByName("Registro Académico")[0].checked = false;
-        //document.getElementsByName("Discapacidad")[0].checked = false;
+        document.getElementsByName("Es discapacidad")[0].checked = false;
 
         for (let i = 0; i < columns.length; i++) {
           if (
             columns[i].value === "estado_ases" ||
-            columns[i].value === "registro_academico" 
-            //||
-            //columns[i].value === "discapacidad"
+            columns[i].value === "registro_academico" ||
+            columns[i].value === "estado_discapacidad"
           ) {
             columns[i].isCheck = false;
           }
@@ -990,9 +1005,8 @@ const Reporte = () => {
         columns.map((item, index) => {
           if (
             (item.value === "estado_ases" && item.isCheck === false) ||
-            (item.value === "registro_academico" && item.isCheck === false) 
-            //||
-            //(item.value === "discapacidad" && item.isCheck === false)
+            (item.value === "registro_academico" && item.isCheck === false) ||
+            (item.value === "estado_discapacidad" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }

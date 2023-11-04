@@ -14,6 +14,7 @@ class estudiante_extra_serializer(serializers.ModelSerializer):
     programa_academico = serializers.SerializerMethodField()
     sede = serializers.SerializerMethodField()
     estado_discapacidad = serializers.SerializerMethodField()
+    estado_ases = serializers.SerializerMethodField()
     registro_academico = serializers.SerializerMethodField()
 
     class Meta:
@@ -27,6 +28,11 @@ class estudiante_extra_serializer(serializers.ModelSerializer):
         if not obj.es_discapacidad:
             return "N/A"
         return 'ACTIVO/A' if obj.discapacidad.estado_discapacidad else 'NO ACTIVO/A'
+    
+    def get_estado_ases(self, obj):
+        if not obj.estado_ases:
+            return "N/A"
+        return 'ACTIVO/A' if obj.estado_ases else 'NO ACTIVO/A'
 
     def get_registro_academico(self, obj):
         programa = self.get_programa(obj)
