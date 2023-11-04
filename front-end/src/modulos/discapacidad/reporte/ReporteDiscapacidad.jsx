@@ -142,7 +142,6 @@ const Reporte = () => {
           ...state,
           estudiante: response.data,
         });
-        console.log(response.data)
         setFiltered(response.data);
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
