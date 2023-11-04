@@ -1,13 +1,7 @@
 import React, { useState, useEffect, Component, useRef } from "react";
 import { Container, Col, Row, Button, Form, Alert } from "react-bootstrap";
-// import Carousel from "react-bootstrap/Carousel";
-// import all_estudiantes_reportes from "../../service/all_estudiantes_reportes";
-// import Select from "react-select";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-// import Checkbox from "react-bootstrap/FormCheck";
-// import Modal from "react-bootstrap/Modal";
-// import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import axios from "axios";
 import { CSVLink } from "react-csv";
 import writeXlsxFile from "write-excel-file";
@@ -19,6 +13,7 @@ import {
   desencriptarInt,
   decryptTokenFromSessionStorage,
 } from "../../utilidades_seguridad/utilidades_seguridad.jsx";
+//import { Columna } from "./Columna.jsx";
 
 // Columnas para el datatable
 var columns = [
@@ -91,11 +86,11 @@ const Reporte = () => {
     busqueda: "",
   });
 
-  //Conexion con el back para extraer los estudiantes, consulta corta
+  //Conexión con el back para extraer los estudiantes, consulta corta
   useEffect(() => {
     let rol = desencriptar(sessionStorage.getItem("rol"));
     let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
-    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+    //let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
 
     const config = {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
@@ -104,10 +99,9 @@ const Reporte = () => {
     const estudiantes_por_rol = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/discapacidad/estudiantes/` +
-            id_usuario.toString() +
-            "/",
-          { params: { usuario_rol: rol, sede: sede } }
+          `${process.env.REACT_APP_API_URL}/discapacidad/estudiantes/`, 
+            {headers: config},  
+            { params: { usuario_rol: rol, sede: sede } } 
         );
         set_state({
           ...state,
@@ -123,34 +117,40 @@ const Reporte = () => {
   }, []);
 
   //Conexion con el back para extraer los estudiantes, consulta larga
-  // useEffect(() => {
-  //   let rol = desencriptar(sessionStorage.getItem("rol"));
-  //   let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
-  //   let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+  useEffect(() => {
+    let rol = desencriptar(sessionStorage.getItem("rol"));
+    let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
 
-  //   // Funcion que busca el reporte del estudiante logueado.
-  //   const riesgos_estudiante = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
-  //           id_usuario.toString() +
-  //           "/",
-  //         { params: { usuario_rol: rol, sede: sede } }
-  //       );
+    // Funcion que busca el reporte del estudiante logueado.
+    const datos_adicionales_estudiantes = async () => {
+      try {
 
-  //       set_state({
-  //         ...state,
-  //         estudiante: response.data,
-  //       });
-  //       setFiltered(response.data);
-  //       document.getElementsByName("loading_data")[0].style.visibility =
-  //         "hidden";
-  //     } catch (error) {
-  //       // // console.log("no capto el dato");
-  //     }
-  //   };
-  //   riesgos_estudiante();
-  // }, []);
+        const config = {
+          Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+        };
+
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/discapacidad/estudiantes-extra/`,
+            {headers: config}, 
+            //id_usuario.toString() +
+            //"/",
+            { params: { usuario_rol: rol, sede: sede } }
+        );
+
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        setFiltered(response.data);
+        document.getElementsByName("loading_data")[0].style.visibility =
+          "hidden";
+      } catch (error) {
+        // // console.log("no capto el dato");
+      }
+    };
+    datos_adicionales_estudiantes();
+  }, []);
 
   const csv_conversion = (item) => {
     var label = item.name;
@@ -206,8 +206,7 @@ const Reporte = () => {
     { name: "Contacto", isCheck: false },
     { name: "Estados", isCheck: false },
     { name: "Académico", isCheck: false },
-    //{ name: "Asignaciones", isCheck: false },
-    //{ name: "Riesgos", isCheck: false },
+    { name: "Discapacidad", isCheck: false },
     { name: "Condición de Excepción", isCheck: false },
   ];
 
@@ -258,13 +257,6 @@ const Reporte = () => {
       sortable: true,
       isCheck: false,
     },
-    {
-      name: "Discapacidad",
-      value: "discapacidad",
-      selector: (row) => row.discapacidad,
-      sortable: true,
-      isCheck: false,
-    },
   ];
 
   const filtros_Academico = [
@@ -289,34 +281,13 @@ const Reporte = () => {
       sortable: true,
       isCheck: false,
     },
-    // {
-    //   name: "Promedio acumulado",
-    //   value: "promedio_acumulado",
-    //   selector: (row) => row.promedio_acumulado,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-    // {
-    //   name: "Estimulos",
-    //   value: "estimulos",
-    //   selector: (row) => row.estimulos,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
-    // {
-    //   name: "Bajo rendimiento",
-    //   value: "bajos_rendimiento",
-    //   selector: (row) => row.bajos_rendimiento,
-    //   sortable: true,
-    //   isCheck: false,
-    // },
   ];
 
   const filtros_Discapacidad = [
     {
-      name: "Tipo de adquisición",
-      selector: (row) => row.tipo_doc,
-      value: "tipo_doc",
+      name: "Tipo de discapacidad",
+      value: "tipo_discapacidad",
+      selector: (row) => row.tipo_discapacidad,
       sortable: true,
       isCheck: false,
     },
@@ -328,235 +299,6 @@ const Reporte = () => {
       isCheck: false,
     },
   ];
-  // const filtros_Asignaciones = [
-  //   {
-  //     name: "Profesional",
-  //     value: "asignacion_profesional",
-  //     selector: (row) => row.asignacion_profesional,
-  //     sortable: true,
-  //     isCheck: false,
-  //   },
-  //   {
-  //     name: "Practicante",
-  //     value: "asignacion_practicante",
-  //     selector: (row) => row.asignacion_practicante,
-  //     sortable: true,
-  //     isCheck: false,
-  //   },
-  //   {
-  //     name: "Monitor",
-  //     value: "asignacion_monitores",
-  //     selector: (row) => row.asignacion_monitores,
-  //     sortable: true,
-  //     isCheck: false,
-  //   },
-  // ];
-
-  // const filtros_Riesgos = [
-  //   {
-  //     name: "Riesgo individual",
-  //     selector: (row) => row.riesgo_individual,
-  //     value: "riesgo_individual",
-  //     sortable: true,
-  //     isCheck: false,
-  //   },
-  //   {
-  //     name: "Riesgo familiar",
-  //     selector: (row) => row.riesgo_familiar,
-  //     value: "riesgo_familiar",
-  //     sortable: true,
-  //     isCheck: false,
-  //   },
-  //   {
-  //     name: "Riesgo académico",
-  //     selector: (row) => row.riesgo_academico,
-  //     value: "riesgo_academico",
-  //     sortable: true,
-  //     isCheck: false,
-  //   },
-  //   {
-  //     name: "Riesgo económico",
-  //     selector: (row) => row.riesgo_economico,
-  //     value: "riesgo_economico",
-  //     sortable: true,
-  //     isCheck: false,
-  //   },
-  //   {
-  //     name: "Riesgo vida universitaria",
-  //     selector: (row) => row.riesgo_vida_universitaria_ciudad,
-  //     value: "riesgo_vida_universitaria_ciudad",
-  //     sortable: true,
-  //     isCheck: false,
-  //   },
-  //   // {
-  //   //   name: "Riesgo geográfico",
-  //   //   selector: (row) => row.ciudad_res,
-  //   //   value: "ciudad_res",
-  //   //   sortable: true,
-  //   //   isCheck: false,
-  //   // },
-  // ];
-
-  // const filtros_Condicion_Excepcion = [
-  //   {
-  //     name: "I.N",
-  //     value: "i_n",
-  //     selector: (row) => row.i_n,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "M.A.P",
-  //     value: "m_a_p",
-  //     selector: (row) => row.m_a_p,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //     padding: "0px 0px 0px 0px",
-  //     margin: "0px 0px 0px 0px",
-  //   },
-  //   {
-  //     name: "C.A",
-  //     value: "c_a",
-  //     selector: (row) => row.c_a,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "C.A.C",
-  //     value: "c_a_c",
-  //     selector: (row) => row.c_a_c,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "C.U",
-  //     value: "c_u",
-  //     selector: (row) => row.c_u,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "P.R",
-  //     value: "p_r",
-  //     selector: (row) => row.p_r,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "M.P.M",
-  //     value: "m_p_m",
-  //     selector: (row) => row.m_p_m,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   // {
-  //   //   name: "D.N.I",
-  //   //   value: "",
-  //   //   selector: (row) => row,
-  //   //   sortable: true,
-  //   //   isCheck: false,
-  //   // },
-  //   // {
-  //   //   name: "M.D.P",
-  //   //   value: "",
-  //   //   selector: (row) => row,
-  //   //   sortable: true,
-  //   //   isCheck: false,
-  //   // },
-  //   // {
-  //   //   name: "P.D",
-  //   //   value: "",
-  //   //   selector: (row) => row,
-  //   //   sortable: true,
-  //   //   isCheck: false,
-  //   // },
-  //   // {
-  //   //   name: "P.D",
-  //   //   value: "",
-  //   //   selector: (row) => row,
-  //   //   sortable: true,
-  //   //   isCheck: false,
-  //   // },
-  //   // {
-  //   //   name: "V.C",
-  //   //   value: "",
-  //   //   selector: (row) => row,
-  //   //   sortable: true,
-  //   //   isCheck: false,
-  //   // },
-  //   // {
-  //   //   name: "A.R",
-  //   //   value: "",
-  //   //   selector: (row) => row,
-  //   //   sortable: true,
-  //   //   isCheck: false,
-  //   // },
-  //   // {
-  //   //   name: "n/a",
-  //   //   value: "",
-  //   //   selector: (row) => row,
-  //   //   sortable: true,
-  //   //   isCheck: false,
-  //   // },
-  // ];
-
-  // const filtros_Condicion_Excepcion_2 = [
-  //   {
-  //     name: "D.N.I",
-  //     value: "d_n_i",
-  //     selector: (row) => row.d_n_i,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "M.D.P",
-  //     value: "m_d_p",
-  //     selector: (row) => row.m_d_p,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "P.D",
-  //     value: "p_d",
-  //     selector: (row) => row.p_d,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "V.C",
-  //     value: "v_c",
-  //     selector: (row) => row.v_c,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "A.R",
-  //     value: "a_r",
-  //     selector: (row) => row.a_r,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  //   {
-  //     name: "n/a",
-  //     value: "n_a",
-  //     selector: (row) => row.n_a,
-  //     sortable: true,
-  //     isCheck: false,
-  //     width: "80px",
-  //   },
-  // ];
 
   const filtros_Condicion_Excepcion_prueba = [
     {
@@ -579,26 +321,10 @@ const Reporte = () => {
     }));
   }, []);
 
-  // function usePrevious(columnas) {
-  //   const ref = useRef();
-  //   useEffect(() => {
-  //     ref.current = columnas;
-  //   });
-  //   return ref.current;
-  // }
-
-  // const columnaPrevia = usePrevious(columnas);
-  // var antiguoArray = [];
-  // const emptyArray = [];
-
   const [filtered, setFiltered] = useState(state.estudiante);
   const [noResults, setNoResults] = useState(false);
 
   const handle_column_search = (e, selected) => {
-    // // console.log(e.target.name);
-    // // console.log("HOLASSS");
-    // // console.log(selected);
-    // // console.log(e.target.value);
 
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === undefined) {
@@ -671,16 +397,6 @@ const Reporte = () => {
         data_filtered.length > 0 ? data_filtered : state.estudiante;
       setFiltered(filtered_data);
     }
-    if (e.target.name === "Discapacidad") {
-      // // // console.log(state.estudiante);
-      const data_filtered = filtered.filter((row) =>
-        row.discapacidad.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      // // // console.log(data_filtered);
-      const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
-      setFiltered(filtered_data);
-    }
 
     // BÚSQUEDA INDIVIDUAL POR FILTRO: ACADÉMICO
     if (e.target.name === "Código programa académico") {
@@ -717,101 +433,27 @@ const Reporte = () => {
       setFiltered(filtered_data);
     }
 
-    // BÚSQUEDA INDIVIDUAL DE FILTRO: ASIGNACIONES
-    // if (e.target.name === "Profesional") {
-    //   // // // // console.log(state.estudiante);
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.asignacion_profesional
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   // // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-    // if (e.target.name === "Practicante") {
-    //   // // // // console.log(state.estudiante);
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.asignacion_practicante
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   // // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-    // if (e.target.name === "Monitor") {
-    //   // // // // console.log(state.estudiante);
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.asignacion_monitores
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   console.log(data_filtered);
-    //   // // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-
-    // BÚSQUEDA INDIVIDUAL DE FILTRO: RIESGOS
-    // if (e.target.name === "Riesgo individual") {
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.riesgo_individual
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   console.log(data_filtered);
-
-    //   // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-    // if (e.target.name === "Riesgo familiar") {
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.riesgo_familiar.includes(e.target.value.toLowerCase())
-    //   );
-    //   // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-    // if (e.target.name === "Riesgo académico") {
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.riesgo_academico
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-    // if (e.target.name === "Riesgo económico") {
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.riesgo_economico
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
-    // if (e.target.name === "Riesgo vida universitaria") {
-    //   const data_filtered = filtered.filter((row) =>
-    //     row.riesgo_vida_universitaria_ciudad
-    //       .toLowerCase()
-    //       .includes(e.target.value.toLowerCase())
-    //   );
-    //   // // // console.log(data_filtered);
-    //   const filtered_data =
-    //     data_filtered.length > 0 ? data_filtered : state.estudiante;
-    //   setFiltered(filtered_data);
-    // }
+    // BÙSQUEDA INDIVIDUAL DE FILTRO: DISCAPACIDAD
+    if (e.target.name === "Tipo de discapacidad") {
+      // // // console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.tipo_discapacidad.toString().includes(e.target.value.toLowerCase())
+      );
+      // // // console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Adquisición") {
+      // // // console.log(state.estudiante);
+      const data_filtered = filtered.filter((row) =>
+        row.adquisicion.toString().includes(e.target.value.toLowerCase())
+      );
+      // // // console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : state.estudiante;
+      setFiltered(filtered_data);
+    }
 
     // BÚSQUEDA INDIVIDUAL DE FILTRO: CONDICIONES DE EXCEPCIÓN
     if (e.target.name === "Condición de Excepción") {
@@ -858,13 +500,13 @@ const Reporte = () => {
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
     );
-    // const seleccionado_riesgos = filtros_Riesgos.find(
-    //   (item) => item.name === e.target.name
-    // );
     const seleccionado_estados = filtros_Estados.find(
       (item) => item.name === e.target.name
     );
     const seleccionado_academico = filtros_Academico.find(
+      (item) => item.name === e.target.name
+    );
+    const seleccionado_discapacidad = filtros_Discapacidad.find(
       (item) => item.name === e.target.name
     );
     // const seleccionado_asignaciones = filtros_Asignaciones.find(
@@ -930,9 +572,10 @@ const Reporte = () => {
     else if (
       (seleccionado_estados.name === "ASES" && e.target.checked === true) ||
       (seleccionado_estados.name === "Registro Académico" &&
-        e.target.checked === true) ||
-      (seleccionado_estados.name === "Discapacidad" &&
-        e.target.checked === true)
+        e.target.checked === true) 
+      //   ||
+      // (seleccionado_estados.name === "Discapacidad" &&
+      //   e.target.checked === true)
     ) {
       seleccionado_estados.isCheck = true;
       var searchable_columns = add_search_bar(seleccionado_estados);
@@ -944,9 +587,10 @@ const Reporte = () => {
     else if (
       (seleccionado_estados.name === "ASES" && e.target.checked === false) ||
       (seleccionado_estados.name === "Registro Académico" &&
-        e.target.checked === false) ||
-      (seleccionado_estados.name === "Discapacidad" &&
-        e.target.checked === false)
+        e.target.checked === false) 
+      //   ||
+      // (seleccionado_estados.name === "Discapacidad" &&
+      //   e.target.checked === false)
     ) {
       seleccionado_estados.isCheck = false;
       document.getElementsByName("Estados")[0].checked = false;
@@ -957,6 +601,37 @@ const Reporte = () => {
       });
       csv_pop(seleccionado_estados);
       schema_pop(seleccionado_estados);
+    }
+
+    // condiciones para Filtros de discapacidad
+
+    if (seleccionado_discapacidad === undefined) {
+    } else if (
+      (seleccionado_discapacidad.name === "Tipo de discapacidad" &&
+        e.target.checked === true) ||
+      (seleccionado_discapacidad.name === "Adquisición" &&
+        e.target.checked === true) 
+    ) {
+      seleccionado_discapacidad.isCheck = true;
+      var searchable_columns = add_search_bar(seleccionado_discapacidad);
+      columns.push(searchable_columns[0]);
+      csv_conversion(seleccionado_discapacidad);
+      schema_push(seleccionado_discapacidad);
+    } else if (
+      (seleccionado_discapacidad.name === "Tipo de discapacidad" &&
+        e.target.checked === false) ||
+      (seleccionado_discapacidad.name === "Adquisición" &&
+        e.target.checked === false) 
+    ) {
+      seleccionado_discapacidad.isCheck = false;
+      document.getElementsByName("Discapacidad")[0].checked = false;
+      columns.map((item, index) => {
+        if (item.value === seleccionado_discapacidad.value) {
+          columns.splice(index, 1);
+        }
+      });
+      csv_pop(seleccionado_discapacidad);
+      schema_pop(seleccionado_discapacidad);
     }
 
     // condiciones para Filtros de Academico
@@ -1004,90 +679,6 @@ const Reporte = () => {
       schema_pop(seleccionado_academico);
     }
 
-    // condiciones para Filtros de Asignaciones
-
-    // if (seleccionado_asignaciones === undefined) {
-    // } else if (
-    //   (seleccionado_asignaciones.name === "Profesional" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_asignaciones.name === "Practicante" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_asignaciones.name === "Monitor" &&
-    //     e.target.checked === true)
-    // ) {
-    //   seleccionado_asignaciones.isCheck = true;
-    //   var searchable_columns = add_search_bar(seleccionado_asignaciones);
-    //   columns.push(searchable_columns[0]);
-    //   csv_conversion(seleccionado_asignaciones);
-    //   schema_push(seleccionado_asignaciones);
-    // } else if (
-    //   (seleccionado_asignaciones.name === "Profesional" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_asignaciones.name === "Practicante" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_asignaciones.name === "Monitor" &&
-    //     e.target.checked === false)
-    // ) {
-    //   seleccionado_asignaciones.isCheck = false;
-    //   document.getElementsByName("Asignaciones")[0].checked = false;
-    //   columns.map((item, index) => {
-    //     if (item.value === seleccionado_asignaciones.value) {
-    //       columns.splice(index, 1);
-    //     }
-    //   });
-    //   csv_pop(seleccionado_asignaciones);
-    //   schema_pop(seleccionado_asignaciones);
-    // }
-
-    //  condiciones Para Filtros de Riesgo
-
-    // if (seleccionado_riesgos === undefined) {
-    // } else if (
-    //   (seleccionado_riesgos.name === "Riesgo individual" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_riesgos.name === "Riesgo familiar" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_riesgos.name === "Riesgo académico" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_riesgos.name === "Riesgo económico" &&
-    //     e.target.checked === true) ||
-    //   (seleccionado_riesgos.name === "Riesgo vida universitaria" &&
-    //     e.target.checked === true)
-    //   // ||
-    //   // (seleccionado_riesgos.name === "Riesgo geográfico" &&
-    //   //   e.target.checked === true)
-    // ) {
-    //   seleccionado_riesgos.isCheck = true;
-    //   var searchable_columns = add_search_bar(seleccionado_riesgos);
-    //   columns.push(searchable_columns[0]);
-    //   csv_conversion(seleccionado_riesgos);
-    //   schema_push(seleccionado_riesgos);
-    // } else if (
-    //   (seleccionado_riesgos.name === "Riesgo individual" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_riesgos.name === "Riesgo familiar" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_riesgos.name === "Riesgo académico" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_riesgos.name === "Riesgo económico" &&
-    //     e.target.checked === false) ||
-    //   (seleccionado_riesgos.name === "Riesgo vida universitaria" &&
-    //     e.target.checked === false)
-    //   //  ||
-    //   // (seleccionado_riesgos.name === "Riesgo geográfico" &&
-    //   //   e.target.checked === false)
-    // ) {
-    //   seleccionado_riesgos.isCheck = false;
-    //   document.getElementsByName("Riesgos")[0].checked = false;
-    //   columns.map((item, index) => {
-    //     if (item.value === seleccionado_riesgos.value) {
-    //       columns.splice(index, 1);
-    //     }
-    //   });
-    //   csv_pop(seleccionado_riesgos);
-    //   schema_pop(seleccionado_riesgos);
-    // }
-
     // **
     // Condiciones para cabeceras de filtros
     // **
@@ -1100,10 +691,8 @@ const Reporte = () => {
         e.target.checked === true) ||
       (seleccionado_cabeceras_filtros.name === "Académico" &&
         e.target.checked === true) ||
-      //(seleccionado_cabeceras_filtros.name === "Asignaciones" &&
-      //  e.target.checked === true) ||
-      //(seleccionado_cabeceras_filtros.name === "Riesgos" &&
-      //  e.target.checked === true) ||
+      (seleccionado_cabeceras_filtros.name === "Discapacidad" &&
+        e.target.checked === true) ||
       (seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
         e.target.checked === true)
     ) {
@@ -1167,16 +756,17 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.isCheck = true;
         document.getElementsByName("ASES")[0].checked = false;
         document.getElementsByName("Registro Académico")[0].checked = false;
-        document.getElementsByName("Discapacidad")[0].checked = false;
+        //document.getElementsByName("Discapacidad")[0].checked = false;
         document.getElementsByName("ASES")[0].checked = true;
         document.getElementsByName("Registro Académico")[0].checked = true;
-        document.getElementsByName("Discapacidad")[0].checked = true;
+        //document.getElementsByName("Discapacidad")[0].checked = true;
 
         for (let i = 0; i < columns.length; i++) {
           if (
             columns[i].value === "estado_ases" ||
-            columns[i].value === "registro_academico" ||
-            columns[i].value === "discapacidad"
+            columns[i].value === "registro_academico" 
+            //||
+            //columns[i].value === "discapacidad"
           ) {
             columns[i].isCheck = false;
           }
@@ -1184,8 +774,9 @@ const Reporte = () => {
         columns.map((item, index) => {
           if (
             (item.value === "estado_ases" && item.isCheck === false) ||
-            (item.value === "registro_academico" && item.isCheck === false) ||
-            (item.value === "discapacidad" && item.isCheck === false)
+            (item.value === "registro_academico" && item.isCheck === false) 
+            //||
+            //(item.value === "discapacidad" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1215,27 +806,17 @@ const Reporte = () => {
         )[0].checked = false;
         document.getElementsByName("Programa académico")[0].checked = false;
         document.getElementsByName("Sede")[0].checked = false;
-        // document.getElementsByName("Promedio acumulado")[0].checked = false;
-        // document.getElementsByName("Estimulos")[0].checked = false;
-        // document.getElementsByName("Bajo rendimiento")[0].checked = false;
         document.getElementsByName(
           "Código programa académico"
         )[0].checked = true;
         document.getElementsByName("Programa académico")[0].checked = true;
         document.getElementsByName("Sede")[0].checked = true;
-        // document.getElementsByName("Promedio acumulado")[0].checked = true;
-        // document.getElementsByName("Estimulos")[0].checked = true;
-        // document.getElementsByName("Bajo rendimiento")[0].checked = true;
 
         for (let i = 0; i < columns.length; i++) {
           if (
             columns[i].value === "id_programa" ||
             columns[i].value === "programa_academico" ||
             columns[i].value === "sede"
-            //  ||
-            // columns[i].value === "Promedio acumulado" ||
-            // columns[i].value === "Estimulos" ||
-            // columns[i].value === "Bajo rendimiento"
           ) {
             columns[i].isCheck = false;
           }
@@ -1245,10 +826,6 @@ const Reporte = () => {
             (item.value === "id_programa" && item.isCheck === false) ||
             (item.value === "programa_academico" && item.isCheck === false) ||
             (item.value === "sede" && item.isCheck === false)
-            // ||
-            // (item.name === "Promedio acumulado" && item.isCheck === false) ||
-            // (item.name === "Estimulos" && item.isCheck === false) ||
-            // (item.name === "Bajo rendimiento" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1269,115 +846,51 @@ const Reporte = () => {
         }
       } 
       
-      // else if (
-      //   seleccionado_cabeceras_filtros.name === "Asignaciones" &&
-      //   e.target.checked === true
-      // ) {
-      //   seleccionado_cabeceras_filtros.isCheck = true;
-      //   document.getElementsByName("Profesional")[0].checked = false;
-      //   document.getElementsByName("Practicante")[0].checked = false;
-      //   document.getElementsByName("Monitor")[0].checked = false;
-      //   document.getElementsByName("Profesional")[0].checked = true;
-      //   document.getElementsByName("Practicante")[0].checked = true;
-      //   document.getElementsByName("Monitor")[0].checked = true;
+      else if (
+        seleccionado_cabeceras_filtros.name === "Discapacidad" &&
+        e.target.checked === true
+      ) {
+        seleccionado_cabeceras_filtros.isCheck = true;
+        document.getElementsByName("Tipo de discapacidad")[0].checked = false;
+        document.getElementsByName("Adquisición")[0].checked = false;
+        document.getElementsByName("Tipo de discapacidad")[0].checked = true;
+        document.getElementsByName("Adquisición")[0].checked = true;
 
-      //   for (let i = 0; i < columns.length; i++) {
-      //     if (
-      //       columns[i].value === "asignacion_profesional" ||
-      //       columns[i].value === "asignacion_practicante" ||
-      //       columns[i].value === "asignacion_monitores"
-      //     ) {
-      //       columns[i].isCheck = false;
-      //     }
-      //   }
-      //   columns.map((item, index) => {
-      //     if (
-      //       (item.value === "asignacion_profesional" &&
-      //         item.isCheck === false) ||
-      //       (item.value === "asignacion_practicante" &&
-      //         item.isCheck === false) ||
-      //       (item.value === "asignacion_monitores" && item.isCheck === false)
-      //     ) {
-      //       columns.splice(index, 1);
-      //     }
-      //   });
+        for (let i = 0; i < columns.length; i++) {
+          if (
+            columns[i].value === "tipo_discapacidad" ||
+            columns[i].value === "adquisicion" 
+          ) {
+            // // console.log("HOLA");
+            columns[i].isCheck = false;
+          }
+        }
+        // // // console.log(columns);
+        // Se utiliza para eliminar del arreglo columnas algún elemento de contactos, que tenga el check en false
+        columns.map((item, index) => {
+          if (
+            (item.value === "tipo_discapacidad" && item.isCheck === false) ||
+            (item.value === "adquisicion" && item.isCheck === false) 
+          ) {
+            columns.splice(index, 1);
+          }
+        });
 
-      //   for (let i = 0; i < filtros_Asignaciones.length; i++) {
-      //     const element = filtros_Asignaciones[i];
-      //     element.isCheck = true;
-      //     var data_var = add_search_bar(element);
-      //     columns.push(data_var[0]);
-      //     // columns.push(element);
-      //   }
+        for (let i = 0; i < filtros_Discapacidad.length; i++) {
+          const element = filtros_Discapacidad[i];
+          // // console.log(element);
+          element.isCheck = true;
+          var data_var = add_search_bar(element);
+          columns.push(data_var[0]);
+        }
 
-      //   for (let i = 0; i < filtros_Asignaciones.length; i++) {
-      //     const element = filtros_Asignaciones[i];
-      //     csv_conversion(element);
-      //     schema_push(element);
-      //   }
-      // } else if (
-      //   seleccionado_cabeceras_filtros.name === "Riesgos" &&
-      //   e.target.checked === true
-      // ) {
-      //   seleccionado_cabeceras_filtros.isCheck = true;
-      //   document.getElementsByName("Riesgo individual")[0].checked = false;
-      //   document.getElementsByName("Riesgo familiar")[0].checked = false;
-      //   document.getElementsByName("Riesgo académico")[0].checked = false;
-      //   document.getElementsByName("Riesgo económico")[0].checked = false;
-      //   document.getElementsByName(
-      //     "Riesgo vida universitaria"
-      //   )[0].checked = false;
-      //   // document.getElementsByName("Riesgo geográfico")[0].checked = false;
-      //   document.getElementsByName("Riesgo individual")[0].checked = true;
-      //   document.getElementsByName("Riesgo familiar")[0].checked = true;
-      //   document.getElementsByName("Riesgo académico")[0].checked = true;
-      //   document.getElementsByName("Riesgo económico")[0].checked = true;
-      //   document.getElementsByName(
-      //     "Riesgo vida universitaria"
-      //   )[0].checked = true;
-      //   // document.getElementsByName("Riesgo geográfico")[0].checked = true;
-
-      //   for (let i = 0; i < columns.length; i++) {
-      //     if (
-      //       columns[i].value === "riesgo_individuall" ||
-      //       columns[i].value === "riesgo_familiar" ||
-      //       columns[i].value === "riesgo_academico" ||
-      //       columns[i].value === "riesgo_economico" ||
-      //       columns[i].value === "riesgo_vida_universitaria_ciudad"
-      //       // ||
-      //       // columns[i].name === "Riesgo geográfico"
-      //     ) {
-      //       columns[i].isCheck = false;
-      //     }
-      //   }
-      //   columns.map((item, index) => {
-      //     if (
-      //       (item.value === "riesgo_individuall" && item.isCheck === false) ||
-      //       (item.value === "riesgo_familiar" && item.isCheck === false) ||
-      //       (item.value === "riesgo_academico" && item.isCheck === false) ||
-      //       (item.value === "riesgo_economico" && item.isCheck === false) ||
-      //       (item.value === "riesgo_vida_universitaria_ciudad" &&
-      //         item.isCheck === false)
-      //       // ||
-      //       // (item.name === "Riesgo geográfico" && item.isCheck === false)
-      //     ) {
-      //       columns.splice(index, 1);
-      //     }
-      //   });
-
-      //   for (let i = 0; i < filtros_Riesgos.length; i++) {
-      //     const element = filtros_Riesgos[i];
-      //     element.isCheck = true;
-      //     var data_var = add_search_bar(element);
-      //     columns.push(data_var[0]);
-      //   }
-
-      //   for (let i = 0; i < filtros_Riesgos.length; i++) {
-      //     const element = filtros_Riesgos[i];
-      //     csv_conversion(element);
-      //     schema_push(element);
-      //   }
-      // } 
+        for (let i = 0; i < filtros_Discapacidad.length; i++) {
+          const element = filtros_Discapacidad[i];
+          csv_conversion(element);
+          schema_push(element);
+        }
+        // // console.log(columns);
+      } 
       
       else if (
         seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
@@ -1401,10 +914,8 @@ const Reporte = () => {
         e.target.checked === false) ||
       (seleccionado_cabeceras_filtros.name === "Académico" &&
         e.target.checked === false) ||
-      // (seleccionado_cabeceras_filtros.name === "Asignaciones" &&
-      //   e.target.checked === false) ||
-      // (seleccionado_cabeceras_filtros.name === "Riesgos" &&
-      //   e.target.checked === false) ||
+       (seleccionado_cabeceras_filtros.name === "Discapacidad" &&
+         e.target.checked === false) ||
       (seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
         e.target.checked === false)
     ) {
@@ -1464,13 +975,14 @@ const Reporte = () => {
         seleccionado_cabeceras_filtros.isCheck = false;
         document.getElementsByName("ASES")[0].checked = false;
         document.getElementsByName("Registro Académico")[0].checked = false;
-        document.getElementsByName("Discapacidad")[0].checked = false;
+        //document.getElementsByName("Discapacidad")[0].checked = false;
 
         for (let i = 0; i < columns.length; i++) {
           if (
             columns[i].value === "estado_ases" ||
-            columns[i].value === "registro_academico" ||
-            columns[i].value === "discapacidad"
+            columns[i].value === "registro_academico" 
+            //||
+            //columns[i].value === "discapacidad"
           ) {
             columns[i].isCheck = false;
           }
@@ -1478,8 +990,9 @@ const Reporte = () => {
         columns.map((item, index) => {
           if (
             (item.value === "estado_ases" && item.isCheck === false) ||
-            (item.value === "registro_academico" && item.isCheck === false) ||
-            (item.value === "discapacidad" && item.isCheck === false)
+            (item.value === "registro_academico" && item.isCheck === false) 
+            //||
+            //(item.value === "discapacidad" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1540,91 +1053,50 @@ const Reporte = () => {
         }
       } 
       
-      // else if (
-      //   seleccionado_cabeceras_filtros.name === "Asignaciones" &&
-      //   e.target.checked === false
-      // ) {
-      //   seleccionado_cabeceras_filtros.isCheck = false;
-      //   document.getElementsByName("Profesional")[0].checked = false;
-      //   document.getElementsByName("Practicante")[0].checked = false;
-      //   document.getElementsByName("Monitor")[0].checked = false;
+      if (
+        seleccionado_cabeceras_filtros.name === "Discapacidad" &&
+        e.target.checked === false
+      ) {
+        // // console.log("WE'RE OVER HERE!");
+        // // console.log(columns);
+        seleccionado_cabeceras_filtros.isCheck = false;
+        document.getElementsByName("Tipo de discapacidad")[0].checked = false;
+        document.getElementsByName("Adquisición")[0].checked = false;
 
-      //   for (let i = 0; i < columns.length; i++) {
-      //     if (
-      //       columns[i].value === "asignacion_profesional" ||
-      //       columns[i].value === "asignacion_practicante" ||
-      //       columns[i].value === "asignacion_monitores"
-      //     ) {
-      //       columns[i].isCheck = false;
-      //     }
-      //   }
-      //   columns.map((item, index) => {
-      //     if (
-      //       (item.value === "asignacion_profesional" &&
-      //         item.isCheck === false) ||
-      //       (item.value === "asignacion_practicante" &&
-      //         item.isCheck === false) ||
-      //       (item.value === "asignacion_monitores" && item.isCheck === false)
-      //     ) {
-      //       columns.splice(index, 1);
-      //     }
-      //   });
-      //   for (let i = 0; i < filtros_Asignaciones.length; i++) {
-      //     filtros_Asignaciones[i].isCheck = false;
-      //     const element = filtros_Asignaciones[i];
-      //     csv_pop(element);
-      //     schema_pop(element);
-      //   }
-      // } 
-      
-      // else if (
-      //   seleccionado_cabeceras_filtros.name === "Riesgos" &&
-      //   e.target.checked === false
-      // ) {
-      //   seleccionado_cabeceras_filtros.isCheck = false;
-      //   document.getElementsByName("Riesgo individual")[0].checked = false;
-      //   document.getElementsByName("Riesgo familiar")[0].checked = false;
-      //   document.getElementsByName("Riesgo académico")[0].checked = false;
-      //   document.getElementsByName("Riesgo económico")[0].checked = false;
-      //   document.getElementsByName(
-      //     "Riesgo vida universitaria"
-      //   )[0].checked = false;
-      //   // document.getElementsByName("Riesgo geográfico")[0].checked = false;
+        // // console.log(columns);
 
-      //   for (let i = 0; i < columns.length; i++) {
-      //     if (
-      //       columns[i].value === "riesgo_individual" ||
-      //       columns[i].value === "riesgo_familiar" ||
-      //       columns[i].value === "riesgo_academico" ||
-      //       columns[i].value === "riesgo_economico" ||
-      //       columns[i].value === "riesgo_vida_universitaria_ciudad"
-      //       // ||
-      //       // columns[i].name === "Riesgo geográfico"
-      //     ) {
-      //       columns[i].isCheck = false;
-      //     }
-      //   }
-      //   columns.map((item, index) => {
-      //     if (
-      //       (item.value === "riesgo_individual" && item.isCheck === false) ||
-      //       (item.value === "riesgo_familiar" && item.isCheck === false) ||
-      //       (item.value === "riesgo_academico" && item.isCheck === false) ||
-      //       (item.value === "riesgo_economico" && item.isCheck === false) ||
-      //       (item.value === "riesgo_vida_universitaria_ciudad" &&
-      //         item.isCheck === false)
-      //       // ||
-      //       // (item.name === "Riesgo geográfico" && item.isCheck === false)
-      //     ) {
-      //       columns.splice(index, 1);
-      //     }
-      //   });
-      //   for (let i = 0; i < filtros_Riesgos.length; i++) {
-      //     filtros_Riesgos[i].isCheck = false;
-      //     const element = filtros_Riesgos[i];
-      //     csv_pop(element);
-      //     schema_pop(element);
-      //   }
-      // } 
+        for (let i = 0; i < columns.length; i++) {
+          if (
+            (columns[i].value === "tipo_discapacidad" && columns[i].isCheck === true) ||
+            (columns[i].value === "adquisicion" && columns[i].isCheck === true) 
+          ) {
+            // // console.log("is HeRe!!");
+            columns[i].isCheck = false;
+            // columns.splice(i, 1);
+          }
+        }
+        // // console.log(columns);
+        // // console.log("IS DEAD THSI SH**");
+
+        columns.map((item, index) => {
+          if (
+            (item.value === "tipo_discapacidad" && item.isCheck === false) ||
+            (item.value === "adquisicion" && item.isCheck === false) 
+          ) {
+            columns.splice(index, 1);
+          }
+        });
+
+        for (let i = 0; i < filtros_Discapacidad.length; i++) {
+          filtros_Discapacidad[i].isCheck = false;
+          const element = filtros_Discapacidad[i];
+          csv_pop(element);
+          schema_pop(element);
+        }
+
+        // // console.log("After Unselect All");
+        // // console.log(columns);
+      }
       
       else if (
         seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
@@ -1676,21 +1148,6 @@ const Reporte = () => {
         backgroundColor: "#e7eef0",
       },
     },
-    // rows: {
-    //   style: {
-    //     color: "#000000",
-    //     backgroundColor: "#F7E6E6"
-    //   },
-    //   stripedStyle: {
-    //     color: "#000000",
-    //     backgroundColor: "#F5DDDD "
-    //   }
-    // },
-    // border: {
-    //   style: {
-    //     color: "#0000",
-    //   }
-    // }
   };
 
   const imprimir_excel = () => {
@@ -1748,6 +1205,7 @@ const Reporte = () => {
 
             {/* Columna Filtros de Contacto */}
             <Row>
+              {/* <Columna tipo_filtro={filtros_Contacto} funcion={handleChange}/> */}
               <Col>
                 {filtros_Contacto.map((Item, index) => (
                   <div key={index}>
@@ -1779,6 +1237,21 @@ const Reporte = () => {
               {/* Columna Filtros Académicos */}
               <Col>
                 {filtros_Academico.map((Item, index) => (
+                  <div key={index}>
+                    <Form.Check
+                      name={Item.name}
+                      type="checkbox"
+                      label={Item.name}
+                      className="mb-2"
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </div>
+                ))}
+              </Col>
+
+              {/* Columna Discapacidad */}
+              <Col>
+                {filtros_Discapacidad.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
                       name={Item.name}

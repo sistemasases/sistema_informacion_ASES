@@ -19,8 +19,8 @@ class ListaEstudiantesDiscapacidad(generics.ListAPIView):
 
 
 class DatosExtraEstudiantesDiscapacidad(generics.ListAPIView):
-    authentication_classes = [JWTTokenUserAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTTokenUserAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     def list(self, request):
         query_programa = programa_estudiante.objects \
