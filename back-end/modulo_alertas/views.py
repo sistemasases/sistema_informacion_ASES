@@ -320,7 +320,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
         fecha_limite = fech_actual - fecha_
 
         for i in riesgo:
-            print(i['encuesta_admitido'])
+            # print(i['encuesta_admitido'])
             if i['riesgo_individual'] == 'ALTO':
                 counter_riesgo_individual += 1
             if i['riesgo_familiar'] == 'ALTO':
