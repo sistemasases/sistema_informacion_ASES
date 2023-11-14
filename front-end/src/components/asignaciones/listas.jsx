@@ -1,5 +1,6 @@
 import React from 'react';
 import {useState } from "react";
+import Form from 'react-bootstrap/Form';
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import axios from 'axios';
@@ -8,6 +9,18 @@ import {decryptTokenFromSessionStorage, desencriptarInt, desencriptar} from '../
 
 const Listas = (props) => {
 
+
+    const [state, set_state] = useState({
+        detalle: "",
+    }
+    )
+
+    const handleForm = (e) => {
+        set_state({
+            ...state,
+            [e.target.name]: e.target.value
+        })
+    }
 
     const config = {
         headers: {
@@ -42,6 +55,30 @@ const Listas = (props) => {
         formData.append("id_usuario", props.monitor_seleccionado);
         formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
         formData.append("id_estudiante", props.item.id);
+        formData.append("detalle", ".");
+        axios({
+            // Endpoint to send files
+            url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
+            method: "POST",
+            headers: config2,
+            data: formData,
+        })
+        .then(response => {
+            childClicked2(props.monitor_seleccionado)
+        })
+        .catch(error => {
+            console.log("siii")
+        });
+    }
+
+    const retirar_estudiante = (e) =>{
+        let formData = new FormData();
+
+        formData.append("llamada", "retiro");
+        formData.append("id_usuario", props.monitor_seleccionado);
+        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
+        formData.append("id_estudiante", props.item.id);
+        formData.append("detalle", state.detalle);
         axios({
             // Endpoint to send files
             url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
@@ -271,11 +308,16 @@ const Listas = (props) => {
                     <Modal.Header closeButton>
                         <Modal.Title></Modal.Title>
                     </Modal.Header>
-                    <Modal.Body> 
-                        Seleccione accion : 
-                        <br/><Button onClick={()=>quitar_estudiante()} >Quitar del monitor</Button>
-                        <br/>
-                        <Button onClick={handleShow2} >Retirar estudiante</Button>
+                    <Modal.Body > 
+                        <h6>
+                            Seleccione una acción: 
+                        </h6>
+                        <Col  xs={"10"} md={"8"}> 
+                        <Row><Button onClick={()=>quitar_estudiante()} >Quitar del monitor</Button></Row>
+                        <Row><Button onClick={handleShow2} >Retirar estudiante</Button></Row>
+                        </Col>
+                            
+
                     </Modal.Body>                    
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
@@ -288,14 +330,19 @@ const Listas = (props) => {
                     <Modal.Header closeButton>
                         <Modal.Title>Retiros</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body> 
-                        Causa del retiro : <textarea></textarea>
+                    <Modal.Body>
+                        <Row className="g-2">
+                            <h6>
+                            Causa del retiro: 
+                            </h6>
+                        </Row>
+                        <Row className="g-2">
+                            <Form.Control as="textarea"  rows={3} name="detalle" onChange={handleForm} />
+                        </Row>
                         <br/>
-                        
-
                     </Modal.Body>                    
                     <Modal.Footer>
-                        <Button onClick={handleShow3} >aceptar</Button>
+                        <Button onClick={() => {retirar_estudiante()}} >aceptar</Button>
                         <Button variant="secondary" onClick={handleClose2}>
                             Close
                         </Button>
