@@ -82,14 +82,36 @@ var columns = [
       },
     ],
   },
-  // {
-  //   name: "Encuesta de admitidos",
-  //   selector: (row) => row.encuesta_admitidos,
-  //   value: "encuesta_admitidos",
-  //   sortable: true,
-  //   isCheck: false,
-  //   width: "190px",
-  // },
+  {
+    name: "Encuesta de admitidos",
+    selector: (row) => row.encuesta_admitido,
+    value: "encuesta_admitido",
+    sortable: true,
+    isCheck: false,
+    width: "190px",
+    conditionalCellStyles: [
+      // {
+      //   when: (row) => row.encuesta_admitido == "DILIGENCIADO",
+      //   style: {
+      //     backgroundColor: "green",
+      //     color: "white",
+      //     "&:hover": {
+      //       cursor: "pointer",
+      //     },
+      //   },
+      // },
+      {
+        when: (row) => row.encuesta_admitido == "SIN DILIGENCIAR",
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+    ],
+  },
   {
     name: "Ficha Semana Anterior",
     selector: (row) => row.fecha_seguimiento,
@@ -431,7 +453,7 @@ const Alertas = () => {
           ...state,
           estudiante: response.data,
         });
-        // console.log(response.data);
+        console.log(response.data);
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
         setFiltered(response.data);
@@ -544,20 +566,26 @@ const Alertas = () => {
     selectAllRowsItem: true,
     selectAllRowsItemText: "Mostrar Todo",
   };
-  
+
   var csv_headers = [
     { label: "Código", key: "cod_univalle" },
     { label: "Nombre", key: "nombre" },
     { label: "Apellido", key: "apellido" },
     { label: "Documento", key: "num_doc" },
-    { label: "Acuerdo de tratamiento de datos", key: "firma_tratamiento_datos" },
-    // { label: "Encuesta de admitidos", key: "encuesta_admitidos" },
+    {
+      label: "Acuerdo de tratamiento de datos",
+      key: "firma_tratamiento_datos",
+    },
+    { label: "Encuesta de admitidos", key: "encuesta_admitido" },
     { label: "Ficha Semana Anterior", key: "fecha_seguimiento" },
     { label: "Riesgo individual", key: "riesgo_individual" },
     { label: "Riesgo familiar", key: "riesgo_familiar" },
     { label: "Riesgo académico", key: "riesgo_academico" },
     { label: "Riesgo económico", key: "riesgo_economico" },
-    { label: "Riesgo vida universitaria", key: "riesgo_vida_universitaria_ciudad" },
+    {
+      label: "Riesgo vida universitaria",
+      key: "riesgo_vida_universitaria_ciudad",
+    },
     // { label: "Riesgo geográfico", key: "ciudad_res" },
     // { label: "Mensaje del profesional", key: "mensaje_profesional" },
     // { label: "Mensaje del practicante", key: "mensaje_practicante" },
@@ -590,11 +618,11 @@ const Alertas = () => {
       type: String,
       value: (student) => student.firma_tratamiento_datos,
     },
-    // {  
-    //   column: "Encuesta de admitidos",
-    //   type: String,
-    //   value: (student) => student.encuesta_admitidos,
-    // },
+    {
+      column: "Encuesta de admitidos",
+      type: String,
+      value: (student) => student.encuesta_admitido,
+    },
     {
       column: "Ficha Semana Anterior",
       type: String,
@@ -645,9 +673,7 @@ const Alertas = () => {
     //   type: String,
     //   value: (student) => student.alerta_academica,
     // },
-
   ];
-
 
   const imprimir_excel = () => {
     let new_data_excel = [];
@@ -666,20 +692,19 @@ const Alertas = () => {
         riesgo_familiar: state.estudiante[i].riesgo_familiar,
         riesgo_academico: state.estudiante[i].riesgo_academico,
         riesgo_economico: state.estudiante[i].riesgo_economico,
-        riesgo_vida_universitaria_ciudad: state.estudiante[i].riesgo_vida_universitaria_ciudad,
+        riesgo_vida_universitaria_ciudad:
+          state.estudiante[i].riesgo_vida_universitaria_ciudad,
         // ciudad_res: state.estudiante[i].ciudad_res,
         // mensaje_profesional: state.estudiante[i].mensaje_profesional,
         // mensaje_practicante: state.estudiante[i].mensaje_practicante,
         // alerta_academica: state.estudiante[i].alerta_academica,
-        
       });
       new_data_excel.push(new_data);
     }
 
     writeXlsxFile(state.estudiante, {
       schema, // (optional) column widths, etc.
-      fileName:
-        "Alertas Académicas.xlsx",
+      fileName: "Alertas Académicas.xlsx",
       // filePath: '../dowloads/file.xlsx'
     });
   };
@@ -766,4 +791,3 @@ const Alertas = () => {
 };
 
 export default Alertas;
-

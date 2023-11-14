@@ -73,9 +73,9 @@ class info_estudiante_viewsets(viewsets.ModelViewSet):
             return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "super_ases":
-            serializer_estudiante = estudiante_serializer(
+            serializer_estudiantes = estudiante_serializer(
                 estudiante.objects.all(), many=True)
-            return Response(serializer_estudiante.data)
+            return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
             list_id_programas = programa.objects.filter(
@@ -137,6 +137,14 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
         else:
             return "SIN FIRMAR"
 
+    def get_encuesta_admitido(self, encuesta):
+        if encuesta == None:
+            return "SIN DILIGENCIAR"
+        if encuesta == True or encuesta == "True" or encuesta == "true":
+            return "DILIGENCIADO"
+        else:
+            return "SIN DILIGENCIAR"
+
     def retrieve(self, request, pk):
         data_usuario_rol = request.GET.get('usuario_rol')
         data_sede = request.GET.get('sede')
@@ -176,7 +184,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                 list_estudiantes, many=True)
 
         elif data_usuario_rol == "super_ases":
-            serializer_estudiante = estudiante_serializer(
+            serializer_estudiantes = estudiante_serializer(
                 estudiante.objects.all(), many=True)
 
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
@@ -194,6 +202,8 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
 
         for i in serializer_estudiantes.data:
 
+            # try:
+
             try:
                 # Obtener el seguimiento más reciente del estudiante especificado
                 seguimiento_reciente = seguimiento_individual.objects.filter(
@@ -204,6 +214,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     id_estudiante=i['id'])
                 # print(firma_tratamiento_datos.objects.filter(
                 #     id_estudiante=i['id']))
+                encuesta_admitido = i['encuesta_admitido']
 
                 # Crear un diccionario con los datos de riesgo del seguimiento
                 riesgo = {
@@ -216,12 +227,13 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha))),
                     # 'fecha_seguimiento': seguimiento_reciente.fecha,
                     # 'fecha_seguimiento': (seguimiento_reciente.fecha).strftime("%Y-%m-%d"),
+                    'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido)),
                     'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
 
                 }
 
                 # Devolver el riesgo en la respuesta
-            except seguimiento_individual.DoesNotExist or firma_tratamiento_datos.DoesNotExist:
+            except seguimiento_individual.DoesNotExist or firma_tratamiento_datos.DoesNotExist or encuesta_admitido.DoesNotExist:
                 # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
                 riesgo = {
                     'riesgo_individual': 'SIN REGISTRAR',
@@ -230,6 +242,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     'riesgo_economico': 'SIN REGISTRAR',
                     'riesgo_vida_universitaria_ciudad': 'SIN REGISTRAR',
                     'fecha_seguimiento': 'FICHA FALTANTE',
+                    'encuesta_admitido': self.get_encuesta_admitido(str(False)),
                     'firma_tratamiento_datos': 'SIN FIRMAR'
                 }
             data = dict(i, **riesgo)
@@ -278,6 +291,15 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 # print("SEJODIOOOOOO")
                 return 'NO AUTORIZA'
 
+    def get_encuesta_admitido(self, encuesta):
+        if encuesta:
+            if encuesta == True or encuesta == "True" or encuesta == "true":
+                return "DILIGENCIADO"
+            else:
+                return "SIN DILIGENCIAR"
+        else:
+            return "SIN DILIGENCIAR"
+
     def get_counter_riesgo(self, riesgo):
         counter_riesgo_individual = 0
         counter_riesgo_familiar = 0
@@ -291,12 +313,14 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
 
         counter_firma_datos = 0
 
+        counter_encuesta_admitido = 0
+
         fech_actual = datetime.datetime.now()
         fecha_ = datetime.timedelta(days=7)
         fecha_limite = fech_actual - fecha_
 
         for i in riesgo:
-
+            print(i['encuesta_admitido'])
             if i['riesgo_individual'] == 'ALTO':
                 counter_riesgo_individual += 1
             if i['riesgo_familiar'] == 'ALTO':
@@ -316,6 +340,8 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                     counter_fecha_seguimiento += 1
             if i['firma_tratamiento_datos'] == 'NO AUTORIZA' or i['firma_tratamiento_datos'] == None:
                 counter_firma_datos += 1
+            if i['encuesta_admitido'] == 'SIN DILIGENCIAR':
+                counter_encuesta_admitido += 1
 
         # contador_riesgo = {
         #     'riesgo_individual': counter_riesgo_individual,
@@ -329,7 +355,8 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
 
         contador_total = counter_riesgo_individual + counter_riesgo_familiar + counter_riesgo_academico + counter_riesgo_economico + \
             counter_riesgo_vida_universitaria_ciudad + \
-            counter_fecha_seguimiento + counter_empty_date + counter_firma_datos
+            counter_fecha_seguimiento + counter_empty_date + \
+            counter_firma_datos + counter_encuesta_admitido
         # print(riesgo)
         # print(contador_total)
         # print(contador_riesgo)
@@ -401,6 +428,8 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 firma_tratamiento = firma_tratamiento_datos.objects.filter(
                     id_estudiante=i['id'])
 
+                encuesta_admitido = i['encuesta_admitido']
+
                 # Crear un diccionario con los datos de riesgo del seguimiento
                 riesgo = {
                     'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
@@ -413,11 +442,12 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                     # 'fecha_seguimiento': seguimiento_reciente.fecha,
                     # 'fecha_seguimiento': (seguimiento_reciente.fecha).strftime("%Y-%m-%d"),
                     'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                    'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
 
                 }
 
                 # Devolver el riesgo en la respuesta
-            except seguimiento_individual.DoesNotExist or firma_tratamiento_datos.DoesNotExist:
+            except seguimiento_individual.DoesNotExist or firma_tratamiento_datos.DoesNotExist or encuesta_admitido.DoesNotExist:
                 # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
                 riesgo = {
                     'riesgo_individual': 'N/A',
@@ -426,7 +456,8 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                     'riesgo_economico': 'N/A',
                     'riesgo_vida_universitaria_ciudad': 'N/A',
                     'fecha_seguimiento': '',
-                    'firma_tratamiento_datos': 'NO AUTORIZA'
+                    'firma_tratamiento_datos': 'NO AUTORIZA',
+                    'encuesta_admitido': self.get_encuesta_admitido(str(False)),
                 }
             data = dict(i, **riesgo)
             # print(cont_riesgos)
