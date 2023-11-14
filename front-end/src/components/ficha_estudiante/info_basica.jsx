@@ -440,15 +440,27 @@ const Info_basica = (props) => {
                         </Row>
                         <Row md={"5"}>
                           {/* Tratamiento de Datos */}
-                          <Col md={"1"} className={"alert_item"}>
+                          <Col
+                            md={"1"}
+                            className={"alert_item alert_item-datos"}
+                            title="Tratamiento de datos"
+                          >
                             <i class="bi bi-check2-square"></i>
                           </Col>
                           {/* Encuesta Admitidos */}
-                          <Col md={"1"} className={"alert_item"}>
+                          <Col
+                            md={"1"}
+                            className={"alert_item alert_item-admitidos"}
+                            title="Encuesta de Admitidos"
+                          >
                             <i class="bi bi-card-checklist"></i>
                           </Col>
                           {/* FIcha Semana Anterior */}
-                          <Col md={"1"} className={"alert_item"}>
+                          <Col
+                            md={"1"}
+                            className={"alert_item alert_item-semana"}
+                            title="Ficha de la Semana Anterior"
+                          >
                             {" "}
                             <i class="bi bi-calendar2-check"></i>
                           </Col>
@@ -516,7 +528,10 @@ const Info_basica = (props) => {
 
                         <Row md={"5"}>
                           {/* Tratamiento de Datos */}
-                          <Col md={"1"} className={"alert_item"}>
+                          <Col
+                            md={"1"}
+                            className={"alert_item alert_item-datos"}
+                          >
                             <i
                               class="bi bi-check2-square"
                               style={
@@ -528,10 +543,14 @@ const Info_basica = (props) => {
                                   ? { color: "red" }
                                   : { color: " #AAB5A6" }
                               }
+                              title="Tratamiento de datos Sin Firmar"
                             ></i>
                           </Col>
                           {/* Encuesta Admitidos */}
-                          <Col md={"1"} className={"alert_item"}>
+                          <Col
+                            md={"1"}
+                            className={"alert_item alert_item-admitidos"}
+                          >
                             <i
                               class="bi bi-card-checklist"
                               style={
@@ -540,10 +559,14 @@ const Info_basica = (props) => {
                                   ? { color: "red" }
                                   : { color: " #AAB5A6" }
                               }
+                              title="Encuesta de Admitidos sin Diligenciar"
                             ></i>
                           </Col>
                           {/* FIcha Semana Anterior */}
-                          <Col md={"1"} className={"alert_item"}>
+                          <Col
+                            md={"1"}
+                            className={"alert_item alert_item-semana"}
+                          >
                             {" "}
                             <i
                               class="bi bi-calendar2-check"
@@ -553,6 +576,7 @@ const Info_basica = (props) => {
                                   ? { color: "red" }
                                   : { color: " #AAB5A6" }
                               }
+                              title="Ficha de la Semana Anterior sin Registrar"
                             ></i>
                           </Col>
                         </Row>
