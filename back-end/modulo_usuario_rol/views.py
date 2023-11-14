@@ -9,7 +9,7 @@ from modulo_geografico.models import barrio, departamento, municipio
 from modulo_programa.models import programa_estudiante, programa, historial_estado_programa_estudiante, programa_monitor
 from modulo_instancia.models import semestre, cohorte
 from modulo_asignacion.models import asignacion
-from modulo_seguimiento.models import inasistencia, seguimiento_individual
+from modulo_seguimiento.models import inasistencia, seguimiento_individual, riesgo_individual
 from modulo_usuario_rol.models import firma_tratamiento_datos
 from django.db.models import Q
 from rest_framework.views import APIView
@@ -35,6 +35,7 @@ from django.core import serializers
 
 from rest_framework.viewsets import ModelViewSet
 import pandas as pd
+import datetime
 
 # Create your views here.
 
@@ -98,8 +99,50 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
     permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
+    
+    # Conversión nivel riesgos, de numerico a clasificacion textual
+    def get_nivel_riesgo(self, riesgo):
+        if riesgo == 0:
+            return 'BAJO'
+        if riesgo == 1:
+            return 'MEDIO'
+        elif riesgo == 2:
+            return 'ALTO'
+        elif riesgo == None or riesgo == 'None':
+            return 'SIN RIESGO'
+        
+    # Conversioón de fecha a formato datetime
+    def get_fecha_seguimiento(self, fecha):
+        # print(fecha)
+        if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
+            return "FICHA FALTANTE"
+        elif fecha:
+            fech_actual = datetime.datetime.now()
+            fecha_ = datetime.timedelta(days=7)
+            fecha_limite = fech_actual - fecha_
+            date_obj = datetime.datetime.strptime(
+                    fecha, "%Y-%m-%d")
+            if date_obj.date() <= fecha_limite.date():
+                return "FICHA FALTANTE"
+            else:
+                return "SEGUIMIENTO RECIENTE"
+            
+    # Verificamos si al firmar el tratamiento de datos autoriza o no autoriza
+    def get_firma(self, firma):
+        # print(firma)
+        if firma:
+            for i in firma:
+                if i.autoriza == True:
+                    # print("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                    return 'AUTORIZA'
+                elif i.autoriza == False:
+                    # print("SEJODIOOOOOO")
+                    return 'NO AUTORIZA'
+        else:
+            return "SIN FIRMAR"
 
     def retrieve(self, request, pk=None):
+        
         request_sede = int(request.GET.get('id_sede'))
         var_estudiante = estudiante.objects.get(id=pk)
         serializer_estudiante = estudiante_serializer(var_estudiante)
@@ -298,8 +341,47 @@ class estudiante_viewsets(viewsets.ModelViewSet):
                     }
 
         diccionario_estudiante.update(datos_encargados)
-
-
+        
+        try:
+            # print("Hola")
+            # Obtener el seguimiento más reciente del estudiante especificado
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk).latest('fecha')
+            # print(seguimiento_reciente.creacion)
+            # Crear un diccionario con los datos de riesgo del seguimiento
+            riesgo = {
+                'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
+                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha))),
+            }
+        except seguimiento_individual.DoesNotExist:
+            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+            riesgo = {
+                'riesgo_individual': 'SIN SEGUIMIENTO',
+                'riesgo_familiar': 'SIN SEGUIMIENTO',
+                'riesgo_academico': 'SIN SEGUIMIENTO',
+                'riesgo_economico': 'SIN SEGUIMIENTO',
+                'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
+                'fecha_seguimiento': 'FICHA FALTANTE'
+            }
+            
+        diccionario_estudiante.update(riesgo)
+        
+        try:
+            firma_tratamiento = firma_tratamiento_datos.objects.filter(
+                    id_estudiante=pk)
+            firma = {
+                'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+            }
+        except firma_tratamiento_datos.DoesNotExist:
+            firma = {
+                'firma_tratamiento_datos': 'SIN FIRMAR'
+            }
+            
+        diccionario_estudiante.update(firma)
 
         return Response(diccionario_estudiante)
 
@@ -503,7 +585,7 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
 
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
-            seguimiento_reciente = seguimiento_individual.objects.filter(id_estudiante=pk).latest('fecha')
+            seguimiento_reciente = riesgo_individual.objects.get(id_estudiante=pk)
 
             # Crear un diccionario con los datos de riesgo del seguimiento
             riesgo = {
@@ -515,19 +597,44 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
             }
             # Devolver el riesgo en la respuesta
             return Response(riesgo)
-        except seguimiento_individual.DoesNotExist:
+        except riesgo_individual.DoesNotExist:
             # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
             return Response({})
 
 
+class create_riesgo_individual_ViewSet(viewsets.ModelViewSet):
+    serializer_class = seguimiento_individual_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
 
 
+    def retrieve(self, request, pk):
+        # estudiante_id = request.query_params.get('estudiante_id')
 
+        try:
+            # Obtener el seguimiento más reciente del estudiante especificado
+            queryset = seguimiento_individual.objects.all().order_by('fecha')
 
+            for object in queryset:
+                seguimiento_reciente, create = riesgo_individual.objects.get_or_create(id_estudiante=object.id_estudiante)
+                seguimiento_reciente.fecha = object.fecha
+                if object.riesgo_individual != None:
+                    seguimiento_reciente.riesgo_individual = object.riesgo_individual
+                if object.riesgo_familiar != None:
+                    seguimiento_reciente.riesgo_familiar = object.riesgo_familiar
+                if object.riesgo_academico != None:
+                    seguimiento_reciente.riesgo_academico = object.riesgo_academico
+                if object.riesgo_economico != None:
+                    seguimiento_reciente.riesgo_economico = object.riesgo_economico
+                if object.riesgo_vida_universitaria_ciudad != None:
+                    seguimiento_reciente.riesgo_vida_universitaria_ciudad = object.riesgo_vida_universitaria_ciudad
+                seguimiento_reciente.save()
 
-
-
-
+            # Devolver el riesgo en la respuesta
+            return Response({'Alberto': 'lo chupa'})
+        except seguimiento_individual.DoesNotExist:
+            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+            return Response({})
 
 
 # Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol ///
