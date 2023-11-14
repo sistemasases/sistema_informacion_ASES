@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante
 from modulo_asignacion.models import asignacion
 from modulo_instancia.models import semestre
+from modulo_carga_masiva.models import retiro, motivo
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -98,6 +99,30 @@ class estudiante_asignacion_viewsets (viewsets.ModelViewSet):
                 var_asignacion = var_old_asignacion
                 var_asignacion.estado = False
                 var_asignacion.save()
+
+                return Response({'Respuesta': 'Asignación eliminada'},status=status.HTTP_200_OK)
+            
+            elif (serializer.data['llamada']=="retiro"):
+                id_sede_request = serializer.data['id_sede']
+                id_estudiante_request = serializer.data['id_estudiante']
+                text_detalle = serializer.data['detalle']
+                var_estudiante =estudiante.objects.get(id=id_estudiante_request)
+                serializer_estudiante= estudiante_serializer(var_estudiante)
+                var_semestre =semestre.objects.get(semestre_actual = True,id_sede= id_sede_request)
+                serializer_semestre= semestre_serializer(var_semestre)
+                var_motivo =motivo.objects.get(id=2)
+                try:
+                    Retiro = retiro(id_estudiante= var_estudiante,id_motivo= var_motivo,detalle = str(text_detalle))
+                    var_old_asignacion = asignacion.objects.get(id_estudiante = serializer_estudiante.data['id'],  id_semestre = serializer_semestre.data['id'],estado = True)
+
+                except:
+                    return Response(
+                    status=status.HTTP_404_NOT_FOUND
+                    )
+                var_asignacion = var_old_asignacion
+                var_asignacion.estado = False
+                var_asignacion.save()
+                Retiro.save()
 
                 return Response({'Respuesta': 'Asignación eliminada'},status=status.HTTP_200_OK)
 

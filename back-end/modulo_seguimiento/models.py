@@ -93,3 +93,16 @@ class inasistencia (models.Model):
 
     class Meta:
         db_table = "inasistencia"
+
+class riesgo_individual (models.Model):
+
+    fecha = models.DateField(auto_now_add=False, null=True)
+    riesgo_individual = models.IntegerField(null=True)
+    riesgo_familiar = models.IntegerField(null=True)
+    riesgo_academico = models.IntegerField(null=True)
+    riesgo_economico = models.IntegerField(null=True)
+    riesgo_vida_universitaria_ciudad = models.IntegerField(null=True)
+    id_estudiante = models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
+
+    class Meta:
+        db_table = "riesgo_individual"
