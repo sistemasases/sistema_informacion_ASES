@@ -282,6 +282,10 @@ const Pagina_inicio = () => {
                 <Link to={`/campus_diverso/registro_estudiante`}> 
                   <img src={boton15} className="boton" alt='/'></img>
                 </Link>)}
+                {(userRole === "CAMPUS DIVERSO")&&(
+                <Link to={`/campus_diverso/obtener_estudiante`}> 
+                  <img src={boton6} className="boton" alt='/'></img>
+                </Link>)}
                 </Col>
 
                 <Col className="vertical-line-col"><div className="vertical"></div></Col>

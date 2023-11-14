@@ -73,6 +73,30 @@ const Registro_estudiante = () => {
     semestre_academico:"",
     pertenencia_univalle:false,
 
+    
+    //Informacion general
+
+    fecha:"",
+    creacion:"",
+    dedicacion_externa:"",
+    tiene_eps:"",
+    nombre_eps:"",
+    regimen_eps:"",
+    tipo_entidad_acompanamiento_recibido:"",
+    calificacion_acompanamiento_recibido:"",
+    motivo_calificacion_acompanamiento:"",
+    actividades_especificas_tiempo_libre:"",
+    observacion_general_fuente_de_ingresos:"",
+    calificacion_relacion_familiar:"",
+    relacion_familiar:"",
+    observacion_general_redes_de_apoyo:"",
+    observacion_general_factores_de_riesgo:"",
+    creencia_religiosa:"",
+    decision_encuentro_inicial_con_profesional:"",
+    observacion_horario:"",
+    origen_descubrimiento_campus_diverso:"",
+    comentarios_o_sugerencias_de_usuario:"",
+    ocupaciones_actuales:[],
 
 
     
@@ -98,11 +122,10 @@ const Registro_estudiante = () => {
   const [expresionesOptions, setExpresionesOptions] = useState([]);
   const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
 
+//Informacion general
+  const [ocupacionOptions, setOcupacionOptions] = useState([]);
 
-
-
-  //Grupo poblacion getter
-// Primer useEffect para obtener opciones de grupo poblacional
+// Getters de las listas
 useEffect(() => {
   Promise.all([
     axios.get(`${process.env.REACT_APP_API_URL}/campus_diverso/pertenencia_grupo_poblacional/`),
@@ -113,11 +136,14 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/campus_diverso/orientacion-sexual/`),
     axios.get(`${process.env.REACT_APP_API_URL}/campus_diverso/expresion-genero/`),
     axios.get(`${process.env.REACT_APP_API_URL}/campus_diverso/identidad-genero/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/campus_diverso/ocupacion-actual/`),
+
   ])
     .then((responses) => {
       //persona
       const [grupoPoblacionResponse, respuestaCambioDocumentoResponse, relacionPersonaConfianzaResponse,
-      identidadResponse, pronomeopcionesResponse, orientacionResponse, expresionesResponse,identiadesGeneroResponse] = responses;
+      identidadResponse, pronomeopcionesResponse, orientacionResponse, expresionesResponse,identiadesGeneroResponse,
+      ocupacionResponse] = responses;
       const relacionPersonaConfianzaOpciones = relacionPersonaConfianzaResponse.data.map((item) => item.nombre_persona_confianza);
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => item.nombre_grupo_poblacional);
       const identidadOpciones = identidadResponse.data.map((item) => item.nombre_identidad_etnico_racial);
@@ -126,7 +152,7 @@ useEffect(() => {
       const orientacionOpciones = orientacionResponse.data.map((item) => item.nombre_orientacion_sexual)
       const expresionesOpciones = expresionesResponse.data.map((item) => item.nombre_expresion_genero)
       const identidadesGeneroOpciones = identiadesGeneroResponse.data.map((item) => item.nombre_identidad_genero)
-
+      const ocupacionOpciones = ocupacionResponse.data.map((item) => item.nombre_ocupacion_actual)
       console.log('Respuesta cambio de documento:', respuestaCambioDocumentoResponse.data);
       setRazasOptions(grupoPoblacionOpciones);
       setIdentidadOptions(identidadOpciones);
@@ -136,11 +162,15 @@ useEffect(() => {
       setOrientacionOptions(orientacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
+      setOcupacionOptions(ocupacionOpciones);
       setIsLoading(false);
+
     })
     .catch((error) => {
+
       console.error('Error al obtener opciones:', error);
       setIsLoading(false);
+
     });
 }, []);
 
@@ -279,6 +309,18 @@ const handleChange = (event) => {
 
   }
 
+  const InformacionGeneralData = {
+
+    fecha: state.fecha,
+    creacion: state.creacion,
+    
+
+
+
+
+
+  }
+
     try {
       const personaResponse = await axios.post(`${process.env.REACT_APP_API_URL}/campus_diverso/persona/`, personaData);
       console.log('Respuesta del servidor:', personaResponse.data);
@@ -288,8 +330,14 @@ const handleChange = (event) => {
       const diversidadSexualResponse = await axios.post(`${process.env.REACT_APP_API_URL}/campus_diverso/diversidad-sexual/`, {
         ...DiversidadSexualData,
         id_persona: personaId, // Usa el ID de la persona recién creada
-      });      
+      });
+      
+      const informacionGeneralResponse = await axios.post(`${process.env.REACT_APP_API_URL}/campus_diverso/informacion-general/`, {
+        ...InformacionGeneralData,
+        id_persona: personaId, // Usa el ID de la persona recién creada
+      });          
       console.log('Respuesta del servidor (informacion-academica):', diversidadSexualResponse.data);
+      console.log('Respuesta del servidor (informacion-academica):', informacionGeneralResponse.data);
 
       setShowModal(true);
       setMensaje("El formulario se envió con éxito.");
