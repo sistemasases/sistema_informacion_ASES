@@ -26,7 +26,11 @@ class inasistencia_viewsets (viewsets.ModelViewSet):
     queryset = inasistencia_serializer.Meta.model.objects.all()
 
 
-
+class riesgo_individual_viewsets (viewsets.ModelViewSet):
+    serializer_class = riesgo_individual_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = riesgo_individual_serializer.Meta.model.objects.all()
+    
 class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
     #permission_classes = (IsAuthenticated,)

@@ -50,9 +50,6 @@ const Pagina_inicio = () => {
   } else if (userRole === 'monitor') {
     desplegable = 'MONITOR';
   } else if (userRole === 'practicante') {
-  } else if (sessionStorage.rol === 'monitor') {
-    desplegable = 'MONITOR'; 
-  } else if (sessionStorage.rol === 'practicante') {
     desplegable = 'PRACTICANTE';
   } else if (userRole === 'dir_investigacion') {
     desplegable = 'DIRECTOR INVES.';
@@ -62,7 +59,7 @@ const Pagina_inicio = () => {
     desplegable = 'VICERRECTOR ACADE.';
   } else if (userRole === 'profesional') {
     desplegable = 'PROFESIONAL';
-  } else if (sessionStorage.rol === 'profesor') {
+  } else if (userRole === 'profesor') {
     desplegable = 'PROFESOR';
   }
   
