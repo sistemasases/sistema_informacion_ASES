@@ -717,7 +717,7 @@ const Alertas = () => {
         {
           <Container>
             <div>
-              <h1>Alertas Académicas</h1>
+              <h1>Sistema de Alertas</h1>
             </div>
             {/* Columna Filtros de Contacto */}
 
