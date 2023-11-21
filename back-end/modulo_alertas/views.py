@@ -40,52 +40,38 @@ class info_estudiante_viewsets(viewsets.ModelViewSet):
         list_estudiantes = list()
 
         if data_usuario_rol == "monitor":
-            list_id_estudiantes = asignacion.objects.filter(
-                id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(
-                list_estudiantes, many=True)
+
+            list_id_estudiantes = asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "practicante":
-            list_id_monitores = usuario_rol.objects.filter(
-                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
-            list_id_estudiantes = asignacion.objects.filter(
-                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(
-                list_estudiantes, many=True)
+            list_id_monitores= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "profesional":
-            list_id_practicantes = usuario_rol.objects.filter(
-                id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
-            list_id_monitores = usuario_rol.objects.filter(
-                id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
-            list_id_estudiantes = asignacion.objects.filter(
-                id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(
-                list_estudiantes, many=True)
+            list_id_practicantes= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_monitores= usuario_rol.objects.filter(id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
+            list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == "super_ases":
-            serializer_estudiantes = estudiante_serializer(
-                estudiante.objects.all(), many=True)
-            return Response(serializer_estudiantes.data)
 
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
-            list_id_programas = programa.objects.filter(
-                id_sede=data_sede).values('id')
-            list_id_estudiantes = programa_estudiante.objects.filter(
-                id_programa__in=list_id_programas).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(
-                list_estudiantes, many=True)
+            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
+            return Response(serializer_estudiante.data)
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+
+            list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
         elif data_usuario_rol == None:
@@ -248,7 +234,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     'riesgo_academico': 'N/A',
                     'riesgo_economico': 'N/A',
                     'riesgo_vida_universitaria_ciudad': 'N/A',
-                    'fecha_seguimiento': '',
+                    'fecha_seguimiento': 'FICHA FALTANTE',
                     'firma_tratamiento_datos': 'SIN FIRMAR',
                     'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
@@ -259,7 +245,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     'riesgo_academico': 'N/A',
                     'riesgo_economico': 'N/A',
                     'riesgo_vida_universitaria_ciudad': 'N/A',
-                    'fecha_seguimiento': '',
+                    'fecha_seguimiento': 'FICHA FALTANTE',
                     'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
                     'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
