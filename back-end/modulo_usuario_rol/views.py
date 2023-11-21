@@ -597,41 +597,6 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
             return Response({})
 
 
-class create_riesgo_individual_ViewSet(viewsets.ModelViewSet):
-    serializer_class = seguimiento_individual_serializer
-    # permission_classes = (IsAuthenticated,)
-    queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
-
-
-    def retrieve(self, request, pk):
-        # estudiante_id = request.query_params.get('estudiante_id')
-
-        try:
-            # Obtener el seguimiento más reciente del estudiante especificado
-            queryset = seguimiento_individual.objects.all().order_by('fecha')
-
-            for object in queryset:
-                seguimiento_reciente, create = riesgo_individual.objects.get_or_create(id_estudiante=object.id_estudiante)
-                seguimiento_reciente.fecha = object.fecha
-                if object.riesgo_individual != None:
-                    seguimiento_reciente.riesgo_individual = object.riesgo_individual
-                if object.riesgo_familiar != None:
-                    seguimiento_reciente.riesgo_familiar = object.riesgo_familiar
-                if object.riesgo_academico != None:
-                    seguimiento_reciente.riesgo_academico = object.riesgo_academico
-                if object.riesgo_economico != None:
-                    seguimiento_reciente.riesgo_economico = object.riesgo_economico
-                if object.riesgo_vida_universitaria_ciudad != None:
-                    seguimiento_reciente.riesgo_vida_universitaria_ciudad = object.riesgo_vida_universitaria_ciudad
-                seguimiento_reciente.save()
-
-            # Devolver el riesgo en la respuesta
-            return Response({'Alberto': 'lo chupa'})
-        except seguimiento_individual.DoesNotExist:
-            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-            return Response({})
-
-
 # Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol ///
 # Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol ///
 # Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol /// Viewsets del Rol ///
