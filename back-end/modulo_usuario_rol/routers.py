@@ -40,6 +40,7 @@ router.register(r'cohortes_lista',cohortes_lista_viewsets,basename = 'cohortes_l
 router.register(r'historial_monitor',historial_monitor_viewsets,basename = 'historial_monitor')
 
 router.register(r'deibyelmejor',create_riesgo_individual_ViewSet,basename = 'create_riesgo_individual')
+router.register(r'cesarlachupa',actualizar_estudiantes_encuesta_admitido,basename = 'actualizar_estudiantes_encuesta_admitido')
 
 
 #rutas de views que son prueba o valen mondaa
