@@ -125,12 +125,7 @@ const Seguimiento_individual = (props) =>{
     }
     const verificador_tematicas = () => {
         if(!!form.individual || !!form.familiar || !!form.academico || !!form.economico || !!form.vida_universitaria_ciudad){
-            if(state.objetivos.length < 5000 && state.observaciones.length < 5000 && state.individual.length < 5000 && state.familiar.length < 5000  && state.academico.length < 5000  && state.economico.length < 5000  && state.vida_universitaria_ciudad.length < 5000 ){
-                verificador_individual()
-            }
-            else{
-                window.confirm("Recuerda que el límite máximo de caracteres, por cuadro de texto, es de 5000.")
-            }
+            verificador_individual()
         }
         else{
             window.confirm("Debes diligenciar al menos una dimesión, por favor verifica estos campos.")

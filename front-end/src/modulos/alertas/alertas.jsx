@@ -453,7 +453,6 @@ const Alertas = () => {
           ...state,
           estudiante: response.data,
         });
-        // console.log(response.data);
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
         setFiltered(response.data);
@@ -718,7 +717,7 @@ const Alertas = () => {
         {
           <Container>
             <div>
-              <h1>Alertas Académicas</h1>
+              <h1>Sistema de Alertas</h1>
             </div>
             {/* Columna Filtros de Contacto */}
 
