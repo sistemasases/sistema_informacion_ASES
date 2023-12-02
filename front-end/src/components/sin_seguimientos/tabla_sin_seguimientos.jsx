@@ -17,6 +17,7 @@ const Tabla_sin_Seguimientos = (props) =>{
 
   const [state,set_state] = useState({
     id_semestre : desencriptarInt(sessionStorage.getItem('id_semestre_actual')),
+    id_usuario : desencriptarInt(sessionStorage.getItem('id_usuario')),
     console : console.log("id semestre actual: "+desencriptarInt(sessionStorage.getItem('id_semestre_actual'))),
     la_info_de_la_tabla : [],
   })
@@ -24,10 +25,11 @@ const Tabla_sin_Seguimientos = (props) =>{
   useEffect(()=>{
       const paramsget = {
         id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
+        rol: desencriptar(sessionStorage.getItem('rol')),
       };
       axios({
         // Endpoint to send files
-        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/info_estudiantes_sin_seguimientos/`+state.id_semestre+"/",
+        url:  `${process.env.REACT_APP_API_URL}/usuario_rol/info_estudiantes_sin_seguimientos/`+state.id_usuario+"/",
         params : paramsget,
         method: "GET",
         headers: config,

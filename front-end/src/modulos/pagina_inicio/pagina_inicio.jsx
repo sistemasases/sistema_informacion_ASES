@@ -50,9 +50,6 @@ const Pagina_inicio = () => {
   } else if (userRole === 'monitor') {
     desplegable = 'MONITOR';
   } else if (userRole === 'practicante') {
-  } else if (sessionStorage.rol === 'monitor') {
-    desplegable = 'MONITOR'; 
-  } else if (sessionStorage.rol === 'practicante') {
     desplegable = 'PRACTICANTE';
   } else if (userRole === 'dir_investigacion') {
     desplegable = 'DIRECTOR INVES.';
@@ -62,7 +59,7 @@ const Pagina_inicio = () => {
     desplegable = 'VICERRECTOR ACADE.';
   } else if (userRole === 'profesional') {
     desplegable = 'PROFESIONAL';
-  } else if (sessionStorage.rol === 'profesor') {
+  } else if (userRole === 'profesor') {
     desplegable = 'PROFESOR';
   }
   
@@ -221,13 +218,13 @@ const Pagina_inicio = () => {
                   </Button>
                 </Modal.Footer>
               </Modal>
-              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+              {(userRole === "super_ases" || userRole === "socioeducativo"|| userRole === "socioeducativo_reg")&&(
               <Row className="rowJustFlex">
                 <h4>Para cambiar de sede:</h4>
               </Row>)}
-              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+              {(userRole === "super_ases" || userRole === "socioeducativo"|| userRole === "socioeducativo_reg")&&(
               <Row className="selector_reg">
-              {(userRole === "super_ases" || userRole === "sistemas"|| userRole === "socioeducativo_reg")&&(
+              {(userRole === "super_ases" || userRole === "socioeducativo"|| userRole === "socioeducativo_reg")&&(
                 <Select
                   name="def"
                   class="option"
@@ -266,10 +263,10 @@ const Pagina_inicio = () => {
                 <Link to={`/reporte_seguimientos`}> 
                   <img src={boton17} className="boton" alt='/'></img>
                 </Link>)}
-                {/* {(userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
+                {( userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' || userRole === 'profesional')&& (
                 <Link to={`/sin_seguimientos`}> 
                   <img src={boton8} className="boton" alt='/'></img>
-                </Link>)} */}
+                </Link>)}
                 {(userRole === 'dir_academico' )&& (
                 <Link to={`/academico`}> 
                   <img src={boton20} className="boton" alt='/'></img>

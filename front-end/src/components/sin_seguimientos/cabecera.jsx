@@ -1,12 +1,11 @@
 import React, {useMemo, useState} from 'react';
 import {useTable, Table} from 'react-table';
-import MOCK_DATA from './MOCK_DATA.json';
 import Columnas from './columnas' ;
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Select from 'react-select'  ;
-import {decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import {decryptTokenFromSessionStorage, desencriptar} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 
 const Cabecera = (props) =>{
@@ -87,10 +86,10 @@ useEffect(()=>{
         <Container >
             <Row >
                 <Col xs={"12"} md={"8"} className="texto_titulo_bold">
-                Reporte estudiantes sin seguimientos
+                Conteo Total de Seguimientos
                 </Col>
                 {
-                  sessionStorage.rol === 'super_ases' || sessionStorage.rol === 'sistemas' ?
+                  desencriptar(sessionStorage.rol)=== '' || desencriptar(sessionStorage.rol) === '' ?
                   (
                     <Col xs={"12"} md={"4"} className="texto_pequeño">
                       Seleccione el semestre
@@ -101,7 +100,7 @@ useEffect(()=>{
                       />
                     </Col>
                   ):
-                  (<Col>{sessionStorage.semestre_actual}</Col>)
+                  (<Col className="texto_titulo_bold">{desencriptar(sessionStorage.semestre_actual)}</Col>)
                 }
 
             </Row>

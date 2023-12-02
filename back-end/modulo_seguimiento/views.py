@@ -18,6 +18,7 @@ from functools import reduce
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from django.views import View
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -33,7 +34,11 @@ class inasistencia_viewsets (viewsets.ModelViewSet):
     queryset = inasistencia_serializer.Meta.model.objects.all()
 
 
-
+class riesgo_individual_viewsets (viewsets.ModelViewSet):
+    serializer_class = riesgo_individual_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = riesgo_individual_serializer.Meta.model.objects.all()
+    
 class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
     #permission_classes = (IsAuthenticated,)
@@ -68,8 +73,6 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
                 list_semestre.remove(i)  
         return Response(list_final,status=status.HTTP_200_OK)
         
-
-
 
 class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
@@ -174,8 +177,6 @@ class conteo_seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
             }
 
         return Response(counts,status=status.HTTP_200_OK)
-
-
 
 class descarga_seguimientos_inasistencias_viewsets (viewsets.ModelViewSet):
 
