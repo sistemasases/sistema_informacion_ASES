@@ -119,7 +119,7 @@ const Selector = (props) =>{
             id:1,
             name:"GENERAL",
             contenido:"2siiiiiii",
-            permitidos: ["sistemas","super_ases","socioeducativo","socioeducativo_reg","profesional","practicante","monitor","dir_academico"],
+            permitidos: ["sistemas","super_ases","socioeducativo","socioeducativo_reg","profesional","practicante","monitor","dir_academico","dir_programa","vcd_academico"],
             component:<Info_general 
                         id={props.id} 
                         seleccionado={props.seleccionado} 

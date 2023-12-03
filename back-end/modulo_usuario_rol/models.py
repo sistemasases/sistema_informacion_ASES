@@ -95,6 +95,8 @@ class estudiante (models.Model):
     puntaje_icfes=models.IntegerField(default=None,null=True)
     id_etnia=models.ForeignKey(etnia,on_delete=models.CASCADE,default=None,null=True,related_name='etnia_in_estudiante')
     ult_modificacion=models.DateTimeField(auto_now_add=False,null=True)
+    es_discapacidad = models.BooleanField(default=False, null=True)
+    encuesta_admitido = models.BooleanField(default=False, null=True)
 
     class Meta:
         db_table = "estudiante"
@@ -181,11 +183,11 @@ class cohorte_estudiante(models.Model):
 class firma_tratamiento_datos(models.Model):
 
     id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
-    tipo_id_estudiante= models.CharField(max_length=10,default=None,unique=True)
+    tipo_id_estudiante= models.CharField(max_length=10,default=None)
     fecha_firma = models.DateTimeField(auto_now_add=False,null=False)
     nombre_firma= models.CharField(max_length=50,default=None)
     correo_firma= models.CharField(max_length=50,default=None)
-    autoriza= models.BooleanField(default=False)
-    
+    autoriza_tratamiento_datos= models.BooleanField(default=False)
+    autoriza_tratamiento_imagen= models.BooleanField(default=False)
     class Meta:
         db_table = "firma_tratamiento_datos"

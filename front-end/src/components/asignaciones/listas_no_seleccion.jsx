@@ -18,6 +18,7 @@ const Listas_no_seleccion = (props) => {
         formData.append("id_usuario", props.monitor_seleccionado);
         formData.append("id_estudiante", props.item.id);
         formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
+        formData.append("detalle", ".");
 
         axios({
       // Endpoint to send files
