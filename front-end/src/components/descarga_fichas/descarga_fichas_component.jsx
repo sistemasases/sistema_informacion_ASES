@@ -255,18 +255,18 @@ const Descarga_fichas_component = () =>{
               <Modal.Body>{respuesta}</Modal.Body>
               <Modal.Footer>
                 <CSVLink
-                    data={inasistenciasData} // Tu arreglo de datos de inasistencias
-                    headers={Object.keys(inasistenciasData[0])} // Encabezados de las columnas
+                    data={inasistenciasData}
+                    headers={Object.keys(inasistenciasData[0])} 
                     filename="inasistencias.csv"
-                    className="hidden" // Clase para ocultar el enlace
+                    className="hidden" 
                 >
                     Descargar Inasistencias
                 </CSVLink>
                 <CSVLink
-                    data={seguimientosData} // Tu arreglo de datos de seguimientos
-                    headers={Object.keys(seguimientosData[0])} // Encabezados de las columnas
+                    data={seguimientosData}
+                    headers={Object.keys(seguimientosData[0])}
                     filename="seguimientos.csv"
-                    className="hidden" // Clase para ocultar el enlace
+                    className="hidden"
                 >
                     Descargar Seguimientos
                 </CSVLink>
