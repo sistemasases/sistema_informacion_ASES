@@ -195,7 +195,7 @@ class descarga_seguimientos_inasistencias_viewsets (viewsets.ModelViewSet):
                 estudiante_obj = estudiante.objects.all()
                 filters_and.append(Q(**{ "id_estudiante__in": estudiante_obj }))
         except:
-                estudiante_obj = estudiante.objects.all()
+                estudiante_obj = []
                 filters_and.append(Q(**{ "id_estudiante__in": estudiante_obj }))
         try:
             if request.data['fecha_inicio']:

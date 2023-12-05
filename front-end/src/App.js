@@ -25,6 +25,7 @@ import "./Scss/sin_seguimientos/sin_seguimientos.css"
 import "./Scss/login/login_component.css";
 import "./Scss/componentes_generales/data_table_extensions.css";
 import "./Scss/carga_masiva/carga_masiva.css";
+import "./Scss/descarga_fichas/descarga_fichas.css";
 import "./Scss/reporte_desercion/desercion.css";
 import "./Scss/inicio/inicio.css";
 
@@ -46,6 +47,7 @@ import Calificador from "./modulos/academico_pestaña/calificador.jsx";
 import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
+import Descarga_fichas from "./modulos/descarga_fichas/descarga_fichas.jsx";
 import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
 import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia.jsx";
 import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas.jsx";
@@ -73,6 +75,7 @@ const App = () => {
                         <Route path="/calificador/:profesor/:curso/:cod/:franja"element={<Calificador path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol path_actual={"Gestion usuarios"} usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>
+                        <Route path="/descarga_fichas" element={<Descarga_fichas/>}/>
                         <Route path="/asignaciones" element={<Asignaciones/>}/>
                         <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
                         <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
