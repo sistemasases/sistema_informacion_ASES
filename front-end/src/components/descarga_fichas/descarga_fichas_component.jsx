@@ -145,9 +145,6 @@ const Descarga_fichas_component = () =>{
             response = res.data;
             set_seguimientosData(response['seguimientos'])
             set_inasistenciasData(response['inasistencias'])
-            console.log(response)
-            console.log(inasistenciasData)
-            console.log(seguimientosData)
             set_respuesta('Busqueda finalizada.')
         })
         .catch(err=>{
