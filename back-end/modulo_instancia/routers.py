@@ -8,11 +8,12 @@ conjuntos 'sede_viewsets' y 'semestre_viewsets'. Luego, se crean URLs para estas
 """
 
 from rest_framework.routers import DefaultRouter
-from modulo_instancia.views import sede_viewsets, semestre_viewsets
+from modulo_instancia.views import sede_viewsets, semestre_viewsets, cohorte_viewsets
 
 router = DefaultRouter()
 
 router.register(r'instancia',sede_viewsets,basename = 'sede')
 router.register(r'semestre',semestre_viewsets,basename = 'semestre')
+router.register(r'cohorte',cohorte_viewsets,basename = 'cohorte')
 
 urlpatterns = router.urls
