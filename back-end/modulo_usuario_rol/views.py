@@ -378,6 +378,8 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             
         diccionario_estudiante.update(firma)
 
+
+
         return Response(diccionario_estudiante)
 
 class estudiante_por_sede_viewsets(viewsets.ModelViewSet):
