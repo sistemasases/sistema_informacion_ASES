@@ -10,7 +10,7 @@ para la creación, actualización y recuperación del actual objeto 'semestre' b
 
 from .models import semestre
 from rest_framework.response import Response
-from .serializers import  semestre_serializer, sede_serializer
+from .serializers import  semestre_serializer, sede_serializer, cohorte_serializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
@@ -58,3 +58,11 @@ class semestre_viewsets (viewsets.ModelViewSet):
             semestreActual_serializer.save()
             return Response (semestreActual_serializer.data)
         return Response (semestreActual_serializer.errors)
+
+class cohorte_viewsets (viewsets.ModelViewSet):
+    """
+    Viewset para la gestión de 'cohorte'.
+    """
+    serializer_class = cohorte_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = cohorte_serializer.Meta.model.objects.all()

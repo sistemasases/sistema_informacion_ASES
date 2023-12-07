@@ -42,7 +42,6 @@ router.register(r'historial_monitor',historial_monitor_viewsets,basename = 'hist
 router.register(r'deibyelmejor',create_riesgo_individual_ViewSet,basename = 'create_riesgo_individual')
 router.register(r'cesarlachupa',actualizar_estudiantes_encuesta_admitido,basename = 'actualizar_estudiantes_encuesta_admitido')
 
-
 #rutas de views que son prueba o valen mondaa
 # router.register(r'estudiante_selected2',estudiante_selected2_viewsets,basename = 'estudiante_selected2')
 

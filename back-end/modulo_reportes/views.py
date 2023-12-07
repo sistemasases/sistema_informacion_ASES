@@ -12,7 +12,7 @@ from modulo_usuario_rol.models import rol, usuario_rol, estudiante, cond_excepci
 from modulo_asignacion.models import asignacion
 from modulo_instancia.models import semestre, sede
 from modulo_programa.models import dir_programa, facultad, programa, programa_estudiante, estado_programa, vcd_academico
-from modulo_seguimiento.models import inasistencia, seguimiento_individual
+from modulo_seguimiento.models import inasistencia, seguimiento_individual, riesgo_individual 
 
 
 from django.shortcuts import render, get_object_or_404
@@ -59,6 +59,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
         elif data_usuario_rol == "super_ases":
 
             serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
+
             return Response(serializer_estudiante.data)
 
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
@@ -181,9 +182,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
         sedes = sede.objects.in_bulk([programa_data[programa_id].id_sede_id for programa_id in programa_data])
 
         # Obtener los datos relacionados con el último seguimiento de una vez
-        seguimientos_recientes = seguimiento_individual.objects.filter(id_estudiante__in=estudiantes_ids) \
-        .values('id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad') \
-        .annotate(latest_fecha=Max('fecha'))
+        seguimientos_recientes = riesgo_individual.objects.filter(id_estudiante__in=estudiantes_ids).values('id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad')
 
 
         for data_del_estudiante in serializer_estudiantes.data:

@@ -532,6 +532,7 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
+                          <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
                             <i
                               class="bi bi-check2-square"
                               style={
@@ -545,12 +546,14 @@ const Info_basica = (props) => {
                               }
                               title="Tratamiento de datos Sin Firmar"
                             ></i>
+                            </a>
                           </Col>
                           {/* Encuesta Admitidos */}
                           <Col
                             md={"1"}
                             className={"alert_item alert_item-admitidos"}
                           >
+                          <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
                             <i
                               class="bi bi-card-checklist"
                               style={
@@ -561,6 +564,7 @@ const Info_basica = (props) => {
                               }
                               title="Encuesta de Admitidos sin Diligenciar"
                             ></i>
+                            </a>
                           </Col>
                           {/* FIcha Semana Anterior */}
                           <Col
