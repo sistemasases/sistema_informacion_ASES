@@ -26,6 +26,11 @@
                 "path":"/inicio_semestre_sistemas",
                 "name":"Inicio semestre sistema",
                 "icon":"bi bi-card-checklist"
+            },
+            {
+                "path":"/descarga_fichas",
+                "name":"Descarga de fichas",
+                "icon":"bi bi-file-earmark-arrow-down"
             }
         ]
     },
