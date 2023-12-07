@@ -30,6 +30,7 @@ var columns = [
     sortable: true,
     isCheck: true,
     width: "110px",
+    conditionalCellStyles: [],
   },
   {
     name: "Nombre",
@@ -37,6 +38,8 @@ var columns = [
     value: "nombre",
     sortable: true,
     isCheck: true,
+    width: "110px",
+    conditionalCellStyles: [],
   },
   {
     name: "Apellido",
@@ -44,6 +47,8 @@ var columns = [
     value: "apellido",
     sortable: true,
     isCheck: true,
+    width: "110px",
+    conditionalCellStyles: [],
   },
   {
     name: "Documento",
@@ -51,6 +56,8 @@ var columns = [
     value: "num_doc",
     sortable: true,
     isCheck: true,
+    width: "110px",
+    conditionalCellStyles: [],
   },
   {
     name: "Acuerdo de tratamiento de datos",
@@ -118,9 +125,10 @@ var columns = [
     value: "fecha_seguimiento",
     sortable: true,
     isCheck: false,
+    width: "190px",
     conditionalCellStyles: [
       {
-        when: (row) => row.fecha_seguimiento == "FICHA FALTANTE",
+        when: (row) => row.fecha_seguimiento == "FICHA FALTANTE" || row.fecha_seguimiento == "INASISTENCIA",
         style: {
           backgroundColor: "red",
           color: "white",
@@ -130,7 +138,6 @@ var columns = [
         },
       },
     ],
-    width: "190px",
   },
   {
     name: "Riesgo individual",
@@ -138,6 +145,7 @@ var columns = [
     value: "riesgo_individual",
     sortable: true,
     isCheck: false,
+    width: "190px",
     conditionalCellStyles: [
       {
         when: (row) => row.riesgo_individual == "ALTO",
@@ -177,6 +185,7 @@ var columns = [
     value: "riesgo_familiar",
     sortable: true,
     isCheck: false,
+    width: "190px",
     conditionalCellStyles: [
       {
         when: (row) => row.riesgo_familiar == "ALTO",
@@ -216,6 +225,7 @@ var columns = [
     value: "riesgo_academico",
     sortable: true,
     isCheck: false,
+    width: "190px",
     conditionalCellStyles: [
       {
         when: (row) => row.riesgo_academico == "ALTO",
@@ -255,6 +265,7 @@ var columns = [
     value: "riesgo_economico",
     sortable: true,
     isCheck: false,
+    width: "190px",
     conditionalCellStyles: [
       {
         when: (row) => row.riesgo_economico == "ALTO",
@@ -294,6 +305,7 @@ var columns = [
     value: "riesgo_vida_universitaria_ciudad",
     sortable: true,
     isCheck: false,
+    width: "190px",
     conditionalCellStyles: [
       {
         when: (row) => row.riesgo_vida_universitaria_ciudad == "ALTO",
@@ -361,12 +373,18 @@ var columns = [
   // },
 ];
 
+var new_columns = [];
+
+var prueba = [];
+var restore = [];
+
 const Alertas = () => {
   const [state, set_state] = useState({ estudiante: [] });
+  const [filtered, setFiltered] = useState(state.estudiante);
   const [search, set_Search] = useState({
     busqueda: "",
   });
-  const [columnas, set_columnas] = useState({ cabeceras: columns });
+  const [columnas, set_columnas] = useState({ cabeceras: [] });
 
   const filtros_Contacto = [
     {
@@ -422,11 +440,10 @@ const Alertas = () => {
           ...state,
           estudiante: response.data,
         });
-        // console.log(response.data);
-        // document.getElementsByName("loading_data")[0].style.visibility =
-        //   "hidden";
         setFiltered(response.data);
-      } catch (error) {}
+      } catch (error) {
+        // console.log(error);
+      }
     };
 
     datos_estudiantes();
@@ -457,7 +474,7 @@ const Alertas = () => {
           "hidden";
         setFiltered(response.data);
       } catch (error) {
-        // console.log(error);
+        // // console.log(error);
         if (error.message == "Network Error") {
           alert(
             "No se ha podido establecer conexión con el servidor. Se refrescará la página."
@@ -470,8 +487,6 @@ const Alertas = () => {
     datos_estudiantes_extra();
   }, []);
 
-  const [filtered, setFiltered] = useState(state.estudiante);
-
   useEffect(() => {
     set_columnas((prevState) => ({
       ...prevState,
@@ -479,57 +494,169 @@ const Alertas = () => {
     }));
   }, []);
 
-  // Añadir columnas por Checks
-  const handleChange = (e) => {
+  const onSearch = (e) => {
+    set_Search({ ...search, busqueda: e.target.value });
+    // // // // // console.log(search);
+  };
+
+  var empty_stuff = [
+    { cod_univalle: " ", nombre: " ", apellido: " " },
+  ];
+
+  // console.log(state.estudiante);
+  // console.log("Filtered es:");
+  // console.log(filtered);
+  prueba = state.estudiante;
+  restore = state.estudiante;
+  const [show, setShow] = useState(false);
+  const [search_bar_data, set_search_bar_data] = useState([]);
+  const handle_column_search = (e) => {
+    restore = prueba;
     // console.log(e.target.name);
-    const seleccionado_contacto = filtros_Contacto.find(
-      (item) => item.name === e.target.name
-    );
+    // console.log(e.target.value);
+    // // console.log(state.estudiante);
+    // console.log(filtered);
+    if (e.target.name === "Código") {
+      // console.log(prueba);
+      const hola = prueba.filter((row) =>
+        row.cod_univalle.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+      setFiltered(filtered_data);
+      // console.log("Filtraste en Código");
+    }
+    if (e.target.name === "Nombre") {
+      const hola = prueba.filter((row) =>
+        row.nombre.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+      setFiltered(filtered_data);
+      // console.log("Filtraste en Nombre");
+    }
+    if (e.target.name === "Apellido") {
+      const hola = prueba.filter((row) =>
+        row.apellido.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+      setFiltered(filtered_data);
+      // console.log("Filtraste en Apellido");
+    }
+    if (e.target.name === "Documento") {
+      const hola = prueba.filter((row) =>
+        row.num_doc.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+      setFiltered(filtered_data);
+      // console.log("Filtraste en Documento");
+    }
+    if (e.target.name === "Acuerdo de tratamiento de datos") {
+      const hola = prueba.filter((row) =>
+        row.firma_tratamiento_datos
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+      setFiltered(filtered_data);
+      // console.log("Filtraste en Acuerdo de tratamiento de datos");
+    }
+    if (e.target.name === "Encuesta de admitidos") {
+      const hola = prueba.filter((row) =>
+        row.encuesta_admitido
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+      setFiltered(filtered_data);
+      // console.log("Filtraste en Encuesta de admitidos");
+    }
+    if (e.target.name === "Ficha Semana Anterior") {
+      const hola = prueba.filter((row) =>
+        row.fecha_seguimiento
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+      setFiltered(filtered_data);
+      // console.log("Filtraste en Ficha Semana Anterior");
+    }
+    if (e.target.name === "Riesgo individual") {
+      const hola = prueba.filter((row) =>
+        row.riesgo_individual
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+      // console.log("Filtraste en Riesgo individual");
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Riesgo familiar") {
+      const hola = prueba.filter((row) =>
+        row.riesgo_familiar
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
 
-    //  condiciones Para Filtros de Contacto
+      // console.log("Filtraste en Riesgo familiar");
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Riesgo académico") {
+      const hola = prueba.filter((row) =>
+        row.riesgo_academico
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
 
-    if (seleccionado_contacto === undefined) {
-    } else if (
-      (seleccionado_contacto.name === "Tipo de documento" &&
-        e.target.checked === true) ||
-      (seleccionado_contacto.name === "Correo electrónico" &&
-        e.target.checked === true) ||
-      (seleccionado_contacto.name === "Celular" && e.target.checked === true) ||
-      (seleccionado_contacto.name === "Dirección" && e.target.checked === true)
-    ) {
-      seleccionado_contacto.isCheck = true;
-      //   var searchable_columns = add_search_bar(seleccionado_contacto);
-      //   columns.push(searchable_columns[0]);
-      columns.push(seleccionado_contacto);
-      //   csv_conversion(seleccionado_contacto);
-      //   schema_push(seleccionado_contacto);
-    } else if (
-      (seleccionado_contacto.name === "Tipo de documento" &&
-        e.target.checked === false) ||
-      (seleccionado_contacto.name === "Correo electrónico" &&
-        e.target.checked === false) ||
-      (seleccionado_contacto.name === "Celular" &&
-        e.target.checked === false) ||
-      (seleccionado_contacto.name === "Dirección" && e.target.checked === false)
-    ) {
-      seleccionado_contacto.isCheck = false;
-      //   document.getElementsByName("Contacto")[0].checked = false;
-      columns.map((item, index) => {
-        if (item.value === seleccionado_contacto.value) {
-          columns.splice(index, 1);
-        }
-      });
-      //   csv_pop(seleccionado_contacto);
-      //   schema_pop(seleccionado_contacto);
+      // console.log("Filtraste en Riesgo académico");
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Riesgo económico") {
+      const hola = prueba.filter((row) =>
+        row.riesgo_economico
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+
+      // console.log("Filtraste en Riesgo económico");
+      setFiltered(filtered_data);
+    }
+    if (e.target.name === "Riesgo vida universitaria") {
+      const hola = prueba.filter((row) =>
+        row.riesgo_vida_universitaria_ciudad
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase())
+      );
+      const filtered_data = hola.length > 0 ? hola : empty_stuff;
+
+      // console.log("Filtraste en Riesgo vida universitaria");
+      setFiltered(filtered_data);
+    }
+    
+  };
+
+  var new_search_bar_data = [];
+  const add_search_bar = () => {
+    for (let i = 0; i < columns.length; i++) {
+      const element = columns[i];
+      element.name = (
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">{element.name}</h4>
+          <input
+            name={element.name}
+            internal_name={element.value}
+            onChange={(e) => {
+              handle_column_search(e);
+            }}
+            maxlength="20"
+          />
+        </Row>
+      );
+      new_columns.push(element);
     }
 
-    // DONT TOCUH IT ;D
-    // Añadir columnas a la tabla
-    const nuevasColumnas = columns;
-    set_columnas({
-      ...columnas,
-      cabeceras: nuevasColumnas.filter((item) => item.isCheck === true),
-    });
+    // return new_columns;
   };
 
   //   Estilo visual de la tabla
@@ -677,7 +804,7 @@ const Alertas = () => {
   const imprimir_excel = () => {
     let new_data_excel = [];
 
-    for (let i = 0; i < state.estudiante.length; i++) {
+    for (let i = 0; i < filtered.length; i++) {
       let new_data = [];
       new_data.push({
         cod_univalle: state.estudiante[i].cod_univalle,
@@ -685,7 +812,7 @@ const Alertas = () => {
         apellido: state.estudiante[i].apellido,
         num_doc: state.estudiante[i].num_doc,
         firma_tratamiento_datos: state.estudiante[i].firma_tratamiento_datos,
-        // encuesta_admitidos: state.estudiante[i].encuesta_admitidos,
+        encuesta_admitidos: state.estudiante[i].encuesta_admitidos,
         fecha_seguimiento: state.estudiante[i].fecha_seguimiento,
         riesgo_individual: state.estudiante[i].riesgo_individual,
         riesgo_familiar: state.estudiante[i].riesgo_familiar,
@@ -701,15 +828,16 @@ const Alertas = () => {
       new_data_excel.push(new_data);
     }
 
-    writeXlsxFile(state.estudiante, {
+    writeXlsxFile(filtered, {
       schema, // (optional) column widths, etc.
       fileName: "Alertas Académicas.xlsx",
       // filePath: '../dowloads/file.xlsx'
     });
   };
 
-  //   vVariable de navegación para
+  //  Variable de navegación
   let navigate = useNavigate();
+  add_search_bar();
 
   return (
     <>
@@ -725,9 +853,9 @@ const Alertas = () => {
             <DataTable
               id="tabla_alertas"
               title="Alertas"
-              columns={columnas.cabeceras}
-              // data = {filtered}
-              data={state.estudiante}
+              columns={new_columns}
+              data={filtered}
+              // data={state.estudiante}
               noDataComponent="Cargando Información..."
               pagination
               paginationComponentOptions={paginacionOpciones}
@@ -750,7 +878,7 @@ const Alertas = () => {
               <Col sm={12} md={12} lg={12}>
                 <CSVLink
                   headers={csv_headers}
-                  data={state.estudiante}
+                  data={filtered}
                   filename="Alertas Académicas"
                 >
                   {/* headers={columns} */}
