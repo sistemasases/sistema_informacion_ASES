@@ -1154,6 +1154,76 @@ def carga_autorizacion(file):
     return Response(list_dict_result)
 
 
+def carga_autorizacion(file):
+    list_dict_result = []
+    list_autorizacion = []
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+
+        if (estudiante.objects.filter(num_doc = datos.iat[i,4]).values()):
+            consulta_estudiante= estudiante.objects.filter(num_doc =datos.iat[i,4]).first()
+
+            if (firma_tratamiento_datos.objects.filter(fecha_firma = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y %H:%M:%S'),
+                                                    id_estudiante =  consulta_estudiante,).first()):
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'Ya existe una firma del estudiante con cédula: '+str(datos.iat[i,4])+'.'
+                }
+                list_dict_result.append(dict_result)
+            else:
+
+                try:
+                    if str(datos.iat[i,5]) == "nan":
+                        firma_datos = False
+                    elif str(datos.iat[i,5]) == "Sí":
+                        firma_datos = True
+                    elif str(datos.iat[i,5]) == "No":
+                        firma_datos = False
+                    else:
+                        firma_datos =  str(datos.iat[i,5])
+
+                    if str(datos.iat[i,6]) == "nan":
+                        firma_imagen = False
+                    elif str(datos.iat[i,6]) == "Sí":
+                        firma_imagen = True
+                    elif str(datos.iat[i,6]) == "No":
+                        firma_imagen = False
+                    else:
+                        firma_imagen =  str(datos.iat[i,6])
+
+                    Firma =firma_tratamiento_datos(
+                        id_estudiante =  consulta_estudiante,
+                        tipo_id_estudiante= str(datos.iat[i,3]),
+                        fecha_firma = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y %H:%M:%S'),
+                        nombre_firma= str(datos.iat[i,2]),
+                        correo_firma= str(datos.iat[i,1]),
+                        autoriza_tratamiento_datos= firma_datos,
+                        autoriza_tratamiento_imagen= firma_imagen,
+
+                    )
+                    list_autorizacion.append(Firma)
+                    dict_result = {
+                        'dato' : datos.iat[i,0],
+                        'mensaje' : 'Se cargó correctamente la firma del estudiante con documento: '+str(datos.iat[i,4])+'.'
+                    }
+                    list_dict_result.append(dict_result)
+                except:
+                    dict_result = {
+                        'dato' : datos.iat[i,0],
+                        'mensaje' : 'Error al cargar la firma del estudiante con documento: '+str(datos.iat[i,4])+'.'
+                    }
+                    list_dict_result.append(dict_result)
+        else:
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
+            }
+            list_dict_result.append(dict_result)
+
+    firma_tratamiento_datos.objects.bulk_create(list_autorizacion)
+    return Response(list_dict_result)
+
+
 def carga_vcd_academicos(file):
     list_dict_result = []
     lista_vcd_academico =[]
