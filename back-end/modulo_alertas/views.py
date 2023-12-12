@@ -135,12 +135,23 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     return "FICHA FALTANTE"
             else:
                 ina = datetime.strptime(inasistencia, "%Y-%m-%d")
-                # # print(date_obj)
-                # # print(ina)
                 if date_obj.date() <= ina.date():
+                    # return str(ina.date())
                     return "INASISTENCIA"
                 else:
-                 return "SEGUIMIENTO RECIENTE"
+                    # print(date_obj)
+                    # print(ina)
+                    # print(fecha_limite)
+                    # print("ENTRO")
+                    # print(date_obj)
+                    # print("ina")
+                    # print(ina)
+                    # print(fecha_limite)
+                # return str(ina.date())
+                    return "SEGUIMIENTO RECIENTE"
+                
+                
+             
 
     def get_firma(self, firma):
         if firma:
@@ -241,8 +252,11 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                 # # # print(firma_tratamiento_datos.objects.filter(
                 #     id_estudiante=i['id']))
 
-                inasistencia_regs = next(
-                    (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == estudiante_id), None)
+                inasistencia_regs = max(
+                    (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == estudiante_id), 
+                    key=lambda x: x['fecha'],
+                    default=None
+                )
 
                 encuesta_admitido = i['encuesta_admitido']
 
@@ -412,6 +426,8 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
         counter_riesgo_vida_universitaria_ciudad = 0
 
         counter_fecha_seguimiento = 0
+        
+        counter_inasistencia = 0
 
         counter_empty_date = 0
 
@@ -445,12 +461,26 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                     otra_inasistencia = datetime.strptime(
                         i['registra_inasistencia'], "%Y-%m-%d")
                     if otra_inasistencia.date() <= fecha_limite.date():
-                        counter_empty_date += 1
+                        counter_inasistencia += 0
             else:
                 date_obj = datetime.strptime(
                     i['fecha_seguimiento'], "%Y-%m-%d")
-                if date_obj.date() <= fecha_limite.date():
-                    counter_fecha_seguimiento += 1
+                if i['registra_inasistencia'] == None or i['registra_inasistencia'] == '':
+                    if date_obj.date() <= fecha_limite.date():
+                        # print("ENTRO")
+                        # print(date_obj)
+                        # print("ina")
+                        # print(otra_inasistencia)
+                        # print(fecha_limite)
+                        counter_fecha_seguimiento += 1
+                else:
+                    ina = datetime.strptime(
+                        i['registra_inasistencia'], "%Y-%m-%d")
+                    if date_obj.date() <= ina.date():
+                        # return str(ina.date())
+                        counter_inasistencia += 0
+                    # else:
+                    #     counter_fecha_seguimiento += 1
             if i['firma_tratamiento_datos'] == 'NO AUTORIZA' or i['firma_tratamiento_datos'] == None or i['firma_tratamiento_datos'] == 'SIN FIRMAR':
                 counter_firma_datos += 1
                 # # print(i)
@@ -466,20 +496,23 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
         #     'fecha_seguimiento': counter_fecha_seguimiento,
         #     'firma_tratamiento_datos': counter_firma_datos
         # }
-        # # print(counter_riesgo_individual)
-        # # print(counter_riesgo_familiar)
-        # # print(counter_riesgo_academico)
-        # # print(counter_riesgo_economico)
-        # # print(counter_riesgo_vida_universitaria_ciudad)
-        # # print(counter_fecha_seguimiento)
-        # # print(counter_empty_date)
-        # # print(counter_firma_datos)
-        # # print(counter_encuesta_admitido)
+        print(counter_riesgo_individual)
+        print(counter_riesgo_familiar)
+        print(counter_riesgo_academico)
+        print(counter_riesgo_economico)
+        print(counter_riesgo_vida_universitaria_ciudad)
+        print("seguimiento Faltante:")
+        print(counter_fecha_seguimiento)
+        print("inasistencia")
+        print(counter_inasistencia)
+        print(counter_empty_date)
+        print(counter_firma_datos)
+        print(counter_encuesta_admitido)
 
         contador_total = counter_riesgo_individual + counter_riesgo_familiar + counter_riesgo_academico + counter_riesgo_economico + \
             counter_riesgo_vida_universitaria_ciudad + \
             counter_fecha_seguimiento + counter_empty_date + \
-            counter_firma_datos + counter_encuesta_admitido
+            counter_firma_datos + counter_encuesta_admitido + counter_inasistencia
         # # # print(riesgo)
         # # # print(contador_total)
         # # # print(contador_riesgo)
@@ -564,8 +597,11 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 firma_tratamiento = next(
                     (s for s in firma_tratamientos if s['id_estudiante_id'] == estudiante_id), None)
                 # # # print(seguimiento_reciente)
-                inasistencia_regs = next(
-                    (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == estudiante_id), None)
+                inasistencia_regs = max(
+                    (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == estudiante_id), 
+                    key=lambda x: x['fecha'],
+                    default=None
+                )
                 encuesta_admitido = i['encuesta_admitido']
 
                 # Crear un diccionario con los datos de riesgo del seguimiento

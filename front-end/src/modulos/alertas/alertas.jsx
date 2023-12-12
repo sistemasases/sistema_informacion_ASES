@@ -128,7 +128,7 @@ var columns = [
     width: "190px",
     conditionalCellStyles: [
       {
-        when: (row) => row.fecha_seguimiento == "FICHA FALTANTE" || row.fecha_seguimiento == "INASISTENCIA",
+        when: (row) => row.fecha_seguimiento == "FICHA FALTANTE",
         style: {
           backgroundColor: "red",
           color: "white",
