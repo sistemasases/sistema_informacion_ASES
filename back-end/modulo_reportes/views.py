@@ -59,6 +59,7 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
         elif data_usuario_rol == "super_ases":
 
             serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
+
             return Response(serializer_estudiante.data)
 
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
