@@ -7,6 +7,8 @@ import Modal from 'react-bootstrap/Modal';
 import {Dropdown, Button} from "react-bootstrap";
 import {useEffect} from 'react';
 import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import myGif from "../../modulos/reportes/loading_data.gif";
+
 
 import axios from 'axios';
 
@@ -81,6 +83,7 @@ const Selector = (props) =>{
                     ...state,
                     data_user_socioedu: respuesta.data
                   })
+                 document.getElementsByName("loading_data")[0].style.visibility = "hidden";
             })
             .catch(err=>{
                 return (err)
@@ -92,6 +95,7 @@ const Selector = (props) =>{
         const paramsget = {
             id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         };
+        document.getElementsByName("loading_data")[0].style.visibility = "visible";
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
             axios({
             // Endpoint to send files
@@ -101,6 +105,8 @@ const Selector = (props) =>{
             headers: config,
             })
             .then((respuesta)=>{
+                document.getElementsByName("loading_data")[0].style.visibility = "hidden";
+            
                 set_state({
                     ...state,
                     data_user_socioedu: respuesta.data,
@@ -165,7 +171,23 @@ const Selector = (props) =>{
 
     return (
         <Container className="containerSelector">
-                
+                <div>
+                {/* GIF DE CARGA */}
+                <img
+                src={myGif}
+                name="loading_data"
+                alt="my-gif"
+                style={{
+                    float: "right",
+                    height: 110,
+                    width: 110,
+                    position: "fixed",
+                    right: 0,
+                    bottom: 0,
+                    visibility: "visible",
+                }}
+                />
+            </div>
                 <Row className="tabs" >
                     {
                         tabs.map((tab, index)=>(
