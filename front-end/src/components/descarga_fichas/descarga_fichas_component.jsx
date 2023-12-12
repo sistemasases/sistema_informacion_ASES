@@ -112,6 +112,8 @@ const Descarga_fichas_component = () =>{
     const [sedes,set_sedes] = useState([])
     const [cohortes,set_cohortes] = useState([])
 
+    const [descargaHabilitada, setDescargaHabilitada] = useState(true);
+
     const handle_form = (e) => {
         set_form({
             ...form,
@@ -135,10 +137,11 @@ const Descarga_fichas_component = () =>{
 
     const [show, setShow] = useState(false);
     const handle_open = () => setShow(true);
-    const handle_close = () => {setShow(false); set_respuesta('Cargando, espera un momento.')};
+    const handle_close = () => {setShow(false); set_respuesta('Cargando, espera un momento.'); setDescargaHabilitada(true)};
 
     const handle_upload= async ()=>{
         set_respuesta('Cargando, espera un momento.')
+        setDescargaHabilitada(true)
         handle_open()
         await Descargar_fichas.descargar_fichas(form)
         .then((res)=>{
@@ -146,9 +149,11 @@ const Descarga_fichas_component = () =>{
             set_seguimientosData(response['seguimientos'])
             set_inasistenciasData(response['inasistencias'])
             set_respuesta('Busqueda finalizada.')
+            setDescargaHabilitada(false)
         })
         .catch(err=>{
             set_respuesta('Error al momento de buscar las fichas.')
+            setDescargaHabilitada(true)
         })
     }
 
@@ -254,11 +259,13 @@ const Descarga_fichas_component = () =>{
               </Modal.Header>
               <Modal.Body>{respuesta}</Modal.Body>
               <Modal.Footer>
-                <CSVLink
+                { !descargaHabilitada ?
+                    <><CSVLink
                     data={inasistenciasData}
                     headers={Object.keys(inasistenciasData[0])} 
                     filename="inasistencias.csv"
                     className="hidden" 
+                    separator="*"
                 >
                     Descargar Inasistencias
                 </CSVLink>
@@ -267,9 +274,11 @@ const Descarga_fichas_component = () =>{
                     headers={Object.keys(seguimientosData[0])}
                     filename="seguimientos.csv"
                     className="hidden"
+                    separator="*"
                 >
                     Descargar Seguimientos
-                </CSVLink>
+                </CSVLink></> : <></>
+                }
                 <Button variant="secondary" onClick={handle_close}>
                   Salir
                 </Button>
