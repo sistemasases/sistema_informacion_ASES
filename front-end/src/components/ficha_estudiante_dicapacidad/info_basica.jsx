@@ -40,7 +40,6 @@ const Info_basica = (props) =>{
       setLoading2(true);
       const paramsget = {
         id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
-        
       };
       const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` + state.id_usuario + '/';
             axios({
@@ -522,9 +521,6 @@ const Info_basica = (props) =>{
                   }
           </Row>
           </div>
-
-
-
 
           <div class="d-block d-md-none">
           <Row className="info_basica_borde_pequeño">
