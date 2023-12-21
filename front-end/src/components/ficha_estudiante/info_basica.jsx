@@ -22,6 +22,7 @@ import {
   desencriptarInt,
   encriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import myGif from "../../modulos/reportes/loading_data.gif";
 
 const Info_basica = (props) => {
   const config = {
@@ -66,6 +67,8 @@ const Info_basica = (props) => {
         });
 
         setRiesgos(riesgosObj);
+        // document.getElementsByName("loading_data")[0].style.visibility =
+        //   "hidden";
       })
       .catch((error) => {
         console.error("Error al obtener los riesgos:", error);
@@ -198,6 +201,7 @@ const Info_basica = (props) => {
         { paramsget }
       );
       state.total_datos_estudiantes.push(response.data);
+      // document.getElementsByName("loading_data")[0].style.visibility = "hidden";
     } catch (error) {
       fetchData(index);
     }
@@ -248,7 +252,10 @@ const Info_basica = (props) => {
                 tab_abierto: 3,
                 ya_selecciono_automatico: false,
               });
+              // document.getElementsByName("loading_data")[0].style.visibility =
+              //   "hidden";
             })
+
             .catch((err) => {
               console.log("no tomo el dato");
             });
@@ -278,6 +285,9 @@ const Info_basica = (props) => {
       headers: config2,
     })
       .then((respuesta) => {
+        // document.getElementsByName("loading_data")[0].style.visibility =
+        //   "hidden";
+
         const json = respuesta.data;
 
         // Obtener la fecha de nacimiento del JSON
@@ -532,6 +542,7 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
+                          <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
                             <i
                               class="bi bi-check2-square"
                               style={
@@ -545,12 +556,14 @@ const Info_basica = (props) => {
                               }
                               title="Tratamiento de datos Sin Firmar"
                             ></i>
+                            </a>
                           </Col>
                           {/* Encuesta Admitidos */}
                           <Col
                             md={"1"}
                             className={"alert_item alert_item-admitidos"}
                           >
+                          <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
                             <i
                               class="bi bi-card-checklist"
                               style={
@@ -561,6 +574,7 @@ const Info_basica = (props) => {
                               }
                               title="Encuesta de Admitidos sin Diligenciar"
                             ></i>
+                            </a>
                           </Col>
                           {/* FIcha Semana Anterior */}
                           <Col
@@ -864,7 +878,7 @@ const Info_basica = (props) => {
           />
         </Col>
       </div>
-
+      
       <Modal show={show2} onHide={handleClose2} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Importante</Modal.Title>

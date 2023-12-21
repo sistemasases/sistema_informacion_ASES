@@ -53,6 +53,3 @@ class cohorte_sede (models.Model):
     
     class Meta:
         db_table = "cohorte_sede"
-
-
-

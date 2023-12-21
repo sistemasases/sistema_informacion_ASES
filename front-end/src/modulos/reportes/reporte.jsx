@@ -14,7 +14,11 @@ import writeXlsxFile from "write-excel-file";
 import myGif from "../reportes/loading_data.gif";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { desencriptar, desencriptarInt, decryptTokenFromSessionStorage } from "../utilidades_seguridad/utilidades_seguridad.jsx";
+import {
+  desencriptar,
+  desencriptarInt,
+  decryptTokenFromSessionStorage,
+} from "../utilidades_seguridad/utilidades_seguridad.jsx";
 
 var columns = [
   {
@@ -78,6 +82,10 @@ var schema = [
   },
 ];
 
+var prueba = [];
+
+var restore = [];
+
 const Reporte = () => {
   const [state, set_state] = useState({ estudiante: [] });
   const [search, set_Search] = useState({
@@ -98,8 +106,8 @@ const Reporte = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
-          id_usuario.toString() +
-          "/",
+            id_usuario.toString() +
+            "/",
           { params: { usuario_rol: rol, sede: sede } }
         );
         set_state({
@@ -125,8 +133,8 @@ const Reporte = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
-          id_usuario.toString() +
-          "/",
+            id_usuario.toString() +
+            "/",
           { params: { usuario_rol: rol, sede: sede } }
         );
 
@@ -141,18 +149,17 @@ const Reporte = () => {
 
         // Obtiene una lista con la clase de los checks hijos
         var child_checks = document.getElementsByClassName("mb-2");
-        // Recorre la lista para habilitarlos una vez termina la consula 
+        // Recorre la lista para habilitarlos una vez termina la consula
         for (let i = 0; i < child_checks.length; i++) {
           child_checks[i].firstElementChild.removeAttribute("disabled");
         }
 
         // Obtiene una lista con la clase de los checks Padres
         var header_checks = document.getElementsByClassName("h5");
-        // Recorre la lista para habilitarlos una vez termina la consula 
+        // Recorre la lista para habilitarlos una vez termina la consula
         for (let i = 0; i < header_checks.length; i++) {
           header_checks[i].firstElementChild.removeAttribute("disabled");
         }
-
       } catch (error) {
         // // // console.log("no capto el dato");
       }
@@ -206,6 +213,47 @@ const Reporte = () => {
   const onSearch = (e) => {
     set_Search({ ...search, busqueda: e.target.value });
     // // // // console.log(search);
+  };
+
+  var empty_stuff = [{ cod_univalle: " ", nombre: " ", apellido: " " }];
+
+  prueba = state.estudiante;
+  
+  const on_search_base = (e) => {
+    const data_filtered = prueba.filter(
+      (row) =>
+        row.cod_univalle.toString().toLowerCase().includes(e.target.value.toString().toLowerCase()) ||
+        row.nombre.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        row.apellido.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        row.num_doc.toString().includes(e.target.value.toString().toLowerCase())
+    );
+    // // // // console.log(data_filtered);
+    const filtered_data =
+      data_filtered.length > 0 ? data_filtered : empty_stuff;
+    setFiltered(filtered_data);
+
+    // .filter((item) => {
+    //   return search.busqueda.toLowerCase() === ""
+    //     ? item
+    //     : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
+    //     item.nombre.toLowerCase().includes(search.busqueda) ||
+    //     item.apellido.toLowerCase().includes(search.busqueda) ||
+    //     item.num_doc
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(search.busqueda) ||
+    //     item.asignacion_profesional
+    //       .toLowerCase()
+    //       .includes(search.busqueda) ||
+    //     //    ||
+    //     // item.asignacion_practicante
+    //     //   .toLowerCase()
+    //     //   .includes(search.busqueda) ||
+    //     // item.asignacion_monitores
+    //     //   .toLowerCase()
+    //     //   .includes(search.busqueda)
+    //     item.sede.toLowerCase().includes(search.busqueda);
+    // })}
   };
 
   const [columnas, set_columnas] = useState({ cabeceras: columns });
@@ -577,6 +625,7 @@ const Reporte = () => {
   const [filtered, setFiltered] = useState(state.estudiante);
   const [noResults, setNoResults] = useState(false);
 
+  
   const handle_column_search = (e, selected) => {
     // // // console.log(e.target.name);
     // // // console.log("HOLASSS");
@@ -597,7 +646,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Correo electrónico") {
@@ -607,7 +656,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Celular") {
@@ -617,7 +666,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Dirección") {
@@ -627,7 +676,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -639,7 +688,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Registro Académico") {
@@ -651,7 +700,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -663,7 +712,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Programa académico") {
@@ -675,7 +724,7 @@ const Reporte = () => {
       );
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
       // // // // // console.log(filtered);
     }
@@ -686,7 +735,7 @@ const Reporte = () => {
       );
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -700,7 +749,7 @@ const Reporte = () => {
       );
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Practicante") {
@@ -712,7 +761,7 @@ const Reporte = () => {
       );
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Monitor") {
@@ -725,7 +774,7 @@ const Reporte = () => {
       // console.log(data_filtered);
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -740,7 +789,7 @@ const Reporte = () => {
 
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo familiar") {
@@ -749,7 +798,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo académico") {
@@ -760,7 +809,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo económico") {
@@ -771,7 +820,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo vida universitaria") {
@@ -782,7 +831,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -795,7 +844,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
   };
@@ -1052,7 +1101,6 @@ const Reporte = () => {
       csv_pop(seleccionado_riesgos);
       schema_pop(seleccionado_riesgos);
     }
-
 
     // **
     // Condiciones para cabeceras de filtros
@@ -1644,7 +1692,7 @@ const Reporte = () => {
   const imprimir_excel = () => {
     let new_data_excel = [];
 
-    for (let i = 0; i < state.estudiante.length; i++) {
+    for (let i = 0; i < filtered.length; i++) {
       let new_data = [];
       new_data.push({
         cod_univalle: state.estudiante[i].cod_univalle,
@@ -1655,7 +1703,7 @@ const Reporte = () => {
       new_data_excel.push(new_data);
     }
 
-    writeXlsxFile(state.estudiante, {
+    writeXlsxFile(filtered, {
       schema, // (optional) column widths, etc.
       fileName:
         "Reporte general Campus Virtual Ases universidad del Valle Excel.xlsx",
@@ -1681,7 +1729,6 @@ const Reporte = () => {
                 // <div key={index}>
                 <Col key={index}>
                   <Form.Check
-
                     name={Item.name}
                     type="checkbox"
                     disabled
@@ -1702,7 +1749,6 @@ const Reporte = () => {
                 {filtros_Contacto.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       label={Item.name}
@@ -1717,7 +1763,6 @@ const Reporte = () => {
                 {filtros_Estados.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       disabled={true}
@@ -1734,7 +1779,6 @@ const Reporte = () => {
                 {filtros_Academico.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       disabled
@@ -1751,7 +1795,6 @@ const Reporte = () => {
                 {filtros_Asignaciones.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       disabled
@@ -1768,7 +1811,6 @@ const Reporte = () => {
                 {filtros_Riesgos.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       disabled={true}
@@ -1818,7 +1860,7 @@ const Reporte = () => {
               type="text"
               placeholder="Búsqueda de Datos"
               // value={}
-              onChange={(e) => onSearch(e)}
+              onChange={(e) => on_search_base(e)}
             />
             <br />
 
@@ -1836,28 +1878,7 @@ const Reporte = () => {
               id="tabla_Reporte"
               title="Reporte"
               columns={columnas.cabeceras}
-              data={filtered.filter((item) => {
-                return search.busqueda.toLowerCase() === ""
-                  ? item
-                  : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
-                  item.nombre.toLowerCase().includes(search.busqueda) ||
-                  item.apellido.toLowerCase().includes(search.busqueda) ||
-                  item.num_doc
-                    .toString()
-                    .toLowerCase()
-                    .includes(search.busqueda) ||
-                  item.asignacion_profesional
-                    .toLowerCase()
-                    .includes(search.busqueda) ||
-                  //    ||
-                  // item.asignacion_practicante
-                  //   .toLowerCase()
-                  //   .includes(search.busqueda) ||
-                  // item.asignacion_monitores
-                  //   .toLowerCase()
-                  //   .includes(search.busqueda)
-                  item.sede.toLowerCase().includes(search.busqueda);
-              })}
+              data={filtered}
               // data = {filtered}
               // data={state.estudiante}
               noDataComponent="Cargando Información..."
@@ -1881,7 +1902,7 @@ const Reporte = () => {
               <Col style={{ padding: 10 }}>
                 <CSVLink
                   headers={csv_headers}
-                  data={state.estudiante}
+                  data={filtered}
                   filename="Reporte general Campus Virtual Ases universidad del Valle"
                 >
                   {/* headers={columns} */}

@@ -1,7 +1,7 @@
 from ast import And
 from operator import and_
 from queue import Empty
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from rest_framework.serializers import ModelSerializer, Serializer
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, act_simultanea, cond_excepcion, discap_men, estado_civil,  etnia, identidad_gen, cohorte_estudiante
@@ -35,8 +35,6 @@ from django.core import serializers
 
 from rest_framework.viewsets import ModelViewSet
 import pandas as pd
-import datetime
-
 # Create your views here.
 
 
@@ -117,10 +115,10 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
             return "FICHA FALTANTE"
         elif fecha:
-            fech_actual = datetime.datetime.now()
-            fecha_ = datetime.timedelta(days=7)
+            fech_actual = datetime.now()
+            fecha_ = timedelta(days=7)
             fecha_limite = fech_actual - fecha_
-            date_obj = datetime.datetime.strptime(
+            date_obj = datetime.strptime(
                     fecha, "%Y-%m-%d")
             if date_obj.date() <= fecha_limite.date():
                 return "FICHA FALTANTE"
@@ -131,13 +129,10 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     def get_firma(self, firma):
         # print(firma)
         if firma:
-            for i in firma:
-                if i.autoriza == True:
-                    # print("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-                    return 'AUTORIZA'
-                elif i.autoriza == False:
-                    # print("SEJODIOOOOOO")
-                    return 'NO AUTORIZA'
+            if firma[0]['autoriza_tratamiento_datos']  == True:
+                return 'AUTORIZA'
+            elif firma[0]['autoriza_tratamiento_datos'] == False:
+                return 'NO AUTORIZA'
         else:
             return "SIN FIRMAR"
 
@@ -372,7 +367,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         
         try:
             firma_tratamiento = firma_tratamiento_datos.objects.filter(
-                    id_estudiante=pk)
+                    id_estudiante=pk).values()
             firma = {
                 'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
             }
@@ -382,6 +377,8 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             }
             
         diccionario_estudiante.update(firma)
+
+
 
         return Response(diccionario_estudiante)
 
@@ -598,41 +595,6 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
             # Devolver el riesgo en la respuesta
             return Response(riesgo)
         except riesgo_individual.DoesNotExist:
-            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-            return Response({})
-
-
-class create_riesgo_individual_ViewSet(viewsets.ModelViewSet):
-    serializer_class = seguimiento_individual_serializer
-    permission_classes = (IsAuthenticated,)
-    queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
-
-
-    def retrieve(self, request, pk):
-        # estudiante_id = request.query_params.get('estudiante_id')
-
-        try:
-            # Obtener el seguimiento más reciente del estudiante especificado
-            queryset = seguimiento_individual.objects.all().order_by('fecha')
-
-            for object in queryset:
-                seguimiento_reciente, create = riesgo_individual.objects.get_or_create(id_estudiante=object.id_estudiante)
-                seguimiento_reciente.fecha = object.fecha
-                if object.riesgo_individual != None:
-                    seguimiento_reciente.riesgo_individual = object.riesgo_individual
-                if object.riesgo_familiar != None:
-                    seguimiento_reciente.riesgo_familiar = object.riesgo_familiar
-                if object.riesgo_academico != None:
-                    seguimiento_reciente.riesgo_academico = object.riesgo_academico
-                if object.riesgo_economico != None:
-                    seguimiento_reciente.riesgo_economico = object.riesgo_economico
-                if object.riesgo_vida_universitaria_ciudad != None:
-                    seguimiento_reciente.riesgo_vida_universitaria_ciudad = object.riesgo_vida_universitaria_ciudad
-                seguimiento_reciente.save()
-
-            # Devolver el riesgo en la respuesta
-            return Response({'Alberto': 'lo chupa'})
-        except seguimiento_individual.DoesNotExist:
             # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
             return Response({})
 
