@@ -1,17 +1,19 @@
 .container-main{
+    font-family: inherit;
     width: 100%;
+    color: #606060;
     display: grid;
     grid-template-columns: 80% 20%;
     grid-template-areas: 
     "bigC imgE"
     "bigC imgE" 
     "bigC links";
+    font-size: 1rem;
 }
 
 .container-submain {
     grid-area: bigC;
     width: 100%;
-    color: #606060;
     background-color: rgba(155, 155, 155, 0.432);
     border-radius: 30px 30px 0px 30px;
     display: grid;
@@ -35,6 +37,9 @@
 }
 
 .select-item {
+    text-transform: uppercase;
+    font-weight: 700;
+    color: inherit;
     height: 40px;
     width: 90%;
     border-radius: 20px;
@@ -67,7 +72,7 @@
 }
 
 .condicion {
-    font-weight: 900;
+    font-weight: 700;
     grid-area: condicion;
 }
 
@@ -105,19 +110,24 @@
     padding: 10px;
     text-decoration: none;
     background-color: rgba(155, 155, 155, 0.432);
-    /* box-shadow: -10px 0 -10px rgba(0,0,0,0.5); */
     border-radius: 0px 30px 30px 0px;
 }
 
 .link{
+    width: 90%;
+    min-width: 110px;
+    height: auto;
+    margin: 0px auto 10px;
+    min-height: 30px;
     text-decoration: none;
     background-color: transparent;
     color:  #838381;
     border: 1px solid #838381; 
     border-radius: 10px;
-    height: 40px;
-    line-height: 20px;
-    margin-bottom: 5px;
+    font-size: 0.9rem;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
 }
 
 .link:hover {
@@ -130,13 +140,13 @@
 }
 
 .title-prog {
-    font-weight: 900;
-    font-size: 15px;
+    font-weight: 700;
+    font-size: 1rem;
 }
 
 .short-info-programa {
     color: white;
-    font-size: 12px;
+    font-size: 0.9rem;
     width: 80px;
     height: 30px;
     border-radius: 10px;
@@ -154,4 +164,141 @@
 
 .desertor {
     background-color: #838381;
+}
+
+@media (max-width: 500px){
+    .container-main{
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+        "bigC bigC"
+        "bigC bigC" 
+        "imgE links";
+    }
+
+    .container-submain {
+        grid-template-areas:
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "condicion condicion condicion condicion condicion condicion condicion"
+            "infoP infoP infoP infoP infoP infoP infoP"
+            "otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo"
+            "profIP profIP profIP profIP profIP profIP profIP";   
+    }
+
+    .img{
+        margin-top: 15px;
+    }
+
+    .container-otros-datos {
+        padding-left: 0px;
+        margin-bottom: 20px; 
+    }
+
+    .links {
+        border-radius: 0px 0px 30px 30px;
+        padding-top: 40px;
+    }
+
+    .link{
+        width: 80%;
+    }
+}
+
+@media (min-width: 500px) and (max-width: 800px){
+    .container-main{
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+        "bigC bigC"
+        "bigC bigC" 
+        "imgE links";
+        font-size: 0.8rem;
+    }
+
+    .container-submain {
+        grid-template-areas:
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "condicion condicion condicion condicion condicion condicion condicion"
+            "infoP infoP infoP infoP infoP infoP infoP"
+            "otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo"
+            "profIP profIP profIP profIP profIP profIP profIP";   
+    }
+
+    .container-otros-datos {
+        padding-left: 0px;
+        margin-bottom: 20px; 
+    }
+
+    .short-info-programa {
+        font-size: 0.7rem;
+        width: 70px;
+        margin-right: 10px;
+    }
+
+    .links {
+        border-radius: 0px 0px 30px 30px;
+        padding-top: 30px;
+    }
+    
+    .link{
+        width: 80%;
+        font-size: 0.7rem;
+    }
+
+    .title-prog {
+        font-size: inherit;
+    }
+}
+
+@media (min-width: 801px) and (max-width: 1200px){
+    .container-main{
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+        "bigC bigC"
+        "bigC bigC" 
+        "imgE links";
+        font-size: 0.7rem;
+    }
+
+    .container-submain {
+        grid-template-areas:
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "condicion condicion condicion condicion condicion condicion condicion"
+            "infoP infoP infoP infoP otraInfo otraInfo otraInfo"
+            "infoP infoP infoP infoP otraInfo otraInfo otraInfo"
+            "profIP profIP profIP profIP profIP profIP profIP";  
+    }
+
+    .container-otros-datos {
+        padding-left: 0px;
+    }
+
+    .short-info-programa {
+        font-size: 0.6rem;
+        width: 60px;
+        margin-right: 10px;
+    }
+
+    .more-stud-info p {
+        font-size: 0.7rem;
+    }
+
+    .img{
+        display: block;
+        margin: 10px auto 0px;
+        width: 75%;
+        height: 90%;
+        border: solid rgb(255, 255, 255);
+        border-radius: 30px;
+    }
+
+    .links {
+        border-radius: 0px 0px 30px 30px;
+        padding-top: 50px;
+    }
+
+    .title-prog {
+        font-size: inherit;
+    }
 }

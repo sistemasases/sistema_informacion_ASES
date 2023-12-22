@@ -9,15 +9,15 @@ const Riesgos = () => {
       <div className="categorias">
         <div className="casos">
           <p className="gradoS alto">A</p>
-          <p>Alto</p>
+          <p className="cat">Alto</p>
         </div>
         <div className="casos">
           <p className="gradoS medio">M</p>
-          <p>Medio</p>
+          <p className="cat">Medio</p>
         </div>
         <div className="casos">
           <p className="gradoS bajo">B</p>
-          <p>Bajo</p>
+          <p className="cat">Bajo</p>
         </div>
       </div>
 
@@ -40,7 +40,7 @@ const Riesgos = () => {
         </div>
         <div className="casos casosG">
           <p className="letras B">B</p>
-          <p className="grupo bajo">VIDA UNIVERSITARIA</p>
+          <p className="grupo bajo espV">VIDA UNIVERSITARIA</p>
         </div>
         <div className="casos casosG">
           <p className="letras N">N</p>

@@ -1,9 +1,7 @@
 .container_footer{
-    width: 102%;
+    width: 100%;
     background:red;
     word-break: break-all;
-}
-.row_footer{
 }
 
 .footer_icons{

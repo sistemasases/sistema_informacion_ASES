@@ -1,0 +1,22 @@
+.rowsC {
+    margin-left: 40px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.rowC {
+    display: grid;
+    grid-auto-flow: column;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #606060;
+    column-gap: 20px;
+}
+
+.first-columnC {
+    width: 200px;
+    font-weight: 700;
+    color: #606060;
+    margin-left: 10px;
+}

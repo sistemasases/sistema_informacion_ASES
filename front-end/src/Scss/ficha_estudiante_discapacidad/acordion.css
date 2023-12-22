@@ -12,7 +12,35 @@
     border-radius: 10px;
     background-color: rgba(155, 155, 155, 0.432);
     color: #606060;
-    font-weight: bolder;
+    font-weight: 700;
     text-align: left;
     padding-left: 20px;
+}
+
+.container-subacordion{
+    margin-top: 10px;
+    row-gap: 0px;
+}
+
+.subacordion{
+    background-color: rgb(255, 255, 255);
+    font-weight: 900;
+}
+
+.title{
+    margin-top: 20px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #eb1e00;
+    padding-left: 20px;
+}
+
+.subsubacordion{
+    border: 1px solid rgba(155, 155, 155, 0.432);
+    font-weight: 400;
+    margin-left: 20px;
+}
+
+.subsubsubacordion{
+    margin-left: 40px;
 }

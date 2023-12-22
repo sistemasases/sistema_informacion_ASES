@@ -18,7 +18,7 @@ const Select = () => {
     practicante: null,
     monitor: null,
     ultimaActualizacion: null,
-    telefono: null,
+    telefono: "000 000 0000",
   });
 
   const handleSelectStudent = (student) => {
