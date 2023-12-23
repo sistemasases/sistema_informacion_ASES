@@ -1,12 +1,14 @@
-import Accesibilidad from "./Accesibilidad";
+import Accesibilidad from "./accesibilidad/Accesibilidad";
 import Acordion from "./Acordion";
 import '../../../Scss/ficha_estudiante_discapacidad/acordion.css';
+import General from "./general/General";
+import Seguimiento from "./seguimiento/Seguimiento";
 
 const Acordiones = () => {
   return (
     <div className="container-acordion">
       <Acordion title="GENERAL" claseAcordion={'acordion'}>
-        <p>Contenido del acordeón 1</p>
+        <General />
       </Acordion>
       <Acordion title="CARACTERIZACIÓN" claseAcordion={'acordion'}>
         <p>Contenido del acordeón 2</p>
@@ -15,7 +17,7 @@ const Acordiones = () => {
         <Accesibilidad />
       </Acordion>
       <Acordion title="SEGUIMIENTO" claseAcordion={'acordion'}>
-        <p>Contenido del acordeón 3</p>
+        <Seguimiento />
       </Acordion>
     </div>
   );

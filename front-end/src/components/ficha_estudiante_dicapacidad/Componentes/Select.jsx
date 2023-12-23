@@ -5,14 +5,16 @@ import "../../../Scss/ficha_estudiante_discapacidad/select.css";
 
 const Select = () => {
   const [estudiantes, setEstudiantes] = useState([]);
-  const { estudiantesDiscapacidad } = useAuthStore();
+  const { estudiantesDiscapacidad, setEstudianteSelected } = useAuthStore();
   const [selectedStudent, setSelectedStudent] = useState({
     id: "identificación",
+    nombre: null,
     codigo: null,
     correo: "correo",
     edad: "edad",
     imagen: null,
     programas: [],
+    seguimientos: [],
     condicion: "condición",
     profesional: null,
     practicante: null,
@@ -29,6 +31,7 @@ const Select = () => {
       edad: student.edad,
       imagen: student.imagen,
       programas: student.programas,
+      seguimientos: student.seguimientos,
       condicion: student.condicion,
       profesional: student.profesional,
       practicante: student.practicante,
@@ -36,6 +39,7 @@ const Select = () => {
       ultimaActualizacion: student.ultimaActualizacion,
       telefono: student.telefono,
     });
+    setEstudianteSelected(selectedStudent)
   };
 
   useEffect(() => {

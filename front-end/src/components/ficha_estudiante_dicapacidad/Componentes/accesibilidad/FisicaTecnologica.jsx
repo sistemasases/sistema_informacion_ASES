@@ -1,5 +1,5 @@
-import AcordionesHijos from "./AcordionesHijos"
-import Columns from "./Columns"
+import AcordionesHijos from "../AcordionesHijos"
+import Columns from "../Columns"
 
 const FisicaTecnologica = () => {
     return (
@@ -186,7 +186,15 @@ const FisicaTecnologica = () => {
                         />
                       ),
                     },
-                    { title: "Obtención de las herramientas", content: "" },
+                    { title: "Obtención de las herramientas", content: (
+                      <Columns
+                        columns={[
+                          [
+                              { type: "text", name: "No disponible" },
+                          ],
+                        ]}
+                      />
+                    ), },
                   ]}
                   claseAcor={
                     "acordion subacordion subsubacordion subsubsubacordion"

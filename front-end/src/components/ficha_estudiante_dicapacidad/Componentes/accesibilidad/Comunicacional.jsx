@@ -1,9 +1,10 @@
-import AcordionesHijos from "./AcordionesHijos";
-import Columns from "./Columns";
+import AcordionesHijos from "../AcordionesHijos";
+import Columns from "../Columns";
 
 const Comunicacional = () => {
     return (
         <AcordionesHijos
+          claseCon={"accordion-content"}
           acordiones={[
             {
               title: "Producción",
@@ -176,6 +177,7 @@ const Comunicacional = () => {
               title: "Ajustes razonables",
               content: (
                 <AcordionesHijos
+                  claseCon={"accordion-content"}
                   acordiones={[
                     {
                       title: "Apoyo en productos y tecnologías",

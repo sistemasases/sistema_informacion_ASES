@@ -1,9 +1,19 @@
+import { useState } from "react";
 import "../../../Scss/ficha_estudiante_discapacidad/riesgos.css";
+import Modal from "./Modal";
+import Formulario from "./Formulario";
 
 const Riesgos = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="container-riesgos">
-      <button className="buttonR">NUEVO SEGUIMIENTO</button>
+      <button className="buttonR" onClick={() => setIsModalOpen(true)}>
+        NUEVO SEGUIMIENTO
+      </button>
+      <Modal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)}>
+        <Formulario />
+      </Modal>
       <p className="titleR">RIESGOS</p>
 
       <div className="categorias">

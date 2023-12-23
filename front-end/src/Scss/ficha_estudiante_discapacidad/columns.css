@@ -20,3 +20,42 @@
     color: #606060;
     margin-left: 10px;
 }
+
+.contenido {
+    width: 95%;
+    max-width: 90%;
+    overflow-x: auto;
+}
+
+.button {
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 20px;
+}
+
+.title {
+    font-weight: 700;
+    color: #606060;
+    margin-left: 10px;
+}
+
+.bold {
+    font-weight: 700;
+    color: #606060;
+    width: 150px;
+    margin-left: 10px;
+}
+
+@media (max-width: 600px) {
+    .contenido {
+        max-width: 400px;
+        overflow-x: auto;
+    }
+}
+
+@media (min-width: 601px) {
+    .contenido {
+        max-width: 700px;
+        overflow-x: auto;
+    }
+}

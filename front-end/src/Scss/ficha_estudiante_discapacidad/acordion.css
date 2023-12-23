@@ -17,6 +17,10 @@
     padding-left: 20px;
 }
 
+.accordion-content{
+    width: 95%;
+}
+
 .container-subacordion{
     margin-top: 10px;
     row-gap: 0px;
@@ -43,4 +47,19 @@
 
 .subsubsubacordion{
     margin-left: 40px;
+}
+
+.flechas{
+    float: right;
+    margin-right: 20px;
+    width: 30px;
+}
+
+@media (max-width: 600px) {
+    .accordion-content {
+        max-width: 400px;
+    }
+    .subsubacordion{
+        height: 50px;
+    }
 }

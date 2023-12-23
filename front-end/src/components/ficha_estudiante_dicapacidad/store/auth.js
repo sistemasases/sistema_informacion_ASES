@@ -8,10 +8,13 @@ export const useAuthStore = create(
       (set, get) => ({
         user: null,
         estudiantesDiscapacidad: [],
+        estudianteSelected: null,
 
         setUser: (payload) => set((state) => ({ user: payload })),
         setEstudiantesDiscapacidad: (payload) =>
           set((state) => ({ estudiantesDiscapacidad: payload })),
+        setEstudianteSelected: (payload) =>
+          set((state) => ({ estudianteSelected: payload })),
       }),
       {
         name: "auth",

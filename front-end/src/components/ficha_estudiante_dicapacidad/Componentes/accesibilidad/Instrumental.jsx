@@ -1,5 +1,5 @@
-import AcordionesHijos from "./AcordionesHijos";
-import Columns from "./Columns";
+import AcordionesHijos from "../AcordionesHijos";
+import Columns from "../Columns";
 
 const Instrumental = () => {
   return (
@@ -215,23 +215,24 @@ const Instrumental = () => {
           <Columns
             columns={[
               [
-                  { type: "text", name: "Alt. de descanso/bienestar" },
-                  { type: "text", name: "Medicamentos para descansar" },
-                  { type: "text", name: "Horas de descanso día" },
-                  { type: "text", name: "Influye en sus actividades" },
+                { type: "text", name: "Alt. de descanso/bienestar" },
+                { type: "radio", name: "binaryChoice", value: "Si"},
+                { type: "radio", name: "binaryChoice", value: "No"},
               ],
               [
-                  { type: "radio", name: "binaryChoice", value: "Si"},
-                  { type: "radio", name: "binaryChoice", value: "No"},
-                  { type: "radio", name: "binaryChoice", value: "Si"},
-                  { type: "radio", name: "binaryChoice", value: "No"},
-                  { type: "input", name: "No. horas" },
-                  { type: "radio", name: "binaryChoice", value: "Si"},
-                  { type: "radio", name: "binaryChoice", value: "No"},
+                { type: "text", name: "Medicamentos para descansar" },
+                { type: "radio", name: "binaryChoice", value: "Si"},
+                { type: "radio", name: "binaryChoice", value: "No"},
+                { type: "input", name: "Cuál o cuales?" },
               ],
               [
-                  {},
-                  { type: "input", name: "Cuál o cuales?"},
+                { type: "text", name: "Horas de descanso día" },
+                { type: "number", name: "No. horas" },
+              ],
+              [
+                { type: "text", name: "Influye en sus actividades" },
+                { type: "radio", name: "binaryChoice", value: "Si"},
+                { type: "radio", name: "binaryChoice", value: "No"},
               ],
             ]}
           />

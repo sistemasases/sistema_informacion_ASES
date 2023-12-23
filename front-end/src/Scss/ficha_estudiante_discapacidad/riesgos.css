@@ -21,6 +21,10 @@
     border-radius: 20px;
 }
 
+.buttonR:hover{
+    background-color: #c41a00b0;
+}
+
 .titleR{
     height: 40px;
     line-height: 40px;

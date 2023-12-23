@@ -1,5 +1,5 @@
-import AcordionesHijos from "./AcordionesHijos"
-import Columns from "./Columns"
+import AcordionesHijos from "../AcordionesHijos"
+import Columns from "../Columns"
 
 const Metodologia = () => {
     return (
@@ -118,14 +118,18 @@ const Metodologia = () => {
                   columns={[
                     [
                         { type: "text", name: "Práctica pedagógica del docente" },
-                        { type: "text", name: "Tiempo asincronico"},
-                        { type: "text", name: "Tipo de asignatura (electiva- profesional- OL)"},
-                        { type: "text", name: "Créditos"},
+                        {type: "input", name: "" },
                     ],
                     [
-                        {type: "input", name: "" },
-                        { type: "input", name: "" },
-                        { type: "input", name: ""},
+                      { type: "text", name: "Tiempo asincronico"},
+                      { type: "input", name: "" },
+                    ],
+                    [
+                      { type: "text", name: "Tipo de asignatura (electiva- profesional- OL)"},
+                      { type: "input", name: ""},
+                    ],
+                    [
+                        { type: "text", name: "Créditos"},
                         { type: "input", name: ""},
                     ],
                   ]}
