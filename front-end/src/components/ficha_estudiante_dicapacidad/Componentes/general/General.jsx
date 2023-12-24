@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/auth";
-import swal from "sweetalert";
 import Columns from "../Columns";
 import withSwal from "../withSwal";
 
+// Componente de General
+// Este componente se encarga de mostrar la información general de un estudiante
+// permite editar ciertos detalles de la información
 const General = () => {
   const { estudianteSelected } = useAuthStore();
   const [editar, setEditar] = useState(false);

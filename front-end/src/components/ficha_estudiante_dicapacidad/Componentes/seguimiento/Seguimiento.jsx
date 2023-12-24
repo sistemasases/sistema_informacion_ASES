@@ -2,6 +2,9 @@ import { useAuthStore } from "../../store/auth";
 import Acordion from "../Acordion";
 import "../../../../Scss/ficha_estudiante_discapacidad/seguimiento.css";
 
+// Componente de Seguimiento
+// Este componente se encarga de mostrar los seguimientos que tiene un estudiante
+// y de mostrar un formulario con la información de cada seguimiento almacenado.
 const Seguimiento = () => {
   // const { estudianteSelected } = useAuthStore()
 

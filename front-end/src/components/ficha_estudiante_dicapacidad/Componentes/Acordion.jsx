@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 
 // Componente de acordeón
+// Recibe como props:
+// title: título del acordeón
+// children: contenido del acordeón
+// claseAcordion: clase del acordeón
+// claseContenido: clase del contenido del acordeón
+// flechaUp: flecha hacia arriba
+// flechaDown: flecha hacia abajo
 const Acordion = ({
   title,
   children,

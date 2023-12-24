@@ -5,6 +5,11 @@ import "../../../Scss/ficha_estudiante_discapacidad/columns.css";
 // estudiante de manera organizada en columnas, para que sea mas facil de leer
 // recibe como parametro un arreglo de arreglos, donde cada arreglo interno contiene objetos
 // que representan una columna, cada objeto tiene un atributo type que indica el tipo de elemento
+
+// Componente de Columns
+// Recibe como props:
+// columns: arreglo de columnas
+// twobold: si es si, se aplica negrita a la primera y tercera columna
 const Columns = ({ columns, twobold }) => {
 
   const [inputValues, setInputValues] = useState({});

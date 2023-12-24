@@ -3,6 +3,9 @@ import "../../../Scss/ficha_estudiante_discapacidad/riesgos.css";
 import Modal from "./Modal";
 import Formulario from "./Formulario";
 
+// Componente de Riesgos
+// Este componente se encarga de mostrar los riesgos que puede tener un estudiante
+// y de mostrar un formulario para agregar un nuevo seguimiento
 const Riesgos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 

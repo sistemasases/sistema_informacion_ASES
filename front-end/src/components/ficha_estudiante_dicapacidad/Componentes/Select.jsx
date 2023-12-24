@@ -3,6 +3,10 @@ import { useAuthStore } from "../store/auth";
 import perfilUsuario from "./Usuario.png";
 import "../../../Scss/ficha_estudiante_discapacidad/select.css";
 
+// Componente de Select
+// Este componente se encarga de obtener al estudiante seleccionado, 
+// guardarlo en la varible global estudianteSelected para que otros 
+// componentes lo puedan usar y mostrar su informacion básica
 const Select = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const { estudiantesDiscapacidad, setEstudianteSelected } = useAuthStore();
