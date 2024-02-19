@@ -2,7 +2,7 @@ from urllib import request
 from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
-from modulo_usuario_rol.models import estudiante, cohorte_estudiante, cond_excepcion, usuario_rol, firma_tratamiento_datos
+from modulo_usuario_rol.models import estudiante, cohorte_estudiante, cond_excepcion, usuario_rol, firma_tratamiento_datos, rol
 from django.contrib.auth.models import User
 from modulo_programa.models import programa, programa_estudiante, estado_programa,vcd_academico,dir_programa
 from modulo_carga_masiva.models import retiro, motivo
@@ -35,6 +35,8 @@ class Validador_carga(APIView):
                 return carga_estudiante_cohorte(file)
             elif(tipo == "Usuario"):
                 return carga_usuarios(file)
+            elif(tipo == "Usuario_rol"):
+                return carga_usuario_rol(file)
             elif(tipo == "Programa"):
                 return carga_programas(file)
             elif(tipo == "Materia"):
@@ -278,7 +280,7 @@ def carga_usuarios(file):
                 first_name = str(datos.iat[i,1]),
                 last_name = str(datos.iat[i,2]),
                 email = str(datos.iat[i,3]),
-                is_staff = True,
+                is_staff = False,
                 is_active = True
                 )
                 lista_usuarios.append(Usuario)
@@ -296,6 +298,86 @@ def carga_usuarios(file):
                 list_dict_result.append(dict_result)
 
     User.objects.bulk_create(lista_usuarios)
+    return Response(list_dict_result)
+
+def carga_usuario_rol(file):
+    list_dict_result = []
+    lista_usuarios_rol =[]
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+        if (User.objects.filter(username = datos.iat[i,0]).values()):
+            consulta_usuario= User.objects.filter(username =datos.iat[i,0]).first()
+ 
+            if (User.objects.filter(username = datos.iat[i,3]).values()):
+                consulta_jefe= User.objects.filter(username =datos.iat[i,3]).first()
+
+                if (rol.objects.filter(id = datos.iat[i,1]).values()):
+                    consulta_rol= rol.objects.filter(id =datos.iat[i,1]).first()
+
+                    if (semestre.objects.filter(id = datos.iat[i,2]).values()):
+                        consulta_semestre= semestre.objects.filter(id =datos.iat[i,2]).first()
+
+                        if (usuario_rol.objects.filter(id_usuario = consulta_usuario,id_semestre = consulta_semestre).values()):
+                           
+                            dict_result = {
+                                'dato' : datos.iat[i,0],
+                                'mensaje' : 'El usuario ya tiene un rol en este semestre: '+ str(datos.iat[i,2])
+                            }
+                            list_dict_result.append(dict_result)
+                        else:
+                            try:
+                                Usuario_rol = usuario_rol(
+                                id_rol = consulta_rol,
+                                id_usuario = consulta_usuario,
+                                estado = 'ACTIVO',
+                                id_semestre = consulta_semestre,
+                                id_jefe = consulta_jefe,
+                                )
+                                lista_usuarios_rol.append(Usuario_rol)
+                        
+                                dict_result = {
+                                    'dato' : datos.iat[i,0],
+                                    'mensaje' : 'Se le asignó correctamente el rol al usuario.'
+                                }
+                                list_dict_result.append(dict_result)
+                            except:
+                                dict_result = {
+                                    'dato' : datos.iat[i,0],
+                                    'mensaje' : 'Error al asignar rol al usuario.'
+                                }
+                                list_dict_result.append(dict_result)
+                            
+
+                    else:
+                        dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'No existe un semestre con este id: '+ str(datos.iat[i,2])
+                        }
+                        list_dict_result.append(dict_result)
+
+                else:
+                    dict_result = {
+                        'dato' : datos.iat[i,0],
+                        'mensaje' : 'No existe un rol con este id: '+ str(datos.iat[i,1])
+                    }
+                    list_dict_result.append(dict_result)
+            
+            else:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'No existe el usuario a asignar como jefe: '+ str(datos.iat[i,3])
+                }
+                list_dict_result.append(dict_result)
+                
+        else:
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'No existe un usuario con ese username.'
+            }
+            list_dict_result.append(dict_result)
+            
+
+    usuario_rol.objects.bulk_create(lista_usuarios_rol)
     return Response(list_dict_result)
 
 def carga_programas(file):
@@ -1146,77 +1228,7 @@ def carga_autorizacion(file):
         else:
             dict_result = {
                 'dato' : datos.iat[i,0],
-                'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
-            }
-            list_dict_result.append(dict_result)
-
-    firma_tratamiento_datos.objects.bulk_create(list_autorizacion)
-    return Response(list_dict_result)
-
-
-def carga_autorizacion(file):
-    list_dict_result = []
-    list_autorizacion = []
-    datos = pd.read_csv(file,header=0)
-    for i in range(datos.shape[0]):
-
-        if (estudiante.objects.filter(num_doc = datos.iat[i,4]).values()):
-            consulta_estudiante= estudiante.objects.filter(num_doc =datos.iat[i,4]).first()
-
-            if (firma_tratamiento_datos.objects.filter(fecha_firma = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y %H:%M:%S'),
-                                                    id_estudiante =  consulta_estudiante,).first()):
-                dict_result = {
-                    'dato' : datos.iat[i,0],
-                    'mensaje' : 'Ya existe una firma del estudiante con cédula: '+str(datos.iat[i,4])+'.'
-                }
-                list_dict_result.append(dict_result)
-            else:
-
-                try:
-                    if str(datos.iat[i,5]) == "nan":
-                        firma_datos = False
-                    elif str(datos.iat[i,5]) == "Sí":
-                        firma_datos = True
-                    elif str(datos.iat[i,5]) == "No":
-                        firma_datos = False
-                    else:
-                        firma_datos =  str(datos.iat[i,5])
-
-                    if str(datos.iat[i,6]) == "nan":
-                        firma_imagen = False
-                    elif str(datos.iat[i,6]) == "Sí":
-                        firma_imagen = True
-                    elif str(datos.iat[i,6]) == "No":
-                        firma_imagen = False
-                    else:
-                        firma_imagen =  str(datos.iat[i,6])
-
-                    Firma =firma_tratamiento_datos(
-                        id_estudiante =  consulta_estudiante,
-                        tipo_id_estudiante= str(datos.iat[i,3]),
-                        fecha_firma = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y %H:%M:%S'),
-                        nombre_firma= str(datos.iat[i,2]),
-                        correo_firma= str(datos.iat[i,1]),
-                        autoriza_tratamiento_datos= firma_datos,
-                        autoriza_tratamiento_imagen= firma_imagen,
-
-                    )
-                    list_autorizacion.append(Firma)
-                    dict_result = {
-                        'dato' : datos.iat[i,0],
-                        'mensaje' : 'Se cargó correctamente la firma del estudiante con documento: '+str(datos.iat[i,4])+'.'
-                    }
-                    list_dict_result.append(dict_result)
-                except:
-                    dict_result = {
-                        'dato' : datos.iat[i,0],
-                        'mensaje' : 'Error al cargar la firma del estudiante con documento: '+str(datos.iat[i,4])+'.'
-                    }
-                    list_dict_result.append(dict_result)
-        else:
-            dict_result = {
-                'dato' : datos.iat[i,0],
-                'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,6])+'.'
+                'mensaje' : 'No existe el estudiante con ID: '+str(datos.iat[i,6])+'.'
             }
             list_dict_result.append(dict_result)
 

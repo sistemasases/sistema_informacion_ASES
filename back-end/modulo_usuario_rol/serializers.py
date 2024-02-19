@@ -24,6 +24,12 @@ class estudiante_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = estudiante
 		fields = '__all__'
+class basic_estudiante_serializer(serializers.ModelSerializer):
+
+	# create a meta class
+	class Meta:
+		model = estudiante
+		fields = 'id','cod_univalle'
 
 class monitor_serializer(serializers.ModelSerializer):
 
