@@ -107,6 +107,7 @@ const Carga_masiva_component = () =>{
                   <option value="Programa_estudiante">Programa estudiante</option>
                   <option value="Estudiante_Cohorte">Cohorte estudiante</option>
                   <option value="Usuario">Usuario</option>
+                  <option value="Usuario_rol">Usuario rol</option>
                   <option value="Programa">Programa</option>
                   <option value="Materia">Materia</option>
                   <option value="Matricula">Matricula</option>

@@ -3,9 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from modulo_seguimiento.serializers import *
-from modulo_usuario_rol.serializers import  user_serializer,estudiante_serializer
+from modulo_usuario_rol.serializers import  user_serializer,estudiante_serializer,basic_estudiante_serializer
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, cohorte_estudiante
-from modulo_programa.models import programa_estudiante, programa
+from modulo_asignacion.models import asignacion
+from modulo_asignacion.serializers import asignacion_serializer
+from modulo_programa.models import programa_estudiante, programa, estado_programa
 from modulo_programa.serializers import *
 from modulo_seguimiento.models import *
 from modulo_instancia.models import *
@@ -19,6 +21,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from django.views import View
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import MultipleObjectsReturned
 
 # Create your views here.
 
@@ -244,3 +247,124 @@ class descarga_seguimientos_inasistencias_viewsets (viewsets.ModelViewSet):
                         ).data
 
         return Response({"seguimientos": seguimientos, "inasistencias": inasistencias},status=status.HTTP_200_OK)
+
+class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
+    serializer_class = basic_estudiante_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = basic_estudiante_serializer.Meta.model.objects.all()
+
+    def get_nivel_riesgo(self, riesgo):
+        if riesgo == 0:
+            return 'BAJO'
+        if riesgo == 1:
+            return 'MEDIO'
+        elif riesgo == 2:
+            return 'ALTO'
+        elif riesgo is None:
+            return 'SIN RIESGO'
+
+    def retrieve(self, request, pk=None):
+
+        try:
+            final_list_estudiantes = list()
+            estudiante_consultado = estudiante.objects.filter(num_doc=pk)
+            serializer_estudiantes = basic_estudiante_serializer(estudiante_consultado, many=True)
+
+            estudiantes_ids = [data['id'] for data in serializer_estudiantes.data]
+            # Obtener los datos relacionados a los programas y estados de una vez
+            programas_estudiantes = programa_estudiante.objects.filter(id_estudiante__in=estudiante_consultado)
+            programa_data = programa.objects.in_bulk(programas_estudiantes.values_list('id_programa_id', flat=True))
+            sedes = sede.objects.in_bulk([programa_data[programa_id].id_sede_id for programa_id in programa_data])
+
+            # Obtener los datos relacionados con el último seguimiento de una vez
+            seguimientos_recientes = riesgo_individual.objects.filter(id_estudiante__in=estudiantes_ids).values('id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad')
+            
+            for data_del_estudiante in serializer_estudiantes.data:
+                # serializer_estudiante_2 = estudiante_serializer(i)
+                estudiante_id = data_del_estudiante['id']
+
+                codigo = {
+                    'codigo_univalle' : data_del_estudiante['cod_univalle']
+                }
+                try:
+                    seguimiento_reciente = next((s for s in seguimientos_recientes if s['id_estudiante'] == estudiante_id), None)
+                    # Crear un diccionario con los datos de riesgo del seguimiento
+                    if seguimiento_reciente:
+                        conteo_seguimiento_individual = seguimiento_individual.objects.filter(id_estudiante = estudiante_id).count()
+                        conteo_inasistencia = inasistencia.objects.filter(id_estudiante = estudiante_id).count()
+                        
+                        riesgo = {
+                            'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
+                            'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente['riesgo_familiar']),
+                            'riesgo_academico': self.get_nivel_riesgo(seguimiento_reciente['riesgo_academico']),
+                            'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente['riesgo_economico']),
+                            'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad'])
+                        }
+                        conteo = {
+                            'conteo_seguimientos': conteo_seguimiento_individual,
+                            'conto_inasistencias': conteo_inasistencia,
+                        }
+                    else:
+                        riesgo = {
+                        'riesgo_individual': 'SIN RIESGO',
+                        'riesgo_familiar': 'SIN RIESGO',
+                        'riesgo_academico': 'SIN RIESGO',
+                        'riesgo_economico': 'SIN RIESGO',
+                        'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
+                        }
+                        conteo = {
+                            'conteo_seguimientos': conteo_seguimiento_individual,
+                            'conto_inasistencias': conteo_inasistencia,
+                        }
+                except seguimiento_individual.DoesNotExist:
+                    # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+                    riesgo = {
+                        'riesgo_individual': 'N/A',
+                        'riesgo_familiar': 'N/A',
+                        'riesgo_academico': 'N/A',
+                        'riesgo_economico': 'N/A',
+                        'riesgo_vida_universitaria_ciudad': 'N/A'
+                    }
+                    conteo = {
+                            'conteo_seguimientos': conteo_seguimiento_individual,
+                            'conto_inasistencias': conteo_inasistencia,
+                        }
+
+                try:
+                    programa_del_estudiante = programas_estudiantes.filter(id_estudiante=data_del_estudiante['id']).first()
+
+                    dic_programa = {
+                        'cod_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
+                        'programa_academico': programa_data[programa_del_estudiante.id_programa_id].nombre,
+                        'sede': sedes[programa_data[programa_del_estudiante.id_programa_id].id_sede_id].nombre
+                    }
+
+                except:
+                    dic_programa = {
+                        'cod_programa': '',
+                        'programa_academico': 'N/A',
+                        'sede': 'N/A'
+                    } 
+                try:
+                    list_semestres = []
+                    asignaciones = asignacion.objects.filter(id_estudiante = estudiante_id,estado = True)
+                    serializer_asignacion = asignacion_serializer(asignaciones, many=True)
+                    for data in serializer_asignacion.data :
+                        semestre_acompañado = semestre.objects.filter(id = data['id_semestre']).values('nombre')
+                        list_semestres.append(semestre_acompañado[0]['nombre'])
+                    periodos_acompañamiento = {
+                        'periodos_acompañamiento': list_semestres
+                    }
+                except:
+                    periodos_acompañamiento = {
+                        'periodos_acompañamiento': []
+                    }
+                data = dict(codigo, **riesgo,**conteo, **dic_programa, **periodos_acompañamiento)
+
+                final_list_estudiantes.append(data)
+
+            return Response(final_list_estudiantes,status=status.HTTP_200_OK)
+
+        except estudiante.DoesNotExist:
+            final_list_estudiantes = list()
+            return Response(final_list_estudiantes,status=status.HTTP_204_NO_CONTENT)
