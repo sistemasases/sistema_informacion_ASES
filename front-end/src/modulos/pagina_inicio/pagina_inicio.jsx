@@ -15,7 +15,7 @@ import All_sede_service from "../../service/all_sede";
 import { encriptar, desencriptar, encriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 import boton1 from '../../images/BOTONES_SVG 18.svg';
 import boton2 from '../../images/BOTONES_SVG 19.svg';
-
+import boton3 from '../../images/BOTONES_SVG 20.svg';
 import boton4 from '../../images/BOTONES_SVG 21.svg';
 import boton6 from '../../images/BOTONES_SVG 3.svg';
 
@@ -278,16 +278,16 @@ const Pagina_inicio = () => {
                 <Col className="vertical-line-col"><div className="vertical"></div></Col>
 
                 <Col xs={"12"} md={"5"} className="botones-container">
-                <Link to={`https://sistemasases.github.io/rutasdeatencion/`}> 
+                <Link to={`https://sistemasases.github.io/rutasdeatencion/`} target="_blank"> 
                   <img src={boton1} className="boton" alt='/'></img>
                 </Link>
-                <Link to={`https://asesinteractiva.univalle.edu.co/semaforoalertas/`}> 
+                <Link to={`https://asesinteractiva.univalle.edu.co/semaforoalertas/`} target="_blank"> 
                   <img src={boton2} className="boton" alt='/'></img>
                 </Link>
-                {/* <Link to={`https://caja-de-herramientas-univalle.vercel.app/`}> 
+                <Link to={`https://caja-de-herramientas-univalle.vercel.app/`} target="_blank"> 
                   <img src={boton3} className="boton" alt='/'></img>
-                </Link> */}
-                <Link to={`https://ases.univalle.edu.co/`}> 
+                </Link>
+                <Link to={`https://ases.univalle.edu.co/`} target="_blank"> 
                   <img src={boton4} className="boton" alt='/'></img>
                 </Link>
               </Col>
