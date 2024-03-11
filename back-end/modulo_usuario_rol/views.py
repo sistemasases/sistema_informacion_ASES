@@ -1762,21 +1762,25 @@ class firma_tratamiento_datos_view(APIView):
     def post(self, request):
         serializer = firma_tratamiento_datos_serializer(data=request.data)
         if serializer.is_valid():
-
-            if (estudiante.objects.filter(num_doc = serializer.data["documento"]).first()):
-                consulta_estudiante = estudiante.objects.filter(num_doc = request.data["documento"]).first()
+            documento = serializer.data["documento"]
+            if estudiante.objects.filter(num_doc=documento).exists():
+                consulta_estudiante = estudiante.objects.get(num_doc=documento)
+                if firma_tratamiento_datos.objects.filter(id_estudiante=consulta_estudiante).exists():
+                    return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
                 try:
                     Firma = firma_tratamiento_datos.objects.create(
-                        id_estudiante = consulta_estudiante,
-                        fecha_firma = serializer.data["fecha_firma"],
-                        tipo_id_estudiante= serializer.data["tipo_id_estudiante"],
-                        nombre_firma = serializer.data["nombre_firma"],
-                        correo_firma= serializer.data["correo_firma"],
-                        autoriza = bool(serializer.data["autoriza"])
-                        )
-                except:
-                    return Response({'Respuesta': 'Ya existe una firma con ese documento'}, status=status.HTTP_400_BAD_REQUEST)
-                return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
+                        id_estudiante=consulta_estudiante,
+                        fecha_firma=serializer.data["fecha_firma"],
+                        tipo_id_estudiante=serializer.data["tipo_id_estudiante"],
+                        nombre_firma=serializer.data["nombre_firma"],
+                        correo_firma=serializer.data["correo_firma"],
+                        autoriza=bool(serializer.data["autoriza"]),
+                        autoriza_tratamiento_imagen=bool(serializer.data["autoriza_tratamiento_imagen"])
+                    )
+                    return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
+                except Exception as e:
+                    print(f"Error al crear la firma: {str(e)}")
+                    return Response({'Respuesta': 'Error al crear la firma'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 return Response({'Respuesta': 'No existe un estudiante con ese documento'}, status=status.HTTP_404_NOT_FOUND)
         else:
