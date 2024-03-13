@@ -61,7 +61,7 @@ import { Registro } from './modulos/discapacidad/registro/Registro.jsx';
 const App = () => {
   const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / ");
   const[rolUsuario] = useState("superSistemas");
-  const[periodo] = useState("2023-2");
+  const[periodo] = useState("2024-1");
   const[area] = useState('1');
 
     return (

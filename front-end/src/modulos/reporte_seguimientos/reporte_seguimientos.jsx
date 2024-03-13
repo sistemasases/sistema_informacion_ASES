@@ -97,7 +97,7 @@ const Reporte_seguimientos = (props) =>{
         
         <>{userRole.includes('view_reporte_segui') ? <Col className="contenido_children">
             <Row className="containerRow">
-                <Cabecera usuario={props.usuario} periodo={props.periodo} data_user={state.data_user}></Cabecera>
+                <Cabecera usuario={props.usuario} periodo={desencriptar(sessionStorage.getItem('semestre_actual'))} data_user={state.data_user}></Cabecera>
             </Row>
         </Col> : <Acceso_denegado/>}</>
     )

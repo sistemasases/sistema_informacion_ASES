@@ -24,6 +24,12 @@ class estudiante_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = estudiante
 		fields = '__all__'
+class basic_estudiante_serializer(serializers.ModelSerializer):
+
+	# create a meta class
+	class Meta:
+		model = estudiante
+		fields = 'id','cod_univalle'
 
 class monitor_serializer(serializers.ModelSerializer):
 
@@ -167,7 +173,8 @@ class firma_tratamiento_datos_serializer(serializers.Serializer):
 	fecha_firma = serializers.DateField()
 	correo_firma = serializers.CharField()
 	tipo_id_estudiante = serializers.CharField()
-	autoriza = serializers.BooleanField()
+	autoriza_tratamiento_datos = serializers.BooleanField()
+	autoriza_tratamiento_imagen = serializers.BooleanField()
 
 class retiro_serializer(serializers.ModelSerializer):
 	class Meta:
