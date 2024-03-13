@@ -1956,7 +1956,7 @@ const Reporte = () => {
                       type="checkbox"
                       disabled={true}
                       label={Item.name}
-                      className="mb-2"
+                      className="h5"
                       style={{ fontWeight: "bold" }}
                       onChange={(e) => handleChange(e)}
                     />
