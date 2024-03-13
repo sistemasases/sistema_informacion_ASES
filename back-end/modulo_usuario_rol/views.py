@@ -112,6 +112,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     # Conversioón de fecha a formato datetime
     def get_fecha_seguimiento(self, fecha, inasistencia):
         # print(fecha)
+        # print(inasistencia)
         # if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
         #     return "FICHA FALTANTE"
         # elif fecha:
@@ -130,7 +131,9 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         fecha_ = timedelta(days=7)
         fecha_limite = fech_actual - fecha_
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
-            if inasistencia == None or inasistencia == '':
+            if inasistencia == None or inasistencia == '' or inasistencia == 'None':
+                # print("el supuesto None")
+                # print(inasistencia)
                 return "FICHA FALTANTE"
             else:
                 otra_inasistencia = datetime.strptime(inasistencia, "%Y-%m-%d")
@@ -143,6 +146,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
                 fecha, "%Y-%m-%d")
             if inasistencia == None or inasistencia == '':
                 if date_obj.date() <= fecha_limite.date():
+                    # print("AQUI NO FUE")
                     return "FICHA FALTANTE"
             else:
                 ina = datetime.strptime(inasistencia, "%Y-%m-%d")
@@ -159,7 +163,8 @@ class estudiante_viewsets(viewsets.ModelViewSet):
                     # # print(ina)
                     # # print(fecha_limite)
                 # return str(ina.date())
-                    return "SEGUIMIENTO RECIENTE"
+                    return "FICHA FALTANTE"
+            return "SEGUIMIENTO RECIENTE"
             
             
             
@@ -406,23 +411,38 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             }
         except seguimiento_individual.DoesNotExist:
             # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-            riesgo = {
-                'riesgo_individual': 'SIN SEGUIMIENTO',
-                'riesgo_familiar': 'SIN SEGUIMIENTO',
-                'riesgo_academico': 'SIN SEGUIMIENTO',
-                'riesgo_economico': 'SIN SEGUIMIENTO',
-                'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
-                'fecha_seguimiento': 'FICHA FALTANTE'
-            }
+            try:
+                inasistencias_registradas = inasistencia.objects.filter(
+                id_estudiante= pk).latest('fecha')
+                riesgo = {
+                    'riesgo_individual': 'SIN SEGUIMIENTO',
+                    'riesgo_familiar': 'SIN SEGUIMIENTO',
+                    'riesgo_academico': 'SIN SEGUIMIENTO',
+                    'riesgo_economico': 'SIN SEGUIMIENTO',
+                    'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
+                    'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(inasistencias_registradas.fecha))),
+                }
+            except:
+                riesgo = {
+                        'riesgo_individual': 'SIN SEGUIMIENTO',
+                        'riesgo_familiar': 'SIN SEGUIMIENTO',
+                        'riesgo_academico': 'SIN SEGUIMIENTO',
+                        'riesgo_economico': 'SIN SEGUIMIENTO',
+                        'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
+                        'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(None))),
+                    }
+
         except inasistencia.DoesNotExist:
-            
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk).latest('fecha')
             riesgo = {
                 'riesgo_individual': 'SIN SEGUIMIENTO',
                 'riesgo_familiar': 'SIN SEGUIMIENTO',
                 'riesgo_academico': 'SIN SEGUIMIENTO',
                 'riesgo_economico': 'SIN SEGUIMIENTO',
                 'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
-                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), None)),
+                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(None))),
+
             }
             
         diccionario_estudiante.update(riesgo)

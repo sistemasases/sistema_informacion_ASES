@@ -113,13 +113,16 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             return 'SIN RIESGO'
 
     def get_fecha_seguimiento(self, fecha, inasistencia):
-        # # # # print(fecha)
-        # # # # print(inasistencia)
+        # print(fecha)
+        # print(inasistencia)
+
         fech_actual = datetime.now()
         fecha_ = timedelta(days=7)
         fecha_limite = fech_actual - fecha_
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
-            if inasistencia == None or inasistencia == '':
+            if inasistencia == None or inasistencia == '' or inasistencia == 'None':
+                # print("el supuesto None")
+                # print(inasistencia)
                 return "FICHA FALTANTE"
             else:
                 otra_inasistencia = datetime.strptime(inasistencia, "%Y-%m-%d")
@@ -132,6 +135,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                 fecha, "%Y-%m-%d")
             if inasistencia == None or inasistencia == '':
                 if date_obj.date() <= fecha_limite.date():
+                    # print("AQUI NO FUE")
                     return "FICHA FALTANTE"
             else:
                 ina = datetime.strptime(inasistencia, "%Y-%m-%d")
@@ -148,7 +152,8 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     # # print(ina)
                     # # print(fecha_limite)
                 # return str(ina.date())
-                    return "SEGUIMIENTO RECIENTE"
+                    return "FICHA FALTANTE"
+            return "SEGUIMIENTO RECIENTE"
                 
                 
              
