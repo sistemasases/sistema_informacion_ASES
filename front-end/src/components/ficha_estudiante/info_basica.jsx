@@ -195,8 +195,8 @@ const Info_basica = (props) => {
       };
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
-          state.data_user[index]["id"] +
-          "/",
+        state.data_user[index]["id"] +
+        "/",
         config,
         { paramsget }
       );
@@ -324,6 +324,7 @@ const Info_basica = (props) => {
       alert("problema con el celular_numerico");
     }
   };
+  // console.log(state.total_datos_estudiante_seleccionado);
 
   return (
     <Row className="row_prueba">
@@ -542,20 +543,20 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
-                          <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
-                            <i
-                              class="bi bi-check2-square"
-                              style={
-                                state.total_datos_estudiante_seleccionado
-                                  .firma_tratamiento_datos == "SIN FIRMAR"
-                                  ? { color: "red" }
-                                  : state.total_datos_estudiante_seleccionado
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
+                              <i
+                                class="bi bi-check2-square"
+                                style={
+                                  state.total_datos_estudiante_seleccionado
+                                    .firma_tratamiento_datos == "SIN FIRMAR"
+                                    ? { color: "red" }
+                                    : state.total_datos_estudiante_seleccionado
                                       .firma_tratamiento_datos == "NO AUTORIZA"
-                                  ? { color: "red" }
-                                  : { color: " #AAB5A6" }
-                              }
-                              title="Tratamiento de datos Sin Firmar"
-                            ></i>
+                                      ? { color: "red" }
+                                      : { color: " #AAB5A6" }
+                                }
+                                title="Tratamiento de datos Sin Firmar"
+                              ></i>
                             </a>
                           </Col>
                           {/* Encuesta Admitidos */}
@@ -563,17 +564,17 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-admitidos"}
                           >
-                          <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
-                            <i
-                              class="bi bi-card-checklist"
-                              style={
-                                state.total_datos_estudiante_seleccionado
-                                  .encuesta_admitido == false
-                                  ? { color: "red" }
-                                  : { color: " #AAB5A6" }
-                              }
-                              title="Encuesta de Admitidos sin Diligenciar"
-                            ></i>
+                            <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
+                              <i
+                                class="bi bi-card-checklist"
+                                style={
+                                  state.total_datos_estudiante_seleccionado
+                                    .encuesta_admitido == false
+                                    ? { color: "red" }
+                                    : { color: " #AAB5A6" }
+                                }
+                                title="Encuesta de Admitidos sin Diligenciar"
+                              ></i>
                             </a>
                           </Col>
                           {/* FIcha Semana Anterior */}
@@ -690,13 +691,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                    <Button
-                      className="boton_nuevo_registro_pequeño"
-                      onClick={handleModal}
-                    >
-                      NUEVO SEGUIMIENTO
-                    </Button>
-                  )}
+                      <Button
+                        className="boton_nuevo_registro_pequeño"
+                        onClick={handleModal}
+                      >
+                        NUEVO SEGUIMIENTO
+                      </Button>
+                    )}
                 </Row>
               </Col>
             ) : (
@@ -737,13 +738,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                    <Button
-                      className="boton_nuevo_registro_pequeño"
-                      onClick={handleModal}
-                    >
-                      NUEVO SEGUIMIENTO
-                    </Button>
-                  )}
+                      <Button
+                        className="boton_nuevo_registro_pequeño"
+                        onClick={handleModal}
+                      >
+                        NUEVO SEGUIMIENTO
+                      </Button>
+                    )}
                 </Row>
               </Col>
             )}
