@@ -85,12 +85,14 @@ var schema = [
 var prueba = [];
 
 var restore = [];
+var inner_column_data;
 
 const Reporte = () => {
   const [state, set_state] = useState({ estudiante: [] });
   const [search, set_Search] = useState({
     busqueda: "",
   });
+  const [cohorte_list, set_cohorte_list] = useState({ cohorte: [] });
 
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
@@ -166,6 +168,42 @@ const Reporte = () => {
     riesgos_estudiante();
   }, []);
 
+  // FRAGMENTO SELECTOR DE COHORTES - WIP
+  //
+  // Solicitud Back para obtener los lista de cohortes
+  // useEffect(() => {
+  //   let rol = desencriptar(sessionStorage.getItem("rol"));
+  //   let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+  //   let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+  //   const config = {
+  //     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+  //   };
+
+  //   const lista_cohortes = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/reportes/cohortes_list/` +
+  //           id_usuario.toString() +
+  //           "/",
+  //         { params: { usuario_rol: rol, sede: sede } }
+  //       );
+  //       set_cohorte_list({
+  //         ...cohorte_list,
+  //         cohorte: response.data,
+  //       });
+  //       // setFiltered(response.data);
+  //     } catch (error) {
+  //       // // // console.log("no capto el dato");
+  //     }
+  //   };
+
+  //   lista_cohortes();
+  // }, []);
+
+  // FIN FRAGMENTO SELECTOR DE COHORTES - WIP
+  //
+
   const csv_conversion = (item) => {
     var label = item.name;
     var key = item.value;
@@ -217,19 +255,37 @@ const Reporte = () => {
   var empty_stuff = [{ cod_univalle: " ", nombre: " ", apellido: " " }];
 
   prueba = state.estudiante;
-  
+  inner_column_data = 0;
+
   const on_search_base = (e) => {
-    const data_filtered = prueba.filter(
-      (row) =>
-        row.cod_univalle.toString().toLowerCase().includes(e.target.value.toString().toLowerCase()) ||
-        row.nombre.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        row.apellido.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        row.num_doc.toString().includes(e.target.value.toString().toLowerCase())
-    );
-    // // // // console.log(data_filtered);
-    const filtered_data =
-      data_filtered.length > 0 ? data_filtered : empty_stuff;
-    setFiltered(filtered_data);
+    console.log(e.target.value);
+    var longitud_busqueda = e.target.value;
+    console.log(longitud_busqueda.length);
+
+    if (longitud_busqueda.length == 0) {
+      setFiltered(prueba);
+      console.log(
+        "LA SOLEDAD ES CAPAZ INUNDAR NUESTROS CORAZONES AUNQUE ESTEMOS EN COMPAÑIA"
+      );
+    } else {
+      const data_filtered = prueba.filter(
+        (row) =>
+          row.cod_univalle
+            .toString()
+            .toLowerCase()
+            .includes(e.target.value.toString().toLowerCase()) ||
+          row.nombre.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          row.apellido.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          row.num_doc
+            .toString()
+            .includes(e.target.value.toString().toLowerCase())
+      );
+      // // // // console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
+      setFiltered(filtered_data);
+      console.log(filtered);
+    }
 
     // .filter((item) => {
     //   return search.busqueda.toLowerCase() === ""
@@ -264,6 +320,7 @@ const Reporte = () => {
     { name: "Asignaciones", isCheck: false },
     { name: "Riesgos", isCheck: false },
     { name: "Condición de Excepción", isCheck: false },
+    // { name: "Cohorte", isCheck: false },
   ];
 
   const filtros_Contacto = [
@@ -600,6 +657,18 @@ const Reporte = () => {
       width: "180px",
     },
   ];
+
+  const filtro_cohorte = [
+    {
+      name: "Cohorte",
+      value: "cohorte",
+      selector: (row) => row.cohorte,
+      sortable: true,
+      isCheck: false,
+      with: "180px",
+    },
+  ];
+
   const columns_searchable = columns;
 
   useEffect(() => {
@@ -609,14 +678,6 @@ const Reporte = () => {
     }));
   }, []);
 
-  // function usePrevious(columnas) {
-  //   const ref = useRef();
-  //   useEffect(() => {
-  //     ref.current = columnas;
-  //   });
-  //   return ref.current;
-  // }
-
   // const columnaPrevia = usePrevious(columnas);
   // var antiguoArray = [];
   // const emptyArray = [];
@@ -624,22 +685,22 @@ const Reporte = () => {
   const [filtered, setFiltered] = useState(state.estudiante);
   const [noResults, setNoResults] = useState(false);
 
-  
   const handle_column_search = (e, selected) => {
     // // // console.log(e.target.name);
     // // // console.log("HOLASSS");
     // // // console.log(selected);
-    // // // console.log(e.target.value);
+    // console.log(e.target.value);
 
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === undefined) {
       // // // console.log("no hay nada");
       const data_filtered = state.estudiante;
       setFiltered(data_filtered);
+      console.log("UNDEFINED");
     }
 
     // BÚSQUEDA INDIVIDUAL POR FILTRO: CONTACTO
-    if (e.target.name === "Tipo documento") {
+    if (e.target.name === "Tipo de documento") {
       const data_filtered = filtered.filter((row) =>
         row.tipo_doc.toLowerCase().includes(e.target.value.toLowerCase())
       );
@@ -725,6 +786,8 @@ const Reporte = () => {
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
+      inner_column_data = e.target.value;
+      console.log(inner_column_data);
       // // // // // console.log(filtered);
     }
     if (e.target.name === "Sede") {
@@ -846,6 +909,17 @@ const Reporte = () => {
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
+
+    // BÚSQUEDA INDIVIDUAL DE FILTRO: COHORTE
+    if (e.target.name === "Cohorte") {
+      const data_filtered = filtered.filter((row) =>
+        row.cohorte.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      // // // // console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
+      setFiltered(filtered_data);
+    }
   };
 
   const add_search_bar = (selected) => {
@@ -875,6 +949,8 @@ const Reporte = () => {
 
   const handleChange = (e) => {
     // // // // console.log(columnaPrevia.cabeceras);
+    // console.log(e.target.name);
+    // console.log(e.target);
 
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
@@ -900,10 +976,17 @@ const Reporte = () => {
     const seleccionado_cabeceras_filtros = cabecerasFiltros.find(
       (item) => item.name === e.target.name
     );
+
     const seleccionado_condiciones_excepcion_prueba =
       filtros_Condicion_Excepcion_prueba.find(
         (item) => item.name === "Condición de Excepción"
       );
+
+    const seleccionado_cohorte = filtro_cohorte.find(
+      (item) => item.name === e.target.name
+    );
+
+    // console.log(seleccionado_cohorte);
 
     //  condiciones Para Filtros de Contacto
 
@@ -1099,6 +1182,36 @@ const Reporte = () => {
       });
       csv_pop(seleccionado_riesgos);
       schema_pop(seleccionado_riesgos);
+    }
+
+    // condiciones para Filtros de cohortes
+    if (seleccionado_cohorte === undefined) {
+      // console.log("HOLA ??");
+    } else if (
+      seleccionado_cohorte.name === "Cohorte" &&
+      e.target.checked === true
+    ) {
+      // console.log("AWAAAAAA");
+      seleccionado_cohorte.isCheck = true;
+      var searchable_columns = add_search_bar(seleccionado_cohorte);
+      columns.push(searchable_columns[0]);
+      csv_conversion(seleccionado_cohorte);
+      schema_push(seleccionado_cohorte);
+
+      // console.log("ENTRO AQUI");
+    } else if (
+      seleccionado_cohorte.name === "Cohorte" &&
+      e.target.checked === false
+    ) {
+      seleccionado_cohorte.isCheck = false;
+      // document.getElementsByName("Riesgos")[0].checked = false;
+      columns.map((item, index) => {
+        if (item.value === seleccionado_cohorte.value) {
+          columns.splice(index, 1);
+        }
+      });
+      csv_pop(seleccionado_cohorte);
+      schema_pop(seleccionado_cohorte);
     }
 
     // **
@@ -1395,6 +1508,7 @@ const Reporte = () => {
         csv_conversion(element);
         schema_push(element);
       }
+
       // **
       //    Bloque de eliminación de la tabla
       // **
@@ -1710,6 +1824,17 @@ const Reporte = () => {
     });
   };
 
+  // FRAGMENTO SELECTOR DE COHORTES - WIP
+  // console.log(cohorte_list.cohorte);
+  // const cohorte_options = cohorte_list.cohorte.map((item) => (
+  //   <option key={item.value + 1} value={item.label}>
+  //     {item.label}
+  //   </option>
+  // ));
+
+  // console.log(cohorte_options);
+  // FIN FRAGMENTO SELECTOR DE COHORTES - WIP
+
   let navigate = useNavigate();
 
   return (
@@ -1822,24 +1947,31 @@ const Reporte = () => {
               </Col>
               {/* Columna Filtros Condicion de Excepcion */}
 
-              {/* OCULTAS ESTAS DOS COLUMNAS DEL AVERNO */}
-              <Col sm={1} xs={1}>
-                {/* {filtros_Condicion_Excepcion.map((Item, index) => (
+              {/* Columna Filtros Riesgos */}
+              <Col>
+                {filtro_cohorte.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
                       name={Item.name}
                       type="checkbox"
+                      disabled={true}
                       label={Item.name}
-                      className="mb-2"
+                      className="h5"
+                      style={{ fontWeight: "bold" }}
                       onChange={(e) => handleChange(e)}
                     />
                   </div>
-                ))} */}
-                <p> </p>
-              </Col>
+                ))}
 
-              <Col sm={1} xs={1}>
-                {/* {filtros_Condicion_Excepcion_2.map((Item, index) => (
+                {/*   // FRAGMENTO SELECTOR DE COHORTES - WIP */}
+                {/* <select>{cohorte_options}</select> */}
+
+                {/* FIN  FRAGMENTO SELECTOR DE COHORTES - WIP */}
+              </Col>
+              {/* Columna Filtros Condicion de Excepcion */}
+
+              {/* OCULTAS ESTAS DOS COLUMNAS DEL AVERNO */}
+              {/* {filtros_Condicion_Excepcion.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
                       name={Item.name}
@@ -1850,8 +1982,18 @@ const Reporte = () => {
                     />
                   </div>
                 ))} */}
-                <p> </p>
-              </Col>
+
+              {/* {filtros_Condicion_Excepcion_2.map((Item, index) => (
+                  <div key={index}>
+                    <Form.Check
+                      name={Item.name}
+                      type="checkbox"
+                      label={Item.name}
+                      className="mb-2"
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </div>
+                ))} */}
             </Row>
 
             {/* Buscador */}
