@@ -879,7 +879,7 @@ const Info_basica = (props) => {
           />
         </Col>
       </div>
-
+      
       <Modal show={show2} onHide={handleClose2} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Importante</Modal.Title>

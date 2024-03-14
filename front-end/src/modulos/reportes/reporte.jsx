@@ -287,6 +287,7 @@ const Reporte = () => {
       console.log(filtered);
     }
 
+
     // .filter((item) => {
     //   return search.busqueda.toLowerCase() === ""
     //     ? item
@@ -685,6 +686,7 @@ const Reporte = () => {
   const [filtered, setFiltered] = useState(state.estudiante);
   const [noResults, setNoResults] = useState(false);
 
+  
   const handle_column_search = (e, selected) => {
     // // // console.log(e.target.name);
     // // // console.log("HOLASSS");
@@ -918,6 +920,7 @@ const Reporte = () => {
       // // // // console.log(data_filtered);
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
+
       setFiltered(filtered_data);
     }
   };
@@ -1213,6 +1216,7 @@ const Reporte = () => {
       csv_pop(seleccionado_cohorte);
       schema_pop(seleccionado_cohorte);
     }
+
 
     // **
     // Condiciones para cabeceras de filtros
