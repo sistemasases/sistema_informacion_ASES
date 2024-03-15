@@ -165,14 +165,14 @@ def carga_programa_estudiante(file):
     lista_programa_estudiante =[]
     datos = pd.read_csv(file,header=0)
     for i in range(datos.shape[0]):
-        if (estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle =datos.iat[i,1]).first()):
-            consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle =datos.iat[i,1]).first()
-            if(programa.objects.filter(codigo_univalle= datos.iat[i,2],id_sede = datos.iat[i,3]).first()):
-                consulta_programa = programa.objects.filter(codigo_univalle= datos.iat[i,2],id_sede = datos.iat[i,3]).first()
+        if (estudiante.objects.filter(num_doc = datos.iat[i,0]).first()):
+            consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0]).first()
+            if(programa.objects.filter(codigo_univalle= datos.iat[i,1],id_sede = datos.iat[i,2]).first()):
+                consulta_programa = programa.objects.filter(codigo_univalle= datos.iat[i,1],id_sede = datos.iat[i,2]).first()
                 if(programa_estudiante.objects.filter(id_estudiante = consulta_estudiante,id_programa=consulta_programa).values()):
                     dict_result = {
                         'dato' : datos.iat[i,0],
-                        'mensaje' : 'Este estudiante ya está matriculado en este programa: '+ str(datos.iat[i,2])
+                        'mensaje' : 'Este estudiante ya está matriculado en este programa: '+ str(datos.iat[i,1])
                     }
                     list_dict_result.append(dict_result)
                 else:
@@ -187,19 +187,19 @@ def carga_programa_estudiante(file):
                         lista_programa_estudiante.append(Programa_estudiante)
                         dict_result = {
                                     'dato' : datos.iat[i,0],
-                                    'mensaje' : 'Se relacionó correctamente este estudiante con su programa: '+ str(datos.iat[i,2])
+                                    'mensaje' : 'Se relacionó correctamente este estudiante con su programa: '+ str(datos.iat[i,1])
                                 }
                         list_dict_result.append(dict_result)
                     except:
                         dict_result = {
                             'dato' : datos.iat[i,0],
-                            'mensaje' : 'Error al relacionar el estudiante con su programa: '+ str(datos.iat[i,2])
+                            'mensaje' : 'Error al relacionar el estudiante con su programa: '+ str(datos.iat[i,1])
                         }
                         list_dict_result.append(dict_result)   
             else:
                 dict_result = {
                     'dato' : datos.iat[i,0],
-                    'mensaje' : 'El programa al que se quiere matricular el estudiante no existe: '+ str(datos.iat[i,2])
+                    'mensaje' : 'El programa al que se quiere matricular el estudiante no existe: '+ str(datos.iat[i,1])
                 }
                 list_dict_result.append(dict_result) 
         else:

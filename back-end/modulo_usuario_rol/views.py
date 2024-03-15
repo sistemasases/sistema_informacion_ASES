@@ -110,38 +110,14 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             return 'SIN RIESGO'
         
     # Conversioón de fecha a formato datetime
-    def get_fecha_seguimiento(self, fecha, inasistencia):
+    def get_fecha_seguimiento(self, fecha):
         # print(fecha)
-        # print(inasistencia)
-        # if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
-        #     return "FICHA FALTANTE"
-        # elif fecha:
-        #     fech_actual = datetime.now()
-        #     fecha_ = timedelta(days=7)
-        #     fecha_limite = fech_actual - fecha_
-        #     date_obj = datetime.strptime(
-        #             fecha, "%Y-%m-%d")
-        #     if date_obj.date() <= fecha_limite.date():
-        #         return "FICHA FALTANTE"
-        #     else:
-        #         return "SEGUIMIENTO RECIENTE"
-        # if inasistencia.doesNotExist():
-        #     inasistencia = None
-        fech_actual = datetime.now()
-        fecha_ = timedelta(days=7)
-        fecha_limite = fech_actual - fecha_
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
-            if inasistencia == None or inasistencia == '' or inasistencia == 'None':
-                # print("el supuesto None")
-                # print(inasistencia)
-                return "FICHA FALTANTE"
-            else:
-                otra_inasistencia = datetime.strptime(inasistencia, "%Y-%m-%d")
-                if otra_inasistencia.date() <= fecha_limite.date():
-                    return "INASISTENCIA"
-                else:
-                    return "INASISTENCIA"
-        else:
+            return "FICHA FALTANTE"
+        elif fecha:
+            fech_actual = datetime.now()
+            fecha_ = timedelta(days=7)
+            fecha_limite = fech_actual - fecha_
             date_obj = datetime.strptime(
                 fecha, "%Y-%m-%d")
             if inasistencia == None or inasistencia == '' or inasistencia == 'None':
@@ -149,25 +125,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
                     # print("AQUI NO FUE")
                     return "FICHA FALTANTE"
             else:
-                ina = datetime.strptime(inasistencia, "%Y-%m-%d")
-                if date_obj.date() <= ina.date():
-                    # return str(ina.date())
-                    return "INASISTENCIA"
-                else:
-                    # # print(date_obj)
-                    # # print(ina)
-                    # # print(fecha_limite)
-                    # # print("ENTRO")
-                    # # print(date_obj)
-                    # # print("ina")
-                    # # print(ina)
-                    # # print(fecha_limite)
-                # return str(ina.date())
-                    return "FICHA FALTANTE"
-            return "SEGUIMIENTO RECIENTE"
-            
-            
-            
+                return "SEGUIMIENTO RECIENTE"
             
     # Verificamos si al firmar el tratamiento de datos autoriza o no autoriza
     def get_firma(self, firma):
@@ -387,62 +345,24 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             seguimiento_reciente = seguimiento_individual.objects.filter(
                 id_estudiante=pk).latest('fecha')
             # print(seguimiento_reciente.creacion)
-            inasistencias_registradas = inasistencia.objects.filter(
-            id_estudiante= pk).latest('fecha')
-            # print("Holaaa")
-            # print(inasistencias_registradas)
-            # print(diccionario_estudiante['id'])
-            # inasistencia_regs = max(
-            #         (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == pk), 
-            #         key=lambda x: x['fecha'],
-            #         default=None
-            #     )
             # Crear un diccionario con los datos de riesgo del seguimiento
-            # print("HOLA")
-            # print(inasistencias_registradas)
-            # print(seguimiento_reciente)
             riesgo = {
                 'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
                 'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
                 'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
                 'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
                 'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
-                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(inasistencias_registradas.fecha))),
+                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha))),
             }
         except seguimiento_individual.DoesNotExist:
             # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-            try:
-                inasistencias_registradas = inasistencia.objects.filter(
-                id_estudiante= pk).latest('fecha')
-                riesgo = {
-                    'riesgo_individual': 'SIN SEGUIMIENTO',
-                    'riesgo_familiar': 'SIN SEGUIMIENTO',
-                    'riesgo_academico': 'SIN SEGUIMIENTO',
-                    'riesgo_economico': 'SIN SEGUIMIENTO',
-                    'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
-                    'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(inasistencias_registradas.fecha))),
-                }
-            except:
-                riesgo = {
-                        'riesgo_individual': 'SIN SEGUIMIENTO',
-                        'riesgo_familiar': 'SIN SEGUIMIENTO',
-                        'riesgo_academico': 'SIN SEGUIMIENTO',
-                        'riesgo_economico': 'SIN SEGUIMIENTO',
-                        'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
-                        'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(None))),
-                    }
-
-        except inasistencia.DoesNotExist:
-            seguimiento_reciente = seguimiento_individual.objects.filter(
-                id_estudiante=pk).latest('fecha')
             riesgo = {
                 'riesgo_individual': 'SIN SEGUIMIENTO',
                 'riesgo_familiar': 'SIN SEGUIMIENTO',
                 'riesgo_academico': 'SIN SEGUIMIENTO',
                 'riesgo_economico': 'SIN SEGUIMIENTO',
                 'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
-                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(None))),
-
+                'fecha_seguimiento': 'FICHA FALTANTE'
             }
             
         diccionario_estudiante.update(riesgo)
@@ -1844,25 +1764,21 @@ class firma_tratamiento_datos_view(APIView):
     def post(self, request):
         serializer = firma_tratamiento_datos_serializer(data=request.data)
         if serializer.is_valid():
-            documento = serializer.data["documento"]
-            if estudiante.objects.filter(num_doc=documento).exists():
-                consulta_estudiante = estudiante.objects.get(num_doc=documento)
-                if firma_tratamiento_datos.objects.filter(id_estudiante=consulta_estudiante).exists():
-                    return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if (estudiante.objects.filter(num_doc = serializer.data["documento"]).first()):
+                consulta_estudiante = estudiante.objects.filter(num_doc = request.data["documento"]).first()
                 try:
                     Firma = firma_tratamiento_datos.objects.create(
-                        id_estudiante=consulta_estudiante,
-                        fecha_firma=serializer.data["fecha_firma"],
-                        tipo_id_estudiante=serializer.data["tipo_id_estudiante"],
-                        nombre_firma=serializer.data["nombre_firma"],
-                        correo_firma=serializer.data["correo_firma"],
-                        autoriza=bool(serializer.data["autoriza"]),
-                        autoriza_tratamiento_imagen=bool(serializer.data["autoriza_tratamiento_imagen"])
-                    )
-                    return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
-                except Exception as e:
-                    print(f"Error al crear la firma: {str(e)}")
-                    return Response({'Respuesta': 'Error al crear la firma'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                        id_estudiante = consulta_estudiante,
+                        fecha_firma = serializer.data["fecha_firma"],
+                        tipo_id_estudiante= serializer.data["tipo_id_estudiante"],
+                        nombre_firma = serializer.data["nombre_firma"],
+                        correo_firma= serializer.data["correo_firma"],
+                        autoriza = bool(serializer.data["autoriza"])
+                        )
+                except:
+                    return Response({'Respuesta': 'Ya existe una firma con ese documento'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
             else:
                 return Response({'Respuesta': 'No existe un estudiante con ese documento'}, status=status.HTTP_404_NOT_FOUND)
         else:

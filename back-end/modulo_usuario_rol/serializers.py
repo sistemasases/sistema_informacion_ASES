@@ -173,8 +173,7 @@ class firma_tratamiento_datos_serializer(serializers.Serializer):
 	fecha_firma = serializers.DateField()
 	correo_firma = serializers.CharField()
 	tipo_id_estudiante = serializers.CharField()
-	autoriza_tratamiento_datos = serializers.BooleanField()
-	autoriza_tratamiento_imagen = serializers.BooleanField()
+	autoriza = serializers.BooleanField()
 
 class retiro_serializer(serializers.ModelSerializer):
 	class Meta:

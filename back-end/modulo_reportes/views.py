@@ -2,20 +2,18 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
-from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 import time
-from modulo_usuario_rol.serializers import user_serializer, estudiante_serializer, usuario_rol_serializer, user_selected, basic_estudiante_serializer
+from modulo_usuario_rol.serializers import user_serializer, estudiante_serializer, usuario_rol_serializer, user_selected
 from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core import serializers
 
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, cond_excepcion, cohorte_estudiante
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, cond_excepcion
 from modulo_asignacion.models import asignacion
 from modulo_instancia.models import semestre, sede
 from modulo_programa.models import dir_programa, facultad, programa, programa_estudiante, estado_programa, vcd_academico
 from modulo_seguimiento.models import inasistencia, seguimiento_individual, riesgo_individual 
 
-from modulo_instancia.models import cohorte
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
@@ -222,10 +220,6 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
             try:
                 programa_del_estudiante = programas_estudiantes.filter(id_estudiante=data_del_estudiante['id']).first()
-                cohorte_estudiante_data = cohorte_estudiante.objects.filter(id_estudiante=data_del_estudiante['id']).values('id_cohorte')
-                # print(cohorte_estudiante_data)
-                cohorte_data = cohorte.objects.filter(id__in=cohorte_estudiante_data).values('id_number')
-                # print(cohorte_data)
 
                 dic_programa = {
                     'id_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
@@ -236,11 +230,6 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 dic_reg_academico = {
                     'registro_academico': estado_data[programa_del_estudiante.id_estado_id].nombre
                 }
-                
-                dic_cohorte = {
-                    'cohorte': cohorte_data[0]['id_number']
-                }
-                
 
             except:
                 dic_programa = {
@@ -250,10 +239,6 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 } 
                 dic_reg_academico = {
                     'registro_academico': 'N/A'
-                }
-                
-                dic_cohorte = {   
-                    'cohorte': 'N/A'
                 }
 
             try:
@@ -295,75 +280,9 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 }   
 
             data = dict(data_del_estudiante, **riesgo, **dic_programa, **dic_estados, **
-                        dic_reg_academico, **dic_cohorte, **dic_asignaciones, **dic_cond_excepcion)
-    
+                        dic_reg_academico, **dic_asignaciones, **dic_cond_excepcion)
+
             final_list_estudiantes.append(data)
-            # print(data)
+
         return Response(final_list_estudiantes)
-
-
-class get_cohortes_viewsets(viewsets.GenericViewSet):
-    serializer_class = estudiante_serializer
-    queryset = estudiante_serializer.Meta.model.objects.all()
-    # permission_classes = (IsAuthenticated,)
-
-    def retrieve(self, request, pk):
-        data_usuario_rol = request.GET.get('usuario_rol')
-        data_sede = request.GET.get('sede')
-        var_semestre = get_object_or_404(
-            semestre, semestre_actual=True, id_sede=data_sede)
-
-        if data_usuario_rol == "monitor":
-            final_list_estudiantes = list()
-            list_id_estudiantes = asignacion.objects.filter(id_usuario=pk, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
-            
-        estudiantes_ids = [data['id'] for data in serializer_estudiantes.data]
-        # print("bfr fr loop")
-        list_cohortes = []
-        for data_del_estudiante in serializer_estudiantes.data:
-            estudiante_id = data_del_estudiante['id']
-            try:
-                cohorte_estudiante_data = cohorte_estudiante.objects.filter(id_estudiante=data_del_estudiante['id']).values('id_cohorte')
-                # print(cohorte_estudiante_data)
-                cohorte_data = cohorte.objects.filter(id__in=cohorte_estudiante_data).values('id_number')
-                # print(cohorte_data)
-                dic_cohorte = {
-                        'cohorte': cohorte_data[0]['id_number']
-                    }
-            except:
-                dic_cohorte = {   
-                        'cohorte': 'N/A'
-                    }
-            
-            data = dict(dic_cohorte)
-            list_cohortes.append(data)
-        # print(list_cohortes)
-        a_final_list_cohortes = list({v['cohorte']:v for v in list_cohortes}.values())
-        
-        # print(a_final_list_cohortes)
-
-        new_cohorte  = list()
-        new_cohorte_list = []
-        cantidad_cohortes = 0
-        last_list_cohortes = []
-        for i in a_final_list_cohortes:
-            new_cohorte.append(i.get('cohorte'))
-            cantidad_cohortes += 1
-            try:
-                new_cohorte_list = {
-                    'value': cantidad_cohortes,
-                    'label': i.get('cohorte'),
-                }
-            except:
-                new_cohorte_list = {
-                    'label': 'N/A',
-                    'value': 'N/A'
-                }
-            data = dict(new_cohorte_list)
-            last_list_cohortes.append(data)
-
-        
-        return Response(last_list_cohortes)
 

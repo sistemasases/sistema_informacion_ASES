@@ -182,7 +182,7 @@ class cohorte_estudiante(models.Model):
 
 class firma_tratamiento_datos(models.Model):
 
-    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0,unique=True)
+    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
     tipo_id_estudiante= models.CharField(max_length=10,default=None)
     fecha_firma = models.DateTimeField(auto_now_add=False,null=False)
     nombre_firma= models.CharField(max_length=50,default=None)
