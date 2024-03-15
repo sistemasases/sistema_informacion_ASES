@@ -1,5 +1,18 @@
 [
     {
+        "id":"1",
+        "path":"/",
+        "name":"sistemas",
+        "icon":"bi-pc-display-horizontal",
+        "childrens":[
+            {
+                "path":"/descarga_fichas",
+                "name":"Descarga de fichas",
+                "icon":"bi bi-file-earmark-arrow-down"
+            }
+        ]
+    },
+    {
         "id":"2",
         "path":"/ficha_estudiante/sin_seleccion",
         "name":"socieducativo",

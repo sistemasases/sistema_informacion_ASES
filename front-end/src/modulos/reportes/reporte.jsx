@@ -14,7 +14,11 @@ import writeXlsxFile from "write-excel-file";
 import myGif from "../reportes/loading_data.gif";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { desencriptar, desencriptarInt, decryptTokenFromSessionStorage } from "../utilidades_seguridad/utilidades_seguridad.jsx";
+import {
+  desencriptar,
+  desencriptarInt,
+  decryptTokenFromSessionStorage,
+} from "../utilidades_seguridad/utilidades_seguridad.jsx";
 
 var columns = [
   {
@@ -78,11 +82,17 @@ var schema = [
   },
 ];
 
+var prueba = [];
+
+var restore = [];
+var inner_column_data;
+
 const Reporte = () => {
   const [state, set_state] = useState({ estudiante: [] });
   const [search, set_Search] = useState({
     busqueda: "",
   });
+  const [cohorte_list, set_cohorte_list] = useState({ cohorte: [] });
 
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
@@ -98,8 +108,8 @@ const Reporte = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
-          id_usuario.toString() +
-          "/",
+            id_usuario.toString() +
+            "/",
           { params: { usuario_rol: rol, sede: sede } }
         );
         set_state({
@@ -124,8 +134,8 @@ const Reporte = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
-          id_usuario.toString() +
-          "/",
+            id_usuario.toString() +
+            "/",
           { params: { usuario_rol: rol, sede: sede } }
         );
 
@@ -140,24 +150,59 @@ const Reporte = () => {
 
         // Obtiene una lista con la clase de los checks hijos
         var child_checks = document.getElementsByClassName("mb-2");
-        // Recorre la lista para habilitarlos una vez termina la consula 
+        // Recorre la lista para habilitarlos una vez termina la consula
         for (let i = 0; i < child_checks.length; i++) {
           child_checks[i].firstElementChild.removeAttribute("disabled");
         }
 
         // Obtiene una lista con la clase de los checks Padres
         var header_checks = document.getElementsByClassName("h5");
-        // Recorre la lista para habilitarlos una vez termina la consula 
+        // Recorre la lista para habilitarlos una vez termina la consula
         for (let i = 0; i < header_checks.length; i++) {
           header_checks[i].firstElementChild.removeAttribute("disabled");
         }
-
       } catch (error) {
         // // // console.log("no capto el dato");
       }
     };
     riesgos_estudiante();
   }, []);
+
+  // FRAGMENTO SELECTOR DE COHORTES - WIP
+  //
+  // Solicitud Back para obtener los lista de cohortes
+  // useEffect(() => {
+  //   let rol = desencriptar(sessionStorage.getItem("rol"));
+  //   let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+  //   let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+  //   const config = {
+  //     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+  //   };
+
+  //   const lista_cohortes = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/reportes/cohortes_list/` +
+  //           id_usuario.toString() +
+  //           "/",
+  //         { params: { usuario_rol: rol, sede: sede } }
+  //       );
+  //       set_cohorte_list({
+  //         ...cohorte_list,
+  //         cohorte: response.data,
+  //       });
+  //       // setFiltered(response.data);
+  //     } catch (error) {
+  //       // // // console.log("no capto el dato");
+  //     }
+  //   };
+
+  //   lista_cohortes();
+  // }, []);
+
+  // FIN FRAGMENTO SELECTOR DE COHORTES - WIP
+  //
 
   const csv_conversion = (item) => {
     var label = item.name;
@@ -207,6 +252,65 @@ const Reporte = () => {
     // // // // console.log(search);
   };
 
+  var empty_stuff = [{ cod_univalle: " ", nombre: " ", apellido: " " }];
+
+  prueba = state.estudiante;
+  inner_column_data = 0;
+
+  const on_search_base = (e) => {
+    console.log(e.target.value);
+    var longitud_busqueda = e.target.value;
+    console.log(longitud_busqueda.length);
+
+    if (longitud_busqueda.length == 0) {
+      setFiltered(prueba);
+      console.log(
+        "LA SOLEDAD ES CAPAZ INUNDAR NUESTROS CORAZONES AUNQUE ESTEMOS EN COMPAÑIA"
+      );
+    } else {
+      const data_filtered = prueba.filter(
+        (row) =>
+          row.cod_univalle
+            .toString()
+            .toLowerCase()
+            .includes(e.target.value.toString().toLowerCase()) ||
+          row.nombre.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          row.apellido.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          row.num_doc
+            .toString()
+            .includes(e.target.value.toString().toLowerCase())
+      );
+      // // // // console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
+      setFiltered(filtered_data);
+      console.log(filtered);
+    }
+
+    // .filter((item) => {
+    //   return search.busqueda.toLowerCase() === ""
+    //     ? item
+    //     : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
+    //     item.nombre.toLowerCase().includes(search.busqueda) ||
+    //     item.apellido.toLowerCase().includes(search.busqueda) ||
+    //     item.num_doc
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(search.busqueda) ||
+    //     item.asignacion_profesional
+    //       .toLowerCase()
+    //       .includes(search.busqueda) ||
+    //     //    ||
+    //     // item.asignacion_practicante
+    //     //   .toLowerCase()
+    //     //   .includes(search.busqueda) ||
+    //     // item.asignacion_monitores
+    //     //   .toLowerCase()
+    //     //   .includes(search.busqueda)
+    //     item.sede.toLowerCase().includes(search.busqueda);
+    // })}
+  };
+
   const [columnas, set_columnas] = useState({ cabeceras: columns });
 
   const cabecerasFiltros = [
@@ -216,6 +320,7 @@ const Reporte = () => {
     { name: "Asignaciones", isCheck: false },
     { name: "Riesgos", isCheck: false },
     { name: "Condición de Excepción", isCheck: false },
+    // { name: "Cohorte", isCheck: false },
   ];
 
   const filtros_Contacto = [
@@ -552,6 +657,18 @@ const Reporte = () => {
       width: "180px",
     },
   ];
+
+  const filtro_cohorte = [
+    {
+      name: "Cohorte",
+      value: "cohorte",
+      selector: (row) => row.cohorte,
+      sortable: true,
+      isCheck: false,
+      with: "180px",
+    },
+  ];
+
   const columns_searchable = columns;
 
   useEffect(() => {
@@ -560,14 +677,6 @@ const Reporte = () => {
       cabeceras: columns,
     }));
   }, []);
-
-  // function usePrevious(columnas) {
-  //   const ref = useRef();
-  //   useEffect(() => {
-  //     ref.current = columnas;
-  //   });
-  //   return ref.current;
-  // }
 
   // const columnaPrevia = usePrevious(columnas);
   // var antiguoArray = [];
@@ -580,23 +689,24 @@ const Reporte = () => {
     // // // console.log(e.target.name);
     // // // console.log("HOLASSS");
     // // // console.log(selected);
-    // // // console.log(e.target.value);
+    // console.log(e.target.value);
 
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === undefined) {
       // // // console.log("no hay nada");
       const data_filtered = state.estudiante;
       setFiltered(data_filtered);
+      console.log("UNDEFINED");
     }
 
     // BÚSQUEDA INDIVIDUAL POR FILTRO: CONTACTO
-    if (e.target.name === "Tipo documento") {
+    if (e.target.name === "Tipo de documento") {
       const data_filtered = filtered.filter((row) =>
         row.tipo_doc.toLowerCase().includes(e.target.value.toLowerCase())
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Correo electrónico") {
@@ -606,7 +716,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Celular") {
@@ -616,7 +726,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Dirección") {
@@ -626,7 +736,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -638,7 +748,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Registro Académico") {
@@ -650,7 +760,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -662,7 +772,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Programa académico") {
@@ -674,8 +784,10 @@ const Reporte = () => {
       );
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
+      inner_column_data = e.target.value;
+      console.log(inner_column_data);
       // // // // // console.log(filtered);
     }
     if (e.target.name === "Sede") {
@@ -685,7 +797,7 @@ const Reporte = () => {
       );
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -699,7 +811,7 @@ const Reporte = () => {
       );
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Practicante") {
@@ -711,7 +823,7 @@ const Reporte = () => {
       );
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Monitor") {
@@ -724,7 +836,7 @@ const Reporte = () => {
       // console.log(data_filtered);
       // // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -739,7 +851,7 @@ const Reporte = () => {
 
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo familiar") {
@@ -748,7 +860,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo académico") {
@@ -759,7 +871,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo económico") {
@@ -770,7 +882,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo vida universitaria") {
@@ -781,7 +893,7 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
 
@@ -794,7 +906,18 @@ const Reporte = () => {
       );
       // // // // console.log(data_filtered);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : state.estudiante;
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
+      setFiltered(filtered_data);
+    }
+
+    // BÚSQUEDA INDIVIDUAL DE FILTRO: COHORTE
+    if (e.target.name === "Cohorte") {
+      const data_filtered = filtered.filter((row) =>
+        row.cohorte.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      // // // // console.log(data_filtered);
+      const filtered_data =
+        data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
   };
@@ -826,6 +949,8 @@ const Reporte = () => {
 
   const handleChange = (e) => {
     // // // // console.log(columnaPrevia.cabeceras);
+    // console.log(e.target.name);
+    // console.log(e.target);
 
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
@@ -851,10 +976,17 @@ const Reporte = () => {
     const seleccionado_cabeceras_filtros = cabecerasFiltros.find(
       (item) => item.name === e.target.name
     );
+
     const seleccionado_condiciones_excepcion_prueba =
       filtros_Condicion_Excepcion_prueba.find(
         (item) => item.name === "Condición de Excepción"
       );
+
+    const seleccionado_cohorte = filtro_cohorte.find(
+      (item) => item.name === e.target.name
+    );
+
+    // console.log(seleccionado_cohorte);
 
     //  condiciones Para Filtros de Contacto
 
@@ -1052,6 +1184,35 @@ const Reporte = () => {
       schema_pop(seleccionado_riesgos);
     }
 
+    // condiciones para Filtros de cohortes
+    if (seleccionado_cohorte === undefined) {
+      // console.log("HOLA ??");
+    } else if (
+      seleccionado_cohorte.name === "Cohorte" &&
+      e.target.checked === true
+    ) {
+      // console.log("AWAAAAAA");
+      seleccionado_cohorte.isCheck = true;
+      var searchable_columns = add_search_bar(seleccionado_cohorte);
+      columns.push(searchable_columns[0]);
+      csv_conversion(seleccionado_cohorte);
+      schema_push(seleccionado_cohorte);
+
+      // console.log("ENTRO AQUI");
+    } else if (
+      seleccionado_cohorte.name === "Cohorte" &&
+      e.target.checked === false
+    ) {
+      seleccionado_cohorte.isCheck = false;
+      // document.getElementsByName("Riesgos")[0].checked = false;
+      columns.map((item, index) => {
+        if (item.value === seleccionado_cohorte.value) {
+          columns.splice(index, 1);
+        }
+      });
+      csv_pop(seleccionado_cohorte);
+      schema_pop(seleccionado_cohorte);
+    }
 
     // **
     // Condiciones para cabeceras de filtros
@@ -1347,6 +1508,7 @@ const Reporte = () => {
         csv_conversion(element);
         schema_push(element);
       }
+
       // **
       //    Bloque de eliminación de la tabla
       // **
@@ -1643,7 +1805,7 @@ const Reporte = () => {
   const imprimir_excel = () => {
     let new_data_excel = [];
 
-    for (let i = 0; i < state.estudiante.length; i++) {
+    for (let i = 0; i < filtered.length; i++) {
       let new_data = [];
       new_data.push({
         cod_univalle: state.estudiante[i].cod_univalle,
@@ -1654,13 +1816,24 @@ const Reporte = () => {
       new_data_excel.push(new_data);
     }
 
-    writeXlsxFile(state.estudiante, {
+    writeXlsxFile(filtered, {
       schema, // (optional) column widths, etc.
       fileName:
         "Reporte general Campus Virtual Ases universidad del Valle Excel.xlsx",
       // filePath: '../dowloads/file.xlsx'
     });
   };
+
+  // FRAGMENTO SELECTOR DE COHORTES - WIP
+  // console.log(cohorte_list.cohorte);
+  // const cohorte_options = cohorte_list.cohorte.map((item) => (
+  //   <option key={item.value + 1} value={item.label}>
+  //     {item.label}
+  //   </option>
+  // ));
+
+  // console.log(cohorte_options);
+  // FIN FRAGMENTO SELECTOR DE COHORTES - WIP
 
   let navigate = useNavigate();
 
@@ -1680,7 +1853,6 @@ const Reporte = () => {
                 // <div key={index}>
                 <Col key={index}>
                   <Form.Check
-
                     name={Item.name}
                     type="checkbox"
                     disabled
@@ -1701,7 +1873,6 @@ const Reporte = () => {
                 {filtros_Contacto.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       label={Item.name}
@@ -1716,7 +1887,6 @@ const Reporte = () => {
                 {filtros_Estados.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       disabled={true}
@@ -1733,7 +1903,6 @@ const Reporte = () => {
                 {filtros_Academico.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       disabled
@@ -1750,7 +1919,6 @@ const Reporte = () => {
                 {filtros_Asignaciones.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       disabled
@@ -1767,7 +1935,6 @@ const Reporte = () => {
                 {filtros_Riesgos.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
-
                       name={Item.name}
                       type="checkbox"
                       disabled={true}
@@ -1780,24 +1947,31 @@ const Reporte = () => {
               </Col>
               {/* Columna Filtros Condicion de Excepcion */}
 
-              {/* OCULTAS ESTAS DOS COLUMNAS DEL AVERNO */}
-              <Col sm={1} xs={1}>
-                {/* {filtros_Condicion_Excepcion.map((Item, index) => (
+              {/* Columna Filtros Riesgos */}
+              <Col>
+                {filtro_cohorte.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
                       name={Item.name}
                       type="checkbox"
+                      disabled={true}
                       label={Item.name}
-                      className="mb-2"
+                      className="h5"
+                      style={{ fontWeight: "bold" }}
                       onChange={(e) => handleChange(e)}
                     />
                   </div>
-                ))} */}
-                <p> </p>
-              </Col>
+                ))}
 
-              <Col sm={1} xs={1}>
-                {/* {filtros_Condicion_Excepcion_2.map((Item, index) => (
+                {/*   // FRAGMENTO SELECTOR DE COHORTES - WIP */}
+                {/* <select>{cohorte_options}</select> */}
+
+                {/* FIN  FRAGMENTO SELECTOR DE COHORTES - WIP */}
+              </Col>
+              {/* Columna Filtros Condicion de Excepcion */}
+
+              {/* OCULTAS ESTAS DOS COLUMNAS DEL AVERNO */}
+              {/* {filtros_Condicion_Excepcion.map((Item, index) => (
                   <div key={index}>
                     <Form.Check
                       name={Item.name}
@@ -1808,8 +1982,18 @@ const Reporte = () => {
                     />
                   </div>
                 ))} */}
-                <p> </p>
-              </Col>
+
+              {/* {filtros_Condicion_Excepcion_2.map((Item, index) => (
+                  <div key={index}>
+                    <Form.Check
+                      name={Item.name}
+                      type="checkbox"
+                      label={Item.name}
+                      className="mb-2"
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </div>
+                ))} */}
             </Row>
 
             {/* Buscador */}
@@ -1817,7 +2001,7 @@ const Reporte = () => {
               type="text"
               placeholder="Búsqueda de Datos"
               // value={}
-              onChange={(e) => onSearch(e)}
+              onChange={(e) => on_search_base(e)}
             />
             <br />
 
@@ -1835,28 +2019,7 @@ const Reporte = () => {
               id="tabla_Reporte"
               title="Reporte"
               columns={columnas.cabeceras}
-              data={filtered.filter((item) => {
-                return search.busqueda.toLowerCase() === ""
-                  ? item
-                  : item.cod_univalle.toLowerCase().includes(search.busqueda) ||
-                  item.nombre.toLowerCase().includes(search.busqueda) ||
-                  item.apellido.toLowerCase().includes(search.busqueda) ||
-                  item.num_doc
-                    .toString()
-                    .toLowerCase()
-                    .includes(search.busqueda) ||
-                  item.asignacion_profesional
-                    .toLowerCase()
-                    .includes(search.busqueda) ||
-                  //    ||
-                  // item.asignacion_practicante
-                  //   .toLowerCase()
-                  //   .includes(search.busqueda) ||
-                  // item.asignacion_monitores
-                  //   .toLowerCase()
-                  //   .includes(search.busqueda)
-                  item.sede.toLowerCase().includes(search.busqueda);
-              })}
+              data={filtered}
               // data = {filtered}
               // data={state.estudiante}
               noDataComponent="Cargando Información..."
@@ -1880,7 +2043,7 @@ const Reporte = () => {
               <Col style={{ padding: 10 }}>
                 <CSVLink
                   headers={csv_headers}
-                  data={state.estudiante}
+                  data={filtered}
                   filename="Reporte general Campus Virtual Ases universidad del Valle"
                 >
                   {/* headers={columns} */}
