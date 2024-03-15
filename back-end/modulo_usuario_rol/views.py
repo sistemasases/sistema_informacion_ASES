@@ -119,9 +119,11 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             fecha_ = timedelta(days=7)
             fecha_limite = fech_actual - fecha_
             date_obj = datetime.strptime(
-                    fecha, "%Y-%m-%d")
-            if date_obj.date() <= fecha_limite.date():
-                return "FICHA FALTANTE"
+                fecha, "%Y-%m-%d")
+            if inasistencia == None or inasistencia == '' or inasistencia == 'None':
+                if date_obj.date() <= fecha_limite.date():
+                    # print("AQUI NO FUE")
+                    return "FICHA FALTANTE"
             else:
                 return "SEGUIMIENTO RECIENTE"
             
