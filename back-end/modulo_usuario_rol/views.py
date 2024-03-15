@@ -144,7 +144,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         else:
             date_obj = datetime.strptime(
                 fecha, "%Y-%m-%d")
-            if inasistencia == None or inasistencia == '':
+            if inasistencia == None or inasistencia == '' or inasistencia == 'None':
                 if date_obj.date() <= fecha_limite.date():
                     # print("AQUI NO FUE")
                     return "FICHA FALTANTE"
