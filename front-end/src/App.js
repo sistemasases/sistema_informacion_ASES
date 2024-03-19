@@ -55,7 +55,8 @@ import Reporte from "./modulos/reportes/reporte.jsx";
 import Alertas from './modulos/alertas/alertas.jsx';
 import FichaEstudianteDiscapacidad from './modulos/discapacidad/ficha_estudiante/FichaEstudianteDiscapacidad.jsx';
 import ReporteDiscapacidad from './modulos/discapacidad/reporte/ReporteDiscapacidad.jsx';
-import { Registro } from './modulos/discapacidad/registro/Registro.jsx';
+import {Registro} from './modulos/discapacidad/registro/Registro.jsx';
+import FichaEstudianteV2 from './modulos/ficha_estudiante_V2/FichaEstudianteV2.jsx';
 // import Footer from './components/componentes_generales/footer.jsx';
 
 const App = () => {
@@ -88,6 +89,7 @@ const App = () => {
                         <Route path="/alertas" element={<Alertas/>}/>
                         <Route path="/" element={<Inicio/>}/>
                         <Route path="/registro_discapacidad" element={<Registro/>}/>
+                        <Route path="/ficha_est_v2" element={<FichaEstudianteV2/>}/>
                     </Routes>
                 </SideBar>
             </Row>

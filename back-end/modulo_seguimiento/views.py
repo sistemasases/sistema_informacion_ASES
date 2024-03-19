@@ -110,8 +110,6 @@ class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewS
         return Response(list_final,status=status.HTTP_200_OK)
 
 
-
-
 class conteo_seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
     permission_classes = (IsAuthenticated,)

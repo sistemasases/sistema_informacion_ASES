@@ -14,14 +14,14 @@ const Acordiones = () => {
       <Acordion title="GENERAL" claseAcordion={'acordion'}>
         <General />
       </Acordion>
-      <Acordion title="CARACTERIZACIÓN" claseAcordion={'acordion'}>
-        <p>Contenido del acordeón 2</p>
-      </Acordion>
-      <Acordion title="ACCESIBILIDAD" claseAcordion={'acordion'}>
-        <Accesibilidad />
-      </Acordion>
-      <Acordion title="SEGUIMIENTO" claseAcordion={'acordion'}>
+      <Acordion title="SOCIOEDUCATIVO" claseAcordion={'acordion'}>
         <Seguimiento />
+      </Acordion>
+      <Acordion title="ACADÉMICO" claseAcordion={'acordion'}>
+        <Seguimiento />
+      </Acordion>
+      <Acordion title="GEOGRÁFICO" claseAcordion={'acordion'}>
+        
       </Acordion>
     </div>
   );
