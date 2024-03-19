@@ -32,7 +32,7 @@ const FichaEstudianteV2 = (props) => {
     {/* The userRole is used to check if the user has the permission to view the page
         if the user has the permission, the page is displayed, otherwise, the user is 
         redirected to the AccesoDenegado component */}
-      {user && user.userRole.includes("view_ficha_estudiantes") ? (
+      {user && user.userRole && user.userRole.includes("view_ficha_estudiantes") ? (
         <div className="container-ficha">
           <div className="select-container">
             <Select />

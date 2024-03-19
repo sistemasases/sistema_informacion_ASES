@@ -28,7 +28,7 @@ const FichaEstudianteDiscapacidad = (props) => {
 
   return (
     <>
-      {user && user.userRole.includes("view_ficha_estudiantes") ? (
+      {user && user.userRole && user.userRole.includes("view_ficha_estudiantes") ? (
         <div className="container-ficha">
           <div className="select-container">
             <Select />
