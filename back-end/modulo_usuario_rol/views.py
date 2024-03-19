@@ -1856,7 +1856,7 @@ class firma_tratamiento_datos_view(APIView):
                         tipo_id_estudiante=serializer.data["tipo_id_estudiante"],
                         nombre_firma=serializer.data["nombre_firma"],
                         correo_firma=serializer.data["correo_firma"],
-                        autoriza=bool(serializer.data["autoriza"]),
+                        autoriza_tratamiento_datos=bool(serializer.data["autoriza_tratamiento_datos"]),
                         autoriza_tratamiento_imagen=bool(serializer.data["autoriza_tratamiento_imagen"])
                     )
                     return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
