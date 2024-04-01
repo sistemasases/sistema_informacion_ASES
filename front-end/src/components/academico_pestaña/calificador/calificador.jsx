@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import Tabla_de_notas from './tabla_de_notas';
-import axios from 'axios';
-import Modal from 'react-bootstrap/Modal';
-import { decryptTokenFromSessionStorage, desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx'
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import Tabla_de_notas from "./tabla_de_notas";
+import axios from "axios";
+import Modal from "react-bootstrap/Modal";
+import {
+  decryptTokenFromSessionStorage,
+  desencriptar,
+} from "../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const Cabecera = () => {
   const config = {
     headers: {
-      Authorization: 'Bearer ' + decryptTokenFromSessionStorage(), 
+      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
     },
   };
 
@@ -18,7 +21,7 @@ const Cabecera = () => {
     alumnos_del_profesor: [],
     tiene_alumnos_del_profesor: false,
     tiene_items: false,
-    filtro: '',
+    filtro: "",
     profesores_de_la_franja: [],
   });
 
@@ -29,18 +32,18 @@ const Cabecera = () => {
   const [editShow, setEditShow] = useState(false);
   const handleEditClose = () => setEditShow(false);
 
-  const [itemName, setItemName] = useState('');
+  const [itemName, setItemName] = useState("");
   const [isPartial, setIsPartial] = useState(false);
   const [flag_de_actualizacion, setFlag_de_actualizacion] = useState(false);
 
-  const [editItemName, setEditItemName] = useState('');
+  const [editItemName, setEditItemName] = useState("");
   const [editIsPartial, setEditIsPartial] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
 
-  const [profesor, setProfesor] = useState('');
-  const [curso, setCurso] = useState('');
-  const [cod, setCod] = useState('');
-  const [franja, setFranja] = useState('');
+  const [profesor, setProfesor] = useState("");
+  const [curso, setCurso] = useState("");
+  const [cod, setCod] = useState("");
+  const [franja, setFranja] = useState("");
 
   const [alumnos_del_profesor, setAlumnos_del_profesor] = useState([]);
   const [curso_datos_generales, setCurso_datos_generales] = useState([]);
@@ -51,7 +54,7 @@ const Cabecera = () => {
 
   useEffect(() => {
     const currentUrl = window.location.href;
-    const urlParts = currentUrl.split('/');
+    const urlParts = currentUrl.split("/");
     const cursoParam = urlParts[4]; // Obtiene el valor del curso
     const profesorParam = urlParts[5]; // Obtiene el valor del profesor
     const codParam = urlParts[6]; // Obtiene el valor del curso
@@ -77,7 +80,7 @@ const Cabecera = () => {
         });
         setAlumnos_del_profesor(response.data);
       } catch (error) {
-        console.log('Error al obtener los datos de alumnos');
+        console.log("Error al obtener los datos de alumnos");
       }
     };
 
@@ -90,15 +93,16 @@ const Cabecera = () => {
         );
 
         setDatos_del_curso(response.data);
-        const parcialIDs = response.data.filter(item => item.parcial).map(item => item.id);
-        setIdParciales(parcialIDs)
-
+        const parcialIDs = response.data
+          .filter((item) => item.parcial)
+          .map((item) => item.id);
+        setIdParciales(parcialIDs);
       } catch (error) {
-        console.log('No se pudo obtener el dato del curso');
+        console.log("No se pudo obtener el dato del curso");
       }
     };
 
-    if (curso !== '' && profesor !== '') {
+    if (curso !== "" && profesor !== "") {
       fetchData();
       datos_del_curso();
       //info_materia();
@@ -107,19 +111,21 @@ const Cabecera = () => {
     const curso_datos_generales = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/academico/curso_datos_generales/` + curso + '/',
+          `${process.env.REACT_APP_API_URL}/academico/curso_datos_generales/` +
+            curso +
+            "/",
           config
         );
 
         setCurso_datos_generales(response.data);
 
-        console.log('Datos del curso capturados correctamente');
+        console.log("Datos del curso capturados correctamente");
       } catch (error) {
-        console.log('No se pudo obtener el dato del curso');
+        console.log("No se pudo obtener el dato del curso");
       }
     };
 
-    if (curso !== '' && profesor !== '') {
+    if (curso !== "" && profesor !== "") {
       fetchData();
       datos_del_curso();
       curso_datos_generales();
@@ -128,7 +134,7 @@ const Cabecera = () => {
   }, [profesor, curso, flag_de_actualizacion]);
 
   const agregar_item = async () => {
-    const semestreActual = curso_datos_generales['id_semestre'];
+    const semestreActual = curso_datos_generales["id_semestre"];
 
     try {
       const data = {
@@ -146,10 +152,12 @@ const Cabecera = () => {
       );
 
       // Aquí puedes realizar alguna acción adicional con la respuesta del backend si lo necesitas.
-    const newItemId = response.data.id; // Obtener el ID del nuevo item
+      const newItemId = response.data.id; // Obtener el ID del nuevo item
 
       // Crear nuevas notas para cada estudiante del curso con el ID del nuevo item
-      const estudiantesCurso = alumnos_del_profesor.map((estudiante) => estudiante.id);
+      const estudiantesCurso = alumnos_del_profesor.map(
+        (estudiante) => estudiante.id
+      );
       for (const estudianteId of estudiantesCurso) {
         await axios.post(
           `${process.env.REACT_APP_API_URL}/academico/crear_nota/`,
@@ -160,7 +168,7 @@ const Cabecera = () => {
       setFlag_de_actualizacion(!flag_de_actualizacion);
       handleClose(); // Cerrar el modal después de agregar el item exitosamente.
     } catch (error) {
-      console.log('Error al agregar el item' + error);
+      console.log("Error al agregar el item" + error);
     }
   };
 
@@ -175,8 +183,8 @@ const Cabecera = () => {
   // Función para editar el ítem
   // Función para editar el ítem
   const handleEditItem = async () => {
-    const semestreActual = curso_datos_generales['id_semestre'];
-  
+    const semestreActual = curso_datos_generales["id_semestre"];
+
     try {
       const data = {
         id_curso: curso,
@@ -185,116 +193,115 @@ const Cabecera = () => {
         parcial: editIsPartial,
         id_semestre: semestreActual,
       };
-  
+
       // Realizar la solicitud PUT al backend para editar el ítem
       await axios.put(
         `${process.env.REACT_APP_API_URL}/academico/crear_item/${editingItem.id}/`,
         data,
         config
       );
-  
+
       // Aquí puedes realizar alguna acción adicional después de editar el ítem si es necesario.
       setFlag_de_actualizacion(!flag_de_actualizacion);
       setEditingItem(null); // Limpiar el objeto de edición
       setEditShow(false); // Cerrar el modal de edición
     } catch (error) {
-      console.log('Error al editar el ítem' + error);
+      console.log("Error al editar el ítem" + error);
     }
-};
+  };
 
-const handleDeleteItem = async () => {
-  try {
-    // Crear una lista de notas con el id_item igual al id del item que queremos borrar
-    const notasToDelete = alumnos_del_profesor.flatMap((estudiante) =>
-      estudiante.notas.filter((nota) => nota.id_item === editingItem.id)
-    );
+  const handleDeleteItem = async () => {
+    try {
+      // Crear una lista de notas con el id_item igual al id del item que queremos borrar
+      const notasToDelete = alumnos_del_profesor.flatMap((estudiante) =>
+        estudiante.notas.filter((nota) => nota.id_item === editingItem.id)
+      );
 
-    // Borrar cada una de las notas
-    for (const nota of notasToDelete) {
+      // Borrar cada una de las notas
+      for (const nota of notasToDelete) {
+        await axios.delete(
+          `${process.env.REACT_APP_API_URL}/academico/borrar_nota/${nota.id}/`,
+          config
+        );
+      }
+
+      // Borrar el ítem
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/academico/borrar_nota/${nota.id}/`,
+        `${process.env.REACT_APP_API_URL}/academico/borrar_item/${editingItem.id}/`,
         config
       );
+
+      // Actualizamos el estado para refrescar la lista de ítems
+      setFlag_de_actualizacion(!flag_de_actualizacion);
+
+      // Cerramos el modal de edición
+      setEditingItem(null);
+      setEditShow(false);
+    } catch (error) {
+      console.log("Error al borrar el ítem y sus notas:", error);
     }
-
-    // Borrar el ítem
-    await axios.delete(
-      `${process.env.REACT_APP_API_URL}/academico/borrar_item/${editingItem.id}/`,
-      config
-    );
-
-    // Actualizamos el estado para refrescar la lista de ítems
-    setFlag_de_actualizacion(!flag_de_actualizacion);
-
-    // Cerramos el modal de edición
-    setEditingItem(null);
-    setEditShow(false);
-  } catch (error) {
-    console.log('Error al borrar el ítem y sus notas:', error);
-  }
-};
-
+  };
 
   return (
     <Container className="container_academico_para_footer">
       <Row>
-        <Col xs={'12'} md={'8'} className="texto_titulo_bold">
+        <Col xs={"12"} md={"8"} className="texto_titulo_bold">
           {curso_datos_generales.nombre}
         </Col>
       </Row>
       <Row>
-        <Col xs={'12'} md={'8'} className="texto_subtitulo2">
-          {curso_datos_generales.cod_materia+'-'+curso_datos_generales.franja}
+        <Col xs={"12"} md={"8"} className="texto_subtitulo2">
+          {curso_datos_generales.cod_materia +
+            "-" +
+            curso_datos_generales.franja}
         </Col>
       </Row>
 
-      <br/>
+      <br />
       <Row>
-        <Col xs={'12'} md={'8'} className="texto_titulo_bold">
+        <Col xs={"12"} md={"8"} className="texto_titulo_bold">
           <Button onClick={handleShow}>Agregar Item</Button>
         </Col>
       </Row>
 
       <Row>
-        <Col> Parciales : <i class="bi bi-star"></i></Col>
+        <Col>
+          {" "}
+          Parciales : <i class="bi bi-star"></i>
+        </Col>
       </Row>
-      <br/>
-
-
+      <br />
 
       {state.tiene_alumnos_del_profesor ? (
-        <Row >
-
-          <Col className="contenido_fichas_academico2" xs={2} >
+        <Row>
+          <Col className="contenido_fichas_academico2" xs={2}>
             Estudiante
           </Col>
 
-          <Col className="contenido_fichas_academico2" xs={2} >
+          <Col className="contenido_fichas_academico2" xs={2}>
             Cod. Estudiante
           </Col>
 
           {datos_del_curso.length > 0 ? (
             datos_del_curso.map((item, index) => (
-              <Col key={index} >
+              <Col key={index}>
                 {item.parcial && <i class="bi bi-star"></i>}
                 <span>{item.nombre}</span>
-                  <Button
-                    variant="link"
-                    onClick={() => handleEditModal(item)}
-                    style={{ textDecoration: 'none' }}
-                  >
+                <Button
+                  variant="link"
+                  onClick={() => handleEditModal(item)}
+                  style={{ textDecoration: "none" }}
+                >
                   <i className="bi bi-pencil" />
                 </Button>
               </Col>
             ))
-          )
-          : 
-          (
+          ) : (
             <Col>No hay items registrados</Col>
           )}
 
-          {desencriptar(sessionStorage.rol) !== 'profesor' ? (
-            <Col xs={'2'}>
+          {desencriptar(sessionStorage.rol) !== "profesor" ? (
+            <Col xs={"2"}>
               <Row>
                 <Col xs={"6"}>Promedio:</Col>
                 <Col xs={"6"}>Parciales:</Col>
@@ -303,49 +310,38 @@ const handleDeleteItem = async () => {
           ) : (
             <div class="d-none"></div>
           )}
-
         </Row>
-      ) 
-      : 
-      (
+      ) : (
         <Row>Sin alumnos ni items registrados</Row>
-      )
-    }
-
-
-
+      )}
 
       {state.tiene_alumnos_del_profesor ? (
-        <Row >
-
-        <Col xs={"12"}>
-          {alumnos_del_profesor.length > 0 ? (
+        <Row>
+          <Col xs={"12"}>
+            {alumnos_del_profesor.length > 0 ? (
               alumnos_del_profesor.map((item, index) => (
-                <Tabla_de_notas key={index} item={item} lista_parciales={idParciales} />
+                <Tabla_de_notas
+                  key={index}
+                  item={item}
+                  lista_parciales={idParciales}
+                />
               ))
-            ) 
-            : 
-            (
+            ) : (
               <Col>No hay estudiantes registrados</Col>
-            )
-          }
-        </Col>
-
+            )}
+          </Col>
         </Row>
-        ) 
-        : 
-        (
-          <Row>Sin alumnos ni items registrados</Row>
-        )
-      }
+      ) : (
+        <Row>Sin alumnos ni items registrados</Row>
+      )}
 
-      <Modal show={show} onHide={handleClose} size={'lg'}>
+      <Modal show={show} onHide={handleClose} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Nuevo Item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col xs={'12'} md={'6'}>
+            <Col xs={"12"} md={"6"}>
               <input
                 type="text"
                 value={itemName}
@@ -355,7 +351,7 @@ const handleDeleteItem = async () => {
             </Col>
           </Row>
           <Row>
-            <Col xs={'12'} md={'6'}>
+            <Col xs={"12"} md={"6"}>
               <label>
                 <input
                   type="checkbox"
@@ -378,13 +374,13 @@ const handleDeleteItem = async () => {
       </Modal>
 
       {/* Modal para editar/borrar ítems */}
-      <Modal show={editShow} onHide={handleEditClose} size={'lg'}>
+      <Modal show={editShow} onHide={handleEditClose} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Editar Item</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col xs={'12'} md={'6'}>
+            <Col xs={"12"} md={"6"}>
               <input
                 type="text"
                 value={editItemName}
@@ -394,7 +390,7 @@ const handleDeleteItem = async () => {
             </Col>
           </Row>
           <Row>
-            <Col xs={'12'} md={'6'}>
+            <Col xs={"12"} md={"6"}>
               <label>
                 <input
                   type="checkbox"

@@ -21,7 +21,7 @@ import {
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 
 export const Contador_alertas = () => {
-  const [state, set_state] = useState({ alertas_total: ''});
+  const [state, set_state] = useState({ alertas_total: "" });
 
   useEffect(() => {
     let rol = desencriptar(sessionStorage.getItem("rol"));

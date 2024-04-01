@@ -44,6 +44,6 @@ const FilterBox = () => {
       </Row>
     </>
   );
-}
+};
 
 export default FilterBox;

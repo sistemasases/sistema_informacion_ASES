@@ -18,7 +18,7 @@ const General = () => {
       setNombreBoton("Editar información");
     }
   }, [editar]);
-  // La idea esar al estudiante seleccionado almacenado en el useAuthStore, el cual es visible para 
+  // La idea esar al estudiante seleccionado almacenado en el useAuthStore, el cual es visible para
   // todos los componenetes y modificar ciertos detalles
 
   return (

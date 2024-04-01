@@ -7,14 +7,14 @@ export const useAuthStore = create(
     persist(
       (set, get) => ({
         user: null,
-        estudiantesDiscapacidad: [],
-        estudianteSelected: null,
+        estudiantes: [],
+        shosenStudent: null,
 
         setUser: (payload) => set((state) => ({ user: payload })),
-        setEstudiantesDiscapacidad: (payload) =>
-          set((state) => ({ estudiantesDiscapacidad: payload })),
-        setEstudianteSelected: (payload) =>
-          set((state) => ({ estudianteSelected: payload })),
+        setEstudiantes: (payload) =>
+          set((state) => ({ estudiantes: payload })),
+        setShosenStudent: (payload) =>
+          set((state) => ({ shosenStudent: payload })),
       }),
       {
         name: "auth",

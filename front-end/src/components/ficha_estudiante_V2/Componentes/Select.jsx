@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/auth";
 import perfilUsuario from "./Usuario.png";
-import "../../../Scss/ficha_estudiante_discapacidad/select.css";
+import "../../../Scss/ficha_estudiante_V2/select.css";
+import fetchEstudiante from "../api/fetch_estudiante";
 
 // Componente de Select
-// Este componente se encarga de obtener al estudiante seleccionado, 
-// guardarlo en la varible global estudianteSelected para que otros 
+// Este componente se encarga de obtener al estudiante seleccionado,
+// guardarlo en la varible global estudianteSelected para que otros
 // componentes lo puedan usar y mostrar su informacion básica
 const Select = () => {
-  const [estudiantes, setEstudiantes] = useState([]);
-  const { estudiantesDiscapacidad, setEstudianteSelected } = useAuthStore();
+  const { estudiantes, user, setShosenStudent } = useAuthStore();
   const [selectedStudent, setSelectedStudent] = useState({
     id: "identificación",
     nombre: null,
@@ -27,57 +27,66 @@ const Select = () => {
     telefono: "000 000 0000",
   });
 
-  const handleSelectStudent = (student) => {
+  const handleSelectStudent = (e) => {
+    const studentCodigo = e.target.value;
+    const student_sec = estudiantes.find(
+      (estudiante) => estudiante.cod_univalle === studentCodigo
+    );
+
+    console.log(selectedStudent);
     setSelectedStudent({
-      id: student.id,
-      codigo: student.codigo,
-      correo: student.correo,
-      edad: student.edad,
-      imagen: student.imagen,
-      programas: student.programas,
-      seguimientos: student.seguimientos,
-      condicion: student.condicion,
-      profesional: student.profesional,
-      practicante: student.practicante,
-      monitor: student.monitor,
-      ultimaActualizacion: student.ultimaActualizacion,
-      telefono: student.telefono,
+      id: student_sec.id
     });
-    setEstudianteSelected(selectedStudent)
   };
 
+  function calcularEdad(fechaNacimiento) {
+    const fechaNacimientoMs = Date.parse(fechaNacimiento);
+    const edadMs = Date.now() - fechaNacimientoMs;
+    const edadFecha = new Date(edadMs);
+    return Math.abs(edadFecha.getUTCFullYear() - 1970);
+  }
+
+  // Se ejecuta cuando se selecciona un estudiante, trae la informacion
+  // del estudiante seleccionado y la guarda en la variable global
   useEffect(() => {
-    if (estudiantesDiscapacidad.length > 0) return;
-    setEstudiantes(estudiantesDiscapacidad);
-  }, [estudiantesDiscapacidad]);
+    if (selectedStudent.id === "identificación") return;
+    // Method setEstudiantes is used to set the students data in the store
+    const getStudent = async () => {
+      const res = await fetchEstudiante(selectedStudent.id, user.sede_id);
+      if (res) {
+        setSelectedStudent(res);
+        setShosenStudent(selectedStudent);
+      }
+      console.log(res);
+    };
+    getStudent();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStudent.id, user.sede_id]);
 
   return (
     <div className="container-main">
       <div className="container-submain">
         <div className="container-basic">
-          <select
-            onChange={(e) => {
-              const studentCodigo = e.target.value;
-              const selectedStudent = estudiantes.find(
-                (estudiante) => estudiante.codigo === studentCodigo
-              );
-              handleSelectStudent(selectedStudent);
-            }}
-            className="select-item"
-          >
-            <option>Select a student</option>
-            {estudiantes.map((estudiante) => (
-              <option value={estudiante.codigo}>
-                {estudiante.codigo} - {estudiante.nombre}
+          <select onChange={handleSelectStudent} className="select-item">
+            <option value="">Select a student</option>
+            {estudiantes?.map((estudiante) => (
+              <option
+                key={estudiante.cod_univalle}
+                value={estudiante.cod_univalle}
+              >
+                {estudiante.cod_univalle} - {estudiante.nombre}{" "}
+                {estudiante.apellido}
               </option>
             ))}
           </select>
 
-          <div className="basic-info">
-            <p>{selectedStudent.id}</p>
-            <p>{selectedStudent.correo}</p>
-            <p>{selectedStudent.edad}</p>
-          </div>
+          {selectedStudent && (
+            <div className="basic-info">
+              <p>{selectedStudent.num_doc}</p>
+              <p>{selectedStudent.email}</p>
+              <p>{calcularEdad(selectedStudent.fecha_nac)} años</p>
+            </div>
+          )}
         </div>
 
         <div className="container-programa">
@@ -89,56 +98,78 @@ const Select = () => {
           </div>
         </div>
 
-        <div className="condicion">
-          <p>Condición de excepción {selectedStudent.condicion}</p>
-        </div>
+        {selectedStudent && (
+          <div className="condicion">
+            <p>Condición de excepción {selectedStudent.nombre_cohorte}</p>
+          </div>
+        )}
 
         <div className="info-prof-programa">
-          {selectedStudent.programas.length === 0 ? (
-            <p className="dimen-prog desertor"></p>
+          {selectedStudent?.programas?.length === 0 ? (
+            <p className="dimen-prog desertor">No hay programas disponibles</p>
           ) : (
-            selectedStudent.programas.map((programa) => {
+            selectedStudent?.programas?.map((programa) => {
               let color;
-              if (programa.estado === "egresado") {
+              if (programa.id_estado_id === 3) {
                 color = "egresado";
-              } else if (programa.estado === "en curso") {
+              } else if (programa.id_estado_id === 1) {
                 color = "encurso";
-              } else if (programa.estado === "desertor") {
+              } else if (programa.id_estado_id === 6) {
                 color = "desertor";
               }
               return (
-                <p className={`dimen-prog ${color}`}>
-                  {programa.codigoEst} - {programa.codigo} - {programa.nombre}
+                <p
+                  key={programa.cod_univalle}
+                  className={`dimen-prog ${color}`}
+                >
+                  {programa.codigo_estudiante} - {programa.cod_univalle} -{" "}
+                  {programa.nombre_programa}
                 </p>
               );
             })
           )}
         </div>
 
-        <div className="container-otros-datos">
-          <div className="more-stud-info">
-            <p>Profesional: {selectedStudent.profesional}</p>
-            <p>Practicante: {selectedStudent.practicante}</p>
-            <p>Monitor: {selectedStudent.monitor}</p>
-            <p>Actualización: {selectedStudent.ultimaActualizacion}</p>
+        {selectedStudent && (
+          <div className="container-otros-datos">
+            <div className="more-stud-info">
+              <p>
+                Profesional: {selectedStudent.profesional?.first_name}{" "}
+                {selectedStudent.profesional?.last_name}
+              </p>
+              <p>
+                Practicante: {selectedStudent.practicante?.first_name}{" "}
+                {selectedStudent.practicante?.last_name}
+              </p>
+              <p>
+                Monitor: {selectedStudent.info_monitor?.first_name}{" "}
+                {selectedStudent.info_monitor?.last_name}
+              </p>
+              <p>Actualización: {selectedStudent.ult_modificacion}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
-      <div className="container-img">
-        <img
-          className="img"
-          src={selectedStudent.imagen || perfilUsuario}
-          alt="Student"
-        />
-      </div>
-      <div className="links">
-        <a className="link" href="#trayectoria">
-          TRAYECTORIA
-        </a>
-        <a className="link" href={`tel:+57${selectedStudent.telefono}`}>
-          + 57 {selectedStudent.telefono}
-        </a>
-      </div>
+
+      {selectedStudent && (
+        <>
+          <div className="container-img">
+            <img
+              className="img"
+              src={selectedStudent.imagen || perfilUsuario}
+              alt="Student"
+            />
+          </div>
+          <div className="links">
+            <a className="link" href="#trayectoria">
+              TRAYECTORIA
+            </a>
+            <a className="link" href={`tel:+57${selectedStudent.celular}`}>
+              + 57 {selectedStudent.celular}
+            </a>
+          </div>
+        </>
+      )}
     </div>
   );
 };

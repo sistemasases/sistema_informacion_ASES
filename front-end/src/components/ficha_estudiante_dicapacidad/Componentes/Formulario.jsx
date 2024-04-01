@@ -17,8 +17,8 @@ const Formulario = () => {
     }
   }, [form]);
 
-  // En la consola sale error porque hay ciertos campo que tienen el mismo atributo id, 
-  // esto se corregira cuando se definan las consultas al backend, Este componente se 
+  // En la consola sale error porque hay ciertos campo que tienen el mismo atributo id,
+  // esto se corregira cuando se definan las consultas al backend, Este componente se
   // terminara cuando se definan las consultas al backend
 
   return (
@@ -61,14 +61,12 @@ const Formulario = () => {
           manejo_finanzas: "",
           //Faltan mas pero se definiran cuando esten listas las consultas al backend
         }}
-        validate={(values) => {
-
-        }}
+        validate={(values) => {}}
         onSubmit={(values) => {
           console.log("Formulario enviado", values);
         }}
       >
-        {({ values, handleSubmit, handleChange, handleBlur}) => (
+        {({ values, handleSubmit, handleChange, handleBlur }) => (
           <form className="formulario" onSubmit={handleSubmit}>
             {form ? (
               <>

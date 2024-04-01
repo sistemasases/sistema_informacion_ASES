@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
-import Switch from 'react-switch';
-import { Container, Row, Col } from 'react-bootstrap';
-import axios from 'axios';
-import Informacion_rol from '../../components/reporte_seguimientos/informacion_rol';
-import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import React, { useState, useEffect } from "react";
+import Select from "react-select";
+import Switch from "react-switch";
+import { Container, Row, Col } from "react-bootstrap";
+import axios from "axios";
+import Informacion_rol from "../../components/reporte_seguimientos/informacion_rol";
+import {
+  desencriptar,
+  decryptTokenFromSessionStorage,
+  desencriptarInt,
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 
 const Cabecera = (props) => {
   const config = {
-    Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
+    Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
 
   const [switchChecked, setChecked] = useState(false);
@@ -24,48 +28,45 @@ const Cabecera = (props) => {
   const total_datos_estudiantes = [];
 
   const [state, set_state] = useState({
-    periodo: '',
-    usuario: '',
+    periodo: "",
+    usuario: "",
     data_user: [],
     data_periodo: [],
     data_rol: [],
-    seleccionado: '',
-    id_usuario: '',
-    nombres: '',
-    apellidos: '',
-    cedula: '',
-    correo: '',
-    telefono: '',
+    seleccionado: "",
+    id_usuario: "",
+    nombres: "",
+    apellidos: "",
+    cedula: "",
+    correo: "",
+    telefono: "",
     reportes_estudiante: [],
     ids_estudiantes_del_monitor: [],
     ids_monitores_del_practicante: [],
     ids_practicantes_del_profesional: [],
     tiene_datos: false,
 
-    total_fichas_prof:0,
-    fichas_revisado_prof:0,
-    fichas_no_revisado_prof:0,
+    total_fichas_prof: 0,
+    fichas_revisado_prof: 0,
+    fichas_no_revisado_prof: 0,
 
-    total_inasistencias_prof:0,
-    inasistencias_revisado_prof:0,
-    inasistencias_no_revisado_prof:0,
+    total_inasistencias_prof: 0,
+    inasistencias_revisado_prof: 0,
+    inasistencias_no_revisado_prof: 0,
 
+    total_fichas_prac: 0,
+    fichas_revisado_prac: 0,
+    fichas_no_revisado_prac: 0,
 
-
-    total_fichas_prac:0,
-    fichas_revisado_prac:0,
-    fichas_no_revisado_prac:0,
-
-    total_inasistencias_prac:0,
-    inasistencias_revisado_prac:0,
-    inasistencias_no_revisado_prac:0,
+    total_inasistencias_prac: 0,
+    inasistencias_revisado_prac: 0,
+    inasistencias_no_revisado_prac: 0,
   });
-
 
   useEffect(() => {
     axios({
       url: `${process.env.REACT_APP_API_URL}/wizard/semestre/`,
-      method: 'GET',
+      method: "GET",
       headers: config,
     })
       .then((respuesta) => {
@@ -78,61 +79,57 @@ const Cabecera = (props) => {
         return err;
       });
 
-    if (desencriptar(sessionStorage.getItem('rol')) === 'profesional')
-      {
-        const paramsget = {
-          id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
-        };
-        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + desencriptar(sessionStorage.getItem('id_usuario')) + '/';
-        axios({
-          url: url_axios,
-          params: paramsget,
-          method: 'GET',
-          headers: config,
-        })
-          .then((respuesta) => {
-            set_state({
-              ...state,
-              ids_practicantes_del_profesional: respuesta.data,
-              tiene_datos: true,
-            });
-            //conteo_datos();
-          })
-          .catch((err) => {
-            return err;
+    if (desencriptar(sessionStorage.getItem("rol")) === "profesional") {
+      const paramsget = {
+        id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
+      };
+      const url_axios =
+        `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` +
+        desencriptar(sessionStorage.getItem("id_usuario")) +
+        "/";
+      axios({
+        url: url_axios,
+        params: paramsget,
+        method: "GET",
+        headers: config,
+      })
+        .then((respuesta) => {
+          set_state({
+            ...state,
+            ids_practicantes_del_profesional: respuesta.data,
+            tiene_datos: true,
           });
-
-      }
-      else if (desencriptar(sessionStorage.getItem('rol')) === 'practicante')
-      {
-        const paramsget = {
-          id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
-        };
-        axios({
-          url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos_practicante/` + desencriptar(sessionStorage.getItem('id_usuario')) + '/',
-          params : paramsget,
-          method: 'GET',
-          headers: config,
+          //conteo_datos();
         })
-          .then((respuesta) => {
-            set_state({
-              ...state,
-              ids_practicantes_del_profesional: respuesta.data,
-              tiene_datos: true,
-            });
-            //conteo_datos();
-          })
-          .catch((err) => {
-            return err;
+        .catch((err) => {
+          return err;
+        });
+    } else if (desencriptar(sessionStorage.getItem("rol")) === "practicante") {
+      const paramsget = {
+        id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
+      };
+      axios({
+        url:
+          `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos_practicante/` +
+          desencriptar(sessionStorage.getItem("id_usuario")) +
+          "/",
+        params: paramsget,
+        method: "GET",
+        headers: config,
+      })
+        .then((respuesta) => {
+          set_state({
+            ...state,
+            ids_practicantes_del_profesional: respuesta.data,
+            tiene_datos: true,
           });
-      }
-
-
-
+          //conteo_datos();
+        })
+        .catch((err) => {
+          return err;
+        });
+    }
   }, []);
-
-
-
 
   /*
 
@@ -165,23 +162,28 @@ const Cabecera = (props) => {
 
 */
 
-
-
-
   const handle_users_persona = (e) => {
     if (bandera_option_user == true) {
       for (let i = 0; i < props.data_user.length; i++) {
         const dato = {
-          value: props.data_user[i]['id'],
-          label: props.data_user[i]['username'] + ' ' + props.data_user[i]['first_name'] + ' ' + props.data_user[i]['last_name'],
+          value: props.data_user[i]["id"],
+          label:
+            props.data_user[i]["username"] +
+            " " +
+            props.data_user[i]["first_name"] +
+            " " +
+            props.data_user[i]["last_name"],
           id: i,
         };
         datos_option_user.push(dato);
 
-        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/` + props.data_user[i]['id_rol'] + '/';
+        const url_axios =
+          `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/` +
+          props.data_user[i]["id_rol"] +
+          "/";
         axios({
           url: url_axios,
-          method: 'GET',
+          method: "GET",
           headers: config,
         })
           .then((respuesta) => {
@@ -193,25 +195,23 @@ const Cabecera = (props) => {
     }
   };
 
-
-
-
-
-
   const handle_option_user = (e) => {
     set_state({
       ...state,
       seleccionado: e.id,
-      id_usuario: props.data_user[e.id]['id'],
+      id_usuario: props.data_user[e.id]["id"],
       total_datos_estudiante_seleccionado: total_datos_estudiantes[e.id],
     });
     const paramsget = {
-      id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
+      id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
     axios({
-      url: `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` + props.data_user[e.id]['id'] + '/',
-      params : paramsget,
-      method: 'GET',
+      url:
+        `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` +
+        props.data_user[e.id]["id"] +
+        "/",
+      params: paramsget,
+      method: "GET",
       headers: config,
     })
       .then((respuesta) => {
@@ -227,11 +227,6 @@ const Cabecera = (props) => {
       });
   };
 
-
-
-
-
-
   const handle_option_periodo = (e) => {
     set_state({
       ...state,
@@ -239,13 +234,14 @@ const Cabecera = (props) => {
     });
   };
 
-
-
-
   const handle_periodo = (e) => {
     if (bandera_option_periodo == true) {
       for (let i = 0; i < state.data_periodo.length; i++) {
-        const dato = { value: state.data_periodo[i]['nombre'], label: state.data_periodo[i]['nombre'], id: ['id_instancia'] };
+        const dato = {
+          value: state.data_periodo[i]["nombre"],
+          label: state.data_periodo[i]["nombre"],
+          id: ["id_instancia"],
+        };
         datos_option_periodo.push(dato);
       }
       bandera_option_periodo = false;
@@ -253,95 +249,93 @@ const Cabecera = (props) => {
     }
   };
 
+  useEffect(() => {
+    // Variables para el conteo
+    let conteo_total_fichas_prof = 0;
+    let conteo_fichas_revisado_prof = 0;
+    let conteo_fichas_no_revisado_prof = 0;
+    let conteo_total_inasistencias_prof = 0;
+    let conteo_inasistencias_revisado_prof = 0;
+    let conteo_inasistencias_no_revisado_prof = 0;
 
-
-
-
-
-
-
-
-
-    useEffect(() => {
-      // Variables para el conteo
-      let conteo_total_fichas_prof = 0;
-      let conteo_fichas_revisado_prof = 0;
-      let conteo_fichas_no_revisado_prof = 0;
-      let conteo_total_inasistencias_prof = 0;
-      let conteo_inasistencias_revisado_prof = 0;
-      let conteo_inasistencias_no_revisado_prof = 0;
-
-      let conteo_total_fichas_prac = 0;
-      let conteo_fichas_revisado_prac = 0;
-      let conteo_fichas_no_revisado_prac = 0;
-      let conteo_total_inasistencias_prac = 0;
-      let conteo_inasistencias_revisado_prac = 0;
-      let conteo_inasistencias_no_revisado_prac = 0;
-
+    let conteo_total_fichas_prac = 0;
+    let conteo_fichas_revisado_prac = 0;
+    let conteo_fichas_no_revisado_prac = 0;
+    let conteo_total_inasistencias_prac = 0;
+    let conteo_inasistencias_revisado_prac = 0;
+    let conteo_inasistencias_no_revisado_prac = 0;
 
     state.ids_practicantes_del_profesional.forEach((practicante) => {
+      conteo_total_fichas_prof +=
+        practicante.cantidad_reportes.count_seguimientos;
+      conteo_total_inasistencias_prof +=
+        practicante.cantidad_reportes.count_inasistencias;
+      conteo_total_fichas_prac +=
+        practicante.cantidad_reportes.count_seguimientos;
+      conteo_total_inasistencias_prac +=
+        practicante.cantidad_reportes.count_inasistencias;
 
-      conteo_total_fichas_prof += practicante.cantidad_reportes.count_seguimientos;
-      conteo_total_inasistencias_prof += practicante.cantidad_reportes.count_inasistencias;
-      conteo_total_fichas_prac += practicante.cantidad_reportes.count_seguimientos;
-      conteo_total_inasistencias_prac += practicante.cantidad_reportes.count_inasistencias;
+      conteo_fichas_no_revisado_prof +=
+        practicante.cantidad_reportes.count_seguimientos_pendientes_profesional;
+      conteo_inasistencias_no_revisado_prof +=
+        practicante.cantidad_reportes
+          .count_inasistencias_pendientes_profesional;
 
-      conteo_fichas_no_revisado_prof += practicante.cantidad_reportes.count_seguimientos_pendientes_profesional;
-      conteo_inasistencias_no_revisado_prof += practicante.cantidad_reportes.count_inasistencias_pendientes_profesional;
-
-
-      conteo_fichas_no_revisado_prac += practicante.cantidad_reportes.count_seguimientos_pendientes_practicante;
-      conteo_inasistencias_no_revisado_prac += practicante.cantidad_reportes.count_inasistencias_pendientes_practicante;
-
+      conteo_fichas_no_revisado_prac +=
+        practicante.cantidad_reportes.count_seguimientos_pendientes_practicante;
+      conteo_inasistencias_no_revisado_prac +=
+        practicante.cantidad_reportes
+          .count_inasistencias_pendientes_practicante;
     });
-    
-    conteo_fichas_revisado_prof = conteo_total_fichas_prof - conteo_fichas_no_revisado_prof;
-    conteo_inasistencias_revisado_prof = conteo_total_inasistencias_prof - conteo_inasistencias_no_revisado_prof;
 
-    conteo_fichas_revisado_prac = conteo_total_fichas_prac - conteo_fichas_no_revisado_prac;
-    conteo_inasistencias_revisado_prac = conteo_total_inasistencias_prac - conteo_inasistencias_no_revisado_prac;
+    conteo_fichas_revisado_prof =
+      conteo_total_fichas_prof - conteo_fichas_no_revisado_prof;
+    conteo_inasistencias_revisado_prof =
+      conteo_total_inasistencias_prof - conteo_inasistencias_no_revisado_prof;
 
-
-
+    conteo_fichas_revisado_prac =
+      conteo_total_fichas_prac - conteo_fichas_no_revisado_prac;
+    conteo_inasistencias_revisado_prac =
+      conteo_total_inasistencias_prac - conteo_inasistencias_no_revisado_prac;
 
     set_state({
-        ...state,
-        total_fichas_prof : conteo_total_fichas_prof,
-        fichas_revisado_prof : conteo_fichas_revisado_prof,
-        fichas_no_revisado_prof : conteo_fichas_no_revisado_prof,
+      ...state,
+      total_fichas_prof: conteo_total_fichas_prof,
+      fichas_revisado_prof: conteo_fichas_revisado_prof,
+      fichas_no_revisado_prof: conteo_fichas_no_revisado_prof,
 
-        total_inasistencias_prof : conteo_total_inasistencias_prof,
-        inasistencias_revisado_prof : conteo_inasistencias_revisado_prof,
-        inasistencias_no_revisado_prof : conteo_inasistencias_no_revisado_prof,
+      total_inasistencias_prof: conteo_total_inasistencias_prof,
+      inasistencias_revisado_prof: conteo_inasistencias_revisado_prof,
+      inasistencias_no_revisado_prof: conteo_inasistencias_no_revisado_prof,
 
+      total_fichas_prac: conteo_total_fichas_prac,
+      fichas_revisado_prac: conteo_fichas_revisado_prac,
+      fichas_no_revisado_prac: conteo_fichas_no_revisado_prac,
 
-
-        total_fichas_prac : conteo_total_fichas_prac,
-        fichas_revisado_prac : conteo_fichas_revisado_prac,
-        fichas_no_revisado_prac : conteo_fichas_no_revisado_prac,
-
-        total_inasistencias_prac : conteo_total_inasistencias_prac,
-        inasistencias_revisado_prac : conteo_inasistencias_revisado_prac,
-        inasistencias_no_revisado_prac : conteo_inasistencias_no_revisado_prac,
-      });
-
+      total_inasistencias_prac: conteo_total_inasistencias_prac,
+      inasistencias_revisado_prac: conteo_inasistencias_revisado_prac,
+      inasistencias_no_revisado_prac: conteo_inasistencias_no_revisado_prac,
+    });
   }, [state.ids_practicantes_del_profesional]);
-
-
-
-
-
 
   const handle_upload = (e) => {};
 
   return (
     <Container>
       <Row className="row_presentacion_reportes_seguimientos">
-        <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
+        <Col
+          className="col_selectores_reportes_seguimientos"
+          xs={"12"}
+          md={"4"}
+        >
           <h1>Seguimientos</h1>
         </Col>
-        {props.rolUsuario === 'super_ases' ? (
-          <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
+        {props.rolUsuario === "super_ases" ? (
+          <Col
+            className="col_selectores_reportes_seguimientos"
+            xs={"12"}
+            md={"4"}
+          >
             período actual
             <Select
               options={datos_option_periodo}
@@ -352,52 +346,62 @@ const Cabecera = (props) => {
             />
           </Col>
         ) : (
-          <Col className="col_label_reportes_seguimientos" xs={'12'} md={'4'}>
+          <Col className="col_label_reportes_seguimientos" xs={"12"} md={"4"}>
             <label>{props.periodo}</label>
           </Col>
         )}
 
-        {
-        (desencriptar(sessionStorage.getItem('rol'))=='socioeducativo_reg' || desencriptar(sessionStorage.getItem('rol'))=='super_ases' || desencriptar(sessionStorage.getItem('rol'))=='socieducativo') ? 
-        (        
-        <Col className="col_selectores_reportes_seguimientos" xs={'12'} md={'4'}>
-          <Row>
-            <h4 className="texto_subtitulo2">Selector persona</h4>
-          </Row>
-          <Row>
-            <Select options={datos_option_user} onMenuOpen={handle_users_persona} onChange={handle_option_user} />
-          </Row>
-        </Col>
-        )
-        :(<Col></Col>)
-        }
+        {desencriptar(sessionStorage.getItem("rol")) == "socioeducativo_reg" ||
+        desencriptar(sessionStorage.getItem("rol")) == "super_ases" ||
+        desencriptar(sessionStorage.getItem("rol")) == "socieducativo" ? (
+          <Col
+            className="col_selectores_reportes_seguimientos"
+            xs={"12"}
+            md={"4"}
+          >
+            <Row>
+              <h4 className="texto_subtitulo2">Selector persona</h4>
+            </Row>
+            <Row>
+              <Select
+                options={datos_option_user}
+                onMenuOpen={handle_users_persona}
+                onChange={handle_option_user}
+              />
+            </Row>
+          </Col>
+        ) : (
+          <Col></Col>
+        )}
       </Row>
 
       <Row className="prueba_seguimintos">
-
-        {state.tiene_datos && state.ids_practicantes_del_profesional.length > 0 ? (
+        {state.tiene_datos &&
+        state.ids_practicantes_del_profesional.length > 0 ? (
           <Row>
-              {/*<li>{JSON.stringify(state.ids_practicantes_del_profesional[0].cantidad_reportes)}</li>*/}
+            {/*<li>{JSON.stringify(state.ids_practicantes_del_profesional[0].cantidad_reportes)}</li>*/}
 
-          <Informacion_rol
-            total_fichas_prof={state.total_fichas_prof}
-            fichas_revisado_prof={state.fichas_revisado_prof}
-            fichas_no_revisado_prof={state.fichas_no_revisado_prof}
-
-            total_inasistencias_prof={state.total_inasistencias_prof}
-            inasistencias_revisado_prof={state.inasistencias_revisado_prof}
-            inasistencias_no_revisado_prof={state.inasistencias_no_revisado_prof}
-
-            total_fichas_prac={state.total_fichas_prac}
-            fichas_revisado_prac={state.fichas_revisado_prac}
-            fichas_no_revisado_prac={state.fichas_no_revisado_prac}
-
-            total_inasistencias_prac={state.total_inasistencias_prac}
-            inasistencias_revisado_prac={state.inasistencias_revisado_prac}
-            inasistencias_no_revisado_prac={state.inasistencias_no_revisado_prac}
-
-            ids_practicantes_del_profesional={state.ids_practicantes_del_profesional}
-          />
+            <Informacion_rol
+              total_fichas_prof={state.total_fichas_prof}
+              fichas_revisado_prof={state.fichas_revisado_prof}
+              fichas_no_revisado_prof={state.fichas_no_revisado_prof}
+              total_inasistencias_prof={state.total_inasistencias_prof}
+              inasistencias_revisado_prof={state.inasistencias_revisado_prof}
+              inasistencias_no_revisado_prof={
+                state.inasistencias_no_revisado_prof
+              }
+              total_fichas_prac={state.total_fichas_prac}
+              fichas_revisado_prac={state.fichas_revisado_prac}
+              fichas_no_revisado_prac={state.fichas_no_revisado_prac}
+              total_inasistencias_prac={state.total_inasistencias_prac}
+              inasistencias_revisado_prac={state.inasistencias_revisado_prac}
+              inasistencias_no_revisado_prac={
+                state.inasistencias_no_revisado_prac
+              }
+              ids_practicantes_del_profesional={
+                state.ids_practicantes_del_profesional
+              }
+            />
           </Row>
         ) : (
           <Row></Row>

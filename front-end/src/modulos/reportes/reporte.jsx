@@ -686,7 +686,6 @@ const Reporte = () => {
   const [filtered, setFiltered] = useState(state.estudiante);
   const [noResults, setNoResults] = useState(false);
 
-  
   const handle_column_search = (e, selected) => {
     // // // console.log(e.target.name);
     // // // console.log("HOLASSS");

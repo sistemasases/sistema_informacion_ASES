@@ -1,7 +1,7 @@
-export const Registro = ()=>{
-    return(
+export const Registro = () => {
+  return (
     <>
-        <h1>Registro</h1>
+      <h1>Registro</h1>
     </>
-    )
-}
+  );
+};

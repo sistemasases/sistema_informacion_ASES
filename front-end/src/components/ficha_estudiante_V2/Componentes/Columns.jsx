@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../../../Scss/ficha_estudiante_discapacidad/columns.css";
 
-// Este componente es el que se encarga de mostrar la informacion del 
+// Este componente es el que se encarga de mostrar la informacion del
 // estudiante de manera organizada en columnas, para que sea mas facil de leer
 // recibe como parametro un arreglo de arreglos, donde cada arreglo interno contiene objetos
 // que representan una columna, cada objeto tiene un atributo type que indica el tipo de elemento
@@ -11,15 +11,14 @@ import "../../../Scss/ficha_estudiante_discapacidad/columns.css";
 // columns: arreglo de columnas
 // twobold: si es si, se aplica negrita a la primera y tercera columna
 const Columns = ({ columns, twobold }) => {
-
   const [inputValues, setInputValues] = useState({});
 
   useEffect(() => {
     console.log(inputValues);
   }, [inputValues]);
 
-  // La idea es hacer la peticion al backend para editar al estudiante en esta parte 
-  // y modificar ciertos detalles 
+  // La idea es hacer la peticion al backend para editar al estudiante en esta parte
+  // y modificar ciertos detalles
 
   return (
     <div className="rowsC contenido">

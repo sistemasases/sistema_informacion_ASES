@@ -4,8 +4,8 @@ import perfilUsuario from "./Usuario.png";
 import "../../../Scss/ficha_estudiante_discapacidad/select.css";
 
 // Componente de Select
-// Este componente se encarga de obtener al estudiante seleccionado, 
-// guardarlo en la varible global estudianteSelected para que otros 
+// Este componente se encarga de obtener al estudiante seleccionado,
+// guardarlo en la varible global estudianteSelected para que otros
 // componentes lo puedan usar y mostrar su informacion básica
 const Select = () => {
   const [estudiantes, setEstudiantes] = useState([]);
@@ -43,7 +43,7 @@ const Select = () => {
       ultimaActualizacion: student.ultimaActualizacion,
       telefono: student.telefono,
     });
-    setEstudianteSelected(selectedStudent)
+    setEstudianteSelected(selectedStudent);
   };
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import {
   desencriptar,
   desencriptarInt,
-  desencriptarBigInt,
+  desencriptarBigInt
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import Select from "../../components/ficha_estudiante_V2/Componentes/Select.jsx";
 import Riesgos from "../../components/ficha_estudiante_V2/Componentes/Riesgos.jsx";
@@ -10,9 +10,10 @@ import Acordiones from "../../components/ficha_estudiante_V2/Componentes/Acordio
 import "../../Scss/ficha_estudiante_V2/discapacidad.css";
 import { useAuthStore } from "../../components/ficha_estudiante_V2/store/auth.js";
 import AccesoDenegado from "../../components/ficha_estudiante_V2/Componentes/AccesoDenegado.jsx";
+import fetchEstudiantes from "../../components/ficha_estudiante_V2/api/fetch_estudiantes.js";
 
 const FichaEstudianteV2 = (props) => {
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, setEstudiantes } = useAuthStore();
 
   useEffect(() => {
     // Method setUser is used to set the user data in the store
@@ -24,15 +25,25 @@ const FichaEstudianteV2 = (props) => {
       ).toString(),
       userRole: desencriptar(sessionStorage.getItem("permisos")).toString(),
     });
-    console.log("USER: ", user);
+    // Method setEstudiantes is used to set the students data in the store
+    const getStudents = async () => {
+      const { id_usuario, sede_id, rol } = user;
+      const res = await fetchEstudiantes(id_usuario, sede_id, rol);
+      if (res) {
+        setEstudiantes(res);
+      }
+    };
+    getStudents();
   }, []);
 
   return (
     <>
-    {/* The userRole is used to check if the user has the permission to view the page
+      {/* The userRole is used to check if the user has the permission to view the page
         if the user has the permission, the page is displayed, otherwise, the user is 
         redirected to the AccesoDenegado component */}
-      {user && user.userRole && user.userRole.includes("view_ficha_estudiantes") ? (
+      {user &&
+      user.userRole &&
+      user.userRole.includes("view_ficha_estudiantes") ? (
         <div className="container-ficha">
           <div className="select-container">
             <Select />

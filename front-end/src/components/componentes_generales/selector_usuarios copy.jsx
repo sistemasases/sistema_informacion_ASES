@@ -9,8 +9,6 @@
 // import Accordion from 'react-bootstrap/Accordion';
 // import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
 
-
-
 // const selector_usuarios = () =>{
 //   const[isOpen, setIsOpen] = useState(false);
 //     const toggle = false;
@@ -42,7 +40,7 @@
 //     .catch(err=>{
 //         return (err)
 //     })
-    
+
 //   },[]);
 
 //   const aja = (e)=>{
@@ -70,7 +68,6 @@
 //       toggle : !toggle
 //     })
 
-    
 //   }
 //   const handle_all_rol = (e)=>{
 //     if(bandera_option_rol==true){
@@ -86,10 +83,6 @@
 //       console.log([datos_option_rol]);
 //     }
 //   }
-  
-
- 
-
 
 //   const handle_option_user = (e) => {
 //     // Getting the files from the input
@@ -137,13 +130,13 @@
 //                         </DropdownToggle>
 
 //                         <DropdownMenu>
-//                         { isOpen ? 
+//                         { isOpen ?
 //                         (
 //                           <Row className="formulario_selector_usuario">
 //                           <Row >
 
 //                             <Select class="form-control" options={datos_option_user} onMenuOpen={handle_users} onChange={handle_option_user} />
-                          
+
 //                           </Row>
 //                           <Row className="g-2">
 //                               <h6>Nombre Completo:</h6>
@@ -163,36 +156,29 @@
 
 //                           <Row className="g-2" >
 //                             <Select class="form-control"  options={datos_option_rol} onMenuOpen={handle_all_rol} onChange={handle_option_rol} />
-                              
+
 //                           </Row>
-//                           <Row className='mt-2'> 
+//                           <Row className='mt-2'>
 //                           <Col lg={{ span: 1, offset: 5}}>
-//                               <Button onClick={handle_upload}>Aceptar</Button> 
-            
+//                               <Button onClick={handle_upload}>Aceptar</Button>
+
 //                           </Col>
 //                           <Col>
 
-//                               <Button onClick={handle_all_rol}>Cancelar</Button> 
-//                           </Col>    
-//                       </Row>  
-//                           </Row>      
-//                         ) 
+//                               <Button onClick={handle_all_rol}>Cancelar</Button>
+//                           </Col>
+//                       </Row>
+//                           </Row>
+//                         )
 //                         :
 //                         (<Row></Row>)
 //                         }
-                            
-                            
+
 //                         </DropdownMenu>
 //             </Dropdown>
-
 
 //         </Container>
 //   )
 // }
 
 // export default selector_usuarios
-
-
-  
-  
-  

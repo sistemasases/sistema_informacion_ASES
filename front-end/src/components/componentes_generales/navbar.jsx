@@ -16,7 +16,7 @@ import {
   decryptTokenFromSessionStorage,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 // import { Contador_alertas } from "../../modulos/alertas/contador_alertas";
-import {Contador_alertas} from "../../modulos/alertas/contador_alertas";
+import { Contador_alertas } from "../../modulos/alertas/contador_alertas";
 
 const Navbar = (props) => {
   const decryptToken = decryptTokenFromSessionStorage();

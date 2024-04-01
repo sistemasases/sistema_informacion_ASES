@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../../Scss/ficha_estudiante_discapacidad/modal.css';
+import React from "react";
+import "../../../Scss/ficha_estudiante_discapacidad/modal.css";
 
 // Componente de Modal
 // Recibe como props:
@@ -16,10 +16,12 @@ const Modal = ({ isOpen, handleClose, children }) => {
     <div className="modalF">
       <div className="modal-contentF">
         {children}
-        <button onClick={handleClose} className='boton'>Close</button>
+        <button onClick={handleClose} className="boton">
+          Close
+        </button>
       </div>
     </div>
   );
-}
+};
 
 export default Modal;

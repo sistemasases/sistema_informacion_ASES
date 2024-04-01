@@ -1,21 +1,21 @@
-import React, { useMemo, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { Container, Row } from 'react-bootstrap';
-import DataTableExtensions from 'react-data-table-component-extensions';
-import DataTable from 'react-data-table-component';
-import MOCK_DATA from './MOCK_DATA.json';
-import Cabecera from './cabecera.jsx';
-import { useEffect } from 'react';
-import axios from 'axios';
-import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import React, { useMemo, useState } from "react";
+import ReactDOM from "react-dom";
+import { Container, Row } from "react-bootstrap";
+import DataTableExtensions from "react-data-table-component-extensions";
+import DataTable from "react-data-table-component";
+import MOCK_DATA from "./MOCK_DATA.json";
+import Cabecera from "./cabecera.jsx";
+import { useEffect } from "react";
+import axios from "axios";
+import { decryptTokenFromSessionStorage } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const Tabla_desercion = () => {
   const config = {
-    Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
+    Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
   const [state, set_state] = useState({
-    periodo: '',
-    usuario: '',
+    periodo: "",
+    usuario: "",
     data_user: [],
     data_periodo: [],
     data_rol: [],
@@ -35,7 +35,7 @@ const Tabla_desercion = () => {
   useEffect(() => {
     axios({
       url: `${process.env.REACT_APP_API_URL}/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
-      method: 'GET',
+      method: "GET",
       headers: config,
     })
       .then((respuesta) => {
@@ -46,7 +46,7 @@ const Tabla_desercion = () => {
         setRecords(respuesta.data);
       })
       .catch((err) => {
-        console.log('Error:', err);
+        console.log("Error:", err);
       });
   }, [state.id_cohorte]);
 
@@ -63,20 +63,21 @@ const Tabla_desercion = () => {
 
     return [
       {
-        name: 'Documento',
-        selector: 'info_estudiante',
+        name: "Documento",
+        selector: "info_estudiante",
         cell: (row) => `${row.info_estudiante.num_doc}`,
         sortable: true,
       },
       {
-        name: 'Estudiante',
-        selector: 'info_estudiante',
-        cell: (row) => `${row.info_estudiante.nombre} ${row.info_estudiante.apellido}`,
+        name: "Estudiante",
+        selector: "info_estudiante",
+        cell: (row) =>
+          `${row.info_estudiante.nombre} ${row.info_estudiante.apellido}`,
         sortable: true,
       },
       ...generatedColumns,
       {
-        name: 'Cantidad de Programas Distintos',
+        name: "Cantidad de Programas Distintos",
         cell: (row) => getDistinctProgramsCount(row),
       },
     ];
@@ -123,7 +124,11 @@ const Tabla_desercion = () => {
       return periods.map((period) => {
         const cellStyle = {
           backgroundColor:
-            period.id_estado === 1 ? 'orange' : period.id_estado === 4 ? 'lightblue' : 'lightgray',
+            period.id_estado === 1
+              ? "orange"
+              : period.id_estado === 4
+              ? "lightblue"
+              : "lightgray",
         };
 
         return (
@@ -141,13 +146,13 @@ const Tabla_desercion = () => {
   function renderEstadoLabel(estado) {
     switch (estado) {
       case 1:
-        return 'Inactivo';
+        return "Inactivo";
       case 2:
-        return 'Activo';
+        return "Activo";
       case 4:
-        return 'Egresado';
+        return "Egresado";
       default:
-        return '';
+        return "";
     }
   }
 

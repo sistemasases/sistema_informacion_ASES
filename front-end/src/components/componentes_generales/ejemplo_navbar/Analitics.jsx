@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-const Analitics = () =>{
-    return (
-        <div>
-            <h1>Analitics</h1>
-        </div>
-    )
-}
+const Analitics = () => {
+  return (
+    <div>
+      <h1>Analitics</h1>
+    </div>
+  );
+};
 
-export default Analitics 
+export default Analitics;

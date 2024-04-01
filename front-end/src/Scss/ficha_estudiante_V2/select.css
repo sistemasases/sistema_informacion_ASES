@@ -1,13 +1,13 @@
-.container-main{
+.container-main {
     font-family: inherit;
     width: 100%;
     color: #606060;
     display: grid;
     grid-template-columns: 80% 20%;
-    grid-template-areas: 
-    "bigC imgE"
-    "bigC imgE" 
-    "bigC links";
+    grid-template-areas:
+        "bigC imgE"
+        "bigC imgE"
+        "bigC links";
     font-size: 1rem;
 }
 
@@ -24,15 +24,16 @@
         "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
         "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
         "infoP infoP infoP infoP condicion condicion condicion"
-        "profIP profIP profIP profIP otraInfo otraInfo otraInfo";
+        "profIP profIP profIP profIP otraInfo otraInfo otraInfo"
+        "otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo";
 }
 
 .container-basic {
     grid-area: cont-basic;
     width: 100%;
-    display: grid; 
+    display: grid;
     gap: 10px;
-    justify-items: center; 
+    justify-items: center;
     align-items: center;
 }
 
@@ -57,7 +58,7 @@
     border-radius: 30px;
 }
 
-.img{
+.img {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -91,16 +92,19 @@
 
 .container-otros-datos {
     grid-area: otraInfo;
-    color:  #838381;
+    color: #838381;
     padding-left: 30px;
     display: grid;
     grid-template-columns: auto;
 }
 
 .more-stud-info p {
-    margin-top: 0; /* Elimina el espacio encima de los párrafos */
-    margin-bottom: -1em; /* Reduce el espacio debajo de los párrafos */
-    line-height: 2.2; /* Restaura la altura de línea a un valor normal */
+    margin-top: 0;
+    /* Elimina el espacio encima de los párrafos */
+    margin-bottom: -1em;
+    /* Reduce el espacio debajo de los párrafos */
+    line-height: 2.2;
+    /* Restaura la altura de línea a un valor normal */
 }
 
 .links {
@@ -113,7 +117,7 @@
     border-radius: 0px 30px 30px 0px;
 }
 
-.link{
+.link {
     width: 90%;
     min-width: 110px;
     height: auto;
@@ -121,8 +125,8 @@
     min-height: 30px;
     text-decoration: none;
     background-color: transparent;
-    color:  #838381;
-    border: 1px solid #838381; 
+    color: #838381;
+    border: 1px solid #838381;
     border-radius: 10px;
     font-size: 0.9rem;
     padding: 5px;
@@ -166,13 +170,13 @@
     background-color: #838381;
 }
 
-@media (max-width: 500px){
-    .container-main{
+@media (max-width: 500px) {
+    .container-main {
         grid-template-columns: 1fr 1fr;
-        grid-template-areas: 
-        "bigC bigC"
-        "bigC bigC" 
-        "imgE links";
+        grid-template-areas:
+            "bigC bigC"
+            "bigC bigC"
+            "imgE links";
     }
 
     .container-submain {
@@ -182,16 +186,16 @@
             "condicion condicion condicion condicion condicion condicion condicion"
             "infoP infoP infoP infoP infoP infoP infoP"
             "otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo"
-            "profIP profIP profIP profIP profIP profIP profIP";   
+            "profIP profIP profIP profIP profIP profIP profIP";
     }
 
-    .img{
+    .img {
         margin-top: 15px;
     }
 
     .container-otros-datos {
         padding-left: 0px;
-        margin-bottom: 20px; 
+        margin-bottom: 20px;
     }
 
     .links {
@@ -199,18 +203,18 @@
         padding-top: 40px;
     }
 
-    .link{
+    .link {
         width: 80%;
     }
 }
 
-@media (min-width: 500px) and (max-width: 800px){
-    .container-main{
+@media (min-width: 500px) and (max-width: 800px) {
+    .container-main {
         grid-template-columns: 1fr 1fr;
-        grid-template-areas: 
-        "bigC bigC"
-        "bigC bigC" 
-        "imgE links";
+        grid-template-areas:
+            "bigC bigC"
+            "bigC bigC"
+            "imgE links";
         font-size: 0.8rem;
     }
 
@@ -221,12 +225,12 @@
             "condicion condicion condicion condicion condicion condicion condicion"
             "infoP infoP infoP infoP infoP infoP infoP"
             "otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo"
-            "profIP profIP profIP profIP profIP profIP profIP";   
+            "profIP profIP profIP profIP profIP profIP profIP";
     }
 
     .container-otros-datos {
         padding-left: 0px;
-        margin-bottom: 20px; 
+        margin-bottom: 20px;
     }
 
     .short-info-programa {
@@ -239,8 +243,8 @@
         border-radius: 0px 0px 30px 30px;
         padding-top: 30px;
     }
-    
-    .link{
+
+    .link {
         width: 80%;
         font-size: 0.7rem;
     }
@@ -250,13 +254,13 @@
     }
 }
 
-@media (min-width: 801px) and (max-width: 1200px){
-    .container-main{
+@media (min-width: 801px) and (max-width: 1200px) {
+    .container-main {
         grid-template-columns: 1fr 1fr;
-        grid-template-areas: 
-        "bigC bigC"
-        "bigC bigC" 
-        "imgE links";
+        grid-template-areas:
+            "bigC bigC"
+            "bigC bigC"
+            "imgE links";
         font-size: 0.7rem;
     }
 
@@ -267,7 +271,7 @@
             "condicion condicion condicion condicion condicion condicion condicion"
             "infoP infoP infoP infoP otraInfo otraInfo otraInfo"
             "infoP infoP infoP infoP otraInfo otraInfo otraInfo"
-            "profIP profIP profIP profIP profIP profIP profIP";  
+            "profIP profIP profIP profIP profIP profIP profIP";
     }
 
     .container-otros-datos {
@@ -284,7 +288,7 @@
         font-size: 0.7rem;
     }
 
-    .img{
+    .img {
         display: block;
         margin: 10px auto 0px;
         width: 75%;

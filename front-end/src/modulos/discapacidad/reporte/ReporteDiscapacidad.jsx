@@ -99,9 +99,9 @@ const Reporte = () => {
     const estudiantes_por_rol = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/discapacidad/estudiantes/`, 
-            {headers: config},  
-            { params: { usuario_rol: rol, sede: sede } } 
+          `${process.env.REACT_APP_API_URL}/discapacidad/estudiantes/`,
+          { headers: config },
+          { params: { usuario_rol: rol, sede: sede } }
         );
         set_state({
           ...state,
@@ -125,17 +125,16 @@ const Reporte = () => {
     // Funcion que busca el reporte del estudiante logueado.
     const datos_adicionales_estudiantes = async () => {
       try {
-
         const config = {
           Authorization: "Bearer " + decryptTokenFromSessionStorage(),
         };
 
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/discapacidad/estudiantes-extra/`,
-            {headers: config}, 
-            //id_usuario.toString() +
-            //"/",
-            { params: { usuario_rol: rol, sede: sede } }
+          { headers: config },
+          //id_usuario.toString() +
+          //"/",
+          { params: { usuario_rol: rol, sede: sede } }
         );
 
         set_state({
@@ -332,7 +331,6 @@ const Reporte = () => {
   const [noResults, setNoResults] = useState(false);
 
   const handle_column_search = (e, selected) => {
-
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === undefined) {
       // // console.log("no hay nada");
@@ -590,7 +588,7 @@ const Reporte = () => {
     // Si algunas de las opciones de estados is checked, haga lo siguiente
     else if (
       (seleccionado_estados.name === "ASES" && e.target.checked === true) ||
-      (seleccionado_estados.name === "Registro Académico" && 
+      (seleccionado_estados.name === "Registro Académico" &&
         e.target.checked === true) ||
       (seleccionado_estados.name === "Es discapacidad" &&
         e.target.checked === true)
@@ -605,7 +603,7 @@ const Reporte = () => {
     else if (
       (seleccionado_estados.name === "ASES" && e.target.checked === false) ||
       (seleccionado_estados.name === "Registro Académico" &&
-        e.target.checked === false)  ||
+        e.target.checked === false) ||
       (seleccionado_estados.name === "Es discapacidad" &&
         e.target.checked === false)
     ) {
@@ -627,7 +625,7 @@ const Reporte = () => {
       (seleccionado_discapacidad.name === "Tipo de discapacidad" &&
         e.target.checked === true) ||
       (seleccionado_discapacidad.name === "Adquisición" &&
-        e.target.checked === true) 
+        e.target.checked === true)
     ) {
       seleccionado_discapacidad.isCheck = true;
       var searchable_columns = add_search_bar(seleccionado_discapacidad);
@@ -638,7 +636,7 @@ const Reporte = () => {
       (seleccionado_discapacidad.name === "Tipo de discapacidad" &&
         e.target.checked === false) ||
       (seleccionado_discapacidad.name === "Adquisición" &&
-        e.target.checked === false) 
+        e.target.checked === false)
     ) {
       seleccionado_discapacidad.isCheck = false;
       document.getElementsByName("Discapacidad")[0].checked = false;
@@ -859,9 +857,7 @@ const Reporte = () => {
           csv_conversion(element);
           schema_push(element);
         }
-      } 
-      
-      else if (
+      } else if (
         seleccionado_cabeceras_filtros.name === "Discapacidad" &&
         e.target.checked === true
       ) {
@@ -874,7 +870,7 @@ const Reporte = () => {
         for (let i = 0; i < columns.length; i++) {
           if (
             columns[i].value === "tipo_discapacidad" ||
-            columns[i].value === "adquisicion" 
+            columns[i].value === "adquisicion"
           ) {
             // // console.log("HOLA");
             columns[i].isCheck = false;
@@ -885,7 +881,7 @@ const Reporte = () => {
         columns.map((item, index) => {
           if (
             (item.value === "tipo_discapacidad" && item.isCheck === false) ||
-            (item.value === "adquisicion" && item.isCheck === false) 
+            (item.value === "adquisicion" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -905,9 +901,7 @@ const Reporte = () => {
           schema_push(element);
         }
         // // console.log(columns);
-      } 
-      
-      else if (
+      } else if (
         seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
         e.target.checked === true
       ) {
@@ -929,8 +923,8 @@ const Reporte = () => {
         e.target.checked === false) ||
       (seleccionado_cabeceras_filtros.name === "Académico" &&
         e.target.checked === false) ||
-       (seleccionado_cabeceras_filtros.name === "Discapacidad" &&
-         e.target.checked === false) ||
+      (seleccionado_cabeceras_filtros.name === "Discapacidad" &&
+        e.target.checked === false) ||
       (seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
         e.target.checked === false)
     ) {
@@ -1064,8 +1058,8 @@ const Reporte = () => {
           csv_pop(element);
           schema_pop(element);
         }
-      } 
-      
+      }
+
       if (
         seleccionado_cabeceras_filtros.name === "Discapacidad" &&
         e.target.checked === false
@@ -1080,8 +1074,9 @@ const Reporte = () => {
 
         for (let i = 0; i < columns.length; i++) {
           if (
-            (columns[i].value === "tipo_discapacidad" && columns[i].isCheck === true) ||
-            (columns[i].value === "adquisicion" && columns[i].isCheck === true) 
+            (columns[i].value === "tipo_discapacidad" &&
+              columns[i].isCheck === true) ||
+            (columns[i].value === "adquisicion" && columns[i].isCheck === true)
           ) {
             // // console.log("is HeRe!!");
             columns[i].isCheck = false;
@@ -1094,7 +1089,7 @@ const Reporte = () => {
         columns.map((item, index) => {
           if (
             (item.value === "tipo_discapacidad" && item.isCheck === false) ||
-            (item.value === "adquisicion" && item.isCheck === false) 
+            (item.value === "adquisicion" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1109,9 +1104,7 @@ const Reporte = () => {
 
         // // console.log("After Unselect All");
         // // console.log(columns);
-      }
-      
-      else if (
+      } else if (
         seleccionado_cabeceras_filtros.name === "Condición de Excepción" &&
         e.target.checked === false
       ) {

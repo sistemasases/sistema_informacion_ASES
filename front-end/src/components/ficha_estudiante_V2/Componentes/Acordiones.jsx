@@ -1,6 +1,6 @@
 import Accesibilidad from "./accesibilidad/Accesibilidad";
 import Acordion from "./Acordion";
-import '../../../Scss/ficha_estudiante_discapacidad/acordion.css';
+import "../../../Scss/ficha_estudiante_discapacidad/acordion.css";
 import General from "./general/General";
 import Seguimiento from "./seguimiento/Seguimiento";
 
@@ -11,18 +11,16 @@ import Seguimiento from "./seguimiento/Seguimiento";
 const Acordiones = () => {
   return (
     <div className="container-acordion">
-      <Acordion title="GENERAL" claseAcordion={'acordion'}>
+      <Acordion title="GENERAL" claseAcordion={"acordion"}>
         <General />
       </Acordion>
-      <Acordion title="SOCIOEDUCATIVO" claseAcordion={'acordion'}>
+      <Acordion title="SOCIOEDUCATIVO" claseAcordion={"acordion"}>
         <Seguimiento />
       </Acordion>
-      <Acordion title="ACADÉMICO" claseAcordion={'acordion'}>
+      <Acordion title="ACADÉMICO" claseAcordion={"acordion"}>
         <Seguimiento />
       </Acordion>
-      <Acordion title="GEOGRÁFICO" claseAcordion={'acordion'}>
-        
-      </Acordion>
+      <Acordion title="GEOGRÁFICO" claseAcordion={"acordion"}></Acordion>
     </div>
   );
 };

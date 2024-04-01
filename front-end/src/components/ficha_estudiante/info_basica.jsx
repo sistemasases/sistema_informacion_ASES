@@ -542,20 +542,24 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
-                          <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
-                            <i
-                              class="bi bi-check2-square"
-                              style={
-                                state.total_datos_estudiante_seleccionado
-                                  .firma_tratamiento_datos == "SIN FIRMAR"
-                                  ? { color: "red" }
-                                  : state.total_datos_estudiante_seleccionado
-                                      .firma_tratamiento_datos == "NO AUTORIZA"
-                                  ? { color: "red" }
-                                  : { color: " #AAB5A6" }
-                              }
-                              title="Tratamiento de datos Sin Firmar"
-                            ></i>
+                            <a
+                              href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link"
+                              target="_blank"
+                            >
+                              <i
+                                class="bi bi-check2-square"
+                                style={
+                                  state.total_datos_estudiante_seleccionado
+                                    .firma_tratamiento_datos == "SIN FIRMAR"
+                                    ? { color: "red" }
+                                    : state.total_datos_estudiante_seleccionado
+                                        .firma_tratamiento_datos ==
+                                      "NO AUTORIZA"
+                                    ? { color: "red" }
+                                    : { color: " #AAB5A6" }
+                                }
+                                title="Tratamiento de datos Sin Firmar"
+                              ></i>
                             </a>
                           </Col>
                           {/* Encuesta Admitidos */}
@@ -563,17 +567,20 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-admitidos"}
                           >
-                          <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
-                            <i
-                              class="bi bi-card-checklist"
-                              style={
-                                state.total_datos_estudiante_seleccionado
-                                  .encuesta_admitido == false
-                                  ? { color: "red" }
-                                  : { color: " #AAB5A6" }
-                              }
-                              title="Encuesta de Admitidos sin Diligenciar"
-                            ></i>
+                            <a
+                              href="https://encuestaadmitidos.univalle.edu.co/"
+                              target="_blank"
+                            >
+                              <i
+                                class="bi bi-card-checklist"
+                                style={
+                                  state.total_datos_estudiante_seleccionado
+                                    .encuesta_admitido == false
+                                    ? { color: "red" }
+                                    : { color: " #AAB5A6" }
+                                }
+                                title="Encuesta de Admitidos sin Diligenciar"
+                              ></i>
                             </a>
                           </Col>
                           {/* FIcha Semana Anterior */}
@@ -878,7 +885,7 @@ const Info_basica = (props) => {
           />
         </Col>
       </div>
-      
+
       <Modal show={show2} onHide={handleClose2} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Importante</Modal.Title>

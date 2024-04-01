@@ -499,9 +499,7 @@ const Alertas = () => {
     // // // // // console.log(search);
   };
 
-  var empty_stuff = [
-    { cod_univalle: " ", nombre: " ", apellido: " " },
-  ];
+  var empty_stuff = [{ cod_univalle: " ", nombre: " ", apellido: " " }];
 
   // console.log(state.estudiante);
   // console.log("Filtered es:");
@@ -591,9 +589,7 @@ const Alertas = () => {
     }
     if (e.target.name === "Riesgo familiar") {
       const hola = prueba.filter((row) =>
-        row.riesgo_familiar
-          .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+        row.riesgo_familiar.toLowerCase().includes(e.target.value.toLowerCase())
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
 
@@ -633,7 +629,6 @@ const Alertas = () => {
       // console.log("Filtraste en Riesgo vida universitaria");
       setFiltered(filtered_data);
     }
-    
   };
 
   var new_search_bar_data = [];
