@@ -157,36 +157,24 @@ const Descarga_fichas_component = () =>{
         })
     }
 
-    useEffect( async ()=>{
+    const cargar_selects = async () =>{
+
         await All_sede_service.all_sede().then((res) => {
-            set_sedes(res); 
-            bandera_option_sede = true;
+          for (var i = 0; i < res['length'] ; i++) {
+            const dato = { value: res[i]['nombre'], label: res[i]['nombre'], id: res[i]['id'] }
+            opciones_sede.push(dato);
+          }
         })
+  
         await All_cohorte_service.all_cohorte().then((res) => {
-            set_cohortes(res);
-            bandera_option_cohorte=true;
+          for (var i = 0; i < res['length'] ; i++) {
+            const dato = { value: res[i]['id_number'], label: res[i]['id_number'], id: res[i]['id'] }
+            opciones_cohorte.push(dato);
+          }
         })
-    },[]);
-
-    const handle_sedes = async () => {
-        if(bandera_option_sede===true){
-            for (var i = 0; i < sedes['length'] ; i++) {
-                const dato = { value: sedes[i]['nombre'], label: sedes[i]['nombre'], id: sedes[i]['id'] }
-                opciones_sede.push(dato);
-            }
-            bandera_option_sede = false;
-        }
-    }
-
-    const handle_cohorte = async () => {
-        if(bandera_option_cohorte===true){
-            for (var i = 0; i < cohortes['length'] ; i++) {
-                const dato = { value: cohortes[i]['id_number'], label: cohortes[i]['id_number'], id: cohortes[i]['id'] }
-                opciones_cohorte.push(dato);
-            }
-            bandera_option_cohorte = false;
-        }
-    }
+      }
+  
+      cargar_selects()
 
     return (
         <Container className='mi-clase-background'>
@@ -233,14 +221,14 @@ const Descarga_fichas_component = () =>{
                         />
                     </Form.Group>
                     <br/>
-                    <Form.Group>
+                    <Form.Group onClick={cargar_selects}>
                         <Form.Label>Sede</Form.Label>
-                        <Select class="option" className="option" options={opciones_sede} onMenuOpen={handle_sedes} onChange={(e) => handle_form_sede(e)} placeholder="Selecione una sede"/>
+                        <Select class="option" className="option" options={opciones_sede} onChange={(e) => handle_form_sede(e)} placeholder="Selecione una sede"/>
                     </Form.Group>
                     <br/>
-                    <Form.Group>
+                    <Form.Group onClick={cargar_selects}>
                         <Form.Label>Cohorte</Form.Label>
-                        <Select class="option" className="option" options={opciones_cohorte} onMenuOpen={handle_cohorte} onChange={(e) => handle_form_cohorte(e)} placeholder="Selecione una cohorte"/>
+                        <Select class="option" className="option" options={opciones_cohorte} onChange={(e) => handle_form_cohorte(e)} placeholder="Selecione una cohorte"/>
                     </Form.Group>
                 </Form>
                 </Col>
@@ -259,8 +247,8 @@ const Descarga_fichas_component = () =>{
               </Modal.Header>
               <Modal.Body>{respuesta}</Modal.Body>
               <Modal.Footer>
-                { !descargaHabilitada ?
-                    <><CSVLink
+              { !descargaHabilitada ?
+                    <> { inasistenciasData[1] ? <CSVLink
                     data={inasistenciasData}
                     headers={Object.keys(inasistenciasData[0])} 
                     filename="inasistencias.csv"
@@ -268,8 +256,9 @@ const Descarga_fichas_component = () =>{
                     separator="*"
                 >
                     Descargar Inasistencias
-                </CSVLink>
-                <CSVLink
+                </CSVLink> : <></>
+                }
+                { seguimientosData[1] ? <CSVLink
                     data={seguimientosData}
                     headers={Object.keys(seguimientosData[0])}
                     filename="seguimientos.csv"
@@ -277,7 +266,9 @@ const Descarga_fichas_component = () =>{
                     separator="*"
                 >
                     Descargar Seguimientos
-                </CSVLink></> : <></>
+                </CSVLink> : <></>
+                }
+                </> : <></>
                 }
                 <Button variant="secondary" onClick={handle_close}>
                   Salir
