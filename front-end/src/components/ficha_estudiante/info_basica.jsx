@@ -1,3 +1,12 @@
+/**
+  * @file info_basica.jsx
+  * @version 1.0.0
+  * @description 
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024 
+*/
+
 import React, { useState } from "react";
 import Select from "react-select";
 import { Row, Col } from "styled-bootstrap-grid";
@@ -211,10 +220,16 @@ const Info_basica = (props) => {
   const searchParams = new URLSearchParams(location.search);
   const id_parametros = searchParams.get("id");
 
+  /**
+  * @description Función que se encarga de cargar la información de los usuarios.
+  * @param {Evento} e - Evento que desencadenó la carga de información.
+  * @return {void} - No retorna ningún valor.
+  */
   const handle_users = (e) => {
     // Getting the files from the input
     if (bandera_option_user === true) {
       for (var i = 0; i < props.data_user["length"]; i++) {
+        // Almaena la información del usuario en un objeto.
         const dato = {
           value: props.data_user[i]["id"],
           label:
@@ -231,26 +246,29 @@ const Info_basica = (props) => {
         //este if lo pongo para que abra academico de una
         if (url_estudiante == dato.value && state.ya_selecciono_automatico) {
           setSelectedOption(dato);
+          // Almacena la sede a la cual pertenece el usuario logueado.
           const paramsget = {
             id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
           };
+          // Almacena la URL de la petición al servidor.
           const url_axios =
             `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
             dato.value +
             "/";
           axios({
-            // Endpoint to send files
-            url: url_axios,
-            params: paramsget,
-            method: "GET",
-            headers: config2,
+            // Datos necesarios para realizar la petición al servidor.
+            url: url_axios, // URL de la petición.
+            params: paramsget, // Parámetros necesarios para la petición.
+            method: "GET", // Método de la petición.
+            headers: config2, // Cabeceras necesarias para la petición.
           })
             .then((respuesta) => {
+              // Actualiza el estado con la información del estudiante.
               set_state({
                 ...state,
-                total_datos_estudiantes: respuesta.data,
-                tab_abierto: 3,
-                ya_selecciono_automatico: false,
+                total_datos_estudiantes: respuesta.data, // Información del estudiante.
+                tab_abierto: 3, // Tab abierto.
+                ya_selecciono_automatico: false, // estado por defecto.
               });
               // document.getElementsByName("loading_data")[0].style.visibility =
               //   "hidden";
@@ -265,15 +283,24 @@ const Info_basica = (props) => {
     }
   };
 
+  /**
+  * @description Función que se encarga de hacer la peticion al servidor para obtener
+  *              los datos del estudiante seleccionado y procesarlos.
+  * @param {Evento} e - Evento que desencadenó la carga de información.
+  * @return {void} - No retorna ningún valor.
+  */
   const handle_option_user = (e) => {
+    // Almacena la sede a la cual pertenece el usuario logueado.
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
+    // Almacena el id del estudiante logueado.
     const id_estudiante_encriptada = encriptarInt(e.value);
     sessionStorage.setItem(
       "id_estudiante_seleccionado",
       id_estudiante_encriptada
     );
+    // Almacena la URL de la petición al servidor.
     const url_axios =
       `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
       e.value +
@@ -288,6 +315,7 @@ const Info_basica = (props) => {
         // document.getElementsByName("loading_data")[0].style.visibility =
         //   "hidden";
 
+        // Almacena la data obtenida de la petición al servidor.
         const json = respuesta.data;
 
         // Obtener la fecha de nacimiento del JSON
@@ -315,9 +343,19 @@ const Info_basica = (props) => {
     setSelectedOption(e);
   };
 
+  /**
+  * @description Función que se encarga de verificar si el celular del estudiante
+  *              fue diligenciado y, en caso afirmativo, redirigir al usuario a la 
+  *              página de WhatsApp con el número de celular del estudiante. De lo contrario,
+  *             se muestra una alerta al usuario.
+  * @param {Evento} e - Evento que desencadenó la carga de información.
+  * @return {void} - No retorna ningún valor.
+  */
   const handleWhatsapp = (e) => {
+    // Almaena el número de celular del estudiante.
     const celular_numerico = parseInt(state.celular);
     if (celular_numerico) {
+      // URL de WhatsApp con el número de celular del estudiante.
       const url = `https://api.whatsapp.com/send?phone=${celular_numerico}`;
       window.open(url, "_blank");
     } else {

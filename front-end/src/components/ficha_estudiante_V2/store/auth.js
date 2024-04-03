@@ -11,8 +11,7 @@ export const useAuthStore = create(
         shosenStudent: null,
 
         setUser: (payload) => set((state) => ({ user: payload })),
-        setEstudiantes: (payload) =>
-          set((state) => ({ estudiantes: payload })),
+        setEstudiantes: (payload) => set((state) => ({ estudiantes: payload })),
         setShosenStudent: (payload) =>
           set((state) => ({ shosenStudent: payload })),
       }),

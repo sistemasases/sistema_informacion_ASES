@@ -1,3 +1,14 @@
+/**
+  * @file programas_academicos.jsx
+  * @version 1.0.0
+  * @description Componente que muestra información sobre programas académicos.
+  *              El componente renderiza diferentes estilos de filas según el estado del programa 
+  *              académico. 
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024 
+*/
+
 import React, { useState } from "react";
 import Switch from "react-switch";
 import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
@@ -9,8 +20,9 @@ import {
 } from "react-icons/fa";
 
 const Programas_academicos = (props) => {
+  // Estado para controlar si el dropdown está abierto o cerrado.
   const [open, setOpen] = useState(false);
-
+  // Estado para controlar si el dropdown está abierto o cerrado.
   if (props.item.id_estado_id === 1) {
     return (
       <Row className="infoRow23_activo">
@@ -38,7 +50,9 @@ const Programas_academicos = (props) => {
                   </Col> */}
       </Row>
     );
-  } else if (props.item.id_estado_id === 2) {
+  } 
+  //
+  else if (props.item.id_estado_id === 2) {
     return (
       <Row className="infoRow23_inactivo">
         <Col xs={"12"} md={"12"}>

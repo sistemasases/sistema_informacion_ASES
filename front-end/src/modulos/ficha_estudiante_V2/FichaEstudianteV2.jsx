@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import {
   desencriptar,
   desencriptarInt,
-  desencriptarBigInt
+  desencriptarBigInt,
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import Select from "../../components/ficha_estudiante_V2/Componentes/Select.jsx";
 import Riesgos from "../../components/ficha_estudiante_V2/Componentes/Riesgos.jsx";

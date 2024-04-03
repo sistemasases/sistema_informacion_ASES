@@ -1,3 +1,13 @@
+/**
+  * @file socioeducativa.jsx
+  * @version 1.0.0
+  * @description Este archivo contiene el componente Socioeducativa, que muestra los seguimientos 
+  * de pares de los estudiantes. 
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024 
+*/
+
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
@@ -16,25 +26,43 @@ import {
 } from "../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const Socieducativa = (props) => {
+  // variable que almacena el estado del switch.
   const [switchChecked, setChecked] = useState(false);
+  // función que cambia el estado del switchChecked.
   const handleChange = () => setChecked(!switchChecked);
-
+  // variable que almacena el estado del modal.
   const [show, setShow] = useState(false);
+  /**
+  * @description Función que cierra el modal.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const handleClose = () => setShow(false);
+  /**
+  * @description Función que abre el modal.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const handleShow = () => setShow(true);
+  // variable que almacenará los datos obtenidos del servidor.
   const [state, set_state] = useState({
     data_user: props.data_user_socioedu,
   });
-
+  // variable que almacenará el nombre del primer elemento del arreglo en caso de existir.
   const [activeTabIndex, setActiveTabIndex] = useState(
     state.data_user && state.data_user.length > 0
       ? state.data_user[0]["nombre"]
       : ""
   );
+  /**
+  * @description Función que se encarga de actualizar el índice del elemento seleccionado.
+  * @param {number} - index: índice del elemento seleccionado.
+  * @return {void} - No retorna ningún valor.
+  */
   const activeTab = (index) => {
     index === activeTabIndex ? setActiveTabIndex(0) : setActiveTabIndex(index);
   };
-
+  // variable que almacena el rol del usuario logueado.
   const userRole = desencriptar(sessionStorage.getItem("rol"));
 
   return (

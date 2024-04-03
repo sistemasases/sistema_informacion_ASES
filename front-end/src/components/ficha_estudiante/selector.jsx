@@ -1,3 +1,13 @@
+/**
+  * @file selector.jsx
+  * @version 1.0.0
+  * @description Este componente se encarga de mostrar a los estudiantes en el 
+  *              selector dependiendo del rol del usuario logueado.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024 
+*/
+
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Info_general from "./tabs/info_general";
@@ -12,23 +22,29 @@ import {
   decryptTokenFromSessionStorage,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import myGif from "../../modulos/reportes/loading_data.gif";
-
 import axios from "axios";
 
+
 const Selector = (props) => {
+  // variable de configuración para las peticiones al servidor.
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
 
+  // variable que almacena el rol del usuario logueado.
   const userRol = desencriptar(sessionStorage.getItem("rol"));
-
+  // variable que almacena el estado del switch.
   const [switchChecked, setChecked] = useState(false);
+  // función que cambia el estado del switchChecked.
   const handleChange = () => setChecked(!switchChecked);
-
+  // variable que almacena el estado del modal.
   const [show, setShow] = useState(false);
+  // funciones que cierra el modal.
   const handleClose = () => setShow(false);
+  // funciones que abre el modal.
   const handleShow = () => setShow(true);
 
+  // variable que almacena los datos obtenidos del servidor.
   const [state, set_state] = useState({
     usuario: "",
     data_user: [],
@@ -46,24 +62,39 @@ const Selector = (props) => {
     tiene_datos_cargados: false,
   });
 
+  // este efecto garantiza que la pestaña activa se actualice automáticamente 
+  //cuando cambia la propiedad tab_abierto del componente.
   useEffect(() => {
     setActiveTabIndex(props.tab_abierto);
   }, [props.tab_abierto]);
 
+  // variable que almacena el índice de la pestaña activa.
   const [activeTabIndex, setActiveTabIndex] = useState(state.tab_abierto);
+  /**
+  * Activa la pestaña especificada por su índice.
+  * Si la pestaña ya está activa, la desactiva.
+  * @param {number} index - Índice de la pestaña a activar.
+  * @return {void}
+  */
   const activeTab = (index) => {
     index === activeTabIndex ? setActiveTabIndex(0) : setActiveTabIndex(index);
   };
 
+  /**
+  * @description Carga la información de seguimiento del estudiante desde el servidor.
+  * @param {} - No recibe parámetros.
+  * @return {void}
+  */
   const loadInfo = (e) => {
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
-
+    // Almacena la URL de la petición al servidor.
     const url_axios =
       `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/` +
       props.seleccionado +
       "/";
+    // Realiza la petición al servidor.
     axios({
       // Endpoint to send files
       url: url_axios,
@@ -83,16 +114,20 @@ const Selector = (props) => {
         return err;
       });
   };
-
+  // Realiza una serie de acciones cuando cambia la propiedad props.seleccionado.
   useEffect(() => {
+    // Variable que almacena la sede a la cual pertenece el usuario logueado.
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
+    // Muestra el GIF de carga.
     document.getElementsByName("loading_data")[0].style.visibility = "visible";
+    // Almacena la URL de la petición al servidor.
     const url_axios =
       `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/` +
       props.seleccionado +
       "/";
+    // Realiza la petición al servidor.
     axios({
       // Endpoint to send files
       url: url_axios,
@@ -116,6 +151,7 @@ const Selector = (props) => {
     activeTab("");
   }, [props.seleccionado]);
 
+  // Variable que almacena los acordiones de la ficha del estudiante y sus respectivos permisos.
   const tabs = [
     {
       id: 1,
@@ -228,6 +264,7 @@ const Selector = (props) => {
         />
       </div>
       <Row className="tabs">
+        {/* Muestra las pestañas de la ficha del estudiante. */}
         {tabs.map((tab, index) => (
           <Col xs={12}>
             {props.seleccionado !== "" &&
@@ -273,7 +310,7 @@ const Selector = (props) => {
           </Col>
         ))}
       </Row>
-
+      {/* Ventana que se mostrará si no se ha seleccionado a un estudiante en el selector. */}
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Importante</Modal.Title>

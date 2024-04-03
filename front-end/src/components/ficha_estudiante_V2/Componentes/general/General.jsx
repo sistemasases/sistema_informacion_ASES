@@ -7,7 +7,7 @@ import withSwal from "../withSwal";
 // Este componente se encarga de mostrar la información general de un estudiante
 // permite editar ciertos detalles de la información
 const General = () => {
-  const { shosenStudent } = useAuthStore();
+  const { user, shosenStudent } = useAuthStore();
   const [editar, setEditar] = useState(false);
   const [nombreBoton, setNombreBoton] = useState("Editar información");
 
@@ -48,81 +48,96 @@ const General = () => {
                 { type: "text", name: "Puntaje Icfes" },
                 editar
                   ? { type: "number", name: "" }
-                  : { type: "text", name: "Sin nombre" },
+                  : { type: "text", name: shosenStudent.puntaje_icfes },
                 { type: "text", name: "Año ingreso Univalle" },
-                { type: "text", name: "Sin apellido" },
+                {
+                  type: "text",
+                  name: new Date(
+                    Date.parse(shosenStudent.anio_ingreso)
+                  ).getFullYear(),
+                },
               ],
               [
                 { type: "text", name: "Teléfono residencia" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin nombre" },
+                  : { type: "text", name: shosenStudent.telefono_ini },
                 { type: "text", name: "Celular" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin nombre" },
+                  : { type: "text", name: shosenStudent.celular },
               ],
               [
                 { type: "text", name: "Email alternativo" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "sinnombre@gmail.com" },
+                  : { type: "text", name: shosenStudent.email },
               ],
               [
                 { type: "text", name: "Estrato" },
-                { type: "text", name: "Sin estrato" },
+                { type: "text", name: shosenStudent.estrato },
                 { type: "text", name: "Dirección residencia" },
-                { type: "text", name: "Sin direccion" },
+                { type: "text", name: shosenStudent.dir_res },
               ],
               [
                 { type: "text", name: "Barrio" },
                 { type: "text", name: shosenStudent.barrio_res },
                 { type: "text", name: "Municipio actual" },
-                { type: "text", name: "Sin direccion" },
+                { type: "text", name: shosenStudent.ciudad_res },
               ],
               [
                 { type: "text", name: "País de origen" },
-                { type: "text", name: "Sin estrato" },
+                { type: "text", name: "Sin país" },
                 { type: "text", name: "Grupo étnico" },
                 editar
                   ? { type: "select", name: "", options: [] }
-                  : { type: "text", name: "Sin direccion" },
+                  : { type: "text", name: shosenStudent.id_etnia },
               ],
               [
                 { type: "text", name: "Actividad simultánea" },
                 editar
                   ? { type: "select", name: "", options: [] }
-                  : { type: "text", name: "Sin estrato" },
+                  : { type: "text", name: shosenStudent.id_act_simultanea },
                 { type: "text", name: "Sexo" },
                 editar
-                  ? { type: "select", name: "", options: ["op1", "op2"] }
-                  : { type: "text", name: "Sin direccion" },
+                  ? {
+                      type: "select",
+                      name: "",
+                      options: ["Femenino", "Masculino"],
+                    }
+                  : { type: "text", name: shosenStudent.sexo },
               ],
               [
                 { type: "text", name: "Identidad de género" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin genero" },
+                  : {
+                      type: "text",
+                      name: shosenStudent.el_id_de_identidad_gen,
+                    },
                 { type: "text", name: "Estado civil" },
                 editar
                   ? { type: "select", name: "", options: [] }
-                  : { type: "text", name: "Cantidad hijo(s)" },
+                  : { type: "text", name: shosenStudent.el_id_de_estado_civil },
               ],
               [
                 { type: "text", name: "Cantidad hijo(s)" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "0" },
+                  : { type: "text", name: shosenStudent.hijos },
                 { type: "text", name: "Deportes que practica" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin deportes" },
+                  : {
+                      type: "text",
+                      name: shosenStudent.actividades_ocio_deporte,
+                    },
               ],
               [
                 { type: "text", name: "Condición de excepciòn" },
                 editar
                   ? { type: "select", name: "", options: [] }
-                  : { type: "text", name: "Excepción" },
+                  : { type: "text", name: shosenStudent.id_cond_excepcion },
               ],
             ]}
           />
@@ -130,16 +145,16 @@ const General = () => {
           <Columns
             twobold="si"
             columns={[
-              [
+              shosenStudent.vive_con.map((vive) => [
                 { type: "text", name: "Nombre Completo" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin nombre" },
+                  : { type: "text", name: vive.nombre },
                 { type: "text", name: "Parentesco" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin apellido" },
-              ],
+                  : { type: "text", name: vive.parentesco },
+              ]),
             ]}
           />
           <p className="title">
@@ -152,11 +167,11 @@ const General = () => {
                 { type: "text", name: "Nombre Completo" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin nombre" },
+                  : { type: "text", name: shosenStudent.acudiente },
                 { type: "text", name: "Parentesco y Teléfono" },
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin apellido" },
+                  : { type: "text", name: shosenStudent.telefono_acudiente },
               ],
             ]}
           />
@@ -166,7 +181,7 @@ const General = () => {
               [
                 editar
                   ? { type: "input", name: "" }
-                  : { type: "text", name: "Sin observaciones" },
+                  : { type: "text", name: shosenStudent.observacion },
               ],
             ]}
           />
@@ -176,5 +191,4 @@ const General = () => {
   );
 };
 
-export default General;
-// export default withSwal(General); // This is the original line
+export default withSwal(General); // This is the original line

@@ -32,10 +32,9 @@ const Select = () => {
     const student_sec = estudiantes.find(
       (estudiante) => estudiante.cod_univalle === studentCodigo
     );
-
     console.log(selectedStudent);
     setSelectedStudent({
-      id: student_sec.id
+      id: student_sec.id,
     });
   };
 
@@ -47,7 +46,11 @@ const Select = () => {
   }
 
   // Se ejecuta cuando se selecciona un estudiante, trae la informacion
-  // del estudiante seleccionado y la guarda en la variable global
+  // del estudiante seleccionado y la guarda en la variable global.
+  useEffect(() => {
+    setShosenStudent(null);
+  }, []);
+
   useEffect(() => {
     if (selectedStudent.id === "identificación") return;
     // Method setEstudiantes is used to set the students data in the store
@@ -55,12 +58,12 @@ const Select = () => {
       const res = await fetchEstudiante(selectedStudent.id, user.sede_id);
       if (res) {
         setSelectedStudent(res);
-        setShosenStudent(selectedStudent);
+        setShosenStudent(res);
       }
       console.log(res);
     };
     getStudent();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedStudent.id, user.sede_id]);
 
   return (
@@ -68,7 +71,9 @@ const Select = () => {
       <div className="container-submain">
         <div className="container-basic">
           <select onChange={handleSelectStudent} className="select-item">
-            <option value="">Select a student</option>
+            <option value="" disabled selected>
+              Select a student
+            </option>
             {estudiantes?.map((estudiante) => (
               <option
                 key={estudiante.cod_univalle}

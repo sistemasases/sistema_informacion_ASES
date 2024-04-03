@@ -1,3 +1,12 @@
+/**
+  * @file info_general.jsx
+  * @version 1.0.0
+  * @description 
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024 
+*/
+
 import React, { useState } from "react";
 import Select from "react-select";
 import { Container, Row, Col, Button } from "react-bootstrap";
@@ -13,22 +22,24 @@ import {
 //import DatePicker from 'react-datepicker';
 
 const Info_general = (props) => {
+  // Configuración necesaria para la petición
   const config = {
     headers: {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
     },
   };
-
+  // Configuración necesaria para la petición
   const config2 = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
 
   // Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------
 
+  // rol del usuario logueado.
   const userRole = desencriptar(sessionStorage.getItem("rol"));
+  // Almacena el estado de los datos del estudiante.
   const [state, set_state] = useState({
     editar: false,
-
     usuario: "",
     data_user: [],
     data_rol: [],
@@ -58,8 +69,8 @@ const Info_general = (props) => {
     email_alternativo: props.datos["email"], // CharField
     sexo: props.datos["sexo"], // CharField
     cantidad_hijo: props.datos["hijos"], // IntegerField
-    actividades_tiempo_libre: props.datos["actividades_tiempo_libre"], // jajaj no se, la quire por ahora
-    otros_acompañamientos: props.datos["otros_acompañamientos"], // jajaj no se, la quire por ahora
+    actividades_tiempo_libre: props.datos["actividades_tiempo_libre"], 
+    otros_acompañamientos: props.datos["otros_acompañamientos"], 
     año_ingreso_univalle: props.datos["anio_ingreso"], // DateTimeField
     deportes_que_practica: props.datos["actividades_ocio_deporte"],
 
@@ -94,13 +105,17 @@ const Info_general = (props) => {
     nuevo_identidad_de_genero_id: props.datos["el_id_de_identidad_gen"],
     nuevo_estado_civil_id: props.datos["el_id_de_estado_civil"],
     nuevo_condicion_de_excepcion_id: props.datos["el_id_de_cond_excepcion"],
-    //no estan por ahora
     nuevo_actividades_tiempo_libre: props.datos["actividades_tiempo_libre"],
     nuevo_otros_acompañamientos: props.datos["otros_acompañamientos"],
 
     nuevo_personas_con_quien_vive: props.datos["vive_con"],
   });
 
+  /**
+  * @description Función que se encarga de obtener los grupos étnicos.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const opciones_lista_Etico = () => {
     axios
       .get(
@@ -124,6 +139,11 @@ const Info_general = (props) => {
       });
   };
 
+  /**
+  * @description Función que se encarga de obtener las actividades simultáneas.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const opciones_lista_Actividad_simultanea = () => {
     axios
       .get(
@@ -147,6 +167,11 @@ const Info_general = (props) => {
       });
   };
 
+  /**
+  * @description Función que se encarga de obtener las identidades de género.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const opciones_lista_identidad_de_genero = () => {
     axios
       .get(
@@ -170,6 +195,11 @@ const Info_general = (props) => {
       });
   };
 
+  /**
+  * @description Función que se encarga de obtener los estados civiles.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const opciones_lista_estado_civil = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/usuario_rol/estado_civil/`, config)
@@ -189,7 +219,11 @@ const Info_general = (props) => {
         console.error("Error al obtener los grupos étnicos:");
       });
   };
-
+  /**
+  * @description Función que se encarga de obtener las condiciones de excepción.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const opciones_lista_condicion_de_excepcion = () => {
     axios
       .get(
@@ -217,12 +251,23 @@ const Info_general = (props) => {
   // Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------
   // Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------ Funciones de edicion ------------------
 
+
+  /**
+  * @description Función que se encarga de actualizar la variable de estado 'editar' a true.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const esta_editando = (e) =>
     set_state({
       ...state,
       editar: true,
     });
 
+  /**
+  * @description Función que se encarga de actualizar los datos del estado.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const esta_editando_cancelar = (e) =>
     set_state({
       ...state,
@@ -268,7 +313,15 @@ const agregarPariente = () => {
   }
 };
 */
+
+/**
+  * @description Función que agrega un nuevo pariente a la lista correspondiente y 
+  *              actualiza el estado.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const agregarPariente = () => {
+    // Si no hay personas con quien vive, crea una lista vacía
     const nuevoPersonasConQuienVive = {
       personas: [
         ...(state.nuevo_personas_con_quien_vive &&
@@ -277,7 +330,6 @@ const agregarPariente = () => {
           : []),
       ],
     };
-
     nuevoPersonasConQuienVive.personas.push({
       pariente: "",
       nombre: "",
@@ -285,11 +337,17 @@ const agregarPariente = () => {
 
     set_state({
       ...state,
-      nuevo_personas_con_quien_vive: nuevoPersonasConQuienVive,
-      agregarPariente: true,
+      nuevo_personas_con_quien_vive: nuevoPersonasConQuienVive, // Actualiza el estado
+      agregarPariente: true, 
     });
   };
 
+  /**
+  * @description Función que actualiza el estado para guardar los cambios realizados 
+  *              en la lista de parientes.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const guardarPariente = () => {
     set_state({
       ...state,
@@ -300,6 +358,11 @@ const agregarPariente = () => {
     handle_upload_estudiante();
   };
 
+   /**
+  * @description Función que actualiza el estado no agregar un pariente.
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const cancelarPariente = () => {
     set_state({
       ...state,
@@ -345,6 +408,12 @@ const agregarPariente = () => {
       }
       };
 */
+
+  /**
+  * @description Función 
+  * @param {} - No recibe parámetros.
+  * @return {void} - No retorna ningún valor.
+  */
   const cambiar_datos = (e) => {
     if (e.target.name.startsWith("nuevo_personas_con_quien_vive")) {
       const [indexStr, field] = e.target.name.match(/\[(\d+)\]\.(.*)/).slice(1);

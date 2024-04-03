@@ -3,23 +3,23 @@ import Acordion from "../Acordion";
 import "../../../../Scss/ficha_estudiante_discapacidad/seguimiento.css";
 import withSwal from "../withSwal";
 import { useEffect, useState } from "react";
-import fetchSocioEducativo from "../../api/fetch_socio_educativo";
+import fetchAcademico from "../../api/fetch_acadecmico";
 
 // Componente de Seguimiento
 // Este componente se encarga de mostrar los seguimientos que tiene un estudiante
 // y de mostrar un formulario con la información de cada seguimiento almacenado.
-const Seguimiento = () => {
+const Academico = () => {
   const { user, shosenStudent } = useAuthStore();
-  const [seguimientos, setSeguimientos] = useState([]);
+  const [periodos, setPeriodos] = useState([]);
 
   useEffect(() => {
     // Method setEstudiantes is used to set the students data in the store
     const getSeguimientos = async () => {
-      const res = await fetchSocioEducativo(shosenStudent.id, user.sede_id);
+      const res = await fetchAcademico(shosenStudent.id, user.sede_id);
       if (res) {
-        setSeguimientos(res);
+        setPeriodos(res);
       }
-      // console.log(res);
+      console.log(res);
     };
     getSeguimientos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -28,11 +28,11 @@ const Seguimiento = () => {
   return (
     <>
       <p className="title">Seguimiento de pares</p>
-      {seguimientos && seguimientos.length > 0 ? (
-        seguimientos.map((seguimiento, index) => (
+      {periodos && periodos.length > 0 ? (
+        periodos.map((periodo, index) => (
           <Acordion
             key={index}
-            title={seguimiento[0].nombre}
+            title={periodo[0].nombre}
             claseAcordion={"acordion subacordion"}
             claseContenido={"accordion-content"}
             flechaUp={
@@ -50,7 +50,7 @@ const Seguimiento = () => {
               />
             }
           >
-            {seguimiento.slice(1).map((seg, index) => (
+            {periodos.slice(1).map((seg, index) => (
               <div key={index} className="seguimiento">
                 <p>Seguimiento individual: {seg.fecha}</p>
               </div>
@@ -64,4 +64,4 @@ const Seguimiento = () => {
   );
 };
 
-export default withSwal(Seguimiento); // This is the original line when everything is done
+export default withSwal(Academico); // This is the original line when everything is done

@@ -3,6 +3,7 @@ import Acordion from "./Acordion";
 import "../../../Scss/ficha_estudiante_discapacidad/acordion.css";
 import General from "./general/General";
 import Seguimiento from "./seguimiento/Seguimiento";
+import Academico from "./academico/Academico";
 
 // Componente de Acordiones
 // Este componente se encarga de mostrar los acordeones de la ficha de estudiante
@@ -18,7 +19,7 @@ const Acordiones = () => {
         <Seguimiento />
       </Acordion>
       <Acordion title="ACADÉMICO" claseAcordion={"acordion"}>
-        <Seguimiento />
+        <Academico />
       </Acordion>
       <Acordion title="GEOGRÁFICO" claseAcordion={"acordion"}></Acordion>
     </div>

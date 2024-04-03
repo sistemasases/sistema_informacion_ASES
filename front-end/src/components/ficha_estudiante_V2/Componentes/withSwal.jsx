@@ -5,15 +5,15 @@ import swal from "sweetalert";
 // Retorna un componente que solo se renderiza si hay un estudiante seleccionado
 const withSwal = (Component) => {
   return (props) => {
-    const { estudianteSelected } = useAuthStore();
+    const { shosenStudent } = useAuthStore();
 
     useEffect(() => {
-      if (!estudianteSelected) {
+      if (!shosenStudent) {
         swal("No hay estudiante seleccionado");
       }
-    }, [estudianteSelected]);
+    }, [shosenStudent]);
 
-    return <>{estudianteSelected && <Component {...props} />}</>;
+    return <>{shosenStudent && <Component {...props} />}</>;
   };
 };
 

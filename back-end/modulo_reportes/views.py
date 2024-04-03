@@ -27,7 +27,7 @@ from django.db.models import F, OuterRef, Subquery, Max
 class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
     serializer_class = estudiante_serializer
     queryset = estudiante_serializer.Meta.model.objects.all()
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def retrieve(self, request, pk):
 
