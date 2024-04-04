@@ -1,11 +1,20 @@
-import React from 'react';
+/**
+ * @file Analitics.jsx
+ * @version 1.0.0
+ * @description Archivo de prueba
+ * @author Deiby A. Rodriguez R.
+ * @contact deiby.rodriguez@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
-const Analitics = () =>{
-    return (
-        <div>
-            <h1>Analitics</h1>
-        </div>
-    )
-}
+import React from "react";
 
-export default Analitics 
+const Analitics = () => {
+  return (
+    <div>
+      <h1>Analitics</h1>
+    </div>
+  );
+};
+
+export default Analitics;
