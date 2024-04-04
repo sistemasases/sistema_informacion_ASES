@@ -1,28 +1,46 @@
+/**
+  * @file desplegable_item_listas_materias.jsx
+  * @version 1.0.0
+  * @description Componente para mostrar listas desplegables de materias, cursos, franjas, profesores y estudiantes.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 import React, { useMemo, useState } from 'react';
 import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
 import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
+/**
+ * Componente para mostrar listas desplegables de materias, cursos, franjas, profesores y estudiantes.
+ * @param {Object} props - Propiedades del componente.
+ * @param {Object} props.item - Elemento de la lista de materias, cursos, franjas, profesores o estudiantes.
+ * @param {string} [props.franja] - Franja del curso.
+ * @returns {JSX.Element} Componente Desplegable_item_listas_materias.
+ */
 const Desplegable_item_listas_materias = ({ item, franja }) => {
-
+  // Configuración para las llamadas a la API
   const config = {
     headers: {
+      // Obtención del token de sesión 
       Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     }
   };
 
+  // Estado para el control del despliegue
   const [open, setOpen] = useState(false)
 
+  // Estado para almacenar datos y su actualización
   const [state, set_state] = useState({
     filtro: '',
     cursos_de_la_facultad: [],
     franjas_de_curso: [],
     profesores_de_la_franja: [],
     alumnos_del_profesor: []
-
   })
 
+  // Obtener cursos de la facultad desde la API
   const traer_cursos_de_facultad = async (index) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/cursos_facultad/` + index + "/", config);
@@ -35,7 +53,7 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
     }
   }
 
-
+  //Obtener franjas de un curso desde la API
   const franjas_del_curso = async (index) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/franja_curso/` + index + "/", config);
@@ -48,6 +66,7 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
     }
   }
 
+  // Función para obtener profesores de una franja
   const profesores_de_la_franja = async (index, index2) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/profesores_del_curso/`,
@@ -61,6 +80,7 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
     }
   }
 
+  // Función para obtener alumnos de un profesor
   const alumnos_del_profesor = async (index, index2) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/alumnos_del_profesor/`,
@@ -73,36 +93,16 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
       console.log("no capto el dato")
     }
   }
+
+  // Cambiar el valor de un dato en el estado
   const cambiar_dato = (e) => {
     set_state({
       ...state,
       [e.target.name]: e.target.value
     })
   }
-
-
-  /*if(item.codigo_univalle){
-      return (
-          <Row>
-              <Col className={open ? "fichas_academico open" : "fichas_academico"}>
-                  <Row className="link_academico1" onClick={() => {setOpen(!open); traer_cursos_de_facultad(item.id)}}>
-                      <Col className="link_text_academico1" >
-                          <Row className="link_text_academico_hover1">
-                              {item.nombre}
-                          </Row>
-                      </Col>
-                  </Row>
-                  <Row className="content_academico">
-                      
-                      <Col className="contenido_fichas_academico1">
-                          { state.cursos_de_la_facultad.map((child, index) => <Desplegable_item_listas_materias key={index} item={child} />) }
-                      </Col>
-                  </Row>
-              </Col>
-          </Row>
-      )
-  }else */
-
+  
+  // Renderizado condicional según el tipo de dato
   if (item.materias) {
     return (
       <Row>
@@ -249,11 +249,9 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
       </Row>
     );
   }
-  // ...
+
 
 
 }
 
 export default Desplegable_item_listas_materias
-
-
