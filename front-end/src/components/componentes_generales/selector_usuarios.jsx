@@ -118,11 +118,11 @@ const Selector_usuarios = () => {
    * @returns Se almacenan los datos en la variable state.data_user_rol
    */
   const consulta_all_user_rol = (e) => {
-    // console.log('Valor de pk:', pk);
+    // Se obtiene el id de la sede
     let pk = desencriptar(sessionStorage.getItem("sede_id"));
-    console.log("Valor de pk:", pk);
     all_users_rols.all_users_rols(pk).then((res) => {
       if (Array.isArray(res.data)) {
+        // Se almacenan los datos en la variable updatedData
         const updatedData = res.data;
 
         set_state((prevState) => ({
@@ -138,7 +138,6 @@ const Selector_usuarios = () => {
    * @returns Se almacenan los datos en la variable datos_option_user
    */
   const handle_user_selector = (e) => {
-    console.log("Valor de state.data_user:", state.data_user);
     if (bandera_option_user === true) {
       for (var i = 0; i < state.data_user["length"]; i++) {
         const dato = {
@@ -186,7 +185,6 @@ const Selector_usuarios = () => {
    */
   const handle_option_user = (e) => {
     // Getting the files from the input
-    console.log(e);
     // Se creo un nuevo objecto FormDatas
     let formData = new FormData();
 
@@ -305,7 +303,6 @@ const Selector_usuarios = () => {
    */
   const handleChange = ({ selectedRows }) => {
     // You can set state or dispatch with something like Redux so we can use the retrieved data
-    console.log("Selected Rows: ", selectedRows);
     set_state({
       ...state,
       select_rows: selectedRows,
