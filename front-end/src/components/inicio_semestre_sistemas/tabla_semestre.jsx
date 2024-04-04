@@ -7,19 +7,18 @@
   * @date 28 de marzo de 2023
 */
 
-import React, {useState, useEffect} from 'react';
-import {Container, Row, Table} from "react-bootstrap";
 import All_Users_Rols from '../../service/all_users_rol';
+import {Container, Row, Table} from "react-bootstrap";
+import React, {useState, useEffect} from 'react';
+
 
 const Semestre_sistemas_component = () =>{
-
     // Constante para guardar el estado de la tabla
     const [state,set_state] = useState({
         data: [],
     })
-
+    // Trae todos los usuarios con rol del semestre
     useEffect(()=>{
-        //Trae todos los usuarios con rol del semestre
         let formData = new FormData();
         formData.append('id_sede', sessionStorage.getItem('sede_id'));
         All_Users_Rols.all_users_rols(formData).then((res) => {
