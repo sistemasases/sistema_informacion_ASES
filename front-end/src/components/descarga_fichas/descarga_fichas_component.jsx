@@ -1,21 +1,30 @@
+/**
+  * @file descarga_fichas_component.jsx
+  * @version 1.0.0
+  * @description Vista para descargar las fichas en un csv.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
+
 import {Container, Col, Row, Button, Modal} from 'react-bootstrap';
+import Descargar_fichas from '../../service/descargar_fichas';
 import All_cohorte_service from '../../service/all_cohorte';
 import All_sede_service from '../../service/all_sede';
-import Descargar_fichas from '../../service/descargar_fichas';
-import React, {useState, useEffect} from 'react';
-import { CSVLink } from 'react-csv';
 import Form from 'react-bootstrap/Form';
+import React, {useState} from 'react';
+import { CSVLink } from 'react-csv';
 import Select from 'react-select';
 
 
 const Descarga_fichas_component = () =>{
-
-    var bandera_option_sede = true;
+    // Aquí se guardará todas las sedes en el sistema.
     var opciones_sede = [];
-    var bandera_option_cohorte = true;
+    // Aquí se guardará todos los cohortes en el sistema.
     var opciones_cohorte = [];
-
+    // Variable para guardar la respuesta del axios
     var response = undefined;
+    // constante para almacenar el modelo de los seguimientos
     const [seguimientosData,set_seguimientosData] = useState([{
         "id": 0,
         "fecha": "",
@@ -84,7 +93,7 @@ const Descarga_fichas_component = () =>{
         "id_modificador": null,
         "id_estudiante": null
     }]);
-    
+    // constante para almacenar el modelo de las inasistencias
     const [inasistenciasData,set_inasistenciasData] = useState([{
         "id": 0,
         "fecha": "",
@@ -97,9 +106,9 @@ const Descarga_fichas_component = () =>{
         "id_modificador": null,
         "id_estudiante": null
     }]);
-
+    // constante con mensaje para el modal
     const [respuesta,set_respuesta] = useState('Cargando, espera un momento.')
-
+    // constante para almacenar los filtros escogidos
     const [form,set_form] = useState({
         estudiante:'',
         fecha_inicio:'',
@@ -108,37 +117,51 @@ const Descarga_fichas_component = () =>{
         sede:'',
         cohorte:''
     });
-
-    const [sedes,set_sedes] = useState([])
-    const [cohortes,set_cohortes] = useState([])
-
+    // Constante para permitir activar el botón de descarga una vez finalice el axios
     const [descargaHabilitada, setDescargaHabilitada] = useState(true);
-
+    /**
+        * Función para cambiar los valores de los filtros.
+        * @param {Event} e Información del evento del filtro que está cambiando.
+    */
     const handle_form = (e) => {
         set_form({
             ...form,
             [e.target.name]: e.target.value
         });
     };
-
+    /**
+        * Función para cambiar los valores de las sedes en el filtro.
+        * @param {Event} e Información del evento de la sede que está cambiando.
+    */
     const handle_form_sede = (e) => {
         set_form({
             ...form,
             sede: e.value
         });
     };
-
+    /**
+        * Función para cambiar los valores de las cohorte en el filtro.
+        * @param {Event} e Información del evento de la cohorte que está cambiando.
+    */
     const handle_form_cohorte = (e) => {
         set_form({
             ...form,
             cohorte: e.value
         });
     };
-
+    // Show para manejar la vista del modal
     const [show, setShow] = useState(false);
+    /**
+        * Función para abrir el modal, cambiando el show a true.
+    */
     const handle_open = () => setShow(true);
+    /**
+        * Función para cerrar el modal, cambiando el show a false.
+    */
     const handle_close = () => {setShow(false); set_respuesta('Cargando, espera un momento.'); setDescargaHabilitada(true)};
-
+    /**
+        * Función asincronica que hace la consulta en la API para traer las fichas.
+    */
     const handle_upload= async ()=>{
         set_respuesta('Cargando, espera un momento.')
         setDescargaHabilitada(true)
@@ -156,25 +179,25 @@ const Descarga_fichas_component = () =>{
             setDescargaHabilitada(true)
         })
     }
-
+    /**
+        * Función asincronica para cargar los select de sedes y cohortes con la información en el sistema.
+    */
     const cargar_selects = async () =>{
-
         await All_sede_service.all_sede().then((res) => {
-          for (var i = 0; i < res['length'] ; i++) {
-            const dato = { value: res[i]['nombre'], label: res[i]['nombre'], id: res[i]['id'] }
-            opciones_sede.push(dato);
-          }
+            for (var i = 0; i < res['length'] ; i++) {
+                const dato = { value: res[i]['nombre'], label: res[i]['nombre'], id: res[i]['id'] }
+                opciones_sede.push(dato);
+            }
         })
-  
         await All_cohorte_service.all_cohorte().then((res) => {
-          for (var i = 0; i < res['length'] ; i++) {
-            const dato = { value: res[i]['id_number'], label: res[i]['id_number'], id: res[i]['id'] }
-            opciones_cohorte.push(dato);
-          }
+            for (var i = 0; i < res['length'] ; i++) {
+                const dato = { value: res[i]['id_number'], label: res[i]['id_number'], id: res[i]['id'] }
+                opciones_cohorte.push(dato);
+            }
         })
-      }
+    }
   
-      cargar_selects()
+    cargar_selects()
 
     return (
         <Container className='mi-clase-background'>
