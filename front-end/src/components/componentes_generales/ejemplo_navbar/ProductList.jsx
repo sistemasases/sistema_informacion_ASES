@@ -1,11 +1,19 @@
-import React from 'react';
+/**
+ * @file ProductList.jsx
+ * @version 1.0.0
+ * @description Archivo de prueba
+ * @author Deiby A. Rodriguez R.
+ * @contact deiby.rodriguez@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+import React from "react";
 
-const ProductList = () =>{
-    return (
-        <div>
-            <h1>ProductList</h1>
-        </div>
-    )
-}
+const ProductList = () => {
+  return (
+    <div>
+      <h1>ProductList</h1>
+    </div>
+  );
+};
 
-export default ProductList 
+export default ProductList;

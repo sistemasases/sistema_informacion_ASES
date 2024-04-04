@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import Select from 'react-select'  ;
 import Switch from 'react-switch';
 import Selector_usuarios from "../../components/componentes_generales/selector_usuarios"
-import Selector_usuarios_copy from "../../components/componentes_generales/selector_usuarios copy"
 import Formulario_asginacion_rol from "../../components/gestion_usuario_rol/formulario_asignacion_rol"
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
