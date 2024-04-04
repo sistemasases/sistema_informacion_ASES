@@ -1,3 +1,11 @@
+/**
+  * @file Cabecera.jsx
+  * @version 1.0.0
+  * @description Componente de cabecera para el reporte de desersión.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 import React, {useState} from 'react';
 import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
@@ -5,9 +13,14 @@ import axios from 'axios';
 import Select from 'react-select'  ;
 import {decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
-
+/**
+ * @description Componente de cabecera para el reporte de desersión.
+ * @param {object} props - Propiedades pasadas al componente.
+ * @returns {JSX.Element} Componente de cabecera.
+ */
 const Cabecera = (props) =>{
-    const config = {
+  // Se obtiene y desencripta el token de sesión  
+  const config = {
       Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     };
       const{childClicked} = props
@@ -15,9 +28,9 @@ const Cabecera = (props) =>{
     const datos_option_user = [];
     var bandera_option_user = true;
 
+    //Estado del Componente
     const [state,set_state] = useState({
         periodo : '',
-  
         usuario : '',
         data_user : [],
         data_periodo : [],
@@ -25,11 +38,10 @@ const Cabecera = (props) =>{
   
       })
 
-
+    //Obtener las cohortes
     useEffect(()=>{
   
         axios({
-          // Endpoint to send files
           url:  `${process.env.REACT_APP_API_URL}/usuario_rol/cohortes_lista/`,
           method: "GET",
           headers: config,
@@ -46,9 +58,12 @@ const Cabecera = (props) =>{
 
       },[]);
 
-
+      /**
+      * Procesa los datos de data_user para crear objetos y los agrega a un array de estudiantes.
+      * @param {Event} e
+      * @returns {void}
+      */
       const handle_users = (e) => {
-        // Getting the files from the input
         if(bandera_option_user === true){
     
           for (var i = 0; i < state.data_user['length'] ; i++) {
@@ -64,10 +79,7 @@ const Cabecera = (props) =>{
 
       
       const handle_option_user = (e) => {
-        // Getting the files from the input
-
         childClicked(e.id)
-
       }
 
     return (

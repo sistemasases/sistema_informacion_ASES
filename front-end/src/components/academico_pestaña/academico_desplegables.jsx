@@ -1,3 +1,12 @@
+/**
+  * @file academico_desplegables.jsx
+  * @version 1.0.0
+  * @description Componente para los desplegables del módulo académico
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
+
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import Desplegable_item_listas_materias from './desplegable_Item_listas_materias';
@@ -7,23 +16,31 @@ import Profesores from './profesores';
 import axios from 'axios';
 import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
+/**
+ * Academico_desplegable
+ * @description Componente que muestra el desplegable para seleccionar diferentes elementos académicos como facultades, profesores y estudiantes.
+ * @returns {JSX.Element} Componente Academico_desplegable.
+ */
 const Academico_desplegable = () => {
+
+  // Configuración para las llamadas a la API
   const config = {
     headers: {
+      // Obtención del token de sesión 
       Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     }
   };
 
-
-
-
+  // Estado para el interruptor de cambio
   const [switchChecked, setChecked] = useState(false);
   const handleChange = () => setChecked(!switchChecked);
 
+  // Estado para el modal y sus controladores
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  // Estado para almacenar datos y su actualización
   const [state, set_state] = useState({
     facultades: [],
     profesores: [{ profesores: '' }],
@@ -35,11 +52,13 @@ const Academico_desplegable = () => {
     filtro: ''
   });
 
+  // Estado para la pestaña activa y su controlador
   const [activeTabIndex, setActiveTabIndex] = useState('0');
   const activeTab = (index) => {
     index === activeTabIndex ? setActiveTabIndex(0) : setActiveTabIndex(index);
   };
 
+  // Cambiar dato en el estado
   const cambiar_dato = (e) => {
     set_state({
       ...state,
@@ -47,9 +66,8 @@ const Academico_desplegable = () => {
     });
   };
 
+  // Efecto para realizar llamadas iniciales
   useEffect(() => {
-    // Aquí puedes realizar las llamadas iniciales si es necesario
-    // Por ejemplo, si necesitas obtener facultades al cargar el componente
     if(desencriptar(sessionStorage.getItem('rol')) === 'profesor')
     {
       traer_materias_del_profesor()
@@ -60,8 +78,7 @@ const Academico_desplegable = () => {
     }
   }, []);
 
-
-
+  // Obtener materias del profesor desde la API
   const traer_materias_del_profesor = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/traer_materias_del_profesor/`+desencriptar(sessionStorage.getItem('id_usuario'))+'/', config);
@@ -73,13 +90,14 @@ const Academico_desplegable = () => {
     }
   };
 
-    const traer_cursos_de_facultad = async (index)=>{
-    try{
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/cursos_facultad/`, config);
-      set_state({
-        facultades: [{ materias: response.data }],
-        tiene_facultades: true
-      })
+  // Obtener cursos de la facultad desde la API
+  const traer_cursos_de_facultad = async (index)=>{
+  try{
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/cursos_facultad/`, config);
+    set_state({
+      facultades: [{ materias: response.data }],
+      tiene_facultades: true
+    })
 
     }
     catch (error){
@@ -87,8 +105,7 @@ const Academico_desplegable = () => {
     }
   }
 
-
-
+  // Obtener facultades desde la API
   const traer_facultades = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/lista_de_facultades/`, config);
@@ -101,6 +118,7 @@ const Academico_desplegable = () => {
     }
   };
 
+  // Obtener profesores desde la API
   const traer_profesores = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/lista_de_profesores/`, config);
@@ -113,6 +131,7 @@ const Academico_desplegable = () => {
     }
   };
 
+  // Obtener estudiantes desde la API
   const traer_estudiantes = async () => {
     try {
       const paramsget = {
@@ -128,10 +147,7 @@ const Academico_desplegable = () => {
     }
   };
 
-
-
-  const prueba = 'profesor';
- //sessionStorage.rol
+  // Determinar el tipo de usuario y renderizar el contenido correspondiente
   if (desencriptar(sessionStorage.rol) === 'profesor') {
     return (
       <Container className="academico_container">
