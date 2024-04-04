@@ -7,26 +7,26 @@
   * @date 28 de marzo de 2023
 */
 
-import React from 'react';
 import Inicio_semestre_component from "../../components/inicio_semestre_sistemas/inicio_semestre_component";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
-import {Container, Row, Col} from "react-bootstrap";
 import {desencriptar} from '../utilidades_seguridad/utilidades_seguridad';
-
+import {Row, Col} from "react-bootstrap";
+import React from 'react';
 
 
 const Inicio_semestre_sistemas_instancia = () =>{
-
+    // Desencriptar los permisos del usuario desde el sessionStorage.
     const userRole = desencriptar(sessionStorage.getItem('permisos'));
+    
     return (
-    <>{ userRole.includes('view_inicio_semestre') ? <Col className="contenido_children">
-        <Row className="rowJustFlex">
-            <h1>INICIO DE SEMESTRE</h1>
-        </Row>
-        <Row className="containerRow">
-            <Inicio_semestre_component/>
-        </Row>
-    </Col> : <Acceso_denegado/>}</>
+        <>{ userRole.includes('view_inicio_semestre') ? <Col className="contenido_children">
+            <Row className="rowJustFlex">
+                <h1>INICIO DE SEMESTRE</h1>
+            </Row>
+            <Row className="containerRow">
+                <Inicio_semestre_component/>
+            </Row>
+        </Col> : <Acceso_denegado/>}</>
     )
 }
 

@@ -1,27 +1,27 @@
-import React, { useState, useEffect, Component, useRef } from "react";
-import DataTable from "react-data-table-component";
-import DataTableExtensions from "react-data-table-component-extensions";
-import axios from "axios";
-import {
-  Container,
-  Col,
-  Row,
-  Button,
-  Form,
-  Alert,
-  Dropdown,
-} from "react-bootstrap";
-import Select from "react-select";
-import { useNavigate } from "react-router-dom";
-import {
-  desencriptar,
-  desencriptarInt,
-  decryptTokenFromSessionStorage,
-} from "../utilidades_seguridad/utilidades_seguridad.jsx";
-import { CSVLink } from "react-csv";
-import writeXlsxFile from "write-excel-file";
-import myGif from "../reportes/loading_data.gif";
+/**
+  * @file alertas.jsx
+  * @version 1.0.0
+  * @description modulo para visualizar las alertas.
+  * @author Steven Bernal
+  * @contact steven.bernal@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
 
+import {
+        desencriptar,
+        desencriptarInt,
+        decryptTokenFromSessionStorage
+       } from "../utilidades_seguridad/utilidades_seguridad.jsx";
+import {Container, Col, Row, Button} from "react-bootstrap";
+import DataTable from "react-data-table-component";
+import React, {useState, useEffect} from "react";
+import myGif from "../reportes/loading_data.gif";
+import {useNavigate} from "react-router-dom";
+import writeXlsxFile from "write-excel-file";
+import {CSVLink} from "react-csv";
+import axios from "axios";
+
+// variable con las columnas a usar dentro de las notificaciones
 var columns = [
   {
     name: "Código",
@@ -97,16 +97,6 @@ var columns = [
     isCheck: false,
     width: "190px",
     conditionalCellStyles: [
-      // {
-      //   when: (row) => row.encuesta_admitido == "DILIGENCIADO",
-      //   style: {
-      //     backgroundColor: "green",
-      //     color: "white",
-      //     "&:hover": {
-      //       cursor: "pointer",
-      //     },
-      //   },
-      // },
       {
         when: (row) => row.encuesta_admitido == "SIN DILIGENCIAR",
         style: {
@@ -339,53 +329,33 @@ var columns = [
       },
     ],
   },
-  // {
-  //   name: "Riesgo geográfico",
-  //   selector: (row) => row.ciudad_res,
-  //   value: "ciudad_res",
-  //   sortable: true,
-  //   isCheck: false,
-  // },
-
-  // {
-  //   name: "Mensaje del profesional",
-  //   selector: (row) => row.mensaje_profesional,
-  //   value: "mensaje_profesional",
-  //   sortable: true,
-  //   isCheck: false,
-  //   width: "190px",
-  // },
-  // {
-  //   name: "Mensaje del practicante",
-  //   selector: (row) => row.mensaje_practicante,
-  //   value: "mensaje_practicante",
-  //   sortable: true,
-  //   isCheck: false,
-  //   width: "190px",
-  // },
-  // {
-  //   name: "Alerta académica",
-  //   selector: (row) => row.alerta_academica,
-  //   value: "alerta_academica",
-  //   sortable: true,
-  //   isCheck: false,
-  //   width: "190px",
-  // },
 ];
 
+// variable para setear las columnas
 var new_columns = [];
 
+// variable para guardar los estudiantes
 var prueba = [];
+
+// variable para guardar los estudiantes
 var restore = [];
 
+/**
+    * Función principal.
+    * @return {HTML} Visualización de las alertas.
+*/
 const Alertas = () => {
+  // constante para guarda los estudiantes
   const [state, set_state] = useState({ estudiante: [] });
+  // constante para guarda los estudiantes filtrados
   const [filtered, setFiltered] = useState(state.estudiante);
+  // constante para utilizar la busqueda
   const [search, set_Search] = useState({
     busqueda: "",
   });
+  // constante para las cabeceras
   const [columnas, set_columnas] = useState({ cabeceras: [] });
-
+  // constante para filtrar por documento
   const filtros_Contacto = [
     {
       name: "Tipo de documento",
@@ -449,6 +419,7 @@ const Alertas = () => {
     datos_estudiantes();
   }, []);
 
+  // Extraer los permisos de los roles
   useEffect(() => {
     let rol = desencriptar(sessionStorage.getItem("rol"));
     let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
@@ -487,6 +458,7 @@ const Alertas = () => {
     datos_estudiantes_extra();
   }, []);
 
+  // Actualiza todas las columnas
   useEffect(() => {
     set_columnas((prevState) => ({
       ...prevState,
@@ -494,36 +466,36 @@ const Alertas = () => {
     }));
   }, []);
 
+  // Constante para actualizar la busqueda
   const onSearch = (e) => {
     set_Search({ ...search, busqueda: e.target.value });
-    // // // // // console.log(search);
   };
 
+  // Variable que sirve como guia para la información del estudiante
   var empty_stuff = [
     { cod_univalle: " ", nombre: " ", apellido: " " },
   ];
 
-  // console.log(state.estudiante);
-  // console.log("Filtered es:");
-  // console.log(filtered);
   prueba = state.estudiante;
+
   restore = state.estudiante;
+
+  // Constante para actualizar la busqueda
   const [show, setShow] = useState(false);
+  // Constante para actualizar la busqueda
   const [search_bar_data, set_search_bar_data] = useState([]);
+  /**
+    * Busqueda y filtro para los estudiantes.
+    * @param {Event} e Evento de la busqueda.
+  */
   const handle_column_search = (e) => {
     restore = prueba;
-    // console.log(e.target.name);
-    // console.log(e.target.value);
-    // // console.log(state.estudiante);
-    // console.log(filtered);
     if (e.target.name === "Código") {
-      // console.log(prueba);
       const hola = prueba.filter((row) =>
         row.cod_univalle.toLowerCase().includes(e.target.value.toLowerCase())
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
-      // console.log("Filtraste en Código");
     }
     if (e.target.name === "Nombre") {
       const hola = prueba.filter((row) =>
@@ -531,7 +503,6 @@ const Alertas = () => {
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
-      // console.log("Filtraste en Nombre");
     }
     if (e.target.name === "Apellido") {
       const hola = prueba.filter((row) =>
@@ -539,7 +510,6 @@ const Alertas = () => {
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
-      // console.log("Filtraste en Apellido");
     }
     if (e.target.name === "Documento") {
       const hola = prueba.filter((row) =>
@@ -547,7 +517,6 @@ const Alertas = () => {
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
-      // console.log("Filtraste en Documento");
     }
     if (e.target.name === "Acuerdo de tratamiento de datos") {
       const hola = prueba.filter((row) =>
@@ -557,7 +526,6 @@ const Alertas = () => {
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
-      // console.log("Filtraste en Acuerdo de tratamiento de datos");
     }
     if (e.target.name === "Encuesta de admitidos") {
       const hola = prueba.filter((row) =>
@@ -567,7 +535,6 @@ const Alertas = () => {
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
-      // console.log("Filtraste en Encuesta de admitidos");
     }
     if (e.target.name === "Ficha Semana Anterior") {
       const hola = prueba.filter((row) =>
@@ -577,7 +544,6 @@ const Alertas = () => {
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
-      // console.log("Filtraste en Ficha Semana Anterior");
     }
     if (e.target.name === "Riesgo individual") {
       const hola = prueba.filter((row) =>
@@ -586,7 +552,6 @@ const Alertas = () => {
           .includes(e.target.value.toLowerCase())
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
-      // console.log("Filtraste en Riesgo individual");
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo familiar") {
@@ -596,8 +561,6 @@ const Alertas = () => {
           .includes(e.target.value.toLowerCase())
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
-
-      // console.log("Filtraste en Riesgo familiar");
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo académico") {
@@ -607,8 +570,6 @@ const Alertas = () => {
           .includes(e.target.value.toLowerCase())
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
-
-      // console.log("Filtraste en Riesgo académico");
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo económico") {
@@ -618,8 +579,6 @@ const Alertas = () => {
           .includes(e.target.value.toLowerCase())
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
-
-      // console.log("Filtraste en Riesgo económico");
       setFiltered(filtered_data);
     }
     if (e.target.name === "Riesgo vida universitaria") {
@@ -629,14 +588,15 @@ const Alertas = () => {
           .includes(e.target.value.toLowerCase())
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
-
-      // console.log("Filtraste en Riesgo vida universitaria");
       setFiltered(filtered_data);
     }
     
   };
-
+  // variable para actualizar la data de la busqueda
   var new_search_bar_data = [];
+  /**
+    * Añade una busqueda extra.
+  */
   const add_search_bar = () => {
     for (let i = 0; i < columns.length; i++) {
       const element = columns[i];
@@ -655,8 +615,6 @@ const Alertas = () => {
       );
       new_columns.push(element);
     }
-
-    // return new_columns;
   };
 
   //   Estilo visual de la tabla
@@ -667,22 +625,6 @@ const Alertas = () => {
         backgroundColor: "#e7eef0",
       },
     },
-
-    // rows: {
-    //   style: {
-    //     color: "#000000",
-    //     backgroundColor: "#F7E6E6"
-    //   },
-    //   stripedStyle: {
-    //     color: "#000000",
-    //     backgroundColor: "#F5DDDD "
-    //   }
-    // },
-    // border: {
-    //   style: {
-    //     color: "#0000",
-    //   }
-    // }
   };
 
   //   Opciones de paginacion de la tabla
@@ -693,6 +635,7 @@ const Alertas = () => {
     selectAllRowsItemText: "Mostrar Todo",
   };
 
+  // Cabecera del csv
   var csv_headers = [
     { label: "Código", key: "cod_univalle" },
     { label: "Nombre", key: "nombre" },
@@ -712,12 +655,9 @@ const Alertas = () => {
       label: "Riesgo vida universitaria",
       key: "riesgo_vida_universitaria_ciudad",
     },
-    // { label: "Riesgo geográfico", key: "ciudad_res" },
-    // { label: "Mensaje del profesional", key: "mensaje_profesional" },
-    // { label: "Mensaje del practicante", key: "mensaje_practicante" },
-    // { label: "Alerta académica", key: "alerta_academica" },
   ];
 
+  // variable con la info del csv
   var schema = [
     {
       column: "Código univalle",
@@ -779,28 +719,11 @@ const Alertas = () => {
       type: String,
       value: (student) => student.riesgo_vida_universitaria_ciudad,
     },
-    // {
-    //   column: "Riesgo geográfico",
-    //   type: String,
-    //   value: (student) => student.ciudad_res,
-    // },
-    // {
-    //   column: "Mensaje del profesional",
-    //   type: String,
-    //   value: (student) => student.mensaje_profesional,
-    // },
-    // {
-    //   column: "Mensaje del practicante",
-    //   type: String,
-    //   value: (student) => student.mensaje_practicante,
-    // },
-    // {
-    //   column: "Alerta académica",
-    //   type: String,
-    //   value: (student) => student.alerta_academica,
-    // },
   ];
 
+  /**
+    * Pasa el csv a formato excel.
+  */
   const imprimir_excel = () => {
     let new_data_excel = [];
 
@@ -820,10 +743,6 @@ const Alertas = () => {
         riesgo_economico: state.estudiante[i].riesgo_economico,
         riesgo_vida_universitaria_ciudad:
           state.estudiante[i].riesgo_vida_universitaria_ciudad,
-        // ciudad_res: state.estudiante[i].ciudad_res,
-        // mensaje_profesional: state.estudiante[i].mensaje_profesional,
-        // mensaje_practicante: state.estudiante[i].mensaje_practicante,
-        // alerta_academica: state.estudiante[i].alerta_academica,
       });
       new_data_excel.push(new_data);
     }
