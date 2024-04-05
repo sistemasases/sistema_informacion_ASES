@@ -17,14 +17,14 @@ import fetchAcademico from "../../api/fetch_acadecmico";
 // Componente de Academico - EN CONSTRUCCION.
 const Academico = () => {
   const { user, shosenStudent } = useAuthStore();
-  const [periodos, setPeriodos] = useState([]);
+  const [semestre, setSemestre] = useState([]);
 
   useEffect(() => {
     // Method setEstudiantes is used to set the students data in the store
     const getSeguimientos = async () => {
       const res = await fetchAcademico(shosenStudent.id, user.sede_id);
       if (res) {
-        setPeriodos(res);
+        setSemestre(res);
       }
       console.log(res);
     };
@@ -35,11 +35,11 @@ const Academico = () => {
   return (
     <>
       <p className="title">Seguimiento de pares</p>
-      {periodos && periodos.length > 0 ? (
-        periodos.map((periodo, index) => (
+      {semestre && semestre.length > 0 ? (
+        semestre.map((periodo, index) => (
           <Acordion
             key={index}
-            title={periodo[0].nombre}
+            title={"Semestre: " + periodo[0].nombre}
             claseAcordion={"acordion subacordion"}
             claseContenido={"accordion-content"}
             flechaUp={
@@ -57,11 +57,10 @@ const Academico = () => {
               />
             }
           >
-            {periodos.slice(1).map((seg, index) => (
-              <div key={index} className="seguimiento">
-                <p>Seguimiento individual: {seg.fecha}</p>
-              </div>
-            ))}
+        
+            {/* <div key={index} className="seguimiento">
+              <p>{semestre[1]}</p>
+            </div> */}
           </Acordion>
         ))
       ) : (
