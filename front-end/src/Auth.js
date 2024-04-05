@@ -1,20 +1,20 @@
-
-import React from "react"
-import axios from 'axios';
+import React from "react";
+import axios from "axios";
 
 export default function (props) {
-  const url = `${process.env.REACT_APP_API_URL}/login`
+  const url = `${process.env.REACT_APP_API_URL}/login`;
   const data = {
-    'username' : 'admin',
-    'password' : 'admin'
-  }
+    username: "admin",
+    password: "admin",
+  };
   const handleSendNewData = () => {
-    axios.post(url, data)
-    .then(res=>{
-      console.log(res.data)
-    })
-    .catch(err=>console.log(err))
-  }
+    axios
+      .post(url, data)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="Auth-form-container">
@@ -48,5 +48,5 @@ export default function (props) {
         </div>
       </form>
     </div>
-  )
+  );
 }

@@ -62,7 +62,8 @@
     "start": "react-scripts start",
     "build": "rm -rf build && mkdir build && react-scripts build && cp .htaccess build/.htaccess",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write \"src/**/*.{js,jsx}\""
   },
   "eslintConfig": {
     "extends": [
@@ -90,6 +91,7 @@
   "devDependencies": {
     "eslint": "^8.40.0",
     "eslint-config-react-app": "^7.0.1",
+    "prettier": "^2.7.1",
     "workbox-webpack-plugin": "^6.5.4"
   }
 }

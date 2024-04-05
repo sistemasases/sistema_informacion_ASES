@@ -1,3 +1,12 @@
+/**
+ * @file info_basica.jsx
+ * @version 1.0.0
+ * @description Muestra la información básica del estudiante.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import React, { useState } from "react";
 import Select from "react-select";
 import { Row, Col } from "styled-bootstrap-grid";
@@ -25,25 +34,36 @@ import {
 import myGif from "../../modulos/reportes/loading_data.gif";
 
 const Info_basica = (props) => {
+  // Almacena la configuración necesaria para realizar la petición al servidor.
   const config = {
     headers: {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
     },
   };
-
+  // Almacena la configuración necesaria para realizar la petición al servidor.
   const config2 = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
 
+  // Almacena el estado de carga de la información.
   const [loading, setLoading2] = useState(false);
+  // Almacena las fechas.
   const [fechas, setFechas] = useState([]);
+  // Almacena los riesgos.
   const [riesgos, setRiesgos] = useState({});
-
+  /**
+   * @description Función que se encarga de hacer la petición al servidor para obtener
+   *             los datos del estudiante seleccionado y procesarla.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const traer_graficos = () => {
     setLoading2(true);
+    // Almacena los parámetros necesarios para realizar la petición al servidor.
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
+    // Almacena la URL de la petición al servidor.
     const url_axios =
       `${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` +
       state.id_usuario +
@@ -79,12 +99,23 @@ const Info_basica = (props) => {
       });
   };
 
+  // Almacena el estado del global.
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  /**
+   * @description Función que abre el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
 
+  /**
+   * @description Función que cierra el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -94,22 +125,55 @@ const Info_basica = (props) => {
   const handleChange = () => setChecked(!switchChecked);
 
   const [show, setShow] = useState(false);
+  /**
+   * @description Función que abre el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleModal = () => setShow(true);
+  /**
+   * @description Función que abre el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleClose = () => setShow(false);
-
+  //Almacena es estado del
   const [show2, setShow2] = useState(false);
+  /**
+   * @description Función que cierra el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleClose2 = () => setShow2(false);
+  /**
+   * @description Función que abre el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleShow = () => setShow2(true);
 
   const [showIn, setShowIn] = useState(false);
+  /**
+   * @description Función que abre el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleModalIn = () => setShowIn(true);
+  /**
+   * @description Función que cierra el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleCloseIn = () => setShowIn(false);
 
+  // Alamcena los datos del usuario.
   const datos_option_user = [];
+  // Almacena el estado de carga de la información.
   const [isLoading, setIsLoading] = useState(true);
-
+  // Almacena el rol del usuario.
   const userRole = desencriptar(sessionStorage.getItem("rol"));
 
+  // Alamcena el estado de la opción del usuario.
   var bandera_option_user = true;
   const [state, set_state] = useState({
     actualizar: 0,
@@ -165,10 +229,16 @@ const Info_basica = (props) => {
     }
   }, [state.total_datos_estudiantes]);
 
+  // Almacena la opción seleccionada.
   const [selectedOption, setSelectedOption] = useState("");
-
+  // Almacena el id del usuario.
   const { id } = useParams();
 
+  /**
+   * @description Función que actualiza el estado.
+   * @param {string} - recibe un nombre.
+   * @return {void} - No retorna ningún valor.
+   */
   function nuevo_actualizar(name) {
     set_state({
       ...state,
@@ -180,23 +250,34 @@ const Info_basica = (props) => {
     handle_users();
   }, [props.data_user]);
 
+  // Almacena la URL del estudiante.
   const [url_estudiante, setUrl] = useState("");
 
   useEffect(() => {
+    // Almacena la URL actual.
     const currentUrl = window.location.href;
+    // Almacena la sub URL.
     const subUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
     setUrl(subUrl);
   }, []);
 
+  /**
+   * @description Función que se encarga de hacer la petición al servidor para obtener
+   *             los datos del estudiante seleccionado y procesarlos.
+   * @param {string} - recibe un nombre.
+   * @return {void} - No retorna ningún valor.
+   */
   const fetchData = async (index) => {
     try {
+      // almacenar la sede a la cual pertenece el usuario logueado
       const paramsget = {
         id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
       };
+      // almacenar la URL de la petición al servidor
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
-        state.data_user[index]["id"] +
-        "/",
+          state.data_user[index]["id"] +
+          "/",
         config,
         { paramsget }
       );
@@ -206,15 +287,23 @@ const Info_basica = (props) => {
       fetchData(index);
     }
   };
-
+  // Almacena la ubicación.
   const location = useLocation();
+  // Almacena los parámetros de la URL.
   const searchParams = new URLSearchParams(location.search);
+  // Almacena el id de los parámetros.
   const id_parametros = searchParams.get("id");
 
+  /**
+   * @description Función que se encarga de cargar la información de los usuarios.
+   * @param {Evento} e - Evento que desencadenó la carga de información.
+   * @return {void} - No retorna ningún valor.
+   */
   const handle_users = (e) => {
     // Getting the files from the input
     if (bandera_option_user === true) {
       for (var i = 0; i < props.data_user["length"]; i++) {
+        // Almaena la información del usuario en un objeto.
         const dato = {
           value: props.data_user[i]["id"],
           label:
@@ -231,26 +320,29 @@ const Info_basica = (props) => {
         //este if lo pongo para que abra academico de una
         if (url_estudiante == dato.value && state.ya_selecciono_automatico) {
           setSelectedOption(dato);
+          // Almacena la sede a la cual pertenece el usuario logueado.
           const paramsget = {
             id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
           };
+          // Almacena la URL de la petición al servidor.
           const url_axios =
             `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
             dato.value +
             "/";
           axios({
-            // Endpoint to send files
-            url: url_axios,
-            params: paramsget,
-            method: "GET",
-            headers: config2,
+            // Datos necesarios para realizar la petición al servidor.
+            url: url_axios, // URL de la petición.
+            params: paramsget, // Parámetros necesarios para la petición.
+            method: "GET", // Método de la petición.
+            headers: config2, // Cabeceras necesarias para la petición.
           })
             .then((respuesta) => {
+              // Actualiza el estado con la información del estudiante.
               set_state({
                 ...state,
-                total_datos_estudiantes: respuesta.data,
-                tab_abierto: 3,
-                ya_selecciono_automatico: false,
+                total_datos_estudiantes: respuesta.data, // Información del estudiante.
+                tab_abierto: 3, // Tab abierto.
+                ya_selecciono_automatico: false, // estado por defecto.
               });
               // document.getElementsByName("loading_data")[0].style.visibility =
               //   "hidden";
@@ -265,15 +357,24 @@ const Info_basica = (props) => {
     }
   };
 
+  /**
+   * @description Función que se encarga de hacer la peticion al servidor para obtener
+   *              los datos del estudiante seleccionado y procesarlos.
+   * @param {Evento} e - Evento que desencadenó la carga de información.
+   * @return {void} - No retorna ningún valor.
+   */
   const handle_option_user = (e) => {
+    // Almacena la sede a la cual pertenece el usuario logueado.
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
+    // Almacena el id del estudiante logueado.
     const id_estudiante_encriptada = encriptarInt(e.value);
     sessionStorage.setItem(
       "id_estudiante_seleccionado",
       id_estudiante_encriptada
     );
+    // Almacena la URL de la petición al servidor.
     const url_axios =
       `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
       e.value +
@@ -288,6 +389,7 @@ const Info_basica = (props) => {
         // document.getElementsByName("loading_data")[0].style.visibility =
         //   "hidden";
 
+        // Almacena la data obtenida de la petición al servidor.
         const json = respuesta.data;
 
         // Obtener la fecha de nacimiento del JSON
@@ -315,16 +417,25 @@ const Info_basica = (props) => {
     setSelectedOption(e);
   };
 
+  /**
+   * @description Función que se encarga de verificar si el celular del estudiante
+   *              fue diligenciado y, en caso afirmativo, redirigir al usuario a la
+   *              página de WhatsApp con el número de celular del estudiante. De lo contrario,
+   *             se muestra una alerta al usuario.
+   * @param {Evento} e - Evento que desencadenó la carga de información.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleWhatsapp = (e) => {
+    // Almaena el número de celular del estudiante.
     const celular_numerico = parseInt(state.celular);
     if (celular_numerico) {
+      // URL de WhatsApp con el número de celular del estudiante.
       const url = `https://api.whatsapp.com/send?phone=${celular_numerico}`;
       window.open(url, "_blank");
     } else {
       alert("problema con el celular_numerico");
     }
   };
-  // console.log(state.total_datos_estudiante_seleccionado);
 
   return (
     <Row className="row_prueba">
@@ -543,7 +654,10 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
-                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
+                            <a
+                              href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link"
+                              target="_blank"
+                            >
                               <i
                                 class="bi bi-check2-square"
                                 style={
@@ -551,9 +665,10 @@ const Info_basica = (props) => {
                                     .firma_tratamiento_datos == "SIN FIRMAR"
                                     ? { color: "red" }
                                     : state.total_datos_estudiante_seleccionado
-                                      .firma_tratamiento_datos == "NO AUTORIZA"
-                                      ? { color: "red" }
-                                      : { color: " #AAB5A6" }
+                                        .firma_tratamiento_datos ==
+                                      "NO AUTORIZA"
+                                    ? { color: "red" }
+                                    : { color: " #AAB5A6" }
                                 }
                                 title="Tratamiento de datos Sin Firmar"
                               ></i>
@@ -564,7 +679,10 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-admitidos"}
                           >
-                            <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
+                            <a
+                              href="https://encuestaadmitidos.univalle.edu.co/"
+                              target="_blank"
+                            >
                               <i
                                 class="bi bi-card-checklist"
                                 style={
@@ -691,13 +809,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                      <Button
-                        className="boton_nuevo_registro_pequeño"
-                        onClick={handleModal}
-                      >
-                        NUEVO SEGUIMIENTO
-                      </Button>
-                    )}
+                    <Button
+                      className="boton_nuevo_registro_pequeño"
+                      onClick={handleModal}
+                    >
+                      NUEVO SEGUIMIENTO
+                    </Button>
+                  )}
                 </Row>
               </Col>
             ) : (
@@ -738,13 +856,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                      <Button
-                        className="boton_nuevo_registro_pequeño"
-                        onClick={handleModal}
-                      >
-                        NUEVO SEGUIMIENTO
-                      </Button>
-                    )}
+                    <Button
+                      className="boton_nuevo_registro_pequeño"
+                      onClick={handleModal}
+                    >
+                      NUEVO SEGUIMIENTO
+                    </Button>
+                  )}
                 </Row>
               </Col>
             )}
@@ -879,7 +997,7 @@ const Info_basica = (props) => {
           />
         </Col>
       </div>
-      
+
       <Modal show={show2} onHide={handleClose2} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Importante</Modal.Title>

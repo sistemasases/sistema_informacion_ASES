@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 
-import {Row} from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import "@fontsource/manrope";
 
-import 'styled-components';
+import "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
@@ -16,12 +16,12 @@ import "./Scss/ficha_estudiante/selector.css";
 import "./Scss/ficha_estudiante/informacion_general.css";
 import "./Scss/ficha_estudiante/academico.css";
 import "./Scss/reporte_seguimientos/reporte_seguimientos.css";
-import "./Scss/reporte_seguimientos/desplegable.css"
-import "./Scss/gestion_usuarios_rol/selector_usuarios.css"
-import "./Scss/gestion_usuarios_rol/gestion_usuario_rol.css"
+import "./Scss/reporte_seguimientos/desplegable.css";
+import "./Scss/gestion_usuarios_rol/selector_usuarios.css";
+import "./Scss/gestion_usuarios_rol/gestion_usuario_rol.css";
 import "./Scss/footer/footer.css";
 import "./Scss/asignaciones/asignaciones.css";
-import "./Scss/sin_seguimientos/sin_seguimientos.css"
+import "./Scss/sin_seguimientos/sin_seguimientos.css";
 import "./Scss/login/login_component.css";
 import "./Scss/componentes_generales/data_table_extensions.css";
 import "./Scss/carga_masiva/carga_masiva.css";
@@ -29,11 +29,9 @@ import "./Scss/descarga_fichas/descarga_fichas.css";
 import "./Scss/reporte_desercion/desercion.css";
 import "./Scss/inicio/inicio.css";
 
-
-
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SideBar from "./components/componentes_generales/sideBar.jsx";
 // import Login from "./modulos/login/login.jsx";
 //import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
@@ -52,44 +50,121 @@ import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
 import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia.jsx";
 import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas.jsx";
 import Reporte from "./modulos/reportes/reporte.jsx";
-import Alertas from './modulos/alertas/alertas.jsx';
+import Alertas from "./modulos/alertas/alertas.jsx";
 // import Footer from './components/componentes_generales/footer.jsx';
 
 const App = () => {
-  const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / ");
-  const[rolUsuario] = useState("superSistemas");
-  const[periodo] = useState("2024-1");
-  const[area] = useState('1');
+  const [nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / ");
+  const [rolUsuario] = useState("superSistemas");
+  const [periodo] = useState("2024-1");
+  const [area] = useState("1");
 
-    return (
-        <BrowserRouter>
-            <Row> 
-                <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
-                    <Routes>
-                        <Route path="/ficha_estudiante/:id" element={<Ficha_estudiante path_actual={"Ficha Estudiante"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/ficha_monitor" element={<Ficha_monitor path_actual={"Ficha Monitor"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/reporte_seguimientos"element={<Reporte_seguimientos path_actual={"Reporte seguimientos"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
-                        <Route path="/desercion"element={<Desercion path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
-                        <Route path="/academico"element={<Academico_pestaña path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
-                        <Route path="/calificador/:profesor/:curso/:cod/:franja"element={<Calificador path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
-                        <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol path_actual={"Gestion usuarios"} usuario={nombreUsuario}/>}/>
-                        <Route path="/carga_masiva" element={<Carga_masiva/>}/>
-                        <Route path="/descarga_fichas" element={<Descarga_fichas/>}/>
-                        <Route path="/asignaciones" element={<Asignaciones/>}/>
-                        <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
-                        <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
-                        <Route path="/reporte"element={<Reporte/>}/>
-                        <Route path="/alertas"element={<Alertas/>}/>
-                        <Route path="/"element={<Inicio/>}/>
-                    </Routes>
-                </SideBar>
-            </Row>
+  return (
+    <BrowserRouter>
+      <Row>
+        <SideBar
+          usuario={nombreUsuario}
+          rolUsuario={rolUsuario}
+          periodo={periodo}
+        >
+          <Routes>
+            <Route
+              path="/ficha_estudiante/:id"
+              element={
+                <Ficha_estudiante
+                  path_actual={"Ficha Estudiante"}
+                  usuario={nombreUsuario}
+                  rolUsuario={rolUsuario}
+                  area={area}
+                  periodo={periodo}
+                />
+              }
+            />
+            <Route
+              path="/ficha_monitor"
+              element={
+                <Ficha_monitor
+                  path_actual={"Ficha Monitor"}
+                  usuario={nombreUsuario}
+                  rolUsuario={rolUsuario}
+                  area={area}
+                  periodo={periodo}
+                />
+              }
+            />
+            <Route
+              path="/reporte_seguimientos"
+              element={
+                <Reporte_seguimientos
+                  path_actual={"Reporte seguimientos"}
+                  usuario={nombreUsuario}
+                  rolUsuario={rolUsuario}
+                  area={area}
+                  periodo={periodo}
+                />
+              }
+            />
+            <Route
+              path="/sin_seguimientos"
+              element={
+                <Sin_seguimientos
+                  path_actual={"Cantidad seguimientos"}
+                  usuario={nombreUsuario}
+                />
+              }
+            />
+            <Route
+              path="/desercion"
+              element={
+                <Desercion path_actual={"Deserción"} usuario={nombreUsuario} />
+              }
+            />
+            <Route
+              path="/academico"
+              element={
+                <Academico_pestaña
+                  path_actual={"Deserción"}
+                  usuario={nombreUsuario}
+                />
+              }
+            />
+            <Route
+              path="/calificador/:profesor/:curso/:cod/:franja"
+              element={
+                <Calificador
+                  path_actual={"Deserción"}
+                  usuario={nombreUsuario}
+                />
+              }
+            />
+            <Route
+              path="/gestion_usuario_rol"
+              element={
+                <Gestion_usuario_rol
+                  path_actual={"Gestion usuarios"}
+                  usuario={nombreUsuario}
+                />
+              }
+            />
+            <Route path="/carga_masiva" element={<Carga_masiva />} />
+            <Route path="/descarga_fichas" element={<Descarga_fichas />} />
+            <Route path="/asignaciones" element={<Asignaciones />} />
+            <Route
+              path="/inicio_semestre_sistemas"
+              element={<Inicio_semestre_sistemas />}
+            />
+            <Route
+              path="/crear_semestre_sistemas"
+              element={<Semestre_sistemas />}
+            />
+            <Route path="/reporte" element={<Reporte />} />
+            <Route path="/alertas" element={<Alertas />} />
+            <Route path="/" element={<Inicio />} />
+          </Routes>
+        </SideBar>
+      </Row>
+    </BrowserRouter>
+  );
+};
 
-        </BrowserRouter>
-    )
-}
-
-export default App
-
-
+export default App;

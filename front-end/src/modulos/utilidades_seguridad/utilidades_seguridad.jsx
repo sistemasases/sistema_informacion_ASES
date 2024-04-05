@@ -1,7 +1,6 @@
 // utilidades_seguridad.js
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 const { BigInt } = global;
-
 
 // Clave secreta para la encriptación (debes gestionarla de forma segura)
 const secretKey = process.env.REACT_APP_SECRET_KEY;
@@ -12,7 +11,7 @@ export const encriptar = (valor) => {
     const valorEncriptado = CryptoJS.AES.encrypt(valor, secretKey).toString();
     return valorEncriptado;
   } catch (error) {
-    console.error('Error al encriptar:', error);
+    console.error("Error al encriptar:", error);
     return null;
   }
 };
@@ -24,55 +23,61 @@ export const desencriptar = (valorEncriptado) => {
     const valorDesencriptado = bytes.toString(CryptoJS.enc.Utf8);
     return valorDesencriptado;
   } catch (error) {
-    console.error('Error al desencriptar:', error);
+    console.error("Error al desencriptar:", error);
     return null;
   }
 };
 // Función para encriptar json's.
 export const encriptarJson = (valor) => {
   try {
-    const valorEncriptado = CryptoJS.AES.encrypt(JSON.stringify(valor), secretKey).toString();
+    const valorEncriptado = CryptoJS.AES.encrypt(
+      JSON.stringify(valor),
+      secretKey
+    ).toString();
     return valorEncriptado;
   } catch (error) {
-    console.error('Error al encriptar los permisos:', error);
+    console.error("Error al encriptar los permisos:", error);
     return null;
   }
 };
 // Función para encriptar campos de tipo entero.
 export const encriptarInt = (valor) => {
   try {
-    const valorEncriptado = CryptoJS.AES.encrypt(valor.toString(), secretKey).toString();
+    const valorEncriptado = CryptoJS.AES.encrypt(
+      valor.toString(),
+      secretKey
+    ).toString();
     return valorEncriptado;
-    
   } catch (error) {
-    console.error('Error al encriptar el valor seleccionado:', error);
+    console.error("Error al encriptar el valor seleccionado:", error);
     return null;
-    
   }
-
 };
 // Función para desencriptar campos de tipo entero.
 export const desencriptarInt = (valorEncriptado) => {
   try {
     const bytes = CryptoJS.AES.decrypt(valorEncriptado, secretKey);
     const valorDesencriptado = bytes.toString(CryptoJS.enc.Utf8);
-    
+
     // Verificar si la cadena es un número válido antes de convertirla en un entero
     if (!isNaN(valorDesencriptado)) {
       return parseInt(valorDesencriptado);
     } else {
-      console.error('El valor desencriptado no es un número válido:', valorDesencriptado);
+      console.error(
+        "El valor desencriptado no es un número válido:",
+        valorDesencriptado
+      );
       return null;
     }
   } catch (error) {
-    console.error('Error al desencriptar el valor seleccionado:', error);
+    console.error("Error al desencriptar el valor seleccionado:", error);
     return null;
   }
 };
 
 // Función para desencriptar tokens.
 export const decryptTokenFromSessionStorage = () => {
-  const encryptedToken = sessionStorage.getItem('token');
+  const encryptedToken = sessionStorage.getItem("token");
   if (!encryptedToken) {
     return null; // No hay token en sessionStorage
   }
@@ -91,13 +96,13 @@ export const desencriptarJson = (valorEncriptado) => {
     const valorDesencriptado = bytes.toString(CryptoJS.enc.Utf8);
     return JSON.parse(valorDesencriptado);
   } catch (error) {
-    console.error('Error al desencriptar el json:', error);
+    console.error("Error al desencriptar el json:", error);
     return null;
   }
-}
+};
 // Función para desencriptar el ID de usuario.
 export const decryptUserIdFromSessionStorage = () => {
-  const encryptedUserId = sessionStorage.getItem('id_usuario');
+  const encryptedUserId = sessionStorage.getItem("id_usuario");
   if (!encryptedUserId) {
     return null; // No hay un id de usuario en el sessionStorage.
   }
@@ -113,33 +118,47 @@ export const encriptarBigInt = (valor) => {
   try {
     // Convertir BigInt a cadena y luego encriptar la cadena.
     const valorComoCadena = valor.toString();
-    const valorEncriptado = CryptoJS.AES.encrypt(valorComoCadena, secretKey).toString();
+    const valorEncriptado = CryptoJS.AES.encrypt(
+      valorComoCadena,
+      secretKey
+    ).toString();
     return valorEncriptado;
   } catch (error) {
-    console.error('Error al encriptar el valor seleccionado:', error);
+    console.error("Error al encriptar el valor seleccionado:", error);
     return null;
   }
 };
 
 //Función para desencriptar campos de tipo BigInt.
 export const desencriptarBigInt = (valorEncriptado) => {
-  
   try {
     // Desencriptar la cadena y luego convertirla a BigInt.
-    const decryptedValue = CryptoJS.AES.decrypt(valorEncriptado, secretKey).toString(CryptoJS.enc.Utf8);
+    const decryptedValue = CryptoJS.AES.decrypt(
+      valorEncriptado,
+      secretKey
+    ).toString(CryptoJS.enc.Utf8);
     return BigInt(decryptedValue);
   } catch (error) {
-    console.error('Error al desencriptar el valor:', error);
+    console.error("Error al desencriptar el valor:", error);
     return null;
   }
 };
 
-export const desencriptarIdEstudianteSeleccionado = (idEstudianteSeleccionado) => {
-  const encryptedIdEstudianteSeleccionado = sessionStorage.getItem('id_estudiante_seleccionado');
+export const desencriptarIdEstudianteSeleccionado = (
+  idEstudianteSeleccionado
+) => {
+  const encryptedIdEstudianteSeleccionado = sessionStorage.getItem(
+    "id_estudiante_seleccionado"
+  );
   if (!encryptedIdEstudianteSeleccionado) {
     return null; // No hay un estudiante seleccionado en el sessionStorage.
   }
-  idEstudianteSeleccionado = CryptoJS.AES.decrypt(encryptedIdEstudianteSeleccionado, secretKey);
-  const decryptedIdEstudianteSeleccionado = idEstudianteSeleccionado.toString(CryptoJS.enc.Utf8);
+  idEstudianteSeleccionado = CryptoJS.AES.decrypt(
+    encryptedIdEstudianteSeleccionado,
+    secretKey
+  );
+  const decryptedIdEstudianteSeleccionado = idEstudianteSeleccionado.toString(
+    CryptoJS.enc.Utf8
+  );
   return decryptedIdEstudianteSeleccionado;
-};  
+};
