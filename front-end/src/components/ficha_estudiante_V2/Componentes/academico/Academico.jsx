@@ -1,6 +1,6 @@
 import { useAuthStore } from "../../store/auth";
 import Acordion from "../Acordion";
-import "../../../../Scss/ficha_estudiante_discapacidad/seguimiento.css";
+import "../../../../Scss/ficha_estudiante_V2/seguimiento.css";
 import withSwal from "../withSwal";
 import { useEffect, useState } from "react";
 import fetchAcademico from "../../api/fetch_acadecmico";

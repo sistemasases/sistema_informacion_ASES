@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../Scss/ficha_estudiante_discapacidad/modal.css";
+import "../../../Scss/ficha_estudiante_V2/modal.css";
 
 // Componente de Modal
 // Recibe como props:

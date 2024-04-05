@@ -1,6 +1,6 @@
 import Accesibilidad from "./accesibilidad/Accesibilidad";
 import Acordion from "./Acordion";
-import "../../../Scss/ficha_estudiante_discapacidad/acordion.css";
+import "../../../Scss/ficha_estudiante_V2/acordion.css";
 import General from "./general/General";
 import Seguimiento from "./seguimiento/Seguimiento";
 import Academico from "./academico/Academico";

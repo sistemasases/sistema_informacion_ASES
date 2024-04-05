@@ -1,4 +1,4 @@
-import "../../../Scss/ficha_estudiante_discapacidad/acceso_denegado.css";
+import "../../../Scss/ficha_estudiante_V2/acceso_denegado.css";
 
 const AccesoDenegado = () => {
   return (

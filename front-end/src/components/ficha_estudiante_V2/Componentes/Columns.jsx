@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "../../../Scss/ficha_estudiante_discapacidad/columns.css";
+import "../../../Scss/ficha_estudiante_V2/columns.css";
 
 // Este componente es el que se encarga de mostrar la informacion del
 // estudiante de manera organizada en columnas, para que sea mas facil de leer
