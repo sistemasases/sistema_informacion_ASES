@@ -1,3 +1,12 @@
+/**
+ * @file Academico.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar los periodos academicos de un estudiante.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import { useAuthStore } from "../../store/auth";
 import Acordion from "../Acordion";
 import "../../../../Scss/ficha_estudiante_V2/seguimiento.css";
@@ -5,9 +14,7 @@ import withSwal from "../withSwal";
 import { useEffect, useState } from "react";
 import fetchAcademico from "../../api/fetch_acadecmico";
 
-// Componente de Seguimiento
-// Este componente se encarga de mostrar los seguimientos que tiene un estudiante
-// y de mostrar un formulario con la información de cada seguimiento almacenado.
+// Componente de Academico - EN CONSTRUCCION.
 const Academico = () => {
   const { user, shosenStudent } = useAuthStore();
   const [periodos, setPeriodos] = useState([]);

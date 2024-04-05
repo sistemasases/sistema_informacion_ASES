@@ -1,3 +1,13 @@
+/**
+ * @file AccesoDenegado.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar un mensaje acerca de los 
+ *              permisos necesarios para ver una página.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import "../../../Scss/ficha_estudiante_V2/acceso_denegado.css";
 
 const AccesoDenegado = () => {

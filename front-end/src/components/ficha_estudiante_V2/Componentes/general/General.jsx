@@ -1,3 +1,12 @@
+/**
+ * @file General.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar la información general de un estudiante.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/auth";
 import Columns from "../Columns";

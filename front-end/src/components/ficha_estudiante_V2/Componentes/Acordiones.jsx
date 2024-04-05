@@ -1,4 +1,12 @@
-import Accesibilidad from "./accesibilidad/Accesibilidad";
+/**
+ * @file Acordiones.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar los acordeones de la ficha de estudiante.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import Acordion from "./Acordion";
 import "../../../Scss/ficha_estudiante_V2/acordion.css";
 import General from "./general/General";

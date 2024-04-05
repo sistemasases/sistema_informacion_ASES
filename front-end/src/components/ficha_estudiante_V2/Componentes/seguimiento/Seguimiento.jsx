@@ -1,3 +1,12 @@
+/**
+ * @file Seguimiento.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar los seguimientos que tiene un estudiante.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import { useAuthStore } from "../../store/auth";
 import Acordion from "../Acordion";
 import "../../../../Scss/ficha_estudiante_V2/seguimiento.css";
@@ -6,8 +15,7 @@ import { useEffect, useState } from "react";
 import fetchSocioEducativo from "../../api/fetch_socio_educativo";
 
 // Componente de Seguimiento
-// Este componente se encarga de mostrar los seguimientos que tiene un estudiante
-// y de mostrar un formulario con la información de cada seguimiento almacenado.
+// Por hacer -> y de mostrar un formulario con la información de cada seguimiento almacenado.
 const Seguimiento = () => {
   const { user, shosenStudent } = useAuthStore();
   const [seguimientos, setSeguimientos] = useState([]);

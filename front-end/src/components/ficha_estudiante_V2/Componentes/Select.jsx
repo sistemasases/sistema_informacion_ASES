@@ -1,3 +1,13 @@
+/**
+ * @file Select.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar la información básica de un estudiante seleccionado.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
+
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/auth";
 import perfilUsuario from "./Usuario.png";
@@ -6,7 +16,7 @@ import fetchEstudiante from "../api/fetch_estudiante";
 
 // Componente de Select
 // Este componente se encarga de obtener al estudiante seleccionado,
-// guardarlo en la varible global estudianteSelected para que otros
+// guardarlo en la varible global shosenStudent para que otros
 // componentes lo puedan usar y mostrar su informacion básica
 const Select = () => {
   const { estudiantes, user, setShosenStudent } = useAuthStore();

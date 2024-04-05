@@ -1,3 +1,12 @@
+/**
+ * @file auth.js
+ * @version 1.0.0
+ * @description Este componente se encarga de manejar el estado global de ciertas variables.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 /* eslint-disable no-unused-vars */
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
