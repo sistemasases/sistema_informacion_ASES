@@ -1,3 +1,11 @@
+/**
+ * @file cabecera.jsx
+ * @version 1.0.0
+ * @description Realiza la consulta de los periodos y usuarios para mostrarlos en el select de la cabecera de la tabla de seguimientos.
+ * @author Componente Sistemas Ases 
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 import React, {useMemo, useState} from 'react';
 import {useTable, Table} from 'react-table';
 import Columnas from './columnas' ;
@@ -7,7 +15,11 @@ import axios from 'axios';
 import Select from 'react-select'  ;
 import {decryptTokenFromSessionStorage, desencriptar} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
-
+/**
+ * Componente funcional que representa la cabecera de la tabla de seguimientos.
+ * @param {Object} props - Propiedades pasadas al componente.
+ * @returns {JSX.Element} Elemento JSX que representa la cabecera de la tabla de seguimientos.
+ */
 const Cabecera = (props) =>{
   const config = {
     Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
@@ -39,7 +51,9 @@ const Cabecera = (props) =>{
   
       })
 
-
+/**
+ * Hook de efecto que se ejecuta al montar el componente y realiza una consulta al servidor para obtener los periodos.
+ */
 useEffect(()=>{
   
         axios({
@@ -60,7 +74,10 @@ useEffect(()=>{
         })
         
       },[]);
-
+/**
+ * Función que maneja la apertura del menú de selección de usuarios.
+ * @param {Event} e - Evento de apertura del menú.
+ */
       const handle_users = (e) => {
  
         // Getting the files from the input
@@ -75,7 +92,10 @@ useEffect(()=>{
           bandera_option_user = false;
         }
       }
-
+/**
+ * Función que maneja la selección de un usuario en el menú de selección.
+ * @param {Object} e - Objeto que representa la opción seleccionada.
+ */
       const handle_option_user = (e) => {
         // Getting the files from the input
         childClicked(e.id)
