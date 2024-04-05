@@ -1,11 +1,11 @@
 /**
-  * @file trayectoria.jsx
-  * @version 1.0.0
-  * @description Este componente se encarga de mostrar la trayectoria de un estudiante.
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024 
-*/
+ * @file trayectoria.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar la trayectoria de un estudiante.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
 import React, { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
@@ -18,7 +18,7 @@ const GraphComponent = ({ fechas, riesgos }) => {
     if (fechas && riesgos) {
       // Obtener las claves y valores de los riesgos
       const labels = Object.keys(riesgos);
-      // Este código crea conjuntos de datos para representar gráficamente información, 
+      // Este código crea conjuntos de datos para representar gráficamente información,
       // utilizando valores de un objeto y etiquetas asociadas.
       const datasets = Object.values(riesgos).map((values, index) => ({
         label: labels[index],
@@ -75,13 +75,13 @@ const GraphComponent = ({ fechas, riesgos }) => {
   }, [fechas, riesgos]);
 
   /**
-  * Genera un color hexadecimal aleatorio.
-  * @param {} - No recibe parámetros.
-  * @return {string} - Retorna un color aleatorio en formato hexadecimal.
-  */
+   * Genera un color hexadecimal aleatorio.
+   * @param {} - No recibe parámetros.
+   * @return {string} - Retorna un color aleatorio en formato hexadecimal.
+   */
   // Función auxiliar para generar colores aleatorios.
   const getRandomColor = () => {
-    // Almadena los caracteres hexadecimales 
+    // Almadena los caracteres hexadecimales
     const letters = "0123456789ABCDEF";
     // Almacenará el color generado.
     let color = "#";

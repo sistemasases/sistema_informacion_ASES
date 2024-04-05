@@ -1,11 +1,11 @@
 /**
-  * @file info_registros.jsx
-  * @version 1.0.0
-  * @description Muestra los riesgos de un estudiante en la ficha del estudiante.
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024 
-*/
+ * @file info_registros.jsx
+ * @version 1.0.0
+ * @description Muestra los riesgos de un estudiante en la ficha del estudiante.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
 import React, { useState } from "react";
 import { Dropdown, Button } from "react-bootstrap";
@@ -22,7 +22,6 @@ import {
 import { id } from "date-fns/locale";
 
 const Info_registros = (props) => {
-
   // variable de configuración para las peticiones al servidor.
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
@@ -32,30 +31,30 @@ const Info_registros = (props) => {
   // almacena el estado del modal.
   const [show, setShow] = useState(false);
   /**
-  * @description Función que abre el modal.
-  * @param {}- No recibe parámetros.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que abre el modal.
+   * @param {}- No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleModal = () => setShow(true);
   /**
-  * @description Función que cierra el modal.
-  * @param {} - No recibe parámetros.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que cierra el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleClose = () => setShow(false);
   // Variable que almacena el estado del modal.
   const [showIn, setShowIn] = useState(false);
   /**
-  * @description Función que abre el modal.
-  * @param {} - No recibe parámetros.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que abre el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleModalIn = () => setShowIn(true);
   /**
-  * @description Función que cierra el modal.
-  * @param {} - No recibe parámetros.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que cierra el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleCloseIn = () => setShowIn(false);
   // Almacena los datos obtenidos de la petición al servidor.
   const [state, set_state] = useState({

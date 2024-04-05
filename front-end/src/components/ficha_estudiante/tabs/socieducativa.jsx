@@ -1,12 +1,12 @@
 /**
-  * @file socioeducativa.jsx
-  * @version 1.0.0
-  * @description Este archivo contiene el componente Socioeducativa, que muestra los seguimientos 
-  * de pares de los estudiantes. 
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024 
-*/
+ * @file socioeducativa.jsx
+ * @version 1.0.0
+ * @description Este archivo contiene el componente Socioeducativa, que muestra los seguimientos
+ * de pares de los estudiantes.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
@@ -33,16 +33,16 @@ const Socieducativa = (props) => {
   // variable que almacena el estado del modal.
   const [show, setShow] = useState(false);
   /**
-  * @description Función que cierra el modal.
-  * @param {} - No recibe parámetros.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que cierra el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleClose = () => setShow(false);
   /**
-  * @description Función que abre el modal.
-  * @param {} - No recibe parámetros.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que abre el modal.
+   * @param {} - No recibe parámetros.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleShow = () => setShow(true);
   // variable que almacenará los datos obtenidos del servidor.
   const [state, set_state] = useState({
@@ -55,10 +55,10 @@ const Socieducativa = (props) => {
       : ""
   );
   /**
-  * @description Función que se encarga de actualizar el índice del elemento seleccionado.
-  * @param {number} - index: índice del elemento seleccionado.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que se encarga de actualizar el índice del elemento seleccionado.
+   * @param {number} - index: índice del elemento seleccionado.
+   * @return {void} - No retorna ningún valor.
+   */
   const activeTab = (index) => {
     index === activeTabIndex ? setActiveTabIndex(0) : setActiveTabIndex(index);
   };

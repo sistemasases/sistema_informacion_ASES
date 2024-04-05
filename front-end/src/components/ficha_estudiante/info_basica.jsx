@@ -1,11 +1,11 @@
 /**
-  * @file info_basica.jsx
-  * @version 1.0.0
-  * @description 
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024 
-*/
+ * @file info_basica.jsx
+ * @version 1.0.0
+ * @description
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
 import React, { useState } from "react";
 import Select from "react-select";
@@ -221,10 +221,10 @@ const Info_basica = (props) => {
   const id_parametros = searchParams.get("id");
 
   /**
-  * @description Función que se encarga de cargar la información de los usuarios.
-  * @param {Evento} e - Evento que desencadenó la carga de información.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que se encarga de cargar la información de los usuarios.
+   * @param {Evento} e - Evento que desencadenó la carga de información.
+   * @return {void} - No retorna ningún valor.
+   */
   const handle_users = (e) => {
     // Getting the files from the input
     if (bandera_option_user === true) {
@@ -284,11 +284,11 @@ const Info_basica = (props) => {
   };
 
   /**
-  * @description Función que se encarga de hacer la peticion al servidor para obtener
-  *              los datos del estudiante seleccionado y procesarlos.
-  * @param {Evento} e - Evento que desencadenó la carga de información.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que se encarga de hacer la peticion al servidor para obtener
+   *              los datos del estudiante seleccionado y procesarlos.
+   * @param {Evento} e - Evento que desencadenó la carga de información.
+   * @return {void} - No retorna ningún valor.
+   */
   const handle_option_user = (e) => {
     // Almacena la sede a la cual pertenece el usuario logueado.
     const paramsget = {
@@ -344,13 +344,13 @@ const Info_basica = (props) => {
   };
 
   /**
-  * @description Función que se encarga de verificar si el celular del estudiante
-  *              fue diligenciado y, en caso afirmativo, redirigir al usuario a la 
-  *              página de WhatsApp con el número de celular del estudiante. De lo contrario,
-  *             se muestra una alerta al usuario.
-  * @param {Evento} e - Evento que desencadenó la carga de información.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que se encarga de verificar si el celular del estudiante
+   *              fue diligenciado y, en caso afirmativo, redirigir al usuario a la
+   *              página de WhatsApp con el número de celular del estudiante. De lo contrario,
+   *             se muestra una alerta al usuario.
+   * @param {Evento} e - Evento que desencadenó la carga de información.
+   * @return {void} - No retorna ningún valor.
+   */
   const handleWhatsapp = (e) => {
     // Almaena el número de celular del estudiante.
     const celular_numerico = parseInt(state.celular);

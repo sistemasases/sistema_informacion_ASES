@@ -1,11 +1,11 @@
 /**
-  * @file ficha_footer.jsx
-  * @version 1.0.0
-  * @description Este componente se encarga de mostrar el footer de la ficha del estudiante.
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024 
-*/
+ * @file ficha_footer.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar el footer de la ficha del estudiante.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
 import React, { useState } from "react";
 import Select from "react-select";
@@ -28,10 +28,10 @@ const Ficha_footer = () => {
   var now = today.toLocaleString();
 
   /**
-  * @description Función que se encarga de actualizar la fecha de la última actualización.
-  * @param {Evento} e - Evento que desencadenó la carga de información.
-  * @return {void} - No retorna ningún valor.
-  */
+   * @description Función que se encarga de actualizar la fecha de la última actualización.
+   * @param {Evento} e - Evento que desencadenó la carga de información.
+   * @return {void} - No retorna ningún valor.
+   */
   const handle_time = (e) => {
     set_state({
       ...state,

@@ -1,13 +1,13 @@
 /**
-  * @file programas_academicos.jsx
-  * @version 1.0.0
-  * @description Componente que muestra información sobre programas académicos.
-  *              El componente renderiza diferentes estilos de filas según el estado del programa 
-  *              académico. 
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024 
-*/
+ * @file programas_academicos.jsx
+ * @version 1.0.0
+ * @description Componente que muestra información sobre programas académicos.
+ *              El componente renderiza diferentes estilos de filas según el estado del programa
+ *              académico.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
 import React, { useState } from "react";
 import Switch from "react-switch";
@@ -50,7 +50,7 @@ const Programas_academicos = (props) => {
                   </Col> */}
       </Row>
     );
-  } 
+  }
   //
   else if (props.item.id_estado_id === 2) {
     return (

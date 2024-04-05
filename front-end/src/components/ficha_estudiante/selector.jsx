@@ -1,12 +1,12 @@
 /**
-  * @file selector.jsx
-  * @version 1.0.0
-  * @description Este componente se encarga de mostrar a los estudiantes en el 
-  *              selector dependiendo del rol del usuario logueado.
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024 
-*/
+ * @file selector.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar a los estudiantes en el
+ *              selector dependiendo del rol del usuario logueado.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
@@ -23,7 +23,6 @@ import {
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import myGif from "../../modulos/reportes/loading_data.gif";
 import axios from "axios";
-
 
 const Selector = (props) => {
   // variable de configuración para las peticiones al servidor.
@@ -62,7 +61,7 @@ const Selector = (props) => {
     tiene_datos_cargados: false,
   });
 
-  // este efecto garantiza que la pestaña activa se actualice automáticamente 
+  // este efecto garantiza que la pestaña activa se actualice automáticamente
   //cuando cambia la propiedad tab_abierto del componente.
   useEffect(() => {
     setActiveTabIndex(props.tab_abierto);
@@ -71,20 +70,20 @@ const Selector = (props) => {
   // variable que almacena el índice de la pestaña activa.
   const [activeTabIndex, setActiveTabIndex] = useState(state.tab_abierto);
   /**
-  * Activa la pestaña especificada por su índice.
-  * Si la pestaña ya está activa, la desactiva.
-  * @param {number} index - Índice de la pestaña a activar.
-  * @return {void}
-  */
+   * Activa la pestaña especificada por su índice.
+   * Si la pestaña ya está activa, la desactiva.
+   * @param {number} index - Índice de la pestaña a activar.
+   * @return {void}
+   */
   const activeTab = (index) => {
     index === activeTabIndex ? setActiveTabIndex(0) : setActiveTabIndex(index);
   };
 
   /**
-  * @description Carga la información de seguimiento del estudiante desde el servidor.
-  * @param {} - No recibe parámetros.
-  * @return {void}
-  */
+   * @description Carga la información de seguimiento del estudiante desde el servidor.
+   * @param {} - No recibe parámetros.
+   * @return {void}
+   */
   const loadInfo = (e) => {
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
