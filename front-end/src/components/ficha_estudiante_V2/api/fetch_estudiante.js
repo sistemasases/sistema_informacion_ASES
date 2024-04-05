@@ -1,5 +1,5 @@
 /**
- * @file fetch_estudiantes.js
+ * @file fetch_estudiante.js
  * @version 1.0.0
  * @description Este archivo se encarga de realizar la petición para obtener un
  *              estudiante en específico.
