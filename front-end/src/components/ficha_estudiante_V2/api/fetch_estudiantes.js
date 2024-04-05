@@ -1,3 +1,13 @@
+/**
+ * @file fetch_estudiantes.js
+ * @version 1.0.0
+ * @description Este archivo se encarga de realizar la petición para obtener los 
+ *              estudiantes de un usuario.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import { decryptTokenFromSessionStorage } from "../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const fetchEstudiantes = async (id_user, id_sede, user_rol) => {
