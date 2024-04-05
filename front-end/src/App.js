@@ -51,6 +51,7 @@ import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_
 import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas.jsx";
 import Reporte from "./modulos/reportes/reporte.jsx";
 import Alertas from "./modulos/alertas/alertas.jsx";
+import FichaEstudianteV2 from "./modulos/ficha_estudiante_V2/FichaEstudianteV2.jsx"
 // import Footer from './components/componentes_generales/footer.jsx';
 
 const App = () => {
@@ -160,6 +161,7 @@ const App = () => {
             <Route path="/reporte" element={<Reporte />} />
             <Route path="/alertas" element={<Alertas />} />
             <Route path="/" element={<Inicio />} />
+            <Route path="/ficha_est_v2" element={<FichaEstudianteV2 />} />
           </Routes>
         </SideBar>
       </Row>
