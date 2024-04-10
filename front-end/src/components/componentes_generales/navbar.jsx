@@ -1,3 +1,12 @@
+/**
+ * @file navbar.jsx
+ * @version 1.0.0
+ * @description Este archivo se encarga de renderizar el footer de la página web
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useEffect } from "react";
@@ -5,31 +14,42 @@ import Logos from "./LOGO BLANCORecurso 1.png";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
-import { Button, ListGroupItem } from "react-bootstrap";
-
-import { useNavigate } from "react-router-dom";
-
+import { Button } from "react-bootstrap";
 import axios from "axios";
 import {
-  encriptar,
   desencriptar,
   decryptTokenFromSessionStorage,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 import { Contador_alertas } from "../../modulos/alertas/contador_alertas";
 
+/**
+ * Se encarga de renderizar el navbar de la página web, conteniendo el historial de rutas visitadas, alertas,
+ * opciones de usuario e información de perfil
+ * @param {Diccionario} props
+ * @returns Renderizado de la navbar
+ */
 const Navbar = (props) => {
+  // Variables de utilidades
   const decryptToken = decryptTokenFromSessionStorage();
   const location = useLocation();
+  // Variables de estado para las rutas visitadas
   const [lastVisitedRoutes, setLastVisitedRoutes] = useState([]);
+  // Configuración de la petición
   const config = {
     headers: {
       Authorization: "Bearer " + decryptToken,
     },
   };
 
+  /**
+   * Se encarga de obtener las rutas visitadas y almacenarlas en sessionStorage permitiendo la navegación entre rutas
+   */
   useEffect(() => {
+    // Obtener la ruta actual
     const currentUrl = window.location.href;
+    // Obtener las rutas almacenadas en sessionStorage
     const storedRoutes = sessionStorage.getItem("lastVisitedRoutes");
+    // Arreglo para actualizar las rutas
     let updatedRoutes = [];
 
     if (storedRoutes) {
@@ -52,69 +72,79 @@ const Navbar = (props) => {
     setLastVisitedRoutes(updatedRoutes.reverse());
   }, [location]);
 
-  const getSegmentsFromUrl = (url) => {
-    const segments = url.split("/");
-    return segments.slice(1, 2); // Obtener el cuarto segmento (índice 3)
-  };
-
+  /**
+   * Función para cerrar sesión
+   */
   const handleSalir = () => {
     sessionStorage.clear();
     window.location.replace("");
   };
 
+  // Variables de estado para el modal de cambio de contraseña
   const [show, setShow] = useState(false);
   const handleModal = () => setShow(true);
   const handleClose = () => setShow(false);
 
+  /**
+   * Función para obtener el título de la ruta
+   * @param {String} url url de la ruta actual
+   * @returns Ultima ruta de manera legible para los usuarios
+   */
   const getTitleFromUrl = (url) => {
     const segments = url.split("/");
     const lastSegment = segments.slice(1)[2]; // Obtener el último segmento
     return lastSegment.replaceAll("_", " "); // Reemplazar "_" por " "
   };
 
+  // Variables de estado para el cambio de contraseña
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [password, setActualPassword] = useState("");
 
+  /**
+   * Funciones para el cambio de contraseña
+   * @param {Evento} event captura la contraseña actual
+   */
   const actualPassword = (event) => {
     setActualPassword(event.target.value);
   };
 
+  /**
+   * Función para el cambio de contraseña
+   * @param {Evento} event Captura la nueva contraseña
+   */
   const handleNewPasswordChange = (event) => {
     setNewPassword(event.target.value);
   };
 
+  /**
+   * Función para el cambio de contraseña
+   * @param {Evento} event Confirma la nueva contraseña
+   */
   const handleConfirmPasswordChange = (event) => {
     setConfirmPassword(event.target.value);
   };
 
+  // Variables de estado para el desplegable de usuario
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
-  // const handleSalir = () =>{
-  //     sessionStorage.removeItem('token')
-  //     sessionStorage.removeItem('refresh-token')
-  //     sessionStorage.removeItem('email')
-  //     sessionStorage.removeItem('first_name')
-  //     sessionStorage.removeItem('instancia')
-  //     sessionStorage.removeItem('last_name')
-  //     sessionStorage.removeItem('nombre_completo')
-  //     sessionStorage.removeItem('instancia_id')
-  //     sessionStorage.removeItem('rol')
-  //     sessionStorage.removeItem('semestre_actual')
-  //     sessionStorage.removeItem('username')
-  //     sessionStorage.removeItem('message')
-  //     window.location.replace('');
-  // }
+  /**
+   * Función que se encarga de cambiar la contraseña del usuario
+   * @returns Cambia la contraseña del usuario
+   */
   const cambiar_contra_funcion = () => {
+    // Desencriptar el id del usuario
     const decryptedUserId = desencriptar(sessionStorage.getItem("id_usuario"));
+    // Configuración de la petición
     const url = `${process.env.REACT_APP_API_URL}/change_password`;
+    // Datos de la petición
     const data = {
       user_id: decryptedUserId,
       contraseña: password,
       new_contraseña: newPassword,
     };
+
     axios
       .post(url, data, config)
       .then((res) => {
@@ -123,12 +153,13 @@ const Navbar = (props) => {
       })
       .catch((err) => alert("ERROR en la actualización."));
   };
+  // Desencriptar los datos del usuario
   const decryptNombreCompleto = desencriptar(
     sessionStorage.getItem("nombre_completo")
   );
   const decryptRol = desencriptar(sessionStorage.getItem("rol"));
   const decryptSede = desencriptar(sessionStorage.getItem("sede"));
-  let navigate = useNavigate();
+
   return (
     <Container>
       <Row className="nav">
