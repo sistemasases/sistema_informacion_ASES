@@ -7,20 +7,19 @@
   * @date 28 de marzo de 2023
 */
 
+import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import {Container, Row, Col, Button, Modal} from "react-bootstrap";
+import DataTable from 'react-data-table-component';
+import Form from 'react-bootstrap/Form';
 import React, {useState} from 'react';
 import axios from 'axios';
-import {Container, Row, Col, Button,Modal} from "react-bootstrap";
-import Form from 'react-bootstrap/Form';
-import DataTable from 'react-data-table-component';
-import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+
 
 const Carga_masiva_component = () =>{
-
   // constante para el header del axios
   const config = {
     Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
   };
-
   // Constante que guarda la dirección url utilizada por el axios
   const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva/carga/`
   // Estado que permite guardar la respuesta del axios
@@ -47,7 +46,6 @@ const Carga_masiva_component = () =>{
       grow : 2,
     },
   ]
-
   /**
     * Manejador de eventos del input file para obtener el archivo seleccionado.
     * @param {Event} e Evento del input.
@@ -55,7 +53,6 @@ const Carga_masiva_component = () =>{
   const handle_file = (e) => {
     set_archivo(e.target.files[0])
   }
-
   /**
     * Función para subir el archivo CSV a través de una API.
     * @param {Event} e Evento del botón subir.
@@ -63,11 +60,9 @@ const Carga_masiva_component = () =>{
   const handle_upload=(e)=> {
     let option = [state.option];
     let formData = new FormData();
-  
     // Agregando el archivo a FormData
     formData.append("tipo_de_carga", option);
     formData.append("FILES", archivo);
-
     axios({
       url: url_carga,
       method: "POST",
@@ -88,7 +83,6 @@ const Carga_masiva_component = () =>{
     })})
     setShow(true)
   }
-
   /**
     * Función para cerrar el modal y reiniciar el estado.
   */
@@ -99,7 +93,6 @@ const Carga_masiva_component = () =>{
       respuesta : 'Cargando...',
     })
   }
-
   /**
     *Función para cerrar el modal.
   */

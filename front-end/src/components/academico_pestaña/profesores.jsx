@@ -1,3 +1,11 @@
+/**
+  * @file profesores.jsx
+  * @version 1.0.0
+  * @description @description Componente para mostrar información de profesores y sus cursos.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 import React from 'react';
 import {useState } from "react";
 import {Row, Col} from "react-bootstrap";
@@ -5,30 +13,40 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import {decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
+/**
+ * Componente para mostrar información de profesores y sus cursos.
+ * @param {Object} props - Propiedades del componente.
+ * @param {Object} props.item - Información del estudiante y sus cursos.
+ * @returns {JSX.Element} Componente Profesores.
+ */
 const Profesores = ({item}) => {
-
+    // Configuración para las llamadas a la API
     const config = {
         headers: {
+            // Obtención del token de sesión
             Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
       };
 
+    // Estado para controlar el filtro y los cursos del estudiante
     const [state,set_state] = useState({
         cursos_profesor : [],
         filtro : '',
 
       })
 
+      //Función para cambiar el valor del filtor
     const cambiar_dato = (e) =>{
         set_state({
               ...state,
               [e.target.name] : e.target.value
         })
   }
+  
+  // Estado para el control del despliegue
+  const [open, setOpen] = useState(false)
 
-    const [open, setOpen] = useState(false)
-
-
+  //Traer los cursos del profesor desde la API
     const traer_cursos = async (index)=>{
         try{
           const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/traer_cursos_del_profesor/`+index+"/", config);
@@ -41,6 +59,8 @@ const Profesores = ({item}) => {
         }
       }
 
+
+    //Renderizado  
     if(item.profesores) {
         return (
             <Row>
@@ -108,9 +128,6 @@ const Profesores = ({item}) => {
                         </a>
                     </Row>
                     <Row className="content_academico">
-                        {/* <Col className="contenido_fichas_academico3">
-                            {item.estudiantes.map((child, index) => <Profesores key={index} item={child}/>) }
-                        </Col> */}
                     </Row>
                 </Col>
             </Row>

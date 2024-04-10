@@ -1,11 +1,20 @@
-import axios from 'axios';
-import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
-const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_nuevo) => {
+/**
+  * @file inicio_semestre.js
+  * @version 1.0.0
+  * @description service que inicio un nuevo semestre en el sistema en la misma sede actual y cierra el semestre anterior.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 
+import { decryptTokenFromSessionStorage } from '../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import axios from 'axios';
+
+
+const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_nuevo) => {
   //URL para el axios
   const url_post = `${process.env.REACT_APP_API_URL}/wizard/semestre/`;
   const url_semestre = `${process.env.REACT_APP_API_URL}/wizard/semestre/` + instancia.toString()+"/";
-
   // header para la autorizacion con token
   const config = {
     Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
@@ -15,7 +24,6 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
         Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     }
   };
-
   //variables para la creacion y finalizacion del semestre
   var semestreActual = {
     nombre: '',
@@ -31,7 +39,6 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
     semestre_actual: false,
     id_instancia: 0
   }
-
   //Varaiables para la fecha
   var inicio = new Date();
   var fin = new Date();
@@ -45,7 +52,6 @@ const inicio_semestre = (instancia, nombre_nuevo, fecha_inicio_nuevo, fecha_fin_
   fin.setMonth(fechaF[1] - 1);
   fin.setDate(fechaF[2]);
   fin.setHours(fin.getHours() - 5);
-
   //conexion con el back para actualizar y crear el semestre en una instancia seleccionada
   axios({
     url: url_semestre,

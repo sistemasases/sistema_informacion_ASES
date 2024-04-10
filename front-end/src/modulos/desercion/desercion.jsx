@@ -1,67 +1,66 @@
-import React, {useState} from 'react';
-import Select from 'react-select';
-import Switch from 'react-switch';
-import Component_reporte_seguimientos from "../../components/reporte_seguimientos/desplegable";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import Cabecera from "../../components/reporte_seguimientos/cabecera";
-import Tabla_desercion from "../../components/desercion/tabla_desercion";
+/**
+  * @file desercion.jsx
+  * @version 1.0.0
+  * @description modulo para visualizar la desercion.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
+
+import {decryptTokenFromSessionStorage, desencriptar} from '../utilidades_seguridad/utilidades_seguridad';
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
-import  {useEffect} from 'react';
+import Tabla_desercion from "../../components/desercion/tabla_desercion";
+import React, {useState, useEffect} from 'react';
+import {Row, Col} from "react-bootstrap";
 import axios from 'axios';
-import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../utilidades_seguridad/utilidades_seguridad';
 
 
 const Desercion = () =>{
-
- 
-
+  // Constante para guardar el token
   const config = {
     Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
   };
-
-    //const userRole = sessionStorage.getItem('permisos');
-    const userRole = desencriptar(sessionStorage.getItem('permisos'));
-    console.log("Estos son los permisos:"+userRole)
-    const [state,set_state] = useState({
-        periodo : '',
-    
-        usuario : '',
-        data_user : [],
-        data_periodo : [],
-        data_rol : [],
-        id_cohorte:1,
-    
+  // Constante para obtener los permisos del usuario.
+  const userRole = desencriptar(sessionStorage.getItem('permisos'));
+  // Guarda la información del usuario
+  const [state,set_state] = useState({
+    periodo : '',
+    usuario : '',
+    data_user : [],
+    data_periodo : [],
+    data_rol : [],
+    id_cohorte:1,
+  })
+  // Constante  para cambiar el estado de la busqueda
+  const[switchChecked, setChecked] = useState(false);
+  // Constante para manejar el estado de la busqueda
+  const handleChange = () => setChecked(!switchChecked);
+  // Llamada al back
+  useEffect(()=>{
+    axios({
+      // Endpoint to send files
+      url:  `${process.env.REACT_APP_API_URL}/usuario_rol/cohorte_estudiante_info/`+state.id_cohorte+"/",
+      method: "GET",
+      headers: config,
+    })
+    .then((respuesta)=>{
+      set_state({
+        ...state,
+        data_cohorte : respuesta.data
       })
-    const[switchChecked, setChecked] = useState(false);
-    const handleChange = () => setChecked(!switchChecked);
-    useEffect(()=>{
+    })
+    .catch(err=>{
+      console.log("estos son los pr:"+state.data_user)
+    })
+  },[]);
 
-        axios({
-          // Endpoint to send files
-          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/cohorte_estudiante_info/`+state.id_cohorte+"/",
-          method: "GET",
-          headers: config,
-        })
-        .then((respuesta)=>{
-          set_state({
-            ...state,
-            data_cohorte : respuesta.data
-          })
-        })
-        .catch(err=>{
-          console.log("estos son los pr:"+state.data_user)
-        })
-      },[]);
-    return (
-        <>{ userRole.includes('view_reporte_desercion') ? <Col className="contenido_children">
-            <Row className="containerRow">
-                <Tabla_desercion data_cohorte={state.data_cohorte}/>
-            </Row>
-        </Col> : <Acceso_denegado/>}</>
-    )
+  return (
+      <>{ userRole.includes('view_reporte_desercion') ? <Col className="contenido_children">
+          <Row className="containerRow">
+              <Tabla_desercion data_cohorte={state.data_cohorte}/>
+          </Row>
+      </Col> : <Acceso_denegado/>}</>
+  )
 }
 
 export default Desercion 
