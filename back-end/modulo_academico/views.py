@@ -302,7 +302,7 @@ class traer_materias_del_profesor_viewsets(viewsets.ModelViewSet):
     def retrieve(self, request, pk):
         try:
             # Obtener información del profesor con el ID dado
-            info_profesor = usuario_rol.objects.get(id_usuario=pk)
+            info_profesor = usuario_rol.objects.get(id_usuario=pk, estado= "ACTIVO")
             id_semestre = info_profesor.id_semestre_id
 
             # Filtrar las materias del profesor en el semestre actual
