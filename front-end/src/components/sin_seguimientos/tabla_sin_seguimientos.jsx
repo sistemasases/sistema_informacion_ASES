@@ -1,8 +1,8 @@
-import React, {useMemo, useState} from 'react';
-import ReactDOM from "react-dom";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import React, { useState} from 'react';
+// import ReactDOM from "react-dom";
+import {Container, Row} from "react-bootstrap";
 import Cabecera from "./cabecera.jsx";
-import DataTable, {selectFilter} from'react-data-table-component';
+import DataTable from'react-data-table-component';
 import DataTableExtensions from 'react-data-table-component-extensions';
 import  {useEffect} from 'react';
 import axios from 'axios';

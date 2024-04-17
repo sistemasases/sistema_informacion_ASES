@@ -23,7 +23,7 @@ import Menu9 from "./menus/profesor.json";
 import SidebarItem from "./sidebarItem";
 import Footer from "./footer";
 import Sidebar_item_closed from "./sidebar_item_closed";
-import { Scrollbars } from "react-custom-scrollbars";
+import { Scrollbars } from "react-custom-scrollbars-2";
 import axios from "axios";
 import {
   decryptTokenFromSessionStorage,

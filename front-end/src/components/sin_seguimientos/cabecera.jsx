@@ -1,7 +1,7 @@
-import React, {useMemo, useState} from 'react';
-import {useTable, Table} from 'react-table';
-import Columnas from './columnas' ;
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
+import React, { useState} from 'react';
+// import {useTable, Table} from 'react-table';
+// import Columnas from './columnas' ;
+import {Container, Row, Col} from "react-bootstrap";
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Select from 'react-select'  ;
