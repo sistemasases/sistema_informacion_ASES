@@ -22,18 +22,22 @@ def prepare_and_transform_data():
     queryset = datos_prediccion.objects.all().values(
         'cultura', 'lugar_adecuado_estudio', 'ocupacion', 'max_lvl_estudio_padre',
         'max_lvl_estudio_madre', 'ingresos_mensuales', 'gastos_mensuales',
-        'gastos_suficientes', 'cambiar_programa', 'habilidades_razonamiento',
+        'ingresos_suficientes', 'cambiar_programa', 'habilidades_razonamiento',
         'acceso_computador', 'acceso_internet', 'calificacion_prueba_diagnostica',
         'estado_civil', 'ciudad_res', 'sexo', 'hijos', 'anio_ingreso','ciudad_nac',
-        'discap_men'
+        'discap_men','estrato','pais_nac','depart_nac','pais_res','depart_res','facultad'
     )
     data_frame = pd.DataFrame.from_records(queryset)
 
 
     # Definición de atributos categóricos y numéricos
     cat_attribs = ['cultura', 'ocupacion', 'max_lvl_estudio_padre', 'max_lvl_estudio_madre',
-                   'habilidades_razonamiento','estado_civil']
-    num_attribs = ['ingresos_mensuales', 'gastos_mensuales', 'calificacion_prueba_diagnostica']
+                   'habilidades_razonamiento','estado_civil', 'ciudad_res', 'ciudad_nac',
+                   'lugar_adecuado_estudio','acceso_internet','acceso_computador',
+                   'anio_ingreso','sexo','cambiar_programa','discap_men','estrato',
+                   'pais_nac','depart_nac','pais_res','depart_res','facultad','ingresos_suficientes']
+    
+    num_attribs = ['ingresos_mensuales', 'gastos_mensuales', 'calificacion_prueba_diagnostica','hijos']
 
     # Pipelines para procesamiento
     cat_pipeline = Pipeline([
