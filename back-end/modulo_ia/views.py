@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import  *
+from modulo_ia.admin import *
 
 
 # Create your views here.
@@ -23,13 +24,13 @@ class predictor(APIView):
         codigo_estudiante = request.data['codigo']
         valores = self.prediccion_red(codigo_estudiante)
         list_total_datos =[]
-        probabilidad_apro_valor = 3
-        prediccion_valor = True
-        mensaje_valor = "todo good"
+        probabilidad_apro_valor = train_and_evaluate_models['Probabilidad_Clase_Aprobar']
+        prediccion_valor = train_and_evaluate_models['Prediccion']
+        mensaje_valor = train_and_evaluate_models['Mensaje']
         datos_respuesta = {
-                    'probabilidad_apro': probabilidad_apro_valor,
-                    'prediccion': prediccion_valor,
-                    'mensaje': mensaje_valor,
+                    'Probabilidad_Clase_Aprobar': probabilidad_apro_valor,
+                    'Prediccion': prediccion_valor,
+                    'Mensaje': mensaje_valor,
                     }
         list_total_datos.append(datos_respuesta)
         return Response(list_total_datos,status=status.HTTP_200_OK)
