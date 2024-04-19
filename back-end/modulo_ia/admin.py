@@ -25,7 +25,8 @@ def prepare_and_transform_data():
         'ingresos_suficientes', 'cambiar_programa', 'habilidades_razonamiento',
         'acceso_computador', 'acceso_internet', 'calificacion_prueba_diagnostica',
         'estado_civil', 'ciudad_res', 'sexo', 'hijos', 'anio_ingreso','ciudad_nac',
-        'discap_men','estrato','pais_nac','depart_nac','pais_res','depart_res','facultad'
+        'discap_men','estrato','pais_nac','depart_nac','pais_res','depart_res','facultad',
+        'edad'
     )
     data_frame = pd.DataFrame.from_records(queryset)
 
@@ -37,7 +38,7 @@ def prepare_and_transform_data():
                    'anio_ingreso','sexo','cambiar_programa','discap_men','estrato',
                    'pais_nac','depart_nac','pais_res','depart_res','facultad','ingresos_suficientes']
     
-    num_attribs = ['ingresos_mensuales', 'gastos_mensuales', 'calificacion_prueba_diagnostica','hijos']
+    num_attribs = ['ingresos_mensuales', 'gastos_mensuales', 'edad','hijos']
 
     # Pipelines para procesamiento
     cat_pipeline = Pipeline([

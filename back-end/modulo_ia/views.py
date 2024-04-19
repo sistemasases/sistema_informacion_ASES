@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import  *
 from modulo_ia.admin import *
+from datetime import datetime
 
 # Create your views here.
 
@@ -15,6 +16,10 @@ class predictor(APIView):
         datos_estudiante = estudiante.objects.filter(codigo=codigo_estu).values()
         datos_datos_prediccion = datos_prediccion.objects.filter(id_estudiante=datos_estudiante.id).values()
         cultura_estudiante = datos_datos_prediccion['cultura']
+       
+        ano_actual = datetime.now().year
+        edad = ano_actual- datos_datos_prediccion["fecha_nac"].year()
+        
         valores={}
         return(valores)
 
