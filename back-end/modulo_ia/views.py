@@ -18,7 +18,7 @@ class predictor(APIView):
         cultura_estudiante = datos_datos_prediccion['cultura']
        
         ano_actual = datetime.now().year
-        edad = ano_actual- datos_datos_prediccion["fecha_nac"].year()
+        edad_estudiante = ano_actual- datos_estudiante["fecha_nac"].year()
         
         valores={}
         return(valores)
