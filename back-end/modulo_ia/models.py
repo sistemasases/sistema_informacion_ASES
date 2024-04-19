@@ -17,12 +17,6 @@ class datos_prediccion (models.Model):
     acceso_internet =models.BooleanField(default=False, null=True)
     calificacion_prueba_diagnostica = models.BigIntegerField(default=None)
     
-    estrato =models.CharField(max_length=200, default=None,null=True)
-    pais_nac =models.CharField(max_length=200, default=None,null=True)
-    depart_nac =models.CharField(max_length=200, default=None,null=True)
-    pais_res =models.CharField(max_length=200, default=None,null=True)
-    depart_res =models.CharField(max_length=200, default=None,null=True)
-    facultad =models.CharField(max_length=200, default=None,null=True)
 
 
     class Meta:
