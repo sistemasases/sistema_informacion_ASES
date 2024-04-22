@@ -1,3 +1,10 @@
+/**
+ * @file form_seguimiento_individual_sin_boton.jsx
+ * @version 1.0.0.
+ * @description Formulario de inasistencia sin botón de agregar.
+ * @author Componente Sistemas Ases.
+ * @contact sistemas.ases@correounivalle.edu.co.
+ */
 import React, {useEffect, useState} from 'react';
 import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
@@ -9,7 +16,9 @@ import { desencriptarInt, desencriptar } from '../../modulos/utilidades_segurida
 
 
 const Seguimiento_individual = (props) =>{
-       
+     /**
+     * Función para recargar la página.
+     */   
 
     const recargarPagina = () => {
         
@@ -22,9 +31,9 @@ const Seguimiento_individual = (props) =>{
 
     };
 
-
-
-
+    /**
+     * Estado local del formulario.
+     */
     const [form, set_form] = useState({
         id: props.item.id,
         fecha: props.item.fecha,
@@ -92,8 +101,8 @@ const Seguimiento_individual = (props) =>{
         id_estudiante: props.item.id_estudiante
     })
 
-    const hora_creacion = new Date(props.item.creacion)
-    const hora_edicion = new Date(props.item.modificacion)
+    const hora_creacion = new Date(props.item.creacion) // Variable para almacenar la hora de creación del formulario.
+    const hora_edicion = new Date(props.item.modificacion)// Variable para almacenar la hora de edición del formulario.
     
     const verificador_datos_basicos = () => {
         if(!!form.fecha){

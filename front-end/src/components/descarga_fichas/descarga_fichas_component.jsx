@@ -276,7 +276,7 @@ const Descarga_fichas_component = () =>{
                     headers={Object.keys(inasistenciasData[0])} 
                     filename="inasistencias.csv"
                     className="hidden" 
-                    separator="*"
+                    separator="|"
                 >
                     Descargar Inasistencias
                 </CSVLink> : <></>
@@ -286,7 +286,7 @@ const Descarga_fichas_component = () =>{
                     headers={Object.keys(seguimientosData[0])}
                     filename="seguimientos.csv"
                     className="hidden"
-                    separator="*"
+                    separator="|"
                 >
                     Descargar Seguimientos
                 </CSVLink> : <></>
