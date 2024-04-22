@@ -595,7 +595,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
 
         elif data_usuario_rol == "super_ases":
             serializer_estudiantes = estudiante_serializer(
-                estudiante.objects.all(), many=True)
+                estudiante.objects.filter(estudiante_elegible = True), many=True)
 
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
             list_id_programas = programa.objects.filter(
@@ -603,7 +603,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
             list_id_estudiantes = programa_estudiante.objects.filter(
                 id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
+                id__in=list_id_estudiantes,estudiante_elegible = True )
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
 

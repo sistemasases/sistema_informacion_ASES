@@ -1,12 +1,28 @@
-// utilidades_seguridad.js
+/**
+  * @file utilidades_seguridad.jsx
+  * @version 1.0.0
+  * @description Modulo de seguridad creado con el proposito de encriptar y desencriptar datos traidos desde el backend que son almacenados por el session storage.
+  * @author Juan Pablo Carabali Quiroz
+  * @contact carabali.juan@correounivalle.edu.co,
+  * @date 13 de febrero del 2024 
+*/
 import CryptoJS from 'crypto-js';
+
+
+// Clave secreta para la encriptación y desencriptación de datos
+const secretKey = process.env.REACT_APP_SECRET_KEY;
+
+// Importar BigInt para manejar números enteros grandes
 const { BigInt } = global;
 
 
-// Clave secreta para la encriptación (debes gestionarla de forma segura)
-const secretKey = process.env.REACT_APP_SECRET_KEY;
-
-// Función para encriptar un valor
+/**
+    * Descripción: Función para encriptar un valor
+    * @param {String} valor - Valor a encriptar
+    * @param {String} secretKey - Clave secreta para encriptar
+    * @return {String} - Valor encriptado
+    * @throws {Error} Si el valor no se puede encriptar
+*/
 export const encriptar = (valor) => {
   try {
     const valorEncriptado = CryptoJS.AES.encrypt(valor, secretKey).toString();
@@ -17,7 +33,13 @@ export const encriptar = (valor) => {
   }
 };
 
-// Función para desencriptar un valor
+/**
+    * Descripción: Función para encriptar un valor
+    * @param {String} Recibe un string encriptado
+    * @param {String} secretKey - Clave secreta para encriptar
+    * @return {String} - Retorna el valor desencriptado
+    * @throws {Error} Si el valor no se puede desencriptar
+*/
 export const desencriptar = (valorEncriptado) => {
   try {
     const bytes = CryptoJS.AES.decrypt(valorEncriptado, secretKey);
@@ -28,7 +50,13 @@ export const desencriptar = (valorEncriptado) => {
     return null;
   }
 };
-// Función para encriptar json's.
+/**
+    * Funcion para encriptar un valor de tipo Json
+    * @param {JavaScript Object Notation} Recibe un objeto de tipo Json.
+    * @param {String} secretKey - Clave secreta para encriptar
+    * @return {Encrypted JavaScript Object Notation} Retorna el Json encriptado .
+    * @throws {Error} Si el valor no se puede encriptar.
+*/
 export const encriptarJson = (valor) => {
   try {
     const valorEncriptado = CryptoJS.AES.encrypt(JSON.stringify(valor), secretKey).toString();
@@ -38,7 +66,13 @@ export const encriptarJson = (valor) => {
     return null;
   }
 };
-// Función para encriptar campos de tipo entero.
+/**
+    * Funcion para encriptar un valor de tipo entero
+    * @param {Int} Recibe un valor de tipo Entero.
+    * @param {String} secretKey - Clave secreta para encriptar
+    * @return {Encrypted Int} Retorna el Int encriptado .
+    * @throws {Error} Si el valor no se puede encriptar.
+*/
 export const encriptarInt = (valor) => {
   try {
     const valorEncriptado = CryptoJS.AES.encrypt(valor.toString(), secretKey).toString();
@@ -51,13 +85,19 @@ export const encriptarInt = (valor) => {
   }
 
 };
-// Función para desencriptar campos de tipo entero.
+/**
+ * Función para desencriptar un valor de tipo entero
+ * @param {String} Recibe un valor de tipo entero encriptado.
+ * @param {String} secretKey - Clave secreta para desencriptar.
+ * @return {Int} Retorna el valor desencriptado.
+ * @throws {Error} Si el valor no se puede desencriptar.
+ * @throws {Error} Si el valor desencriptado no es un número válido.
+  */
 export const desencriptarInt = (valorEncriptado) => {
   try {
     const bytes = CryptoJS.AES.decrypt(valorEncriptado, secretKey);
     const valorDesencriptado = bytes.toString(CryptoJS.enc.Utf8);
     
-    // Verificar si la cadena es un número válido antes de convertirla en un entero
     if (!isNaN(valorDesencriptado)) {
       return parseInt(valorDesencriptado);
     } else {
@@ -69,8 +109,14 @@ export const desencriptarInt = (valorEncriptado) => {
     return null;
   }
 };
+/**
+ * Función para desencriptar el token almacenado en sessionStorage.
+ * @param {String} Recibe un token encriptado.
+ * @param {String} secretKey - Clave secreta para desencriptar.
+ * @return {String} Retorna el token desencriptado.
+ * @throws {Null} Si no hay un token almacenado en el sessionStorage.
+ */
 
-// Función para desencriptar tokens.
 export const decryptTokenFromSessionStorage = () => {
   const encryptedToken = sessionStorage.getItem('token');
   if (!encryptedToken) {
@@ -83,8 +129,13 @@ export const decryptTokenFromSessionStorage = () => {
 
   return decryptedToken;
 };
-
-// Función para desencriptar Json's
+/**
+ * Función para desencriptar el token almacenado en sessionStorage.
+ * @param {String} Recibe un token encriptado.
+ * @param {String} secretKey - Clave secreta para desencriptar.
+ * @return {String} Retorna el token desencriptado.
+ * @throws {Null} Si no hay un token almacenado en el sessionStorage.
+ */
 export const desencriptarJson = (valorEncriptado) => {
   try {
     const bytes = CryptoJS.AES.decrypt(valorEncriptado, secretKey);
@@ -95,23 +146,34 @@ export const desencriptarJson = (valorEncriptado) => {
     return null;
   }
 }
-// Función para desencriptar el ID de usuario.
+/**
+ * Función para desencriptar el id de usuario almacenado en sessionStorage.
+ * @param {String} Recibe un id de usuario encriptado.
+ * @param {String} secretKey - Clave secreta para desencriptar.
+ * @return {String} Retorna el id de usuario desencriptado.
+ * @throws {Null} Si no hay un id de usuario almacenado en el sessionStorage.
+ */
 export const decryptUserIdFromSessionStorage = () => {
   const encryptedUserId = sessionStorage.getItem('id_usuario');
   if (!encryptedUserId) {
-    return null; // No hay un id de usuario en el sessionStorage.
+    return null; 
   }
 
-  // Desencriptar el id de usuario usando la clave secreta.
   const bytes = CryptoJS.AES.decrypt(encryptedUserId, secretKey);
   const decryptedUserId = bytes.toString(CryptoJS.enc.Utf8);
 
   return decryptedUserId;
 };
-// Función para encriptar campos de tipo BigInt.
+/**
+ * Función para encriptar enteros muy grandes.
+ * @param {BigInt} valor - Valor a encriptar
+ * @param {String} secretKey - Clave secreta para encriptar
+ * @return {String} - Valor encriptado
+ * @throws {Error} Si el valor no se puede encriptar
+ */
+
 export const encriptarBigInt = (valor) => {
   try {
-    // Convertir BigInt a cadena y luego encriptar la cadena.
     const valorComoCadena = valor.toString();
     const valorEncriptado = CryptoJS.AES.encrypt(valorComoCadena, secretKey).toString();
     return valorEncriptado;
@@ -121,7 +183,13 @@ export const encriptarBigInt = (valor) => {
   }
 };
 
-//Función para desencriptar campos de tipo BigInt.
+/**
+ * Función para desencriptar enteros muy grandes.
+ * @param {String} valorEncriptado - Valor encriptado
+ * @param {String} secretKey - Clave secreta para desencriptar
+ * @return {BigInt} - Valor desencriptado
+ * @throws {Error} Si el valor no se puede desencriptar
+ */
 export const desencriptarBigInt = (valorEncriptado) => {
   
   try {
@@ -134,6 +202,7 @@ export const desencriptarBigInt = (valorEncriptado) => {
   }
 };
 
+/**
 export const desencriptarIdEstudianteSeleccionado = (idEstudianteSeleccionado) => {
   const encryptedIdEstudianteSeleccionado = sessionStorage.getItem('id_estudiante_seleccionado');
   if (!encryptedIdEstudianteSeleccionado) {
@@ -142,4 +211,5 @@ export const desencriptarIdEstudianteSeleccionado = (idEstudianteSeleccionado) =
   idEstudianteSeleccionado = CryptoJS.AES.decrypt(encryptedIdEstudianteSeleccionado, secretKey);
   const decryptedIdEstudianteSeleccionado = idEstudianteSeleccionado.toString(CryptoJS.enc.Utf8);
   return decryptedIdEstudianteSeleccionado;
-};  
+}; 
+**/ 
