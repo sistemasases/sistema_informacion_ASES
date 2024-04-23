@@ -10,7 +10,7 @@ from imblearn.over_sampling import SMOTE
 import pandas as pd
 
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score
 import numpy as np
 
 
@@ -85,12 +85,16 @@ def train_and_evaluate_models(X_train, y_train, X_test, y_test):
                 y_pred = model.predict(X_test)
                 accuracy = round(accuracy_score(y_test, y_pred), 4)
                 confusion = confusion_matrix(y_test, y_pred)
+                y_pred_proba = model.predict_proba(X_test)[:, 1]  # Asume que la clase positiva está en la columna 1
+                auc_score = roc_auc_score(y_test, y_pred_proba)
+
                 resultados.append({
                     "Topología": topologia,
                     "Función de activación": activacion,
                     "Solver": solver,
                     "Accuracy": accuracy,
-                    "Matriz de confusión": confusion
+                    "Matriz de confusión": confusion,
+                    "AUC": auc_score
                 })
 
     # DataFrame de resultados
