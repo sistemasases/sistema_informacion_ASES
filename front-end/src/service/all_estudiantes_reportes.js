@@ -1,42 +1,37 @@
-import axios from "axios";
+/**
+  * @file all_estudiantes_reportes.js
+  * @version 1.0.0
+  * @description service que retorna todos los reportes por estudiante.
+  * @author Deiby A. Rodriguez R.
+  * @contact deiby.rodriguez@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
+
 import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import axios from "axios";
+
 
 const all_estudiantes_reportes = async (formData, id_usuario) => {
   try {
-    // console.log("LO RECIBIDO EN EL FORM DATA ES:");
-    // console.log(formData.get("usuario_rol"));
-    // console.log("LO RECIBIDO EN EL ID_USUARIO ES:");
-    // console.log(id_usuario);
+    // Constante que va en el header con información del token para el axios
     const config = {
-      //   headers: {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
-      //   },
     };
-    // const url_axios = 'http://localhost:8000/usuario_rol/estudiante_selected2/';
+    // url de la API
     const url_axios =
       `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
       id_usuario.toString() +
       "/";
-    //   + id_usuario + "/"
+    // Interacción con la API
     axios({
       url: url_axios,
       method: "GET",
       headers: config,
       data: formData,
-      // {
-      //     "usuario_rol": "super_ases"
-      //     "sede":"1",
-      // }
     }).then((res) => {
-      // console.log("HOLAAAAAAAAAAAA");
-      // console.log(res.data);
-      // const res = await axios.get(url_axios, config)
       return res.data;
     });
   } catch (err) {
-    // console.log("HOLAAAAAAAAAAAA");
-    // console.log(formData);
-
     console.log(err);
   }
 };

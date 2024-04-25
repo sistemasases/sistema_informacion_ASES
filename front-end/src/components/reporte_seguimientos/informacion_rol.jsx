@@ -1,48 +1,24 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
+/**
+ * @file informacion_rol.jsx
+ * @version 1.0.0
+ * @description Este archivo se encarga de renderizar la información de las fichas y las inasistencias en desplegables
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
+import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
 import Desplegable from "./desplegable";
 import { useEffect } from "react";
 
+/**
+ * Renderiza la información de las fichas y las inasistencias
+ * @param {Diccionario} props Contiene datos como cantidad total de fichas, total de inasistencais y su respectivo estado, revisado y no revisado
+ * @returns
+ */
 const Informacion_rol = (props) => {
-  const la_lista_de_practicantes = [];
-  const la_lista_de_monitores = [];
-  const la_lista_de_estudiantes = [];
-
-  const [state, set_state] = useState({
-    periodo: "",
-
-    usuario: "",
-    data_user: [],
-    data_periodo: [],
-    data_rol: [],
-
-    seleccionado: "",
-
-    id_usuario: "",
-    nombres: "",
-    apellidos: "",
-    cedula: "",
-    correo: "",
-    telefono: "",
-
-    reportes_estudiante: [],
-    ids_estudiantes_del_monitor: [],
-    ids_monitores_del_practicante: [],
-    ids_practicantes_del_profesional: [],
-
-    reportes_estudiante2: [],
-    ids_estudiantes_del_monitor2: [],
-    ids_monitores_del_practicante2: [],
-    ids_practicantes_del_profesional2: [],
-
-    lista: [],
-    lista1: [],
-    lista2: [],
-    lista1_1: [],
-    lista2_1: [],
-  });
-
+  // useEffect que se ejecuta cuando se actualiza el id de los practicantes del profesional
   useEffect(() => {}, [props.ids_practicantes_del_profesional]);
 
   return (

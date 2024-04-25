@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Select from "react-select";
-import { Container, Row, Col, Dropdown, Button, Modal } from "react-bootstrap";
-import DropdownItem from "react-bootstrap/esm/DropdownItem";
+/**
+ * @file sideBar.jsx
+ * @version 1.0.0
+ * @description Este archivo se encarga de mostrar los menus que se encuentran abiertos segun el rol del usuario
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
+import React, { useState } from "react";
+import { Container, Row, Button, Modal } from "react-bootstrap";
 import { FaBars } from "react-icons/fa";
 import NavBar from "./navbar";
 import Menu from "./menus/sistemas.json";
@@ -13,7 +20,6 @@ import Menu6 from "./menus/ente_academico.json";
 import Menu7 from "./menus/sin_rol.json";
 import Menu8 from "./menus/practicante.json";
 import Menu9 from "./menus/profesor.json";
-import Ficha_estudiante from "../../modulos/ficha_estudiante/ficha_estudiante.jsx";
 import SidebarItem from "./sidebarItem";
 import Footer from "./footer";
 import Sidebar_item_closed from "./sidebar_item_closed";
@@ -22,19 +28,29 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-  desencriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
+/**
+ * Se encarga de gestionar los menus de la barra lateral para cada rol así como verificar el tiempo de sesión de cada usuario
+ * @param {Diccionario} props Contiene los menus que son visibles para cada rol
+ * @returns renderizado de los menus completamente funcionales
+ */
 const SideBar = (props) => {
+  // Variable de estado que se encarga de abrir y cerrar los menus
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
+  /**
+   * Cierra los menus que se encuentran abiertos si el click es en el exterior del menu
+   * @param {Evento} e: Evento que se activa al hacer click fuera del menu
+   */
   const outSideClick = (e) => {
     if (isOpen == true) {
       setIsOpen(false);
     }
   };
 
+  //   Variables de estado que almacenan los menus que se encuentran segun el rol del usuario
   const [state, set_state] = useState({
     desplegable:
       desencriptar(sessionStorage.rol) === "sistemas" ||
@@ -60,6 +76,10 @@ const SideBar = (props) => {
         : Menu7,
   });
 
+  /**
+   * Asigna en la variable state la ruta actual
+   * @param {String} name
+   */
   function path_actual(name) {
     set_state({
       ...state,
@@ -67,13 +87,20 @@ const SideBar = (props) => {
     });
   }
 
+  //   Constante que guarda el tokten de inicio de sesión
   const [data, setData] = useState({
     refreshtoken: desencriptar(sessionStorage.getItem("refresh-token")),
   });
+
+  //  Constante que guarda el estado de la ventana modal
   const [show, setShow] = useState(false);
 
+  //   Funciones que se encargan de abrir la ventana modal
   const handleShow = () => setShow(true);
 
+  /**
+   * Función que se encargan de cerrar la ventana modal y limpiar el sessionStorage
+   */
   const handleClose = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("refresh-token");
@@ -95,6 +122,9 @@ const SideBar = (props) => {
     window.location.reload();
   };
 
+  /**
+   * Función que se encarga de prolongar la sesión del usuario
+   */
   const handleContinue = () => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/refresh`, data)
@@ -108,14 +138,19 @@ const SideBar = (props) => {
       });
   };
 
+  //   Constante que guarda la configuración de la petición
   const config = {
     headers: {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
     },
   };
 
+  //   Constante que guarda el tiempo de espera
   const tiempoEspera = 1 * 1 * 60 * 1000;
 
+  /**
+   * Función que se encarga de verificar el tiempo de sesión del usuario
+   */
   const timeoutId = setTimeout(async () => {
     await axios
       .get(`${process.env.REACT_APP_API_URL}/wizard/instancia/`, config)

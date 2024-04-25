@@ -1,3 +1,18 @@
+/**
+ * @file columnas.jsx
+ * @version 1.0.0
+ * @description Columnas de la tabla de seguimientos.
+ * @author Componente Sistemas Ases.
+ * @contact sistemas.ases@correounivalle.edu.co.
+ * @date 13 de febrero del 2024
+ */
+
+/**
+ * Arreglo que define las columnas de la tabla de seguimientos.
+ * Cada objeto en el arreglo representa una columna y contiene la configuración necesaria.
+ * @type {Array<Object>}
+ */
+
 export const Columnas = [
   {
     Header: "Codigo",

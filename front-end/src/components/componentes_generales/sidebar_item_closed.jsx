@@ -1,8 +1,23 @@
+/**
+ * @file sidebar_item_closed.jsx
+ * @version 1.0.0
+ * @description Este archivo se encarga de cerrar los menus que se encuentran abiertos
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import React from "react";
 import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 
+/**
+ * Cierra los menus que se enceuntran abiertos
+ * @param {Diccionario} props Contiene los menus que son visibles para cada rol
+ * @returns renderizado de los menus y los cierra
+ */
 const Sidebar_item_closed = (props) => {
+  // Varialbe de estado que se encarga de abrir y cerrar los menus
   const [open, setOpen] = useState(false);
 
   if (props.item.childrens) {

@@ -1,6 +1,14 @@
+/**
+ * @file cabecera.jsx
+ * @version 1.0.0
+ * @description Este archivo contiene la cabecera de la página de reporte de seguimientos, donde se muestra un contador de las asistencias e inasistencias de los estudiantes según el rol del usuario.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import Switch from "react-switch";
 import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import Informacion_rol from "../../components/reporte_seguimientos/informacion_rol";
@@ -10,23 +18,31 @@ import {
   desencriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 
+/**
+ * Es la función principal usada en el reporte de seguimientos dependiendo de el rol de los usuarios
+ * @param {Arreglo} props: Contiene datos de usuario tales como id, nombre, periodo, rol de usuario, etc.
+ * @returns Renderizado de la cabecera de reporte de seguimientos.
+ */
+
 const Cabecera = (props) => {
+  // Configuración de la petición
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
-
-  const [switchChecked, setChecked] = useState(false);
-  const handleChange = () => setChecked(!switchChecked);
-
+  // Constante donde se almacenan los datos del usario contenidos en props
   const datos_option_user = [];
+  // Constante donde se almacenan los datos del periodo contenidos en props
   const datos_option_periodo = [];
-  const datos_option_rol = [];
+
+  // Variable booleana
   var bandera_option_user = true;
+  // Variable booleana
   var bandera_option_periodo = true;
-  var bandera_option_rol = true;
-  var bandera = true;
+
+  // Constante donde se se almacena el total de los datos de los estudiantes
   const total_datos_estudiantes = [];
 
+  // Constante donde se se almacena el estado en el que se encuentran los datos del estudiante/usuario
   const [state, set_state] = useState({
     periodo: "",
     usuario: "",
@@ -63,6 +79,9 @@ const Cabecera = (props) => {
     inasistencias_no_revisado_prac: 0,
   });
 
+  /**
+   * Se realiza la peticion al servidor para obtener los datos de los periodos segun el semestre, así como de la determinacion los datos qué se muestran segun el rol.
+   */
   useEffect(() => {
     axios({
       url: `${process.env.REACT_APP_API_URL}/wizard/semestre/`,
@@ -80,9 +99,12 @@ const Cabecera = (props) => {
       });
 
     if (desencriptar(sessionStorage.getItem("rol")) === "profesional") {
+      // Se define el id de la sede como parametro para la petición
       const paramsget = {
         id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
       };
+
+      // Se define la peticion que se realiza al servidor
       const url_axios =
         `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` +
         desencriptar(sessionStorage.getItem("id_usuario")) +
@@ -105,9 +127,11 @@ const Cabecera = (props) => {
           return err;
         });
     } else if (desencriptar(sessionStorage.getItem("rol")) === "practicante") {
+      // Se define el id de la sede como parametro para la petición
       const paramsget = {
         id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
       };
+
       axios({
         url:
           `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos_practicante/` +
@@ -131,40 +155,13 @@ const Cabecera = (props) => {
     }
   }, []);
 
-  /*
-
-  const handle_users = (e) => {
-    if (bandera_option_user == true) {
-      for (let i = 0; i < state.data_user.length; i++) {
-        const dato = {
-          value: state.data_user[i]['id_rol'],
-          label: state.data_user[i]['id_rol'] + ' ' + state.data_user[i]['id_usuario'] + ' ' + state.data_user[i]['estado'],
-          id: i,
-        };
-        datos_option_user.push(dato);
-
-        const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/' + state.data_user[i]['id_rol'] + '/';
-        axios({
-          url: url_axios,
-          method: 'GET',
-          headers: config,
-        })
-          .then((respuesta) => {
-            total_datos_estudiantes.push(respuesta.data);
-          })
-          .catch((err) => {});
-      }
-      bandera_option_user = false;
-    } else {
-      console.log('bandera off');
-    }
-  };
-
-*/
-
+  /**
+   * Asigna los datos de los usuarios a la variable datos_option_user y los estudiantes a total_datos_estudiantes
+   */
   const handle_users_persona = (e) => {
     if (bandera_option_user == true) {
       for (let i = 0; i < props.data_user.length; i++) {
+        // Se almacenan los datos del usuario
         const dato = {
           value: props.data_user[i]["id"],
           label:
@@ -177,6 +174,7 @@ const Cabecera = (props) => {
         };
         datos_option_user.push(dato);
 
+        // Se define la peticion que se realiza al servidor
         const url_axios =
           `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/` +
           props.data_user[i]["id_rol"] +
@@ -195,6 +193,10 @@ const Cabecera = (props) => {
     }
   };
 
+  /**
+   * Asigna los datos del estudiante seleccionado a las variables de estado
+   * @param {evento} e: Contiene los datos del estudiantes seleccionado
+   */
   const handle_option_user = (e) => {
     set_state({
       ...state,
@@ -202,9 +204,12 @@ const Cabecera = (props) => {
       id_usuario: props.data_user[e.id]["id"],
       total_datos_estudiante_seleccionado: total_datos_estudiantes[e.id],
     });
+
+    // Se define el id de la sede como parametro para la petición
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
+
     axios({
       url:
         `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` +
@@ -227,6 +232,10 @@ const Cabecera = (props) => {
       });
   };
 
+  /**
+   * Asigna los datos del estudiante seleccionado a las variables de estado
+   * @param {evento} e: Contiene los datos del estudiantes seleccionado
+   */
   const handle_option_periodo = (e) => {
     set_state({
       ...state,
@@ -234,9 +243,14 @@ const Cabecera = (props) => {
     });
   };
 
+  /**
+   * Asigna los datos del periodo a la variable datos_option_periodo
+   * @returns Datos del periodo
+   */
   const handle_periodo = (e) => {
     if (bandera_option_periodo == true) {
       for (let i = 0; i < state.data_periodo.length; i++) {
+        // Se almacenan los datos del periodo
         const dato = {
           value: state.data_periodo[i]["nombre"],
           label: state.data_periodo[i]["nombre"],
@@ -249,8 +263,11 @@ const Cabecera = (props) => {
     }
   };
 
+  /**
+   * Se realiza el conteo de las fichas y las inasistencias de los estudiantes
+   */
   useEffect(() => {
-    // Variables para el conteo
+    // Inicio Variables para el conteo
     let conteo_total_fichas_prof = 0;
     let conteo_fichas_revisado_prof = 0;
     let conteo_fichas_no_revisado_prof = 0;
@@ -317,8 +334,6 @@ const Cabecera = (props) => {
       inasistencias_no_revisado_prac: conteo_inasistencias_no_revisado_prac,
     });
   }, [state.ids_practicantes_del_profesional]);
-
-  const handle_upload = (e) => {};
 
   return (
     <Container>

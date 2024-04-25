@@ -10,6 +10,10 @@
 import React from "react";
 import { Container, Row } from "react-bootstrap";
 
+/**
+ * Renderiza un mensaje de error 403, acceso denegado
+ * @returns Renderiza un error
+ */
 const acceso_denegado = () => {
   return (
     <Container>

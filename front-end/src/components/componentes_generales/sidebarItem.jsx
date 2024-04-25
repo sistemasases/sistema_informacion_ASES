@@ -1,8 +1,22 @@
+/**
+ * @file sidebarItem.jsx
+ * @version 1.0.0
+ * @description Este archivo se encarga de abrir los menus que se encuentran cerrados en la barra lateral
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 import React from "react";
 import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 
+/**
+ * Abre los menus que se encuentran cerrados
+ * @param {Diccionario} props Contiene los menus que son visibles para cada rol
+ * @returns renderizado de los menus y apertura de los mismos
+ */
 const SidebarItem = (props) => {
+  // Variable de estado que se encarga de abrir y cerrar los menus
   const [open, setOpen] = useState(false);
 
   if (props.item.childrens) {

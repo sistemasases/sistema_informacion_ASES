@@ -177,7 +177,12 @@ class conteo_seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
             }
 
         return Response(counts,status=status.HTTP_200_OK)
-
+#
+#   * Descripción de la función.
+#   * @author Deiby A. Rodriguez R.
+#   * @param {ModelViewSet} viewsets.ModelViewSet, View set usada por django.
+#   * @return {Json} seguimientos, inasistencias, Json con todos los seguimientos e inasistencias filtradas.
+#
 class descarga_seguimientos_inasistencias_viewsets (viewsets.ModelViewSet):
 
     serializer_class = seguimiento_individual_serializer

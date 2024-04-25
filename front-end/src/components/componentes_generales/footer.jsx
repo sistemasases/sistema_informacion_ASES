@@ -1,12 +1,18 @@
-import React, { useState } from "react";
-import Select from "react-select";
-import Switch from "react-switch";
-import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
-import { FaThList, FaBars, FaFontAwesome } from "react-icons/fa";
-import { DropdownItem, DropdownToggle, DropdownMenu } from "reactstrap";
-import { NavLink } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+/**
+ * @file footer.jsx
+ * @version 1.0.0
+ * @description Este archivo se encarga de renderizar el footer de la página web
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+import React from "react";
+import { Row, Col } from "react-bootstrap";
 
+/**
+ * Se renderiza el footer de la página web, qué contiene información de contacto y redes asociadas a la estrategia ASES
+ * @returns Footer de la página web
+ */
 const Footer = () => {
   return (
     <Col className="container_footer">

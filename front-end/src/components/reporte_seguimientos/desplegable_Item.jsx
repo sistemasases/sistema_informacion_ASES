@@ -1,37 +1,53 @@
+/**
+ * @file desplegable_Item.jsx
+ * @version 1.0.0
+ * @description Este archivo se encarga de renderizar en una tabla el reporte de los seguimientos e inasistencias de los estudiantes
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import React from "react";
 import { useState } from "react";
-import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
-import {
-  FaRegChartBar,
-  FaThList,
-  FaGraduationCap,
-  FaUser,
-} from "react-icons/fa";
+import { Row, Col } from "react-bootstrap";
+import { FaGraduationCap, FaUser } from "react-icons/fa";
 import Socieducativa from "./socieducativa";
-import { useEffect } from "react";
 import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
-  desencriptar,
   desencriptarInt,
   encriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
+/**
+ * Renderiza desplegables qué contienen los seguimientos e inasistencias
+ * @param {Diccionario} item contiene datos como el tipo de usuario, el nombre, cantidad de estudiantes, etc.
+ * @returns Renderizado de desplegables
+ */
 const Desplegable_item = ({ item }) => {
+  // Configuración de la petición
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
 
+  // Constantes para controlar la apertura y cierre de los modales
   const [open, setOpen] = useState(false);
 
+  // Constante para controlar el estado de los reportes
   const [state, set_state] = useState({
     data_user_socioedu: [],
     tiene_reportes_cargados: false,
   });
 
+  // Constantes para controlar los datos del usuario socioeducativo
   const [data_user_socioedu, set_data_user_socioedu] = useState([]);
 
+  /**
+   * Se encarga de traer los seguimientos de un estudiante solamente del semestre actual
+   * @param {Integer} e: Contiene el id del estudiante
+   */
   const traer_reportes = (e) => {
+    // Se define el id de la sede como parametro para la petición
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
@@ -41,10 +57,12 @@ const Desplegable_item = ({ item }) => {
       tiene_reportes_cargados: false,
     });
 
+    // Se define la peticion que se realiza al servidor
     const url_axios =
       `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante_solo_semestre_actual/` +
       e +
       "/";
+
     axios({
       // Endpoint to send files
       url: url_axios,

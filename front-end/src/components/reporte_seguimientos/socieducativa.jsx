@@ -1,26 +1,31 @@
+/**
+ * @file socieducativa.jsx
+ * @version 1.0.0
+ * @description Renderiza los seguimientos de un estudiante tras seleccionarlo
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { Dropdown, Button } from "react-bootstrap";
-import { FaRegChartBar, FaThList, FaBars } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
-import { useEffect, componentDidUpdate } from "react";
-import axios from "axios";
+import { Button } from "react-bootstrap";
 import Desplegable_item from "./desplegable_Item copy";
-import Desplegable from "./desplegable";
 
+/**
+ * Se encarga de renderizar los seguimientos de un estudiante
+ * @param {Diccionario} props contiene los seguimientos individuales de cada estudiante y las inasistencias
+ * @returns renderizado de los seguimientos
+ */
 const Socieducativa = (props) => {
-  const [switchChecked, setChecked] = useState(false);
-  const handleChange = () => setChecked(!switchChecked);
-
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const [state, set_state] = useState({
-    data_user: props.data_user_socioedu,
-  });
 
+  /**
+   * Envia los datos del Usuario socieducativo y lo actualiza
+   * @param {Arreglo} e: Contiene datos del usuario socioeducativo
+   */
   const enviar_datos = (e) => {
     // Actualiza state.data_user_socioedu con los nuevos datos
     props.updateDataUserSocioedu(e);
@@ -28,9 +33,6 @@ const Socieducativa = (props) => {
 
   return (
     <Container className="socioeducativa_container">
-      {/* <li>{JSON.stringify(props.data_user_socioedu)}</li>
-                        <li>{JSON.stringify(props.data_user_socioedu[0])}</li> */}
-
       <Row className="socioeducativa_fondo">
         {props.data_user_socioedu.map((item, index) => (
           <Col className={"periodo_asignaciones open"} xs={"12"}>

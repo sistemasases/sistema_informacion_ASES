@@ -29,6 +29,8 @@ class Validador_carga(APIView):
             file = request.data.get('FILES')
             if(tipo == 'Estudiante'):
                 return carga_estudiantes(file)
+            elif(tipo == "Activar_estudiante"):
+                return activar_estudiante(file)
             elif(tipo == "Programa_estudiante"):
                 return carga_programa_estudiante(file)
             elif(tipo == "Estudiante_Cohorte"):
@@ -65,6 +67,36 @@ class Validador_carga(APIView):
                 return carga_autorizacion(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
+            
+def activar_estudiante(file):
+    list_dict_result = []
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+        consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle =datos.iat[i,1]).first()
+        if (consulta_estudiante):
+            try:
+                consulta_estudiante.estudiante_elegible = True
+                consulta_estudiante.save()
+                dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Se activo correctamente este estudiante.' 
+                        }
+                list_dict_result.append(dict_result)
+            except:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'Error al activar el estudiante.'
+                }
+                list_dict_result.append(dict_result)   
+        
+        else:
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'No existe un estudiante con este numero de documento y código: ' + str(datos.iat[i,1])
+            }
+            list_dict_result.append(dict_result)
+
+    return Response(list_dict_result)
 
 def carga_estudiantes(file):
     list_dict_result = []
@@ -165,14 +197,14 @@ def carga_programa_estudiante(file):
     lista_programa_estudiante =[]
     datos = pd.read_csv(file,header=0)
     for i in range(datos.shape[0]):
-        if (estudiante.objects.filter(num_doc = datos.iat[i,0]).first()):
-            consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0]).first()
-            if(programa.objects.filter(codigo_univalle= datos.iat[i,1],id_sede = datos.iat[i,2]).first()):
-                consulta_programa = programa.objects.filter(codigo_univalle= datos.iat[i,1],id_sede = datos.iat[i,2]).first()
+        if (estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle =datos.iat[i,1]).first()):
+            consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle =datos.iat[i,1]).first()
+            if(programa.objects.filter(codigo_univalle= datos.iat[i,2],id_sede = datos.iat[i,3]).first()):
+                consulta_programa = programa.objects.filter(codigo_univalle= datos.iat[i,2],id_sede = datos.iat[i,3]).first()
                 if(programa_estudiante.objects.filter(id_estudiante = consulta_estudiante,id_programa=consulta_programa).values()):
                     dict_result = {
                         'dato' : datos.iat[i,0],
-                        'mensaje' : 'Este estudiante ya está matriculado en este programa: '+ str(datos.iat[i,1])
+                        'mensaje' : 'Este estudiante ya está matriculado en este programa: '+ str(datos.iat[i,2])
                     }
                     list_dict_result.append(dict_result)
                 else:
@@ -187,19 +219,19 @@ def carga_programa_estudiante(file):
                         lista_programa_estudiante.append(Programa_estudiante)
                         dict_result = {
                                     'dato' : datos.iat[i,0],
-                                    'mensaje' : 'Se relacionó correctamente este estudiante con su programa: '+ str(datos.iat[i,1])
+                                    'mensaje' : 'Se relacionó correctamente este estudiante con su programa: '+ str(datos.iat[i,2])
                                 }
                         list_dict_result.append(dict_result)
                     except:
                         dict_result = {
                             'dato' : datos.iat[i,0],
-                            'mensaje' : 'Error al relacionar el estudiante con su programa: '+ str(datos.iat[i,1])
+                            'mensaje' : 'Error al relacionar el estudiante con su programa: '+ str(datos.iat[i,2])
                         }
                         list_dict_result.append(dict_result)   
             else:
                 dict_result = {
                     'dato' : datos.iat[i,0],
-                    'mensaje' : 'El programa al que se quiere matricular el estudiante no existe: '+ str(datos.iat[i,1])
+                    'mensaje' : 'El programa al que se quiere matricular el estudiante no existe: '+ str(datos.iat[i,2])
                 }
                 list_dict_result.append(dict_result) 
         else:
@@ -1175,8 +1207,7 @@ def carga_autorizacion(file):
         if (estudiante.objects.filter(num_doc = datos.iat[i,4]).values()):
             consulta_estudiante= estudiante.objects.filter(num_doc =datos.iat[i,4]).first()
 
-            if (firma_tratamiento_datos.objects.filter(fecha_firma = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y %H:%M:%S'),
-                                                    id_estudiante =  consulta_estudiante,).first()):
+            if (firma_tratamiento_datos.objects.filter(id_estudiante = consulta_estudiante,).first()):
                 dict_result = {
                     'dato' : datos.iat[i,0],
                     'mensaje' : 'Ya existe una firma del estudiante con cédula: '+str(datos.iat[i,4])+'.'
