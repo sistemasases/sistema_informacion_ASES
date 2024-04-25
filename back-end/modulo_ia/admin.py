@@ -70,7 +70,7 @@ def prepare_and_transform_data():
     return X_train_balanced, y_train_balanced, X_test, y_test
 
 
-
+# Cuando se va a entrenar un nuevo modelo y seleccion de parametros
 def seleccion_prediccion_modelos(X_train, y_train, X_test, y_test):
     resultados = []
     topologias = [(10,), (10, 10), (20,), (20, 20), (30,)]
@@ -129,7 +129,7 @@ def seleccion_prediccion_modelos(X_train, y_train, X_test, y_test):
 
 
 
-
+# Modelo incial con mejor accuracy y area bajo la curva
 def modelo_entrenamiento_evaluacion(X_train, y_train, X_test, y_test):
     # Configuración especificada de la red neuronal
     topologia = (10,)
