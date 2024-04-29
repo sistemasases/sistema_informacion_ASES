@@ -585,10 +585,10 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         # Obtener los programas asociados a la sede proporcionada en la solicitud
         programas_sede = programa.objects.filter(id_sede=request.data["id_sede"])
         # Filtrar todos los estudiantes asociados a los programas de la sede
-        estudiantes_totales = estudiante.objects.filter(
-        ~Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True) & 
-        Q(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede) &
-        Q(estudiante_elegible = True)).distinct()
+        estudiantes_totales = estudiante.objects.exclude(
+            asignacion__id_semestre=serializer_semestre.data['id'], asignacion__estado=True).filter(
+            Q(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede) &
+            Q(estudiante_elegible = True)).distinct()
         # Filtrar los estudiantes no asignados para el semestre actual
         # estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
         # # Excluir los estudiantes no asignados de la lista total de estudiantes
