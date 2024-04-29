@@ -17,7 +17,7 @@ from modulo_instancia.models import semestre, cohorte
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual, riesgo_individual
 from modulo_usuario_rol.models import firma_tratamiento_datos
-from django.db.models import Q
+from django.db.models import Q, Subquery, OuterRef
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -33,6 +33,7 @@ from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import get_object_or_404
 from django.core import serializers
+
 
 """
 POR EL GRAN TAMAÑO DE ESTA VISTA SE DIVIDIÓ LA MISMA EN VARIAS PARTES
@@ -584,11 +585,20 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         estudiantes_asignados = estudiante.objects.filter(asignacion__id_usuario=pk, asignacion__estado=True, asignacion__id_semestre=serializer_semestre.data['id']).distinct()
         # Obtener los programas asociados a la sede proporcionada en la solicitud
         programas_sede = programa.objects.filter(id_sede=request.data["id_sede"])
-        # Filtrar todos los estudiantes asociados a los programas de la sede
-        estudiantes_totales = estudiante.objects.exclude(
-            asignacion__id_semestre=serializer_semestre.data['id'], asignacion__estado=True).filter(
+        # Subconsulta para obtener las asignaciones en el semestre actual con estado True
+        asignaciones_semestre_actual_true = asignacion.objects.filter(
+            id_estudiante=OuterRef('pk'), 
+            id_semestre=serializer_semestre.data['id'], 
+            estado=True
+        )
+
+        # Consulta principal
+        estudiantes_totales = estudiante.objects.filter(
             Q(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede) &
-            Q(estudiante_elegible = True)).distinct()
+            Q(estudiante_elegible=True)
+        ).exclude(
+            id__in=Subquery(asignaciones_semestre_actual_true.values('id_estudiante'))
+        ).distinct()
         # Filtrar los estudiantes no asignados para el semestre actual
         # estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
         # # Excluir los estudiantes no asignados de la lista total de estudiantes
