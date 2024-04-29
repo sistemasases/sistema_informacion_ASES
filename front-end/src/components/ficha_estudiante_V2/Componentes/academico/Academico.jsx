@@ -1,23 +1,30 @@
+/**
+ * @file Academico.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar los periodos academicos de un estudiante.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import { useAuthStore } from "../../store/auth";
 import Acordion from "../Acordion";
-import "../../../../Scss/ficha_estudiante_discapacidad/seguimiento.css";
+import "../../../../Scss/ficha_estudiante_V2/seguimiento.css";
 import withSwal from "../withSwal";
 import { useEffect, useState } from "react";
 import fetchAcademico from "../../api/fetch_acadecmico";
 
-// Componente de Seguimiento
-// Este componente se encarga de mostrar los seguimientos que tiene un estudiante
-// y de mostrar un formulario con la información de cada seguimiento almacenado.
+// Componente de Academico - EN CONSTRUCCION.
 const Academico = () => {
   const { user, shosenStudent } = useAuthStore();
-  const [periodos, setPeriodos] = useState([]);
+  const [semestre, setSemestre] = useState([]);
 
   useEffect(() => {
     // Method setEstudiantes is used to set the students data in the store
     const getSeguimientos = async () => {
       const res = await fetchAcademico(shosenStudent.id, user.sede_id);
       if (res) {
-        setPeriodos(res);
+        setSemestre(res);
       }
       console.log(res);
     };
@@ -28,11 +35,11 @@ const Academico = () => {
   return (
     <>
       <p className="title">Seguimiento de pares</p>
-      {periodos && periodos.length > 0 ? (
-        periodos.map((periodo, index) => (
+      {semestre && semestre.length > 0 ? (
+        semestre.map((periodo, index) => (
           <Acordion
             key={index}
-            title={periodo[0].nombre}
+            title={"Semestre: " + periodo[0].nombre}
             claseAcordion={"acordion subacordion"}
             claseContenido={"accordion-content"}
             flechaUp={
@@ -50,11 +57,10 @@ const Academico = () => {
               />
             }
           >
-            {periodos.slice(1).map((seg, index) => (
-              <div key={index} className="seguimiento">
-                <p>Seguimiento individual: {seg.fecha}</p>
-              </div>
-            ))}
+        
+            {/* <div key={index} className="seguimiento">
+              <p>{semestre[1]}</p>
+            </div> */}
           </Acordion>
         ))
       ) : (

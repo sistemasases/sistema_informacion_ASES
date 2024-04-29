@@ -1,10 +1,18 @@
-import { useEffect, useState } from "react";
-import "../../../Scss/ficha_estudiante_discapacidad/columns.css";
+/**
+ * @file Columns.jsx
+ * @version 1.0.0
+ * @description Este componente es el que se encarga de mostrar la informacion del
+                estudiante de manera organizada en columnas, para que sea mas facil de leer
+                recibe como parametro un arreglo de arreglos, donde cada arreglo interno 
+                contiene objetos que representan una columna, cada objeto tiene un atributo 
+                type que indica el tipo de elemento.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
-// Este componente es el que se encarga de mostrar la informacion del
-// estudiante de manera organizada en columnas, para que sea mas facil de leer
-// recibe como parametro un arreglo de arreglos, donde cada arreglo interno contiene objetos
-// que representan una columna, cada objeto tiene un atributo type que indica el tipo de elemento
+import { useEffect, useState } from "react";
+import "../../../Scss/ficha_estudiante_V2/columns.css";
 
 // Componente de Columns
 // Recibe como props:

@@ -1,3 +1,12 @@
+/**
+ * @file FichaEstudianteV2.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar cargas los componentes necesarios para la ficha.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import React, { useEffect } from "react";
 import {
   desencriptar,
@@ -12,7 +21,7 @@ import { useAuthStore } from "../../components/ficha_estudiante_V2/store/auth.js
 import AccesoDenegado from "../../components/ficha_estudiante_V2/Componentes/AccesoDenegado.jsx";
 import fetchEstudiantes from "../../components/ficha_estudiante_V2/api/fetch_estudiantes.js";
 
-const FichaEstudianteV2 = (props) => {
+const FichaEstudianteV2 = () => {
   const { user, setUser, setEstudiantes } = useAuthStore();
 
   useEffect(() => {

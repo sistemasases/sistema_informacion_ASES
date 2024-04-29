@@ -1,5 +1,15 @@
+/**
+ * @file Formulario.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar un formulario para registrar 
+ *              inasistencias o seguimientos de un estudiante.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import { useEffect, useState } from "react";
-import "../../../Scss/ficha_estudiante_discapacidad/formulario.css";
+import "../../../Scss/ficha_estudiante_V2/formulario.css";
 import { Formik } from "formik";
 
 const Formulario = () => {

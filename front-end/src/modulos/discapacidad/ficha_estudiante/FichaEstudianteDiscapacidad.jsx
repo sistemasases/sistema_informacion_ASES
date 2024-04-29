@@ -1,3 +1,12 @@
+/**
+ * @file FichaEstudianteDiscapacidad.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar los componentes necesarios para la ficha.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import React, { useEffect } from "react";
 import {
   desencriptar,

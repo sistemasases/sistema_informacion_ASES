@@ -1,11 +1,19 @@
+/**
+ * @file Riesgos.jsx
+ * @version 1.0.0
+ * @description Este componente se encarga de mostrar los riesgos de un estudiante.
+ * @author Nicol Ortiz
+ * @contact nicol.ortiz@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+
 import { useState } from "react";
-import "../../../Scss/ficha_estudiante_discapacidad/riesgos.css";
+import "../../../Scss/ficha_estudiante_V2/riesgos.css";
 import Modal from "./Modal";
 import Formulario from "./Formulario";
 
 // Componente de Riesgos
-// Este componente se encarga de mostrar los riesgos que puede tener un estudiante
-// y de mostrar un formulario para agregar un nuevo seguimiento
+// En construcción - se debe mostrar un formulario para agregar un nuevo seguimiento
 const Riesgos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
