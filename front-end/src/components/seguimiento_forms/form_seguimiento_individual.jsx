@@ -3,7 +3,7 @@ import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, Fo
 import Form from 'react-bootstrap/Form';
 import Create_Seguimiento from '../../service/create_seguimiento';
 import { CSVLink } from 'react-csv';
-import { desencriptarInt } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { desencriptarInt, encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -12,7 +12,8 @@ const Seguimiento_individual = (props) =>{
     const recargarPagina = () => {
         
             // Cambiar la URL a la página con el ID del estudiante seleccionado
-            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+            sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${state.id_estudiante}`))
+            window.location.reload()
 
     };
 

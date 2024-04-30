@@ -11,7 +11,7 @@ import {useState } from "react";
 import {Row, Col} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import {decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import {decryptTokenFromSessionStorage, encriptar} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 /**
  * Componente para mostrar información de profesores y sus cursos.
@@ -59,6 +59,16 @@ const Profesores = ({item}) => {
         }
       }
 
+    /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        sessionStorage.setItem("path", encriptar(e));
+        window.location.reload();
+    };
+
 
     //Renderizado  
     if(item.profesores) {
@@ -80,7 +90,7 @@ const Profesores = ({item}) => {
                     <Row>
                         <Col className="contenido_fichas_academico2">
                         { item.profesores.filter((item)=>{
-                            console.log(state.filtro.toLowerCase())
+                            //console.log(state.filtro.toLowerCase())
                                 return state.filtro.toLowerCase() === '' ? item 
                                 : 
                                 item.first_name.toLowerCase().includes(state.filtro.toLowerCase()) ||  
@@ -122,7 +132,7 @@ const Profesores = ({item}) => {
             <Row >
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_text_academico_hover4" onClick={() => { setOpen(!open) }}>
-                        <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
+                        <a onClick={() => cambiar_ruta(`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`)} 
                             rel="noopener noreferrer" className="link_text_academico_hover4">
                             {item.nombre} -- {item.cod_materia} -- {item.franja}
                         </a>

@@ -11,7 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Update_seguimiento from '../../service/update_seguimiento';
 import Delete_seguimiento from '../../service/delete_seguimiento';
 import { CSVLink } from 'react-csv';
-import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { desencriptarInt, desencriptar, encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
@@ -24,7 +24,8 @@ const Seguimiento_individual = (props) =>{
         
         if (props.recarga_ficha_estudiante) {
             // Cambiar la URL a la página con el ID del estudiante seleccionado
-            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+            sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${state.id_estudiante}`))
+            window.location.reload()
         } else {
             props.updateDataUserSocioedu(form.id_estudiante);
         }
@@ -298,7 +299,7 @@ const Seguimiento_individual = (props) =>{
 
     }
     const handleForm = (e) => {
-        console.log(e.target.checked)
+        //console.log(e.target.checked)
         if(e.target.name === "riesgo_individual_bajo"){
             if(e.target.checked === true){
                 set_form({

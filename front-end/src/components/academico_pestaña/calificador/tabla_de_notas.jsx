@@ -13,7 +13,7 @@ import React, { useMemo, useState } from 'react';
 import { Container, Row, Col, Dropdown, Button, Form } from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
-import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt, encriptar} from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
     // Configuración para la autorización de la API
@@ -87,6 +87,18 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
         } catch (error) {
             console.log('Error al actualizar la nota:', error);
         }
+    };
+
+    /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        if(e) {
+            sessionStorage.setItem("path", encriptar(e));
+        }
+        window.location.reload();
     };
 
     if (item.tipo_dato === 'estudiante') {
@@ -167,7 +179,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
     }
     else {
         return (
-            <a href={item.path || "#"} className="fichas_academico plain">
+            <a onClick={() => cambiar_ruta(item.path)} className="fichas_academico plain">
                 return
             </a>
         )

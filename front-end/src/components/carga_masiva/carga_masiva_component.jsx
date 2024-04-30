@@ -89,7 +89,7 @@ const Carga_masiva_component = () =>{
       data: formData,
     })
     .then((res)=>{
-      console.log(res)
+      //console.log(res)
       set_state({
         ...state,
         mensaje : res.data,

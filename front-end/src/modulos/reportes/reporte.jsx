@@ -220,9 +220,6 @@ const Reporte = () => {
     var longitud_busqueda = e.target.value;
     if (longitud_busqueda.length == 0) {
       setFiltered(prueba);
-      console.log(
-        "LA SOLEDAD ES CAPAZ INUNDAR NUESTROS CORAZONES AUNQUE ESTEMOS EN COMPAÑIA"
-      );
     } else {
       const data_filtered = prueba.filter(
         (row) =>
@@ -239,7 +236,7 @@ const Reporte = () => {
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
-      console.log(filtered);
+      //console.log(filtered);
     }
   };
   // Columnas usadas para almacenar la información de la consulta con el back
@@ -433,7 +430,7 @@ const Reporte = () => {
     if (e.target.name === undefined) {
       const data_filtered = state.estudiante;
       setFiltered(data_filtered);
-      console.log("UNDEFINED");
+      //console.log("UNDEFINED");
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: DOCUMENTO
     if (e.target.name === "Tipo de documento") {
@@ -511,7 +508,7 @@ const Reporte = () => {
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
       inner_column_data = e.target.value;
-      console.log(inner_column_data);
+      //console.log(inner_column_data);
     }
     // BUSQUEDA INDIVIDUAL POR FILTRO: SEDE
     if (e.target.name === "Sede") {

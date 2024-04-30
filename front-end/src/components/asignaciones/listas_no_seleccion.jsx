@@ -74,7 +74,7 @@ const Listas_no_seleccion = (props) => {
       data: formData,
         })
         .then((res)=>{
-        console.log(res)
+        //console.log(res)
         })
         .catch(err=>{
         })

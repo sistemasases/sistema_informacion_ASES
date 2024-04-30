@@ -11,7 +11,7 @@ export default function (props) {
   const handleSendNewData = () => {
     axios.post(url, data)
     .then(res=>{
-      console.log(res.data)
+      //console.log(res.data)
     })
     .catch(err=>console.log(err))
   }

@@ -125,7 +125,7 @@ const Info_basica_monitor = (props) =>{
         
         id_sede: id_sede_desencriptada,
         };
-        console.log(e.id)
+        //console.log(e.id)
         const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_info_extra/`+desencriptarInt(state.data_user[e.id]['id'])+"/";
         axios({
           // Endpoint to send files
