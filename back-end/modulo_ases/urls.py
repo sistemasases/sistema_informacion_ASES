@@ -32,6 +32,7 @@ urlpatterns = [
     path('reportes/', include('modulo_reportes.routers')),
     path('alertas/', include('modulo_alertas.routers')),
     path('academico/', include('modulo_academico.routers')),
+    path('ia/', include('modulo_ia.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('usuario_rol_firma/', include('modulo_usuario_rol.urls')),
