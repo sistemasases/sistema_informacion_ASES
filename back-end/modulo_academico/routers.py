@@ -27,4 +27,6 @@ router.register(r'borrar_item',todo_item_viewsets,basename = 'borrar_item')
 
 router.register(r'lista_historiales_academicos',lista_historiales_academicos_viewsets,basename = 'lista_historiales_academicos')
 
+router.register(r'reporte_calificador',reporte_calificador_viewsets,basename = 'reporte_calificador')
+
 urlpatterns = router.urls

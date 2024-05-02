@@ -44,6 +44,7 @@ import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
 import Desercion from "./modulos/desercion/desercion.jsx";
 import Academico_pestaña from "./modulos/academico_pestaña/academico_pestaña.jsx";
 import Calificador from "./modulos/academico_pestaña/calificador.jsx";
+import Academico_reportes from "./modulos/academico_reportes/academico_reportes.jsx";
 import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
 import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
 import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
@@ -72,6 +73,7 @@ const App = () => {
                         <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
                         <Route path="/desercion"element={<Desercion path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
                         <Route path="/academico"element={<Academico_pestaña path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
+                        <Route path="/academico_reportes"element={<Academico_reportes path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
                         <Route path="/calificador/:profesor/:curso/:cod/:franja"element={<Calificador path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
                         <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol path_actual={"Gestion usuarios"} usuario={nombreUsuario}/>}/>
                         <Route path="/carga_masiva" element={<Carga_masiva/>}/>

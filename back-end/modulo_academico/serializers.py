@@ -15,7 +15,7 @@ from .models import (
     notas_historico,
     notas_semestre,
 )
-
+from modulo_usuario_rol.serializers import user_basic_info_serializer
 
 
 class historial_academico_serializer(serializers.ModelSerializer):
@@ -31,6 +31,12 @@ class materia_serializer(serializers.ModelSerializer):
     class Meta:
         model = materia
         fields = '__all__'
+        
+class cesar_serializer(serializers.ModelSerializer):
+    id_profesor = user_basic_info_serializer()
+    class Meta:
+        model = materia
+        fields =  ('id','nombre','cod_materia','franja','id_profesor')
 
 
 class matricula_serializer(serializers.ModelSerializer):
@@ -78,3 +84,7 @@ class notas_semestre_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class curso_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = materia
+        fields = '__all__'

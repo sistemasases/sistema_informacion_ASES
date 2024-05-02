@@ -125,6 +125,11 @@
                 "path":"/academico",
                 "name":"Calificador",
                 "icon":"bi bi-calculator-fill"
+            },
+            {
+                "path":"/academico_reportes",
+                "name":"Reportes Calificador",
+                "icon":"bi bi-body-text"
             }
         ]
     }

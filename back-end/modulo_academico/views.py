@@ -18,7 +18,7 @@ from modulo_usuario_rol import serializers
 from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from .serializers import historial_academico_serializer, materia_serializer, matricula_serializer, matricula_serializer, items_historico_serializer, items_semestre_serializer, notas_historico_serializer, notas_semestre_serializer
+from .serializers import *
 
 from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer, facultad_serializer
 from modulo_instancia.serializers import semestre_serializer
@@ -495,4 +495,17 @@ class todo_item_viewsets(viewsets.ModelViewSet):
     serializer_class = items_semestre_serializer
 
 
-
+class reporte_calificador_viewsets(viewsets.ModelViewSet):
+    queryset = materia.objects.all()
+    serializer_class = materia_serializer
+    def create(self, request):
+        respuesta = []
+        materias = materia.objects.filter(id_sede=request.data['id_sede'])
+        materias_respuesta = cesar_serializer(materias, many=True).data
+        for materiass in materias_respuesta:
+            items = items_semestre.objects.filter(id_curso=materiass['id']).count()
+            materiass['items'] = items
+            respuesta.append(materiass)
+            items_calificados = items_semestre.objects.filter(notas_semestre__id_item__in = items_semestre.objects.filter(id_curso=materiass['id'])).distinct().count()
+            materiass['items_calificados'] = items_calificados
+        return Response(respuesta, status=status.HTTP_200_OK)

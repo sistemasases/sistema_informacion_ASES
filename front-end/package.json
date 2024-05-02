@@ -52,6 +52,7 @@
     "react-text-mask": "^5.5.0",
     "react-to-print": "^2.14.13",
     "reactstrap": "^9.1.9",
+    "recharts": "^2.12.6",
     "styled-bootstrap-grid": "^3.1.2",
     "styled-component": "^2.8.0",
     "styled-components": "^5.3.9",
