@@ -36,22 +36,22 @@ const Path = (props) => {
     <>
     {path !== undefined ? (
         <>
-          {path === "/" ? (<Inicio path_actual={"/"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/carga_masiva" ? (<Carga_masiva path_actual={"/carga_masiva"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/descarga_fichas" ? (<Descarga_fichas path_actual={"/descarga_fichas"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/alertas" ? (<Alertas path_actual={"/alertas"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/reporte" ? (<Reporte path_actual={"/reporte"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/crear_semestre_sistemas" ? (<Semestre_sistemas path_actual={"/crear_semestre_sistemas"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/inicio_semestre_sistemas" ? (<Inicio_semestre_sistemas path_actual={"/inicio_semestre_sistemas"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/asignaciones" ? (<Asignaciones path_actual={"/asignaciones"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/gestion_usuario_rol" ? (<Gestion_usuario_rol path_actual={"/gestion_usuario_rol"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/academico" ? (<Academico_pestaña path_actual={"/academico"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/desercion" ? (<Desercion path_actual={"/desercion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/sin_seguimientos" ? (<Sin_seguimientos path_actual={"/sin_seguimientos"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/reporte_seguimientos" ? (<Reporte_seguimientos path_actual={"/reporte_seguimientos"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/ficha_monitor" ? (<Ficha_monitor path_actual={"/ficha_monitor"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/ficha_estudiante/sin_seleccion" ? (<Ficha_estudiante path_actual={"/ficha_estudiante/sin_seleccion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path === "/calificador" ? (<Ficha_estudiante path_actual={"/ficha_estudiante/sin_seleccion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path === "/" || path === "" ? (<Inicio path_actual={"/"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/carga_masiva') ? (<Carga_masiva path_actual={"/carga_masiva"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/descarga_fichas') ? (<Descarga_fichas path_actual={"/descarga_fichas"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/alertas') ? (<Alertas path_actual={"/alertas"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/reporte') ? (<Reporte path_actual={"/reporte"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/crear_semestre_sistemas') ? (<Semestre_sistemas path_actual={"/crear_semestre_sistemas"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/inicio_semestre_sistemas') ? (<Inicio_semestre_sistemas path_actual={"/inicio_semestre_sistemas"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/asignaciones') ? (<Asignaciones path_actual={"/asignaciones"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/gestion_usuario_rol') ? (<Gestion_usuario_rol path_actual={"/gestion_usuario_rol"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/academico') ? (<Academico_pestaña path_actual={"/academico"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/desercion') ? (<Desercion path_actual={"/desercion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/sin_seguimientos') ? (<Sin_seguimientos path_actual={"/sin_seguimientos"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/reporte_seguimientos') ? (<Reporte_seguimientos path_actual={"/reporte_seguimientos"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/ficha_monitor') ? (<Ficha_monitor path_actual={"/ficha_monitor"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/ficha_estudiante') ? (<Ficha_estudiante path_actual={"/ficha_estudiante/sin_seleccion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/calificador") ? (<Ficha_estudiante path_actual={"/ficha_estudiante/sin_seleccion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
         </>
       ) : (
         <Pagina_no_encontrada/>

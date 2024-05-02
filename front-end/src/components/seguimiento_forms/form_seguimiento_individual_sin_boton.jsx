@@ -24,7 +24,7 @@ const Seguimiento_individual = (props) =>{
         
         if (props.recarga_ficha_estudiante) {
             // Cambiar la URL a la página con el ID del estudiante seleccionado
-            sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${state.id_estudiante}`))
+            sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${form.id_estudiante}`))
             window.location.reload()
         } else {
             props.updateDataUserSocioedu(form.id_estudiante);

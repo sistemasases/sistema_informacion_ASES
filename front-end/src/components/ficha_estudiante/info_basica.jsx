@@ -185,6 +185,7 @@ const Info_basica = (props) => {
   useEffect(() => {
     const currentUrl = desencriptar(sessionStorage.getItem('path'));
     const subUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
+    console.log(subUrl)
     setUrl(subUrl);
   }, []);
 

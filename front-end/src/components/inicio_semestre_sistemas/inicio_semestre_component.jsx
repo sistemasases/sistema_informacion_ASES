@@ -11,9 +11,9 @@ import {Container, Row, Button, Col, Alert, Form} from "react-bootstrap";
 import Inicio_semestre_service from '../../service/inicio_semestre';
 import All_sede_service from '../../service/all_sede';
 import React, {useState, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import CryptoJS from 'crypto-js';
+import { encriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 
 
 // Clave secreta para desencriptar el token
@@ -42,8 +42,6 @@ const Inicio_semestre_component = () =>{
     // Constante y variable que se usaran para el select
     const opciones = [];
     var bandera_option = true;
-    // Hook que se usara para el redirecionamiento
-    const navigate = useNavigate();
     // Estado que se usara para extraer todas las sedes
     const [state,set_state] = useState({tabs: [],})
     // Estados que se usaran para activar o desactivar parte de la vista
@@ -88,6 +86,15 @@ const Inicio_semestre_component = () =>{
         }
     }
     /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        sessionStorage.setItem("path", encriptar(e));
+        window.location.reload();
+    };
+    /**
         * Manejador de los diferentes inputs
     */
     const handleButton = () =>{
@@ -95,7 +102,7 @@ const Inicio_semestre_component = () =>{
             if(!(!semestre.fecha_inicio || semestre.fecha_inicio === '') && (dateToInt(formatDate(date_inicio)) <= dateToInt(semestre.fecha_inicio))){
                 if(!(!semestre.fecha_fin || semestre.fecha_fin === '') && (dateToInt(semestre.fecha_inicio) < dateToInt(semestre.fecha_fin))){
                     Inicio_semestre_service.inicio_semestre(semestre.idSede, semestre.nombreSemestre, semestre.fecha_inicio, semestre.fecha_fin);
-                    navigate('/crear_semestre_sistemas');
+                    cambiar_ruta('/crear_semestre_sistemas');
                 } else {
                     setActivated({
                         ...activated,
@@ -223,7 +230,7 @@ const Inicio_semestre_component = () =>{
                     <p>¿Desea continuar con la creación del semestre?</p>
                     <Button variant="secondary" onClick={() => {setActivated({...activated, isError: false,}); setIsSelected(false);}}>Cancelar</Button>
                     {'  '}
-                    <Button variant="primary" onClick={() => navigate('/crear_semestre_sistemas')}>Crear Semestre</Button>
+                    <Button variant="primary" onClick={() => cambiar_ruta('/crear_semestre_sistemas')}>Crear Semestre</Button>
                 </Alert>
             </Row>
             <Row className="rowJustFlex" hidden={!activated.isDisabled}>

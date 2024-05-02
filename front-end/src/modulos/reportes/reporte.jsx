@@ -12,11 +12,11 @@ import {
   desencriptar,
   desencriptarInt,
   decryptTokenFromSessionStorage,
+  encriptar,
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import DataTable from "react-data-table-component";
 import React, {useState, useEffect} from "react";
 import myGif from "../reportes/loading_data.gif";
-import { useNavigate } from "react-router-dom";
 import writeXlsxFile from "write-excel-file";
 import {CSVLink} from "react-csv";
 import axios from "axios";
@@ -1381,7 +1381,16 @@ const Reporte = () => {
         "Reporte general Campus Virtual Ases universidad del Valle Excel.xlsx",
     });
   };
-  let navigate = useNavigate();
+
+  /**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+   */
+  const cambiar_ruta = (e) => {
+    sessionStorage.setItem("path", encriptar(e));
+    window.location.reload();
+  };
 
   return (
     <>
@@ -1576,7 +1585,7 @@ const Reporte = () => {
               highlightOnHover
               onRowClicked={(row) => {
                 // redirect(`/ficha_estudiante/${row.id}`);
-                navigate(`/ficha_estudiante/${row.id}`);
+                cambiar_ruta(`/ficha_estudiante/${row.id}`);
                 // // // // console.log(row);
               }}
               responsive

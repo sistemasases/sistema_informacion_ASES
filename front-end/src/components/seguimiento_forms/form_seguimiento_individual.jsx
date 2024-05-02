@@ -11,9 +11,9 @@ const Seguimiento_individual = (props) =>{
 
     const recargarPagina = () => {
         
-            // Cambiar la URL a la página con el ID del estudiante seleccionado
-            sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${state.id_estudiante}`))
-            window.location.reload()
+        // Cambiar la URL a la página con el ID del estudiante seleccionado
+        sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${state.id_estudiante}`))
+        window.location.reload()
 
     };
 

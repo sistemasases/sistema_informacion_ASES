@@ -43,7 +43,6 @@ const App = () => {
             <Row> 
                 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
                     <Routes>
-                        <Route path="/calificador/:profesor/:curso/:cod/:franja"element={<Calificador path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
                         <Route path="/"element={<Path usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
                         <Route path="*"element={<Pagina_no_encontrada/>}/>
                     </Routes>
