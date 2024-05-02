@@ -239,7 +239,7 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
         <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
           <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
             <Col className="link_text_academico1_sin_borde" xs={4}>
-              <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+              <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                 {item.nombre} {item.apellido} - {item.cod_univalle}
               </Link>
             </Col>

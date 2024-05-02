@@ -114,7 +114,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                         ):
                         (
                             <Col className="link_text_academico1_sin_borde" xs={2} >
-                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                                     {item.nombre} {item.apellido}
                                 </Link>
                             </Col>
@@ -130,7 +130,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                         :
                         (
                             <Col className="link_text_academico1_sin_borde" xs={2} >
-                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                                     {item.cod_univalle}
                                 </Link>
                             </Col>

@@ -149,7 +149,7 @@ const Profesores = ({item}) => {
                 <Row className="link_academico1_sin_borde">
                     <Col className="link_text_academico1_sin_borde" >
                         <Row className="link_text_academico_hover4">
-                            <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                            <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                                 {item.estudiante} {item.apellido} - {item.cod_univalle}  -- {item.username}
                             </Link>
                         </Row>
