@@ -1,11 +1,11 @@
 import React from 'react';
 import {useState } from "react";
 import Form from 'react-bootstrap/Form';
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
+import { Row, Col, Button} from "react-bootstrap";
+// import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
-import {decryptTokenFromSessionStorage, desencriptarInt, desencriptar} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import {decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Listas = (props) => {
 
