@@ -99,7 +99,7 @@ def seleccion_prediccion_modelos(X_train, y_train, X_test, y_test):
 
     # DataFrame de resultados
     resultado_Riesgo = pd.DataFrame(resultados)
-    mejor_modelo = resultado_Riesgo.loc[resultado_Riesgo['Accuracy'].idxmax()]
+    mejor_modelo = resultado_Riesgo.loc[resultado_Riesgo['AUC'].idxmax()]
 
     # Entrenar y evaluar el mejor modelo
     modelo_mejor = MLPClassifier(hidden_layer_sizes=mejor_modelo['Topología'],
