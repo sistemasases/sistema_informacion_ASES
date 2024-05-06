@@ -511,7 +511,7 @@ const cambiar_datos = (e) => {
                   })
                   alert("error al editar el estudiante :" + err)
                   
-            console.log('celular'+state.celular)
+            //console.log('celular'+state.celular)
             //console.log("entra al malo")
             //alert("error al editar el estudiante : " + props.datos.id);
       })

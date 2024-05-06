@@ -36,7 +36,7 @@ const Update_inasistencia = async (formData) => {
         // Conexion con la API
         await axios.patch(url_axios, inasistencia, config)
         .then(res=>{
-            console.log(res);
+            // console.log(res);
             respuesta = true;
         })
         .catch(err=>{

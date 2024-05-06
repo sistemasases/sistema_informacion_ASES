@@ -92,7 +92,7 @@ const Update_seguimiento = async (formData) => {
         // conexion con la API
         await axios.patch(url_axios, seguimiento, config)
         .then(res=>{
-            console.log(res);
+            // console.log(res);
             respuesta = true;
         })
         .catch(err=>{

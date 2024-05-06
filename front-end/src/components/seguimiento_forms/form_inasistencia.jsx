@@ -10,7 +10,7 @@ import { Modal, Button, Col, Row } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Inasistencia from '../../service/create_inasistencia';
 import { CSVLink } from 'react-csv';
-import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { desencriptarInt, desencriptar, encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 /**
  * Componente funcional que representa un formulario de inasistencia.
@@ -36,7 +36,8 @@ const Inasistencia = (props) => {
      */
     const recargarPagina = () => {
         // Cambiar la URL a la página con el ID del estudiante seleccionado
-        window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+        sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${state.id_estudiante}`))
+        window.location.reload()
     };
 
     useEffect(() => {

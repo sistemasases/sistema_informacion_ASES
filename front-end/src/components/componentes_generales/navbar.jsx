@@ -17,6 +17,7 @@ import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 import {
+  encriptar,
   desencriptar,
   decryptTokenFromSessionStorage,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
@@ -46,7 +47,7 @@ const Navbar = (props) => {
    */
   useEffect(() => {
     // Obtener la ruta actual
-    const currentUrl = window.location.href;
+    const currentUrl = desencriptar(sessionStorage.getItem('path'));
     // Obtener las rutas almacenadas en sessionStorage
     const storedRoutes = sessionStorage.getItem("lastVisitedRoutes");
     // Arreglo para actualizar las rutas
@@ -92,8 +93,7 @@ const Navbar = (props) => {
    */
   const getTitleFromUrl = (url) => {
     const segments = url.split("/");
-    const lastSegment = segments.slice(1)[2]; // Obtener el último segmento
-    return lastSegment.replaceAll("_", " "); // Reemplazar "_" por " "
+    return segments[1].replaceAll("_", " "); // Reemplazar "_" por " "
   };
 
   // Variables de estado para el cambio de contraseña
@@ -160,13 +160,21 @@ const Navbar = (props) => {
   const decryptRol = desencriptar(sessionStorage.getItem("rol"));
   const decryptSede = desencriptar(sessionStorage.getItem("sede"));
 
+  /**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+  */
+  const cambiar_ruta = (e) => {
+    sessionStorage.setItem("path", encriptar(e));
+    window.location.reload();
+  };
+
   return (
     <Container>
       <Row className="nav">
         <Col xs={"5"} md={"2"} href={"/"}>
-          <Link to={`/`}>
-            <img src={Logos} className="logo" alt="/"></img>
-          </Link>
+          <img src={Logos} className="logo" alt="/" onClick={() => cambiar_ruta("/")}></img>
         </Col>
 
         <div class="d-none d-md-inline col-md-5">
@@ -175,7 +183,7 @@ const Navbar = (props) => {
               {/* Aquí se mostrarían las últimas rutas visitadas en orden inverso */}
               {lastVisitedRoutes.reverse().map((url, index) => (
                 <Col key={index} md={"4"} className="col_historial">
-                  <a href={url} className="col_historial_item">
+                  <a onClick={() => cambiar_ruta(url)} className="col_historial_item">
                     {getTitleFromUrl(url) === ""
                       ? "Inicio"
                       : getTitleFromUrl(url)}
@@ -199,13 +207,13 @@ const Navbar = (props) => {
               // <i class="bi bi-exclamation-diamond-fill"></i>
               <>
                 <Col md={"4"}>
-                  <a href="/alertas">
-                    <i class="bi bi-exclamation-diamond" href="/alertas"></i>
+                  <a onClick={()=>cambiar_ruta("/alertas")}>
+                    <i class="bi bi-exclamation-diamond" onClick={()=>cambiar_ruta("/alertas")}></i>
                   </a>
                 </Col>
                 <Col md={"1"} className="alert_counter">
                   {" "}
-                  <a href="/alertas" className="inner-counter">
+                  <a onClick={()=>cambiar_ruta("/alertas")} className="inner-counter">
                     <Contador_alertas></Contador_alertas>
                   </a>
                 </Col>

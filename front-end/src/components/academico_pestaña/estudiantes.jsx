@@ -13,6 +13,7 @@ import { FaRegChartBar, FaThList, FaGraduationCap, FaUser } from "react-icons/fa
 import Modal from 'react-bootstrap/Modal';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 /**
  * Componente para mostrar información de estudiantes y sus cursos.
@@ -60,6 +61,16 @@ const Estudiantes = ({ item }) => {
             [e.target.name]: e.target.value
         })
     }
+
+    /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        sessionStorage.setItem("path", encriptar(e));
+        window.location.reload();
+    };
     
     // Renderizado
     if (item.estudiantes) {
@@ -81,7 +92,7 @@ const Estudiantes = ({ item }) => {
                         <Col className="contenido_fichas_academico2">
 
                             {item.estudiantes.filter((item) => {
-                                console.log(state.filtro.toLowerCase())
+                                //console.log(state.filtro.toLowerCase())
                                 return state.filtro.toLowerCase() === '' ? item
                                     :
                                     item.nombre.toLowerCase().includes(state.filtro.toLowerCase()) ||
@@ -103,7 +114,7 @@ const Estudiantes = ({ item }) => {
             <Row >
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_text_academico_hover4" onClick={() => { setOpen(!open) }}>
-                        <a href={`/calificador/${encodeURIComponent(item.id_curso)}/${encodeURIComponent(item.curso_data.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`}
+                        <a onClick={() => cambiar_ruta(`/calificador/${encodeURIComponent(item.id_curso)}/${encodeURIComponent(item.curso_data.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`)}
                             rel="noopener noreferrer" className="link_text_academico_hover4">
                             {item.curso_data.cod_materia}--{item.curso_data.franja} : {item.curso_data.nombre}
                         </a>
@@ -119,7 +130,7 @@ const Estudiantes = ({ item }) => {
                     <Row className="link_academico1" onClick={() => { setOpen(!open); traer_cursos_del_estudiante(item.id) }}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover3">
-                                <a><Link to={`/ficha_estudiante/${item.id}`}>Ficha del estudiante </Link> : {item.nombre} {item.apellido} - {item.cod_univalle}</a>
+                                <a><Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)}>Ficha del estudiante </Link> : {item.nombre} {item.apellido} - {item.cod_univalle}</a>
                             </Row>
                         </Col>
                     </Row>

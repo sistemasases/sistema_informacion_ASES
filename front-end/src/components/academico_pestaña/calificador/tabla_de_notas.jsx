@@ -13,7 +13,7 @@ import React, {  useState } from 'react';
 import { Row, Col, Form } from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
-import { decryptTokenFromSessionStorage, desencriptar} from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt, encriptar} from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
     // Configuración para la autorización de la API
@@ -89,6 +89,18 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
         }
     };
 
+    /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        if(e) {
+            sessionStorage.setItem("path", encriptar(e));
+        }
+        window.location.reload();
+    };
+
     if (item.tipo_dato === 'estudiante') {
         return (
             <Row>
@@ -102,7 +114,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                         ):
                         (
                             <Col className="link_text_academico1_sin_borde" xs={2} >
-                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                                     {item.nombre} {item.apellido}
                                 </Link>
                             </Col>
@@ -118,7 +130,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                         :
                         (
                             <Col className="link_text_academico1_sin_borde" xs={2} >
-                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                                     {item.cod_univalle}
                                 </Link>
                             </Col>
@@ -167,7 +179,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
     }
     else {
         return (
-            <a href={item.path || "#"} className="fichas_academico plain">
+            <a onClick={() => cambiar_ruta(item.path)} className="fichas_academico plain">
                 return
             </a>
         )

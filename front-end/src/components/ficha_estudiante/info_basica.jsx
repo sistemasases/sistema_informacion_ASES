@@ -183,8 +183,9 @@ const Info_basica = (props) => {
   const [url_estudiante, setUrl] = useState("");
 
   useEffect(() => {
-    const currentUrl = window.location.href;
+    const currentUrl = desencriptar(sessionStorage.getItem('path'));
     const subUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
+    console.log(subUrl)
     setUrl(subUrl);
   }, []);
 

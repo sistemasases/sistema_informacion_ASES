@@ -58,7 +58,7 @@ const Login_component = () => {
   const handleSendNewData = () => {
     axios.post(url, data)
       .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         const encryptedToken = encriptar(res.data.token);
         const encryptedRefreshToken = encriptar(res.data.refresh_token);
         const encryptedIdUsuario = encriptarBigInt(res.data.user.id);
@@ -74,6 +74,7 @@ const Login_component = () => {
         const encryptedUsername = encriptar(res.data.user.username);
         const encryptedPermisos = encriptarJson(res.data.user.permisos);
         const encryptedMessage = encriptar(res.data.message);
+        const encryptedPath = encriptar("/");
         sessionStorage.setItem('token', encryptedToken);
         sessionStorage.setItem('refresh-token',encryptedRefreshToken);
         sessionStorage.setItem('id_usuario', encryptedIdUsuario);
@@ -89,6 +90,7 @@ const Login_component = () => {
         sessionStorage.setItem('username', encryptedUsername);
         sessionStorage.setItem('permisos', encryptedPermisos);
         sessionStorage.setItem('message', encryptedMessage);
+        sessionStorage.setItem('path', encryptedPath);
         set_state({
           ...state,
           logged: encryptedToken,

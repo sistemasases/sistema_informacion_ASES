@@ -9,6 +9,22 @@
 import React from "react";
 import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
+import { encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+
+/**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+  */
+const cambiar_ruta = (e) => {
+  if (e){
+    sessionStorage.setItem("path", encriptar(e));
+    window.location.reload();
+  } else {
+    sessionStorage.setItem("path", encriptar("/"));
+    window.location.reload();
+  }
+};
 
 /**
  * Abre los menus que se encuentran cerrados
@@ -37,7 +53,7 @@ const SidebarItem = (props) => {
     );
   } else {
     return (
-      <a href={props.item.path || "#"} className="sidebar-item">
+      <a onClick={() => cambiar_ruta(props.item.path)} className="sidebar-item">
         <span className="tamaño_icon">
           {props.item.icon && <i className={props.item.icon}></i>}
         </span>

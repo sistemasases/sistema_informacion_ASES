@@ -12,7 +12,7 @@ import Form from 'react-bootstrap/Form';
 import Update_Inasistencia from '../../service/update_inasistencia';
 import Delete_inasistencia from '../../service/delete_inasistencia';
 import { CSVLink } from 'react-csv';
-import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { desencriptarInt, desencriptar, encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 /**
  * Componente funcional que representa un formulario de inasistencia sin botón de agregar.
@@ -28,7 +28,8 @@ const Inasistencia = (props) =>{
         
         if (props.recarga_ficha_estudiante) {
             // Cambiar la URL a la página con el ID del estudiante seleccionado
-            window.location.href = `/ficha_estudiante/${form.id_estudiante}`;
+            sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${form.id_estudiante}`))
+            window.location.reload()
         } else {
             props.updateDataUserSocioedu(form.id_estudiante);
         }
