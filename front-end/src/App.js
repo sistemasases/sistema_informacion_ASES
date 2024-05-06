@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import {Row} from "react-bootstrap";
 import "@fontsource/manrope";
-import 'styled-components';
+
+// import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";

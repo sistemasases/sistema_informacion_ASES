@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
+// import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import all_rols_service from '../../service/all_rols'
