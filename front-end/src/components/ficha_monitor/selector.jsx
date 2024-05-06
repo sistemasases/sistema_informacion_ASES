@@ -3,12 +3,12 @@ import {Container, Row, Col} from "react-bootstrap";
 import Info_general from "./tabs/info_general"
 import Historico from "./tabs/historico"
 import Modal from 'react-bootstrap/Modal';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import {Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import { NavLink } from 'react-router-dom';
-import  {useEffect, componentDidUpdate} from 'react';
-import axios from 'axios';
+// import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+import { Button} from "react-bootstrap";
+// import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
+// import { NavLink } from 'react-router-dom';
+// import  {useEffect, componentDidUpdate} from 'react';
+// import axios from 'axios';
 
 
 const Selector = (props) =>{
