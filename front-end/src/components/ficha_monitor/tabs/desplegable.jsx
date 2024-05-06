@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState } from "react";
-import {Row, } from "react-bootstrap";
+import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 
 
 const Desplegable = ({item}) => {
