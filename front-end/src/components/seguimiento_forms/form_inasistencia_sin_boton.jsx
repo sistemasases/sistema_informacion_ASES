@@ -1,15 +1,29 @@
-import React,  { useState}  from 'react';
-import { Row, Col, Button, Modal} from "react-bootstrap";
+/**
+ * @file form_inasistencia_sin_boton.jsx.
+ * @version 1.0.0.
+ * @description Formulario de inasistencia sin botón de agregar.
+ * @author Componente Sistemas Ases.
+ * @contact sistemas.ases@correounivalle.edu.co.
+ */
+
+import React, { useState } from 'react';
+import { Row, Col, Button, Modal  } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Update_Inasistencia from '../../service/update_inasistencia';
 import Delete_inasistencia from '../../service/delete_inasistencia';
 import { CSVLink } from 'react-csv';
 import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
-
+/**
+ * Componente funcional que representa un formulario de inasistencia sin botón de agregar.
+ * @param {Object} props - Propiedades del componente.
+ * @returns {JSX.Element} Formulario de inasistencia.
+ */
 const Inasistencia = (props) =>{
 
-
+    /**
+     * Función para recargar la página.
+     */
     const recargarPagina = () => {
         
         if (props.recarga_ficha_estudiante) {
@@ -18,12 +32,9 @@ const Inasistencia = (props) =>{
         } else {
             props.updateDataUserSocioedu(form.id_estudiante);
         }
-
     };
 
-
-
-
+    // Estado local del formulario.
     const [form, set_form] = useState({
         id: props.item.id,
         fecha: props.item.fecha,
@@ -33,56 +44,76 @@ const Inasistencia = (props) =>{
         id_creador: props.item.id_creador,
         id_modificador: parseInt(desencriptarInt(sessionStorage.getItem("id_usuario"))),
         id_estudiante: props.item.id_estudiante,
-    })
-    const hora_creacion = new Date(props.item.creacion)
-    const hora_edicion = new Date(props.item.modificacion)
-    console.log(hora_creacion)
+    });
+
+    // Hora de creación y edición del formulario.
+    const hora_creacion = new Date(props.item.creacion);
+    const hora_edicion = new Date(props.item.modificacion);
+
+    /**
+     * Actualiza la información de la inasistencia.
+     */
     const set_info = (e) => {
         Update_Inasistencia.Update_inasistencia(form).then(res=>{
             if(res){
-                props.handleCloseIn()
-                recargarPagina()
+                props.handleCloseIn();
+                recargarPagina();
             } else {
-                window.alert("Hubo un error al momento de actualizar la inasistencia, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.")
+                window.alert("Hubo un error al momento de actualizar la inasistencia, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria.");
             }
-        })
-    }
+        });
+    };
 
+    /**
+     * Elimina la información de la inasistencia.
+     */
     const delete_info = (e) => {
         if(window.confirm("¿Está seguro que desea eliminar la inasistencia?")){
             Delete_inasistencia.Delete_inasistencia(form.id).then(res=>{
                 if(res){
-                    props.handleCloseIn()
-                    recargarPagina()
+                    props.handleCloseIn();
+                    recargarPagina();
                 } else {
-                    window.alert("Hubo un error al momento de eliminar la inasistencia.")
+                    window.alert("Hubo un error al momento de eliminar la inasistencia.");
                 }
-            })
+            });
         }
-    }
+    };
 
+    /**
+     * Maneja el cambio de los checkbox en el formulario.
+     * @param {Event} e - Evento de cambio en el checkbox.
+     */
     const handleFormChecks = (e) => {
         set_form({
             ...form,
             [e.target.name]: e.target.checked
-        })
+        });
+    };
 
-    }
-
+    /**
+     * Maneja el cambio en los campos del formulario.
+     * @param {Event} e - Evento de cambio en el input.
+     */
     const handleForm = (e) => {
         set_form({
             ...form,
             [e.target.name]: e.target.value
-        })
-    }
+        });
+    };
 
+    // Rol del usuario actual.
     const userRole = desencriptar(sessionStorage.getItem('rol'));
 
+    /**
+     * Maneja el cierre del modal.
+     */
     const handleChange = () => {
-        props.handleCloseIn()
-        props.handleModal()
-    }
+        props.handleCloseIn();
+        props.handleModal();
+    };
 
+    // Renderiza el formulario de inasistencia.
     return (
         
         <Modal {...props} backdrop="static">
@@ -112,7 +143,7 @@ const Inasistencia = (props) =>{
                 <br/> 
                 <Row>
                     <Col>
-                    <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional'||userRole === 'super_ases')} name="revisado_profesional" onChange={handleFormChecks}/>        
+                        <Form.Check type="checkbox" label="Revisado profesional" defaultChecked={props.item.revisado_profesional} disabled={!(userRole === 'profesional'||userRole === 'super_ases')} name="revisado_profesional" onChange={handleFormChecks}/>        
                     </Col>
                     <Col>
                         <Form.Check type="checkbox" label="Revisado practicante" defaultChecked={props.item.revisado_practicante} disabled={!(userRole === 'practicante' || userRole === 'profesional'|| userRole === 'super_ases')} name="revisado_practicante" onChange={handleFormChecks}/>        
@@ -148,7 +179,7 @@ const Inasistencia = (props) =>{
             </Button>
           </Modal.Footer>
         </Modal>
-    )
-}
+    );
+};
 
-export default Inasistencia 
+export default Inasistencia;

@@ -17,7 +17,7 @@ from modulo_instancia.models import semestre, cohorte
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual, riesgo_individual
 from modulo_usuario_rol.models import firma_tratamiento_datos
-from django.db.models import Q
+from django.db.models import Q, Subquery, OuterRef
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -33,6 +33,7 @@ from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import get_object_or_404
 from django.core import serializers
+
 
 """
 POR EL GRAN TAMAÑO DE ESTA VISTA SE DIVIDIÓ LA MISMA EN VARIAS PARTES
@@ -545,13 +546,12 @@ class estudiante_por_sede_viewsets(viewsets.ModelViewSet):
         #Obtener los programas asociados a la sede especificada
         programas_sede = programa.objects.filter(id_sede=pk)
         # Filtrar los estudiantes asociados a los programas de la sede
-        estudiantes_sede = estudiante.objects.filter(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede).distinct()
+        estudiantes_sede = estudiante.objects.filter(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede, estudiante_elegible = True).distinct()
         # Serializar los datos de los estudiantes en formato python
-        serialized_estudiantes = serializers.serialize('python', estudiantes_sede)
+        list_estudiantes = estudiante_serializer(estudiantes_sede, many=True)
         # Extraer los campos de los estudiantes serializados
-        list_estudiantes = [item['fields'] for item in serialized_estudiantes]
         # Devolver la lista de estudiantes como respuesta
-        return Response(list_estudiantes, status=status.HTTP_200_OK)
+        return Response(list_estudiantes.data, status=status.HTTP_200_OK)
     
 class estudiante_selected_viewsets(viewsets.ModelViewSet):
     """
@@ -585,17 +585,29 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         estudiantes_asignados = estudiante.objects.filter(asignacion__id_usuario=pk, asignacion__estado=True, asignacion__id_semestre=serializer_semestre.data['id']).distinct()
         # Obtener los programas asociados a la sede proporcionada en la solicitud
         programas_sede = programa.objects.filter(id_sede=request.data["id_sede"])
-        # Filtrar todos los estudiantes asociados a los programas de la sede
-        estudiantes_totales = estudiante.objects.filter(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede).distinct()
+        # Subconsulta para obtener las asignaciones en el semestre actual con estado True
+        asignaciones_semestre_actual_true = asignacion.objects.filter(
+            id_estudiante=OuterRef('pk'), 
+            id_semestre=serializer_semestre.data['id'], 
+            estado=True
+        )
+
+        # Consulta principal
+        estudiantes_totales = estudiante.objects.filter(
+            Q(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede) &
+            Q(estudiante_elegible=True)
+        ).exclude(
+            id__in=Subquery(asignaciones_semestre_actual_true.values('id_estudiante'))
+        ).distinct()
         # Filtrar los estudiantes no asignados para el semestre actual
-        estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
-        # Excluir los estudiantes no asignados de la lista total de estudiantes
-        estudiantes_totales = estudiantes_totales.exclude(id__in=estudiantes_no_asignados.values_list('id', flat=True))
+        # estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
+        # # Excluir los estudiantes no asignados de la lista total de estudiantes
+        # estudiantes_totales = estudiantes_totales.exclude(id__in=estudiantes_no_asignados.values_list('id', flat=True))
         # Serializar los datos de los estudiantes asignados y no asignados
-        list_estudiantes_selected = [estudiante_serializer(est).data for est in estudiantes_asignados]
-        list_estudiantes = [estudiante_serializer(est).data for est in estudiantes_totales]
+        list_estudiantes_selected = estudiante_serializer(estudiantes_asignados, many=True) 
+        list_estudiantes = estudiante_serializer(estudiantes_totales, many=True)
         # Consolidar los datos de los estudiantes seleccionados y no seleccionados
-        datos = [list_estudiantes_selected, list_estudiantes]
+        datos = [list_estudiantes_selected.data, list_estudiantes.data]
         # Devolver los datos como respuesta
         return Response(datos, status=status.HTTP_200_OK)
     
