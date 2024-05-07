@@ -2,7 +2,7 @@ from django.db import models
 from modulo_usuario_rol.models import estudiante
 
 class datos_prediccion (models.Model):
-    id_estudiante=models.ForeignKey( estudiante,on_delete=models.CASCADE,related_name='')
+    id_estudiante=models.ForeignKey( estudiante,on_delete=models.CASCADE,related_name='id_estudiante_in_datos_prediccion')
     cultura = models.CharField(max_length=200, default=None,null=True)
     lugar_adecuado_estudio =models.BooleanField(default=False, null=True)
     ocupacion = models.CharField(max_length=200, default=None,null=True)
