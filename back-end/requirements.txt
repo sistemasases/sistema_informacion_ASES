@@ -6,3 +6,5 @@ django-environ
 psycopg2-binary
 pandas
 mod_wsgi
+imblearn
+scikit-learn
