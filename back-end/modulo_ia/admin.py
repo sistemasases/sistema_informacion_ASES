@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from modulo_usuario_rol.models import datos_prediccion
+from modulo_ia.models import datos_prediccion
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
@@ -127,49 +127,5 @@ def seleccion_prediccion_modelos(X_train, y_train, X_test, y_test):
     # Seleccionar columnas relevantes para mostrar
     return df_test[['CALIFICACION_SEMESTRE', 'Probabilidad_Clase_No_Aprobar', 'Probabilidad_Clase_Aprobar', 'Prediccion', 'Mensaje']]
 
-
-
-# Modelo incial con mejor accuracy y area bajo la curva
-def modelo_entrenamiento_evaluacion(X_train, y_train, X_test, y_test):
-    # Configuración especificada de la red neuronal
-    topologia = (10,)
-    activacion = 'relu'
-    solver = 'sgd'
-    
-    # Creación y entrenamiento del modelo
-    model = MLPClassifier(hidden_layer_sizes=topologia, activation=activacion, solver=solver, random_state=123)
-    model.fit(X_train, y_train)
-    
-    # Evaluación del modelo
-    y_pred = model.predict(X_test)
-    accuracy = round(accuracy_score(y_test, y_pred), 4)
-    confusion = confusion_matrix(y_test, y_pred)
-    y_pred_proba = model.predict_proba(X_test)[:, 1]  # Asumimos que la clase positiva está en la columna 1
-    auc_score = roc_auc_score(y_test, y_pred_proba)
-
-    # Crear DataFrame con los resultados
-    resultados = {
-        "Topología": str(topologia),
-        "Función de activación": activacion,
-        "Solver": solver,
-        "Accuracy": accuracy,
-        "Matriz de confusión": confusion,
-        "AUC": auc_score
-    }
-    
-    # DataFrame con predicciones y probabilidades
-    df_test = pd.DataFrame(X_test)
-    df_test['Probabilidad_Clase_No_Aprobar'] = np.round(y_pred_proba, 3)
-    df_test['Probabilidad_Clase_Aprobar'] = np.round(1 - y_pred_proba, 3)
-    df_test['Predicción'] = y_pred
-    
-    # Mensaje basado en la probabilidad de aprobar
-    df_test['Mensaje'] = df_test['Probabilidad_Clase_Aprobar'].apply(
-        lambda x: "De acuerdo al resultado prueba diagnostica, te recomendamos asistir al cursillo de nivelación por 2 semanas, también asistir las monitorias del departamento de matemáticas."
-        if x < 0.5 else "De acuerdo al resultado prueba diagnostica, te recomendamos seguir estudiando y en caso que necesites asistir a las monitorias del departamento de matemáticas."
-    )
-    
-    # Seleccionar columnas relevantes para mostrar
-    return df_test[['CALIFICACION_SEMESTRE', 'Probabilidad_Clase_No_Aprobar', 'Probabilidad_Clase_Aprobar', 'Predicción', 'Mensaje']], resultados
 
 
