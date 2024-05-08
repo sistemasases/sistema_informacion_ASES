@@ -7,51 +7,46 @@
   * @date 28 de marzo de 2023
 */
 
-import axios from 'axios';
-import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Modal, Table, FormGroup} from "react-bootstrap";
-import Select from 'react-select';
-import All_Rols from '../../service/all_rols';
 import All_Users_Rols from '../../service/all_users_rol_old';
 import Create_User from '../../service/create_user';
 import Delete_User from '../../service/delete_user';
+import React, {useState, useEffect} from 'react';
 import user_rol from '../../service/user_rol';
+import All_Rols from '../../service/all_rols';
+import Select from 'react-select';
 import CryptoJS from 'crypto-js';
+import axios from 'axios';
 
 // Clave secreta para encriptar los datos
 const secretKey = process.env.REACT_APP_SECRET_KEY;
-
 // variable que guarda los roles disponibles en la BD.
 var datos_option_rol = [];
 // variable bandera para saber si ya se solicitaron los roles del back.
 var bandera_option_rol = true;
 
 const Semestre_sistemas_component = () =>{
-
-    // Función para desencriptar el token del usuario desde el sessionStorage
+    /**
+        * Función que desencripta el token del sessionstorage
+    */
     const decryptTokenFromSessionStorage = () => {
         const encryptedToken = sessionStorage.getItem('token');
         if (!encryptedToken) {
-          return null; // No hay token en sessionStorage
+            return null; // No hay token en sessionStorage
         }
-      
         // Desencriptar el token usando la clave secreta
         const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
         const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
-      
         return decryptedToken;
-      };
-      
+    };
     // constante para el headers del axios
     const config = {
         headers: {
               Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
     };
-
     //Manejar la disponibilidad del boton
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
     //Constante para guardar el estado actual de la tabla de usuario y el form del usuario a agregar.
     const [state,set_state] = useState({
         data: [],
@@ -64,12 +59,10 @@ const Semestre_sistemas_component = () =>{
             email: undefined,
         },
     })
-
     // Constante para saber si mostrar el modal para ingresar el nuevo usuario y sus respectivas funciones para cambiar el estado.
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
     /**
         * Manejador de eventos del input form para obtener los cambios a las variables.
         * @param {Event} e Evento del formulario.
@@ -83,7 +76,6 @@ const Semestre_sistemas_component = () =>{
             }
         })
     }
-    
     /**
         * Función asincrona para insertar un nuevo usuario en la tabla y crearlo en la BD con su respectivo usuario_rol.
     */
@@ -134,7 +126,7 @@ const Semestre_sistemas_component = () =>{
             window.confirm("Error: Inserte un nombre de usuario valido");
         }
     }
-
+    // Llena los roles y los usuarios rol para los selects
     useEffect(()=>{
         // Trae todos los roles y los guarda en la variable asignada.
         All_Rols.all_rols().then((res) => {
@@ -155,7 +147,6 @@ const Semestre_sistemas_component = () =>{
             })
         })
     },[]);
-
     /**
         * Manejador para emparejar el id del rol de los usuarios con el id del rol en el select.
         * @param {Number} rolId id del rol selecionado.
@@ -168,7 +159,6 @@ const Semestre_sistemas_component = () =>{
             }
         }
     }
-
     /**
         * Manejador para eliminar un usuario de la tabla y su respectivos datos en la BD.
         * @param {Event} e Evento del usuario de la tabla seleccionado para eliminar.
@@ -188,7 +178,6 @@ const Semestre_sistemas_component = () =>{
             set_state({...state, data: lista,});
         }
     }
-
     /**
         * Manejador para actualizar el rol un usuario de la tabla y su respectivos datos en la BD.
         * @param {Event} e Evento del usuario de la tabla seleccionado para eliminar.
@@ -218,7 +207,6 @@ const Semestre_sistemas_component = () =>{
             }
         }
         catch{
-
         }
     }
 

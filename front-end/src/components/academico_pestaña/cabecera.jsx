@@ -4,21 +4,17 @@ import Select from 'react-select'  ;
 
 
 const Cabecera = () =>{
-
     return (
-        
         <Container >
             <Row >
                 <Col xs={"12"} md={"8"} className="texto_titulo_bold">
-                    Reporte de estudiantes activos en SRA por semestre
+                    Reporte de estudiantes activos en SRAA por semestre
                 </Col>
                 <Col xs={"12"} md={"4"} className="texto_pequeño">
                     Seleccione la cohorte
                     <Select></Select>
                 </Col>
             </Row>
-
-
             <Row>
                 <Col>
                     <Row>

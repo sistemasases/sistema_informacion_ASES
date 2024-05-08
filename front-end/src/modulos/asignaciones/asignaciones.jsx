@@ -1,34 +1,39 @@
-import React, {useState, useEffect} from 'react';
-import Select from 'react-select';
-import Switch from 'react-switch';
-import axios from 'axios';
+/**
+  * @file asignaciones.jsx
+  * @version 1.0.0
+  * @description modulo para visualizar las asignaciones.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 28 de marzo de 2023
+*/
+
+import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../utilidades_seguridad/utilidades_seguridad';
 import Asignaciones_component from "../../components/asignaciones/asignaciones_component";
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
-import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
-import { FaRegChartBar, FaThList, FaBars } from "react-icons/fa";
-import { DropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../utilidades_seguridad/utilidades_seguridad';
+import React, {useState, useEffect} from 'react';
+import {Row, Col} from "react-bootstrap";
+import axios from 'axios';
+
 
 const Carga_masiva = () => {
-
+  // Constante para guardar el token
   const config = {
     headers: {
           Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
     }
   };
-
+  // Constante para obtener los permisos del usuario.
   const userRole = desencriptar(sessionStorage.getItem('permisos'));
-
+  // Constante para guardar la data.
   const [state, set_state] = useState({
     data1: [],
     data2: [],
     data3: [],
     data4: []
   });
-
+  // Constante para saber si está cargando la consultado
   const [isLoading, setIsLoading] = useState(true);
-
+  // Llamada al back
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/usuario_rol/profesional/`+desencriptarInt(sessionStorage.getItem('sede_id'))+"/", config)
       .then(response => {
@@ -73,10 +78,8 @@ const Carga_masiva = () => {
       .catch(error => {
         console.log(error);
       });
-
-
   }, []);
-
+  //Setea la info
   useEffect(() => {
     if (state.data1.length > 0 && state.data2.length > 0 && state.data3.length > 0 && state.data4.length > 0 && isLoading) {
       setIsLoading(false);
@@ -105,7 +108,7 @@ const Carga_masiva = () => {
           </Col>
         </Row>
     </Col> : <Acceso_denegado/>}</>
-    )
+  )
 }
 
 export default Carga_masiva 

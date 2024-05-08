@@ -1,12 +1,24 @@
+/**
+ * @file form_inasistencia.jsx
+ * @version 1.0.0.
+ * @description Formulario de inasistencia sin botón de agregar.
+ * @author Componente Sistemas Ases.
+ * @contact sistemas.ases@correounivalle.edu.co.
+ */
 import React, { useEffect, useState } from 'react';
-import { Modal, ModalHeader, ModalBody, Button, Col, Row } from "react-bootstrap";
+import { Modal, Button, Col, Row } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Inasistencia from '../../service/create_inasistencia';
 import { CSVLink } from 'react-csv';
-import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { desencriptarInt, desencriptar, encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
+/**
+ * Componente funcional que representa un formulario de inasistencia.
+ * @param {Object} props - Propiedades del componente.
+ * @returns {JSX.Element} Formulario de inasistencia.
+ */
 const Inasistencia = (props) => {
-    const id_estudiantecons = props.estudiante_seleccionado
+    // Estado local del formulario.
     const [state, set_state] = useState({
         fecha: null,
         observaciones: "",
@@ -14,36 +26,34 @@ const Inasistencia = (props) => {
         revisado_practicante: false,
         id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
         id_modificador: null,
-
     });
 
+    // ID del estudiante seleccionado.
+    const id_estudiantecons = props.estudiante_seleccionado;
 
-
+    /**
+     * Función para recargar la página.
+     */
     const recargarPagina = () => {
-        
-            // Cambiar la URL a la página con el ID del estudiante seleccionado
-            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
-
+        // Cambiar la URL a la página con el ID del estudiante seleccionado
+        sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${state.id_estudiante}`))
+        window.location.reload()
     };
 
-
     useEffect(() => {
+        // Actualiza el estado con el ID del estudiante seleccionado.
         set_state(prevState => ({
             ...prevState,
             id_estudiante: id_estudiantecons,
-        }))
-    },[state.fecha])
+        }));
+    },[state.fecha]);
 
-
-
+    /**
+     * Registra la información de la inasistencia.
+     */
     const set_info = async () => {
-
-        // Llamada a la función set_state para actualizar el estado
-        
-
-
-        // Llamada a la función Create_Inasistencia.create_inasistencia solo cuando se hace clic en el botón Registrar
         try {
+            // Llamada a la función Create_Inasistencia.create_inasistencia
             const res = await Create_Inasistencia.create_inasistencia(state);
             if (res) {
                 recargarPagina();
@@ -56,11 +66,10 @@ const Inasistencia = (props) => {
         }
     };
 
-    const handleChange = () => {
-        props.handleCloseIn();
-        props.handleModal();
-    };
-
+    /**
+     * Maneja el cambio en los campos del formulario.
+     * @param {Event} e - Evento de cambio en el input.
+     */
     const handleForm = (e) => {
         set_state({
             ...state,
@@ -68,8 +77,18 @@ const Inasistencia = (props) => {
         });
     };
 
+    // Rol del usuario actual.
     const userRole = desencriptar(sessionStorage.getItem('rol'));
 
+    /**
+     * Maneja el cierre del modal.
+     */
+    const handleChange = () => {
+        props.handleCloseIn();
+        props.handleModal();
+    };
+
+    // Renderiza el formulario de inasistencia.
     return (
         <Modal {...props} backdrop="static">
             <Modal.Header closeButton>

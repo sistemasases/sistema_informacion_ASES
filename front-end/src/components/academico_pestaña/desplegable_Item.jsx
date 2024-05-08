@@ -1,17 +1,34 @@
+/**
+  * @file desplegable_item.jsx
+  * @version 1.0.0
+  * @description @description Componente para mostrar elementos desplegables del módulo académico.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
+
 import React from 'react';
 import {useState } from "react";
 import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import Modal from 'react-bootstrap/Modal';
 
+/**
+ * Componente para mostrar elementos desplegables.
+ * @param {Object} props - Propiedades del componente.
+ * @param {Object} props.item - Elemento a mostrar.
+ * @returns {JSX.Element} Componente Desplegable_item.
+ */
 const Desplegable_item = ({item}) => {
-
+    // Estado para el control del despliegue
     const [open, setOpen] = useState(false)
 
+    // Estado y funciones para el control del modal
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    // Se renderiza el componente
     if(item.nombre){
         return (
             <Row className="periodo_activo_o_no">

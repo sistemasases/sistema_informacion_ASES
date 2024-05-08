@@ -1,34 +1,52 @@
+/**
+  * @file profesores.jsx
+  * @version 1.0.0
+  * @description @description Componente para mostrar información de profesores y sus cursos.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 import React from 'react';
 import {useState } from "react";
 import {Row, Col} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import {decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import {decryptTokenFromSessionStorage, encriptar} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
+/**
+ * Componente para mostrar información de profesores y sus cursos.
+ * @param {Object} props - Propiedades del componente.
+ * @param {Object} props.item - Información del estudiante y sus cursos.
+ * @returns {JSX.Element} Componente Profesores.
+ */
 const Profesores = ({item}) => {
-
+    // Configuración para las llamadas a la API
     const config = {
         headers: {
+            // Obtención del token de sesión
             Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
       };
 
+    // Estado para controlar el filtro y los cursos del estudiante
     const [state,set_state] = useState({
         cursos_profesor : [],
         filtro : '',
 
       })
 
+      //Función para cambiar el valor del filtor
     const cambiar_dato = (e) =>{
         set_state({
               ...state,
               [e.target.name] : e.target.value
         })
   }
+  
+  // Estado para el control del despliegue
+  const [open, setOpen] = useState(false)
 
-    const [open, setOpen] = useState(false)
-
-
+  //Traer los cursos del profesor desde la API
     const traer_cursos = async (index)=>{
         try{
           const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/traer_cursos_del_profesor/`+index+"/", config);
@@ -41,6 +59,18 @@ const Profesores = ({item}) => {
         }
       }
 
+    /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        sessionStorage.setItem("path", encriptar(e));
+        window.location.reload();
+    };
+
+
+    //Renderizado  
     if(item.profesores) {
         return (
             <Row>
@@ -60,7 +90,7 @@ const Profesores = ({item}) => {
                     <Row>
                         <Col className="contenido_fichas_academico2">
                         { item.profesores.filter((item)=>{
-                            console.log(state.filtro.toLowerCase())
+                            //console.log(state.filtro.toLowerCase())
                                 return state.filtro.toLowerCase() === '' ? item 
                                 : 
                                 item.first_name.toLowerCase().includes(state.filtro.toLowerCase()) ||  
@@ -102,15 +132,12 @@ const Profesores = ({item}) => {
             <Row >
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_text_academico_hover4" onClick={() => { setOpen(!open) }}>
-                        <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`} 
+                        <a onClick={() => cambiar_ruta(`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`)} 
                             rel="noopener noreferrer" className="link_text_academico_hover4">
                             {item.nombre} -- {item.cod_materia} -- {item.franja}
                         </a>
                     </Row>
                     <Row className="content_academico">
-                        {/* <Col className="contenido_fichas_academico3">
-                            {item.estudiantes.map((child, index) => <Profesores key={index} item={child}/>) }
-                        </Col> */}
                     </Row>
                 </Col>
             </Row>
@@ -122,7 +149,7 @@ const Profesores = ({item}) => {
                 <Row className="link_academico1_sin_borde">
                     <Col className="link_text_academico1_sin_borde" >
                         <Row className="link_text_academico_hover4">
-                            <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                            <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                                 {item.estudiante} {item.apellido} - {item.cod_univalle}  -- {item.username}
                             </Link>
                         </Row>

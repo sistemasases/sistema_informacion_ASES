@@ -1,3 +1,11 @@
+/**
+  * @file estudiantes.jsx
+  * @version 1.0.0
+  * @description @description Componente para mostrar información de estudiantes y sus cursos.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 import React from 'react';
 import { useState } from "react";
 import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
@@ -5,17 +13,24 @@ import { FaRegChartBar, FaThList, FaGraduationCap, FaUser } from "react-icons/fa
 import Modal from 'react-bootstrap/Modal';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
-
+/**
+ * Componente para mostrar información de estudiantes y sus cursos.
+ * @param {Object} props - Propiedades del componente.
+ * @param {Object} props.item - Información del estudiante y sus cursos.
+ * @returns {JSX.Element} Componente Estudiantes.
+ */
 const Estudiantes = ({ item }) => {
-
+    // Configuración para las llamadas a la API
     const config = {
         headers: {
+            // Obtención del token de sesión 
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
         }
     };
 
-
+    // Estado para controlar el filtro y los cursos del estudiante
     const [state, set_state] = useState({
 
         filtro: '',
@@ -23,10 +38,10 @@ const Estudiantes = ({ item }) => {
 
     })
 
-
+    // Estado para el control del despliegue
     const [open, setOpen] = useState(false)
 
-
+    //Traer los cursos del estudiante desde la API
     const traer_cursos_del_estudiante = async (index) => {
         try {
             const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/traer_cursos_del_estudiante/` + index + "/", config);
@@ -39,6 +54,7 @@ const Estudiantes = ({ item }) => {
         }
     }
 
+    // Función para cambiar el valor del filtro
     const cambiar_dato = (e) => {
         set_state({
             ...state,
@@ -46,6 +62,17 @@ const Estudiantes = ({ item }) => {
         })
     }
 
+    /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        sessionStorage.setItem("path", encriptar(e));
+        window.location.reload();
+    };
+    
+    // Renderizado
     if (item.estudiantes) {
         return (
             <Row>
@@ -65,7 +92,7 @@ const Estudiantes = ({ item }) => {
                         <Col className="contenido_fichas_academico2">
 
                             {item.estudiantes.filter((item) => {
-                                console.log(state.filtro.toLowerCase())
+                                //console.log(state.filtro.toLowerCase())
                                 return state.filtro.toLowerCase() === '' ? item
                                     :
                                     item.nombre.toLowerCase().includes(state.filtro.toLowerCase()) ||
@@ -87,7 +114,7 @@ const Estudiantes = ({ item }) => {
             <Row >
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_text_academico_hover4" onClick={() => { setOpen(!open) }}>
-                        <a href={`/calificador/${encodeURIComponent(item.id_curso)}/${encodeURIComponent(item.curso_data.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`}
+                        <a onClick={() => cambiar_ruta(`/calificador/${encodeURIComponent(item.id_curso)}/${encodeURIComponent(item.curso_data.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`)}
                             rel="noopener noreferrer" className="link_text_academico_hover4">
                             {item.curso_data.cod_materia}--{item.curso_data.franja} : {item.curso_data.nombre}
                         </a>
@@ -99,24 +126,11 @@ const Estudiantes = ({ item }) => {
     else {
         return (
             <Row>
-                {/*
-            <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
-                <Row className="link_academico1_sin_borde">
-                    <Col className="link_text_academico1_sin_borde" >
-                        <Row className="link_text_academico_hover4">
-                            <Link to={`/ficha_estudiante/${item.id}`} className="link_text_academico_hover4">
-                                {item.nombre} {item.apellido} - {item.cod_univalle}
-                            </Link>
-                        </Row>
-                    </Col>
-                </Row>
-            </Col>
-        */}
                 <Col className={open ? "fichas_academico3 open" : "fichas_academico3"}>
                     <Row className="link_academico1" onClick={() => { setOpen(!open); traer_cursos_del_estudiante(item.id) }}>
                         <Col className="link_text_academico1" >
                             <Row className="link_text_academico_hover3">
-                                <a><Link to={`/ficha_estudiante/${item.id}`}>Ficha del estudiante </Link> : {item.nombre} {item.apellido} - {item.cod_univalle}</a>
+                                <a><Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)}>Ficha del estudiante </Link> : {item.nombre} {item.apellido} - {item.cod_univalle}</a>
                             </Row>
                         </Col>
                     </Row>

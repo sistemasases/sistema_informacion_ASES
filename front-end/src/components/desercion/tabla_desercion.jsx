@@ -1,3 +1,11 @@
+/**
+  * @file tabla_desercion.jsx
+  * @version 1.0.0
+  * @description Componente que muestra la tabla de reporte de deserción estudiantil.
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 import React, { useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Container, Row } from 'react-bootstrap';
@@ -9,10 +17,17 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
+/**
+ * Componente que muestra una tabla de deserción estudiantil.
+ * @returns {JSX.Element} Componente Tabla_desercion.
+ */
 const Tabla_desercion = () => {
+  // Obtención del token de sesión 
   const config = {
     Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
   };
+
+  // Estado del componente
   const [state, set_state] = useState({
     periodo: '',
     usuario: '',
@@ -25,6 +40,11 @@ const Tabla_desercion = () => {
 
   const [records, setRecords] = useState([]);
 
+  /**
+  * Función para actualizar la cohorte seleccionada.
+  * @param {Int} name
+  * @returns {void}
+  */
   function cohorte_seleccion(name) {
     set_state({
       ...state,
@@ -32,6 +52,7 @@ const Tabla_desercion = () => {
     });
   }
 
+  // Obtener información de la cohorte seleccionada
   useEffect(() => {
     axios({
       url: `${process.env.REACT_APP_API_URL}/usuario_rol/cohorte_estudiante_info/${state.id_cohorte}/`,
@@ -49,7 +70,7 @@ const Tabla_desercion = () => {
         console.log('Error:', err);
       });
   }, [state.id_cohorte]);
-
+  // Generar columnas para cada período académico
   const columns = useMemo(() => {
     const existingColumnNames = [];
 
@@ -82,6 +103,11 @@ const Tabla_desercion = () => {
     ];
   }, [records]);
 
+  /**
+   * Genera un array de periodos para la tabla.
+   *
+   * @returns {Array}.
+   */
   function generatePeriodColumns() {
     const periods = getDistinctPeriods();
 
@@ -94,6 +120,11 @@ const Tabla_desercion = () => {
     }));
   }
 
+  /**
+   * Obtiene los periodos distintos de los registros.
+   *
+   * @returns {Array} Un array con los periodos distintos.
+   */
   function getDistinctPeriods() {
     const periods = new Set();
 
@@ -106,6 +137,12 @@ const Tabla_desercion = () => {
     return Array.from(periods);
   }
 
+  /**
+   * Obtiene el número de programas distintos en una fila.
+   *
+   * @param {Object} row - La fila de datos.
+   * @returns {number} El número de programas distintos.
+   */
   function getDistinctProgramsCount(row) {
     const programs = new Set();
 
@@ -116,6 +153,13 @@ const Tabla_desercion = () => {
     return Array.from(programs).length;
   }
 
+  /**
+   * Renderiza las celdas de período para una fila específica.
+   *
+   * @param {Object} row - La fila de datos.
+   * @param {number} idSemestre - El ID del semestre.
+   * @returns {JSX.Element|null} El elemento JSX que representa las celdas de período o null si no hay períodos.
+   */
   function renderPeriodCell(row, idSemestre) {
     const periods = row.periodos.filter((p) => p.id_Semestre === idSemestre);
 
@@ -138,6 +182,12 @@ const Tabla_desercion = () => {
     return null;
   }
 
+  /**
+   * Renderiza la etiqueta correspondiente al estado dado.
+   *
+   * @param {number} estado - El estado para el cual se desea obtener la etiqueta.
+   * @returns {string} La etiqueta correspondiente al estado.
+   */
   function renderEstadoLabel(estado) {
     switch (estado) {
       case 1:
@@ -152,6 +202,21 @@ const Tabla_desercion = () => {
   }
 
   // Conteo total por cada columna de semestre
+  /**
+   * Contador de semestres.
+   * 
+   * @typedef {Object} SemestreCount
+   * @property {number} total - El total de registros en el semestre.
+   * @property {number} inactivo - El número de registros inactivos en el semestre.
+   * @property {number} activo - El número de registros activos en el semestre.
+   * @property {number} egresado - El número de registros egresados en el semestre.
+   */
+
+  /**
+   * Calcula el contador de semestres.
+   * 
+   * @returns {SemestreCount} El contador de semestres.
+   */
   const semestreCount = useMemo(() => {
     const semestreCounts = {};
 

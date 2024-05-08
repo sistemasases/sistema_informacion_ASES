@@ -1,3 +1,11 @@
+/**
+  * @file calificador.jsx
+  * @version 1.0.0
+  * @description Componente para la vista del calificador de un curso
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import Tabla_de_notas from './tabla_de_notas';
@@ -5,13 +13,19 @@ import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import { decryptTokenFromSessionStorage, desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx'
 
+/**
+ * @description Componente que muestra el calificador de un curso para ingresar calificaciones de los estudiantes matriculados.
+ * @returns {JSX.Element}
+ */
 const Cabecera = () => {
+  // Configuración para las llamadas a la API
   const config = {
     headers: {
+      // Obtención del token de sesión 
       Authorization: 'Bearer ' + decryptTokenFromSessionStorage(), 
     },
   };
-
+  // Estado para almacenar los datos del curso y los alumnos del profesor
   const [state, set_state] = useState({
     curso_datos_generales: [],
     datos_del_curso: [],
@@ -22,26 +36,30 @@ const Cabecera = () => {
     profesores_de_la_franja: [],
   });
 
+  // Estado para controlar la visibilidad del modal de agregar item
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  // Estado para controlar la visibilidad del modal de editar item
   const [editShow, setEditShow] = useState(false);
   const handleEditClose = () => setEditShow(false);
 
+  // Estados para almacenar información relacionada con los items y su edición
   const [itemName, setItemName] = useState('');
   const [isPartial, setIsPartial] = useState(false);
   const [flag_de_actualizacion, setFlag_de_actualizacion] = useState(false);
-
   const [editItemName, setEditItemName] = useState('');
   const [editIsPartial, setEditIsPartial] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
 
+  // Estados para almacenar información del curso y el profesor
   const [profesor, setProfesor] = useState('');
   const [curso, setCurso] = useState('');
   const [cod, setCod] = useState('');
   const [franja, setFranja] = useState('');
 
+  // Estados para almacenar información sobre los alumnos del profesor y el curso
   const [alumnos_del_profesor, setAlumnos_del_profesor] = useState([]);
   const [curso_datos_generales, setCurso_datos_generales] = useState([]);
   const [datos_del_curso, setDatos_del_curso] = useState([]);
@@ -49,13 +67,14 @@ const Cabecera = () => {
 
   const [info_materia, setInfo_materia] = useState([]);
 
+  // Efecto para obtener los parámetros del URL y establecer los estados correspondientes
   useEffect(() => {
-    const currentUrl = window.location.href;
+    const currentUrl = desencriptar(sessionStorage.getItem('path'));
     const urlParts = currentUrl.split('/');
-    const cursoParam = urlParts[4]; // Obtiene el valor del curso
-    const profesorParam = urlParts[5]; // Obtiene el valor del profesor
-    const codParam = urlParts[6]; // Obtiene el valor del curso
-    const franjaParam = urlParts[7]; // Obtiene el valor del curso
+    const cursoParam = urlParts[2]; // Obtiene el valor del curso
+    const profesorParam = urlParts[3]; // Obtiene el valor del profesor
+    const codParam = urlParts[4]; // Obtiene el valor del curso
+    const franjaParam = urlParts[5]; // Obtiene el valor del curso
 
     setProfesor(profesorParam);
     setCurso(cursoParam);
@@ -63,6 +82,7 @@ const Cabecera = () => {
     setFranja(franjaParam);
   }, []);
 
+  // Efecto para obtener los datos del curso y los alumnos
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -113,7 +133,7 @@ const Cabecera = () => {
 
         setCurso_datos_generales(response.data);
 
-        console.log('Datos del curso capturados correctamente');
+        //console.log('Datos del curso capturados correctamente');
       } catch (error) {
         console.log('No se pudo obtener el dato del curso');
       }
@@ -127,6 +147,7 @@ const Cabecera = () => {
     }
   }, [profesor, curso, flag_de_actualizacion]);
 
+  // Función para agregar un nuevo ítem al curso
   const agregar_item = async () => {
     const semestreActual = curso_datos_generales['id_semestre'];
 
@@ -145,15 +166,14 @@ const Cabecera = () => {
         config
       );
 
-      // Aquí puedes realizar alguna acción adicional con la respuesta del backend si lo necesitas.
     const newItemId = response.data.id; // Obtener el ID del nuevo item
 
-      // Crear nuevas notas para cada estudiante del curso con el ID del nuevo item
+    // Crear nuevas notas para cada estudiante del curso con el ID del nuevo item
       const estudiantesCurso = alumnos_del_profesor.map((estudiante) => estudiante.id);
       for (const estudianteId of estudiantesCurso) {
         await axios.post(
           `${process.env.REACT_APP_API_URL}/academico/crear_nota/`,
-          { id_item: newItemId, id_estudiante: estudianteId, calificacion: 0 }, // Puedes poner 0 o dejarlo vacío según sea necesario
+          { id_item: newItemId, id_estudiante: estudianteId, calificacion: 0 },
           config
         );
       }
@@ -173,7 +193,6 @@ const Cabecera = () => {
   };
 
   // Función para editar el ítem
-  // Función para editar el ítem
   const handleEditItem = async () => {
     const semestreActual = curso_datos_generales['id_semestre'];
   
@@ -192,8 +211,6 @@ const Cabecera = () => {
         data,
         config
       );
-  
-      // Aquí puedes realizar alguna acción adicional después de editar el ítem si es necesario.
       setFlag_de_actualizacion(!flag_de_actualizacion);
       setEditingItem(null); // Limpiar el objeto de edición
       setEditShow(false); // Cerrar el modal de edición
@@ -201,7 +218,7 @@ const Cabecera = () => {
       console.log('Error al editar el ítem' + error);
     }
 };
-
+// Función para borrar el ítem seleccionado
 const handleDeleteItem = async () => {
   try {
     // Crear una lista de notas con el id_item igual al id del item que queremos borrar
@@ -223,10 +240,10 @@ const handleDeleteItem = async () => {
       config
     );
 
-    // Actualizamos el estado para refrescar la lista de ítems
+    // Se actualiza el estado para refrescar la lista de ítems
     setFlag_de_actualizacion(!flag_de_actualizacion);
 
-    // Cerramos el modal de edición
+    // Se cierra el modal de edición
     setEditingItem(null);
     setEditShow(false);
   } catch (error) {

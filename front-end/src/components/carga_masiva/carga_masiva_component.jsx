@@ -1,33 +1,49 @@
+/**
+  * @file carga_masiva_component.jsx
+  * @version 1.0.0
+  * @description Componente para la vista de carga masiva.
+  * @author Cesar Becerra
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
 import React, {useState} from 'react';
 import axios from 'axios';
-import Select from 'react-select'  ;
-import Switch from 'react-switch'
+// import Select from 'react-select'  ;
+// import Switch from 'react-switch'
 import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import carga_masiva_service from '../../service/carga_masiva';
 import DataTable, {createTheme} from 'react-data-table-component';
 import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
-
+/**
+ * Carga_masiva_component
+ * Componente para carga masiva de datos (con archivos csv).
+ * @returns {JSX.Element} Componente Carga_masiva_component.
+ */
 const Carga_masiva_component = () =>{
-
+  // Configuración para la autorización de la API
   const config = {
-     
+    //Token de sesión
     Authorization: 'Bearer ' +  decryptTokenFromSessionStorage()
-   
   };
 
   const[switchChecked, setChecked] = useState(false);
   const url_carga = `${process.env.REACT_APP_API_URL}/carga_masiva/carga/`
   
-
+  // Estados para almacenar la opción seleccionada, mensajes y respuesta de carga
   const [state,set_state] = useState({
     option : 'Estudiante',
     mensaje : [],
     respuesta : 'Cargando...',
   })
+  // Estado para almacenar el archivo seleccionado
   const [archivo,set_archivo] = useState(null);
+
+  // Estado para controlar la visibilidad del modal de estado de carga
   const [show, setShow] = useState(false);
+
+  // Columnas para la tabla de mensajes de carga
   const columnas =[
     {
       name: 'DATO',
@@ -42,35 +58,38 @@ const Carga_masiva_component = () =>{
     },
   ]
 
+  // Manejador para el cambio de archivo seleccionado
   const handle_file = (e) => {
-
     set_archivo(e.target.files[0])
   }
-  const handle_options = (e) => {
 
+  // Manejador para el cambio de opción seleccionada
+  const handle_options = (e) => {
     set_state({
       ...state,
       [e.target.name] : [e.target.value]
     })
   }
+
+  // Función para subir el archivo seleccionado
   const handle_upload=(e)=> {
     let option = [state.option];
     let formData = new FormData();
 
   
-    //Adding files to the formdata
+    // Agregar el archivo al formData
     formData.append("tipo_de_carga", option);
     formData.append("FILES", archivo);
 
     axios({
-      // Endpoint to send files
+      // Endpoint para enviar archivos
       url: url_carga,
       method: "POST",
       headers: config,
       data: formData,
     })
     .then((res)=>{
-      console.log(res)
+      //console.log(res)
       set_state({
         ...state,
         mensaje : res.data,
@@ -85,6 +104,7 @@ const Carga_masiva_component = () =>{
     setShow(true)
 
   }
+  // Función para cerrar el modal de estado de carga
   const set_info = (e) => {
     setShow(false)
     set_state({
@@ -92,8 +112,11 @@ const Carga_masiva_component = () =>{
       respuesta : 'Cargando...',
     })
   }
+
+  // Función para cerrar el modal
   const handleClose = () => setShow(false);
 
+  //Renderizar el componente
   return (
         <Container className="mi-clase-background">
 
@@ -104,6 +127,7 @@ const Carga_masiva_component = () =>{
               <Col sm={9}>
                 <Form.Select name= "option" onChange={handle_options} >
                   <option value="Estudiante">Estudiante</option>
+                  <option value="Activar_estudiante">Activar estudiante</option>
                   <option value="Programa_estudiante">Programa estudiante</option>
                   <option value="Estudiante_Cohorte">Cohorte estudiante</option>
                   <option value="Usuario">Usuario</option>
@@ -160,8 +184,3 @@ const Carga_masiva_component = () =>{
 }
 
 export default Carga_masiva_component
-
-
-  
-  
-  

@@ -1,30 +1,40 @@
+/**
+ * @file form_seguimiento_individual_sin_boton.jsx
+ * @version 1.0.0.
+ * @description Formulario de inasistencia sin botón de agregar.
+ * @author Componente Sistemas Ases.
+ * @contact sistemas.ases@correounivalle.edu.co.
+ */
 import React, {useEffect, useState} from 'react';
-import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
+import { Row, Col, Button, Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Update_seguimiento from '../../service/update_seguimiento';
 import Delete_seguimiento from '../../service/delete_seguimiento';
 import { CSVLink } from 'react-csv';
-import { desencriptarInt, desencriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
+import { desencriptarInt, desencriptar, encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 
 const Seguimiento_individual = (props) =>{
-       
+     /**
+     * Función para recargar la página.
+     */   
 
     const recargarPagina = () => {
         
         if (props.recarga_ficha_estudiante) {
             // Cambiar la URL a la página con el ID del estudiante seleccionado
-            window.location.href = `/ficha_estudiante/${state.id_estudiante}`;
+            sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${form.id_estudiante}`))
+            window.location.reload()
         } else {
             props.updateDataUserSocioedu(form.id_estudiante);
         }
 
     };
 
-
-
-
+    /**
+     * Estado local del formulario.
+     */
     const [form, set_form] = useState({
         id: props.item.id,
         fecha: props.item.fecha,
@@ -92,8 +102,8 @@ const Seguimiento_individual = (props) =>{
         id_estudiante: props.item.id_estudiante
     })
 
-    const hora_creacion = new Date(props.item.creacion)
-    const hora_edicion = new Date(props.item.modificacion)
+    const hora_creacion = new Date(props.item.creacion) // Variable para almacenar la hora de creación del formulario.
+    const hora_edicion = new Date(props.item.modificacion)// Variable para almacenar la hora de edición del formulario.
     
     const verificador_datos_basicos = () => {
         if(!!form.fecha){
@@ -125,12 +135,7 @@ const Seguimiento_individual = (props) =>{
     }
     const verificador_tematicas = () => {
         if(!!form.individual || !!form.familiar || !!form.academico || !!form.economico || !!form.vida_universitaria_ciudad){
-            if(state.objetivos.length < 5000 && state.observaciones.length < 5000 && state.individual.length < 5000 && state.familiar.length < 5000  && state.academico.length < 5000  && state.economico.length < 5000  && state.vida_universitaria_ciudad.length < 5000 ){
-                verificador_individual()
-            }
-            else{
-                window.confirm("Recuerda que el límite máximo de caracteres, por cuadro de texto, es de 5000.")
-            }
+            verificador_individual()
         }
         else{
             window.confirm("Debes diligenciar al menos una dimesión, por favor verifica estos campos.")
@@ -294,7 +299,7 @@ const Seguimiento_individual = (props) =>{
 
     }
     const handleForm = (e) => {
-        console.log(e.target.checked)
+        //console.log(e.target.checked)
         if(e.target.name === "riesgo_individual_bajo"){
             if(e.target.checked === true){
                 set_form({

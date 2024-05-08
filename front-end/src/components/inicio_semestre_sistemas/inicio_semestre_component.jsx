@@ -7,50 +7,44 @@
   * @date 28 de marzo de 2023
 */
 
-import React, {useState, useEffect} from 'react';
 import {Container, Row, Button, Col, Alert, Form} from "react-bootstrap";
-import Select from 'react-select';
-import { useNavigate } from 'react-router-dom';
 import Inicio_semestre_service from '../../service/inicio_semestre';
 import All_sede_service from '../../service/all_sede';
+import React, {useState, useEffect} from 'react';
+import Select from 'react-select';
 import CryptoJS from 'crypto-js';
+import { encriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 
-//Clave secreta para desencriptar el token
+
+// Clave secreta para desencriptar el token
 const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 const Inicio_semestre_component = () =>{
-
+    /**
+        * Función que desencripta el token del sessionstorage
+    */
     const decryptTokenFromSessionStorage = () => {
         const encryptedToken = sessionStorage.getItem('token');
         if (!encryptedToken) {
-          return null; // No hay token en sessionStorage
+            return null; // No hay token en sessionStorage
         }
-      
         // Desencriptar el token usando la clave secreta
         const bytes = CryptoJS.AES.decrypt(encryptedToken, secretKey);
         const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
-      
         return decryptedToken;
-      };
-      
-    // Config para el fetch
+    };
+    // Config para el el header con el token del usuario
     const config = {
         headers: {
             Authorization: 'Bearer ' + decryptTokenFromSessionStorage() 
         }
     };
-
-    //Constante y variable que se usaran para el select
+    // Constante y variable que se usaran para el select
     const opciones = [];
     var bandera_option = true;
-
-    //Hook que se usara para el redirecionamiento
-    const navigate = useNavigate();
-
-    //Estado que se usara para extraer todas las sedes
+    // Estado que se usara para extraer todas las sedes
     const [state,set_state] = useState({tabs: [],})
-
-    //Estados que se usaran para activar o desactivar parte de la vista
+    // Estados que se usaran para activar o desactivar parte de la vista
     const [isSelected, setIsSelected] = useState(false);
     const [activated, setActivated] = useState({
         isDisabled: false,
@@ -58,8 +52,7 @@ const Inicio_semestre_component = () =>{
         isWarning: false,
         mensaje: "",
     });
-
-    //Estado que se usara para los diferentes atributos del semestre
+    // Estado que se usara para los diferentes atributos del semestre
     const [semestre, setSemestre] = useState({
         idSede: 0,
         nombreSede: '',
@@ -67,12 +60,10 @@ const Inicio_semestre_component = () =>{
         fecha_inicio: '',
         fecha_fin: '',
     });
-
-    //variables para las fechas
+    // Variables para las fechas
     var date_inicio = new Date();
     var date_fin = new Date();
     date_fin.setMonth(date_fin.getMonth() + 6);
-
     //Conexion con el back para extraer todas las sedes
     useEffect(()=>{
         All_sede_service.all_sede().then((res) => {
@@ -82,7 +73,6 @@ const Inicio_semestre_component = () =>{
             })
         })
     },[]);
-
     /**
         * Prop que toma las sedes y las transforma en opciones para el select
     */
@@ -95,7 +85,15 @@ const Inicio_semestre_component = () =>{
             bandera_option = false;
         }
     }
-
+    /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        sessionStorage.setItem("path", encriptar(e));
+        window.location.reload();
+    };
     /**
         * Manejador de los diferentes inputs
     */
@@ -104,7 +102,7 @@ const Inicio_semestre_component = () =>{
             if(!(!semestre.fecha_inicio || semestre.fecha_inicio === '') && (dateToInt(formatDate(date_inicio)) <= dateToInt(semestre.fecha_inicio))){
                 if(!(!semestre.fecha_fin || semestre.fecha_fin === '') && (dateToInt(semestre.fecha_inicio) < dateToInt(semestre.fecha_fin))){
                     Inicio_semestre_service.inicio_semestre(semestre.idSede, semestre.nombreSemestre, semestre.fecha_inicio, semestre.fecha_fin);
-                    navigate('/crear_semestre_sistemas');
+                    cambiar_ruta('/crear_semestre_sistemas');
                 } else {
                     setActivated({
                         ...activated,
@@ -127,7 +125,6 @@ const Inicio_semestre_component = () =>{
             })
         }
     }
-
     /**
         * Manejador de eventos del input form para obtener los cambios de las variables.
         * @param {Event} e Evento del formulario.
@@ -138,7 +135,6 @@ const Inicio_semestre_component = () =>{
             [e.target.name]: e.target.value,
         });
     }
-
     /**
         * Función para agregar un cero delante de un número si es menor que 10.
         * @param {number} int - Número a formatear.
@@ -151,7 +147,6 @@ const Inicio_semestre_component = () =>{
         }
         return result
     }
-
     /**
         * Función que formatea una fecha en el formato 'AAAA-MM-DD'.
         * @param {Date} date Fecha a formatear.
@@ -164,7 +159,6 @@ const Inicio_semestre_component = () =>{
             digitos(date.getDate()),
         ].join('-');
       }
-
     /**
         * Función que convierte una fecha en formato de cadena 'AAAA-MM-DD' a un entero.
         * @param {String} date Fecha en formato de cadena 'AAAA-MM-DD'.
@@ -175,13 +169,11 @@ const Inicio_semestre_component = () =>{
         const fechaint = parseInt(fecha[0] + fecha[1] + fecha[2])
         return fechaint;
     }
-
     /**
         * Activa las vistas una vez se haya seleccionado algo en el select y actualiza los valores a mostrar.
         * @param {Number} e Id de la sede selecionada.
     */
     const handleActivateButton = async (e) =>{
-
         //codigo para la obtencion del nombre del semestre y la fecha de finalizacion del semestre anterior
         var nombre_nuevo = '';
         var fecha = '';
@@ -200,7 +192,6 @@ const Inicio_semestre_component = () =>{
                 nombre_nuevo = (parseInt(nombre_semestre[0])+1).toString() + '-A';
             }
         }
-
         //actualizacion de los datos del semestre
         setSemestre({
             ...semestre,
@@ -210,7 +201,6 @@ const Inicio_semestre_component = () =>{
             fecha_inicio: formatDate(date_inicio),
             fecha_fin: formatDate(date_fin)
         });
-
         //Activa o desativa las vistas
         setIsSelected(true);
         if(fecha < date_inicio){
@@ -240,7 +230,7 @@ const Inicio_semestre_component = () =>{
                     <p>¿Desea continuar con la creación del semestre?</p>
                     <Button variant="secondary" onClick={() => {setActivated({...activated, isError: false,}); setIsSelected(false);}}>Cancelar</Button>
                     {'  '}
-                    <Button variant="primary" onClick={() => navigate('/crear_semestre_sistemas')}>Crear Semestre</Button>
+                    <Button variant="primary" onClick={() => cambiar_ruta('/crear_semestre_sistemas')}>Crear Semestre</Button>
                 </Alert>
             </Row>
             <Row className="rowJustFlex" hidden={!activated.isDisabled}>

@@ -1,19 +1,33 @@
-import React, { useMemo, useState } from 'react';
-import { Container, Row, Col, Dropdown, Button, Form } from "react-bootstrap";
+/**
+  * @file tabla_de_notas.jsx
+  * @version 1.0.0
+  * @description Componente para desplegar mostrar la tabla de notas.
+  * @param {Object} item - Objeto que representa un item calificable.
+  * @param {Array} lista_parciales - Lista de IDs de parciales.
+  * @returns {JSX.Element}
+  * @author Componente Sistemas ASES
+  * @contact sistemas.ases@correounivalle.edu.co
+  * @date 13 de febrero del 2024
+*/
+import React, {  useState } from 'react';
+import { Row, Col, Form } from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
-import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt, encriptar} from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
-
+    // Configuración para la autorización de la API
     const config = {
         headers: {
+            //Token de Sesión
             Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
         }
     };
 
+    // Estado para controlar la apertura del desplegable
     const [open, setOpen] = useState(false)
 
+    // Estado para manejar los datos del componente
     const [state, set_state] = useState({
         cursos_de_la_facultad: [],
         franjas_de_curso: [],
@@ -31,7 +45,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
         return promedio.toFixed(2);
     }
 
-
+    // Función para calcular el promedio de parciales
     const calcularPromedio_parciales = (notas) => {
         if (!notas || notas.length === 0) return 0;
 
@@ -44,7 +58,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
     };
 
 
-    // Función para obtener el color del fondo del campo de promedio
+    // Función para obtener el color del fondo del campo de promedio (red: alto, orange: medio, green:bajo)
     const getPromedioColor = (promedio) => {
         if (promedio < 3.0) {
             return "red";
@@ -66,22 +80,30 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
         try {
             const notaId = item.notas[notaIndex].id; // Obtener el ID de la nota que se está actualizando
             const response = await axios.put(
-                `${process.env.REACT_APP_API_URL}/academico/crear_nota/${notaId}/`, // Reemplaza esta URL con la ruta correcta para actualizar la nota
+                `${process.env.REACT_APP_API_URL}/academico/crear_nota/${notaId}/`,
                 { calificacion: nuevoValor }, // Datos a enviar en el cuerpo de la solicitud (nueva calificación)
                 config
             );
         } catch (error) {
             console.log('Error al actualizar la nota:', error);
-            // En caso de error, se puede mostrar un mensaje de error en la interfaz o realizar otras acciones necesarias.
         }
+    };
+
+    /**
+     * @function cambiar_ruta
+     * @param e Es el nombre de la ruta
+     * @description Cambia la vista según los links seleccionados
+     */
+    const cambiar_ruta = (e) => {
+        if(e) {
+            sessionStorage.setItem("path", encriptar(e));
+        }
+        window.location.reload();
     };
 
     if (item.tipo_dato === 'estudiante') {
         return (
             <Row>
-            {/*esta es la lista : <li >{JSON.stringify(lista_parciales)}</li>*/}
-
-
                 <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
                     <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
                     {desencriptar(sessionStorage.getItem('rol')) === 'profesor' ?
@@ -92,7 +114,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                         ):
                         (
                             <Col className="link_text_academico1_sin_borde" xs={2} >
-                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                                     {item.nombre} {item.apellido}
                                 </Link>
                             </Col>
@@ -108,7 +130,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                         :
                         (
                             <Col className="link_text_academico1_sin_borde" xs={2} >
-                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                                     {item.cod_univalle}
                                 </Link>
                             </Col>
@@ -157,7 +179,7 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
     }
     else {
         return (
-            <a href={item.path || "#"} className="fichas_academico plain">
+            <a onClick={() => cambiar_ruta(item.path)} className="fichas_academico plain">
                 return
             </a>
         )

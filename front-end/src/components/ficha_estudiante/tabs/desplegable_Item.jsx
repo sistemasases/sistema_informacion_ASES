@@ -1,8 +1,8 @@
 import React from 'react';
 import {useState } from "react";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
-import Modal from 'react-bootstrap/Modal';
+import {Row, Col} from "react-bootstrap";
+// import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
+// import Modal from 'react-bootstrap/Modal';
 import Seguimiento_individual from '../../seguimiento_forms/form_seguimiento_individual_sin_boton';
 import Seguimiento_inasistencia from '../../seguimiento_forms/form_inasistencia_sin_boton';
 import { desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';

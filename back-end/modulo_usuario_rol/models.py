@@ -75,7 +75,7 @@ class estudiante (models.Model):
     sexo=models.CharField(max_length=20)
     colegio=models.CharField(max_length=100, default=None)
     estamento=models.CharField(max_length=20, default=None)
-    estado_ases= models.BooleanField(default=True)
+    estudiante_elegible= models.BooleanField(default=True)
     celular=models.CharField(max_length=20, default=None, validators=[RegexValidator(regex=r'^[()\-0-9\s]+$', message='Por favor ingresa un teléfono o celular valido')])
     hijos=models.IntegerField(default=0)
     acudiente=models.CharField(max_length=100, default=None)
@@ -182,8 +182,8 @@ class cohorte_estudiante(models.Model):
 
 class firma_tratamiento_datos(models.Model):
 
-    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0,unique=True)
-    tipo_id_estudiante= models.CharField(max_length=10,default=None)
+    id_estudiante= models.OneToOneField(estudiante,on_delete=models.CASCADE)
+    tipo_id_estudiante= models.CharField(max_length=100,default=None)
     fecha_firma = models.DateTimeField(auto_now_add=False,null=False)
     nombre_firma= models.CharField(max_length=50,default=None)
     correo_firma= models.CharField(max_length=50,default=None)

@@ -1,9 +1,9 @@
 import React from 'react';
-import {useState } from "react";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
+// import {useState } from "react";
+import { Row, Col, } from "react-bootstrap";
+// import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
 import axios from 'axios';
-import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import {decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 const Listas_no_seleccion = (props) => {
     const config = {
         Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
@@ -74,7 +74,7 @@ const Listas_no_seleccion = (props) => {
       data: formData,
         })
         .then((res)=>{
-        console.log(res)
+        //console.log(res)
         })
         .catch(err=>{
         })
