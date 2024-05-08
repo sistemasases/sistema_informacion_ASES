@@ -32,7 +32,7 @@ class predictor(APIView):
             'acceso_computador', 'acceso_internet', 'calificacion_prueba_diagnostica',
             'estado_civil', 'ciudad_res', 'sexo', 'hijos', 'anio_ingreso','ciudad_nac',
             'discap_men','estrato','pais_nac','depart_nac','pais_res','depart_res','facultad',
-            'edad'
+            'edad', 'calificacion_prueba_diagnostica','calificacion_semestre'
         )
             data_frame = pd.DataFrame.from_records(queryset)
 
@@ -42,7 +42,8 @@ class predictor(APIView):
                     'habilidades_razonamiento','estado_civil', 'ciudad_res', 'ciudad_nac',
                     'lugar_adecuado_estudio','acceso_internet','acceso_computador',
                     'anio_ingreso','sexo','cambiar_programa','discap_men','estrato',
-                    'pais_nac','depart_nac','pais_res','depart_res','facultad','ingresos_suficientes']
+                    'pais_nac','depart_nac','pais_res','depart_res','facultad','ingresos_suficientes', 
+                    'calificacion_prueba_diagnostica']
         
             num_attribs = ['ingresos_mensuales', 'gastos_mensuales', 'edad','hijos']
 
@@ -64,7 +65,7 @@ class predictor(APIView):
 
             # Aplicar transformaciones
             X = full_pipeline.fit_transform(data_frame)
-            y = data_frame['calificacion_prueba_diagnostica'].values
+            y = data_frame['calificacion_semestre'].values
 
             # División de datos en entrenamiento y prueba
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

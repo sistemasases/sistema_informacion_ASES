@@ -16,7 +16,8 @@ class datos_prediccion (models.Model):
     acceso_computador =models.BooleanField(default=False, null=True)
     acceso_internet =models.BooleanField(default=False, null=True)
     calificacion_prueba_diagnostica = models.BigIntegerField(default=None)
-    
+    calificacion_semestre = models.BigIntegerField(default=None)
+
 
 
     class Meta:
