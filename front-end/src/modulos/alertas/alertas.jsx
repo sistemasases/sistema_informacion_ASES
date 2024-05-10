@@ -595,23 +595,47 @@ const Alertas = () => {
     * Añade una busqueda extra.
   */
   const add_search_bar = () => {
-    for (let i = 0; i < columns.length; i++) {
-      const element = columns[i];
-      element.name = (
+    // for (let i = 0; i < columns.length; i++) {
+    //   const element = columns[i];
+    //   element.name = (
+    //     <Row className="center_tabla_sin_seguimientos">
+    //       <h4 className="texto_mas_pequeño">{element.name}</h4>
+    //       <input
+    //         name={element.name}
+    //         internal_name={element.value}
+    //         onChange={(e) => {
+    //           handle_column_search(e);
+    //         }}
+    //         maxlength="20"
+    //       />
+    //     </Row>
+    //   );
+    //   new_columns.push(element);
+    // }
+
+    const updatedColumns = columns.map((column) => ({
+      ...column,
+      name: (
         <Row className="center_tabla_sin_seguimientos">
-          <h4 className="texto_mas_pequeño">{element.name}</h4>
+          <h4 className="texto_mas_pequeño">{column.name}</h4>
           <input
-            name={element.name}
-            internal_name={element.value}
+            name={column.name}
+            internal_name={column.value}
             onChange={(e) => {
               handle_column_search(e);
             }}
-            maxlength="20"
+            maxLength={20}
           />
         </Row>
-      );
+      ),
+    }));
+
+    for (let i = 0; i < updatedColumns.length; i++) {
+      const element = updatedColumns[i];
       new_columns.push(element);
     }
+  
+
   };
 
   //   Estilo visual de la tabla
