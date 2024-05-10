@@ -219,6 +219,14 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         fech_actual = datetime.now()
         fecha_ = timedelta(days=7)
         fecha_limite = fech_actual - fecha_
+        # print(fecha_limite)
+        # print(fecha)
+        
+        # print("inasistencia " + inasistencia)
+        # date_obj = datetime.strptime(
+        #         fecha, "%Y-%m-%d")
+        # if(date_obj.date() > fecha_limite.date()):
+        #     print("SEGUIMIENTO RECIENTE")
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
             if inasistencia == None or inasistencia == '' or inasistencia == 'None':
                 return "FICHA FALTANTE"
@@ -234,10 +242,14 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             if inasistencia == None or inasistencia == '' or inasistencia == 'None':
                 if date_obj.date() <= fecha_limite.date():
                     return "FICHA FALTANTE"
+                elif (date_obj.date() > fecha_limite.date()):
+                    return "SEGUIMIENTO RECIENTE"
             else:
                 ina = datetime.strptime(inasistencia, "%Y-%m-%d")
                 if date_obj.date() <= ina.date():
                     return "INASISTENCIA"
+                elif (date_obj.date() > fecha_limite.date()):
+                    return "SEGUIMIENTO RECIENTE"
                 else:
                     return "FICHA FALTANTE"
             return "SEGUIMIENTO RECIENTE"
