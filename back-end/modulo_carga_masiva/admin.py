@@ -4,7 +4,7 @@ from modulo_carga_masiva.models import *
 
 
 class motivo_admin(admin.ModelAdmin):
-    list_display = ('id','descripcion') 
+    list_display = ('id','descripcion','motivo_activo') 
 
 
 class retiro_admin(admin.ModelAdmin):

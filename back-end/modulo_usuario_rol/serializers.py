@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante, rol_permiso, permiso, firma_tratamiento_datos
 from django.contrib.auth.models import User
-from modulo_carga_masiva.models import retiro
+from modulo_carga_masiva.models import retiro, motivo
 
 # create a serializer class
 class user_serializer(serializers.ModelSerializer):
@@ -179,4 +179,9 @@ class firma_tratamiento_datos_serializer(serializers.Serializer):
 class retiro_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = retiro
+		fields = '__all__'
+
+class motivo_serializer(serializers.ModelSerializer):
+	class Meta:
+		model = motivo
 		fields = '__all__'
