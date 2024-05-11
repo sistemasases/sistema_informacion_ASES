@@ -5,8 +5,23 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import  *
-from modulo_ia.admin import *
+from modulo_ia.models import datos_prediccion
 from datetime import datetime
+
+from modulo_ia.models import datos_prediccion
+from modulo_usuario_rol.serializers import estudiante_serializer
+from modulo_ia.serializers import datos_entrenamiento_serializer, datos_prediccion_serializer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+# from imblearn.over_sampling import SMOTE
+import pandas as pd
+
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score
+import numpy as np
 
 # Create your views here.
 
@@ -23,8 +38,15 @@ class predictor(APIView):
         valores={}
         return(valores)
 
-    def prepare_and_transform_data():
-        # Carga de datos desde la base de datos
+    def prepare_and_transform_data(datos_estudiante, datos_prediccion):
+        # Carga de datos desde la base de 
+        #Hola Mav, no hay necesidad de llamar los datos otra vez, con el cambio que hice solo debes llamar los datos desde la entrada
+        #de la función, por ejemplo, si quieres el dato cultura:
+        #datos_prediccion['cultura']
+        #o si quieres la fecha de nacimiento:
+        #datos_estudiante['fecha_nac']
+        #y así con cualquier dato, solo debes verificar en cúal de los dos modelos está, para saber si lo llamas de datos_estudiante 
+        #o de datos_prediccion
             queryset = datos_prediccion.objects.all().values(
             'cultura', 'lugar_adecuado_estudio', 'ocupacion', 'max_lvl_estudio_padre',
             'max_lvl_estudio_madre', 'ingresos_mensuales', 'gastos_mensuales',
@@ -138,9 +160,7 @@ class predictor(APIView):
     
     def post(self,request):
         codigo_estudiante = request.data['codigo']
-        print(codigo_estudiante)
         #valores = self.prediccion_red(codigo_estudiante)
-        list_total_datos =[]
         
         #probabilidad_apro_valor = train_and_evaluate_models['Probabilidad_Clase_Aprobar']
         #prediccion_valor = train_and_evaluate_models['Prediccion']
@@ -155,11 +175,12 @@ class predictor(APIView):
         
         try:
             # Acceso a datos del estudiante y su id
-            estudiante_data = estudiante.objects.get(codigo=codigo_estudiante)
-            datos_prediccion = datos_prediccion.objects.filter(estudiante_id=estudiante_data.id)
-
+            estudiante_data = estudiante.objects.get(cod_univalle=codigo_estudiante)
+            datos_estudiante_serializados = estudiante_serializer(estudiante_data)
+            datos_prediccion_data = datos_prediccion.objects.get(id_estudiante=datos_estudiante_serializados.data['id'])
+            datos_prediccion_serializados = datos_prediccion_serializer(datos_prediccion_data)
             # Preparar y transformar datos
-            X_train, y_train, X_test, y_test = prepare_and_transform_data(datos_prediccion)
+            X_train, y_train, X_test, y_test = self.prepare_and_transform_data(datos_estudiante_serializados.data,datos_prediccion_serializados.data)
             resultados = self.seleccion_prediccion_modelos(X_train, y_train, X_test, y_test)
 
             # Seleccionar solo el resultado más relevante 

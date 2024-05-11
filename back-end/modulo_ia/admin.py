@@ -6,7 +6,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from imblearn.over_sampling import SMOTE
+# from imblearn.over_sampling import SMOTE
 import pandas as pd
 
 from sklearn.neural_network import MLPClassifier
