@@ -16,7 +16,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-# from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE
 import pandas as pd
 
 from sklearn.neural_network import MLPClassifier
@@ -47,56 +47,90 @@ class predictor(APIView):
         #datos_estudiante['fecha_nac']
         #y así con cualquier dato, solo debes verificar en cúal de los dos modelos está, para saber si lo llamas de datos_estudiante 
         #o de datos_prediccion
-            queryset = datos_prediccion.objects.all().values(
-            'cultura', 'lugar_adecuado_estudio', 'ocupacion', 'max_lvl_estudio_padre',
-            'max_lvl_estudio_madre', 'ingresos_mensuales', 'gastos_mensuales',
-            'ingresos_suficientes', 'cambiar_programa', 'habilidades_razonamiento',
-            'acceso_computador', 'acceso_internet', 'calificacion_prueba_diagnostica',
-            'estado_civil', 'ciudad_res', 'sexo', 'hijos', 'anio_ingreso','ciudad_nac',
-            'discap_men','estrato','pais_nac','depart_nac','pais_res','depart_res','facultad',
-            'edad', 'calificacion_prueba_diagnostica','calificacion_semestre'
-        )
-            data_frame = pd.DataFrame.from_records(queryset)
+        
+        # Variables de datos_prediccion
+        cultura = datos_prediccion['cultura']
+        lugar_adecuado_estudio = datos_prediccion['lugar_adecuado_estudio']
+        ocupacion = datos_prediccion['ocupacion']
+        max_lvl_estudio_padre = datos_prediccion['max_lvl_estudio_padre']
+        max_lvl_estudio_madre = datos_prediccion['max_lvl_estudio_madre']
+        ingresos_mensuales = datos_prediccion['ingresos_mensuales']
+        gastos_mensuales = datos_prediccion['gastos_mensuales']
+        ingresos_suficientes = datos_prediccion['ingresos_suficientes']
+        cambiar_programa = datos_prediccion['cambiar_programa']
+        habilidades_razonamiento = datos_prediccion['habilidades_razonamiento']
+        acceso_computador = datos_prediccion['acceso_computador']
+        acceso_internet = datos_prediccion['acceso_internet']
+        calificacion_prueba_diagnostica = datos_prediccion['calificacion_prueba_diagnostica']
+    
+        # Variables posibles de datos_estudiante
+        fecha_nac = datos_estudiante.get('fecha_nac', None)  # Usamos get para manejar casos donde el dato puede no estar presente.
+        edad =  datetime.now().year - fecha_nac.year - ((datetime.now().month, datetime.now().day) < (fecha_nac.month, fecha_nac.day))        
+            
+        ciudad_res = datos_estudiante.get('ciudad_res', None)
+        sexo = datos_estudiante.get('sexo', None)
+        hijos = datos_estudiante.get('hijos', None)
+        estado_civil =datos_estudiante.get('estado_civil', None)
+        anio_ingreso = datos_estudiante.get('anio_ingreso', None)
+        ciudad_nac = datos_estudiante.get('ciudad_nac', None)
+        discap_men = datos_estudiante.get('discap_men', None)
+        estrato = datos_estudiante.get('estrato', None)
+        pais_nac = datos_estudiante.get('pais_nac', None)
+        depart_nac = datos_estudiante.get('depart_nac', None)
+        pais_res = datos_estudiante.get('pais_res', None)
+        depart_res = datos_estudiante.get('depart_res', None)
+        facultad = datos_estudiante.get('facultad', None)
+        calificacion_semestre = datos_estudiante.get('calificacion_semestre', None)
+        
+        queryset = [cultura, lugar_adecuado_estudio, ocupacion, max_lvl_estudio_padre,
+            max_lvl_estudio_madre, ingresos_mensuales, gastos_mensuales,
+            ingresos_suficientes, cambiar_programa, habilidades_razonamiento,
+            acceso_computador, acceso_internet, calificacion_prueba_diagnostica,
+            estado_civil, ciudad_res, sexo, hijos, anio_ingreso,ciudad_nac,
+            discap_men,estrato,pais_nac,depart_nac,pais_res,depart_res,facultad,
+            edad, calificacion_prueba_diagnostica,calificacion_semestre
+        ]
+        data_frame = pd.DataFrame.from_records(queryset)
 
 
         # Definición de atributos categóricos y numéricos
-            cat_attribs = ['cultura', 'ocupacion', 'max_lvl_estudio_padre', 'max_lvl_estudio_madre',
-                    'habilidades_razonamiento','estado_civil', 'ciudad_res', 'ciudad_nac',
-                    'lugar_adecuado_estudio','acceso_internet','acceso_computador',
-                    'anio_ingreso','sexo','cambiar_programa','discap_men','estrato',
-                    'pais_nac','depart_nac','pais_res','depart_res','facultad','ingresos_suficientes', 
-                    'calificacion_prueba_diagnostica']
+        cat_attribs = [cultura, ocupacion, max_lvl_estudio_padre, max_lvl_estudio_madre,
+                    habilidades_razonamiento,estado_civil, ciudad_res, ciudad_nac,
+                    lugar_adecuado_estudio,acceso_internet,acceso_computador,
+                    anio_ingreso,sexo,cambiar_programa,discap_men,estrato,
+                    pais_nac,depart_nac,pais_res,depart_res,facultad,ingresos_suficientes, 
+                    calificacion_prueba_diagnostica]
         
-            num_attribs = ['ingresos_mensuales', 'gastos_mensuales', 'edad','hijos']
+        num_attribs = [ingresos_mensuales, gastos_mensuales, edad,hijos]
 
             # Pipelines para procesamiento
-            cat_pipeline = Pipeline([
+        cat_pipeline = Pipeline([
                 ("imputer", SimpleImputer(strategy="most_frequent")),
                 ("cat_encoder", OneHotEncoder(sparse=False, handle_unknown='ignore'))
             ])
 
-            num_pipeline = Pipeline([
+        num_pipeline = Pipeline([
                 ("imputer", SimpleImputer(strategy="median")),
                 ("scaler", StandardScaler())
             ])
 
-            full_pipeline = ColumnTransformer([
+        full_pipeline = ColumnTransformer([
                 ("num", num_pipeline, num_attribs),
                 ("cat", cat_pipeline, cat_attribs),
             ])
 
             # Aplicar transformaciones
-            X = full_pipeline.fit_transform(data_frame)
-            y = data_frame['calificacion_semestre'].values
+        X = full_pipeline.fit_transform(data_frame)
+        y = data_frame['calificacion_semestre'].values
 
-            # División de datos en entrenamiento y prueba
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        # División de datos en entrenamiento y prueba
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-            # Balanceo de clases con SMOTE
-            smote = SMOTE(random_state=123)
-            X_train_balanced, y_train_balanced = smote.fit_resample(X_train, y_train)
+        # Balanceo de clases con SMOTE
+        smote = SMOTE(random_state=123)
+        X_train_balanced, y_train_balanced = smote.fit_resample(X_train, y_train)
 
-            return X_train_balanced, y_train_balanced, X_test, y_test
+        return X_train_balanced, y_train_balanced, X_test, y_test
 
 
         # Cuando se va a entrenar un nuevo modelo y seleccion de parametros
