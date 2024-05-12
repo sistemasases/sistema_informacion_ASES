@@ -64,23 +64,23 @@ class predictor(APIView):
         calificacion_prueba_diagnostica = datos_prediccion['calificacion_prueba_diagnostica']
     
         # Variables posibles de datos_estudiante
-        fecha_nac = datos_estudiante.get('fecha_nac', None)  # Usamos get para manejar casos donde el dato puede no estar presente.
+        fecha_nac = datos_estudiante['fecha_nac']
         edad =  datetime.now().year - fecha_nac.year - ((datetime.now().month, datetime.now().day) < (fecha_nac.month, fecha_nac.day))        
             
-        ciudad_res = datos_estudiante.get('ciudad_res', None)
-        sexo = datos_estudiante.get('sexo', None)
-        hijos = datos_estudiante.get('hijos', None)
-        estado_civil =datos_estudiante.get('estado_civil', None)
-        anio_ingreso = datos_estudiante.get('anio_ingreso', None)
-        ciudad_nac = datos_estudiante.get('ciudad_nac', None)
-        discap_men = datos_estudiante.get('discap_men', None)
-        estrato = datos_estudiante.get('estrato', None)
-        pais_nac = datos_estudiante.get('pais_nac', None)
-        depart_nac = datos_estudiante.get('depart_nac', None)
-        pais_res = datos_estudiante.get('pais_res', None)
-        depart_res = datos_estudiante.get('depart_res', None)
-        facultad = datos_estudiante.get('facultad', None)
-        calificacion_semestre = datos_estudiante.get('calificacion_semestre', None)
+        ciudad_res = datos_estudiante['ciudad_res']
+        sexo = datos_estudiante['sexo']
+        hijos = datos_estudiante['hijos']
+        estado_civil = datos_estudiante['estado_civil']
+        anio_ingreso = datos_estudiante['anio_ingreso']
+        ciudad_nac = datos_estudiante['ciudad_nac']
+        discap_men = datos_estudiante['discap_men']
+        estrato = datos_estudiante['estrato']
+        pais_nac = datos_estudiante['pais_nac']
+        depart_nac = datos_estudiante['depart_nac']
+        pais_res = datos_estudiante['pais_res']
+        depart_res = datos_estudiante['depart_res']  
+        facultad = datos_estudiante['facultad']
+        calificacion_semestre = datos_estudiante['calificacion_semestre']
         
         queryset = [cultura, lugar_adecuado_estudio, ocupacion, max_lvl_estudio_padre,
             max_lvl_estudio_madre, ingresos_mensuales, gastos_mensuales,
