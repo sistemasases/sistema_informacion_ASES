@@ -180,7 +180,7 @@ class retiro_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = retiro
 		fields = '__all__'
-		
+
 	def create(self, validated_data):
 		TIPO_DETALLE = {
 			'vocacional':'Vocacional',
@@ -201,7 +201,7 @@ class retiro_serializer(serializers.ModelSerializer):
 			'individual':'Individual (Salud)',
 			'carga':'Carga académica',
 			'finalizacion':'Etapa de Acompañamiento finalizada',
-			'No_respuesta':'No hubo respuesta'
+			'no_respuesta':'No hubo respuesta'
 
 		}
 		validated_data['detalle'] = TIPO_DETALLE[validated_data.get('detalle')]
