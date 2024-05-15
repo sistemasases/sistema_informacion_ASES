@@ -3,9 +3,7 @@ import Select from 'react-select'  ;
 import {Container, Row, Col, Button} from "react-bootstrap";
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
-import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
-
-//import DatePicker from 'react-datepicker';
+import { desencriptar, decryptTokenFromSessionStorage } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 
 

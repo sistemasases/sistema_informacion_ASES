@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from 'react';
-import {Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck} from "react-bootstrap";
+import {Row, Col, Button, Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Create_Seguimiento from '../../service/create_seguimiento';
 import { CSVLink } from 'react-csv';

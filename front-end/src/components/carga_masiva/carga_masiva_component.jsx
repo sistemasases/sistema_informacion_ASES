@@ -8,12 +8,9 @@
 */
 import React, {useState} from 'react';
 import axios from 'axios';
-import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
+import {Container, Row, Col, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
-import carga_masiva_service from '../../service/carga_masiva';
-import DataTable, {createTheme} from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
 import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 /**

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { Row, Col } from "styled-bootstrap-grid";
-import { Button, ListGroupItem } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual";
 import { useEffect } from "react";
 import axios from "axios";
 import Selector from "../../components/ficha_estudiante/selector";
-import Ficha_footer from "./ficha_footer";
 import Info_registros from "./info_registros";
 import Programas_academicos from "./programas_academicos";
 import Inasistencia from "../seguimiento_forms/form_inasistencia";
@@ -22,7 +21,6 @@ import {
   desencriptarInt,
   encriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
-import myGif from "../../modulos/reportes/loading_data.gif";
 
 const Info_basica = (props) => {
   const config = {

@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col} from "styled-bootstrap-grid";
+import { Row, Col} from "styled-bootstrap-grid";
 import Programas_academicos from './programas_academicos'
-
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Selector from "./selector";

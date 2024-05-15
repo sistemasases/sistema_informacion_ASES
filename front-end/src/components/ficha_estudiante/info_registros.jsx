@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
 
-import {Dropdown, Button} from "react-bootstrap";
-import {Container, Row, Col} from "styled-bootstrap-grid";
+import {Button} from "react-bootstrap";
+import {Row, Col} from "styled-bootstrap-grid";
 
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
 import {useEffect} from 'react';
 import axios from 'axios';
-import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
-import { id } from 'date-fns/locale';
+import {desencriptar, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Info_registros = (props) =>{
 

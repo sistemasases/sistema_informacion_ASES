@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Row} from "react-bootstrap";
 import "@fontsource/manrope";
 
-import 'styled-components';
+// import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
@@ -29,7 +29,6 @@ import "./Scss/reporte_desercion/desercion.css";
 import "./Scss/inicio/inicio.css";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SideBar from "./components/componentes_generales/sideBar.jsx";
-import Calificador from "./modulos/academico_pestaña/calificador.jsx";
 import Path from './modulos/path/path.jsx';
 import Pagina_no_encontrada from "./components/componentes_generales/pagina_no_encontrada.jsx";
 

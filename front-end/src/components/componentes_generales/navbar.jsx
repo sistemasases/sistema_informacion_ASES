@@ -12,7 +12,6 @@ import { Container, Row, Col } from "react-bootstrap";
 import { useEffect } from "react";
 import Logos from "./LOGO BLANCORecurso 1.png";
 import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 import axios from "axios";
