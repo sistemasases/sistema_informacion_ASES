@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante, rol_permiso, permiso, firma_tratamiento_datos
 from django.contrib.auth.models import User
-from modulo_carga_masiva.models import retiro
+from modulo_carga_masiva.models import retiro, motivo
 
 # create a serializer class
 class user_serializer(serializers.ModelSerializer):
@@ -179,4 +179,38 @@ class firma_tratamiento_datos_serializer(serializers.Serializer):
 class retiro_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = retiro
+		fields = '__all__'
+
+	def create(self, validated_data):
+		TIPO_DETALLE = {
+			'vocacional':'Vocacional',
+			'traslado':'Traslado de Universidad',
+			'bajo':'Bajo Rendimiento',
+			'calamidad':'Calamidad Doméstica',
+			'econ_lab':'Económico / Laboral',
+			'fallecimiento':'Fallecimiento',
+			'no_matricula':'No matriculó',
+			'retiro':'Retiro voluntario / Rechazo del acompañamiento',
+			'abandono':'Abandono del cupo',
+			'inconformidad':'Inconformidad con el Programa',
+			'corresponsabilidad':'Corresponsabilidad / Inasistencias',
+			'falta':'Falta de tiempo',
+			'autonomia':'Autonomía',
+			'econ':'Económico',
+			'rechazo':'Rechazo del cupo (en primer semestre)',
+			'individual':'Individual (Salud)',
+			'carga':'Carga académica',
+			'finalizacion':'Etapa de Acompañamiento finalizada',
+			'no_respuesta':'No hubo respuesta'
+
+		}
+		validated_data['detalle'] = TIPO_DETALLE[validated_data.get('detalle')]
+		consulta_estudiante=estudiante.objects.get(id = validated_data['id_estudiante'].id)
+		consulta_estudiante.estudiante_elegible = False
+		consulta_estudiante.save()
+		return retiro.objects.create(**validated_data)
+
+class motivo_serializer(serializers.ModelSerializer):
+	class Meta:
+		model = motivo
 		fields = '__all__'
