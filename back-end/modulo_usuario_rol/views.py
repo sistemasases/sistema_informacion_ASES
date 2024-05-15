@@ -171,6 +171,50 @@ class retiro_viewsets(viewsets.ModelViewSet):
     serializer_class = retiro_serializer
     permission_classes = (IsAuthenticated,)
     queryset = retiro_serializer.Meta.model.objects.all()
+    
+class motivo_viewsets(viewsets.ModelViewSet):
+    """
+    Viewsets del modelo de Motivo.
+
+    Esta vista permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar)
+    en el modelo de motivo.
+
+    Permisos:
+    - El usuario debe estar autenticado para acceder a esta vista.
+
+    Serializer:
+    - Se utiliza 'motivo_serializer' para serializar los datos del modelo.
+
+    Atributos:
+    - serializer_class: Clase del serializador utilizado.
+    - permission_classes: Clases de permisos aplicadas a la vista.
+    - queryset: Conjunto de objetos del modelo 'Retiro'.
+
+    Métodos HTTP admitidos:
+    - GET: Obtiene una lista de retiros.
+    - POST: Crea un nuevo retiro.
+    - PUT: Actualiza un retiro existente.
+    - DELETE: Elimina un retiro existente.
+
+    Gestión de solicutudes HTTP VIEWSETS:
+    (Redefinida)list: Maneja las solicitudes GET para obtener una lista de recursos, solo trae los motivos que estan activos, es decir, los que tienen el campo motivo_activo en True.
+    create: Maneja las solicitudes POST para crear un nuevo recurso.
+    retrieve: Maneja las solicitudes GET para obtener un recurso específico por su clave primaria.
+    update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
+    partial_update: Maneja las solicitudes PATCH para realizar una actualización parcial de un recurso específico por su clave primaria.
+    destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
+    """
+
+    serializer_class = motivo_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = motivo_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+
+        lista_motivos_activos = motivo.objects.filter(motivo_activo = True).distinct().order_by('id')
+        respuesta = motivo_serializer (lista_motivos_activos, many=True)
+        return Response(respuesta.data, status=status.HTTP_200_OK)
+
 
 class estudiante_viewsets(viewsets.ModelViewSet):
     """

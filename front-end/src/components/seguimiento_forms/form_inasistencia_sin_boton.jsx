@@ -7,7 +7,7 @@
  */
 
 import React, { useState } from 'react';
-import { Row, Col, Button, Modal  } from "react-bootstrap";
+import { Container, Row, Col, Dropdown, Button, Modal, ModalHeader, ModalBody, FormCheck } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import Update_Inasistencia from '../../service/update_inasistencia';
 import Delete_inasistencia from '../../service/delete_inasistencia';

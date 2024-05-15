@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from modulo_usuario_rol.views import *
+from modulo_base.views import *
 
 router = DefaultRouter()
 """
@@ -11,6 +12,7 @@ router.register(r'user_actualizacion',user_actualizacion_viewsets,basename = 'us
     Endpoints Relacioandos con Estudiantes.
 """
 router.register(r'retiro',retiro_viewsets,basename = 'retiro')
+router.register(r'motivo',motivo_viewsets,basename = 'motivo')
 router.register(r'estudiante',estudiante_viewsets,basename = 'estudiante')
 router.register(r'estudiante_sede',estudiante_por_sede_viewsets,basename = 'estudiante_sede')
 router.register(r'estudiante_selected',estudiante_selected_viewsets,basename = 'estudiante_selected')
