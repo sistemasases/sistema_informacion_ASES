@@ -177,62 +177,101 @@ class predictor(APIView):
         return X_train_balanced, y_train_balanced, X_test, y_test
 
 
-        # Cuando se va a entrenar un nuevo modelo y seleccion de parametros
-    def seleccion_prediccion_modelos(X_train, y_train, X_test, y_test):
-            resultados = []
-            topologias = [(10,), (10, 10), (20,), (20, 20), (30,)]
-            func_activacion = ["relu", "logistic"]
-            solvers = ["adam", "sgd"]
+    def seleccion_prediccion_modelos(X_train_balanced, y_train_balanced, X_test, y_test):
+        # Se crea una lista para almacenar los resultados
+        resultados = []
 
-            for topologia in topologias:
-                for activacion in func_activacion:
-                    for solver in solvers:
-                        model = MLPClassifier(hidden_layer_sizes=topologia, activation=activacion, solver=solver, random_state=123)
-                        model.fit(X_train, y_train)
-                        y_pred = model.predict(X_test)
-                        accuracy = round(accuracy_score(y_test, y_pred), 4)
-                        confusion = confusion_matrix(y_test, y_pred)
-                        y_pred_proba = model.predict_proba(X_test)[:, 1]  # Asume que la clase positiva está en la columna 1
-                        auc_score = roc_auc_score(y_test, y_pred_proba)
+        # Define una lista de topologías a probar
+        topologias = [
+            (10,), # una capa oculta con 10 neuronas
+            (10, 10), # dos capas ocultas con 10 neuronas cada una
+            (20,), # una capa oculta con 20 neuronas
+            (20, 20), # dos capas ocultas con 20 neuronas cada una
+            (30,), # una capa oculta con 30 neuronas
+        ]
 
-                        resultados.append({
-                            "Topología": topologia,
-                            "Función de activación": activacion,
-                            "Solver": solver,
-                            "Accuracy": accuracy,
-                            "Matriz de confusión": confusion,
-                            "AUC": auc_score
-                        })
+        # Define una lista de funciones de activación a probar
+        func_activacion = ["relu", "logistic"]
 
-            # DataFrame de resultados
+        # Define una lista de solvers a probar
+        solvers = ["adam", "sgd"]
+
+        # Itera para cada topología
+        for topologia in topologias:
+            # Itera para cada función de activación
+            for activacion in func_activacion:
+                # Itera para cada solver
+                for solver in solvers:
+                    # Crea el modelo de red neuronal
+                    model = MLPClassifier(hidden_layer_sizes=topologia, activation=activacion,
+                                        solver=solver, random_state=123)
+                    # Entrena el modelo
+                    model.fit(X_train_balanced, y_train_balanced)
+
+                    # Realiza las predicciones
+                    y_pred = model.predict(X_test)
+
+                    # Calcula el accuracy
+                    accuracy = round(accuracy_score(y_test, y_pred), 4) # con 4 decimales
+
+                    # Calcula la matriz de confusión
+                    confusion = confusion_matrix(y_test, y_pred)
+
+                    # Almacena el resultado
+                    resultados.append({"Topología": topologia,
+                                    "Función de activación": activacion,
+                                    "Solver": solver,
+                                    "Accuracy": accuracy,
+                                    "Matriz de confusión": confusion})
+
+            # Se imprime la tabla con los resultados y los valores de la matriz de confusión
             resultado_Riesgo = pd.DataFrame(resultados)
+
+            # Encontrar la red neuronal con el mayor valor de Accuracy
+            max_accuracy = max(resultados, key=lambda x: x["Accuracy"])
+            # print("\n")
+            # # Imprime los hiperparámetros del mejor resultado
+            # print("-------------------------------------------")
+            # print("Mejores hiperparámetros:")
+            # print("-------------------------------------------")
+            # print("Topología:", max_accuracy["Topología"])
+            # print("Función de activación:", max_accuracy["Función de activación"])
+            # print("Solver:", max_accuracy["Solver"])
+            # print("Accuracy:", max_accuracy["Accuracy"])
+            # print("Matriz de confusión:", max_accuracy["Matriz de confusión"])
+            # print("\n")
+
+            # Encontrar la red neuronal con el mayor valor de Accuracy
             mejor_modelo = resultado_Riesgo.loc[resultado_Riesgo['Accuracy'].idxmax()]
 
-            # Entrenar y evaluar el mejor modelo
+            # Acceder al modelo del mejor modelo
             modelo_mejor = MLPClassifier(hidden_layer_sizes=mejor_modelo['Topología'],
                                         activation=mejor_modelo['Función de activación'],
                                         solver=mejor_modelo['Solver'], random_state=123)
-            modelo_mejor.fit(X_train, y_train)
-            y_pred_proba = modelo_mejor.predict_proba(X_test)
-            
-            # Probabilidades de clase
-            probabilidad_clase_positiva_test = np.round(y_pred_proba[:, 1], 3)
-            probabilidad_clase_positiva_test_0 = np.round(y_pred_proba[:, 0], 3)
 
-            # DataFrame con predicciones
-            df_test = pd.DataFrame(X_test)
-            df_test['Probabilidad_Clase_No_Aprobar'] = probabilidad_clase_positiva_test
-            df_test['Probabilidad_Clase_Aprobar'] = probabilidad_clase_positiva_test_0
-            df_test['Prediccion'] = modelo_mejor.predict(X_test)
+            # Entrenar el modelo del mejor modelo
+            modelo_mejor.fit(X_train_balanced, y_train_balanced)
+    
+        return modelo_mejor
 
-            # Mensaje basado en la probabilidad de aprobar
-            df_test['Mensaje'] = df_test['Probabilidad_Clase_Aprobar'].apply(
-                lambda x: "De acuerdo al resultado prueba diagnostica y las características de estudiantes, te recomendamos asistir al cursillo de nivelación por 2 semanas, también asistir las monitorias del departamento de matemáticas o las monitorias académicas de ASES."
-                if x < 0.5 else "De acuerdo al resultado prueba diagnostica y las características de estudiantes, te recomendamos seguir estudiando y en caso que necesites asistir a las monitorias del departamento de matemáticas o las monitorias académicas de ASES."
-            )
+    def predecir_con_mejor_modelo(modelo_mejor, X_test):
+        # Realizar predicciones de probabilidades
+        y_pred_proba = modelo_mejor.predict_proba(X_test)
 
-             # Seleccionar columnas relevantes para mostrar
-            return df_test[['CALIFICACION_SEMESTRE', 'Probabilidad_Clase_No_Aprobar', 'Probabilidad_Clase_Aprobar', 'Prediccion', 'Mensaje']]
+        # Obtener las probabilidades de la clase positiva (clase 1)
+        probabilidad_clase_positiva = y_pred_proba[:, 1]
+
+        # DataFrame con predicciones
+        df_test = pd.DataFrame(X_test)
+        df_test['Probabilidad_Clase_Aprobar'] = probabilidad_clase_positiva
+        df_test['Prediccion'] = modelo_mejor.predict(X_test)
+
+        # Mensaje basado en la probabilidad de aprobar
+        df_test['Mensaje'] = df_test['Probabilidad_Clase_Aprobar'].apply(
+            lambda x: "De acuerdo al resultado prueba diagnostica y las características de estudiantes, te recomendamos asistir al cursillo de nivelación por 2 semanas, también asistir las monitorias del departamento de matemáticas o las monitorias académicas de ASES."
+            if x < 0.5 else "De acuerdo al resultado prueba diagnostica y las características de estudiantes, te recomendamos seguir estudiando y en caso que necesites asistir a las monitorias del departamento de matemáticas o las monitorias académicas de ASES."
+        )
+        return df_test
 
 
     
