@@ -206,7 +206,7 @@ class predictor(APIView):
 
             # DataFrame de resultados
             resultado_Riesgo = pd.DataFrame(resultados)
-            mejor_modelo = resultado_Riesgo.loc[resultado_Riesgo['AUC'].idxmax()]
+            mejor_modelo = resultado_Riesgo.loc[resultado_Riesgo['Accuracy'].idxmax()]
 
             # Entrenar y evaluar el mejor modelo
             modelo_mejor = MLPClassifier(hidden_layer_sizes=mejor_modelo['Topología'],
@@ -227,8 +227,8 @@ class predictor(APIView):
 
             # Mensaje basado en la probabilidad de aprobar
             df_test['Mensaje'] = df_test['Probabilidad_Clase_Aprobar'].apply(
-                lambda x: "De acuerdo al resultado prueba diagnostica, te recomendamos asistir al cursillo de nivelación por 2 semanas, también asistir las monitorias del departamento de matemáticas."
-                if x < 0.5 else "De acuerdo al resultado prueba diagnostica, te recomendamos seguir estudiando y en caso que necesites asistir a las monitorias del departamento de matemáticas."
+                lambda x: "De acuerdo al resultado prueba diagnostica y las características de estudiantes, te recomendamos asistir al cursillo de nivelación por 2 semanas, también asistir las monitorias del departamento de matemáticas o las monitorias académicas de ASES."
+                if x < 0.5 else "De acuerdo al resultado prueba diagnostica y las características de estudiantes, te recomendamos seguir estudiando y en caso que necesites asistir a las monitorias del departamento de matemáticas o las monitorias académicas de ASES."
             )
 
              # Seleccionar columnas relevantes para mostrar
