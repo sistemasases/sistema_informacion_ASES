@@ -17,6 +17,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from imblearn.over_sampling import SMOTE
+from dateutil import parser
 import pandas as pd
 
 from sklearn.neural_network import MLPClassifier
@@ -27,8 +28,12 @@ import numpy as np
 
 
 class predictor(APIView):
+    serializer_class= datos_prediccion_serializer
     def prediccion_red(codigo_estu):
+        datos_estudiantes=estudiante.objects.all().values()
         datos_estudiante = estudiante.objects.filter(codigo=codigo_estu).values()
+       
+
         datos_datos_prediccion = datos_prediccion.objects.filter(id_estudiante=datos_estudiante.id).values()
         cultura_estudiante = datos_datos_prediccion['cultura']
        
@@ -38,7 +43,7 @@ class predictor(APIView):
         valores={}
         return(valores)
 
-    def prepare_and_transform_data(datos_estudiante, datos_prediccion):
+    def prepare_and_transform_data(self,datos_estudiantes, datos_prediccion):
         # Carga de datos desde la base de 
         #Hola Mav, no hay necesidad de llamar los datos otra vez, con el cambio que hice solo debes llamar los datos desde la entrada
         #de la función, por ejemplo, si quieres el dato cultura:
@@ -48,65 +53,104 @@ class predictor(APIView):
         #y así con cualquier dato, solo debes verificar en cúal de los dos modelos está, para saber si lo llamas de datos_estudiante 
         #o de datos_prediccion
         
-        # Variables de datos_prediccion
-        cultura = datos_prediccion['cultura']
-        lugar_adecuado_estudio = datos_prediccion['lugar_adecuado_estudio']
-        ocupacion = datos_prediccion['ocupacion']
-        max_lvl_estudio_padre = datos_prediccion['max_lvl_estudio_padre']
-        max_lvl_estudio_madre = datos_prediccion['max_lvl_estudio_madre']
-        ingresos_mensuales = datos_prediccion['ingresos_mensuales']
-        gastos_mensuales = datos_prediccion['gastos_mensuales']
-        ingresos_suficientes = datos_prediccion['ingresos_suficientes']
-        cambiar_programa = datos_prediccion['cambiar_programa']
-        habilidades_razonamiento = datos_prediccion['habilidades_razonamiento']
-        acceso_computador = datos_prediccion['acceso_computador']
-        acceso_internet = datos_prediccion['acceso_internet']
-        calificacion_prueba_diagnostica = datos_prediccion['calificacion_prueba_diagnostica']
-    
-        # Variables posibles de datos_estudiante
-        fecha_nac = datos_estudiante['fecha_nac']
-        edad =  datetime.now().year - fecha_nac.year - ((datetime.now().month, datetime.now().day) < (fecha_nac.month, fecha_nac.day))        
-            
-        ciudad_res = datos_estudiante['ciudad_res']
-        sexo = datos_estudiante['sexo']
-        hijos = datos_estudiante['hijos']
-        estado_civil = datos_estudiante['estado_civil']
-        anio_ingreso = datos_estudiante['anio_ingreso']
-        ciudad_nac = datos_estudiante['ciudad_nac']
-        discap_men = datos_estudiante['discap_men']
-        estrato = datos_estudiante['estrato']
-        pais_nac = datos_estudiante['pais_nac']
-        depart_nac = datos_estudiante['depart_nac']
-        pais_res = datos_estudiante['pais_res']
-        depart_res = datos_estudiante['depart_res']  
-        facultad = datos_estudiante['facultad']
-        calificacion_semestre = datos_estudiante['calificacion_semestre']
+        # Convertir QuerySet a lista de diccionarios
+        datos_estudiantes = list(datos_estudiantes)
+        datos_prediccion = list(datos_prediccion)
+        queryset = []
         
-        queryset = [cultura, lugar_adecuado_estudio, ocupacion, max_lvl_estudio_padre,
-            max_lvl_estudio_madre, ingresos_mensuales, gastos_mensuales,
-            ingresos_suficientes, cambiar_programa, habilidades_razonamiento,
-            acceso_computador, acceso_internet, calificacion_prueba_diagnostica,
-            estado_civil, ciudad_res, sexo, hijos, anio_ingreso,ciudad_nac,
-            discap_men,estrato,pais_nac,depart_nac,pais_res,depart_res,facultad,
-            edad, calificacion_prueba_diagnostica,calificacion_semestre
-        ]
-        data_frame = pd.DataFrame.from_records(queryset)
+        for estudiante in datos_estudiantes:
+            # Obtener el registro correspondiente de datos_prediccion
+            datos_prediccion_actual = next((dp for dp in datos_prediccion if dp['id_estudiante'] == estudiante['id']), None)
+            if datos_prediccion_actual is None:
+                continue  # Si no hay datos de predicción para el estudiante, salta al siguiente
 
+            
+            # Variables de datos_prediccion
+            datos_prediccion_actual = datos_prediccion.filter(id_estudiante=estudiante['id']).values().first()
+            
+            cultura = datos_prediccion_actual['cultura']
+            lugar_adecuado_estudio = datos_prediccion_actual['lugar_adecuado_estudio']
+            ocupacion = datos_prediccion_actual['ocupacion']
+            max_lvl_estudio_padre = datos_prediccion_actual['max_lvl_estudio_padre']
+            max_lvl_estudio_madre = datos_prediccion_actual['max_lvl_estudio_madre']
+            ingresos_mensuales = datos_prediccion_actual['ingresos_mensuales']
+            gastos_mensuales = datos_prediccion_actual['gastos_mensuales']
+            ingresos_suficientes = datos_prediccion_actual['ingresos_suficientes']
+            cambiar_programa = datos_prediccion_actual['cambiar_programa']
+            habilidades_razonamiento = datos_prediccion_actual['habilidades_razonamiento']
+            acceso_computador = datos_prediccion_actual['acceso_computador']
+            acceso_internet = datos_prediccion_actual['acceso_internet']
+            calificacion_prueba_diagnostica = datos_prediccion_actual['calificacion_prueba_diagnostica']
+
+            fecha_nac_str = estudiante['fecha_nac']
+            print(f"Fecha de nacimiento (string): {fecha_nac_str}")
+
+            # Intento de conversión usando dateutil.parser
+            try:
+                fecha_nac = datetime.strptime(fecha_nac_str, '%Y-%m-%d %H:%M:%S.%f %z')
+                print(f"Fecha de nacimiento (datetime): {fecha_nac}")
+            except ValueError as e:
+                print(f"Error al convertir la fecha: {e}")
+                fecha_nac = None  # O algún valor por defecto
+
+            # Calcular la edad solo si la conversión fue exitosa
+            if fecha_nac:
+                hoy = datetime.now()
+                edad = hoy.year - fecha_nac.year - ((hoy.month, hoy.day) < (fecha_nac.month, fecha_nac.day))
+            else:
+                edad = None  # O algún valor por defecto si no se pudo calcular la edad
+
+            ciudad_res = estudiante.get('ciudad_res')
+            sexo = estudiante.get('sexo')
+            hijos = estudiante.get('hijos')
+            estado_civil = estudiante.get('estado_civil')
+            anio_ingreso = estudiante['anio_ingreso']
+            ciudad_nac = estudiante['ciudad_nac']
+            discap_men = estudiante.get('discap_men')
+            estrato = estudiante.get('estrato')
+            pais_nac = estudiante.get('pais_nac')
+            depart_nac = estudiante.get('depart_nac')
+            pais_res = estudiante.get('pais_res')
+            depart_res = estudiante.get('depart_res')
+            facultad = estudiante.get('facultad')
+            calificacion_semestre = estudiante.get('calificacion_semestre')
+
+            queryset.append([
+                cultura, lugar_adecuado_estudio, ocupacion, max_lvl_estudio_padre,
+                max_lvl_estudio_madre, ingresos_mensuales, gastos_mensuales,
+                ingresos_suficientes, cambiar_programa, habilidades_razonamiento,
+                acceso_computador, acceso_internet, calificacion_prueba_diagnostica,
+                estado_civil, ciudad_res, sexo, hijos, anio_ingreso, ciudad_nac,
+                discap_men, estrato, pais_nac, depart_nac, pais_res, depart_res, facultad,
+                edad, calificacion_semestre
+            ])
+        
+
+         # Crear un DataFrame a partir del queryset
+        data_frame = pd.DataFrame(queryset, columns=[
+        'cultura', 'lugar_adecuado_estudio', 'ocupacion', 'max_lvl_estudio_padre',
+        'max_lvl_estudio_madre', 'ingresos_mensuales', 'gastos_mensuales',
+        'ingresos_suficientes', 'cambiar_programa', 'habilidades_razonamiento',
+        'acceso_computador', 'acceso_internet', 'calificacion_prueba_diagnostica',
+        'estado_civil', 'ciudad_res', 'sexo', 'hijos', 'anio_ingreso', 'ciudad_nac',
+        'discap_men', 'estrato', 'pais_nac', 'depart_nac', 'pais_res', 'depart_res',
+        'facultad', 'edad', 'calificacion_semestre'
+         ])
 
         # Definición de atributos categóricos y numéricos
-        cat_attribs = [cultura, ocupacion, max_lvl_estudio_padre, max_lvl_estudio_madre,
-                    habilidades_razonamiento,estado_civil, ciudad_res, ciudad_nac,
-                    lugar_adecuado_estudio,acceso_internet,acceso_computador,
-                    anio_ingreso,sexo,cambiar_programa,discap_men,estrato,
-                    pais_nac,depart_nac,pais_res,depart_res,facultad,ingresos_suficientes, 
-                    calificacion_prueba_diagnostica]
-        
-        num_attribs = [ingresos_mensuales, gastos_mensuales, edad,hijos]
+        cat_attribs = ['cultura', 'ocupacion', 'max_lvl_estudio_padre', 'max_lvl_estudio_madre',
+                   'habilidades_razonamiento', 'estado_civil', 'ciudad_res', 'ciudad_nac',
+                   'lugar_adecuado_estudio', 'acceso_internet', 'acceso_computador',
+                   'anio_ingreso', 'sexo', 'cambiar_programa', 'discap_men', 'estrato',
+                   'pais_nac', 'depart_nac', 'pais_res', 'depart_res', 'facultad', 'ingresos_suficientes',
+                   'calificacion_prueba_diagnostica']
+
+        num_attribs = ['ingresos_mensuales', 'gastos_mensuales', 'edad', 'hijos']
 
             # Pipelines para procesamiento
         cat_pipeline = Pipeline([
                 ("imputer", SimpleImputer(strategy="most_frequent")),
-                ("cat_encoder", OneHotEncoder(sparse=False, handle_unknown='ignore'))
+                ("cat_encoder", OneHotEncoder(sparse_output=False, handle_unknown='ignore'))
             ])
 
         num_pipeline = Pipeline([
@@ -124,7 +168,7 @@ class predictor(APIView):
         y = data_frame['calificacion_semestre'].values
 
         # División de datos en entrenamiento y prueba
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
 
         # Balanceo de clases con SMOTE
         smote = SMOTE(random_state=123)
