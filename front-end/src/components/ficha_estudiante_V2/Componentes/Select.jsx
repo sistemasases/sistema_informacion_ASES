@@ -7,7 +7,6 @@
  * @date 13 de febrero del 2024
  */
 
-
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/auth";
 import perfilUsuario from "./Usuario.png";

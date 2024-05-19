@@ -1,7 +1,7 @@
 /**
  * @file fetch_estudiantes.js
  * @version 1.0.0
- * @description Este archivo se encarga de realizar la petición para obtener los 
+ * @description Este archivo se encarga de realizar la petición para obtener los
  *              estudiantes de un usuario.
  * @author Nicol Ortiz
  * @contact nicol.ortiz@correounivalle.edu.co

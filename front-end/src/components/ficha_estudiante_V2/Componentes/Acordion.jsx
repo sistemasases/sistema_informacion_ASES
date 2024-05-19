@@ -1,7 +1,7 @@
 /**
  * @file Acordion.jsx
  * @version 1.0.0
- * @description Este componente se encarga de mostrar un acordeón con un 
+ * @description Este componente se encarga de mostrar un acordeón con un
  *              título y un contenido que se puede abrir y cerrar.
  * @author Nicol Ortiz
  * @contact nicol.ortiz@correounivalle.edu.co

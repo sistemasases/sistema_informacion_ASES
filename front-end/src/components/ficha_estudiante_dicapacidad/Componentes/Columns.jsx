@@ -71,6 +71,7 @@ const Columns = ({ columns, twobold }) => {
                     <label>
                       {element.name}
                       <select
+                        // value representa el valor seleccionado en el select
                         value={inputValues[inputName] || ""}
                         onChange={(e) =>
                           setInputValues({

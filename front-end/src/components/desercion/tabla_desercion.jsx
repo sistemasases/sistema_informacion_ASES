@@ -1,28 +1,28 @@
 /**
-  * @file tabla_desercion.jsx
-  * @version 1.0.0
-  * @description Componente que muestra la tabla de reporte de deserción estudiantil.
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024
-*/
-import React, { useMemo, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { Container, Row } from 'react-bootstrap';
-import DataTableExtensions from 'react-data-table-component-extensions';
-import DataTable from 'react-data-table-component';
-import MOCK_DATA from './MOCK_DATA.json';
-import Cabecera from './cabecera.jsx';
-import { useEffect } from 'react';
-import axios from 'axios';
-import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+ * @file tabla_desercion.jsx
+ * @version 1.0.0
+ * @description Componente que muestra la tabla de reporte de deserción estudiantil.
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
+import React, { useMemo, useState } from "react";
+import ReactDOM from "react-dom";
+import { Container, Row } from "react-bootstrap";
+import DataTableExtensions from "react-data-table-component-extensions";
+import DataTable from "react-data-table-component";
+import MOCK_DATA from "./MOCK_DATA.json";
+import Cabecera from "./cabecera.jsx";
+import { useEffect } from "react";
+import axios from "axios";
+import { decryptTokenFromSessionStorage } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 /**
  * Componente que muestra una tabla de deserción estudiantil.
  * @returns {JSX.Element} Componente Tabla_desercion.
  */
 const Tabla_desercion = () => {
-  // Obtención del token de sesión 
+  // Obtención del token de sesión
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
@@ -41,10 +41,10 @@ const Tabla_desercion = () => {
   const [records, setRecords] = useState([]);
 
   /**
-  * Función para actualizar la cohorte seleccionada.
-  * @param {Int} name
-  * @returns {void}
-  */
+   * Función para actualizar la cohorte seleccionada.
+   * @param {Int} name
+   * @returns {void}
+   */
   function cohorte_seleccion(name) {
     set_state({
       ...state,
@@ -209,7 +209,7 @@ const Tabla_desercion = () => {
   // Conteo total por cada columna de semestre
   /**
    * Contador de semestres.
-   * 
+   *
    * @typedef {Object} SemestreCount
    * @property {number} total - El total de registros en el semestre.
    * @property {number} inactivo - El número de registros inactivos en el semestre.
@@ -219,7 +219,7 @@ const Tabla_desercion = () => {
 
   /**
    * Calcula el contador de semestres.
-   * 
+   *
    * @returns {SemestreCount} El contador de semestres.
    */
   const semestreCount = useMemo(() => {

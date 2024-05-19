@@ -1,9 +1,9 @@
 /**
  * @file AcordionesHijos.jsx
  * @version 1.0.0
- * @description Este componente se encarga de renderizar un conjunto de acordeones 
- *              hijos, utilizando el componente Acordion para cada uno de ellos. 
- *              Recibe como props un arreglo de acordeones y clases para estilizar 
+ * @description Este componente se encarga de renderizar un conjunto de acordeones
+ *              hijos, utilizando el componente Acordion para cada uno de ellos.
+ *              Recibe como props un arreglo de acordeones y clases para estilizar
  *              el acordeón y su contenido.
  * @author Nicol Ortiz
  * @contact nicol.ortiz@correounivalle.edu.co

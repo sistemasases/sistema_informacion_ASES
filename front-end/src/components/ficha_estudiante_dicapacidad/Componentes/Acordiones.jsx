@@ -3,6 +3,7 @@ import Acordion from "./Acordion";
 import "../../../Scss/ficha_estudiante_discapacidad/acordion.css";
 import General from "./general/General";
 import Seguimiento from "./seguimiento/Seguimiento";
+import Caracterizacion from "./caracterizacion/Caracterizacion";
 
 // Componente de Acordiones
 // Este componente se encarga de mostrar los acordeones de la ficha de estudiante
@@ -15,7 +16,7 @@ const Acordiones = () => {
         <General />
       </Acordion>
       <Acordion title="CARACTERIZACIÓN" claseAcordion={"acordion"}>
-        <p>Contenido del acordeón 2</p>
+        <Caracterizacion />
       </Acordion>
       <Acordion title="ACCESIBILIDAD" claseAcordion={"acordion"}>
         <Accesibilidad />

@@ -57,7 +57,6 @@ const Academico = () => {
               />
             }
           >
-        
             {/* <div key={index} className="seguimiento">
               <p>{semestre[1]}</p>
             </div> */}

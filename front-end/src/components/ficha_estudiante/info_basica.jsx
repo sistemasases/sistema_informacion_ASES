@@ -195,8 +195,8 @@ const Info_basica = (props) => {
       };
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
-        state.data_user[index]["id"] +
-        "/",
+          state.data_user[index]["id"] +
+          "/",
         config,
         { paramsget }
       );
@@ -543,7 +543,10 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
-                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
+                            <a
+                              href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link"
+                              target="_blank"
+                            >
                               <i
                                 class="bi bi-check2-square"
                                 style={
@@ -551,9 +554,10 @@ const Info_basica = (props) => {
                                     .firma_tratamiento_datos == "SIN FIRMAR"
                                     ? { color: "red" }
                                     : state.total_datos_estudiante_seleccionado
-                                      .firma_tratamiento_datos == "NO AUTORIZA"
-                                      ? { color: "red" }
-                                      : { color: " #AAB5A6" }
+                                        .firma_tratamiento_datos ==
+                                      "NO AUTORIZA"
+                                    ? { color: "red" }
+                                    : { color: " #AAB5A6" }
                                 }
                                 title="Tratamiento de datos Sin Firmar"
                               ></i>
@@ -564,7 +568,10 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-admitidos"}
                           >
-                            <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
+                            <a
+                              href="https://encuestaadmitidos.univalle.edu.co/"
+                              target="_blank"
+                            >
                               <i
                                 class="bi bi-card-checklist"
                                 style={
@@ -691,13 +698,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                      <Button
-                        className="boton_nuevo_registro_pequeño"
-                        onClick={handleModal}
-                      >
-                        NUEVO SEGUIMIENTO
-                      </Button>
-                    )}
+                    <Button
+                      className="boton_nuevo_registro_pequeño"
+                      onClick={handleModal}
+                    >
+                      NUEVO SEGUIMIENTO
+                    </Button>
+                  )}
                 </Row>
               </Col>
             ) : (
@@ -738,13 +745,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                      <Button
-                        className="boton_nuevo_registro_pequeño"
-                        onClick={handleModal}
-                      >
-                        NUEVO SEGUIMIENTO
-                      </Button>
-                    )}
+                    <Button
+                      className="boton_nuevo_registro_pequeño"
+                      onClick={handleModal}
+                    >
+                      NUEVO SEGUIMIENTO
+                    </Button>
+                  )}
                 </Row>
               </Col>
             )}
@@ -879,7 +886,7 @@ const Info_basica = (props) => {
           />
         </Col>
       </div>
-      
+
       <Modal show={show2} onHide={handleClose2} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Importante</Modal.Title>

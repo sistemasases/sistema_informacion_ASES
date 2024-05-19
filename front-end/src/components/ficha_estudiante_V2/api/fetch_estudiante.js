@@ -8,7 +8,6 @@
  * @date 13 de febrero del 2024
  */
 
-
 import { decryptTokenFromSessionStorage } from "../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const fetchEstudiante = async (id_user, id_sede) => {

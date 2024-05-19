@@ -1,7 +1,7 @@
 /**
  * @file AccesoDenegado.jsx
  * @version 1.0.0
- * @description Este componente se encarga de mostrar un mensaje acerca de los 
+ * @description Este componente se encarga de mostrar un mensaje acerca de los
  *              permisos necesarios para ver una página.
  * @author Nicol Ortiz
  * @contact nicol.ortiz@correounivalle.edu.co

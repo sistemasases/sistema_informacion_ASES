@@ -1,15 +1,14 @@
 /**
-  * @file all_estudiantes_reportes.js
-  * @version 1.0.0
-  * @description service que retorna todos los reportes por estudiante.
-  * @author Deiby A. Rodriguez R.
-  * @contact deiby.rodriguez@correounivalle.edu.co
-  * @date 13 de febrero del 2024
-*/
+ * @file all_estudiantes_reportes.js
+ * @version 1.0.0
+ * @description service que retorna todos los reportes por estudiante.
+ * @author Deiby A. Rodriguez R.
+ * @contact deiby.rodriguez@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
 import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import axios from "axios";
-
 
 const all_estudiantes_reportes = async (formData, id_usuario) => {
   try {

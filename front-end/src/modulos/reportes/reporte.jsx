@@ -1,26 +1,25 @@
 /**
-  * @file reporte.jsx
-  * @version 1.0.0
-  * @description modulo para visualizar las alertas.
-  * @author Steven Bernal
-  * @contact steven.bernal@correounivalle.edu.co
-  * @date 28 de marzo de 2023
-*/
+ * @file reporte.jsx
+ * @version 1.0.0
+ * @description modulo para visualizar las alertas.
+ * @author Steven Bernal
+ * @contact steven.bernal@correounivalle.edu.co
+ * @date 28 de marzo de 2023
+ */
 
-import {Container, Col, Row, Button, Form} from "react-bootstrap";
+import { Container, Col, Row, Button, Form } from "react-bootstrap";
 import {
   desencriptar,
   desencriptarInt,
   decryptTokenFromSessionStorage,
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import DataTable from "react-data-table-component";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import myGif from "../reportes/loading_data.gif";
 import { useNavigate } from "react-router-dom";
 import writeXlsxFile from "write-excel-file";
-import {CSVLink} from "react-csv";
+import { CSVLink } from "react-csv";
 import axios from "axios";
-
 
 // Columnas del reporte
 var columns = [
@@ -121,8 +120,7 @@ const Reporte = () => {
           estudiante: response.data,
         });
         setFiltered(response.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     estudiantes_por_rol();
   }, []);
@@ -161,8 +159,7 @@ const Reporte = () => {
         for (let i = 0; i < header_checks.length; i++) {
           header_checks[i].firstElementChild.removeAttribute("disabled");
         }
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     riesgos_estudiante();
   }, []);
@@ -214,9 +211,9 @@ const Reporte = () => {
   prueba = state.estudiante;
   inner_column_data = 0;
   /**
-    * Función para buscar según un evento de busqueda.
-    * @param {Event} e Información del evento con el valor a buscar.
-  */
+   * Función para buscar según un evento de busqueda.
+   * @param {Event} e Información del evento con el valor a buscar.
+   */
   const on_search_base = (e) => {
     var longitud_busqueda = e.target.value;
     if (longitud_busqueda.length == 0) {
@@ -425,10 +422,10 @@ const Reporte = () => {
   // Constante si no hay resultados
   const [noResults, setNoResults] = useState(false);
   /**
-    * Función para buscar según un evento de busqueda.
-    * @param {Event} e Información del evento con el valor a buscar.
-    * @param {Event} selected Información del evento con el valor a seleccionado.
-  */
+   * Función para buscar según un evento de busqueda.
+   * @param {Event} e Información del evento con el valor a buscar.
+   * @param {Event} selected Información del evento con el valor a seleccionado.
+   */
   const handle_column_search = (e, selected) => {
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === undefined) {
@@ -628,9 +625,9 @@ const Reporte = () => {
     }
   };
   /**
-    * Función para agregar una busqueda.
-    * @param {Event} selected Información del evento con el valor a seleccionado.
-  */
+   * Función para agregar una busqueda.
+   * @param {Event} selected Información del evento con el valor a seleccionado.
+   */
   const add_search_bar = (selected) => {
     const new_search_bar_data = [];
     new_search_bar_data.push({
@@ -654,9 +651,9 @@ const Reporte = () => {
     return new_search_bar_data;
   };
   /**
-    * Función para manejar los cambios en los filtro.
-    * @param {Event} e Información del evento con el valor a filtrar.
-  */
+   * Función para manejar los cambios en los filtro.
+   * @param {Event} e Información del evento con el valor a filtrar.
+   */
   const handleChange = (e) => {
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
@@ -676,9 +673,10 @@ const Reporte = () => {
     const seleccionado_cabeceras_filtros = cabecerasFiltros.find(
       (item) => item.name === e.target.name
     );
-    const seleccionado_condiciones_excepcion_prueba = filtros_Condicion_Excepcion_prueba.find(
-      (item) => item.name === "Condición de Excepción"
-    );
+    const seleccionado_condiciones_excepcion_prueba =
+      filtros_Condicion_Excepcion_prueba.find(
+        (item) => item.name === "Condición de Excepción"
+      );
     const seleccionado_cohorte = filtro_cohorte.find(
       (item) => item.name === e.target.name
     );
@@ -1365,8 +1363,8 @@ const Reporte = () => {
     },
   };
   /**
-    * Función para pasar el csv a excel.
-  */
+   * Función para pasar el csv a excel.
+   */
   const imprimir_excel = () => {
     let new_data_excel = [];
     for (let i = 0; i < filtered.length; i++) {

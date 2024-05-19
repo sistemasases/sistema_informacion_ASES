@@ -1,7 +1,7 @@
 /**
  * @file Formulario.jsx
  * @version 1.0.0
- * @description Este componente se encarga de mostrar un formulario para registrar 
+ * @description Este componente se encarga de mostrar un formulario para registrar
  *              inasistencias o seguimientos de un estudiante.
  * @author Nicol Ortiz
  * @contact nicol.ortiz@correounivalle.edu.co

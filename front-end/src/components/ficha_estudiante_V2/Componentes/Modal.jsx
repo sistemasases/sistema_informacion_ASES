@@ -1,9 +1,9 @@
 /**
  * @file Modal.jsx
  * @version 1.0.0
- * @description Este componente se encarga de renderizar un modal con contenido 
- *              proporcionado como children. El modal puede estar abierto o cerrado 
- *              dependiendo del estado de la propiedad isOpen. Se proporciona una función 
+ * @description Este componente se encarga de renderizar un modal con contenido
+ *              proporcionado como children. El modal puede estar abierto o cerrado
+ *              dependiendo del estado de la propiedad isOpen. Se proporciona una función
  *              handleClose para cerrar el modal cuando se hace clic en el botón "Close".
  * @author Nicol Ortiz
  * @contact nicol.ortiz@correounivalle.edu.co

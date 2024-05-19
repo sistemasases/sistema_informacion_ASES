@@ -1,20 +1,24 @@
 /**
-  * @file academico_desplegables.jsx
-  * @version 1.0.0
-  * @description Componente para los desplegables del módulo académico
-  * @author Componente Sistemas ASES
-  * @contact sistemas.ases@correounivalle.edu.co
-  * @date 13 de febrero del 2024
-*/
+ * @file academico_desplegables.jsx
+ * @version 1.0.0
+ * @description Componente para los desplegables del módulo académico
+ * @author Componente Sistemas ASES
+ * @contact sistemas.ases@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import Desplegable_item_listas_materias from './desplegable_Item_listas_materias';
-import Modal from 'react-bootstrap/Modal';
-import Estudiantes from './estudiantes';
-import Profesores from './profesores';
-import axios from 'axios';
-import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import Desplegable_item_listas_materias from "./desplegable_Item_listas_materias";
+import Modal from "react-bootstrap/Modal";
+import Estudiantes from "./estudiantes";
+import Profesores from "./profesores";
+import axios from "axios";
+import {
+  decryptTokenFromSessionStorage,
+  desencriptar,
+  desencriptarInt,
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 /**
  * Academico_desplegable
@@ -22,13 +26,12 @@ import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../
  * @returns {JSX.Element} Componente Academico_desplegable.
  */
 const Academico_desplegable = () => {
-
   // Configuración para las llamadas a la API
   const config = {
     headers: {
-      // Obtención del token de sesión 
-      Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
-    }
+      // Obtención del token de sesión
+      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+    },
   };
 
   // Estado para el interruptor de cambio
@@ -53,7 +56,7 @@ const Academico_desplegable = () => {
   });
 
   // Estado para la pestaña activa y su controlador
-  const [activeTabIndex, setActiveTabIndex] = useState('0');
+  const [activeTabIndex, setActiveTabIndex] = useState("0");
   const activeTab = (index) => {
     index === activeTabIndex ? setActiveTabIndex(0) : setActiveTabIndex(index);
   };
@@ -68,13 +71,10 @@ const Academico_desplegable = () => {
 
   // Efecto para realizar llamadas iniciales
   useEffect(() => {
-    if(desencriptar(sessionStorage.getItem('rol')) === 'profesor')
-    {
-      traer_materias_del_profesor()
-    }
-    else
-    {
-        traer_cursos_de_facultad();
+    if (desencriptar(sessionStorage.getItem("rol")) === "profesor") {
+      traer_materias_del_profesor();
+    } else {
+      traer_cursos_de_facultad();
     }
   }, []);
 
@@ -96,19 +96,20 @@ const Academico_desplegable = () => {
   };
 
   // Obtener cursos de la facultad desde la API
-  const traer_cursos_de_facultad = async (index)=>{
-  try{
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/academico/cursos_facultad/`, config);
-    set_state({
-      facultades: [{ materias: response.data }],
-      tiene_facultades: true
-    })
-
+  const traer_cursos_de_facultad = async (index) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/academico/cursos_facultad/`,
+        config
+      );
+      set_state({
+        facultades: [{ materias: response.data }],
+        tiene_facultades: true,
+      });
+    } catch (error) {
+      console.log("no capto el dato");
     }
-    catch (error){
-      console.log("no capto el dato")
-    }
-  }
+  };
 
   // Obtener facultades desde la API
   const traer_facultades = async () => {
@@ -163,7 +164,7 @@ const Academico_desplegable = () => {
   };
 
   // Determinar el tipo de usuario y renderizar el contenido correspondiente
-  if (desencriptar(sessionStorage.rol) === 'profesor') {
+  if (desencriptar(sessionStorage.rol) === "profesor") {
     return (
       <Container className="academico_container">
         <Row className="academico_fondo">
