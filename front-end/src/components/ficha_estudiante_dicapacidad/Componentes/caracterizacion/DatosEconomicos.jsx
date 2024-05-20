@@ -34,13 +34,13 @@ const DatosEconomicos = () => {
                 <input type="checkbox" />
                 <label>Solvencia económica</label>
               </div>
-              <div className="checkbox_group">
-                <label>Expectativas laborales</label>
-                <textarea
-                  name="expectativas_laborales"
-                  id="expectativas_laborales"
-                />
-              </div>
+            </div>
+            <div className="select_space">
+              <label>Expectativas laborales</label>
+              <textarea
+                name="expectativas_laborales"
+                id="expectativas_laborales"
+              />
             </div>
           </div>
 
