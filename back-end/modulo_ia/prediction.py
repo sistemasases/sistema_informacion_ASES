@@ -13,6 +13,9 @@ test_data_url = 'https://raw.githubusercontent.com/MavelSterling/datos_ML/main/t
 # Cargar datos desde la URL
 datos_usuario = pd.read_csv(test_data_url)
 
+# Eliminar la última columna
+datos_usuario = datos_usuario.drop(columns=datos_usuario.columns[-1])
+
 #print("Nombres de las columnas en el DataFrame:", datos_usuario.columns)
 
 # Renombrar las columnas en el DataFrame para el modelo
