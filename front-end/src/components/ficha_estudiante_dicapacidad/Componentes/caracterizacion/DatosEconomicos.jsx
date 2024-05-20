@@ -3,7 +3,7 @@ import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 
 const DatosEconomicos = () => {
   return (
-    <div>
+    <div className="space_content">
       <form>
         <div className="container_carac">
 

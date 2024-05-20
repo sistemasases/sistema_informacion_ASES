@@ -10,7 +10,7 @@ const AccesoServiciosSalud = () => {
   };
 
   return (
-    <>
+    <div className="space_content">
       <div className="container_carac">
         <div>
           <p className="titulo">Régimen de salud vinculado(a)</p>
@@ -126,7 +126,7 @@ const AccesoServiciosSalud = () => {
         </div>
       </div>
       <button>Editar</button>
-    </>
+    </div>
   );
 };
 

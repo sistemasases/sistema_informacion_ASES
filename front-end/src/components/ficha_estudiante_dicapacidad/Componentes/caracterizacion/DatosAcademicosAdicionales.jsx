@@ -5,7 +5,7 @@ const DatosAcademicosAdicionales = () => {
   const current_semestre = "2019-B";
   const nombre_colegio = "COLEGIO DEPARTAMENTAL DE LLORENTE (OFICIAL)";
   return (
-    <form>
+    <form className="space_content">
       <p className="descripcion">
         Datos académicos adicionales en la Universidad del Valle | Semestre
         actual ${current_semestre}

@@ -3,7 +3,7 @@ import Columns from "../Columns";
 
 const PercepcionCaracteristicasDiscapacidad = () => {
   return (
-    <form>
+    <form className="space_content">
       <div>
         <div className="select_space">
           <label>

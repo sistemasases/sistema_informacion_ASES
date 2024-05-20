@@ -58,6 +58,10 @@ textarea {
     background-color: #f2f2f2;
 }
 
+.space_content {
+    margin-left: 25px;
+}
+
 /* Aquí finaliza los estilos para las tablas */
 
 .select_space {
