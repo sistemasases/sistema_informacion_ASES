@@ -1,7 +1,28 @@
-import AcordionesHijos from "../AcordionesHijos";
-import Columns from "../Columns";
+import { useState } from "react";
 
 const PercepcionCaracteristicasDiscapacidad = () => {
+
+  const [visionRange1, setVisionRange1] = useState("0");
+  const [visionRange2, setVisionRange2] = useState("0");
+  const [visionRange3, setVisionRange3] = useState("0");
+  const [visionRange4, setVisionRange4] = useState("0");
+  const [visionRange5, setVisionRange5] = useState("0");
+  const [visionRange6, setVisionRange6] = useState("0");
+  const [visionRange7, setVisionRange7] = useState("0");
+  const [visionRange8, setVisionRange8] = useState("0");
+  const [visionRange9, setVisionRange9] = useState("0");
+  const [visionRange10, setVisionRange10] = useState("0");
+  const [visionRange11, setVisionRange11] = useState("0");
+  const [visionRange12, setVisionRange12] = useState("0");
+  const [visionRange13, setVisionRange13] = useState("0");
+  const [visionRange14, setVisionRange14] = useState("0");
+  const [visionRange15, setVisionRange15] = useState("0");
+  const [visionRange16, setVisionRange16] = useState("0");
+  const [visionRange17, setVisionRange17] = useState("0");
+  const [visionRange18, setVisionRange18] = useState("0");
+  const [visionRange19, setVisionRange19] = useState("0");
+  const [visionRange20, setVisionRange20] = useState("0");
+
   return (
     <form className="space_content">
       <div>
@@ -632,14 +653,15 @@ const PercepcionCaracteristicasDiscapacidad = () => {
                 </label>
               </td>
               <td>
-                <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+              <input
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange1}
+                onChange={(e) => setVisionRange1(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -653,13 +675,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange2}
+                onChange={(e) => setVisionRange2(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -673,13 +696,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange3}
+                onChange={(e) => setVisionRange3(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -693,13 +717,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange4}
+                onChange={(e) => setVisionRange4(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -715,13 +740,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange5}
+                onChange={(e) => setVisionRange5(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -737,13 +763,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange6}
+                onChange={(e) => setVisionRange6(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -757,13 +784,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange7}
+                onChange={(e) => setVisionRange7(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -777,13 +805,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange8}
+                onChange={(e) => setVisionRange8(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -797,13 +826,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange9}
+                onChange={(e) => setVisionRange9(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -817,13 +847,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange10}
+                onChange={(e) => setVisionRange10(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -837,13 +868,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange11}
+                onChange={(e) => setVisionRange11(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -857,13 +889,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange12}
+                onChange={(e) => setVisionRange12(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -877,13 +910,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange13}
+                onChange={(e) => setVisionRange13(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -897,13 +931,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange14}
+                onChange={(e) => setVisionRange14(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -917,13 +952,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange15}
+                onChange={(e) => setVisionRange15(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -937,13 +973,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange16}
+                onChange={(e) => setVisionRange16(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -957,13 +994,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange17}
+                onChange={(e) => setVisionRange17(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -976,14 +1014,15 @@ const PercepcionCaracteristicasDiscapacidad = () => {
                 <label for="ojos">Vestirse y desvestirse</label>
               </td>
               <td>
-                <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+              <input
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange18}
+                onChange={(e) => setVisionRange18(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -996,14 +1035,15 @@ const PercepcionCaracteristicasDiscapacidad = () => {
                 <label for="ojos">Consumir alimentos</label>
               </td>
               <td>
-                <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+              <input
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange19}
+                onChange={(e) => setVisionRange19(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
@@ -1017,13 +1057,14 @@ const PercepcionCaracteristicasDiscapacidad = () => {
               </td>
               <td>
                 <input
-                  type="range"
-                  id="vision_range"
-                  name="vision_range"
-                  min="0"
-                  max="100"
-                  value="Lo hace sin ayuda"
-                />
+                type="range"
+                id="vision_range"
+                name="vision_range"
+                min="0"
+                max="100"
+                value={visionRange20}
+                onChange={(e) => setVisionRange20(e.target.value)}
+              />
                 <span id="vision_value">Lo hace sin ayuda</span>
               </td>
               <td>
