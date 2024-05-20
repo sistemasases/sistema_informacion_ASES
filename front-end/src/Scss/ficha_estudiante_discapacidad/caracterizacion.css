@@ -1,0 +1,112 @@
+.container_carac {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Dos columnas iguales */
+    gap: 20px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+    /* Hace que este elemento ocupe ambas columnas */
+}
+
+.titulo {
+    background-color: rgba(128, 128, 128, 0.712);
+    padding: 3px;
+    padding-left: 6px;
+    margin-top: 15px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #a09f9f;
+    padding: 5px;
+}
+
+textarea {
+    height: 80px;
+    resize: none;
+}
+
+/* Estilos para las tablas */
+.table-style {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 12px;
+}
+
+.table-style th,
+.table-style td {
+    padding: 8px;
+    text-align: left;
+}
+
+.table-style [type="checkbox"] {
+    margin-right: 5px;
+}
+
+.table-style th {
+    background-color: #f2f2f2;
+}
+
+.table-style tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Aquí finaliza los estilos para las tablas */
+
+.select_space {
+    margin-bottom: 8px;
+}
+
+.enunciado {
+    font-weight: 700;
+}
+
+.select_space label,
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.inline-input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.inline-input-group label,
+p {
+    margin-right: 10px;
+}
+
+.descripcion {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.styled-hr {
+    border: none;
+    height: 2px;
+    background-color: #000;
+    margin: 0;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+button {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: rgb(180, 33, 33);
+    margin-top: 5px;
+}
