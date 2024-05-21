@@ -110,7 +110,7 @@ def predecir_usuario(datos_usuario):
 
     # Crear un DataFrame con los resultados
     resultados_df = datos_usuario.copy()
-    resultados_df['Probabilidad de aprobar'] = probabilidades_clase_positiva
+    resultados_df['Probabilidad de aprobar'] = np.round(probabilidades_clase_positiva, 4)
     resultados_df['Mensaje'] = mensajes
 
     return resultados_df
