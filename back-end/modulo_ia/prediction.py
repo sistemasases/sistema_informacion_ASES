@@ -8,58 +8,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 import os
 
-test_data_url = 'https://raw.githubusercontent.com/MavelSterling/datos_ML/main/test_data_mayo.csv'
-
-# Cargar datos desde la URL
-datos_usuario = pd.read_csv(test_data_url)
-
-# Eliminar la última columna
-datos_usuario = datos_usuario.drop(columns=datos_usuario.columns[-1])
-
-#print("Nombres de las columnas en el DataFrame:", datos_usuario.columns)
-
-# Renombrar las columnas en el DataFrame para el modelo
-nombres_columnas = {
-    'periodo_matricula': 'periodo_matricula',
-    'edad': 'EA_Edad',
-    'sexo': 'EA_Sexo',
-    'pais_nac': 'EA_Pasdenacimiento',
-    'departamento_nac': 'EA_departamentodenacimiento',
-    'municipio_nac': 'EA_Municipiodenacimiento',
-    'discapacidad': 'EA_Tienealgntipodediscapac',
-    'estadocivil': 'EA_Estadocivil',
-    'cultura': 'EA_Deacuerdoconsuculturapu',
-    'estrato_actual': 'EA_Estratodelaresidenciaactu',
-    'pais_res': 'EA_Pasdelaresidenciaactual',
-    'departamento_res': 'EA_Departamentodelaresidencia',
-    'municipio_res': 'EA_Municipiodelaresidenciaac',
-    'lugar_adeacuado': 'EA_Consideraustedquetieneun',
-    'ocupacion_estu': 'EA_Ocupacindelestudiante',
-    'ingresos_hogar': 'EA_Ingresosmensualesdelhogar',
-    'gastos_hogar': 'EA_GastosmensualesdelhogarG',
-    'max_nivel_educativo_padre': 'EA_Mximoniveleducativodelpa',
-    'max_nivel_educativo_madre': 'EA_Mximoniveleducativodela',
-    'ingresos_suficientes': 'EA_Consideraquelosingresosd',
-    'hijos': 'EA_Cuntoshijostiene',
-    'cambiar_programa': 'EA_Piensaafuturocambiarsede',
-    'habilidades_mate': 'EA_Indiqueycalifiquesushabil',
-    'tiene_acceso_computador': 'EA_Tieneaccesoacomputador',
-    'tiene_accesoa_internet': 'EA_TieneaccesoaInternet',
-    'facultad': 'EA_Facultad',
-    'prueba_diagnostica': 'EA_PruebaDiagnostica'
-}
-
-# Renombrar las columnas en el DataFrame
-datos_usuario.rename(columns=nombres_columnas, inplace=True)
-
-# Imprimir los nombres de las columnas después de renombrar
-#print("Nombres de las columnas después de renombrar:", datos_usuario.columns)
-
-
-datos_usuario.rename(columns=nombres_columnas, inplace=True)
-
 # Función para cargar el modelo y realizar predicciones para un solo usuario
-def predecir_usuario(datos_usuario):
+def predecir_usuarios(datos_estudiantes):
     # URL del preprocesador en GitHub (enlace raw)
     url_preprocesador = 'https://raw.githubusercontent.com/sistemasases/sistema_informacion_ASES/mavelyn/back-end/modulo_ia/preprocesador.pkl'
     
@@ -87,10 +37,10 @@ def predecir_usuario(datos_usuario):
                    'EA_Tieneaccesoacomputador', 'EA_TieneaccesoaInternet', 'EA_Facultad']
     
     for col in cat_attribs:
-        datos_usuario[col] = datos_usuario[col].astype(str)
+        datos_estudiantes[col] = datos_estudiantes[col].astype(str)
 
     # Transformar datos del DataFrame usando el preprocesador
-    datos_preprocesados = preprocesador.transform(datos_usuario)
+    datos_preprocesados = preprocesador.transform(datos_estudiantes)
     
     # Realizar las predicciones
     probabilidades_clase_positiva = modelo.predict_proba(datos_preprocesados)[:, 0]
@@ -109,13 +59,8 @@ def predecir_usuario(datos_usuario):
         mensajes.append(mensaje)
 
     # Crear un DataFrame con los resultados
-    resultados_df = datos_usuario.copy()
+    resultados_df = datos_estudiantes.copy()
     resultados_df['Probabilidad de aprobar'] = np.round(probabilidades_clase_positiva, 4)
     resultados_df['Mensaje'] = mensajes
 
     return resultados_df
-
-
-# Llamar a la función con los datos cargados
-resultados_mensaje = predecir_usuario(datos_usuario)
-print(resultados_mensaje)
