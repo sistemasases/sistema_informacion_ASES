@@ -28,7 +28,7 @@ const Modal = ({ isOpen, handleClose, children }) => {
     <div className="modalF">
       <div className="modal-contentF">
         {children}
-        <button onClick={handleClose} className="boton">
+        <button onClick={handleClose} className="boton_cerrar">
           Close
         </button>
       </div>

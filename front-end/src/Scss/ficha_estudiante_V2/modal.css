@@ -21,3 +21,7 @@
     max-height: calc(100vh - 200px);
     overflow-y: auto;
   }
+
+  .boton_cerrar {
+    width: 100%;
+  }

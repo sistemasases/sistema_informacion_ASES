@@ -35,7 +35,7 @@ const Formulario = () => {
     <>
       <div className="otherForm">
         <p>{descripcion}</p>
-        <button className="boton" onClick={() => setForm(!form)}>
+        <button className="boton_ficha_estudiante_v2" onClick={() => setForm(!form)}>
           {nombreBoton}
         </button>
       </div>

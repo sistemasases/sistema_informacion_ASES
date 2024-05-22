@@ -17,7 +17,7 @@
     margin-bottom: 20px;
 }
 
-.boton{
+.boton_ficha_estudiante_v2{
     width: 45%;
     height: 40px;
     line-height: 40px;
@@ -28,7 +28,7 @@
     font-weight: 700;
 }
 
-.boton:hover{
+.boton_ficha_estudiante_v2:hover{
     background-color: #0c7c7e;
 }
 

@@ -125,7 +125,7 @@ const AccesoServiciosSalud = () => {
           </div>
         </div>
       </div>
-      <button>Editar</button>
+      <button className="servicios_salud_editar">Editar</button>
     </div>
   );
 };

@@ -1,105 +1,107 @@
-.otherForm{
-    padding: 20px;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+.otherForm {
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
-.otherForm p{
-    margin-top: 7px;
+.otherForm p {
+  margin-top: 7px;
 }
 
-.titleG{
-    text-align: center;
-    font-size: 40px;
-    font-weight: 700;
-    color: #1ec3c5;
-    margin-bottom: 20px;
+.titleG {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 700;
+  color: #1ec3c5;
+  margin-bottom: 20px;
 }
 
-.boton{
-    width: 45%;
-    height: 40px;
-    line-height: 40px;
-    border: none;
-    border-radius: 10px;
-    background-color: #0f9c9e;
-    color: #fff;
-    font-weight: 700;
+.boton_formulario {
+  width: 45%;
+  height: 40px;
+  line-height: 40px;
+  border: none;
+  border-radius: 10px;
+  background-color: #0f9c9e;
+  color: #fff;
+  font-weight: 700;
 }
 
-.boton:hover{
-    background-color: #0c7c7e;
+.boton_formulario:hover {
+  background-color: #0c7c7e;
 }
 
 .formulario {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    max-width: 700px;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .formulario label {
-    font-weight: lighter;
+  font-weight: lighter;
 }
 
 .formulario p {
-    font-weight: 700;
-    text-align: left;
-    color: #1ec3c5;
-    width: 100%;
-    padding: 10px;
+  font-weight: 700;
+  text-align: left;
+  color: #1ec3c5;
+  width: 100%;
+  padding: 10px;
 }
 
-.inputs{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: space-evenly;
-    margin-bottom: 20px;
+.inputs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
 }
 
 .inputs div {
-    width: 45%;
+  width: 45%;
 }
 
-.formulario input[type="text"], .formulario input[type="date"], .formulario input[type="time"] {
-    width: 100%;
-    height: 40px;
-    border-radius: 5px;
-    border: 1px solid #a09f9f;
-    padding: 5px;
+.formulario input[type="text"],
+.formulario input[type="date"],
+.formulario input[type="time"] {
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid #a09f9f;
+  padding: 5px;
 }
 
 .formulario textarea {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100px;
-    resize: none;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100px;
+  resize: none;
 }
 
 .checkbox_container {
-    display: grid;
-    width: 90%;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    border-top: 1px solid #a09f9f;
-    border-bottom: 1px solid #a09f9f;
-    margin-bottom: 20px;
-    text-align: left;
-    padding: 10px;
+  display: grid;
+  width: 90%;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  border-top: 1px solid #a09f9f;
+  border-bottom: 1px solid #a09f9f;
+  margin-bottom: 20px;
+  text-align: left;
+  padding: 10px;
 }
 
 .sin_borde {
-    border: none;
+  border: none;
 }
 
 .checkbox_group {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .botones{
@@ -135,24 +137,22 @@
     background-color: #55554e;
 }
 
-
 @media (max-width: 700px) {
-    .checkbox_container {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 300px;
-    }
+  .checkbox_container {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 300px;
+  }
 }
 
 .formulario .error {
-    color: #e92b2d;
-    font-weight: 600;
-    font-size: 12px;
+  color: #e92b2d;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .formulario .exito {
-    text-align: center;
-    font-size: 14px;
-    padding-top: 20px;
-    color: #02a802;
+  text-align: center;
+  font-size: 14px;
+  padding-top: 20px;
+  color: #02a802;
 }
-

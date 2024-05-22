@@ -112,7 +112,7 @@ const Reporte = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
             id_usuario.toString() +
-            "/",
+            "/",  
           { params: { usuario_rol: rol, sede: sede } }
         );
         set_state({

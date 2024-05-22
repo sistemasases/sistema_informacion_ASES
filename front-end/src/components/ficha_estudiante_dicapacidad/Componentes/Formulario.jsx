@@ -25,7 +25,7 @@ const Formulario = () => {
     <>
       <div className="otherForm">
         <p>{descripcion}</p>
-        <button className="boton" onClick={() => setForm(!form)}>
+        <button className="boton_formulario" onClick={() => setForm(!form)}>
           {nombreBoton}
         </button>
       </div>
