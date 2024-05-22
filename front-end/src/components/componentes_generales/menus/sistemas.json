@@ -66,13 +66,13 @@
             },
             {
                 "id":5,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/",
                 "name":"Reporte geográfico Ases",
                 "icon":"bi bi-pin-map-fill"
             },
             {
                 "id":6,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/",
                 "name":"Descarga de formularios",
                 "icon":"bi bi-file-earmark-arrow-down-fill"
             },
@@ -90,7 +90,7 @@
             },
             {
                 "id":9,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/",
                 "name":"Reporte grafico ASES",
                 "icon":"bi-clipboard2-data-fill"
             },
@@ -103,7 +103,7 @@
             ,
             {
                 "id":11,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/",
                 "name":"Reporte grupal",
                 "icon":"bi bi-ui-checks-grid"
             },

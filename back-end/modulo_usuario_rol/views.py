@@ -17,7 +17,7 @@ from modulo_instancia.models import semestre, cohorte
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual, riesgo_individual
 from modulo_usuario_rol.models import firma_tratamiento_datos
-from django.db.models import Q
+from django.db.models import Q, Subquery, OuterRef
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -33,6 +33,7 @@ from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import get_object_or_404
 from django.core import serializers
+
 
 """
 POR EL GRAN TAMAÑO DE ESTA VISTA SE DIVIDIÓ LA MISMA EN VARIAS PARTES
@@ -170,6 +171,50 @@ class retiro_viewsets(viewsets.ModelViewSet):
     serializer_class = retiro_serializer
     permission_classes = (IsAuthenticated,)
     queryset = retiro_serializer.Meta.model.objects.all()
+    
+class motivo_viewsets(viewsets.ModelViewSet):
+    """
+    Viewsets del modelo de Motivo.
+
+    Esta vista permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar)
+    en el modelo de motivo.
+
+    Permisos:
+    - El usuario debe estar autenticado para acceder a esta vista.
+
+    Serializer:
+    - Se utiliza 'motivo_serializer' para serializar los datos del modelo.
+
+    Atributos:
+    - serializer_class: Clase del serializador utilizado.
+    - permission_classes: Clases de permisos aplicadas a la vista.
+    - queryset: Conjunto de objetos del modelo 'Retiro'.
+
+    Métodos HTTP admitidos:
+    - GET: Obtiene una lista de retiros.
+    - POST: Crea un nuevo retiro.
+    - PUT: Actualiza un retiro existente.
+    - DELETE: Elimina un retiro existente.
+
+    Gestión de solicutudes HTTP VIEWSETS:
+    (Redefinida)list: Maneja las solicitudes GET para obtener una lista de recursos, solo trae los motivos que estan activos, es decir, los que tienen el campo motivo_activo en True.
+    create: Maneja las solicitudes POST para crear un nuevo recurso.
+    retrieve: Maneja las solicitudes GET para obtener un recurso específico por su clave primaria.
+    update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
+    partial_update: Maneja las solicitudes PATCH para realizar una actualización parcial de un recurso específico por su clave primaria.
+    destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
+    """
+
+    serializer_class = motivo_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = motivo_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+
+        lista_motivos_activos = motivo.objects.filter(motivo_activo = True).distinct().order_by('id')
+        respuesta = motivo_serializer (lista_motivos_activos, many=True)
+        return Response(respuesta.data, status=status.HTTP_200_OK)
+
 
 class estudiante_viewsets(viewsets.ModelViewSet):
     """
@@ -218,6 +263,14 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         fech_actual = datetime.now()
         fecha_ = timedelta(days=7)
         fecha_limite = fech_actual - fecha_
+        # print(fecha_limite)
+        # print(fecha)
+        
+        # print("inasistencia " + inasistencia)
+        # date_obj = datetime.strptime(
+        #         fecha, "%Y-%m-%d")
+        # if(date_obj.date() > fecha_limite.date()):
+        #     print("SEGUIMIENTO RECIENTE")
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
             if inasistencia == None or inasistencia == '' or inasistencia == 'None':
                 return "FICHA FALTANTE"
@@ -233,10 +286,14 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             if inasistencia == None or inasistencia == '' or inasistencia == 'None':
                 if date_obj.date() <= fecha_limite.date():
                     return "FICHA FALTANTE"
+                elif (date_obj.date() > fecha_limite.date()):
+                    return "SEGUIMIENTO RECIENTE"
             else:
                 ina = datetime.strptime(inasistencia, "%Y-%m-%d")
                 if date_obj.date() <= ina.date():
                     return "INASISTENCIA"
+                elif (date_obj.date() > fecha_limite.date()):
+                    return "SEGUIMIENTO RECIENTE"
                 else:
                     return "FICHA FALTANTE"
             return "SEGUIMIENTO RECIENTE"
@@ -584,11 +641,20 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         estudiantes_asignados = estudiante.objects.filter(asignacion__id_usuario=pk, asignacion__estado=True, asignacion__id_semestre=serializer_semestre.data['id']).distinct()
         # Obtener los programas asociados a la sede proporcionada en la solicitud
         programas_sede = programa.objects.filter(id_sede=request.data["id_sede"])
-        # Filtrar todos los estudiantes asociados a los programas de la sede
-        estudiantes_totales = estudiante.objects.exclude(
-            asignacion__id_semestre=serializer_semestre.data['id'], asignacion__estado=True).filter(
+        # Subconsulta para obtener las asignaciones en el semestre actual con estado True
+        asignaciones_semestre_actual_true = asignacion.objects.filter(
+            id_estudiante=OuterRef('pk'), 
+            id_semestre=serializer_semestre.data['id'], 
+            estado=True
+        )
+
+        # Consulta principal
+        estudiantes_totales = estudiante.objects.filter(
             Q(id_estudiante_in_programa_estudiante__id_programa__in=programas_sede) &
-            Q(estudiante_elegible = True)).distinct()
+            Q(estudiante_elegible=True)
+        ).exclude(
+            id__in=Subquery(asignaciones_semestre_actual_true.values('id_estudiante'))
+        ).distinct()
         # Filtrar los estudiantes no asignados para el semestre actual
         # estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
         # # Excluir los estudiantes no asignados de la lista total de estudiantes

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { Row, Col } from "styled-bootstrap-grid";
-import { Button, ListGroupItem } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual";
 import { useEffect } from "react";
 import axios from "axios";
 import Selector from "../../components/ficha_estudiante/selector";
-import Ficha_footer from "./ficha_footer";
 import Info_registros from "./info_registros";
 import Programas_academicos from "./programas_academicos";
 import Inasistencia from "../seguimiento_forms/form_inasistencia";
@@ -22,7 +21,6 @@ import {
   desencriptarInt,
   encriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
-import myGif from "../../modulos/reportes/loading_data.gif";
 
 const Info_basica = (props) => {
   const config = {
@@ -183,8 +181,9 @@ const Info_basica = (props) => {
   const [url_estudiante, setUrl] = useState("");
 
   useEffect(() => {
-    const currentUrl = window.location.href;
+    const currentUrl = desencriptar(sessionStorage.getItem('path'));
     const subUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
+    console.log(subUrl)
     setUrl(subUrl);
   }, []);
 
@@ -195,8 +194,8 @@ const Info_basica = (props) => {
       };
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
-          state.data_user[index]["id"] +
-          "/",
+        state.data_user[index]["id"] +
+        "/",
         config,
         { paramsget }
       );
@@ -543,10 +542,7 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
-                            <a
-                              href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link"
-                              target="_blank"
-                            >
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
                               <i
                                 class="bi bi-check2-square"
                                 style={
@@ -554,10 +550,9 @@ const Info_basica = (props) => {
                                     .firma_tratamiento_datos == "SIN FIRMAR"
                                     ? { color: "red" }
                                     : state.total_datos_estudiante_seleccionado
-                                        .firma_tratamiento_datos ==
-                                      "NO AUTORIZA"
-                                    ? { color: "red" }
-                                    : { color: " #AAB5A6" }
+                                      .firma_tratamiento_datos == "NO AUTORIZA"
+                                      ? { color: "red" }
+                                      : { color: " #AAB5A6" }
                                 }
                                 title="Tratamiento de datos Sin Firmar"
                               ></i>
@@ -568,10 +563,7 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-admitidos"}
                           >
-                            <a
-                              href="https://encuestaadmitidos.univalle.edu.co/"
-                              target="_blank"
-                            >
+                            <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
                               <i
                                 class="bi bi-card-checklist"
                                 style={
@@ -698,13 +690,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                    <Button
-                      className="boton_nuevo_registro_pequeño"
-                      onClick={handleModal}
-                    >
-                      NUEVO SEGUIMIENTO
-                    </Button>
-                  )}
+                      <Button
+                        className="boton_nuevo_registro_pequeño"
+                        onClick={handleModal}
+                      >
+                        NUEVO SEGUIMIENTO
+                      </Button>
+                    )}
                 </Row>
               </Col>
             ) : (
@@ -745,13 +737,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                    <Button
-                      className="boton_nuevo_registro_pequeño"
-                      onClick={handleModal}
-                    >
-                      NUEVO SEGUIMIENTO
-                    </Button>
-                  )}
+                      <Button
+                        className="boton_nuevo_registro_pequeño"
+                        onClick={handleModal}
+                      >
+                        NUEVO SEGUIMIENTO
+                      </Button>
+                    )}
                 </Row>
               </Col>
             )}
@@ -886,7 +878,7 @@ const Info_basica = (props) => {
           />
         </Col>
       </div>
-
+      
       <Modal show={show2} onHide={handleClose2} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Importante</Modal.Title>
