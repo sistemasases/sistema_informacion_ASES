@@ -13,6 +13,7 @@
     "chart.js": "^4.4.2",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
+    "formik": "^2.4.6",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-csv": "^2.2.2",
@@ -25,8 +26,10 @@
     "react-scripts": "^5.0.1",
     "react-select": "^5.8.0",
     "styled-bootstrap-grid": "^3.1.2",
+    "sweetalert": "^2.1.2",
     "web-vitals": "^4.0.0",
-    "write-excel-file": "^1.4.30"
+    "write-excel-file": "^1.4.30",
+    "zustand": "^4.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
