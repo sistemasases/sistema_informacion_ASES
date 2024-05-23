@@ -26,6 +26,10 @@ import Sin_seguimientos from "../sin_seguimientos/sin_seguimiento.jsx";
 import Desercion from "../desercion/desercion.jsx";
 import Academico_pestaña from "../academico_pestaña/academico_pestaña.jsx";
 import Calificador from "../academico_pestaña/calificador.jsx";
+import FichaEstudianteDiscapacidad from "../discapacidad/ficha_estudiante/FichaEstudianteDiscapacidad.jsx";
+import ReporteDiscapacidad from "../discapacidad/reporte/ReporteDiscapacidad.jsx";
+import Registro from "../discapacidad/registro/Registro.jsx";
+import FichaEstudianteV2 from "../ficha_estudiante_V2/FichaEstudianteV2.jsx";
 
 /**
  * Controla las rutas del path
@@ -51,8 +55,13 @@ const Path = (props) => {
           {path.startsWith('/sin_seguimientos') ? (<Sin_seguimientos path_actual={"/sin_seguimientos"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/reporte_seguimientos') ? (<Reporte_seguimientos path_actual={"/reporte_seguimientos"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/ficha_monitor') ? (<Ficha_monitor path_actual={"/ficha_monitor"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path.startsWith('/ficha_estudiante') ? (<Ficha_estudiante path_actual={"/ficha_estudiante/sin_seleccion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/ficha_estudiante') ? 
+            (path.startsWith("/ficha_estudiante_discapacidad") ? (<FichaEstudianteDiscapacidad path_actual={"/ficha_estudiante_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):
+                                                                 (<Ficha_estudiante path_actual={"/ficha_estudiante/sin_seleccion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>)):(<></>)}
           {path.startsWith("/calificador") ? (<Calificador path_actual={"/calificador"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/reporte_discapacidad") ? (<ReporteDiscapacidad path_actual={"/reporte_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/registro_discapacidad") ? (<Registro path_actual={"/registro_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/ficha_est_v2") ? (<FichaEstudianteV2 path_actual={"/ficha_est_v2"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
         </>
       ) : (
         <Pagina_no_encontrada/>
