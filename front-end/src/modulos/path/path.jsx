@@ -25,6 +25,7 @@ import Reporte_seguimientos from "../reporte_seguimientos/reporte_seguimientos.j
 import Sin_seguimientos from "../sin_seguimientos/sin_seguimiento.jsx";
 import Desercion from "../desercion/desercion.jsx";
 import Academico_pestaña from "../academico_pestaña/academico_pestaña.jsx";
+import Calificador from "../academico_pestaña/calificador.jsx";
 
 /**
  * Controla las rutas del path
@@ -51,7 +52,7 @@ const Path = (props) => {
           {path.startsWith('/reporte_seguimientos') ? (<Reporte_seguimientos path_actual={"/reporte_seguimientos"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/ficha_monitor') ? (<Ficha_monitor path_actual={"/ficha_monitor"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/ficha_estudiante') ? (<Ficha_estudiante path_actual={"/ficha_estudiante/sin_seleccion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path.startsWith("/calificador") ? (<Ficha_estudiante path_actual={"/ficha_estudiante/sin_seleccion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/calificador") ? (<Calificador path_actual={"/calificador"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
         </>
       ) : (
         <Pagina_no_encontrada/>
