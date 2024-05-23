@@ -16,10 +16,6 @@ const Asignaciones_component = (props) =>{
     }
   };
 
-
-
-
-
   const [selectedTabIndices, setSelectedTabIndices] = useState({
     practicantes: null,
     monitores: null,
