@@ -1,0 +1,13 @@
+.seguimiento{
+    width: 95%;
+    height: 40px;
+    line-height: 40px;
+    border: 2px solid #696969c2;
+    margin-left: 20px;
+    padding-left: 5px;
+}
+
+.seguimiento:hover{
+    background-color: #696969c2;
+}
+
