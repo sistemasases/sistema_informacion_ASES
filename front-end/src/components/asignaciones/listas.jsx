@@ -1,31 +1,12 @@
 import React from 'react';
 import {useState } from "react";
-import Form from 'react-bootstrap/Form';
 import { Row, Col, Button} from "react-bootstrap";
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
+import Detalles from "./opciones_retirar_estudiante.json";
 import {decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Listas = (props) => {
-
-
-    const [state, set_state] = useState({
-        detalle: "",
-    }
-    )
-
-    const handleForm = (e) => {
-        set_state({
-            ...state,
-            [e.target.name]: e.target.value
-        })
-    }
-
-    const config = {
-        headers: {
-            Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
-        }
-    };
 
     const config2 = {
         Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
@@ -33,23 +14,23 @@ const Listas = (props) => {
 
     const{childClicked, childClicked2} = props
 
-
-
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const [show2, setShow2] = useState(false);
-    const handleClose2 = () => setShow2(false);
+    const handleClose2 = () => {
+        setShow2(false);
+        setDetalleSubmenu([]);
+        setMotivoSubmenu([]);
+    };
     const handleShow2 = () => setShow2(true);
 
-    const [show3, setShow3] = useState(false);
-    const handleClose3 = () => setShow3(false);
-    const handleShow3 = () => setShow3(true);
+    const [detalleSubmenu, setDetalleSubmenu] = useState([]);
+    const [motivoSubmenu, setMotivoSubmenu] = useState([]);
 
     const quitar_estudiante = (e) =>{
         let formData = new FormData();
-
         formData.append("llamada", "eliminar");
         formData.append("id_usuario", props.monitor_seleccionado);
         formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
@@ -64,20 +45,34 @@ const Listas = (props) => {
         })
         .then(response => {
             childClicked2(props.monitor_seleccionado)
+            handleClose2()
+            handleClose()
         })
         .catch(error => {
-            console.log("siii")
+            console.log(error)
         });
     }
 
-    const retirar_estudiante = (e) =>{
+    const detalle_option = async (item) => {
+        await Detalles.map((item2)=> {
+            if(item2.motivo === item){
+                setDetalleSubmenu(item2.detalle)
+                setMotivoSubmenu(item2)
+            }
+        })
+        handleShow2()
+    };
+
+    const retirar_estudiante = (detalle) =>{
         let formData = new FormData();
 
         formData.append("llamada", "retiro");
         formData.append("id_usuario", props.monitor_seleccionado);
         formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
         formData.append("id_estudiante", props.item.id);
-        formData.append("detalle", state.detalle);
+        formData.append("id_motivo", motivoSubmenu.id);
+        formData.append("detalle", detalle);
+        
         axios({
             // Endpoint to send files
             url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
@@ -86,10 +81,24 @@ const Listas = (props) => {
             data: formData,
         })
         .then(response => {
-            childClicked2(props.monitor_seleccionado)
+            axios({
+                // Endpoint to send files
+                url: `${process.env.REACT_APP_API_URL}/usuario_rol/retiro/`,
+                method: "POST",
+                headers: config2,
+                data: formData,
+            })
+            .then(response => {
+                childClicked2(props.monitor_seleccionado)
+                handleClose2()
+                handleClose()
+            })
+            .catch(error => {
+                window.alert("Ocurrió un error a la hora de crear el retiro del estudiante")
+            });
         })
         .catch(error => {
-            console.log("siii")
+            window.alert("Ocurrió un error a la hora de desvincular al estudiante")
         });
     }
 
@@ -109,9 +118,11 @@ const Listas = (props) => {
         })
         .then((res)=>{
         childClicked(props.practicante_seleccionado)
+        handleClose2()
+        handleClose()
         })
         .catch(err=>{
-            console.log("sdafw")
+            console.log(err)
         })
 
     }
@@ -131,10 +142,11 @@ const Listas = (props) => {
       data: formData,
         })
         .then((res)=>{
-        //console.log(res)
+            handleClose2()
+            handleClose()
         })
         .catch(err=>{
-            console.log("sdara")
+            console.log(err)
         })
 
     }
@@ -178,19 +190,11 @@ const Listas = (props) => {
                                 {props.item.last_name}
                             </Row>
                         </Col>
-{/*
-                        <Col  xs={"2"} md={"2"}  className="center_asignacion"> 
-                            <button className="asignaciones_icons">
-                                <i class="bi bi-arrow-left-right"></i>
-                            </button>
-                        </Col>
-*/}
                     </Row>
                         
                 </Col>
                 )
-            }
-                    
+            }    
             </Row> 
         )
     }else if(props.rol === "monitor") {
@@ -236,14 +240,6 @@ const Listas = (props) => {
                                     {props.item.last_name}
                                 </Row>
                             </Col>
-
-{/*
-                            <Col  xs={"2"} md={"2"} className="center_asignacion"> 
-                            <button className="asignaciones_icons">
-                                <i class="bi bi-arrow-left-right"></i>
-                            </button>
-                            </Col>
-*/}
                         </Row>                  
                     </Col>
                 )
@@ -254,9 +250,8 @@ const Listas = (props) => {
     else if (props.rol === "estudiante"){
         return (
         <Row className="row_opcion">
-        {
-                props.monitor_seleccionado === '' ?
-                (
+            { props.monitor_seleccionado === '' ?
+            (
             <Col >
                 <Row className="asignaciones_hover1">
                     <Col  xs={"10"} md={"8"}> 
@@ -273,100 +268,77 @@ const Listas = (props) => {
             )
             :
             (
-                <Col >
-                    <Row className="asignaciones_hover1">
-                        <Col  xs={"2"} md={"2"} className="center_asignacion"> 
-                            <button onClick={handleShow} className="asignaciones_icons_quitar">
-                                <i class="bi bi-x"></i>                                                    
-                            </button>
-                        </Col>
-
-
-                        <Col  xs={"10"} md={"8"}> 
-                            <Row className="nombres_asignacion">
-                                {props.item.cod_univalle}
-                            </Row>
-                            <Row className="nombres_asignacion">
-                                {props.item.nombre}
-                                {props.item.apellido}
-                            </Row>
-                        </Col>
-
-{/*
-                        <Col  xs={"2"} md={"2"} className="center_asignacion"> 
-                        <button className="asignaciones_icons">
-                            <i class="bi bi-arrow-left-right"></i>
+            <Col >
+                <Row className="asignaciones_hover1">
+                    <Col  xs={"2"} md={"2"} className="center_asignacion"> 
+                        <button onClick={handleShow} className="asignaciones_icons_quitar">
+                            <i class="bi bi-x"></i>                                                    
                         </button>
-                        </Col>
-*/}
-                    </Row>
+                    </Col>
+                    <Col  xs={"10"} md={"8"}> 
+                        <Row className="nombres_asignacion">
+                            {props.item.cod_univalle}
+                        </Row>
+                        <Row className="nombres_asignacion">
+                            {props.item.nombre}
+                            {props.item.apellido}
+                        </Row>
+                    </Col>
+                </Row>
             </Col>
             )
             }
-                <Modal show={show} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title></Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body > 
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title></Modal.Title>
+                </Modal.Header>
+                <Modal.Body > 
+                    <h6>
+                        Seleccione una acción: 
+                    </h6>
+                    <Col  xs={"10"} md={"8"}> 
+                    <Row><Button onClick={()=>quitar_estudiante()} >Quitar del monitor</Button></Row>
+                    <br/>
+                    {props.opciones_retiro.map((item) => (
+                        <Row key={item.id} style={{ marginBottom: '20px' }}>
+                            <Button style={{ display: 'block', marginBottom: '10px' }} onClick={()=>detalle_option(item.descripcion)}>{item.descripcion}</Button>
+                        </Row>
+                    ))}
+                    </Col>
+                </Modal.Body>                    
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={show2} onHide={handleClose2}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{motivoSubmenu.motivo}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row className="g-2">
                         <h6>
-                            Seleccione una acción: 
+                        Detalle del retiro: 
                         </h6>
-                        <Col  xs={"10"} md={"8"}> 
-                        <Row><Button onClick={()=>quitar_estudiante()} >Quitar del monitor</Button></Row>
-                        <Row><Button onClick={handleShow2} >Retirar estudiante</Button></Row>
-                        </Col>
-                            
-
-                    </Modal.Body>                    
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-                <Modal show={show2} onHide={handleClose2}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Retiros</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
+                    </Row>
+                    {detalleSubmenu.map((detalleItem, index) => (
                         <Row className="g-2">
-                            <h6>
-                            Causa del retiro: 
-                            </h6>
+                            <Button key={index} style={{ display: 'block', marginBottom: '5px' }} onClick={() => {retirar_estudiante(detalleItem.referencia)}}>
+                                {detalleItem.nombre}
+                            </Button>
                         </Row>
-                        <Row className="g-2">
-                            <Form.Control as="textarea"  rows={3} name="detalle" onChange={handleForm} />
-                        </Row>
-                        <br/>
-                    </Modal.Body>                    
-                    <Modal.Footer>
-                        <Button onClick={() => {retirar_estudiante()}} >aceptar</Button>
-                        <Button variant="secondary" onClick={handleClose2}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-                <Modal show={show3} onHide={handleClose3}>
-                    <Modal.Header closeButton>
-                        <Modal.Title></Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body> 
-                        Causa de retiro agregada correctamente
-                    </Modal.Body>                    
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => {handleClose3();handleClose2();handleClose();quitar_estudiante()}}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-        </Row>
-        )
+                    ))}
+                    <br/>
+                </Modal.Body>                    
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose2}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </Row>)
     }
-    
-
-    
 }
 
 export default Listas
