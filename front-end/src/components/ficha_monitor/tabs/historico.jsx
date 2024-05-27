@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Container, Row, Col, Button} from "react-bootstrap";
+import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
 import Desplegable_item_academico from "./desplegable";
 import Modal from 'react-bootstrap/Modal';
 import {useEffect} from 'react';

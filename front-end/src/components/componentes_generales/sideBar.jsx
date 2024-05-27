@@ -24,7 +24,7 @@ import Menu10 from "./menus/discapacidad.json";
 import SidebarItem from "./sidebarItem";
 import Footer from "./footer";
 import Sidebar_item_closed from "./sidebar_item_closed";
-import { Scrollbars } from "react-custom-scrollbars-2";
+import { Scrollbars } from "react-custom-scrollbars";
 import axios from "axios";
 import {
   decryptTokenFromSessionStorage,

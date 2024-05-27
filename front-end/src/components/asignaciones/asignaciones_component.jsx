@@ -4,8 +4,8 @@ import {Container, Row, Col, Button} from "react-bootstrap";
 import Listas from './listas'
 import Listas_no_seleccion from './listas_no_seleccion';
 import axios from 'axios';
-import {decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
-import {Scrollbars} from 'react-custom-scrollbars-2'; 
+import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import {Scrollbars} from 'react-custom-scrollbars'; 
 
 
 const Asignaciones_component = (props) =>{
