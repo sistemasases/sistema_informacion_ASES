@@ -1,0 +1,27 @@
+.modalF {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-contentF {
+    color: black;
+    width: 70%;
+    min-height: 400px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 4px;
+    align-items: center;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+
+  .boton_cerrar {
+    width: 100%;
+  }

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'modulo_academico',
     'modulo_reportes',
     'modulo_alertas',
+    'modulo_discapacidad',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',

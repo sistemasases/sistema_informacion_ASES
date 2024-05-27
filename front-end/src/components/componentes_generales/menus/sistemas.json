@@ -1,7 +1,7 @@
 [
     {
         "id":"1",
-        "path":"/",
+        "path":"/", 
         "name":"sistemas",
         "icon":"bi-pc-display-horizontal",
         "childrens":[
@@ -66,13 +66,13 @@
             },
             {
                 "id":5,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/",
                 "name":"Reporte geográfico Ases",
                 "icon":"bi bi-pin-map-fill"
             },
             {
                 "id":6,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/",
                 "name":"Descarga de formularios",
                 "icon":"bi bi-file-earmark-arrow-down-fill"
             },
@@ -90,7 +90,7 @@
             },
             {
                 "id":9,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/",
                 "name":"Reporte grafico ASES",
                 "icon":"bi-clipboard2-data-fill"
             },
@@ -103,7 +103,7 @@
             ,
             {
                 "id":11,
-                "path":"/ficha_estudiante/sin_seleccion",
+                "path":"/",
                 "name":"Reporte grupal",
                 "icon":"bi bi-ui-checks-grid"
             },
@@ -125,6 +125,32 @@
                 "path":"/academico",
                 "name":"Calificador",
                 "icon":"bi bi-calculator-fill"
+            }
+        ]
+    },
+    {
+        "id":"4",
+        "path":"/",
+        "name":"discapacidad",
+        "icon":"bi bi-person-wheelchair",
+        "childrens":[
+            {
+                "id":2,
+                "path":"/registro_discapacidad",
+                "name":"Registro Discapacidad",
+                "icon":"bi bi-clipboard2-check"
+            },
+            {
+                "id":4,
+                "path":"/ficha_estudiante_discapacidad/sin_seleccion",
+                "name":"Ficha de estudiantes",
+                "icon":"bi bi-file-earmark-person-fill"
+            },
+            {
+                "id":3,
+                "path":"/reporte_discapacidad",
+                "name":"Reporte general",
+                "icon":"bi bi-file-ruled-fill"
             }
         ]
     }

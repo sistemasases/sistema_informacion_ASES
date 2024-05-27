@@ -10,13 +10,13 @@
 import {
         desencriptar,
         desencriptarInt,
-        decryptTokenFromSessionStorage
+        decryptTokenFromSessionStorage,
+        encriptar
        } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import {Container, Col, Row, Button} from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import React, {useState, useEffect} from "react";
 import myGif from "../reportes/loading_data.gif";
-import {useNavigate} from "react-router-dom";
 import writeXlsxFile from "write-excel-file";
 import {CSVLink} from "react-csv";
 import axios from "axios";
@@ -331,20 +331,17 @@ var columns = [
   },
 ];
 
-// variable para setear las columnas
-var new_columns = [];
-
-// variable para guardar los estudiantes
-var prueba = [];
-
-// variable para guardar los estudiantes
-var restore = [];
-
 /**
     * Función principal.
     * @return {HTML} Visualización de las alertas.
 */
 const Alertas = () => {
+  // variable para setear las columnas
+  var new_columns = [];
+  // variable para guardar los estudiantes
+  var prueba = [];
+  // variable para guardar los estudiantes
+  var restore = [];
   // constante para guarda los estudiantes
   const [state, set_state] = useState({ estudiante: [] });
   // constante para guarda los estudiantes filtrados
@@ -598,23 +595,47 @@ const Alertas = () => {
     * Añade una busqueda extra.
   */
   const add_search_bar = () => {
-    for (let i = 0; i < columns.length; i++) {
-      const element = columns[i];
-      element.name = (
+    // for (let i = 0; i < columns.length; i++) {
+    //   const element = columns[i];
+    //   element.name = (
+    //     <Row className="center_tabla_sin_seguimientos">
+    //       <h4 className="texto_mas_pequeño">{element.name}</h4>
+    //       <input
+    //         name={element.name}
+    //         internal_name={element.value}
+    //         onChange={(e) => {
+    //           handle_column_search(e);
+    //         }}
+    //         maxlength="20"
+    //       />
+    //     </Row>
+    //   );
+    //   new_columns.push(element);
+    // }
+
+    const updatedColumns = columns.map((column) => ({
+      ...column,
+      name: (
         <Row className="center_tabla_sin_seguimientos">
-          <h4 className="texto_mas_pequeño">{element.name}</h4>
+          <h4 className="texto_mas_pequeño">{column.name}</h4>
           <input
-            name={element.name}
-            internal_name={element.value}
+            name={column.name}
+            internal_name={column.value}
             onChange={(e) => {
               handle_column_search(e);
             }}
-            maxlength="20"
+            maxLength={20}
           />
         </Row>
-      );
+      ),
+    }));
+
+    for (let i = 0; i < updatedColumns.length; i++) {
+      const element = updatedColumns[i];
       new_columns.push(element);
     }
+  
+
   };
 
   //   Estilo visual de la tabla
@@ -754,9 +775,17 @@ const Alertas = () => {
     });
   };
 
-  //  Variable de navegación
-  let navigate = useNavigate();
   add_search_bar();
+
+  /**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+   */
+  const cambiar_ruta = (e) => {
+    sessionStorage.setItem("path", encriptar(e));
+    window.location.reload();
+  };
 
   return (
     <>
@@ -782,7 +811,7 @@ const Alertas = () => {
               fixedHeaderScrollHeight="400px"
               highlightOnHover
               onRowClicked={(row) => {
-                navigate(`/ficha_estudiante/${row.id}`);
+                cambiar_ruta(`/ficha_estudiante/${row.id}`);
               }}
               responsive
               striped
