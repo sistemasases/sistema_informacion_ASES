@@ -92,7 +92,7 @@ const create_seguimiento = async (formData) => {
         // Conexion con la API
         await axios.post(url_axios, seguimiento, config)
         .then(res=>{
-            console.log(res);
+            // console.log(res);
             respuesta = true;
         })
         .catch(err=>{

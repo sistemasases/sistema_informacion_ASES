@@ -18,7 +18,12 @@ class TipoAdquisicion(models.TextChoices):
     OTRA = "OTRA", "Otra"
 
 
-class dis_estudiante(models.Model):
+class discapacidad_estudiante(models.Model):
+
+    estudiante = models.OneToOneField(
+        estudiante, 
+        related_name="discapacidad",
+        on_delete=models.CASCADE)
 
     tipo_discapacidad = models.CharField(
         max_length=3,
@@ -30,18 +35,7 @@ class dis_estudiante(models.Model):
         choices=TipoAdquisicion.choices,
         default=TipoAdquisicion.OTRA)
 
-    class Meta:
-        db_table = "dis_estudiante"
-
-
-class dis_estudiante__estudiante(models.Model):
-
-    id_estudiante = models.ForeignKey(estudiante, on_delete=models.CASCADE)
-
-    id_discapacidad_estudiante = models.ForeignKey(
-        dis_estudiante,
-        on_delete=models.CASCADE,
-        related_name="estudiante")
+    estado_discapacidad = models.BooleanField(default=True)
 
     class Meta:
-        db_table = "dis_estudiante__estudiante"
+        db_table = "discapacidad_estudiante"

@@ -1,15 +1,9 @@
 import React, {useState} from 'react';
 import {Container, Row, Col} from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import {Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import { NavLink } from 'react-router-dom';
-import  {useEffect, componentDidUpdate} from 'react';
-import axios from 'axios';
+import { Button} from "react-bootstrap";
 import Desplegable_item from "./desplegable_Item";
-import Desplegable from "./desplegable";
-import { decryptTokenFromSessionStorage, desencriptar, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Socieducativa = (props) =>{
 

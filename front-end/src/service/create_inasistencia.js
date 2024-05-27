@@ -36,7 +36,7 @@ const create_inasistencia = async (formData) => {
         // Conexion con la API
         await axios.post(url_axios, inasistencia, config)
         .then(res=>{
-            console.log(res);
+            // console.log(res);
             respuesta = true;
         })
         .catch(err=>{

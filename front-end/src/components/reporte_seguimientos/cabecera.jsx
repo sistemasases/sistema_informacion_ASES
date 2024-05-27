@@ -109,7 +109,6 @@ const Cabecera = (props) => {
         `${process.env.REACT_APP_API_URL}/usuario_rol/reporte_seguimientos/` +
         desencriptar(sessionStorage.getItem("id_usuario")) +
         "/";
-
       axios({
         url: url_axios,
         params: paramsget,
@@ -180,7 +179,6 @@ const Cabecera = (props) => {
           `${process.env.REACT_APP_API_URL}/usuario_rol/profesional/` +
           props.data_user[i]["id_rol"] +
           "/";
-
         axios({
           url: url_axios,
           method: "GET",

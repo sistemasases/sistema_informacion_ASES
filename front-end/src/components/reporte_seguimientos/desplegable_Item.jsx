@@ -16,6 +16,7 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptarInt,
+  encriptar,
   encriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
@@ -104,7 +105,17 @@ const Desplegable_item = ({ item }) => {
 
     encriptarInt(sessionStorage.setItem("id_estudiante_seleccionado", e));
   };
-
+  /**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+  */
+  const cambiar_ruta = (e) => {
+    if(e) {
+      sessionStorage.setItem("path", encriptar(e));
+    }
+    window.location.reload();
+  };
   if (item.tipo_usuario === "practicante") {
     return (
       <Row>
@@ -658,7 +669,7 @@ const Desplegable_item = ({ item }) => {
     );
   } else {
     return (
-      <a href={item.path || "#"} className="fichas-item plain">
+      <a onClick={()=> cambiar_ruta(item.path)} className="fichas-item plain">
         {item.num_doc_ini}
       </a>
     );

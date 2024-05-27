@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+
+.container-ficha {
+    font-family: 'Montserrat', sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    min-width: 370px;
+    max-width: 2000px;
+    display: grid;
+    margin-top: 20px;
+    grid-template-columns: 60% 35%;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "selectEst riesgos"
+        "acordiones riesgos";
+    gap: 20px;
+}
+
+.select-container {
+    grid-area: selectEst;
+}
+
+.riesgo-container {
+    grid-area: riesgos;
+}
+
+.acordion-container {
+    grid-area: acordiones;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 500px) {
+    .container-ficha {
+        grid-template-columns: 90%;
+        grid-template-areas:
+            "selectEst"
+            "riesgos"
+            "acordiones";
+    }
+}
+
+@media (min-width: 501px) and (max-width: 1200px) {
+    .container-ficha {
+        grid-template-areas:
+            "selectEst riesgos"
+            "acordiones acordiones";
+    }
+}

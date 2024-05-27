@@ -1,13 +1,12 @@
 import React from 'react';
 import {useState } from "react";
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
+import {Row, Col} from "react-bootstrap";
 import Desplegable_item from "./desplegable_Item";
 import { desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
 const Desplegable = ({item}) => {
 
-    const userRole = desencriptar(sessionStorage.getItem('rol'));
+    const userRole = desencriptar(sessionStorage.getItem('rol')); 
 
     const [open, setOpen] = useState(false)
         return (

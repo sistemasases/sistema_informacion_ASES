@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col} from "styled-bootstrap-grid";
+import { Row, Col} from "styled-bootstrap-grid";
 import Programas_academicos from './programas_academicos'
-
 import  {useEffect} from 'react';
 import axios from 'axios';
 import Selector from "./selector";
@@ -125,7 +123,7 @@ const Info_basica_monitor = (props) =>{
         
         id_sede: id_sede_desencriptada,
         };
-        console.log(e.id)
+        //console.log(e.id)
         const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_info_extra/`+desencriptarInt(state.data_user[e.id]['id'])+"/";
         axios({
           // Endpoint to send files

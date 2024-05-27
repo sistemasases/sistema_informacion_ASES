@@ -5,8 +5,6 @@ import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
-//import DatePicker from 'react-datepicker';
-
 
 
 const Info_general = (props) =>{
@@ -511,7 +509,7 @@ const cambiar_datos = (e) => {
                   })
                   alert("error al editar el estudiante :" + err)
                   
-            console.log('celular'+state.celular)
+            //console.log('celular'+state.celular)
             //console.log("entra al malo")
             //alert("error al editar el estudiante : " + props.datos.id);
       })
