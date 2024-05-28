@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useState } from "react";
-import "../../../Scss/ficha_estudiante_V2/columns.css";
+import "../../../Scss/ficha_estudiante_discapacidad/columns.css";
 
 // Componente de Columns
 // Recibe como props:

@@ -10,7 +10,7 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/auth";
 import perfilUsuario from "./Usuario.png";
-import "../../../Scss/ficha_estudiante_V2/select.css";
+import "../../../Scss/ficha_estudiante_discapacidad/select.css";
 import fetchEstudiante from "../api/fetch_estudiante";
 
 // Componente de Select
