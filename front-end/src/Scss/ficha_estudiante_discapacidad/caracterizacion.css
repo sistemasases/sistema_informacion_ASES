@@ -30,7 +30,7 @@ select {
 
 textarea {
     height: 80px;
-    min-width: 50px;
+    min-height: 50px;
     resize: vertical;
 }
 
