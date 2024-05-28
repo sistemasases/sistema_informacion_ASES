@@ -30,7 +30,7 @@ select {
 
 textarea {
     height: 80px;
-    resize: none;
+    resize: both;
 }
 
 /* Estilos para las tablas */

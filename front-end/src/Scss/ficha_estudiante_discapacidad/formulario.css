@@ -59,11 +59,13 @@
   gap: 10px;
   justify-content: space-evenly;
   margin-bottom: 20px;
+  resize: both;
 }
 
 .inputs div {
   width: 45%;
 }
+
 
 .formulario input[type="text"],
 .formulario input[type="date"],
@@ -79,7 +81,7 @@
   box-sizing: border-box;
   width: 100%;
   height: 100px;
-  resize: none;
+  resize: both;
 }
 
 .checkbox_container {
