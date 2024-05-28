@@ -1,0 +1,136 @@
+[
+    {
+        "id":"1",
+        "motivo":"Retiro Precoz",
+        "detalle":[
+            {
+                "nombre":"Vocacional",
+                "referencia":"vocacional"
+            },
+            {
+                "nombre":"Traslado de Universidad",
+                "referencia":"traslado"
+            },
+            {
+                "nombre":"Bajo Rendimiento",
+                "referencia":"bajo"
+            },
+            {
+                "nombre":"Calamidad Doméstica",
+                "referencia":"calamidad"
+            },
+            {
+                "nombre":"Económico / Laboral",
+                "referencia":"econ_lab"
+            },
+            {
+                "nombre":"Fallecimiento",
+                "referencia":"fallecimiento"
+            },
+            {
+                "nombre":"No matriculó",
+                "referencia":"no_matricula"
+            },
+            {
+                "nombre":"Retiro voluntario / Rechazo del acompañamiento",
+                "referencia":"retiro"
+            },
+            {
+                "nombre":"Abandono del cupo",
+                "referencia":"abandono"
+            }
+        ]
+    },
+    {
+        "id":"2",
+        "motivo":"Retiro Tardío",
+        "detalle":[
+            {
+                "nombre":"Inconformidad con el Programa",
+                "referencia":"inconformidad"
+            },
+            {
+                "nombre":"Corresponsabilidad / Inasistencias",
+                "referencia":"corresponsabilidad"
+            },
+            {
+                "nombre":"Falta de tiempo",
+                "referencia":"falta"
+            },
+            {
+                "nombre":"Autonomía",
+                "referencia":"autonomia"
+            },
+            {
+                "nombre":"Abandono del cupo",
+                "referencia":"abandono"
+            },
+            {
+                "nombre":"Retiro voluntario / Rechazo del acompañamiento",
+                "referencia":"retiro"
+            },
+            {
+                "nombre":"Fallecimiento",
+                "referencia":"fallecimiento"
+            }
+        ]
+    },
+    {
+        "id":"3",
+        "motivo":"Cancelación de semestre",
+        "detalle":[
+            {
+                "nombre":"Vocacional",
+                "referencia":"vocacional"
+            },
+            {
+                "nombre":"Traslado de Universidad",
+                "referencia":"traslado"
+            },
+            {
+                "nombre":"Bajo Rendimiento",
+                "referencia":"bajo"
+            },
+            {
+                "nombre":"Calamidad Doméstica",
+                "referencia":"calamidad"
+            },
+            {
+                "nombre":"Económico",
+                "referencia":"econ"
+            },
+            {
+                "nombre":"Rechazo del cupo (en primer semestre)",
+                "referencia":"rechazo"
+            },
+            {
+                "nombre":"Individual (Salud)",
+                "referencia":"individual"
+            },
+            {
+                "nombre":"Carga académica",
+                "referencia":"carga"
+            }
+        ]
+    },
+    {
+        "id":"4",
+        "motivo":"Finalización del Ciclo Básico",
+        "detalle":[
+            {
+                "nombre":"Etapa de Acompañamiento finalizada",
+                "referencia":"finalizacion"
+            }
+        ]
+    },
+    {
+        "id":"5",
+        "motivo":"Contacto No Efectivo",
+        "detalle":[
+            {
+                "nombre":"No hubo respuesta",
+                "referencia":"no_respuesta"
+            }
+        ]
+    }
+]
