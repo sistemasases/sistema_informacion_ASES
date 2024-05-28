@@ -79,7 +79,7 @@
     box-sizing: border-box;
     width: 100%;
     height: 100px;
-    resize: both;
+    resize: vertical;
 }
 
 .checkbox_container {

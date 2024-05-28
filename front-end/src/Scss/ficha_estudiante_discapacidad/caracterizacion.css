@@ -30,7 +30,8 @@ select {
 
 textarea {
     height: 80px;
-    resize: both;
+    min-width: 50px;
+    resize: vertical;
 }
 
 /* Estilos para las tablas */
