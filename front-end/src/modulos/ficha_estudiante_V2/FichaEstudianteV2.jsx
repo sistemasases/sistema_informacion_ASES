@@ -16,7 +16,7 @@ import {
 import Select from "../../components/ficha_estudiante_V2/Componentes/Select.jsx";
 import Riesgos from "../../components/ficha_estudiante_V2/Componentes/Riesgos.jsx";
 import Acordiones from "../../components/ficha_estudiante_V2/Componentes/Acordiones.jsx";
-import "../../Scss/ficha_estudiante_V2/discapacidad.css";
+import "../../Scss/ficha_estudiante_discapacidad/discapacidad.css";
 import { useAuthStore } from "../../components/ficha_estudiante_V2/store/auth.js";
 import AccesoDenegado from "../../components/ficha_estudiante_V2/Componentes/AccesoDenegado.jsx";
 import fetchEstudiantes from "../../components/ficha_estudiante_V2/api/fetch_estudiantes.js";

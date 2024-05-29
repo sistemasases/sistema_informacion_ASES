@@ -77,7 +77,7 @@ const DatosAcademicosAdicionales = () => {
           </div>
         </div>
       </div>
-      <button>Editar</button>
+      <button className="full-size-button color_red">Editar</button>
     </form>
   );
 };

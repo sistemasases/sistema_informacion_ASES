@@ -263,7 +263,7 @@ const DatosEconomicos = () => {
             </div>
           </div>
         </div>
-        <button className="datos_economicos_editar">Editar</button>
+        <button className="full-size-button color_red">Editar</button>
       </form>
     </div>
   );

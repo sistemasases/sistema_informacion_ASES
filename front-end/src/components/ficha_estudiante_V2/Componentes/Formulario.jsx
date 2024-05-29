@@ -9,7 +9,7 @@
  */
 
 import { useEffect, useState } from "react";
-import "../../../Scss/ficha_estudiante_V2/formulario.css";
+import "../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import { Formik } from "formik";
 
 const Formulario = () => {

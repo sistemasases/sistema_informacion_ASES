@@ -33,7 +33,7 @@ const General = () => {
   return (
     <div>
       <button
-        className="btn btn-primary button"
+        className="full-size-button color_red"
         onClick={() => setEditar(!editar)}
       >
         {nombreBoton}
