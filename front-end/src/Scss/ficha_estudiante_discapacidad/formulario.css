@@ -65,6 +65,7 @@
   width: 45%;
 }
 
+
 .formulario input[type="text"],
 .formulario input[type="date"],
 .formulario input[type="time"] {
@@ -77,9 +78,11 @@
 
 .formulario textarea {
   box-sizing: border-box;
+  min-height: 50px;
+  max-width: 700px;
   width: 100%;
   height: 100px;
-  resize: none;
+  resize: vertical;
 }
 
 .checkbox_container {
@@ -104,37 +107,37 @@
   gap: 10px;
 }
 
-.botones{
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    padding: 10px;
+.botones {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px;
 }
 
 .botones button {
-    width: 45%;
-    height: 40px;
-    border-radius: 5px;
-    border: none;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
+  width: 45%;
+  height: 40px;
+  border-radius: 5px;
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .botones button[type="submit"] {
-    background-color: #1ec3c5;
+  background-color: #1ec3c5;
 }
 
 .botones button[type="reset"] {
-    background-color: #838381;
+  background-color: #838381;
 }
 
 .botones button[type="submit"]:hover {
-    background-color: #189496;
+  background-color: #189496;
 }
 
 .botones button[type="reset"]:hover {
-    background-color: #55554e;
+  background-color: #55554e;
 }
 
 @media (max-width: 700px) {

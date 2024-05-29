@@ -16,7 +16,7 @@ const Modal = ({ isOpen, handleClose, children }) => {
     <div className="modalF">
       <div className="modal-contentF">
         {children}
-        <button onClick={handleClose} className="boton_cerrar">
+        <button onClick={handleClose} className="full-size-button boton_cerrar">
           Close
         </button>
       </div>

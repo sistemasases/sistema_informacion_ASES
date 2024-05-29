@@ -8,7 +8,7 @@
  */
 
 import { useState } from "react";
-import "../../../Scss/ficha_estudiante_V2/riesgos.css";
+import "../../../Scss/ficha_estudiante_discapacidad/riesgos.css";
 import Modal from "./Modal";
 import Formulario from "./Formulario";
 
