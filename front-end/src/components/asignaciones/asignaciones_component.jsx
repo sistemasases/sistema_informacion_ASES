@@ -5,7 +5,7 @@ import Listas from './listas'
 import Listas_no_seleccion from './listas_no_seleccion';
 import axios from 'axios';
 import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
-import {Scrollbars} from 'react-custom-scrollbars'; 
+import {Scrollbars} from 'react-custom-scrollbars-2'; 
 
 
 const Asignaciones_component = (props) =>{
