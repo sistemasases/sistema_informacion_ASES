@@ -9,7 +9,7 @@
 
 import { useAuthStore } from "../../store/auth";
 import Acordion from "../Acordion";
-import "../../../../Scss/ficha_estudiante_V2/seguimiento.css";
+import "../../../../Scss/ficha_estudiante_discapacidad/seguimiento.css";
 import withSwal from "../withSwal";
 import { useEffect, useState } from "react";
 import fetchSocioEducativo from "../../api/fetch_socio_educativo";
