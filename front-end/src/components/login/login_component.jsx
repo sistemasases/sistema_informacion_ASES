@@ -19,18 +19,16 @@ import axios from 'axios';
 const Login_component = () => {
   // información para el inicio de usuario
   const [state, set_state] = useState({
-    usuario: '',
-    contrasena: '',
-    logged: '',
+    usuario: "",
+    contrasena: "",
+    logged: "",
     temporal: false,
-    errorMessage: '',
+    errorMessage: "",
   });
-  // url para el axios de inicio de sesion
-  const url = `${process.env.REACT_APP_API_URL}/login`
-  // form para el axios de inicio de sesion
+  const url = `${process.env.REACT_APP_API_URL}/login`;
   const data = {
-    'username': state.usuario[0],
-    'password': state.contrasena[0]
+    username: state.usuario[0],
+    password: state.contrasena[0],
   };
   /**
     * Función para cambiar el estado del nombre de usuario.
@@ -56,9 +54,10 @@ const Login_component = () => {
     * Función para obtener toda la información del usuario y lo almacena en el session storage.
   */
   const handleSendNewData = () => {
-    axios.post(url, data)
-      .then(res => {
-        //console.log(res.data);
+    axios
+      .post(url, data)
+      .then((res) => {
+        console.log(res.data);
         const encryptedToken = encriptar(res.data.token);
         const encryptedRefreshToken = encriptar(res.data.refresh_token);
         const encryptedIdUsuario = encriptarBigInt(res.data.user.id);
@@ -66,11 +65,17 @@ const Login_component = () => {
         const encryptedFirstName = encriptar(res.data.user.first_name);
         const encryptedSede = encriptar(res.data.user.sede);
         const encryptedLastName = encriptar(res.data.user.last_name);
-        const encryptedNombreCompleto = encriptar(res.data.user.nombre_completo);
+        const encryptedNombreCompleto = encriptar(
+          res.data.user.nombre_completo
+        );
         const encryptedSedeId = encriptarInt(res.data.user.sede_id);
         const encryptedRol = encriptar(res.data.user.rol);
-        const encryptedIdSemestreActual = encriptarInt(res.data.user.id_semestre_actual);
-        const encryptedSemestreActual = encriptar(res.data.user.semestre_actual);
+        const encryptedIdSemestreActual = encriptarInt(
+          res.data.user.id_semestre_actual
+        );
+        const encryptedSemestreActual = encriptar(
+          res.data.user.semestre_actual
+        );
         const encryptedUsername = encriptar(res.data.user.username);
         const encryptedPermisos = encriptarJson(res.data.user.permisos);
         const encryptedMessage = encriptar(res.data.message);
@@ -94,14 +99,14 @@ const Login_component = () => {
         set_state({
           ...state,
           logged: encryptedToken,
-          temporal: true
+          temporal: true,
         });
       })
-      .catch(err => {
-        if (err.response.status === 400){
+      .catch((err) => {
+        if (err.response.status === 400) {
           set_state({
             ...state,
-            errorMessage: 'Usuario o contraseña incorrecto', // Mensaje de error personalizado
+            errorMessage: "Usuario o contraseña incorrecto", // Mensaje de error personalizado
           });
         }
       });
@@ -126,6 +131,47 @@ const Login_component = () => {
   */
   const handleClose = () => setShow(false);
 
+  // const [show, setShow] = useState(false);
+  const enviar_correos_not_w = () => {
+    setShow(true);
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/correos/enviar_correos/`)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // let rol = desencriptar(sessionStorage.getItem("rol"));
+    // let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+    // let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+    // const config = {
+    //   Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+    // };
+
+    // const enviar_correo_testing = async () => {
+    //   try {
+    //     axios.get(
+    //       `${process.env.REACT_APP_API_URL}/correos/enviar_correos_test/` +
+    //         id_usuario.toString() +
+    //         "/",
+    //       { params: { usuario_rol: rol, sede: sede } }
+    //     );
+    //     // set_state({
+    //     //   ...state,
+    //     //   estudiante: response.data,
+    //     // });
+    //     // setFiltered(response.data);
+    //   } catch (error) {
+    //     // console.log(error);
+    //   }
+    // };
+
+    // enviar_correo_testing();
+  };
+
+  // const handleClose = () => setShow(false);
   return (
     <Row>
       {sessionStorage.token === undefined ? (
@@ -133,7 +179,10 @@ const Login_component = () => {
           <Row>
             <Col>
               <Row>
-                <img src="https://asesinteractiva.univalle.edu.co/semaforoalertas/images/logoasesuv.svg" className='imagen_logo' />
+                <img
+                  src="https://asesinteractiva.univalle.edu.co/semaforoalertas/images/logoasesuv.svg"
+                  className="imagen_logo"
+                />
               </Row>
             </Col>
             <Col>
@@ -141,35 +190,50 @@ const Login_component = () => {
                 <Row className="form_title">
                   <b>Sistema de Información ASES</b>
                 </Row>
-                {state.errorMessage && <div className="error-message" style={{ marginBottom: '20px' }}>{state.errorMessage}</div>}
+                {state.errorMessage && (
+                  <div
+                    className="error-message"
+                    style={{ marginBottom: "20px" }}
+                  >
+                    {state.errorMessage}
+                  </div>
+                )}
                 <div className="form_login">
                   <div className="form_group_login">
                     <Form.Control
-                      className='form_input_login'
-                      id='user'
+                      className="form_input_login"
+                      id="user"
                       type="text"
                       onChange={handle_user}
                       placeholder=" "
                     />
-                    <label className='form_label_login' htmlFor="user">Usuario</label>
+                    <label className="form_label_login" htmlFor="user">
+                      Usuario
+                    </label>
                   </div>
                   <div className="form_group_login">
                     <Form.Control
-                      className='form_input_login'
-                      id='pass'
+                      className="form_input_login"
+                      id="pass"
                       type="password"
                       onChange={handle_password}
                       onKeyDown={handleKeyDown} // Agrega el evento onKeyDown
                       placeholder=" "
                     />
-                    <label className='form_label_login' htmlFor="pass">Contraseña</label>
+                    <label className="form_label_login" htmlFor="pass">
+                      Contraseña
+                    </label>
                   </div>
                   <div>
-                    <label href="https://www.google.com" onClick={handleModal}>Olvidé mi contraseña</label>
+                    <label href="https://www.google.com" onClick={handleModal}>
+                      Olvidé mi contraseña
+                    </label>
                   </div>
                 </div>
                 <Row>
-                  <Button className='boton_login' onClick={handleSendNewData}>Ingresar</Button>
+                  <Button className="boton_login" onClick={handleSendNewData}>
+                    Ingresar
+                  </Button>
                 </Row>
               </div>
             </Col>

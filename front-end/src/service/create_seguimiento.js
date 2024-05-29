@@ -98,6 +98,20 @@ const create_seguimiento = async (formData) => {
         .catch(err=>{
             console.log(err);
         })
+
+        if (seguimiento.observaciones !== "") {
+            axios
+            .get(`${process.env.REACT_APP_API_URL}/correos/enviar_correos/`, { params: { id_estudiante_seleccionado: seguimiento.id_estudiante} })
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        } else {
+            console.log("No se envió el correo porque no hay observaciones");
+        }
+        
     } catch (error) {
         console.log(error);
     }

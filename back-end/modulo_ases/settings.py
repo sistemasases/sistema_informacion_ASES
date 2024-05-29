@@ -32,6 +32,15 @@ DEBUG = os.environ.get('DJANGO_INSECURE_SETTINGS') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') or ['localhost']
 
+# TEST MAIL SENDING
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+#
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+
 
 # Application definition
 
@@ -52,6 +61,7 @@ INSTALLED_APPS = [
     'modulo_programa',
     'modulo_academico',
     'modulo_reportes',
+    'modulo_correos',
     'modulo_alertas',
     'modulo_discapacidad',
     "corsheaders",

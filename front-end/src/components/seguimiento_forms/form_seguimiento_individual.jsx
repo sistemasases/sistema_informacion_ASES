@@ -1074,7 +1074,7 @@ const Seguimiento_individual = (props) =>{
                 </Row>
                 <hr></hr>
                 <Row className="g-2">
-                    <h6>Observaciones:</h6>
+                    <h6>Observacionessss:</h6>
                 </Row>
                 <Row className="g-2">
                     <Form.Control as="textarea"  rows={3} name="observaciones" onChange={handleForm} title="Máximo 5000 caracteres."/>
