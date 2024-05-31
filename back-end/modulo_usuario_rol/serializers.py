@@ -1,10 +1,19 @@
 # import serializers from the REST framework
 from rest_framework import serializers
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante, rol_permiso, permiso, firma_tratamiento_datos
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante, rol_permiso, permiso,discap_men
 from django.contrib.auth.models import User
 from modulo_carga_masiva.models import retiro, motivo
+from modulo_asignacion.serializers import asignacion_monitor_serializer
+from modulo_programa.serializers import programa_estudiante_ficha_serializer
 
 # create a serializer class
+
+class discap_men_serializer(serializers.ModelSerializer):
+	# create a meta class
+	class Meta:
+		model = discap_men
+		fields = '__all__'
+
 class user_serializer(serializers.ModelSerializer):
 
 	# create a meta class
@@ -88,21 +97,6 @@ class User_rol_manage(serializers.Serializer):
 class Estudiante_manage(serializers.Serializer):
 	id = serializers.IntegerField()
 
-# class Estudiante_actualizacion1(serializers.Serializer):
-#     puntaje_icfes = serializers.IntegerField(allow_null=True, required=False)
-#     telefono_res = serializers.CharField(allow_null=True, required=False)
-#     celular = serializers.CharField(allow_null=True, required=False)
-#     email = serializers.CharField(allow_null=True, required=False)
-#     sexo = serializers.CharField(allow_null=True, required=False)
-#     cantidad_hijo = serializers.IntegerField(allow_null=True, required=False)
-#     actividades_ocio_deporte = serializers.CharField(allow_null=True, required=False)
-#     acudiente_emergencia = serializers.CharField(allow_null=True, required=False)
-#     tel_acudiente_emergencia = serializers.CharField(allow_null=True, required=False)
-#     etnia = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
-#     act_simultanea = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
-#     identidad_gen = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
-#     estado_civil = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
-#     cond_excepcion = serializers.PrimaryKeyRelatedField(allow_null=True, required=False)
 	
 class Estudiante_actualizacion(serializers.ModelSerializer):
 	class Meta:
@@ -214,3 +208,71 @@ class motivo_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = motivo
 		fields = '__all__'
+
+class cohorte_estudiante_ficha_serializer(serializers.ModelSerializer):
+	id_cohorte = serializers.SerializerMethodField()
+	class Meta:
+		model = cohorte_estudiante
+		fields = ['id_cohorte']
+	def get_id_cohorte(self, obj):
+		return obj.id_cohorte.nombre
+class ficha_estudiante_serializer(serializers.ModelSerializer):
+	barrio_ini = serializers.SerializerMethodField(allow_null=True)
+	ciudad_ini = serializers.SerializerMethodField(allow_null=True)
+	barrio_res = serializers.SerializerMethodField(allow_null=True)
+	ciudad_res = serializers.SerializerMethodField(allow_null=True)
+	ciudad_nac = serializers.SerializerMethodField(allow_null=True)
+	id_discapacidad = serializers.SerializerMethodField(allow_null=True)
+	el_id_de_cond_excepcion=serializers.SerializerMethodField(source='id_cond_excepcion',allow_null=True)
+	# id_estado_civil=Estado_civil_serializer(allow_null=True)
+	# id_identidad_gen=Identidad_de_genero_serializer(allow_null=True)
+	# id_act_simultanea= Actividad_simultanea_serializer(allow_null=True)
+	# id_etnia=Grupo_etnico_serializer(allow_null=True)
+	cohorte= cohorte_estudiante_ficha_serializer(source='id_estudiante_in_cohorte_estudiante',many=True)
+	programas= programa_estudiante_ficha_serializer(source='id_estudiante_in_programa_estudiante',many=True)
+	# profesional=
+	# practicante=
+	monitor= asignacion_monitor_serializer(source='id_estudiante_in_asignacion',many=True)
+	# riesgos=
+	# fecha_seguimiento=
+	# firma_tratamiento =
+	# create a meta class
+	class Meta:
+		model = estudiante
+		fields = '__all__'
+
+	def get_barrio_ini(self, obj):
+		if obj.barrio_ini:
+			return obj.barrio_ini.nombre
+		return None
+		
+	
+	def get_ciudad_ini(self, obj):
+		if obj.ciudad_ini:
+			return obj.ciudad_ini.nombre
+		return None
+	
+	def get_barrio_res(self, obj):
+		if obj.barrio_res:
+			return obj.barrio_res.nombre
+		return None
+	
+	def get_ciudad_res(self, obj):
+		if obj.ciudad_res:
+			return obj.ciudad_res.nombre
+		return None
+	
+	def get_ciudad_nac(self, obj):
+		if obj.ciudad_nac:
+			return obj.ciudad_nac.nombre
+		return None
+	
+	def get_id_discapacidad(self, obj):
+		if obj.id_discapacidad:
+			return obj.id_discapacidad.nombre
+		return None 
+
+	def get_el_id_de_cond_excepcion(self, obj):
+		if obj.id_cond_excepcion:
+			return obj.id_cond_excepcion.alias
+		return None 

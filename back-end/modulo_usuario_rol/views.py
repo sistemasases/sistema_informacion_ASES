@@ -21,8 +21,7 @@ from django.db.models import Q, Subquery, OuterRef
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from modulo_usuario_rol import serializers
-from django.db.models import F
+from django.db.models import F, Prefetch
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from .serializers import  *
@@ -32,7 +31,6 @@ from modulo_asignacion.serializers import asignacion_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import get_object_or_404
-from django.core import serializers
 
 
 """
@@ -244,7 +242,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
     """
     serializer_class = estudiante_serializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
     
     # Función para convertir el nivel de riesgo numérico en clasificación textual
@@ -313,6 +311,13 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     # Se redefine la función retrieve para poder traer todos los campos que se relacionan con el estudiante, independeinte de si estan en el modelo estudiante o no.
     # Esta función es utlizada en la vista Ficha del Estudiante.
     def retrieve(self, request, pk=None):
+
+        
+        var_estudiante = estudiante.objects.prefetch_related(
+            Prefetch('id_estudiante_in_cohorte_estudiante')
+        ).get(id=pk)
+        serializer_estudiante = ficha_estudiante_serializer(var_estudiante)
+        return Response(serializer_estudiante.data)
         
         request_sede = int(request.GET.get('id_sede'))
         var_estudiante = estudiante.objects.get(id=pk)
