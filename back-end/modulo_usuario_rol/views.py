@@ -312,12 +312,95 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     # Esta función es utlizada en la vista Ficha del Estudiante.
     def retrieve(self, request, pk=None):
 
-        
-        var_estudiante = estudiante.objects.prefetch_related(
-            Prefetch('id_estudiante_in_cohorte_estudiante')
-        ).get(id=pk)
+        request_sede = int(request.GET.get('id_sede'))
+        var_estudiante = estudiante.objects.prefetch_related(Prefetch('id_estudiante_in_cohorte_estudiante')).get(id=pk)
         serializer_estudiante = ficha_estudiante_serializer(var_estudiante)
-        return Response(serializer_estudiante.data)
+        dic_asignaciones={}
+        riesgo ={}
+        firma = {}
+        try:
+            semestre_activo = semestre.objects.filter(semestre_actual=True, id_sede =request_sede).values('id')
+            id_monitor_estudiante = asignacion.objects.filter(id_estudiante=serializer_estudiante.data['id'], estado=True,id_semestre=semestre_activo[0]['id']).values('id_usuario')
+            data_monitor = User.objects.filter(id=id_monitor_estudiante[0]['id_usuario']).values('id','first_name','last_name')
+            consulta_jefe_monitor = usuario_rol.objects.filter(id_usuario=data_monitor[0]['id'],id_semestre=semestre_activo[0]['id'], estado="ACTIVO").values('id_jefe')
+            data_practicante = User.objects.filter(id=consulta_jefe_monitor[0]['id_jefe']).values('id','first_name','last_name')
+            consulta_jefe_practicante = usuario_rol.objects.filter(id_usuario=data_practicante[0]['id'],id_semestre=semestre_activo[0]['id'], estado="ACTIVO").values('id_jefe')
+            data_profesional = User.objects.filter(id=consulta_jefe_practicante[0]['id_jefe']).values('first_name','last_name')
+            dic_asignaciones = {
+                'asignacion_monitores':data_monitor[0],
+                'asignacion_practicante': data_practicante[0],
+                'asignacion_profesional': data_profesional[0],
+            }
+        except:
+            dic_asignaciones = {
+                'asignacion_monitores': 'Sin Asignar',
+                'asignacion_practicante': 'Sin Asignar',
+                'asignacion_profesional': 'Sin Asignar'
+            }
+        try:
+            # Obtener el seguimiento más reciente del estudiante especificado
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk).latest('fecha')
+            inasistencias_registradas = inasistencia.objects.filter(
+            id_estudiante= pk).latest('fecha')
+            riesgo = {
+                'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
+                'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
+                'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
+                'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
+                'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
+                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(inasistencias_registradas.fecha))),
+            }
+        except seguimiento_individual.DoesNotExist:
+            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
+            try:
+                inasistencias_registradas = inasistencia.objects.filter(
+                id_estudiante= pk).latest('fecha')
+                riesgo = {
+                    'riesgo_individual': 'SIN SEGUIMIENTO',
+                    'riesgo_familiar': 'SIN SEGUIMIENTO',
+                    'riesgo_academico': 'SIN SEGUIMIENTO',
+                    'riesgo_economico': 'SIN SEGUIMIENTO',
+                    'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
+                    'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(inasistencias_registradas.fecha))),
+                }
+            except:
+                riesgo = {
+                        'riesgo_individual': 'SIN SEGUIMIENTO',
+                        'riesgo_familiar': 'SIN SEGUIMIENTO',
+                        'riesgo_academico': 'SIN SEGUIMIENTO',
+                        'riesgo_economico': 'SIN SEGUIMIENTO',
+                        'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
+                        'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(None))),
+                    }
+
+        except inasistencia.DoesNotExist:
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk).latest('fecha')
+            riesgo = {
+                'riesgo_individual': 'SIN SEGUIMIENTO',
+                'riesgo_familiar': 'SIN SEGUIMIENTO',
+                'riesgo_academico': 'SIN SEGUIMIENTO',
+                'riesgo_economico': 'SIN SEGUIMIENTO',
+                'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
+                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(None))),
+
+            }
+                  
+        try:
+            firma_tratamiento = firma_tratamiento_datos.objects.filter(
+                    id_estudiante=pk).values()
+            firma = {
+                'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+            }
+        except firma_tratamiento_datos.DoesNotExist:
+            firma = {
+                'firma_tratamiento_datos': 'SIN FIRMAR'
+            }
+            
+
+        result = dict(serializer_estudiante.data, **dic_asignaciones,**riesgo,**firma)
+        return Response(result)
         
         request_sede = int(request.GET.get('id_sede'))
         var_estudiante = estudiante.objects.get(id=pk)

@@ -232,7 +232,7 @@ class ficha_estudiante_serializer(serializers.ModelSerializer):
 	programas= programa_estudiante_ficha_serializer(source='id_estudiante_in_programa_estudiante',many=True)
 	# profesional=
 	# practicante=
-	monitor= asignacion_monitor_serializer(source='id_estudiante_in_asignacion',many=True)
+	# monitor= asignacion_monitor_serializer(source='id_estudiante_in_asignacion',many=True)
 	# riesgos=
 	# fecha_seguimiento=
 	# firma_tratamiento =
