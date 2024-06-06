@@ -3,7 +3,7 @@ from rest_framework import serializers
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etnia, cond_excepcion, estado_civil, identidad_gen, act_simultanea, cohorte_estudiante, rol_permiso, permiso,discap_men
 from django.contrib.auth.models import User
 from modulo_carga_masiva.models import retiro, motivo
-from modulo_asignacion.serializers import asignacion_monitor_serializer
+
 from modulo_programa.serializers import programa_estudiante_ficha_serializer
 
 # create a serializer class
@@ -26,6 +26,12 @@ class user_serializer(serializers.ModelSerializer):
 		user.set_password(validated_data['password'])
 		user.save()
 		return user
+class user_info_basica_serializer(serializers.ModelSerializer):
+
+	# create a meta class
+	class Meta:
+		model = User
+		fields = ['id', 'first_name','last_name']
 
 class estudiante_serializer(serializers.ModelSerializer):
 
@@ -208,7 +214,12 @@ class motivo_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = motivo
 		fields = '__all__'
+class usuario_rol_jefe_serializer(serializers.ModelSerializer):
 
+	id_jefe = user_info_basica_serializer(allow_null=True)
+	class Meta:
+		model = usuario_rol
+		fields = '__all__'
 class cohorte_estudiante_ficha_serializer(serializers.ModelSerializer):
 	id_cohorte = serializers.SerializerMethodField()
 	class Meta:
