@@ -178,7 +178,7 @@ class conteo_seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
 
         return Response(counts,status=status.HTTP_200_OK)
 #
-#   * Descripción de la función.
+#   * Descarga de los seguimientos según varios filtros.
 #   * @author Deiby A. Rodriguez R.
 #   * @param {ModelViewSet} viewsets.ModelViewSet, View set usada por django.
 #   * @return {Json} seguimientos, inasistencias, Json con todos los seguimientos e inasistencias filtradas.
@@ -239,16 +239,25 @@ class descarga_seguimientos_inasistencias_viewsets (viewsets.ModelViewSet):
         filters = []
         filters.append(reduce_and)
 
-        seguimientos =  seguimiento_individual_serializer(
-                            seguimiento_individual.objects.filter(*filters).order_by("fecha"),
-                            many=True
-                        ).data
-        inasistencias = inasistencia_serializer(
-                            inasistencia.objects.filter(*filters).order_by("fecha"),
-                            many=True
-                        ).data
+        seguimientos_data = seguimiento_individual_serializer(
+            seguimiento_individual.objects.filter(*filters).select_related('id_estudiante').order_by("fecha"),
+            many=True).data
 
-        return Response({"seguimientos": seguimientos, "inasistencias": inasistencias},status=status.HTTP_200_OK)
+        inasistencias_data = inasistencia_serializer(
+            inasistencia.objects.filter(*filters).select_related('id_estudiante').order_by("fecha"),
+            many=True).data
+
+        # Diccionario de id_estudiante a cod_univalle para evitar múltiples consultas
+        estudiante_cod_map = {e.id: e.cod_univalle for e in estudiante.objects.all()}
+
+        # Agregar el código del estudiante a los resultados
+        for seguimiento in seguimientos_data:
+            seguimiento['codigo_estudiante'] = estudiante_cod_map.get(seguimiento['id_estudiante'])
+
+        for inasistencia_obj in inasistencias_data:
+            inasistencia_obj['codigo_estudiante'] = estudiante_cod_map.get(inasistencia_obj['id_estudiante'])
+
+        return Response({"seguimientos": seguimientos_data, "inasistencias": inasistencias_data},status=status.HTTP_200_OK)
 
 class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
     serializer_class = basic_estudiante_serializer
