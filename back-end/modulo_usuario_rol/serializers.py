@@ -103,13 +103,6 @@ class User_rol_manage(serializers.Serializer):
 class Estudiante_manage(serializers.Serializer):
 	id = serializers.IntegerField()
 
-	
-class Estudiante_actualizacion(serializers.ModelSerializer):
-	class Meta:
-		model = estudiante
-		fields = ['puntaje_icfes', 'telefono_res', 'celular', 'email', 'sexo', 'hijos', 'actividades_ocio_deporte',
-                  'acudiente', 'telefono_acudiente', 'id_etnia', 'id_act_simultanea', 'id_identidad_gen', 'id_estado_civil',
-                  'id_cond_excepcion','vive_con', 'ult_modificacion']
 
 class Monitor_actualizacion(serializers.ModelSerializer):
 	class Meta:
@@ -227,6 +220,12 @@ class cohorte_estudiante_ficha_serializer(serializers.ModelSerializer):
 		fields = ['id_cohorte']
 	def get_id_cohorte(self, obj):
 		return obj.id_cohorte.nombre
+class Estudiante_actualizacion(serializers.ModelSerializer):
+	class Meta:
+		model = estudiante
+		fields = ['puntaje_icfes', 'telefono_res', 'celular', 'email', 'sexo', 'hijos', 'actividades_ocio_deporte',
+                  'acudiente', 'telefono_acudiente', 'id_etnia', 'id_act_simultanea', 'id_identidad_gen', 'id_estado_civil',
+                  'id_cond_excepcion','vive_con', 'ult_modificacion']
 class ficha_estudiante_serializer(serializers.ModelSerializer):
 	barrio_ini = serializers.SerializerMethodField(allow_null=True)
 	ciudad_ini = serializers.SerializerMethodField(allow_null=True)
@@ -235,10 +234,10 @@ class ficha_estudiante_serializer(serializers.ModelSerializer):
 	ciudad_nac = serializers.SerializerMethodField(allow_null=True)
 	id_discapacidad = serializers.SerializerMethodField(allow_null=True)
 	el_id_de_cond_excepcion=serializers.SerializerMethodField(source='id_cond_excepcion',allow_null=True)
-	# id_estado_civil=Estado_civil_serializer(allow_null=True)
-	# id_identidad_gen=Identidad_de_genero_serializer(allow_null=True)
-	# id_act_simultanea= Actividad_simultanea_serializer(allow_null=True)
-	# id_etnia=Grupo_etnico_serializer(allow_null=True)
+	el_id_de_estado_civil=serializers.SerializerMethodField(source='id_estado_civil',allow_null=True)
+	el_id_de_identidad_gen=serializers.SerializerMethodField(source='id_identidad_gen',allow_null=True)
+	el_id_de_act_simultanea= serializers.SerializerMethodField(source='id_act_simultanea',allow_null=True)
+	el_id_de_etnia=serializers.SerializerMethodField(source='id_etnia',allow_null=True)
 	cohorte= cohorte_estudiante_ficha_serializer(source='id_estudiante_in_cohorte_estudiante',many=True)
 	programas= programa_estudiante_ficha_serializer(source='id_estudiante_in_programa_estudiante',many=True)
 	# profesional=
@@ -286,4 +285,20 @@ class ficha_estudiante_serializer(serializers.ModelSerializer):
 	def get_el_id_de_cond_excepcion(self, obj):
 		if obj.id_cond_excepcion:
 			return obj.id_cond_excepcion.alias
+		return None 
+	def get_el_id_de_estado_civil(self, obj):
+		if obj.id_estado_civil:
+			return obj.id_estado_civil.estado_civil
+		return None 
+	def get_el_id_de_identidad_gen(self, obj):
+		if obj.id_identidad_gen:
+			return obj.id_identidad_gen.genero
+		return None 
+	def get_el_id_de_act_simultanea(self, obj):
+		if obj.id_act_simultanea:
+			return obj.id_act_simultanea.actividad
+		return None 
+	def get_el_id_de_etnia(self, obj):
+		if obj.id_etnia:
+			return obj.id_etnia.etnia
 		return None 

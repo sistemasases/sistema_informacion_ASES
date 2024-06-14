@@ -242,7 +242,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
     """
     serializer_class = estudiante_serializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
     
     # Función para convertir el nivel de riesgo numérico en clasificación textual
@@ -398,7 +398,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             dic_programa = {'error': 'sin programa asignado o no se encontraro coincidencias'
                             }  # Agregar el estado del curso al diccionario
 
-            dic = id_estudiante_programa
+            dic = {}
             dic.update(dic_programa)
             lista_programas.append(dic)
             diccionario_programas = {'programas': lista_programas}
@@ -406,266 +406,6 @@ class estudiante_viewsets(viewsets.ModelViewSet):
 
         result = dict(serializer_estudiante.data, **dic_asignaciones,**riesgo,**firma, **diccionario_programas)
         return Response(result)
-        
-        request_sede = int(request.GET.get('id_sede'))
-        var_estudiante = estudiante.objects.get(id=pk)
-        serializer_estudiante = estudiante_serializer(var_estudiante)
-        diccionario_estudiante = serializer_estudiante.data
-        #llamado y seteo de barrios, ciudades y otros campos que hagan llamada a otra tabla ademas de estudiante (osea, estudiante tiene el id del campo a llamar de otra tabla)
-        #barrio_ini         barrio_res
-        barrio_ini_id = diccionario_estudiante['barrio_ini']
-        barrio_res_id = diccionario_estudiante['barrio_res']
-        try:
-            barrio_ini_obj = barrio.objects.get(codigo_barrio=barrio_ini_id)
-            diccionario_estudiante['barrio_ini'] = barrio_ini_obj.nombre
-        except barrio.DoesNotExist:
-            diccionario_estudiante['barrio_ini'] = None
-        try:
-            barrio_res_obj = barrio.objects.get(codigo_barrio=barrio_res_id)
-            diccionario_estudiante['barrio_res'] = barrio_res_obj.nombre
-            estrato_obj = barrio.objects.get(codigo_barrio=barrio_res_id)
-            estrato_nombre = estrato_obj.estrato
-            diccionario_estrato = {'estrato': estrato_nombre}
-            diccionario_estudiante.update(diccionario_estrato)
-        except barrio.DoesNotExist:
-            diccionario_estudiante['barrio_res'] = None
-        #municipio_nac          municipio_ini          municipio_res
-        municipio_nac_id = diccionario_estudiante['ciudad_nac']
-        municipio_ini_id = diccionario_estudiante['ciudad_ini']
-        municipio_res_id = diccionario_estudiante['ciudad_res']
-        try:
-            municipio_nac_obj = municipio.objects.get(codigo_divipola=municipio_nac_id)
-            diccionario_estudiante['ciudad_nac'] = municipio_nac_obj.nombre
-        except municipio.DoesNotExist:
-            diccionario_estudiante['ciudad_nac'] = None
-        try:
-            municipio_ini_obj = municipio.objects.get(codigo_divipola=municipio_ini_id)
-            diccionario_estudiante['ciudad_ini'] = municipio_ini_obj.nombre
-        except municipio.DoesNotExist:
-            diccionario_estudiante['ciudad_ini'] = None
-        try:
-            municipio_res_obj = municipio.objects.get(codigo_divipola=municipio_res_id)
-            diccionario_estudiante['ciudad_res'] = municipio_res_obj.nombre
-        except municipio.DoesNotExist:
-            diccionario_estudiante['ciudad_res'] = None
-        #cond_excepcion          discap_men
-        cond_excepcion_id = diccionario_estudiante['id_cond_excepcion']
-        discap_men_id = diccionario_estudiante['id_discapacidad']
-        try:
-            cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_id)
-            diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_obj.alias}
-            diccionario_estudiante.update(diccionarion_cond_excepcion)
-        except cond_excepcion.DoesNotExist:
-            diccionario_estudiante['id_cond_excepcion'] = None
-        except MultipleObjectsReturned:
-            cond_excepcion_obj = cond_excepcion.objects.filter(id=cond_excepcion_id).first()
-            diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_obj.alias}
-            diccionario_estudiante.update(diccionarion_cond_excepcion)
-        try:
-            discap_men_obj = discap_men.objects.get(codigo_men=discap_men_id)
-            diccionario_estudiante['id_discapacidad'] = discap_men_obj.nombre
-        except discap_men.DoesNotExist:
-            diccionario_estudiante['id_discapacidad'] = None
-        #identidad_gen          etnia       estado_civil        act_simultanea
-        identidad_gen_id = diccionario_estudiante['id_identidad_gen']
-        etnia_id = diccionario_estudiante['id_etnia']
-        estado_civil_id = diccionario_estudiante['id_estado_civil']
-        act_simultanea_id = diccionario_estudiante['id_act_simultanea']
-
-        try:
-            cohorte_obj = cohorte_estudiante.objects.get(id_estudiante=pk)
-            serializer_id_cohorte = cohorte_estudiante_serializer(cohorte_obj)
-            id_cohorte = serializer_id_cohorte.data['id_cohorte']
-            nombre_cohorte = cohorte.objects.get(id=id_cohorte)
-            diccionarion_cohorte = {'nombre_cohorte':nombre_cohorte.nombre}
-            diccionario_estudiante.update(diccionarion_cohorte)
-        except cohorte_estudiante.DoesNotExist:
-            diccionario_estudiante['nombre_cohorte'] = None
-        except MultipleObjectsReturned:
-            cohorte_obj = cohorte_estudiante.objects.filter(id_estudiante=pk).first()
-            serializer_id_cohorte = cohorte_estudiante_serializer(cohorte_obj)
-            id_cohorte = serializer_id_cohorte.data['id_cohorte']
-            nombre_cohorte = cohorte.objects.get(id=id_cohorte)
-            diccionarion_cohorte = {'nombre_cohorte':nombre_cohorte.nombre}
-            diccionario_estudiante.update(diccionarion_cohorte)
-        try:
-            identidad_gen_obj = identidad_gen.objects.get(opcion_general=identidad_gen_id)
-            diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
-            diccionario_estudiante.update(diccionarion_identidad_gen)
-        except identidad_gen.DoesNotExist:
-            diccionario_estudiante['id_identidad_gen'] = None
-        except MultipleObjectsReturned:
-            identidad_gen_obj = identidad_gen.objects.filter(opcion_general=identidad_gen_id).first()
-            diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
-            diccionario_estudiante.update(diccionarion_identidad_gen)
-        try:
-            etnia_obj = etnia.objects.get(opcion_general=etnia_id)
-            diccionarion_etnia = {'el_id_de_etnia':etnia_obj.etnia}
-            diccionario_estudiante.update(diccionarion_etnia)
-        except etnia.DoesNotExist:
-            diccionario_estudiante['id_etnia'] = None
-        except MultipleObjectsReturned:
-            etnia_obj = etnia.objects.filter(opcion_general=etnia_id).first()
-            diccionarion_etnia = {'el_id_de_etnia':etnia_obj.etnia}
-            diccionario_estudiante.update(diccionarion_etnia)
-        try:
-            estado_civil_obj = estado_civil.objects.get(id=estado_civil_id)
-            diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_obj.estado_civil}
-            diccionario_estudiante.update(diccionarion_estado_civil)
-        except estado_civil.DoesNotExist:
-            diccionario_estudiante['id_estado_civil'] = None
-        except MultipleObjectsReturned:
-            estado_civil_obj = estado_civil.objects.filter(id=estado_civil_id).first()
-            diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_obj.estado_civil}
-            diccionario_estudiante.update(diccionarion_estado_civil)
-        try:
-            act_simultanea_obj = act_simultanea.objects.get(opcion_general=act_simultanea_id)
-            diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_obj.actividad}
-            diccionario_estudiante.update(diccionarion_act_simultanea)
-        except act_simultanea.DoesNotExist:
-            diccionario_estudiante['id_act_simultanea'] = None
-        except MultipleObjectsReturned:
-            act_simultanea_obj = act_simultanea.objects.filter(opcion_general=act_simultanea_id).first()
-            diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_obj.actividad}
-            diccionario_estudiante.update(diccionarion_act_simultanea)
-
-        lista_programas = []
-        try :
-            ids_del_estudiante_para_sus_progamas = estudiante.objects.filter(num_doc=serializer_estudiante.data['num_doc']).values('id', 'cod_univalle')
-            for id_estudiante_programa in ids_del_estudiante_para_sus_progamas:
-                programa_seleccionado = programa_estudiante.objects.filter(id_estudiante=id_estudiante_programa['id']).values('id_programa','id_estado','traker')
-                for programa_id in programa_seleccionado :
-                    var_programa = programa.objects.filter(id=programa_id['id_programa']).values()
-                    dic_programa = {'id': id_estudiante_programa['id'], 
-                                    'nombre_programa': var_programa[0]['nombre'], 
-                                    'cod_univalle': var_programa[0]['codigo_univalle'],
-                                    'codigo_estudiante': id_estudiante_programa['cod_univalle'],
-                                    'id_estado_id': programa_id['id_estado'],
-                                    'traker': programa_id['traker']
-                                    }  # Agregar el estado del curso al diccionario
-                    dic = {}
-                    dic.update(dic_programa)
-                    lista_programas.append(dic)
-
-            diccionario_programas = {'programas': lista_programas}
-
-            diccionario_estudiante.update(diccionario_programas)
-
-        except :
-            dic_programa = {'error': 'sin programa asignado o no se encontraro coincidencias'
-                            }  # Agregar el estado del curso al diccionario
-
-            dic = id_estudiante_programa
-            dic.update(dic_programa)
-            lista_programas.append(dic)
-            diccionario_programas = {'programas': lista_programas}
-            print(diccionario_programas)
-            diccionario_estudiante.update(diccionario_programas)
-
-        try:
-            semestre_activo = semestre.objects.get(semestre_actual=True, id_sede =request_sede)
-            serializer_semestre = semestre_serializer(semestre_activo)
-            el_monitor_asignado = asignacion.objects.get(id_semestre=serializer_semestre.data['id'], id_estudiante=pk,estado=True)
-            serializer_monitor_asignado = asignacion_serializer(el_monitor_asignado)
-
-            info_monitor = usuario_rol.objects.get(id_usuario = serializer_monitor_asignado.data['id_usuario'], id_semestre=serializer_semestre.data['id'])
-
-            serilalizer_info_monitor = usuario_rol_serializer(info_monitor)
-
-            su_practicante = usuario_rol.objects.get(id_usuario=serilalizer_info_monitor.data['id_jefe'], id_semestre=serializer_semestre.data['id'])
-            serializer_su_practicante = usuario_rol_serializer(su_practicante)
-
-            su_profesional = usuario_rol.objects.get(id_usuario=serializer_su_practicante.data['id_jefe'], id_semestre=serializer_semestre.data['id'])
-            serializer_su_profesional = usuario_rol_serializer(su_profesional)
-
-            consulta_practicante = User.objects.get(id =serializer_su_practicante.data['id_usuario'])
-            serializer_practicante = user_selected(consulta_practicante)
-
-            consulta_profesional = User.objects.get(id =serializer_su_profesional.data['id_usuario'])
-            serializer_profesional = user_selected(consulta_profesional)
-
-            consulta_monitor = User.objects.get(id =serilalizer_info_monitor.data['id_usuario'])
-            serializer_monitor = user_selected(consulta_monitor)
-
-            datos_encargados = {
-                    'profesional': serializer_profesional.data, 
-                    'practicante': serializer_practicante.data,
-                    'info_monitor': serializer_monitor.data
-                    }
-        except:
-            datos_encargados = {
-                    'profesional': 'sin asignacion', 
-                    'practicante': 'sin asignacion',
-                    'info_monitor': 'sin asignacion'
-                    }
-
-        diccionario_estudiante.update(datos_encargados)
-        
-        try:
-            # Obtener el seguimiento más reciente del estudiante especificado
-            seguimiento_reciente = seguimiento_individual.objects.filter(
-                id_estudiante=pk).latest('fecha')
-            inasistencias_registradas = inasistencia.objects.filter(
-            id_estudiante= pk).latest('fecha')
-            riesgo = {
-                'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
-                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(inasistencias_registradas.fecha))),
-            }
-        except seguimiento_individual.DoesNotExist:
-            # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
-            try:
-                inasistencias_registradas = inasistencia.objects.filter(
-                id_estudiante= pk).latest('fecha')
-                riesgo = {
-                    'riesgo_individual': 'SIN SEGUIMIENTO',
-                    'riesgo_familiar': 'SIN SEGUIMIENTO',
-                    'riesgo_academico': 'SIN SEGUIMIENTO',
-                    'riesgo_economico': 'SIN SEGUIMIENTO',
-                    'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
-                    'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(inasistencias_registradas.fecha))),
-                }
-            except:
-                riesgo = {
-                        'riesgo_individual': 'SIN SEGUIMIENTO',
-                        'riesgo_familiar': 'SIN SEGUIMIENTO',
-                        'riesgo_academico': 'SIN SEGUIMIENTO',
-                        'riesgo_economico': 'SIN SEGUIMIENTO',
-                        'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
-                        'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(None))),
-                    }
-
-        except inasistencia.DoesNotExist:
-            seguimiento_reciente = seguimiento_individual.objects.filter(
-                id_estudiante=pk).latest('fecha')
-            riesgo = {
-                'riesgo_individual': 'SIN SEGUIMIENTO',
-                'riesgo_familiar': 'SIN SEGUIMIENTO',
-                'riesgo_academico': 'SIN SEGUIMIENTO',
-                'riesgo_economico': 'SIN SEGUIMIENTO',
-                'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
-                'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(None))),
-
-            }
-            
-        diccionario_estudiante.update(riesgo)
-        
-        try:
-            firma_tratamiento = firma_tratamiento_datos.objects.filter(
-                    id_estudiante=pk).values()
-            firma = {
-                'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
-            }
-        except firma_tratamiento_datos.DoesNotExist:
-            firma = {
-                'firma_tratamiento_datos': 'SIN FIRMAR'
-            }
-            
-        diccionario_estudiante.update(firma)
-        return Response(diccionario_estudiante)
 
 class estudiante_por_sede_viewsets(viewsets.ModelViewSet):
     """
@@ -785,85 +525,55 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
     def post(self, request, pk=None):
         # serializer = self.serializer_class(data=request.data)
         # if (serializer.is_valid()):
+        try:
+            var_estudiante = estudiante.objects.get(id = pk)
+        except estudiante.DoesNotExist:
+                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(data=request.data)
-
         if serializer.is_valid():
-
-            puntaje_icfes_request = serializer.data['puntaje_icfes']
-            telefono_res_request = serializer.data['telefono_res']
-            celular_request = serializer.data['celular']
-            email_request = serializer.data['email']
-            sexo_request = serializer.data['sexo']
-            cantidad_hijo_request = serializer.data['hijos']
-            deporte_request = serializer.data['actividades_ocio_deporte']
-            acudiente_emergencia_request = serializer.data['acudiente']
-            tel_acudiente_emergencia_request = serializer.data['telefono_acudiente']
-
-            etnia_request = serializer.data['id_etnia']
-            act_simultanea_request = serializer.data['id_act_simultanea']
-            identidad_gen_request = serializer.data['id_identidad_gen']
-            estado_civil_request = serializer.data['id_estado_civil']
-            cond_excepcion_request = serializer.data['id_cond_excepcion']
-
-            vive_con_request = serializer.data['vive_con']
-            ult_modificacion_request = serializer.data['ult_modificacion']
-
-            var_estudiante = estudiante.objects.get(id=pk)
-            serializer_estudiante = estudiante_serializer(var_estudiante)
+            var_estudiante.puntaje_icfes = serializer.data['puntaje_icfes']
+            var_estudiante.telefono_res = serializer.data['telefono_res']
+            var_estudiante.celular = serializer.data['celular']
+            var_estudiante.email = serializer.data['email']
+            var_estudiante.sexo = serializer.data['sexo']
+            var_estudiante.actividades_ocio_deporte = serializer.data['actividades_ocio_deporte']
+            var_estudiante.hijos = serializer.data['hijos']
+            var_estudiante.acudiente = serializer.data['acudiente']
+            var_estudiante.telefono_acudiente = serializer.data['telefono_acudiente']
+            var_estudiante.vive_con = serializer.data['vive_con']
+            var_estudiante.ult_modificacion = serializer.data['ult_modificacion']
+            try:
+                etnia_obj = etnia.objects.get(id=serializer.data['id_etnia'])
+                var_estudiante.id_etnia = etnia_obj
+            except:
+                print('no hiz etnia')
 
             try:
-                var_old_estudiante = estudiante.objects.get(pk = serializer_estudiante.data['id'])
-                var_estudiante = var_old_estudiante
+                act_simultanea_obj = act_simultanea.objects.get(id=serializer.data['id_act_simultanea'])
+                var_estudiante.id_act_simultanea = act_simultanea_obj
+            except:
+                print('no hiz act_simultanea')
 
-                var_estudiante.puntaje_icfes = puntaje_icfes_request
-                var_estudiante.telefono_res = telefono_res_request
-                var_estudiante.celular = celular_request
-                var_estudiante.email = email_request
-                var_estudiante.sexo = sexo_request
-                var_estudiante.actividades_ocio_deporte = deporte_request
-                var_estudiante.hijos = cantidad_hijo_request
-                var_estudiante.acudiente = acudiente_emergencia_request
-                var_estudiante.telefono_acudiente = tel_acudiente_emergencia_request
-                var_estudiante.vive_con = vive_con_request
-                var_estudiante.ult_modificacion = ult_modificacion_request
+            try:
+                identidad_gen_obj = identidad_gen.objects.get(id=serializer.data['id_identidad_gen'])
+                var_estudiante.id_identidad_gen = identidad_gen_obj
+            except:
+                print('no hiz identidad_gen')
 
-                try:
-                    etnia_obj = etnia.objects.get(id=etnia_request)
-                    var_estudiante.id_etnia = etnia_obj
-                except:
-                    print('no hiz etnia')
+            try:
+                estado_civil_obj = estado_civil.objects.get(id=serializer.data['id_estado_civil'])
+                var_estudiante.id_estado_civil = estado_civil_obj
+            except:
+                print('no hiz estado_civil')
 
-                try:
-                    act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
-                    var_estudiante.id_act_simultanea = act_simultanea_obj
-                except:
-                    print('no hiz act_simultanea')
+            try:
+                cond_excepcion_obj = cond_excepcion.objects.get(id=serializer.data['id_cond_excepcion'])
+                var_estudiante.id_cond_excepcion = cond_excepcion_obj
+            except:
+                print('no hiz cond_excepcion')
+            var_estudiante.save()
 
-                try:
-                    identidad_gen_obj = identidad_gen.objects.filter(id=identidad_gen_request).first()
-                    var_estudiante.id_identidad_gen = identidad_gen_obj
-                except:
-                    print('no hiz identidad_gen')
-
-                try:
-                    estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
-                    var_estudiante.id_estado_civil = estado_civil_obj
-                except:
-                    print('no hiz estado_civil')
-
-                try:
-                    cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
-                    var_estudiante.id_cond_excepcion = cond_excepcion_obj
-                except:
-                    print('no hiz cond_excepcion')
-
-                var_estudiante.save()
-                return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
-            except estudiante.DoesNotExist:
-                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
     
 class trayectoria_viewsets(viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
@@ -913,102 +623,10 @@ class trayectoria_viewsets(viewsets.ModelViewSet):
             return Response(listas)
         except seguimiento_individual.DoesNotExist:
             return Response({})
-        
-class mas_con_quien_vive_viewsets (viewsets.ModelViewSet):
-    serializer_class = Estudiante_actualizacion
-    queryset = estudiante_serializer.Meta.model.objects.all()
-
-    def post(self, request, pk=None):
-        # serializer = self.serializer_class(data=request.data)
-        # if (serializer.is_valid()):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-
-            puntaje_icfes_request = serializer.data['puntaje_icfes']
-            telefono_res_request = serializer.data['telefono_res']
-            celular_request = serializer.data['celular']
-            email_request = serializer.data['email']
-            sexo_request = serializer.data['sexo']
-            cantidad_hijo_request = serializer.data['hijos']
-            deporte_request = serializer.data['actividades_ocio_deporte']
-            acudiente_emergencia_request = serializer.data['acudiente']
-            tel_acudiente_emergencia_request = serializer.data['telefono_acudiente']
-
-            etnia_request = serializer.data['id_etnia']
-            act_simultanea_request = serializer.data['id_act_simultanea']
-            identidad_gen_request = serializer.data['id_identidad_gen']
-            estado_civil_request = serializer.data['id_estado_civil']
-            cond_excepcion_request = serializer.data['id_cond_excepcion']
-
-            var_estudiante = estudiante.objects.get(id=pk)
-            serializer_estudiante = estudiante_serializer(var_estudiante)
-
-            try:
-                var_old_estudiante = estudiante.objects.get(pk = serializer_estudiante.data['id'])
-                var_estudiante = var_old_estudiante
-
-                var_estudiante.puntaje_icfes = puntaje_icfes_request
-                var_estudiante.telefono_res = telefono_res_request
-                var_estudiante.celular = celular_request
-                var_estudiante.email = email_request
-                var_estudiante.sexo = sexo_request
-                var_estudiante.actividades_ocio_deporte = deporte_request
-                var_estudiante.hijos = cantidad_hijo_request
-                var_estudiante.acudiente = acudiente_emergencia_request
-                var_estudiante.telefono_acudiente = tel_acudiente_emergencia_request
-
-                try:
-                    etnia_obj = etnia.objects.get(id=etnia_request)
-                    var_estudiante.id_etnia = etnia_obj
-                except:
-                    print('no hiz etnia')
-
-                try:
-                    act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
-                    var_estudiante.id_act_simultanea = act_simultanea_obj
-                except:
-                    print('no hiz act_simultanea')
-
-                try:
-                    identidad_gen_obj = identidad_gen.objects.filter(id=identidad_gen_request).first()
-                    var_estudiante.id_identidad_gen = identidad_gen_obj
-                except:
-                    print('no hiz identidad_gen')
-
-                try:
-                    estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
-                    var_estudiante.id_estado_civil = estado_civil_obj
-                except:
-                    print('no hiz estado_civil')
-
-                try:
-                    cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
-                    var_estudiante.id_cond_excepcion = cond_excepcion_obj
-                except:
-                    print('no hiz cond_excepcion')
-
-                var_estudiante.save()
-                return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
-            except estudiante.DoesNotExist:
-                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 class Grupo_etnico_viewsets(viewsets.ModelViewSet):
     serializer_class = Grupo_etnico_serializer
     permission_classes = (IsAuthenticated,)
     queryset = etnia.objects.all()
-
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class Actividad_simultanea_viewsets(viewsets.ModelViewSet):
@@ -1016,54 +634,25 @@ class Actividad_simultanea_viewsets(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = act_simultanea.objects.all()
 
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class Identidad_gen_viewsets(viewsets.ModelViewSet):
     serializer_class = Identidad_de_genero_serializer
     permission_classes = (IsAuthenticated,)
     queryset = identidad_gen.objects.all()
 
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class Estado_civil_viewsets(viewsets.ModelViewSet):
     serializer_class = Estado_civil_serializer
     permission_classes = (IsAuthenticated,)
     queryset = estado_civil.objects.all()
-
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class Condicion_de_excepcion_viewsets(viewsets.ModelViewSet):
     serializer_class = Condicion_de_excepcion_serializer
     permission_classes = (IsAuthenticated,)
     queryset = cond_excepcion.objects.all()
 
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk):
