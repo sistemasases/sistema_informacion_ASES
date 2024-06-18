@@ -43,9 +43,9 @@ const Info_basica = (props) => {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
     const url_axios =
-      `${process.env.REACT_APP_API_URL}/usuario_rol/trayectoria/` +
+      `${process.env.REACT_APP_API_URL}/seguimiento/seguimiento_individual/` +
       state.id_usuario +
-      "/";
+      "/trayectoria/";
     axios({
       // Endpoint to send files
       url: url_axios,
@@ -195,7 +195,7 @@ const Info_basica = (props) => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
         state.data_user[index]["id"] +
-        "/",
+        "/datos_ficha_estudiante/",
         config,
         { paramsget }
       );
@@ -236,7 +236,7 @@ const Info_basica = (props) => {
           const url_axios =
             `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
             dato.value +
-            "/";
+            "/datos_ficha_estudiante/";
           axios({
             // Endpoint to send files
             url: url_axios,
@@ -276,7 +276,7 @@ const Info_basica = (props) => {
     const url_axios =
       `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
       e.value +
-      "/";
+      "/datos_ficha_estudiante/";
     axios({
       url: url_axios,
       params: paramsget,
@@ -524,11 +524,11 @@ const Info_basica = (props) => {
                         <Row>
                           <h4 className="texto_mas_pequeño">
                             <br />
-                            Profesional: {state.profesional.first_name}
+                            Profesional: {state.profesional.first_name } {state.profesional.last_name}
                             <br />
-                            Practicante: {state.practicante.first_name}
+                            Practicante: {state.practicante.first_name} {state.practicante.last_name}
                             <br />
-                            Monitor: {state.monitor.first_name}
+                            Monitor: {state.monitor.first_name} {state.monitor.last_name}
                             <br />
                             Ultima actualización:{" "}
                             {state.total_datos_estudiantes.ult_modificacion}

@@ -215,7 +215,7 @@ const isTabSelected_monitor = (username) => {
     let formData = new FormData();
     formData.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
 
-    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', formData,config)
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+name+'/'+'estudiantes_de_un_monitor/', formData,config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

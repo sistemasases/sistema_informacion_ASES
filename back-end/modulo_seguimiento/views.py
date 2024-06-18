@@ -30,6 +30,50 @@ class seguimiento_individual_viewsets (viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
+    @action(detail=True, methods=['get'], url_path='trayectoria')
+    def trayectoria(self, request, pk):
+        request_sede = int(request.GET.get('id_sede'))
+        list_semestre = semestre.objects.all().get(semestre_actual=True,id_sede = request_sede)
+        fecha_inicio_semestre = list_semestre.fecha_inicio
+
+        listas = []
+        fechas = []
+        riesgo_individual = []
+        riesgo_familiar = []
+        riesgo_academico = []
+        riesgo_economico = []
+        riesgo_vida_universitaria_ciudad = []
+
+        try:
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk, fecha__gt=fecha_inicio_semestre
+            ).order_by('fecha')
+            for i in seguimiento_reciente:
+                seguimiento = seguimiento_individual_serializer(i)
+                fechas.append(seguimiento.data['fecha'])
+                riesgo_individual.append(seguimiento.data['riesgo_individual'])
+                riesgo_familiar.append(seguimiento.data['riesgo_familiar'])
+                riesgo_academico.append(seguimiento.data['riesgo_academico'])
+                riesgo_economico.append(seguimiento.data['riesgo_economico'])
+                riesgo_vida_universitaria_ciudad.append(seguimiento.data['riesgo_vida_universitaria_ciudad'])
+
+            fechas_lista = {'fechas': fechas}
+            riesgo_individual_lista = {'riesgo_individual': riesgo_individual}
+            riesgo_familiar_lista = {'riesgo_familiar': riesgo_familiar}
+            riesgo_academico_lista = {'riesgo_academico': riesgo_academico}
+            riesgo_economico_lista = {'riesgo_economico': riesgo_economico}
+            riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad': riesgo_vida_universitaria_ciudad}
+
+            listas.append(fechas_lista)
+            listas.append(riesgo_individual_lista)
+            listas.append(riesgo_familiar_lista)
+            listas.append(riesgo_academico_lista)
+            listas.append(riesgo_economico_lista)
+            listas.append(riesgo_vida_universitaria_ciudad_lista)
+            return Response(listas)
+        except seguimiento_individual.DoesNotExist:
+            return Response({})
+
 
 class inasistencia_viewsets (viewsets.ModelViewSet):
     serializer_class = inasistencia_serializer

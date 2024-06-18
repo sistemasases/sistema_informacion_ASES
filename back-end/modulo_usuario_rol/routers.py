@@ -7,17 +7,12 @@ router = DefaultRouter()
     Endpoints Relacioandos con Usuarios.
 """
 router.register(r'user',user_viewsets,basename = 'user')
-router.register(r'user_actualizacion',user_actualizacion_viewsets,basename = 'user_actualizacion')
 """
     Endpoints Relacioandos con Estudiantes.
 """
 router.register(r'retiro',retiro_viewsets,basename = 'retiro')
 router.register(r'motivo',motivo_viewsets,basename = 'motivo')
 router.register(r'estudiante',estudiante_viewsets,basename = 'estudiante')
-router.register(r'estudiante_sede',estudiante_por_sede_viewsets,basename = 'estudiante_sede')
-router.register(r'estudiante_selected',estudiante_selected_viewsets,basename = 'estudiante_selected')
-router.register(r'estudiante_actualizacion',estudiante_actualizacion_viewsets,basename = 'estudiante_actualizacion')
-router.register(r'trayectoria',trayectoria_viewsets,basename = 'trayectoria')
 router.register(r'grupos_etnicos',Grupo_etnico_viewsets,basename = 'grupos_etnicos')
 router.register(r'actividad_simultanea',Actividad_simultanea_viewsets,basename = 'actividad_simultanea')
 router.register(r'identidad_gen',Identidad_gen_viewsets,basename = 'identidad_gen')
@@ -38,7 +33,6 @@ router.register(r'practicante',practicante_viewsets,basename = 'practicante')
 router.register(r'monitor',monitor_viewsets,basename = 'monitor')
 router.register(r'monitor_info_extra',monitor_info_extra_viewsets,basename = 'monitor_info_extra')
 router.register(r'historial_monitor',historial_monitor_viewsets,basename = 'historial_monitor')
-router.register(r'monitor_actualizacion',monitor_actualizacion_viewsets,basename = 'monitor_actualizacion')
 
 """
     Endpoints Relacioandos con Seguimientos

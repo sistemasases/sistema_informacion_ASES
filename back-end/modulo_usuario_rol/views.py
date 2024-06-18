@@ -10,7 +10,7 @@ para la creación, actualización y recuperación del actual objeto 'semestre' b
 from queue import Empty
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, act_simultanea, cond_excepcion, discap_men, estado_civil,  etnia, identidad_gen, cohorte_estudiante
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, act_simultanea, cond_excepcion, estado_civil,  etnia, identidad_gen, cohorte_estudiante
 from modulo_geografico.models import barrio, municipio
 from modulo_programa.models import programa_estudiante, programa, historial_estado_programa_estudiante, programa_monitor
 from modulo_instancia.models import semestre, cohorte
@@ -31,6 +31,7 @@ from modulo_asignacion.serializers import asignacion_serializer,asignacion_monit
 from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 
 
 """
@@ -75,58 +76,86 @@ class user_viewsets (viewsets.ModelViewSet):
     """
 
     serializer_class = user_serializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = user_serializer.Meta.model.objects.all()
 
-class user_actualizacion_viewsets(viewsets.ViewSet):
-    """
-    Vista para actualizar información de usuarios.
-
-    Esta vista permite actualizar el nombre y apellido de un usuario existente, esta llamada se ejecuta en la vista de ficha del monitor.
-
-    Permisos:
-    - El usuario debe estar autenticado para acceder a esta vista.
-
-    Serializer:
-    - Se utiliza 'user_actualizacion' para serializar los datos de actualización.
-
-    Métodos HTTP admitidos:
-    - PUT: Actualiza el nombre y apellido de un usuario.
-
-    Gestión de solicutudes HTTP VIEWSETS:
-    update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
-
-    """
-    serializer_class = user_actualizacion
-    permission_classes = (IsAuthenticated,)
-
-    def update(self, request, pk=None):
+    @action(detail=False, methods=['post'], url_path='desactivar_usuarios_sede')
+    def desactivar_usuarios_sede(self, request, pk=None):
         """
-        Actualiza el nombre y apellido de un usuario.
+        Desactiva todos los usuarios del semestre actual de la sede especificada.
 
         Args:
-        - request: Solicitud HTTP recibida.
-        - pk: Clave primaria del usuario a actualizar.
+        - request: Solicitud HTTP recibida, debe contener 'id_sede' en el cuerpo.
+
+        Returns:
+        - Response: Respuesta HTTP indicando el resultado de la desactivación.
+        """
+
+        # Filtrar para obtener el semestre actual de la sede especificada en la solicitud.
+        try:
+            semestre_actual = semestre.objects.filter(semestre_actual=True, id_sede=request.data["id_sede"]).values('id')
+        # Si no se encuentra un semestre actual, retornar un error.
+        except semestre.DoesNotExist:
+            return Response({'error': 'La sede suministrada no tiene un semestre activo.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Realizar la actualización masiva de usuarios, desactivándolos.
+        usuarios_desactivados = usuario_rol.objects.filter(id_semestre=semestre_actual[0]['id']).update(estado="INACTIVO")
+        
+        # Retornar una respuesta exitosa.
+        return Response({'mensaje': 'usuarios desactivados con éxito'}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'], url_path='actualizar_info_monitor')
+    def actualizar_info_monitor(self, request, pk=None):
+        """
+        Actualiza la información personal de un monitor, incluyendo nombre, teléfono y observaciones.
+
+        Args:
+        - request: Solicitud HTTP recibida, debe contener los campos a actualizar.
 
         Returns:
         - Response: Respuesta HTTP indicando el resultado de la actualización.
         """
-        serializer = self.serializer_class(data=request.data)
+        
+        # Crear un serializador con los datos recibidos en la solicitud.
+        serializer = user_actualizacion(data=request.data)
 
+        # Verificar si los datos del serializador son válidos.
         if serializer.is_valid():
+            # Extraer los datos validados del serializador.
             first_name_request = serializer.validated_data['first_name']
             last_name_request = serializer.validated_data['last_name']
+            telefono_res_request = serializer.validated_data['telefono']
+            celular_request = serializer.validated_data['celular']
+            observacion_request = serializer.validated_data['observacion']
+            ult_modificacion_request = serializer.validated_data['ult_modificacion']
+
             try:
-                user = User.objects.get(pk=pk)
+                # Intentar obtener el usuario con la clave primaria proporcionada.
+                user = User.objects.get(pk=serializer.validated_data['id_user'])
+
+                # Obtener el monitor asociado al usuario.
+                var_monitor = monitor.objects.get(id_user=user.id)
+
+                # Actualizar los campos del usuario y del monitor.
                 user.first_name = first_name_request
                 user.last_name = last_name_request
-                user.save()
+                var_monitor.telefono = telefono_res_request
+                var_monitor.celular = celular_request
+                var_monitor.observacion = observacion_request
+                var_monitor.ult_modificacion = ult_modificacion_request
 
+                # Guardar los cambios en la base de datos.
+                user.save()
+                var_monitor.save()
+
+                # Retornar una respuesta exitosa.
                 return Response({'Respuesta': 'True'}, status=status.HTTP_200_OK)
+
             except User.DoesNotExist:
-                # Si el usuario no se encuentra, devolver un error 404
+                # Si el usuario no se encuentra, devolver un error 404.
                 return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        # Si los datos del serializador no son válidos, devolver un error 400
+
+        # Si los datos del serializador no son válidos, devolver un error 400.
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 """
@@ -261,14 +290,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         fech_actual = datetime.now()
         fecha_ = timedelta(days=7)
         fecha_limite = fech_actual - fecha_
-        # print(fecha_limite)
-        # print(fecha)
-        
-        # print("inasistencia " + inasistencia)
-        # date_obj = datetime.strptime(
-        #         fecha, "%Y-%m-%d")
-        # if(date_obj.date() > fecha_limite.date()):
-        #     print("SEGUIMIENTO RECIENTE")
+
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
             if inasistencia == None or inasistencia == '' or inasistencia == 'None':
                 return "FICHA FALTANTE"
@@ -310,7 +332,9 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             return "SIN FIRMAR"
     # Se redefine la función retrieve para poder traer todos los campos que se relacionan con el estudiante, independeinte de si estan en el modelo estudiante o no.
     # Esta función es utlizada en la vista Ficha del Estudiante.
-    def retrieve(self, request, pk=None):
+
+    @action(detail=True, methods=['get'], url_path='datos_ficha_estudiante')
+    def datos_ficha_estudiante(self, request, pk=None):
 
         request_sede = int(request.GET.get('id_sede'))
         var_estudiante = estudiante.objects.prefetch_related(Prefetch('id_estudiante_in_cohorte_estudiante')).get(id=pk)
@@ -406,32 +430,9 @@ class estudiante_viewsets(viewsets.ModelViewSet):
 
         result = dict(serializer_estudiante.data, **dic_asignaciones,**riesgo,**firma, **diccionario_programas)
         return Response(result)
-
-class estudiante_por_sede_viewsets(viewsets.ModelViewSet):
-    """
-    Vista para obtener estudiantes por sede.
-
-    Esta vista permite obtener una lista de estudiantes asociados a una sede específica.
-
-    Permisos:
-    - El usuario debe estar autenticado para acceder a esta vista.
-
-    Serializer:
-    - Se utiliza 'usuario_rol_serializer' para serializar los datos del modelo 'UsuarioRol'.
-
-    Métodos HTTP admitidos:
-    - GET: Obtiene una lista de estudiantes por sede.
-
-    Gestión de solicutudes HTTP VIEWSETS:
-    (Redefinida) retrieve: Maneja las solicitudes GET para obtener un recurso específico por su clave primaria. 
     
-    """
-
-    serializer_class = usuario_rol_serializer
-    permission_classes = (IsAuthenticated,)
-    queryset = usuario_rol_serializer.Meta.model.objects.all()
-
-    def retrieve(self, request, pk=None):
+    @action(detail=True, methods=['get'], url_path='estudiantes_por_sede')
+    def estudiantes_por_sede(self, request, pk=None):
         #Obtener los programas asociados a la sede especificada
         programas_sede = programa.objects.filter(id_sede=pk)
         # Filtrar los estudiantes asociados a los programas de la sede
@@ -442,36 +443,20 @@ class estudiante_por_sede_viewsets(viewsets.ModelViewSet):
         # Devolver la lista de estudiantes como respuesta
         return Response(list_estudiantes.data, status=status.HTTP_200_OK)
     
-class estudiante_selected_viewsets(viewsets.ModelViewSet):
-    """
-    Vista para manejar la selección de estudiantes.
+    @action(detail=True, methods=['put'], url_path='estudiantes_de_un_monitor')
+    def estudiantes_de_un_monitor(self, request, pk):
+        """
+            Vista para manejar la selección de estudiantes.
 
-    Esta vista permite actualizar la selección de estudiantes para un usuario específico.
-    Esta función se encarga de devolver un listado de los estudiantes que actualmente tiene asignado el monitor selecionado
-    y los que aun no. Este endpoint es llamado en la vista de Asignaciones, especificamente al seleccionar un monitor.
-
-    Permisos:
-    - El usuario debe estar autenticado para acceder a esta vista.
-
-    Serializer:
-    - Se utiliza 'usuario_rol_serializer' para serializar los datos del modelo 'UsuarioRol'.
-
-    Métodos HTTP admitidos:
-    - PUT: Actualiza la selección de estudiantes para un usuario específico.
-
-    Gestión de solicutudes HTTP VIEWSETS:
-    (Redefinida)update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
-   
-    """
-    serializer_class = usuario_rol_serializer
-    permission_classes = (IsAuthenticated,)
-    queryset = usuario_rol_serializer.Meta.model.objects.all()
-
-    def update(self, request, pk):
+            Esta vista permite actualizar la selección de estudiantes para un usuario específico.
+            Esta función se encarga de devolver un listado de los estudiantes que actualmente tiene asignado el monitor selecionado
+            y los que aun no. Este endpoint es llamado en la vista de Asignaciones, especificamente al seleccionar un monitor.
+        
+        """
         var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=request.data["id_sede"])
         serializer_semestre = semestre_serializer(var_semestre)
         # Filtrar los estudiantes asignados al usuario para el semestre actual
-        estudiantes_asignados = estudiante.objects.filter(asignacion__id_usuario=pk, asignacion__estado=True, asignacion__id_semestre=serializer_semestre.data['id']).distinct()
+        estudiantes_asignados = estudiante.objects.filter(id_estudiante_in_asignacion__id_usuario=pk, id_estudiante_in_asignacion__estado=True, id_estudiante_in_asignacion__id_semestre=serializer_semestre.data['id']).distinct()
         # Obtener los programas asociados a la sede proporcionada en la solicitud
         programas_sede = programa.objects.filter(id_sede=request.data["id_sede"])
         # Subconsulta para obtener las asignaciones en el semestre actual con estado True
@@ -488,10 +473,6 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         ).exclude(
             id__in=Subquery(asignaciones_semestre_actual_true.values('id_estudiante'))
         ).distinct()
-        # Filtrar los estudiantes no asignados para el semestre actual
-        # estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
-        # # Excluir los estudiantes no asignados de la lista total de estudiantes
-        # estudiantes_totales = estudiantes_totales.exclude(id__in=estudiantes_no_asignados.values_list('id', flat=True))
         # Serializar los datos de los estudiantes asignados y no asignados
         list_estudiantes_selected = estudiante_serializer(estudiantes_asignados, many=True) 
         list_estudiantes = estudiante_serializer(estudiantes_totales, many=True)
@@ -500,36 +481,19 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         # Devolver los datos como respuesta
         return Response(datos, status=status.HTTP_200_OK)
     
-class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
-    """
-    Vista para actualizar la información del estudiante.
+    @action(detail=True, methods=['post'], url_path='actualizacion_info_ficha_estuidante')
+    def actualizacion_info_ficha_estuidante(self, request, pk=None):
+        """
+            Vista para actualizar la información del estudiante.
 
-    Esta vista permite actualizar la información del estudiante, independientemente de si los campos
-    están en el modelo de estudiante o no. Se utiliza para la vista de ficha del estudiante.
-
-    Permisos:
-    - El usuario debe estar autenticado para acceder a esta vista.
-
-    Serializer:
-    - Se utiliza 'Estudiante_actualizacion' para serializar los datos del estudiante.
-
-    Métodos HTTP admitidos:
-    - POST: Actualiza la información del estudiante.
-    """
-    serializer_class = Estudiante_actualizacion
-    permission_classes = (IsAuthenticated,)
-    queryset = estudiante_serializer.Meta.model.objects.all()
-
-    # Se define la función post para poder editar todos los campos que se relacionan con el estudiante, independeinte de si estan en el modelo estudiante o no.
-    # Esta función es utlizada en la vista Ficha del Estudiante.
-    def post(self, request, pk=None):
-        # serializer = self.serializer_class(data=request.data)
-        # if (serializer.is_valid()):
+            Esta vista permite actualizar la información del estudiante, independientemente de si los campos
+            están en el modelo de estudiante o no. Se utiliza para la vista de ficha del estudiante.
+        """
         try:
             var_estudiante = estudiante.objects.get(id = pk)
         except estudiante.DoesNotExist:
                 return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(data=request.data)
+        serializer = Estudiante_actualizacion(data=request.data)
         if serializer.is_valid():
             var_estudiante.puntaje_icfes = serializer.data['puntaje_icfes']
             var_estudiante.telefono_res = serializer.data['telefono_res']
@@ -574,55 +538,6 @@ class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
             var_estudiante.save()
 
         return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
-    
-class trayectoria_viewsets(viewsets.ModelViewSet):
-    serializer_class = seguimiento_individual_serializer
-    queryset = seguimiento_individual_serializer.Meta.model.objects.all()
-
-    def retrieve(self, request, pk):
-        request_sede = int(request.GET.get('id_sede'))
-        list_semestre = semestre.objects.all().get(semestre_actual=True,id_sede = request_sede)
-        fecha_inicio_semestre = list_semestre.fecha_inicio
-
-        listas = []
-        fechas = []
-        riesgo_individual = []
-        riesgo_familiar = []
-        riesgo_academico = []
-        riesgo_economico = []
-        riesgo_vida_universitaria_ciudad = []
-
-        try:
-            seguimiento_reciente = seguimiento_individual.objects.filter(
-                id_estudiante=pk, fecha__gt=fecha_inicio_semestre
-            ).order_by('fecha')
-            print (seguimiento_reciente)
-            for i in seguimiento_reciente:
-                seguimiento = seguimiento_individual_serializer(i)
-                fechas.append(seguimiento.data['fecha'])
-                riesgo_individual.append(seguimiento.data['riesgo_individual'])
-                riesgo_familiar.append(seguimiento.data['riesgo_familiar'])
-                riesgo_academico.append(seguimiento.data['riesgo_academico'])
-                riesgo_economico.append(seguimiento.data['riesgo_economico'])
-                riesgo_vida_universitaria_ciudad.append(seguimiento.data['riesgo_vida_universitaria_ciudad'])
-
-            fechas_lista = {'fechas': fechas}
-            riesgo_individual_lista = {'riesgo_individual': riesgo_individual}
-            riesgo_familiar_lista = {'riesgo_familiar': riesgo_familiar}
-            riesgo_academico_lista = {'riesgo_academico': riesgo_academico}
-            riesgo_economico_lista = {'riesgo_economico': riesgo_economico}
-            riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad': riesgo_vida_universitaria_ciudad}
-
-            listas.append(fechas_lista)
-            listas.append(riesgo_individual_lista)
-            listas.append(riesgo_familiar_lista)
-            listas.append(riesgo_academico_lista)
-            listas.append(riesgo_economico_lista)
-            listas.append(riesgo_vida_universitaria_ciudad_lista)
-            print(listas)
-            return Response(listas)
-        except seguimiento_individual.DoesNotExist:
-            return Response({})
 class Grupo_etnico_viewsets(viewsets.ModelViewSet):
     serializer_class = Grupo_etnico_serializer
     permission_classes = (IsAuthenticated,)
@@ -1253,50 +1168,6 @@ class monitor_info_extra_viewsets(viewsets.ModelViewSet):
         diccionario_monitor.update(datos_encargados)
 
         return Response(diccionario_monitor)
-
-
-
-
-class monitor_actualizacion_viewsets (viewsets.ModelViewSet):
-    serializer_class = Monitor_actualizacion
-    permission_classes = (IsAuthenticated,)
-    queryset = monitor_serializer.Meta.model.objects.all()
-
-    def post(self, request, pk=None):
-        # serializer = self.serializer_class(data=request.data)
-        # if (serializer.is_valid()):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-
-            telefono_res_request = serializer.data['telefono_res']
-            celular_request = serializer.data['celular']
-           
-            observacion_request = serializer.data['observacion']
-            ult_modificacion_request = serializer.data['ult_modificacion']
-
-            var_monitor = monitor.objects.get(id=pk)
-            serializer_monitor = monitor_serializer(var_monitor)
-
-            try:
-                var_old_estudiante = monitor.objects.get(pk = serializer_monitor.data['id'])
-                var_monitor = var_old_estudiante
-
-                var_monitor.telefono_res = telefono_res_request
-                var_monitor.celular = celular_request
-
-                var_monitor.observacion = observacion_request
-                var_monitor.ult_modificacion = ult_modificacion_request
-
-                var_monitor.save()
-                return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
-            except estudiante.DoesNotExist:
-
-                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 """
 PARTE 4: VIEWS QUE SE BASAN EN EL MODELO SEGUIMIENTO INDIVIDUAL E INASISTENCIA__________________________________________________________________________________________________
 """
