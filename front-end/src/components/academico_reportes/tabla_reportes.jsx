@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Form, FormControl, Button, InputGroup } from 'react-bootstrap';
 import { BsSearch } from 'react-icons/bs';
 import DataTable from 'react-data-table-component';
 
 const TablaReportes = ({ columns, data }) => {
     const [filteredData, setFilteredData] = useState(data);
+
+    useEffect(() => {
+        setFilteredData(data);
+    }, [data]);
 
     const handleSearch = (event) => {
         const searchTerm = event.target.value;
@@ -15,7 +19,7 @@ const TablaReportes = ({ columns, data }) => {
         );
         setFilteredData(newFilteredData);
     };
-    
+
     return (
         <Container>
             <Form className='search-bar'>

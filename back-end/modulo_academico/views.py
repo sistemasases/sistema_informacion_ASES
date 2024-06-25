@@ -28,6 +28,7 @@ from modulo_usuario_rol.serializers import estudiante_serializer, user_serialize
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
+from django.db.models import Q
 from rest_framework.decorators import action
 
 
@@ -497,15 +498,21 @@ class todo_item_viewsets(viewsets.ModelViewSet):
 
 class reporte_calificador_viewsets(viewsets.ModelViewSet):
     queryset = materia.objects.all()
-    serializer_class = materia_serializer
+    serializer_class = materia_serializer_full
     def create(self, request):
-        respuesta = []
         materias = materia.objects.filter(id_sede=request.data['id_sede'])
-        materias_respuesta = cesar_serializer(materias, many=True).data
-        for materiass in materias_respuesta:
-            items = items_semestre.objects.filter(id_curso=materiass['id']).count()
-            materiass['items'] = items
-            respuesta.append(materiass)
-            items_calificados = items_semestre.objects.filter(notas_semestre__id_item__in = items_semestre.objects.filter(id_curso=materiass['id'])).distinct().count()
-            materiass['items_calificados'] = items_calificados
-        return Response(respuesta, status=status.HTTP_200_OK)
+        return Response(materias, status=status.HTTP_200_OK)
+    
+class reporte_calificador_estudiante_viewsets(viewsets.ModelViewSet):
+    serializer_class = items_estudiante_serializer
+
+    def get_queryset(self):
+        return estudiante.objects.filter(
+            Q(notas_semestre__calificacion__gte=0)  
+        ).distinct()
+    def create(self, request):
+        return Response(request.data, status=status.HTTP_200_OK)
+    
+    
+    
+    
