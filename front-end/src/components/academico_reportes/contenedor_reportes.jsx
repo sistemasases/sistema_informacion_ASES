@@ -103,12 +103,12 @@ const Contenedor_reportes = () => {
     }));
 
     const columns_profesores = [
-        { name: 'Curso', selector: 'curso', sortable: true, grow: 2},
-        { name: 'Profesor', selector: 'profesor', sortable: true , grow: 2},
-        { name: 'Correo', selector: 'correo', sortable: true, grow: 2},
-        { name: 'Items', selector: 'items', sortable: true, maxWidth: '100px'},
-        { name: 'Calificados', selector: 'calificados', sortable: true, maxWidth: '100px'},
-        { name: 'Sin Calificar', selector: 'sin', sortable: true },
+        { name: 'Curso', selector: row => row.curso, sortable: true, grow: 2 },
+        { name: 'Profesor', selector: row => row.profesor, sortable: true, grow: 2 },
+        { name: 'Correo', selector: row => row.correo, sortable: true, grow: 2 },
+        { name: 'Items', selector: row => row.items, sortable: true, maxWidth: '100px' },
+        { name: 'Calificados', selector: row => row.calificados, sortable: true, maxWidth: '100px' },
+        { name: 'Sin Calificar', selector: row => row.sin, sortable: true },
     ];
 
     const data_profesores = state.reporte.map((item) => ({
@@ -121,11 +121,11 @@ const Contenedor_reportes = () => {
     }));
 
     const columns_estudiantes = [
-        { name: 'Código*', selector: 'codigo', sortable: true, grow: 1},
-        { name: 'Nombre', selector: 'nombre', sortable: true, grow: 2},
-        { name: 'Correo', selector: 'correo', sortable: true, grow: 2},
-        { name: 'Items Ganados', selector: 'items_ganados', sortable: true, maxWidth: '200px'},
-        { name: 'Items Perdidos', selector: 'items_perdidos', sortable: true, maxWidth: '200px'}
+        { name: 'Código*', selector: row => row.codigo, sortable: true, grow: 1 },
+        { name: 'Nombre', selector: row => row.nombre, sortable: true, grow: 2 },
+        { name: 'Correo', selector: row => row.correo, sortable: true, grow: 2 },
+        { name: 'Items Ganados', selector: row => row.items_ganados, sortable: true, maxWidth: '200px' },
+        { name: 'Items Perdidos', selector: row => row.items_perdidos, sortable: true, maxWidth: '200px' }
     ];
 
     const data_estudiantes = state.reporte_estudiantes.map((item) => ({
