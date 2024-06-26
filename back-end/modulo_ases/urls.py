@@ -35,5 +35,11 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('usuario_rol_firma/', include('modulo_usuario_rol.urls')),
-    path('discapacidad/', include('modulo_discapacidad.urls'))
+    path('discapacidad/', include('modulo_discapacidad.urls')),
+    path('persona/', include('app_registro.routers')),
+    path('diversidad-sexual/', include('app_diversidad_sexual.routers')),
+    path('informacion-academica/', include('app_informacion_academica.routers')),
+    path('informacion-general/', include('app_informacion_general.routers')),
+    path('documentos-autorizacion/', include('app_documentos_autorizacion.routers')),
+    path('seguimiento/', include('app_seguimiento.routers'))
 ]
