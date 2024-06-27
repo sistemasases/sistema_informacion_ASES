@@ -351,7 +351,7 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
 
         for i in estudiantes_ids:
             serializer = matricula_serializer(i)
-            estudiante_info = estudiante.objects.filter(id=serializer.data['id_estudiante']).values('id', 'nombre', 'apellido', 'cod_univalle')
+            estudiante_info = estudiante.objects.filter(id=serializer.data['id_estudiante']).values('id', 'nombre', 'apellido', 'cod_univalle', 'num_doc')
 
             parcelacion = items_semestre.objects.filter(id_curso=curso_param, id_profesor=proferos_param)
             list_notas = []
