@@ -4,7 +4,7 @@ import {Container, Row, Col, Button} from "react-bootstrap";
 import Listas from './listas'
 import Listas_no_seleccion from './listas_no_seleccion';
 import axios from 'axios';
-import {decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 import {Scrollbars} from 'react-custom-scrollbars-2'; 
 
 
@@ -215,7 +215,7 @@ const isTabSelected_monitor = (username) => {
     let formData = new FormData();
     formData.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
 
-    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', formData,config)
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+name+'/'+'estudiantes_de_un_monitor/', formData,config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,

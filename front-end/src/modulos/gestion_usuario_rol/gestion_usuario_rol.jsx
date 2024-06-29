@@ -11,7 +11,7 @@ import Selector_usuarios from "../../components/componentes_generales/selector_u
 import Acceso_denegado from "../../components/componentes_generales/acceso_denegado.jsx";
 import {desencriptar} from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 import {Row, Col} from "react-bootstrap";
-import React from 'react';
+import React, {useState} from 'react';
 
 
 const Gestion_usuario_rol = () =>{

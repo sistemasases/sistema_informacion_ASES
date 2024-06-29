@@ -16,7 +16,7 @@ const actualizar_estudiante = (formData) => {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
   // url de la API
-  const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`;
+  const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/actualizacion_info_ficha_estuidante/`;
   // Interacción con la API
   axios({
     url: url_axios,
