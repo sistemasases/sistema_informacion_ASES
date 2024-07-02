@@ -21,6 +21,7 @@ import Menu7 from "./menus/sin_rol.json";
 import Menu8 from "./menus/practicante.json";
 import Menu9 from "./menus/profesor.json";
 import Menu10 from "./menus/discapacidad.json";
+import Menu11 from "./menus/campus_diverso.json";
 import SidebarItem from "./sidebarItem";
 import Footer from "./footer";
 import Sidebar_item_closed from "./sidebar_item_closed";
@@ -74,6 +75,7 @@ const SideBar = (props) => {
         ? Menu6
         : desencriptar(sessionStorage.rol) === "profesor"
         ? Menu9
+        : desencriptar(sessionStorage.rol) === 'CAMPUS DIVERSO' ? Menu11 
         : desencriptar(sessionStorage.rol) === "discapacidad"
         ? Menu10
         : Menu7,

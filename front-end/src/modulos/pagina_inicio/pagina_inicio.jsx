@@ -53,6 +53,8 @@ const Pagina_inicio = () => {
     desplegable = 'PROFESIONAL';
   } else if (userRole === 'profesor') {
     desplegable = 'PROFESOR';
+  } else if (userRole === 'CAMPUS DIVERSO'){
+    desplegable = 'campus diverso';
   }
   //Constante y variable que se usaran para el select
   const opciones = [];
@@ -206,6 +208,10 @@ const Pagina_inicio = () => {
               <img src={boton8} className="boton" alt='/' onClick={() => cambiar_ruta(`/sin_seguimientos`)}></img>)}
             {(userRole === 'dir_academico' )&& (
               <img src={boton20} className="boton" alt='/' onClick={() => cambiar_ruta(`/academico`)}></img>)}
+              {(userRole === 'CAMPUS DIVERSO' )&& (
+              <img src={boton15} className="boton" alt='/' onClick={() => cambiar_ruta(`/campus_diverso/registro_persona`)}></img>)}
+              {(userRole === 'CAMPUS DIVERSO' )&& (
+              <img src={boton6} className="boton" alt='/' onClick={() => cambiar_ruta(`/campus_diverso/obtener_persona`)}></img>)}
             {(userRole === 'profesor')?<>{cambiar_ruta(`/academico`)}</>:<>{}</>}
           </Col>
           <Col className="vertical-line-col"><div className="vertical"></div></Col>
