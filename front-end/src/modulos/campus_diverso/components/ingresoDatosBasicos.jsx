@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, Row, Col, Button, Modal,  } from 'react-bootstrap';
-
+import { Container, Col,   } from 'react-bootstrap';
+export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 const IngresoDatosBasicos = ({state,
     handleChange,
     isLoading,
@@ -30,26 +30,26 @@ const IngresoDatosBasicos = ({state,
         </div>
 
         <div>
-          <label className='custom-div'>nombre</label>
+          <label className='custom-div'>nombre y apellido</label>
           <div>
             <input
               type="text"
-              placeholder="Ingrese nombre"
-              name="nombre"
-              value={state.nombre}
+              placeholder="Ingrese nombre y apellido"
+              name="nombre_y_apellido"
+              value={state.nombre_y_apellido}
               onChange={handleChange}
             />
           </div>
         </div>
 
         <div>
-          <label className='custom-div'>Apellido</label>
+          <label className='custom-div'>Email</label>
           <div>
             <input
               type="text"
-              placeholder="Ingrese apellido"
-              name="apellido"
-              value={state.apellido}
+              placeholder="Ingrese email"
+              name="email"
+              value={state.email}
               onChange={handleChange}
             />
           </div>
@@ -64,8 +64,8 @@ const IngresoDatosBasicos = ({state,
               className='input'
               type="text"
               placeholder="CC, TI , CE , ETC.."
-              name="tipo_doc"
-              value={state.tipo_doc}
+              name="tipo_documento"
+              value={state.tipo_documento}
               onChange={handleChange}
             />
           </div>
@@ -78,8 +78,8 @@ const IngresoDatosBasicos = ({state,
               className='input'
               type="text"
               placeholder="123456"
-              name="num_doc"
-              value={state.num_doc}
+              name="numero_documento"
+              value={state.numero_documento}
               onChange={handleChange}
             />
           </div>
@@ -105,8 +105,8 @@ const IngresoDatosBasicos = ({state,
             <input
               type="number"
               placeholder="Ingrese número telefonico"
-              name="telefono_res"
-              value={state.telefono_res}
+              name="telefono"
+              value={state.telefono}
               onChange={handleChange}
             />
           </div>
@@ -125,6 +125,19 @@ const IngresoDatosBasicos = ({state,
           </div>
         </div>
        
+        <div>
+          <label className='custom-div'>Identidad etnico racial</label>
+          <div>
+            <input
+              type="text"
+              placeholdr="Ingrese la identidad"
+              name="identidad_etnico_racial"
+              pattern='[0-9]*'
+              value={state.identidad_etnico_racial}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
         
 
         <div>
@@ -141,41 +154,35 @@ const IngresoDatosBasicos = ({state,
         </div>
 
         <div>
+          <label className='custom-div'>relación con la persona de confianza</label>
+          <div>
+            <input
+              type="text"
+              placeholder="Ingrese la relación"
+              name="relacion_persona_de_confianza"
+              value={state.relacion_persona_de_confianza}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <div>
           <label className='custom-div'>Número de persona de confianza</label>
           <div>
             <input
               type="number"
               placeholder="Ingrese numero"
               name="telefono_persona_de_confianza"
+              pattern='[0-9]*'
+              onKeyDown={preventNegativeValues}
+              min="0"
               value={state.telefono_persona_de_confianza}
               onChange={handleChange}
             />
           </div>
         </div>
-    {/*  
-        <div>
-          <label>Relacion persona confianza</label>
-          <div>
-            {isLoading ? (
-              <p>Cargando...</p>
-            ):(
-            <select
-              name="nombre_persona_confianza"
-              value={state.nombre_persona_confianza}
-              onChange={handleChange}          
-            >
-              <option value="">Seleccione la relacion </option>
-              {relacionOptions.map((nombre_persona_confianza, index) => (
-                <option key={index} value={nombre_persona_confianza}>
-                  {nombre_persona_confianza} 
-                </option>
-              ))}
-              
-              </select>
-              )}
-          </div>
-        </div>
-*/}
+
+
       </Col>
 
       
@@ -196,13 +203,42 @@ const IngresoDatosBasicos = ({state,
           </div>
         </div>
 
+
+        <div>
+          <label className='custom-div'>Corregimiento de nacimiento</label>
+          <div>
+            <input
+              type="text"
+              placeholder="Ingrese corregimiento de nacimiento"
+              name="corregimiento_nacimiento"
+              value={state.corregimiento_nacimiento}
+              onChange={handleChange}
+              pattern='[0-9]*'
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className='custom-div'>Municipio de nacimiento</label>
+          <div>
+            <input
+              type="text"
+              placeholder="Ingrese municipio de nacimiento"
+              name="municipio_nacimiento"
+              value={state.municipio_nacimiento}
+              onChange={handleChange}
+              pattern='[0-9]*'
+            />
+          </div>
+        </div>
+
         <div>
           <label className='custom-div'>Fecha de nacimiento</label>
           <div>
             <input
               type="date"
-              name="fecha_nac"
-              value={state.fecha_nac}
+              name="fecha_nacimiento"
+              value={state.fecha_nacimiento}
               onChange={handleChange}
             />
           </div>
@@ -298,7 +334,6 @@ const IngresoDatosBasicos = ({state,
               name="direccion_residencia"
               value={state.direccion_residencia}
               onChange={handleChange}
-
             />
           </div>
         </div>

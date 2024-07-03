@@ -46,18 +46,18 @@ label {
     border-radius: 4px;
     padding: 10px;
     width: 90%;
-    height: auto; /* Ajusta según sea necesario */
+    height: auto; 
   }
   .form-react-select {
     border-radius: 1px;
     padding-top: 10px;
     padding-bottom: 10px;
     width: 90%;
-    height: auto; /* Ajusta según sea necesario */
+    height: auto; 
   }
   .custom-div {
-    width: 100%; /* Ajusta el ancho según tus necesidades */
-    height: auto; /* Ajusta la altura según tus necesidades */
-    font-size: 15px; /* Ajusta el tamaño del texto según tus necesidades */
+    width: 100%; 
+    height: auto; 
+    font-size: 15px; 
     padding-top: 3px;
     }

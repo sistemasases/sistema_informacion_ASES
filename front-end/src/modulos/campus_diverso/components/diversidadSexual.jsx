@@ -25,16 +25,15 @@ const DiversidadSexual = ({  state,
           
     
         <div>
-              <label style={{ display: 'flex', alignItems: 'center' }}>
-                <span className='custom-div'>¿Cambio de nombre/sexo?</span>
+                <label className='custom-div'>¿Cambio de nombre/sexo?</label>
+                <div>
                 <input
-                  type="checkbox"
-                  checked={estaActivo}
+                  type="text"
                   name="cambio_nombre_sexo_documento"
                   value={state.cambio_nombre_sexo_documento}
                   onChange={handleChange}
                 />
-              </label>
+                </div>
         </div>
     
       <div>
@@ -130,6 +129,8 @@ const DiversidadSexual = ({  state,
                 />
               </label>
         </div>
+
+        
       <div>
               <label className='custom-div'>Orientacion sexual</label>
               <div>
@@ -155,31 +156,31 @@ const DiversidadSexual = ({  state,
               </div>
             </div>
             
-             <div>
-              <label className='custom-div'> Identidad de genero </label>
+            <div>
+              <label className='custom-div'>Identidades de genero</label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>
                 ):(
-                <select
-                  className='form-select'
+                <Select
+                  isMulti
+                  className='form-react-select'
                   name="identidades_de_genero"
-                  value={state.identidades_de_genero}
-                  onChange={handleChange}
+                  options={identidadesGeneroOptions}
+                  value={state.identidades_de_genero.map(option => ({
+                  value: option,
+                  label: identidadesGeneroOptions.find(o => o.value === option).label
+                  }))}
                   
+    
+                  onChange={handleSelectChange}
+    
                   
-                >
-                  <option value="">Seleccione la expesion </option>
-                  {identidadesGeneroOptions.map((identidades_de_genero, index) => (
-                    <option key={index} value={identidades_de_genero}>
-                      {identidades_de_genero} 
-                    </option>
-                  ))}
-                  
-                  </select>
+                  />
                   )}
               </div>
             </div> 
+
             </Col>
             </Container>
             </>

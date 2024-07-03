@@ -31,25 +31,31 @@ import IngresoDatosBasicos from './components/ingresoDatosBasicos';
 
   const [state, set_state] = useState({
     nombre_identitario:"",
-    nombre:"",
+    nombre_orientacion_sexual: "",
+    nombre_y_apellido:"",
+    email:"",
     pertenencia_grupo_poblacional:"",
-    relacion_persona_de_confianza:[],
-    apellido:"",
-    tipo_doc:"",
-    num_doc:"",
+    relacion_persona_de_confianza:"",
+    tipo_documento:"",
+    numero_documento:"",
     estrato_socioeconomico:"",
     ciudad_nacimiento:"",
-    fecha_nac:"",
+    fecha_nacimiento:"",
     departamento_nacimiento:"",
+    corregimiento_nacimiento:"",
+    municipio_nacimiento:"",
+    municipio_residencia:"",
+    corregimiento_residencia:"",
+
     pais_nacimiento:"",
     ciudad_residencia:"",
     zona_residencial:"",
     direccion_residencia:"",
     barrio_residencia:"",
     comuna_barrio:"",
-    telefono_res:"",
+    telefono:"",
     estado_civil:"",
-    identidad_etnico_racial:[],
+    identidad_etnico_racial:"",
     nombre_persona_de_confianza:"",
     telefono_persona_de_confianza:"",
 
@@ -62,7 +68,7 @@ import IngresoDatosBasicos from './components/ingresoDatosBasicos';
     pronombres:"",
     orientaciones_sexuales:[],
     respuestas_cambio_documento:"",
-    identidades_de_genero:"",
+    identidades_de_genero:[],
     
     //Informacion académica
 
@@ -132,38 +138,42 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/pronombre/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/respuesta-cambio-documento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/orientacion-sexual/`),
-    //axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
     //axios.get(`${process.env.REACT_APP_API_URL}/campus_diverso/ocupacion-actual/`),
 
   ])
     .then((responses) => {
       //persona
-      const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,respuestaCambioDocumentoResponse, orientacionResponse, relacionPersonaConfianzaResponse,
-      identidadResponse,  identiadesGeneroResponse,
-      ocupacionResponse] = responses;
+      const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse] = responses;
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => item.nombre_grupo_poblacional);
-      const expresionesOpciones = expresionesResponse.data.map((item) => item.nombre_expresion_genero)
-      const pronombreOpciones = pronomeopcionesResponse.data.map((item) => item.nombre_pronombre)
+      const expresionesOpciones = expresionesResponse.data.map((item) => item.nombre_expresion_genero);
+      const pronombreOpciones = pronomeopcionesResponse.data.map((item) => item.nombre_pronombre);
       const respuestaCambioDocumentoOpciones = respuestaCambioDocumentoResponse.data.map((item) => item.nombre_respuesta_cambio_documento);
+      
       const orientacionOpciones = orientacionResponse.data.map((item) => ({
         value: item.id_orientacion_sexual,
         label: item.nombre_orientacion_sexual
       }));
-   
+      
+      const identidadesGeneroOpciones = identiadesGeneroResponse.data.map((item) => ({
+        value: item.id_identidad_genero,
+        label: item.nombre_identidad_genero
+      }));
+    
+      console.log("aquii", orientacionOpciones);
+     
 
        /* const relacionPersonaConfianzaOpciones = relacionPersonaConfianzaResponse.data.map((item) => item.nombre_persona_confianza);
       const orientacionOpciones = orientacionResponse.data.map((item) => item.nombre_orientacion_sexual)
-      const identidadesGeneroOpciones = identiadesGeneroResponse.data.map((item) => item.nombre_identidad_genero)
       const ocupacionOpciones = ocupacionResponse.data.map((item) => item.nombre_ocupacion_actual) */
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
       setDocumentoOptions(respuestaCambioDocumentoOpciones);
       setOrientacionOptions(orientacionOpciones);
-
-      /*setRelacionOptions(relacionPersonaConfianzaOpciones);
-      setOrientacionOptions(orientacionOpciones);
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
+
+      /*
       setOcupacionOptions(ocupacionOpciones); */
       setIsLoading(false);
       
@@ -184,15 +194,11 @@ const handleChange = (event) => {
   console.log('Revisa el booleano', name, checked);
 
   const config = {
-    'cambio_nombre_sexo_documento': { isCheckbox: true, handler: handleCheckboxChange1 },
     'recibir_orientacion_cambio_en_documento': { isCheckbox: true, handler: handleCheckboxChange2 },
-    'identidad_etnico_racial': { isArray: true },
-    'identidades_de_genero': { isArray: true },
     'respuestas_cambio_documento': { isArray: true },
     'expresiones_de_genero': { isArray: true },
     'pronombres': { isArray: true },
-    'relacion_persona_de_confianza': { isArray: true },
-    'pertenencia_grupo_poblacional': { isArray: false },
+    'pertenencia_grupo_poblacional': { isArray: true },
     'orientaciones_sexuales': { isMultiSelect: true },
   };
 
@@ -232,13 +238,16 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
   const values = selectedOptions ? selectedOptions.map(option => option.value) : [];
   set_state(prevState => ({
     ...prevState,
-    [name]: values,
+    [name]: values
   }));
   console.log(`react-select-event! : ${state[name]}`);
   console.log('selectedOptions', selectedOptions)
 
 };
  
+console.log('state.orientaciones_sexuales:', state.orientaciones_sexuales);
+console.log('state.identidades:', state.identidades_de_genero);
+
 
 
 
@@ -247,15 +256,19 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
   // Dividir los datos en función de ciertos campos
   const personaData = {
     nombre_identitario: state.nombre_identitario,
-    nombre: state.nombre,
+    nombre_y_apellido: state.nombre_y_apellido,
+    email: state.email,
+    municipio_nacimiento: state.municipio_nacimiento,
+    corregimiento_nacimiento: state.corregimiento_nacimiento,
+    
     pertenencia_grupo_poblacional: state.pertenencia_grupo_poblacional,
     relacion_persona_de_confianza: state.relacion_persona_de_confianza,
     apellido: state.apellido,
-    tipo_doc: state.tipo_doc,
-    num_doc: state.num_doc,
+    tipo_documento: state.tipo_documento,
+    numero_documento: state.numero_documento,
     estrato_socioeconomico: state.estrato_socioeconomico,
     ciudad_nacimiento: state.ciudad_nacimiento,
-    fecha_nac: state.fecha_nac,
+    fecha_nacimiento: state.fecha_nacimiento,
     departamento_nacimiento: state.departamento_nacimiento,
     pais_nacimiento: state.pais_nacimiento,
     ciudad_residencia: state.ciudad_residencia,
@@ -263,7 +276,7 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
     direccion_residencia: state.direccion_residencia,
     barrio_residencia: state.barrio_residencia,
     comuna_barrio: state.comuna_barrio,
-    telefono_res: state.telefono_res,
+    telefono: state.telefono,
     estado_civil: state.estado_civil,
     identidad_etnico_racial: state.identidad_etnico_racial,
     nombre_persona_de_confianza: state.nombre_persona_de_confianza,
@@ -280,19 +293,25 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
 
   const DiversidadSexualData = {
     expresiones_de_genero: state.expresiones_de_genero,
-    identidades_de_genero: state.identidades_de_genero,
     recibir_orientacion_cambio_en_documento: state.recibir_orientacion_cambio_en_documento,
     pronombres: state.pronombres,
-    orientaciones_sexuales: state.orientaciones_sexuales,
     cambio_nombre_sexo_documento: state.cambio_nombre_sexo_documento,
     respuestas_cambio_documento: state.respuestas_cambio_documento,
-
+    orientaciones_sexuales: state.orientaciones_sexuales.map(id => {
+      const option = orientacionOptions.find(o => o.value === id);
+      return option ? option.label : id;
+    }),
+    
+    identidades_de_genero: state.identidades_de_genero.map(id => {
+      const option = identidadesGeneroOptions.find(o => o.value === id);
+      return option ? option.label : id;
+    }),
 
     
 
   }
 
-  const InformacionGeneralData = {
+  /* const InformacionGeneralData = {
 
     fecha: state.fecha,
     creacion: state.creacion,
@@ -302,42 +321,40 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
 
 
 
-  }
+  } */
 
     try {
-      const personaResponse = await axios.post(`${process.env.REACT_APP_API_URL}/campus_diverso/persona/`, personaData);
+      const personaResponse = await axios.post(`${process.env.REACT_APP_API_URL}/persona/persona/`, personaData);
       console.log('Respuesta del servidor:', personaResponse.data);
-      const personaId = personaResponse.data.num_doc; // Recordemos que usa la cedula para identificar a la persona
+      const personaId = personaResponse.data.numero_documento; // Recordemos que usa la cedula para identificar a la persona
 
 
-      const diversidadSexualResponse = await axios.post(`${process.env.REACT_APP_API_URL}/campus_diverso/diversidad-sexual/`, {
+      const diversidadSexualResponse = await axios.post(`${process.env.REACT_APP_API_URL}/diversidad-sexual/diversidad-sexual/`, {
         ...DiversidadSexualData,
         id_persona: personaId, // Usa el ID de la persona recién creada
       });
-      
-      const informacionGeneralResponse = await axios.post(`${process.env.REACT_APP_API_URL}/campus_diverso/informacion-general/`, {
+      console.log('Respuesta del servidor (informacion-academica):', diversidadSexualResponse.data);
+
+      /*const informacionGeneralResponse = await axios.post(`${process.env.REACT_APP_API_URL}/campus_diverso/informacion-general/`, {
         ...InformacionGeneralData,
         id_persona: personaId, // Usa el ID de la persona recién creada
-      });          
-      console.log('Respuesta del servidor (informacion-academica):', diversidadSexualResponse.data);
-      console.log('Respuesta del servidor (informacion-academica):', informacionGeneralResponse.data);
+      });  */        
 
       setShowModal(true);
       setMensaje("El formulario se envió con éxito.");
          // Restablecer los valores del formulario a vacío
     set_state({
       nombre_identitario: "",
-      nombre: "",
-      nombre_grupo_poblacional: "",
-      nombre_orientacion_sexual: "",
-      respuestas_cambio_documento: "",
+      nombre_y_apellido: "",
+      email:"",
+      respuestas_cambio_documento: [],
       nombre_persona_confianza: "",
-      apellido: "",
-      tipo_doc: "",
-      num_doc: "",
+      tipo_documento: "",
+      numero_documento: "",
+      relacion_persona_de_confianza: "",
       estrato_socioeconomico: "",
       ciudad_nacimiento: "",
-      fecha_nac: "",
+      fecha_nacimiento: "",
       departamento_nacimiento: "",
       pais_nacimiento: "",
       ciudad_residencia: "",
@@ -345,18 +362,19 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
       direccion_residencia: "",
       barrio_residencia: "",
       comuna_barrio: "",
-      telefono_res: "",
       estado_civil: "",
       identidad_etnico_racial: "",
       nombre_persona_de_confianza: "",
       telefono_persona_de_confianza: "",
-      cambio_nombre_sexo_documento: false,
+      cambio_nombre_sexo_documento: "",
       sede_universidad: "",
       nombre_programa_academico: "",
       cod_univalle: "",
       semestre_academico: "",
       pertenencia_univalle: "",
       recibir_orientacion_cambio_en_documento: false,
+      orientaciones_sexuales:[],
+      identidades_de_genero:[],
     });
      
     } catch (error) {
