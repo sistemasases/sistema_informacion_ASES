@@ -1,6 +1,7 @@
 import React from 'react';
-import { Container, Row, Col, Button, Modal,  } from 'react-bootstrap';
+import { Container, Col,   } from 'react-bootstrap';
 import Select from 'react-select';
+
 
 const DiversidadSexual = ({  state,
     handleChange,
@@ -29,6 +30,7 @@ const DiversidadSexual = ({  state,
                 <div>
                 <input
                   type="text"
+                  placeholder='Ingrese información'
                   name="cambio_nombre_sexo_documento"
                   value={state.cambio_nombre_sexo_documento}
                   onChange={handleChange}

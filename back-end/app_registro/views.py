@@ -37,10 +37,10 @@ class persona_viewsets (viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors) 
 
-    def destroy(self, request, *args, **kwargs):
+    """ def destroy(self, request, *args, **kwargs):
         return Response({
             "error": 'It\'s forbidden to do this action'
-        }, status=status.HTTP_403_FORBIDDEN)
+        }, status=status.HTTP_403_FORBIDDEN) """
 
 # Pertenencia grupo poblacional
 

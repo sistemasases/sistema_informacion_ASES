@@ -58,6 +58,13 @@ label {
   .custom-div {
     width: 100%; 
     height: auto; 
-    font-size: 15px; 
+    font-size: 16px; 
     padding-top: 3px;
     }
+
+    .boton-container {
+      display:block ; /* Habilita el diseño flexible */
+      padding: 8px;
+      margin-top: 10px;
+    }
+    
