@@ -501,11 +501,11 @@ const InformacionGeneral = ({state,
                   value={acompañamiento.observacion_acompanamiento_recibido}
                   onChange={(e) => handleArrayFieldChange('acompanamientos_recibido', index, 'observacion_acompanamiento_recibido', e.target.value)}
                 />
-                <Button className='boton-container' onClick={() => handleEliminarItem('acompanamientos_recibido', index)}>Eliminar</Button>
+                <Button variant='danger' className='boton-container' onClick={() => handleEliminarItem('acompanamientos_recibido', index)}>Eliminar</Button>
               </div>             
             ))}
             <div>
-            <Button className='boton-container' onClick={() => handleAgregarItem('acompanamientos_recibido', { nombre_acompanamiento_recibido: '', observacion_acompanamiento_recibido: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('acompanamientos_recibido', { nombre_acompanamiento_recibido: '', observacion_acompanamiento_recibido: '' })}>
               Agregar Acompañamiento
             </Button></div>
           </div>

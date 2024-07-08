@@ -5,41 +5,27 @@ import DiversidadSexual from './components/diversidadSexual';
 import axios from 'axios';
 import InformacionGeneral from './components/informacionGeneral';
 import IngresoDatosBasicos from './components/ingresoDatosBasicos';
+import InformacionAcademica from './components/informacionAcademica';
+import DocumentosAutorizacion from './components/documentosAutorizacion';
 
   const Registro_estudiante = () => {
 
- const [estaActivo, setEstaActivo] = useState(false);
-
-  const [estaActivo2, setEstaActivo2] = useState(false);
-
-
-  const handleCheckboxChange1 = (e) => {
-    setEstaActivo(e.target.checked);
-  };
-  const handleCheckboxChange2 = (e) => {
-    setEstaActivo2(e.target.checked);
-  };
-
   const [mensaje, setMensaje] = useState(null);
-
   const [showModal, setShowModal] = useState(false);
-
   const handleClose = () => {
     setShowModal(false);
   };
-
-  
 
   const [state, set_state] = useState({
     nombre_identitario:"",
     nombre_orientacion_sexual: "",
     nombre_y_apellido:"",
     email:"",
-    pertenencia_grupo_poblacional:"",
+    pertenencia_grupo_poblacional:[],
     relacion_persona_de_confianza:"",
     tipo_documento:"",
     numero_documento:"",
-    estrato_socioeconomico:"",
+    estrato_socioeconomico:0,
     ciudad_nacimiento:"",
     fecha_nacimiento:"",
     departamento_nacimiento:"",
@@ -61,21 +47,30 @@ import IngresoDatosBasicos from './components/ingresoDatosBasicos';
 
 
     //Diversidad sexual
-    expresiones_de_genero:"",
+    expresiones_de_genero:[],
     recibir_orientacion_cambio_en_documento: false,
     cambio_nombre_sexo_documento:"",
-    pronombres:"",
+    pronombres:[],
     orientaciones_sexuales:[],
-    respuestas_cambio_documento:"",
+    respuestas_cambio_documento:[],
     identidades_de_genero:[],
     
+    //Documentos autorización
+    autorizacion_manejo_de_datos: false,
+    firma_consentimiento_informado: false,
+    firma_terapia_hormonal: false,
+    documento_digital_y_archivo: false,
+    apgar_familiar:0,
+    ecomapa:false,
+    arbol_familiar: false,
+
     //Informacion académica
     sede_universidad:"",
     nombre_programa_academico:"",
-    cod_univalle:"",
+    codigo_estudiante:"",
     semestre_academico:"",
     pertenencia_univalle:false,
-
+    estamentos: [],
     
     //Informacion general
     dedicacion_externa:"",
@@ -114,7 +109,6 @@ import IngresoDatosBasicos from './components/ingresoDatosBasicos';
 
   //Persona
   const [razasOptions, setRazasOptions] = useState([]);
-  const [relacionOptions, setRelacionOptions] = useState([]);
 
 // Diversidad sexual
   const [orientacionOptions, setOrientacionOptions] = useState([]);
@@ -123,20 +117,15 @@ import IngresoDatosBasicos from './components/ingresoDatosBasicos';
   const [expresionesOptions, setExpresionesOptions] = useState([]);
   const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
 
-//Informacion general
-  const [ocupacionOptions, setOcupacionOptions] = useState([]);
-
 // Getters de las listas
 useEffect(() => {
   Promise.all([
     axios.get(`${process.env.REACT_APP_API_URL}/persona/pertenencia_grupo_poblacional/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/expresion-genero/`),
-    //axios.get(`${process.env.REACT_APP_API_URL}/campus_diverso/relacion_persona_confianza/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/pronombre/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/respuesta-cambio-documento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/orientacion-sexual/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
-    //axios.get(`${process.env.REACT_APP_API_URL}/campus_diverso/ocupacion-actual/`),
 
   ])
     .then((responses) => {
@@ -156,22 +145,13 @@ useEffect(() => {
         value: item.id_identidad_genero,
         label: item.nombre_identidad_genero
       }));
-    
-      console.log("aquii", orientacionOpciones);
-     
-
-       /* const relacionPersonaConfianzaOpciones = relacionPersonaConfianzaResponse.data.map((item) => item.nombre_persona_confianza);
-      const orientacionOpciones = orientacionResponse.data.map((item) => item.nombre_orientacion_sexual)
-      const ocupacionOpciones = ocupacionResponse.data.map((item) => item.nombre_ocupacion_actual) */
+         
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
       setDocumentoOptions(respuestaCambioDocumentoOpciones);
       setOrientacionOptions(orientacionOpciones);
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
-
-      /*
-      setOcupacionOptions(ocupacionOpciones); */
       setIsLoading(false);
       
     })
@@ -184,6 +164,14 @@ useEffect(() => {
     });
 }, []);
 
+const handleCheckboxChange = (event) => {
+  const { name, checked } = event.target;
+  set_state((prevState) => ({
+    ...prevState,
+    [name]: checked,
+  }));
+  console.log(`Checkbox ${name} changed to ${checked}`);
+};
 
 const handleChange = (event) => {
   const { name, value, checked, options } = event.target;
@@ -191,7 +179,6 @@ const handleChange = (event) => {
   console.log('Revisa el booleano', name, checked);
 
   const config = {
-    'recibir_orientacion_cambio_en_documento': { isCheckbox: true, handler: handleCheckboxChange2 },
     'respuestas_cambio_documento': { isArray: true },
     'expresiones_de_genero': { isArray: true },
     'pronombres': { isArray: true },
@@ -316,7 +303,26 @@ const handleDeleteItem = (fieldName, index) => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  const personaData = {
+
+  const requiredFields = [
+    'numero_documento',
+  
+    // Add other required fields here
+  ];
+
+  const invalidFields = requiredFields.filter(field => !state[field]);
+
+  if (invalidFields.length > 0) {
+    // alerta de campos vacíos que están en la lista de requiredFields
+    alert(`Los siguientes campos son obligatorios y están vacíos: ${invalidFields.join(', ')}`);
+    return;
+  }
+  // Remueve elementos vacios del formulario a la base de datos
+  const removeEmptyFields = (data) => {
+    return Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== ""));
+  };
+
+  const personaData = removeEmptyFields ({
     nombre_identitario: state.nombre_identitario,
     nombre_y_apellido: state.nombre_y_apellido,
     email: state.email,
@@ -342,9 +348,9 @@ const handleSubmit = async (e) => {
     identidad_etnico_racial: state.identidad_etnico_racial,
     nombre_persona_de_confianza: state.nombre_persona_de_confianza,
     telefono_persona_de_confianza: state.telefono_persona_de_confianza,
-  };
+  });
 
-  const DiversidadSexualData = {
+  const DiversidadSexualData = removeEmptyFields ({
     expresiones_de_genero: state.expresiones_de_genero,
     recibir_orientacion_cambio_en_documento: state.recibir_orientacion_cambio_en_documento,
     pronombres: state.pronombres,
@@ -358,9 +364,9 @@ const handleSubmit = async (e) => {
       const option = identidadesGeneroOptions.find(o => o.value === id);
       return option ? option.label : id;
     }),
-  };
+  });
 
-  const InformacionGeneralData = {
+  const InformacionGeneralData = removeEmptyFields ({
     dedicacion_externa: state.dedicacion_externa,
     factores_de_riesgo: state.factores_de_riesgo,
     observacion_general_factores_de_riesgo: state.observacion_general_factores_de_riesgo,
@@ -371,7 +377,7 @@ const handleSubmit = async (e) => {
     tipo_entidad_acompanamiento_recibido: state.tipo_entidad_acompanamiento_recibido,
     calificacion_acompanamiento_recibido: state.calificacion_acompanamiento_recibido,
     motivo_calificacion_acompanamiento: state.motivo_calificacion_acompanamiento,
-    actividades_especificas_tiempo_libre: state.motivo_calificacion_acompanamiento,
+    actividades_especificas_tiempo_libre: state.actividades_especificas_tiempo_libre,
     observacion_general_actividades_especificas_tiempo_libre: state.observacion_general_actividades_especificas_tiempo_libre,
     observacion_general_relacion_convivencia_vivienda: state.observacion_general_relacion_convivencia_vivienda,
     calificacion_relacion_familiar: state.calificacion_relacion_familiar,
@@ -388,112 +394,188 @@ const handleSubmit = async (e) => {
     fuentes_de_ingresos: state.fuentes_de_ingresos,
     acompanamientos_recibido: state.acompanamientos_recibido,
     ocupaciones_actuales: state.ocupaciones_actuales,
-    profesionales_que_brindo_atencion : state.profesionales_que_brindo_atencion,
+    profesionales_que_brindo_atencion: state.profesionales_que_brindo_atencion,
+  });
+
+  const InformacionAcademicaData = removeEmptyFields ({
+    sede_universidad: state.sede_universidad,
+    nombre_programa_academico: state.nombre_programa_academico,
+    codigo_estudiante: state.codigo_estudiante,
+    semestre_academico: state.semestre_academico,
+    pertenencia_univalle: state.pertenencia_univalle,
+    estamentos: state.estamentos,
+  });
+
+  const DocumentosAutorizacionData = removeEmptyFields ({
+    autorizacion_manejo_de_datos: state.autorizacion_manejo_de_datos,
+    firma_consentimiento_informado: state.firma_consentimiento_informado,
+    firma_terapia_hormonal: state.firma_terapia_hormonal,
+    documento_digital_y_archivo: state.documento_digital_y_archivo,
+    apgar_familiar: state.apgar_familiar,
+    ecomapa: state.ecomapa,
+    arbol_familiar: state.arbol_familiar,
+  });
   
-  };
 
   try {
     const personaResponse = await axios.post(`${process.env.REACT_APP_API_URL}/persona/persona/`, personaData);
     console.log('Respuesta del servidor (persona):', personaResponse.data);
     const personaId = personaResponse.data.numero_documento; // Utiliza el número de documento como ID
-  
+
     try {
       const diversidadSexualResponse = await axios.post(`${process.env.REACT_APP_API_URL}/diversidad-sexual/diversidad-sexual/`, {
         ...DiversidadSexualData,
         id_persona: personaId,
       });
       console.log('Respuesta del servidor (diversidad sexual):', diversidadSexualResponse.data);
-  
+
       try {
         const informacionGeneralResponse = await axios.post(`${process.env.REACT_APP_API_URL}/informacion-general/informacion-general/`, {
           ...InformacionGeneralData,
           id_persona: personaId,
         });
         console.log('Respuesta del servidor (informacion general):', informacionGeneralResponse.data);
-  
-        setShowModal(true);
-        setMensaje("El formulario se envió con éxito.");
-        // Restablecer los valores del formulario a vacío
-        set_state({
-          nombre_identitario: "",
-          nombre_y_apellido: "",
-          email: "",
-          nombre_persona_confianza: "",
-          tipo_documento: "",
-          numero_documento: "",
-          relacion_persona_de_confianza: "",
-          estrato_socioeconomico: "",
-          ciudad_nacimiento: "",
-          fecha_nacimiento: "",
-          departamento_nacimiento: "",
-          pais_nacimiento: "",
-          ciudad_residencia: "",
-          zona_residencial: "",
-          direccion_residencia: "",
-          barrio_residencia: "",
-          comuna_barrio: "",
-          estado_civil: "",
-          identidad_etnico_racial: "",
-          nombre_persona_de_confianza: "",
-          telefono_persona_de_confianza: "",
-          //Informacion academcia -- por revisar
-          sede_universidad: "",
-          nombre_programa_academico: "",
-          cod_univalle: "",
-          semestre_academico: "",
-          pertenencia_univalle: "",
 
-          //Diversidad sexual
-          expresiones_de_genero:[],
-          recibir_orientacion_cambio_en_documento: false,
-          cambio_nombre_sexo_documento:"",
-          pronombres:[],
-          orientaciones_sexuales:[],
-          respuestas_cambio_documento:[],
-          identidades_de_genero:[],
+        try {
+          const informacionAcademicaResponse = await axios.post(`${process.env.REACT_APP_API_URL}/informacion-academica/informacion-academica/`, {
+            ...InformacionAcademicaData,
+            id_persona: personaId,
+          });
+          console.log('Respuesta del servidor (informacion academica):', informacionAcademicaResponse.data);
 
-          //Informacion general
-          dedicacion_externa:"",
-          tiene_eps:"",
-          nombre_eps:"",
-          regimen_eps:"",
-          tipo_entidad_acompanamiento_recibido:"",
-          calificacion_acompanamiento_recibido:"",
-          motivo_calificacion_acompanamiento:"",
-          actividades_especificas_tiempo_libre:"",
-          observacion_general_fuente_de_ingresos:"",
-          calificacion_relacion_familiar:"",
-          observacion_general_redes_de_apoyo:"",
-          observacion_general_factores_de_riesgo:"",
-          creencia_religiosa:"",
-          decision_encuentro_inicial_con_profesional:"",
-          observacion_horario:"",
-          origen_descubrimiento_campus_diverso:"",
-          comentarios_o_sugerencias_de_usuario:"",
-          observacion_general_actividades_especificas_tiempo_libre: "",
-          observacion_general_relacion_convivencia_vivienda:"",
-          profesionales_que_brindo_atencion: [],
-          redes_de_apoyo: [],
-          ocupaciones_actuales:[],
-          factores_de_riesgo: [],
-          encuentro_dias_horas:[],
-          actividades_tiempo_libre:[],
-          acompanamientos_recibido:[],
-          convivencias_en_vivienda: [],
-          fuentes_de_ingresos: [],
-         
+          try {
+            const documentosAutorizacionResponse = await axios.post(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/documentos-autorizacion/`, {
+              ...DocumentosAutorizacionData,
+              id_persona: personaId,
+            });
+            console.log('Respuesta del servidor (documentos autorizacion):', documentosAutorizacionResponse.data);
 
-        });
-  
-      } catch (informacionError) {
-        console.error('Error al enviar la solicitud de informacion general:', informacionError);
-        // Manejo de error de informacion general
-        if (informacionError.response) {
+            setShowModal(true);
+            setMensaje("El formulario se envió con éxito.");
+            // Restablecer los valores del formulario a vacío
+            set_state({
+              nombre_identitario: "",
+              nombre_y_apellido: "",
+              email: "",
+              nombre_persona_confianza: "",
+              tipo_documento: "",
+              numero_documento: "",
+              relacion_persona_de_confianza: "",
+              estrato_socioeconomico: 0,
+              ciudad_nacimiento: "",
+              fecha_nacimiento: "",
+              departamento_nacimiento: "",
+              pais_nacimiento: "",
+              ciudad_residencia: "",
+              zona_residencial: "",
+              direccion_residencia: "",
+              barrio_residencia: "",
+              comuna_barrio: "",
+              estado_civil: "",
+              identidad_etnico_racial: "",
+              nombre_persona_de_confianza: "",
+              telefono_persona_de_confianza: "",
+              pertenencia_grupo_poblacional: [],
+
+              //Informacion academica -- por revisar
+              sede_universidad: "",
+              nombre_programa_academico: "",
+              codigo_estudiante: "",
+              semestre_academico: "",
+              pertenencia_univalle: false,
+              estamentos: [],
+
+              //Documentos autorización
+              autorizacion_manejo_de_datos: false,
+              firma_consentimiento_informado: false,
+              firma_terapia_hormonal: false,
+              documento_digital_y_archivo: false,
+              apgar_familiar: 0,
+              ecomapa: false,
+              arbol_familiar: false,
+
+              //Diversidad sexual
+              expresiones_de_genero: [],
+              recibir_orientacion_cambio_en_documento: false,
+              cambio_nombre_sexo_documento: "",
+              pronombres: [],
+              orientaciones_sexuales: [],
+              respuestas_cambio_documento: [],
+              identidades_de_genero: [],
+
+              //Informacion general
+              dedicacion_externa: "",
+              tiene_eps: "",
+              nombre_eps: "",
+              regimen_eps: "",
+              tipo_entidad_acompanamiento_recibido: "",
+              calificacion_acompanamiento_recibido: "",
+              motivo_calificacion_acompanamiento: "",
+              actividades_especificas_tiempo_libre: "",
+              observacion_general_fuente_de_ingresos: "",
+              calificacion_relacion_familiar: "",
+              observacion_general_redes_de_apoyo: "",
+              observacion_general_factores_de_riesgo: "",
+              creencia_religiosa: "",
+              decision_encuentro_inicial_con_profesional: "",
+              observacion_horario: "",
+              origen_descubrimiento_campus_diverso: "",
+              comentarios_o_sugerencias_de_usuario: "",
+              observacion_general_actividades_especificas_tiempo_libre: "",
+              observacion_general_relacion_convivencia_vivienda: "",
+              profesionales_que_brindo_atencion: [],
+              redes_de_apoyo: [],
+              ocupaciones_actuales: [],
+              factores_de_riesgo: [],
+              encuentro_dias_horas: [],
+              actividades_tiempo_libre: [],
+              acompanamientos_recibido: [],
+              convivencias_en_vivienda: [],
+              fuentes_de_ingresos: [],
+            });
+          } catch (documentosError) {
+            console.error('Error al enviar la solicitud de documentos autorización:', documentosError);
+            // Manejo de error de documentos autorización
+            if (documentosError.response) {
+              let errorMessage = "Hubo un error al enviar el formulario en los campos de documentos autorización. Por favor, inténtalo de nuevo.";
+              if (documentosError.response.data) {
+                errorMessage += "\n\nDetalles del error:\n";
+                for (const field in documentosError.response.data) {
+                  errorMessage += `- ${field}: ${documentosError.response.data[field][0]}\n`;
+                }
+              }
+              setMensaje(errorMessage);
+            } else {
+              setMensaje("Hubo un error al enviar el formulario de documentos autorización. Por favor, inténtalo de nuevo.");
+            }
+            setShowModal(true);
+          }
+        } catch (informacionAcademicaError) {
+          console.error('Error al enviar la solicitud de información académica:', informacionAcademicaError);
+          // Manejo de error de información académica
+          if (informacionAcademicaError.response) {
+            let errorMessage = "Hubo un error al enviar el formulario en los campos de información académica. Por favor, inténtalo de nuevo.";
+            if (informacionAcademicaError.response.data) {
+              errorMessage += "\n\nDetalles del error:\n";
+              for (const field in informacionAcademicaError.response.data) {
+                errorMessage += `- ${field}: ${informacionAcademicaError.response.data[field][0]}\n`;
+              }
+            }
+            setMensaje(errorMessage);
+          } else {
+            setMensaje("Hubo un error al enviar el formulario de información académica. Por favor, inténtalo de nuevo.");
+          }
+          setShowModal(true);
+        }
+      } catch (informacionGeneralError) {
+        console.error('Error al enviar la solicitud de información general:', informacionGeneralError);
+        // Manejo de error de información general
+        if (informacionGeneralError.response) {
           let errorMessage = "Hubo un error al enviar el formulario en los campos de información general. Por favor, inténtalo de nuevo.";
-          if (informacionError.response.data) {
+          if (informacionGeneralError.response.data) {
             errorMessage += "\n\nDetalles del error:\n";
-            for (const field in informacionError.response.data) {
-              errorMessage += `- ${field}: ${informacionError.response.data[field][0]}\n`;
+            for (const field in informacionGeneralError.response.data) {
+              errorMessage += `- ${field}: ${informacionGeneralError.response.data[field][0]}\n`;
             }
           }
           setMensaje(errorMessage);
@@ -502,7 +584,6 @@ const handleSubmit = async (e) => {
         }
         setShowModal(true);
       }
-  
     } catch (diversidadError) {
       console.error('Error al enviar la solicitud de diversidad sexual:', diversidadError);
       // Manejo de error de diversidad sexual
@@ -522,7 +603,6 @@ const handleSubmit = async (e) => {
       }
       setShowModal(true);
     }
-  
   } catch (personaError) {
     console.error('Error al enviar la solicitud de persona:', personaError);
     // Manejo de error de persona
@@ -540,7 +620,7 @@ const handleSubmit = async (e) => {
     }
     setShowModal(true);
   }
-}
+};
 
 
   return (
@@ -553,20 +633,17 @@ const handleSubmit = async (e) => {
     razasOptions={razasOptions}
     />
 
-
-
     <DiversidadSexual
       state={state}
       handleChange={handleChange}
       handleSelectChange={handleSelectChange}
       isLoading={isLoading}
-      estaActivo={estaActivo}
-      estaActivo2={estaActivo2}
       pronombresOptions={pronombresOptions}
       documentoOptions={documentoOptions}
       expresionesOptions={expresionesOptions}
       orientacionOptions={orientacionOptions}
       identidadesGeneroOptions={identidadesGeneroOptions}
+      handleCheckboxChange={handleCheckboxChange}
     />
     
     <InformacionGeneral
@@ -582,7 +659,19 @@ const handleSubmit = async (e) => {
     handleDeleteItem={handleDeleteItem}
     />
 
-    
+    <InformacionAcademica
+    state={state}
+    handleChange={handleChange}
+    handleArrayChange={handleArrayChange}
+    handleAddItem={handleAddItem}
+    handleDeleteItem={handleDeleteItem}
+    handleCheckboxChange={handleCheckboxChange}
+    />
+    <DocumentosAutorizacion
+    state={state}
+    handleCheckboxChange={handleCheckboxChange}
+    handleChange={handleChange}
+    />
 
       
           <Row >

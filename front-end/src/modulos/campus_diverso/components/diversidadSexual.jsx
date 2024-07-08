@@ -3,17 +3,19 @@ import { Container, Col,   } from 'react-bootstrap';
 import Select from 'react-select';
 
 
-const DiversidadSexual = ({  state,
+const DiversidadSexual = ({  
+    state,
     handleChange,
     handleSelectChange,
     isLoading,
-    estaActivo,
-    estaActivo2,
     pronombresOptions,
     documentoOptions,
     expresionesOptions,
     orientacionOptions,
-    identidadesGeneroOptions}) => {
+    identidadesGeneroOptions,
+    handleCheckboxChange
+
+  }) => {
 
 
 
@@ -124,10 +126,10 @@ const DiversidadSexual = ({  state,
                 <div className='custom-div'>¿Recibir orientacion de cambio en documento?</div>
                 <input
                   type="checkbox"
-                  checked={estaActivo2}
+                  checked={state.recibir_orientacion_cambio_en_documento}
                   name="recibir_orientacion_cambio_en_documento"
                   value={state.recibir_orientacion_cambio_en_documento}
-                  onChange={handleChange}
+                  onChange={handleCheckboxChange}
                 />
               </label>
         </div>

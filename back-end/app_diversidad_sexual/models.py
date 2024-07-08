@@ -26,13 +26,13 @@ class DiversidadSexual(models.Model):
     id_diversidad_sexual = models.AutoField(primary_key=True)
     id_persona = models.OneToOneField(Persona, on_delete=models.CASCADE, null=False, blank=False, related_name="diversidad_sexual")
     # id_persona = models.CharField(max_length=30, null=False, unique=True) 
-    cambio_nombre_sexo_documento = models.CharField(max_length=50, blank=True)
+    cambio_nombre_sexo_documento = models.CharField(max_length=100, blank=True, default="N/A")
     recibir_orientacion_cambio_en_documento = models.BooleanField()
-    pronombres = models.ManyToManyField(Pronombre, max_length=50)
+    pronombres = models.ManyToManyField(Pronombre, max_length=100, blank=True)
     identidades_de_genero = models.ManyToManyField(IdentidadGenero,max_length=200, blank=True,)
     expresiones_de_genero = models.ManyToManyField(ExpresionGenero,max_length=200,blank=True,)
     orientaciones_sexuales = models.ManyToManyField(OrientacionSexual,max_length=200, blank=True,)
-    respuestas_cambio_documento = models.ManyToManyField(RespuestaCambioDocumento)
+    respuestas_cambio_documento = models.ManyToManyField(RespuestaCambioDocumento, blank=True)
 
     class Meta:
         db_table = "Diversidad_sexual"
