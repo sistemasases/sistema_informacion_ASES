@@ -24,7 +24,7 @@ const Select = () => {
     practicante: null,
     monitor: null,
     ultimaActualizacion: null,
-    telefono: "000 000 0000",
+    telefono: "0000000000",
   });
 
   const handleSelectStudent = (student) => {
@@ -125,18 +125,20 @@ const Select = () => {
         </div>
       </div>
       <div className="container-img">
+      <a href={`https://wa.me/57${selectedStudent.telefono}`} target="_blank">
         <img
           className="img"
-          src={selectedStudent.imagen || perfilUsuario}
+          src={perfilUsuario}
           alt="Student"
         />
+        </a>
       </div>
       <div className="links">
         <a className="link" href="#trayectoria">
           TRAYECTORIA
         </a>
         <a className="link" href={`tel:+57${selectedStudent.telefono}`}>
-          + 57 {selectedStudent.telefono}
+        + 57 {selectedStudent.telefono.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3')}
         </a>
       </div>
     </div>
