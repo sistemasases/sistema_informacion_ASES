@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Button, Modal,  } from 'react-bootstrap';
+import { Container, Col, Button,} from 'react-bootstrap';
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 
@@ -14,7 +14,7 @@ const InformacionAcademica = ({
 }) => {
   return (
     <>
-    <h1> Información Académica </h1>
+    <h1 className='title-banner'> Información Académica </h1>
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
         <Col className="form-column" xs={"10"} md={"6"}>

@@ -1,13 +1,10 @@
 import React from 'react';
-import { Container, Row, Col, Button, Modal,  } from 'react-bootstrap';
-import Select from 'react-select';
+import { Container, Col, Button, } from 'react-bootstrap';
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 
 const InformacionGeneral = ({state,
     handleChange,
-    handleSelectChange,
-    factoresRiesgo,
     handleArrayFieldChange,
     handleAgregarItem,
     handleEliminarItem,
@@ -18,7 +15,7 @@ const InformacionGeneral = ({state,
 }) => {
   return (
     <>
-    <h1> Información General </h1>
+    <h1 className='title-banner'> Información General </h1>
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
         <Col className="form-column" xs={"10"} md={"6"}>
@@ -167,11 +164,11 @@ const InformacionGeneral = ({state,
                   value={encuentro.hora}
                   onChange={(e) => handleArrayFieldChange('encuentro_dias_horas', index, 'hora', e.target.value)}
                 />
-                <Button className='boton-container' onClick={() => handleEliminarItem('encuentro_dias_horas', index)}>Eliminar</Button>
+                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('encuentro_dias_horas', index)}>Eliminar</Button>
               </div>             
             ))}
             <div>
-            <Button className='boton-container' onClick={() => handleAgregarItem('encuentro_dias_horas', { dia: '', hora: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('encuentro_dias_horas', { dia: '', hora: '' })}>
               Agregar Encuentro
             </Button></div>
           </div>
@@ -196,11 +193,11 @@ const InformacionGeneral = ({state,
                   value={red.observacion_red_apoyo}
                   onChange={(e) => handleArrayFieldChange('redes_de_apoyo', index, 'observacion_red_apoyo', e.target.value)}
                 />
-                <Button className='boton-container' onClick={() => handleEliminarItem('redes_de_apoyo', index)}>Eliminar</Button>
+                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('redes_de_apoyo', index)}>Eliminar</Button>
               </div>             
             ))}
             <div>
-            <Button className='boton-container' onClick={() => handleAgregarItem('redes_de_apoyo', { nombre_red_apoyo: '', observacion_red_apoyo: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('redes_de_apoyo', { nombre_red_apoyo: '', observacion_red_apoyo: '' })}>
               Agregar Red de apoyo
             </Button></div>
           </div>
@@ -216,10 +213,10 @@ const InformacionGeneral = ({state,
             value={ocupacion}
             onChange={(e) => handleArrayChange('ocupaciones_actuales', index, e.target.value)}
           />
-          <Button className='boton-container' onClick={() => handleDeleteItem('ocupaciones_actuales', index)}>Eliminar</Button>
+          <Button variant="danger" className='boton-container' onClick={() => handleDeleteItem('ocupaciones_actuales', index)}>Eliminar</Button>
         </div>
       ))}
-      <Button className='boton-container' onClick={() => handleAddItem('ocupaciones_actuales')}>Agregar Ocupación</Button>
+      <Button variant="secondary" className='boton-container' onClick={() => handleAddItem('ocupaciones_actuales')}>Agregar Ocupación</Button>
     </div>
 
     <div>
@@ -232,10 +229,10 @@ const InformacionGeneral = ({state,
             value={profesional}
             onChange={(e) => handleArrayChange('profesionales_que_brindo_atencion', index, e.target.value)}
           />
-          <Button className='boton-container' onClick={() => handleDeleteItem('profesionales_que_brindo_atencion', index)}>Eliminar</Button>
+          <Button variant="danger" className='boton-container' onClick={() => handleDeleteItem('profesionales_que_brindo_atencion', index)}>Eliminar</Button>
         </div>
       ))}
-      <Button className='boton-container' onClick={() => handleAddItem('profesionales_que_brindo_atencion')}>Agregar profesional</Button>
+      <Button variant="secondary" className='boton-container' onClick={() => handleAddItem('profesionales_que_brindo_atencion')}>Agregar profesional</Button>
     </div>
 
 
@@ -383,11 +380,11 @@ const InformacionGeneral = ({state,
                   value={factor.observacion_factor_riesgo}
                   onChange={(e) => handleArrayFieldChange('factores_de_riesgo', index, 'observacion_factor_riesgo', e.target.value)}
                 />
-                <Button className='boton-container' onClick={() => handleEliminarItem('factores_de_riesgo', index)}>Eliminar</Button>
+                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('factores_de_riesgo', index)}>Eliminar</Button>
               </div>             
             ))}
             <div >
-            <Button className='boton-container' onClick={() => handleAgregarItem('factores_de_riesgo', { nombre_factor_riesgo: '', observacion_factor_riesgo: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('factores_de_riesgo', { nombre_factor_riesgo: '', observacion_factor_riesgo: '' })}>
               Agregar Factor de Riesgo
             </Button></div>
           </div>
@@ -414,11 +411,11 @@ const InformacionGeneral = ({state,
                   value={convivencias.observacion_convivencia_vivienda}
                   onChange={(e) => handleArrayFieldChange('convivencias_en_vivienda', index, 'observacion_convivencia_vivienda', e.target.value)}
                 />
-                <Button className='boton-container' onClick={() => handleEliminarItem('convivencias_en_vivienda', index)}>Eliminar</Button>
+                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('convivencias_en_vivienda', index)}>Eliminar</Button>
               </div>             
             ))}
             <div>
-            <Button className='boton-container' onClick={() => handleAgregarItem('convivencias_en_vivienda', { nombre_convivencia_vivienda: '', observacion_convivencia_vivienda: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('convivencias_en_vivienda', { nombre_convivencia_vivienda: '', observacion_convivencia_vivienda: '' })}>
               Agregar Convivencia
             </Button></div>
           </div>
@@ -443,11 +440,11 @@ const InformacionGeneral = ({state,
                   value={fuentes.observacion_fuente_ingresos}
                   onChange={(e) => handleArrayFieldChange('fuentes_de_ingresos', index, 'observacion_fuente_ingresos', e.target.value)}
                 />
-                <Button className='boton-container' onClick={() => handleEliminarItem('fuentes_de_ingresos', index)}>Eliminar</Button>
+                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('fuentes_de_ingresos', index)}>Eliminar</Button>
               </div>             
             ))}
             <div>
-            <Button className='boton-container' onClick={() => handleAgregarItem('fuentes_de_ingresos', { nombre_fuente_ingresos: '', observacion_fuente_ingresos: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('fuentes_de_ingresos', { nombre_fuente_ingresos: '', observacion_fuente_ingresos: '' })}>
               Agregar Fuente de Ingresos
             </Button></div>
           </div>
@@ -472,11 +469,11 @@ const InformacionGeneral = ({state,
                   value={actividad.observacion_actividad_tiempo_libre}
                   onChange={(e) => handleArrayFieldChange('actividades_tiempo_libre', index, 'observacion_actividad_tiempo_libre', e.target.value)}
                 />
-                <Button className='boton-container' onClick={() => handleEliminarItem('actividades_tiempo_libre', index)}>Eliminar</Button>
+                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('actividades_tiempo_libre', index)}>Eliminar</Button>
               </div>             
             ))}
             <div >
-            <Button className='boton-container' onClick={() => handleAgregarItem('actividades_tiempo_libre', { nombre_actividad_tiempo_libre: '', observacion_actividad_tiempo_libre: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('actividades_tiempo_libre', { nombre_actividad_tiempo_libre: '', observacion_actividad_tiempo_libre: '' })}>
               Agregar Actividad
             </Button></div>
           </div>

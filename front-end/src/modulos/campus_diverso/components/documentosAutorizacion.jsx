@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Button, Modal,  } from 'react-bootstrap';
+import { Container, Col, } from 'react-bootstrap';
 
 const DocumentosAutorizacion = ({
     state,
@@ -9,7 +9,7 @@ const DocumentosAutorizacion = ({
 }) => {
   return (
     <>
-    <h1> Documentos de autorización</h1>
+    <h1 className='title-banner'> Documentos de autorización</h1>
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
         <Col className="form-column" xs={"10"} md={"6"}>

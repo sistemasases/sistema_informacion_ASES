@@ -1,15 +1,17 @@
 import React from 'react';
 import { Container, Col,   } from 'react-bootstrap';
+import Select from 'react-select';
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 const IngresoDatosBasicos = ({state,
     handleChange,
     isLoading,
-    razasOptions
+    razasOptions,
+    handleSelectChange
 
 }) => {
   return (
     <>
-        <h1> Ingreso de datos básicos </h1>
+        <h1 className='title-banner'> Ingreso de datos básicos </h1>
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
     
       <Col className="form-column" xs={"10"} md={"6"}>
@@ -130,7 +132,7 @@ const IngresoDatosBasicos = ({state,
           <div>
             <input
               type="text"
-              placeholdr="Ingrese la identidad"
+              placeholder="Ingrese la identidad"
               name="identidad_etnico_racial"
               pattern='[0-9]*'
               value={state.identidad_etnico_racial}
@@ -245,28 +247,27 @@ const IngresoDatosBasicos = ({state,
         </div>
 
         <div>
-          <label className='custom-div'>Grupo poblacional</label>
-          <div>
-            {isLoading ? (
-              <p>Cargando...</p>
-            ):(
-            <select 
-              className='form-select'
-              name="pertenencia_grupo_poblacional"
-              value={state.pertenencia_grupo_poblacional}
-              onChange={handleChange}
-            >
-              <option value="">Seleccione un grupo poblacional </option>
-              {razasOptions.map((pertenencia_grupo_poblacional, index) => (
-                <option key={index} value={pertenencia_grupo_poblacional}>
-                  {pertenencia_grupo_poblacional} 
-                </option>
-              ))} 
-              
-              </select>
-              )}
-          </div>
-        </div>
+              <label className='custom-div'>Pertenencia grupo poblacional</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  placeholder='Seleccione grupo poblacional'
+                  className='form-react-select'
+                  name="pertenencia_grupo_poblacional"
+                  options={razasOptions}
+                  value={state.pertenencia_grupo_poblacional.map(option => ({
+                  value: option,
+                  label: razasOptions.find(o => o.value === option).label
+                  }))}
+                  onChange={handleSelectChange}
+    
+                  />
+                  )}
+              </div>
+            </div>
 
 
         <div>

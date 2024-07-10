@@ -131,11 +131,27 @@ useEffect(() => {
     .then((responses) => {
       //persona
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse] = responses;
-      const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => item.nombre_grupo_poblacional);
-      const expresionesOpciones = expresionesResponse.data.map((item) => item.nombre_expresion_genero);
-      const pronombreOpciones = pronomeopcionesResponse.data.map((item) => item.nombre_pronombre);
-      const respuestaCambioDocumentoOpciones = respuestaCambioDocumentoResponse.data.map((item) => item.nombre_respuesta_cambio_documento);
       
+      const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
+        value: item.id_grupo_poblacional,
+        label: item.nombre_grupo_poblacional
+      }));
+      
+      const expresionesOpciones = expresionesResponse.data.map((item) => ({
+        value: item.id_expresion_genero,
+        label: item.nombre_expresion_genero
+      }));
+      
+      const pronombreOpciones = pronomeopcionesResponse.data.map((item) => ({
+        value: item.id_pronombre,
+        label: item.nombre_pronombre
+      }));
+
+      const respuestaCambioDocumentoOpciones = respuestaCambioDocumentoResponse.data.map((item) => ({
+        value: item.id_respuesta_cambio_documento,
+        label: item.nombre_respuesta_cambio_documento
+      }));
+
       const orientacionOpciones = orientacionResponse.data.map((item) => ({
         value: item.id_orientacion_sexual,
         label: item.nombre_orientacion_sexual
@@ -328,7 +344,12 @@ const handleSubmit = async (e) => {
     email: state.email,
     municipio_nacimiento: state.municipio_nacimiento,
     corregimiento_nacimiento: state.corregimiento_nacimiento,
-    pertenencia_grupo_poblacional: state.pertenencia_grupo_poblacional,
+
+    pertenencia_grupo_poblacional: state.pertenencia_grupo_poblacional.map(id => {
+      const option = razasOptions.find(o => o.value === id);
+      return option ? option.label : id;
+    }),    
+
     relacion_persona_de_confianza: state.relacion_persona_de_confianza,
     apellido: state.apellido,
     tipo_documento: state.tipo_documento,
@@ -351,11 +372,24 @@ const handleSubmit = async (e) => {
   });
 
   const DiversidadSexualData = removeEmptyFields ({
-    expresiones_de_genero: state.expresiones_de_genero,
     recibir_orientacion_cambio_en_documento: state.recibir_orientacion_cambio_en_documento,
-    pronombres: state.pronombres,
     cambio_nombre_sexo_documento: state.cambio_nombre_sexo_documento,
-    respuestas_cambio_documento: state.respuestas_cambio_documento,
+
+    expresiones_de_genero: state.expresiones_de_genero.map(id => {
+      const option = expresionesOptions.find(o => o.value === id);
+      return option ? option.label : id;
+    }),
+
+    pronombres: state.pronombres.map(id => {
+      const option = pronombresOptions.find(o => o.value === id);
+      return option ? option.label : id;
+    }),
+
+    respuestas_cambio_documento: state.respuestas_cambio_documento.map(id => {
+      const option = documentoOptions.find(o => o.value === id);
+      return option ? option.label : id;
+    }),
+
     orientaciones_sexuales: state.orientaciones_sexuales.map(id => {
       const option = orientacionOptions.find(o => o.value === id);
       return option ? option.label : id;
@@ -631,6 +665,7 @@ const handleSubmit = async (e) => {
     handleChange={handleChange}
     isLoading={isLoading}
     razasOptions={razasOptions}
+    handleSelectChange={handleSelectChange}
     />
 
     <DiversidadSexual
