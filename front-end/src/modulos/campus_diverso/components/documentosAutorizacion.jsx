@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Col, } from 'react-bootstrap';
+export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 const DocumentosAutorizacion = ({
     state,
@@ -103,6 +104,9 @@ const DocumentosAutorizacion = ({
                   type="number"
                   name="apgar_familiar"
                   placeholder='Ingrese apgar'
+                  pattern='[0-9]*'
+                  onKeyDown={preventNegativeValues}
+                  min="0"
                   value={state.apgar_familiar}
                   onChange={handleChange}
                 />

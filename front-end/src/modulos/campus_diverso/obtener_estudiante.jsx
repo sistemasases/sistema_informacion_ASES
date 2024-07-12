@@ -55,9 +55,9 @@ const ObtenerEstudiante = () => {
   };
 
   const filteredUsers = users.filter((user) =>
-    user.numero_documento && user.nombre_y_apellido.toLowerCase().includes(searchText.toLowerCase())
+    (user.numero_documento && user.numero_documento.includes(searchText)) ||
+    (user.nombre_y_apellido && user.nombre_y_apellido.toLowerCase().includes(searchText.toLowerCase()))
   );
-
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };

@@ -78,9 +78,12 @@ const IngresoDatosBasicos = ({state,
           <div>
             <input
               className='input'
-              type="text"
+              type="number"
               placeholder="123456"
               name="numero_documento"
+              pattern='[0-9]*'
+              onKeyDown={preventNegativeValues}
+              min="0"
               value={state.numero_documento}
               onChange={handleChange}
             />
@@ -94,9 +97,11 @@ const IngresoDatosBasicos = ({state,
               type="number"
               placeholder="Estrato"
               name="estrato_socioeconomico"
+              pattern='[0-9]*'
+              onKeyDown={preventNegativeValues}
+              min="0"
               value={state.estrato_socioeconomico}
               onChange={handleChange}
-              pattern='[0-9]*'
             />
           </div>
         </div>
@@ -361,6 +366,9 @@ const IngresoDatosBasicos = ({state,
               type="number" 
               placeholder="Ingrese la comuna"
               name="comuna_barrio"
+              pattern='[0-9]*'
+              onKeyDown={preventNegativeValues}
+              min="0"
               value={state.comuna_barrio}
               onChange={handleChange}
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Button, Modal,  } from 'react-bootstrap';
+import { Container, Row, Col, Button, Modal, Alert  } from 'react-bootstrap';
 import '../../Scss/campus_diverso/campus_diverso.css';
 import DiversidadSexual from './components/diversidadSexual';
 import axios from 'axios';
@@ -9,13 +9,14 @@ import InformacionAcademica from './components/informacionAcademica';
 import DocumentosAutorizacion from './components/documentosAutorizacion';
 
   const Registro_estudiante = () => {
-
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [mensaje, setMensaje] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => {
     setShowModal(false);
   };
-
+  const [currentStep, setCurrentStep] = useState(0);
   const [state, set_state] = useState({
     nombre_identitario:"",
     nombre_orientacion_sexual: "",
@@ -320,6 +321,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
 
+
   const requiredFields = [
     'numero_documento',
   
@@ -330,13 +332,27 @@ const handleSubmit = async (e) => {
 
   if (invalidFields.length > 0) {
     // alerta de campos vacíos que están en la lista de requiredFields
-    alert(`Los siguientes campos son obligatorios y están vacíos: ${invalidFields.join(', ')}`);
+    setMensaje(`Los siguientes campos son obligatorios y están vacíos: ${invalidFields.join(', ')}`);
+    console.log('asdasd', setMensaje);
+    setTimeout(() => {
+      setShowErrorAlert(true);
+      setTimeout(() => setShowErrorAlert(false), 3000);
+    }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
     return;
   }
+
   // Remueve elementos vacios del formulario a la base de datos
   const removeEmptyFields = (data) => {
     return Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== ""));
   };
+
+  setTimeout(() => {
+    // Mostrar alerta de éxito
+    setShowSuccessAlert(true);
+    // Ocultar después de unos segundos
+    setTimeout(() => setShowSuccessAlert(false), 3000);
+  }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
+ 
 
   const personaData = removeEmptyFields ({
     nombre_identitario: state.nombre_identitario,
@@ -566,7 +582,9 @@ const handleSubmit = async (e) => {
               acompanamientos_recibido: [],
               convivencias_en_vivienda: [],
               fuentes_de_ingresos: [],
+              
             });
+            setCurrentStep(0);
           } catch (documentosError) {
             console.error('Error al enviar la solicitud de documentos autorización:', documentosError);
             // Manejo de error de documentos autorización
@@ -583,6 +601,7 @@ const handleSubmit = async (e) => {
               setMensaje("Hubo un error al enviar el formulario de documentos autorización. Por favor, inténtalo de nuevo.");
             }
             setShowModal(true);
+            setShowErrorAlert(true);
           }
         } catch (informacionAcademicaError) {
           console.error('Error al enviar la solicitud de información académica:', informacionAcademicaError);
@@ -600,6 +619,7 @@ const handleSubmit = async (e) => {
             setMensaje("Hubo un error al enviar el formulario de información académica. Por favor, inténtalo de nuevo.");
           }
           setShowModal(true);
+          setShowErrorAlert(true);
         }
       } catch (informacionGeneralError) {
         console.error('Error al enviar la solicitud de información general:', informacionGeneralError);
@@ -617,6 +637,7 @@ const handleSubmit = async (e) => {
           setMensaje("Hubo un error al enviar el formulario de información general. Por favor, inténtalo de nuevo.");
         }
         setShowModal(true);
+        setShowErrorAlert(true);
       }
     } catch (diversidadError) {
       console.error('Error al enviar la solicitud de diversidad sexual:', diversidadError);
@@ -636,6 +657,7 @@ const handleSubmit = async (e) => {
         setMensaje("Hubo un error al enviar el formulario de diversidad sexual. Por favor, inténtalo de nuevo.");
       }
       setShowModal(true);
+      setShowErrorAlert(true);
     }
   } catch (personaError) {
     console.error('Error al enviar la solicitud de persona:', personaError);
@@ -653,35 +675,31 @@ const handleSubmit = async (e) => {
       setMensaje("Hubo un error al enviar el formulario de persona. Por favor, inténtalo de nuevo.");
     }
     setShowModal(true);
+    setShowErrorAlert(true);
   }
 };
 
-
-  return (
-    <>
-
-    <IngresoDatosBasicos
+const steps = [
+  { component:   <IngresoDatosBasicos
     state={state}
     handleChange={handleChange}
     isLoading={isLoading}
     razasOptions={razasOptions}
     handleSelectChange={handleSelectChange}
-    />
-
-    <DiversidadSexual
-      state={state}
-      handleChange={handleChange}
-      handleSelectChange={handleSelectChange}
-      isLoading={isLoading}
-      pronombresOptions={pronombresOptions}
-      documentoOptions={documentoOptions}
-      expresionesOptions={expresionesOptions}
-      orientacionOptions={orientacionOptions}
-      identidadesGeneroOptions={identidadesGeneroOptions}
-      handleCheckboxChange={handleCheckboxChange}
-    />
-    
-    <InformacionGeneral
+    /> },
+  { component:     <DiversidadSexual
+    state={state}
+    handleChange={handleChange}
+    handleSelectChange={handleSelectChange}
+    isLoading={isLoading}
+    pronombresOptions={pronombresOptions}
+    documentoOptions={documentoOptions}
+    expresionesOptions={expresionesOptions}
+    orientacionOptions={orientacionOptions}
+    identidadesGeneroOptions={identidadesGeneroOptions}
+    handleCheckboxChange={handleCheckboxChange}
+  /> },
+  { component:   <InformacionGeneral
     state={state}
     handleChange={handleChange}
     handleSelectChange={handleSelectChange}
@@ -692,52 +710,52 @@ const handleSubmit = async (e) => {
     handleArrayChange={handleArrayChange}
     handleAddItem={handleAddItem}
     handleDeleteItem={handleDeleteItem}
-    />
-
-    <InformacionAcademica
-    state={state}
-    handleChange={handleChange}
-    handleArrayChange={handleArrayChange}
-    handleAddItem={handleAddItem}
-    handleDeleteItem={handleDeleteItem}
-    handleCheckboxChange={handleCheckboxChange}
-    />
-    <DocumentosAutorizacion
+    /> },
+  { component: <DocumentosAutorizacion
     state={state}
     handleCheckboxChange={handleCheckboxChange}
     handleChange={handleChange}
-    />
+    /> },
+];  const nextStep = () => {
+  setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+};
 
-      
-          <Row >
-          
-              <Row>
-            <Col className="text-center">
-              <button type="button" className="btn btn-danger" onClick={handleSubmit}>
-                Enviar
-              </button>
-            </Col>
-          </Row>
+const prevStep = () => {
+  setCurrentStep((prevStep) => Math.max(prevStep - 1, 0));
+};
 
-          <Modal show={showModal} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Resultado del envío</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {mensaje && (
-                <div className={mensaje.startsWith("Error") ? "error-message" : "success-message"}>
-                  {mensaje}
-                </div>
-              )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Cerrar
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </Row>
-        </>
+  return (
+    <Container >
+    <div >{steps[currentStep].component}</div>
+    <div className='buttons-container'>
+    <Button onClick={prevStep} disabled={currentStep === 0}>Atrás</Button>
+    <Button onClick={nextStep} disabled={currentStep === steps.length - 1}>Siguiente</Button>
+    {currentStep === steps.length - 1 && <Button onClick={handleSubmit}>Enviar</Button>}
+    </div>
+    {/* Alerta de éxito como modal */}
+    <Alert
+      show={showSuccessAlert}
+      variant="success"
+      onClose={() => setShowSuccessAlert(false)}
+      dismissible
+      className='alert-style'
+    >
+      <Alert.Heading>¡Éxito!</Alert.Heading>
+      <p>El formulario se envió correctamente.</p>
+    </Alert>
+
+    {/* Alerta de error */}
+      <Alert
+        show={showErrorAlert}
+        variant="danger"
+        onClose={() => setShowErrorAlert(false)}
+        dismissible
+        className='alert-style'
+      >
+        <Alert.Heading>Error</Alert.Heading>
+        <p>{mensaje}</p>
+      </Alert>
+  </Container>
     
   );
 }
