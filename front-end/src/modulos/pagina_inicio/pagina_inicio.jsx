@@ -209,9 +209,9 @@ const Pagina_inicio = () => {
             {(userRole === 'dir_academico' )&& (
               <img src={boton20} className="boton" alt='/' onClick={() => cambiar_ruta(`/academico`)}></img>)}
               {(userRole === 'CAMPUS DIVERSO' )&& (
-              <img src={boton15} className="boton" alt='/' onClick={() => cambiar_ruta(`/campus_diverso/registro_persona`)}></img>)}
+              <img src={boton15} className="boton" alt='/' onClick={() => cambiar_ruta(`/campus_diverso/registro_estudiante`)}></img>)}
               {(userRole === 'CAMPUS DIVERSO' )&& (
-              <img src={boton6} className="boton" alt='/' onClick={() => cambiar_ruta(`/campus_diverso/obtener_persona`)}></img>)}
+              <img src={boton6} className="boton" alt='/' onClick={() => cambiar_ruta(`/campus_diverso/obtener_estudiante`)}></img>)}
             {(userRole === 'profesor')?<>{cambiar_ruta(`/academico`)}</>:<>{}</>}
           </Col>
           <Col className="vertical-line-col"><div className="vertical"></div></Col>

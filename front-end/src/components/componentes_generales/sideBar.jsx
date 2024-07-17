@@ -75,7 +75,8 @@ const SideBar = (props) => {
         ? Menu6
         : desencriptar(sessionStorage.rol) === "profesor"
         ? Menu9
-        : desencriptar(sessionStorage.rol) === 'CAMPUS DIVERSO' ? Menu11 
+        : desencriptar(sessionStorage.rol) === 'CAMPUS DIVERSO' 
+        ? Menu11 
         : desencriptar(sessionStorage.rol) === "discapacidad"
         ? Menu10
         : Menu7,

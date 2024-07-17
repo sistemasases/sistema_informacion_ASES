@@ -41,5 +41,5 @@ urlpatterns = [
     path('informacion-academica/', include('app_informacion_academica.routers')),
     path('informacion-general/', include('app_informacion_general.routers')),
     path('documentos-autorizacion/', include('app_documentos_autorizacion.routers')),
-    path('seguimiento/', include('app_seguimiento.routers'))
+    path('seguimiento-campus/', include('app_seguimiento.routers'))
 ]

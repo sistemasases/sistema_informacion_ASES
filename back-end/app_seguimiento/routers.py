@@ -1,9 +1,11 @@
 from rest_framework.routers import DefaultRouter
-from .views import seguimiento_viewsets
+from .views import SeguimientoViewSet, profesional_viewsets
 
 router = DefaultRouter()
 
-router.register(r'seguimiento', seguimiento_viewsets, basename="seguimiento")
+router.register(r'seguimiento', SeguimientoViewSet, basename="seguimiento")
+router.register(r'profesional', profesional_viewsets, basename="profesional")
+
 
 urlpatterns = router.urls
 

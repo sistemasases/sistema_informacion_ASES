@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Container, Row, Col } from 'react-bootstrap';
+import {Container} from 'react-bootstrap';
 import '../../Scss/campus_diverso/campus_diverso.css';
 import ModalEstudiantes from './components/modalEstudiantes';
 
@@ -11,6 +11,7 @@ const ObtenerEstudiante = () => {
   const [generalInfo, setGeneralInfo] = useState();
   const [academicoInfo, setAcademcioInfo] = useState();
   const [documentosInfo, setDocumentosInfo] = useState();
+  const [seguimientosInfo, setSeguimientosInfo] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -24,7 +25,7 @@ const ObtenerEstudiante = () => {
   const openModal = (user) => {
     setModalOpen(true);
     setSelectedUser(user);
-    setCurrentPage(0); // Reset to first page
+    setCurrentPage(0); // Vuelve a la página inicial
 
     fetch(`${process.env.REACT_APP_API_URL}/diversidad-sexual/diversidad-sexual/${user.numero_documento}/`)
       .then((response) => response.json())
@@ -46,12 +47,42 @@ const ObtenerEstudiante = () => {
       .then((response) => response.json())
       .then((data) => setDocumentosInfo(data))
       .catch((error) => console.error('Error al obtener la información académica:', error));
+
+      fetch(`${process.env.REACT_APP_API_URL}/seguimiento-campus/seguimiento/${user.numero_documento}/`)
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('No se encontraron seguimientos para este usuario.'); // Aquí puedes lanzar un error específico para 404
+          } else {
+            throw new Error('Error en la respuesta del servidor.'); // Otra manejo genérico de error
+          }
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Verificar si hay datos válidos de seguimientos
+        if (data && Object.keys(data).length !== 0) { // Verifica si el objeto no está vacío
+          setSeguimientosInfo(data);
+        } else {
+          setSeguimientosInfo([]); // Establecer como un arreglo vacío si no hay seguimientos
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'No se encontraron seguimientos para este usuario.') {
+          console.error('Error al obtener la información de seguimientos:', error);
+        }
+        setSeguimientosInfo([]); // Manejo de error, establecer seguimientosInfo como un arreglo vacío
+      });
 };
 
   const closeModal = () => {
     setModalOpen(false);
     setSelectedUser(null);
     setDiversidadInfo(null);
+    setGeneralInfo(null);
+    setDocumentosInfo(null);
+    setSeguimientosInfo(null);
+    setAcademcioInfo(null);
   };
 
   const filteredUsers = users.filter((user) =>
@@ -103,6 +134,7 @@ const ObtenerEstudiante = () => {
             academicoInfo={academicoInfo}
             generalInfo={generalInfo}
             documentosInfo={documentosInfo}
+            seguimientosInfo={seguimientosInfo}
             currentPage={currentPage}
             prevPage={prevPage}
             nextPage={nextPage}

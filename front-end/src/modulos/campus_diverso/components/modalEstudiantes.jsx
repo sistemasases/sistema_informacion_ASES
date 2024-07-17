@@ -1,5 +1,7 @@
 import React from 'react';
 import { Modal, Button, Container, Row, Col } from 'react-bootstrap';
+import ModalSeguimientos from './modalSeguimientos';
+import { useState } from 'react';
 
 const ModalEstudiantes = ({
   isModalOpen,
@@ -9,6 +11,7 @@ const ModalEstudiantes = ({
   academicoInfo,
   generalInfo,
   documentosInfo,
+  seguimientosInfo,
   currentPage,
   prevPage,
   nextPage,
@@ -20,9 +23,19 @@ const ModalEstudiantes = ({
     'Información General ',
     'Información Académica',
     'Documentos Autorización',
+    'Seguimientos'
   ];
+  const [isSeguimientoModalOpen, setSeguimientoModalOpen] = useState(false);
 
+  const openSeguimientoModal = () => {
+    setSeguimientoModalOpen(true);
+  };
+
+  const closeSeguimientoModal = () => {
+    setSeguimientoModalOpen(false);
+  };
   return (
+    <>
     <Modal show={isModalOpen} onHide={closeModal} size="lg">
       <Modal.Header className='custom-modal-header' closeButton >
         <Modal.Title >{titles[currentPage]}</Modal.Title>
@@ -245,17 +258,52 @@ const ModalEstudiantes = ({
 
                   </div>
              )}
+              {currentPage === 5   && seguimientosInfo && (
+                <div>
+
+<Row>
+  <ul className='ul-style'>
+    {seguimientosInfo && seguimientosInfo.length > 0 ? (
+      seguimientosInfo.map((seguimiento, index) => (
+        <li className='li-style' key={index}>
+          <div><b>Fecha:</b> {seguimiento.fecha}</div>
+          <div><b>Observación:</b> {seguimiento.observacion}</div>
+          <div><b>Profesionales:</b>
+            <ul>
+              {seguimiento.profesional.map((prof, profIndex) => (
+                <li key={profIndex}>{prof.nombre_profesional}</li>
+              ))}
+            </ul>
+          </div>
+          <div><b>ID Creador Campus:</b> {seguimiento.id_creador_campus || 'N/A'}</div>
+        </li>
+      ))
+    ) : (
+      <li className='li-style'>
+        <div>No hay seguimientos disponibles para este usuario.</div>
+      </li>
+    )}
+  </ul>
+</Row>
+
+                  </div>
+             )}
+
 
           </Row>
         </Container>
       </Modal.Body>
       <Modal.Footer>
+      <Button variant="primary" className='modal-seguimiento' onClick={openSeguimientoModal}>
+            Seguimientos
+          </Button>
+
         {currentPage > 0 && (
           <Button variant="outline-primary"  onClick={prevPage}>
             Atrás
           </Button>
         )}
-        {currentPage < 4 && (
+        {currentPage < 5 && (
           <Button variant="primary"  onClick={nextPage}>
             Adelante
           </Button>
@@ -265,6 +313,11 @@ const ModalEstudiantes = ({
         </Button>
       </Modal.Footer>
     </Modal>
+          <ModalSeguimientos
+          isSeguimientoModalOpen={isSeguimientoModalOpen}
+          closeSeguimientoModal={closeSeguimientoModal}
+        />
+        </>
   );
 };
 

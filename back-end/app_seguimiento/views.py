@@ -6,7 +6,7 @@ from .serializers import SeguimientoSerializer
 from app_registro.models import Persona
 from rest_framework.response import Response
 from rest_framework import viewsets
-
+from .serializers import SeguimientoSerializer,ProfesionalSerializer
 """ class SeguimientoListCreateView(generics.ListCreateAPIView):
     queryset = Seguimiento.objects.all()
     serializer_class = SeguimientoSerializer
@@ -27,18 +27,34 @@ class SeguimientoRetrievelUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
     #         return seguimientos
     #     else:
     #         raise status.HTTP_404_NOT_FOUND  """
-    
-class seguimiento_viewsets(viewsets.ModelViewSet):
-    serializer_class = SeguimientoSerializer
+class profesional_viewsets (viewsets.ModelViewSet):
+    serializer_class = ProfesionalSerializer
     # permission_classes = (IsAuthenticated,)
-    queryset = SeguimientoSerializer.Meta.model.objects.all()
-    
-    def update(self, request, *args, pk=None, **kwargs): 
-        segumiento = get_object_or_404(Seguimiento, id_seguimiento=pk)
-        serializer = self.get_serializer(segumiento, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            self.perform_update(serializer)
-            return Response(serializer.data)
-        return Response(serializer.errors)
+    queryset = ProfesionalSerializer.Meta.model.objects.all()
 
-     
+
+
+class SeguimientoViewSet(viewsets.ModelViewSet):
+    serializer_class = SeguimientoSerializer
+    queryset = Seguimiento.objects.all()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().partial_update(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        numero_documento = kwargs.get('pk')  # Asume que pk será el número de documento
+        persona = get_object_or_404(Persona, numero_documento=numero_documento)
+        seguimientos = Seguimiento.objects.filter(id_persona=persona)
+        if not seguimientos.exists():
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = SeguimientoSerializer(seguimientos, many=True)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
