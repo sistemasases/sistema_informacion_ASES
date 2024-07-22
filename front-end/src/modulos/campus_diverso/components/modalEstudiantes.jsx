@@ -61,8 +61,7 @@ const ModalEstudiantes = ({
                   <div className='div-modal'><b>Teléfono persona de confianza:</b> {selectedUser.telefono_persona_de_confianza}</div>
                   <div className='div-modal'><b>Relación persona de confianza:</b> {selectedUser.relacion_persona_de_confianza}</div>
                   <div className='div-modal'><b>Estado civil:</b> {selectedUser.estado_civil}</div>
-                  <div className='div-modal'><b>Ciudad de residencia:</b> {selectedUser.ciudad_residencia}</div>
-                  <div className='div-modal'><b>Dirección de residencia:</b> {selectedUser.direccion_residencia}</div>
+
                 </Col>
                   <Col className="form-column" xs={"10"} md={"6"}>
                   
@@ -75,7 +74,8 @@ const ModalEstudiantes = ({
                   <div className='div-modal'><b>Pertenencia grupo poblacional:</b> {selectedUser.pertenencia_grupo_poblacional.join(', ')}</div>
                   <div className='div-modal'><b>Número de la Comuna:</b> {selectedUser.comuna_barrio}</div>
                   <div className='div-modal'><b>Barrio:</b> {selectedUser.barrio_residencia}</div>
-                  
+                  <div className='div-modal'><b>Ciudad de residencia:</b> {selectedUser.ciudad_residencia}</div>
+                  <div className='div-modal'><b>Dirección de residencia:</b> {selectedUser.direccion_residencia}</div>
                   </Col>
                 </Row>
                 </div>
@@ -259,17 +259,17 @@ const ModalEstudiantes = ({
                   </div>
              )}
               {currentPage === 5   && seguimientosInfo && (
-                <div>
+                <div className='div-observacion'>
 
 <Row>
   <ul className='ul-style'>
     {seguimientosInfo && seguimientosInfo.length > 0 ? (
       seguimientosInfo.map((seguimiento, index) => (
         <li className='li-style' key={index}>
-          <div><b>Fecha:</b> {seguimiento.fecha}</div>
-          <div><b>Observación:</b> {seguimiento.observacion}</div>
-          <div><b>Profesionales:</b>
-            <ul>
+          <div ><b>Fecha:</b> {seguimiento.fecha}</div>
+          <div ><b>Observación:</b> {seguimiento.observacion}</div>
+          <div ><b>Profesionales:</b>
+            <ul className='ul-style'>
               {seguimiento.profesional.map((prof, profIndex) => (
                 <li key={profIndex}>{prof.nombre_profesional}</li>
               ))}
@@ -316,6 +316,7 @@ const ModalEstudiantes = ({
           <ModalSeguimientos
           isSeguimientoModalOpen={isSeguimientoModalOpen}
           closeSeguimientoModal={closeSeguimientoModal}
+          selectedUser={selectedUser}
         />
         </>
   );

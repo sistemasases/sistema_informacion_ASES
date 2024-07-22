@@ -47,7 +47,7 @@ class SeguimientoViewSet(viewsets.ModelViewSet):
         persona = get_object_or_404(Persona, numero_documento=numero_documento)
         seguimientos = Seguimiento.objects.filter(id_persona=persona)
         if not seguimientos.exists():
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': 'No se encontraron seguimientos para esta persona.'}, status=status.HTTP_404_NOT_FOUND)
         serializer = SeguimientoSerializer(seguimientos, many=True)
         return Response(serializer.data)
 

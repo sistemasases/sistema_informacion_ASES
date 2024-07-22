@@ -49,30 +49,26 @@ const ObtenerEstudiante = () => {
       .catch((error) => console.error('Error al obtener la información académica:', error));
 
       fetch(`${process.env.REACT_APP_API_URL}/seguimiento-campus/seguimiento/${user.numero_documento}/`)
-      .then((response) => {
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error('No se encontraron seguimientos para este usuario.'); // Aquí puedes lanzar un error específico para 404
+      .then(async (response) => {
+        if (response.ok) {
+          const data = await response.json();
+          return data;
+        } else {
+          const errorData = await response.json();
+          if (response.status === 404 && errorData.detail === "No se encontraron seguimientos para esta persona.") {
+            return []; // Retornamos un arreglo vacío si es un error 404 específico
           } else {
-            throw new Error('Error en la respuesta del servidor.'); // Otra manejo genérico de error
+            throw new Error('Error en la respuesta del servidor');
           }
         }
-        return response.json();
       })
       .then((data) => {
-        // Verificar si hay datos válidos de seguimientos
-        if (data && Object.keys(data).length !== 0) { // Verifica si el objeto no está vacío
-          setSeguimientosInfo(data);
-        } else {
-          setSeguimientosInfo([]); // Establecer como un arreglo vacío si no hay seguimientos
-        }
+        setSeguimientosInfo(data || []); // Establecer como un arreglo vacío si no hay datos
       })
       .catch((error) => {
-        if (error.message !== 'No se encontraron seguimientos para este usuario.') {
-          console.error('Error al obtener la información de seguimientos:', error);
-        }
+        console.error('Error al obtener la información de seguimientos:', error);
         setSeguimientosInfo([]); // Manejo de error, establecer seguimientosInfo como un arreglo vacío
-      });
+      });     
 };
 
   const closeModal = () => {
