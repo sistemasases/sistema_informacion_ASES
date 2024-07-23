@@ -14,7 +14,7 @@ const Select = () => {
     id: "identificación",
     nombre: null,
     codigo: null,
-    correo: "correo",
+    correo: "carlos.mauricio.tovar@correounivalle.edu.co",
     edad: "edad",
     imagen: null,
     programas: [],
@@ -25,6 +25,8 @@ const Select = () => {
     monitor: null,
     ultimaActualizacion: null,
     telefono: "0000000000",
+    tipo_discapacidad: "tipo_discapacidad",
+    diagnosticos: ["diagnostico1", "diagnostico2"],
   });
 
   const handleSelectStudent = (student) => {
@@ -42,6 +44,8 @@ const Select = () => {
       monitor: student.monitor,
       ultimaActualizacion: student.ultimaActualizacion,
       telefono: student.telefono,
+      tipo_discapacidad: student.tipo_discapacidad,
+      diagnosticos: student.diagnosticos,
     });
     setEstudianteSelected(selectedStudent);
   };
@@ -73,10 +77,10 @@ const Select = () => {
             ))}
           </select>
 
-          <div className="basic-info">
-            <p>{selectedStudent.id}</p>
-            <p>{selectedStudent.correo}</p>
-            <p>{selectedStudent.edad}</p>
+          <div className="general-info">
+            <p><b>Tipo Discapacidad: </b>{selectedStudent.tipo_discapacidad}</p>
+            <p><b>Diagnóstico/s: </b> {selectedStudent.diagnosticos.join(', ')}</p>
+            <p><b>Correo: </b>{selectedStudent.correo}</p>
           </div>
         </div>
 

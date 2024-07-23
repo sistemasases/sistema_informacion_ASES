@@ -1,13 +1,11 @@
 .container_carac {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* Dos columnas iguales */
     gap: 20px;
 }
 
 .full-width {
     grid-column: 1 / -1;
-    /* Hace que este elemento ocupe ambas columnas */
 }
 
 .titulo {
@@ -19,6 +17,8 @@
 
 input[type="text"],
 input[type="number"],
+input[type="tel"],
+input[type="date"],
 textarea,
 select {
     width: 100%;
@@ -26,6 +26,9 @@ select {
     border-radius: 5px;
     border: 1px solid #a09f9f;
     padding: 5px;
+    margin-left: 0px;
+    margin-right: 20px;
+    display: flex;
 }
 
 textarea {
@@ -34,7 +37,6 @@ textarea {
     resize: vertical;
 }
 
-/* Estilos para las tablas */
 .table-style {
     border-collapse: collapse;
     width: 100%;
@@ -63,7 +65,6 @@ textarea {
     margin-left: 25px;
 }
 
-/* Aquí finaliza los estilos para las tablas */
 
 .select_space {
     margin-bottom: 8px;
@@ -80,8 +81,9 @@ input[type="checkbox"] {
 
 .inline-input-group {
     display: flex;
-    align-items: center;
-    margin-bottom: 4px;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
 
 .inline-input-group label,
@@ -103,7 +105,11 @@ p {
     margin-bottom: 10px;
 }
 
-
+.separator {
+    border: 0;
+    border-top: 1px solid #bcbcbc;
+    margin: 20px 0;
+}
 
 .full-size-button {
     width: 100%;
@@ -119,4 +125,49 @@ p {
 
 .color_red {
     background-color: rgb(180, 33, 33);
+}
+
+
+.programas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.programa-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.programa-item input[type="text"],
+.programa-item input[type="number"],
+.programa-item select {
+    flex: 1;
+    margin-right: 5px;
+}
+
+.programa-item select {
+    flex: 2;
+}
+
+.checkbox_container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkbox_group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.checkbox_group input[type="checkbox"] {
+    margin: 0;
+}
+
+.checkbox_group label {
+    margin: 0;
 }

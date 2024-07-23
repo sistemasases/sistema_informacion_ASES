@@ -41,7 +41,7 @@
     font-weight: 700;
     color: inherit;
     height: 40px;
-    width: 90%;
+    width: 100%;
     border-radius: 20px;
 }
 
@@ -52,16 +52,27 @@
     justify-content: space-between;
 }
 
+
+.general-info {
+    width: 100%;
+    display:table-column;
+    justify-content: left;
+    margin-top: 0; /* Elimina el espacio encima de los párrafos */
+    margin-bottom: 0; /* Reduce el espacio debajo de los párrafos */
+    line-height: 1; /* Restaura la altura de línea a un valor normal */
+    
+}
 .container-img {
     grid-area: imgE;
     border-radius: 30px;
+    align-self: center;
 }
 
 .img{
-    display: block;
+    display: flex;
     margin-left: auto;
     margin-right: auto;
-    height: 95%;
+    width: 80%;
     border-radius: 30px;
 }
 
