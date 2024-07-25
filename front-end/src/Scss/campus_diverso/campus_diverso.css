@@ -40,6 +40,15 @@ label {
     height: 30px;
   }
   
+  textarea {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    box-sizing: border-box; /* Corrección de "borerd-box" a "border-box" */
+    padding: 20px;
+    width: 90%;
+    height: auto; /* Usar 'auto' para permitir que el textarea ajuste su altura según el contenido */
+  }
+
   .form-select {
     display: block;
     border: 1px solid #d9d9d9;

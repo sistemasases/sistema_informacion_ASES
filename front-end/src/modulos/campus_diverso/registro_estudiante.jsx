@@ -711,6 +711,17 @@ const steps = [
     handleAddItem={handleAddItem}
     handleDeleteItem={handleDeleteItem}
     /> },
+    { component:   <InformacionAcademica
+      state={state}
+      handleChange={handleChange}
+      handleSelectChange={handleSelectChange}
+      handleArrayFieldChange={handleArrayFieldChange}
+      handleAgregarItem={handleAgregarItem}
+      handleEliminarItem={handleEliminarItem}
+      handleArrayChange={handleArrayChange}
+      handleAddItem={handleAddItem}
+      handleDeleteItem={handleDeleteItem}
+      /> },
   { component: <DocumentosAutorizacion
     state={state}
     handleCheckboxChange={handleCheckboxChange}

@@ -135,7 +135,7 @@ const InformacionGeneral = ({state,
         <div>
                 <label className='custom-div'>Observación general de fuente de ingresos</label>
                 <div>
-                <input
+                <textarea
                   type="text"
                   name="observacion_general_fuente_de_ingresos"
                   placeholder='Ingrese la observación'
@@ -244,7 +244,7 @@ const InformacionGeneral = ({state,
         <div>
                 <label className='custom-div'>Observación general de redes de apoyo</label>
                 <div>
-                <input
+                <textarea
                   type="text"
                   name="observacion_general_redes_de_apoyo"
                   placeholder='Ingrese la observación'
@@ -257,7 +257,7 @@ const InformacionGeneral = ({state,
         <div>
                 <label className='custom-div'>Observación general factores de riesgo</label>
                 <div>
-                <input
+                <textarea
                   type="text"
                   name="observacion_general_factores_de_riesgo"
                   placeholder='Ingrese la observación'
@@ -334,25 +334,23 @@ const InformacionGeneral = ({state,
         </div> 
 
 
+              <div>
+        <label className='custom-div'>Observación convivencia de vivienda</label>
         <div>
-                <label className='custom-div'>Observación convivencia de vivienda</label>
-                <div>
-                <input
-        
-                  type="text"
-                  name="observacion_general_relacion_convivencia_vivienda"
-                  placeholder='Ingrese la observación'
-                  value={state.observacion_general_relacion_convivencia_vivienda}
-                  onChange={handleChange}
-                />
-                </div>
-        </div> 
+          <textarea
+            name="observacion_general_relacion_convivencia_vivienda"
+            placeholder='Ingrese la observación'
+            value={state.observacion_general_relacion_convivencia_vivienda}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+
 
         <div>
                 <label className='custom-div'>Observación actividades especificas en tiempo libre</label>
                 <div>
-                <input
-                  type="text"
+                <textarea
                   name="observacion_general_actividades_especificas_tiempo_libre"
                   placeholder='Ingrese la observación'
                   value={state.observacion_general_actividades_especificas_tiempo_libre}

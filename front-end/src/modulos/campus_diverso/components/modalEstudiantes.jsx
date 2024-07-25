@@ -15,6 +15,10 @@ const ModalEstudiantes = ({
   currentPage,
   prevPage,
   nextPage,
+  handleFormSubmit,
+  handleInputChange,
+  editableUser,
+  handleCheckboxChange
 }) => {
 
   const titles = [
@@ -26,6 +30,7 @@ const ModalEstudiantes = ({
     'Seguimientos'
   ];
   const [isSeguimientoModalOpen, setSeguimientoModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const openSeguimientoModal = () => {
     setSeguimientoModalOpen(true);
@@ -34,6 +39,8 @@ const ModalEstudiantes = ({
   const closeSeguimientoModal = () => {
     setSeguimientoModalOpen(false);
   };
+
+ 
   return (
     <>
     <Modal show={isModalOpen} onHide={closeModal} size="lg">
@@ -49,33 +56,108 @@ const ModalEstudiantes = ({
                 <div>
                 <Row>
                 <Col className="form-column" xs={"10"} md={"6"}>
-                  <div className='div-modal'><b>Nombre:</b> {selectedUser.nombre_y_apellido}</div>
-                  <div className='div-modal'><b>Nombre identitario:</b> {selectedUser.nombre_identitario}</div>
+                <div className='div-modal'>
+                        <b>Nombre:</b> 
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            name="nombre_y_apellido"
+                            value={editableUser.nombre_y_apellido || ''}
+                            onChange={handleInputChange}
+                          />
+                        ) : (
+                          selectedUser.nombre_y_apellido
+                        )}
+                      </div>                  <div className='div-modal'><b>Nombre identitario:</b> {selectedUser.nombre_identitario}</div>
                   <div className='div-modal'><b>Identificación:</b> {selectedUser.numero_documento}</div>
-                  <div className='div-modal'><b>Tipo de identificación:</b> {selectedUser.tipo_documento}</div>
-                  <div className='div-modal'><b>Email:</b> {selectedUser.email}</div>
-                  <div className='div-modal'><b>Estrato:</b> {selectedUser.estrato_socioeconomico}</div>
-                  <div className='div-modal'><b>Teléfono:</b> {selectedUser.telefono}</div>
-                  <div className='div-modal'><b>Identidad étnico racial:</b> {selectedUser.identidad_etnico_racial}</div>             
-                  <div className='div-modal'><b>Nombre persona de confianza:</b> {selectedUser.nombre_persona_de_confianza}</div>
-                  <div className='div-modal'><b>Teléfono persona de confianza:</b> {selectedUser.telefono_persona_de_confianza}</div>
-                  <div className='div-modal'><b>Relación persona de confianza:</b> {selectedUser.relacion_persona_de_confianza}</div>
-                  <div className='div-modal'><b>Estado civil:</b> {selectedUser.estado_civil}</div>
+                  <div className='div-modal'><b>Tipo de identificación:</b> 
+                  {isEditing ? (
+                      <input type="text" name="tipo_documento" value={editableUser.tipo_documento || '' } onChange={handleInputChange}
+                      /> ) : ( selectedUser.tipo_documento )} </div>
+                  <div className='div-modal'><b>Email:</b> 
+                  {isEditing ? (
+                      <input type="text" name="email" value={editableUser.email || ''} onChange={handleInputChange}
+                      /> ) : ( selectedUser.email )} </div>
+                  <div className='div-modal'><b>Estrato:</b> 
+                  {isEditing ? (
+                      <input type="text" name="estrato_socioeconomico" value={editableUser.estrato_socioeconomico || ''} onChange={handleInputChange}
+                      /> ) : ( selectedUser.estrato_socioeconomico )} </div>
+                     <div className='div-modal'><b>Teléfono:</b>
+            {isEditing ? (
+              <input type="text" name="telefono" value={editableUser.telefono || ''} onChange={handleInputChange}
+              />) : (selectedUser.telefono)} </div>
+          <div className='div-modal'><b>Identidad étnico racial:</b>
+            {isEditing ? (
+              <input type="text" name="identidad_etnico_racial" value={editableUser.identidad_etnico_racial || ''} onChange={handleInputChange}
+              />) : (selectedUser.identidad_etnico_racial)} </div>
+          <div className='div-modal'><b>Nombre persona de confianza:</b>
+            {isEditing ? (
+              <input type="text" name="nombre_persona_de_confianza" value={editableUser.nombre_persona_de_confianza || ''} onChange={handleInputChange}
+              />) : (selectedUser.nombre_persona_de_confianza)} </div>
+          <div className='div-modal'><b>Teléfono persona de confianza:</b>
+            {isEditing ? (
+              <input type="text" name="telefono_persona_de_confianza" value={editableUser.telefono_persona_de_confianza || ''} onChange={handleInputChange}
+              />) : (selectedUser.telefono_persona_de_confianza)} </div>
+          <div className='div-modal'><b>Relación persona de confianza:</b>
+            {isEditing ? (
+              <input type="text" name="relacion_persona_de_confianza" value={editableUser.relacion_persona_de_confianza || ''} onChange={handleInputChange}
+              />) : (selectedUser.relacion_persona_de_confianza)} </div>
+          <div className='div-modal'><b>Estado civil: </b>
+            {isEditing ? (
+              <input type="text" name="estado_civil" value={editableUser.estado_civil || ''} onChange={handleInputChange}
+              />) : (selectedUser.estado_civil)} </div>
+        </Col>
+        <Col className="form-column" xs={"10"} md={"6"}>
+          <div className='div-modal'><b>Ciudad de nacimiento:</b>
+            {isEditing ? (
+              <input type="text" name="ciudad_nacimiento" value={editableUser.ciudad_nacimiento || ''} onChange={handleInputChange}
+              />) : (selectedUser.ciudad_nacimiento)} </div>
+          <div className='div-modal'><b>Corregimiento de nacimiento:</b>
+            {isEditing ? (
+              <input type="text" name="corregimiento_nacimiento" value={editableUser.corregimiento_nacimiento || ''} onChange={handleInputChange}
+              />) : (selectedUser.corregimiento_nacimiento)} </div>
+          <div className='div-modal'><b>Municipío de nacimiento:</b>
+            {isEditing ? (
+              <input type="text" name="municipio_nacimiento" value={editableUser.municipio_nacimiento || ''} onChange={handleInputChange}
+              />) : (selectedUser.municipio_nacimiento)} </div>
+          <div className='div-modal'><b>País de nacimiento:</b>
+            {isEditing ? (
+              <input type="text" name="pais_nacimiento" value={editableUser.pais_nacimiento || ''} onChange={handleInputChange}
+              />) : (selectedUser.pais_nacimiento)} </div>
+          <div className='div-modal'><b>Departamento de nacimiento:</b>
+            {isEditing ? (
+              <input type="text" name="departamento_nacimiento" value={editableUser.departamento_nacimiento || ''} onChange={handleInputChange}
+              />) : (selectedUser.departamento_nacimiento)} </div>
+          <div className='div-modal'><b>Fecha de nacimiento "Año/Mes/Día":</b>
+            {isEditing ? (
+              <input type="date" name="fecha_nacimiento" value={editableUser.fecha_nacimiento || ''} onChange={handleInputChange}
+              />) : (selectedUser.fecha_nacimiento)} </div>
+         
+          <div className='div-modal'><b>Pertenencia grupo poblacional:</b> {selectedUser.pertenencia_grupo_poblacional.join(', ')}</div>
+         
+         {/* <div className='div-modal'><b>Pertenencia grupo poblacional:</b>
+            {isEditing ? (
+              <input type="text" name="comuna_barrio" value={editableUser.comuna_barrio || ''} onChange={handleInputChange} autoComplete='off'
+              />) : (selectedUser.pertenencia_grupo_poblacional.join(', '))} </div>*/}
 
-                </Col>
-                  <Col className="form-column" xs={"10"} md={"6"}>
-                  
-                  <div className='div-modal'><b>Ciudad de nacimiento:</b> {selectedUser.ciudad_nacimiento}</div>
-                  <div className='div-modal'><b>Corregimiento de nacimiento:</b> {selectedUser.corregimiento_nacimiento}</div>
-                  <div className='div-modal'><b>Municipío de nacimiento:</b> {selectedUser.municipio_nacimiento}</div>
-                  <div className='div-modal'><b>País de nacimiento:</b> {selectedUser.telefono_persona_de_confianza}</div>
-                  <div className='div-modal'><b>Departamento de nacimiento:</b> {selectedUser.departamento_nacimiento}</div>
-                  <div className='div-modal'><b>Fecha de nacimiento "Año/Mes/Día":</b> {selectedUser.fecha_nacimiento}</div>
-                  <div className='div-modal'><b>Pertenencia grupo poblacional:</b> {selectedUser.pertenencia_grupo_poblacional.join(', ')}</div>
-                  <div className='div-modal'><b>Número de la Comuna:</b> {selectedUser.comuna_barrio}</div>
-                  <div className='div-modal'><b>Barrio:</b> {selectedUser.barrio_residencia}</div>
-                  <div className='div-modal'><b>Ciudad de residencia:</b> {selectedUser.ciudad_residencia}</div>
-                  <div className='div-modal'><b>Dirección de residencia:</b> {selectedUser.direccion_residencia}</div>
+          <div className='div-modal'><b>Comuna:</b>
+            {isEditing ? (
+              <input type="text" name="comuna_barrio" value={editableUser.comuna_barrio || ''} onChange={handleInputChange} autoComplete='off'
+              />) : (selectedUser.comuna_barrio)} </div>
+
+          <div className='div-modal'><b>Barrio:</b>
+            {isEditing ? (
+              <input type="text" name="barrio_residencia" value={editableUser.barrio_residencia || ''} onChange={handleInputChange}
+              />) : (selectedUser.barrio_residencia)} </div>
+
+          <div className='div-modal'><b>Ciudad de residencia:</b>
+            {isEditing ? (
+              <input type="text" name="ciudad_residencia" value={editableUser.ciudad_residencia || ''} onChange={handleInputChange}
+              />) : (selectedUser.ciudad_residencia)} </div>
+          <div className='div-modal'><b>Dirección de residencia:</b>
+            {isEditing ? (
+              <input type="text" name="direccion_residencia" value={editableUser.direccion_residencia || ''} onChange={handleInputChange}
+              />) : (selectedUser.direccion_residencia)} </div>
                   </Col>
                 </Row>
                 </div>
@@ -90,12 +172,20 @@ const ModalEstudiantes = ({
                   <div className='div-modal'><b>Pronombres:</b> {diversidadInfo.pronombres.join(', ')}</div>                
                   <div className='div-modal'><b>Expresiones de genero:</b> {diversidadInfo.expresiones_de_genero.join(', ')}</div>                
                   <div className='div-modal'><b>Orientaciones sexuales:</b> {diversidadInfo.orientaciones_sexuales.join(', ')}</div>                
-                  <div className='div-modal'><b>Cambio nombre/sexo en el documento:</b> {diversidadInfo.cambio_nombre_sexo_documento}</div>
-                  </Col>
+                  <div className='div-modal'><b>Orientaciones sexuales:</b> {diversidadInfo.orientaciones_sexuales.join(', ')}</div>                
+
+                  <div className='div-modal'><b>Cambio nombre/sexo en el documento:</b>
+            {isEditing ? (
+              <input type="text" name="cambio_nombre_sexo_documento" value={editableUser.cambio_nombre_sexo_documento || '' } onChange={handleInputChange}
+              />) : (diversidadInfo.cambio_nombre_sexo_documento)} </div>
+              </Col>
                   <Col className="form-column" xs={"10"} md={"6"}>               
                   <div className='div-modal'><b>Respuesta a cambio de documento:</b> {diversidadInfo.respuestas_cambio_documento.join(', ')}</div>                
                   <div className='div-modal'><b>Identidades de género:</b> {diversidadInfo.identidades_de_genero.join(', ')}</div>  
-                  <div className='div-modal'><b>Recibir orientación en cambio de documento:</b> {diversidadInfo.recibir_orientacion_cambio_en_documento ? 'Sí' : 'No'}</div>              
+          <div className='div-modal'><b>Recibir orientacion en cambio de documento: </b>
+            {isEditing ? (
+              <input type="checkbox" name="recibir_orientacion_cambio_en_documento" checked={editableUser.recibir_orientacion_cambio_en_documento ?? diversidadInfo.recibir_orientacion_cambio_en_documento} onChange={handleCheckboxChange}
+              />) : diversidadInfo.recibir_orientacion_cambio_en_documento ? 'Sí' : 'No'}</div>              
                   </Col> 
                   </Row>
 
@@ -294,23 +384,41 @@ const ModalEstudiantes = ({
         </Container>
       </Modal.Body>
       <Modal.Footer>
-      <Button variant="primary" className='modal-seguimiento' onClick={openSeguimientoModal}>
-            Seguimientos
-          </Button>
-
-        {currentPage > 0 && (
-          <Button variant="outline-primary"  onClick={prevPage}>
-            Atrás
-          </Button>
-        )}
-        {currentPage < 5 && (
-          <Button variant="primary"  onClick={nextPage}>
-            Adelante
-          </Button>
-        )}
-        <Button variant="outline-danger"  onClick={closeModal}>
-          Cerrar
-        </Button>
+      {isEditing ? (
+            <>
+              <Button variant="success" onClick={() => {
+                handleFormSubmit(editableUser);
+                setIsEditing(false);
+              }}>
+                Guardar
+              </Button>
+              <Button variant="secondary" onClick={() => setIsEditing(false)}>
+                Cancelar
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="primary" onClick={() => setIsEditing(true)}>
+                Editar
+              </Button>
+              <Button variant="primary" className='modal-seguimiento' onClick={openSeguimientoModal}>
+                Seguimientos
+              </Button>
+              {currentPage > 0 && (
+                <Button variant="outline-primary" onClick={prevPage}>
+                  Atrás
+                </Button>
+              )}
+              {currentPage < 5 && (
+                <Button variant="primary" onClick={nextPage}>
+                  Adelante
+                </Button>
+              )}
+              <Button variant="outline-danger" onClick={closeModal}>
+                Cerrar
+              </Button>
+            </>
+          )}
       </Modal.Footer>
     </Modal>
           <ModalSeguimientos
