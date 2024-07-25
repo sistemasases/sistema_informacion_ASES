@@ -1,23 +1,31 @@
 /**
-  * @file login_component.jsx
-  * @version 1.0.0
-  * @description Logica para el inicio de sesión y guardar la información del usuario en el session storage.
-  * @author Deiby A. Rodriguez R.
-  * @contact deiby.rodriguez@correounivalle.edu.co
-  * @date 13 de febrero del 2024
-*/
+ * @file login_component.jsx
+ * @version 1.0.0
+ * @description Logica para el inicio de sesión y guardar la información del usuario en el session storage.
+ * @author Deiby A. Rodriguez R.
+ * @contact deiby.rodriguez@correounivalle.edu.co
+ * @date 13 de febrero del 2024
+ */
 
-import {encriptar, encriptarJson, encriptarInt, encriptarBigInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad';
-import {Container, Row, Col, Button} from "react-bootstrap";
-import Modal from 'react-bootstrap/Modal'; 
-import React, { useState, } from 'react';
-import Form from 'react-bootstrap/Form';
-import App from '../../App.js';
-import axios from 'axios';
-
+import {
+  encriptar,
+  encriptarJson,
+  encriptarInt,
+  encriptarBigInt,
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import React, { useState } from "react";
+import Form from "react-bootstrap/Form";
+import axios from "axios";
+import { set } from "date-fns";
+import { GoogleLogin } from "@react-oauth/google";
+import TFA from "../2fa_login/two_fa_login";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const Login_component = () => {
   // información para el inicio de usuario
+
   const [state, set_state] = useState({
     usuario: "",
     contrasena: "",
@@ -31,9 +39,9 @@ const Login_component = () => {
     password: state.contrasena[0],
   };
   /**
-    * Función para cambiar el estado del nombre de usuario.
-    * @param {Event} e Información del nombre del usuario.
-  */
+   * Función para cambiar el estado del nombre de usuario.
+   * @param {Event} e Información del nombre del usuario.
+   */
   const handle_user = (e) => {
     set_state({
       ...state,
@@ -41,9 +49,9 @@ const Login_component = () => {
     });
   };
   /**
-    * Función para cambiar el estado de la constaseña del usuario.
-    * @param {Event} e Información de la contraseña del usuario.
-  */
+   * Función para cambiar el estado de la constaseña del usuario.
+   * @param {Event} e Información de la contraseña del usuario.
+   */
   const handle_password = (e) => {
     set_state({
       ...state,
@@ -51,8 +59,8 @@ const Login_component = () => {
     });
   };
   /**
-    * Función para obtener toda la información del usuario y lo almacena en el session storage.
-  */
+   * Función para obtener toda la información del usuario y lo almacena en el session storage.
+   */
   const handleSendNewData = () => {
     axios
       .post(url, data)
@@ -80,22 +88,22 @@ const Login_component = () => {
         const encryptedPermisos = encriptarJson(res.data.user.permisos);
         const encryptedMessage = encriptar(res.data.message);
         const encryptedPath = encriptar("/");
-        sessionStorage.setItem('token', encryptedToken);
-        sessionStorage.setItem('refresh-token',encryptedRefreshToken);
-        sessionStorage.setItem('id_usuario', encryptedIdUsuario);
-        sessionStorage.setItem('email', encryptedEmail);
-        sessionStorage.setItem('first_name', encryptedFirstName);
-        sessionStorage.setItem('sede', encryptedSede);
-        sessionStorage.setItem('last_name', encryptedLastName);
-        sessionStorage.setItem('nombre_completo', encryptedNombreCompleto);
-        sessionStorage.setItem('sede_id', encryptedSedeId);
-        sessionStorage.setItem('rol', encryptedRol);
-        sessionStorage.setItem('id_semestre_actual', encryptedIdSemestreActual);
-        sessionStorage.setItem('semestre_actual', encryptedSemestreActual);
-        sessionStorage.setItem('username', encryptedUsername);
-        sessionStorage.setItem('permisos', encryptedPermisos);
-        sessionStorage.setItem('message', encryptedMessage);
-        sessionStorage.setItem('path', encryptedPath);
+        sessionStorage.setItem("token", encryptedToken);
+        sessionStorage.setItem("refresh-token", encryptedRefreshToken);
+        sessionStorage.setItem("id_usuario", encryptedIdUsuario);
+        sessionStorage.setItem("email", encryptedEmail);
+        sessionStorage.setItem("first_name", encryptedFirstName);
+        sessionStorage.setItem("sede", encryptedSede);
+        sessionStorage.setItem("last_name", encryptedLastName);
+        sessionStorage.setItem("nombre_completo", encryptedNombreCompleto);
+        sessionStorage.setItem("sede_id", encryptedSedeId);
+        sessionStorage.setItem("rol", encryptedRol);
+        sessionStorage.setItem("id_semestre_actual", encryptedIdSemestreActual);
+        sessionStorage.setItem("semestre_actual", encryptedSemestreActual);
+        sessionStorage.setItem("username", encryptedUsername);
+        sessionStorage.setItem("permisos", encryptedPermisos);
+        sessionStorage.setItem("message", encryptedMessage);
+        sessionStorage.setItem("path", encryptedPath);
         set_state({
           ...state,
           logged: encryptedToken,
@@ -112,9 +120,9 @@ const Login_component = () => {
       });
   };
   /**
-    * Función para poder utilizar el enter en el pantalla de login
-    * @param {Event} e Información con la tecla que está tocando.
-  */
+   * Función para poder utilizar el enter en el pantalla de login
+   * @param {Event} e Información con la tecla que está tocando.
+   */
   const handleKeyDown = (e) => {
     if (e.keyCode === 13) {
       handleSendNewData();
@@ -123,52 +131,53 @@ const Login_component = () => {
   // Constante para ver y cerrar el modal
   const [show, setShow] = useState(false);
   /**
-    * Función para abrir el modal, cambiando el show a true.
-  */
+   * Función para abrir el modal, cambiando el show a true.
+   */
   const handleModal = () => setShow(true);
   /**
-    * Función para abrir el modal, cambiando el show a false.
-  */
+   * Función para abrir el modal, cambiando el show a false.
+   */
   const handleClose = () => setShow(false);
 
+  const [mail, setMail] = useState("");
   // const [show, setShow] = useState(false);
+  const [mailSent, setMailSent] = useState(false);
   const enviar_correos_not_w = () => {
-    setShow(true);
+    // console.log("enviar correos");
+    // console.log("HOLAAA");
+    // console.log(mail);
+
+    // setShow(true);
     axios
-      .get(`${process.env.REACT_APP_API_URL}/correos/enviar_correos/`)
+      .post(
+        `${process.env.REACT_APP_API_URL}/correos/enviar_correo_cambio_contra/`,
+        {
+          params: { mail: mail.correo },
+        }
+      )
       .then((response) => {
         console.log(response.data);
+        setMailSent(true);
+        if (mailSent) {
+          alert("Correo enviado correctamente");
+          handleClose();
+        }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err.response);
+        setMailSent(false);
+        if (!mailSent) {
+          alert(err.response.data.error);
+        }
       });
-    // let rol = desencriptar(sessionStorage.getItem("rol"));
-    // let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
-    // let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+  };
 
-    // const config = {
-    //   Authorization: "Bearer " + decryptTokenFromSessionStorage(),
-    // };
-
-    // const enviar_correo_testing = async () => {
-    //   try {
-    //     axios.get(
-    //       `${process.env.REACT_APP_API_URL}/correos/enviar_correos_test/` +
-    //         id_usuario.toString() +
-    //         "/",
-    //       { params: { usuario_rol: rol, sede: sede } }
-    //     );
-    //     // set_state({
-    //     //   ...state,
-    //     //   estudiante: response.data,
-    //     // });
-    //     // setFiltered(response.data);
-    //   } catch (error) {
-    //     // console.log(error);
-    //   }
-    // };
-
-    // enviar_correo_testing();
+  const handleForfottenPassword = (e) => {
+    console.log(e.target.value);
+    setMail({
+      ...mail,
+      correo: e.target.value,
+    });
   };
 
   // const handleClose = () => setShow(false);
@@ -238,14 +247,55 @@ const Login_component = () => {
               </div>
             </Col>
           </Row>
-          <Modal show={show} onHide={handleClose} size={'lg'}>
+          <Modal
+            id={"modal_password"}
+            name={"modal_password"}
+            show={show}
+            onHide={handleClose}
+            size={"md"}
+          >
             <Modal.Header closeButton>
-              <Modal.Title>Importante</Modal.Title>
+              <Modal.Title>Reestablecimiento de contraseña</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Para reportar algún problema al iniciar sesión, comuníquese al correo:
-              <br></br>
-              <a href="mailto:sistemas.ases@correounivalle.edu.co">sistemas.ases@correounivalle.edu.co</a>
+              <p style={{ fontFamily: "cursive", fontSize: "1.1em" }}>
+                Por favor ingrese su correo electrónico registrado. Recibirá una
+                contraseña temporal para iniciar sesión y cambiarla por una
+                segura.
+              </p>
+
+              <Form.Group>
+                <Row>
+                  <Col xs={8}>
+                    <Form.Control
+                      style={{
+                        marginTop: "10px",
+                        width: "100%",
+                      }}
+                      type="text"
+                      placeholder="Correo"
+                      onChange={(e) => {
+                        handleForfottenPassword(e);
+                      }}
+                    />
+                  </Col>
+                  <Col xs={4}>
+                    <Button
+                      style={{
+                        marginTop: "10px",
+                        width: "100%",
+                        height: "80%",
+                      }}
+                      type="submit"
+                      // value="Enviar"
+                      variant="primary"
+                      onClick={enviar_correos_not_w}
+                    >
+                      Envíar
+                    </Button>
+                  </Col>
+                </Row>
+              </Form.Group>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
@@ -255,7 +305,7 @@ const Login_component = () => {
           </Modal>
         </Container>
       ) : (
-        <App />
+        <TFA />
       )}
     </Row>
   );

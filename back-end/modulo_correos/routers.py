@@ -3,6 +3,12 @@ from modulo_correos.views import *
 
 router = DefaultRouter()
 
-router.register(r'enviar_correos', enviar_correos_viewset, basename = 'enviar_correos')
+router.register(r'enviar_correos_riesgos', enviar_correos_riesgos_viewset, basename = 'enviar_correos_riesgos')
+router.register(r'enviar_correo_cambio_contra', enviar_correo_cambio_contra_viewset, basename = 'enviar_correo_cambio_contra')
+router.register(r'enviar_observaciones', enviar_correo_observaciones_viewsets, basename = 'enviar_observaciones')
+router.register(r'enviar_riesgo_editado', enviar_riesgo_editado_viewset, basename = 'enviar_riesgo_editado')
+router.register(r'enviar_codigo_otp_correo', enviar_codigo_otp_correo_viewsets, basename = 'enviar_codigo_otp_correo')
+router.register(r'verificar_clave_otp', verificar_clave_otp_viewsets, basename = 'verificar_clave_otp')
+router.register(r'verify_token_otp', VerifyTokenView, basename = 'verify_token_otp')
 
 urlpatterns = router.urls

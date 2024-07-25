@@ -30,17 +30,19 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_INSECURE_SETTINGS') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') or ['localhost']
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS', '').split(',') or ['localhost']
 
-# TEST MAIL SENDING
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+# MAIL SENDING
+EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST')
+EMAIL_PORT = os.environ.get('DJANGO_EMAIL_PORT')
+
+EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('DJANGO_EMAIL_HOST_PASSWORD')
+
+EMAIL_USE_TLS = os.environ.get('DJANGO_EMAIL_USE_TLS')
+# EMAIL_USE_SSL = os.environ.get('DJANGO_EMAIL_USE_SSL')
 #
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-
 
 # Application definition
 
@@ -51,6 +53,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
+    'two_factor',
     'modulo_usuario_rol',
     'modulo_geografico',
     'modulo_asignacion',
@@ -71,23 +77,35 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 ]
 
+# Usando la base de datos para almacenar sesiones
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'ases_extra'  # Nombre de la cookie de sesión
+SESSION_COOKIE_AGE = 86400    # Un día
+SESSION_SAVE_EVERY_REQUEST = True  # Guarda la sesión en cada solicitud
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # No expira al cerrar el navegador
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',   
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'modulo_ases.urls'
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = os.environ.get('DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
-CSRF_TRUSTED_ORIGINS = os.environ.get('DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
-CORS_ORIGIN_WHITELIST = os.environ.get('DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    'DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
+CORS_ORIGIN_WHITELIST = os.environ.get(
+    'DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
 
 TEMPLATES = [
     {
@@ -116,10 +134,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DJANGO_DB_NAME'),
-        'USER' : os.environ.get('DJANGO_DB_USER'),
-        'PASSWORD' : os.environ.get('DJANGO_DB_PASSWORD'),
-        'HOST' : os.environ.get('DJANGO_DB_HOST'),
-        'DATABASE_PORT' : os.environ.get('DJANGO_DB_PORT'),
+        'USER': os.environ.get('DJANGO_DB_USER'),
+        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD'),
+        'HOST': os.environ.get('DJANGO_DB_HOST'),
+        'DATABASE_PORT': os.environ.get('DJANGO_DB_PORT'),
     }
 }
 
@@ -130,12 +148,18 @@ REST_FRAMEWORK = {
     )
 }
 
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=300),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS' : True,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACK_LIST_AFTER_ROTATION': True
 }
+
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend',
+#     'two_factor.auth_backends.OtpBackend',
+# )
 
 
 # Password validation
@@ -186,5 +210,3 @@ CSP_DEFAULT_SRC = ("'self'",)
 SECURE_BROWSER_XSS_FILTER = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
 SESSION_COOKIE_SECURE = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
 CSRF_COOKIE_SECURE = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
-
-
