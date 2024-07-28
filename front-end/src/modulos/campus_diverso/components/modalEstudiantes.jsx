@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Container, Row, Col } from 'react-bootstrap';
 import ModalSeguimientos from './modalSeguimientos';
-import { useState } from 'react';
+import Select from 'react-select';
+
 
 const ModalEstudiantes = ({
   isModalOpen,
@@ -9,7 +10,7 @@ const ModalEstudiantes = ({
   selectedUser,
   diversidadInfo,
   academicoInfo,
-  generalInfo,
+  generalInfo = { factores_de_riesgo: [], profesionales_que_brindo_atencion:[] },
   documentosInfo,
   seguimientosInfo,
   currentPage,
@@ -18,7 +19,21 @@ const ModalEstudiantes = ({
   handleFormSubmit,
   handleInputChange,
   editableUser,
-  handleCheckboxChange
+  setEditableUser,
+  handleCheckboxChange,
+  razasOptions,
+  handleSelectChange,
+  isEditing,
+  setIsEditing,
+  pronombresOptions,
+  expresionesOptions,
+  orientacionOptions,
+  identidadesGeneroOptions,
+  documentoOptions,
+  handleArrayFieldChange,
+  handleAddItem,
+  handleDeleteItem,
+  handleArrayChange,
 }) => {
 
   const titles = [
@@ -30,7 +45,11 @@ const ModalEstudiantes = ({
     'Seguimientos'
   ];
   const [isSeguimientoModalOpen, setSeguimientoModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+
+  const handleCancel = () => {
+    setEditableUser({selectedUser});
+    setIsEditing(false);
+  };
 
   const openSeguimientoModal = () => {
     setSeguimientoModalOpen(true);
@@ -40,7 +59,20 @@ const ModalEstudiantes = ({
     setSeguimientoModalOpen(false);
   };
 
- 
+ /* const [editableRiskFactors, setEditableRiskFactors] = useState(generalInfo.factores_de_riesgo);
+
+
+
+  const handleObservationChange = (index, event) => {
+    const newRiskFactors = [...editableRiskFactors];
+    newRiskFactors[index].observacion_factor_riesgo = event.target.value;
+    setEditableRiskFactors(newRiskFactors);
+  };
+
+  const handleAddRiskFactor = () => {
+    setEditableRiskFactors([...editableRiskFactors, { nombre_factor_riesgo: '', observacion_factor_riesgo: '' }]);
+  }; */
+
   return (
     <>
     <Modal show={isModalOpen} onHide={closeModal} size="lg">
@@ -133,12 +165,35 @@ const ModalEstudiantes = ({
               <input type="date" name="fecha_nacimiento" value={editableUser.fecha_nacimiento || ''} onChange={handleInputChange}
               />) : (selectedUser.fecha_nacimiento)} </div>
          
-          <div className='div-modal'><b>Pertenencia grupo poblacional:</b> {selectedUser.pertenencia_grupo_poblacional.join(', ')}</div>
-         
-         {/* <div className='div-modal'><b>Pertenencia grupo poblacional:</b>
-            {isEditing ? (
-              <input type="text" name="comuna_barrio" value={editableUser.comuna_barrio || ''} onChange={handleInputChange} autoComplete='off'
-              />) : (selectedUser.pertenencia_grupo_poblacional.join(', '))} </div>*/}
+
+
+ <div className='div-modal'>
+  <b>Pertenencia grupo poblacional:</b>
+  {isEditing ? (
+    <Select
+      isMulti
+      placeholder='Seleccione grupo poblacional'
+      className='form-react-select'
+      name="pertenencia_grupo_poblacional"
+      // Opciones disponibles, excluyendo las ya seleccionadas
+      options={razasOptions.filter(option => 
+        !( editableUser.pertenencia_grupo_poblacional || selectedUser.pertenencia_grupo_poblacional|| []).includes(option.value && option.label) 
+      )}
+      // Opciones seleccionadas
+      value={(editableUser.pertenencia_grupo_poblacional || selectedUser.pertenencia_grupo_poblacional|| []).map(value => {
+        const foundOption = razasOptions.find(o => o.value === value);
+        return foundOption || { value, label: value };
+      })}
+      onChange={handleSelectChange}
+    />
+  ) : (
+    selectedUser.pertenencia_grupo_poblacional.join(', ')
+  )}
+</div>
+
+
+
+
 
           <div className='div-modal'><b>Comuna:</b>
             {isEditing ? (
@@ -169,19 +224,135 @@ const ModalEstudiantes = ({
                   <Row>
                   <Col className="form-column" xs={"10"} md={"6"}>
 
-                  <div className='div-modal'><b>Pronombres:</b> {diversidadInfo.pronombres.join(', ')}</div>                
-                  <div className='div-modal'><b>Expresiones de genero:</b> {diversidadInfo.expresiones_de_genero.join(', ')}</div>                
-                  <div className='div-modal'><b>Orientaciones sexuales:</b> {diversidadInfo.orientaciones_sexuales.join(', ')}</div>                
-                  <div className='div-modal'><b>Orientaciones sexuales:</b> {diversidadInfo.orientaciones_sexuales.join(', ')}</div>                
+              <div className='div-modal'>
 
+              <b>Pronombres: </b>
+              {isEditing ? (
+                <Select
+                  isMulti
+                  placeholder='Seleccione pronombres'
+                  className='form-react-select'
+                  name="pronombres"
+                  // Opciones disponibles, excluyendo las ya seleccionadas
+                  options={pronombresOptions.filter(option => 
+                    !( editableUser.pronombres || diversidadInfo.pronombres).includes(option.value && option.label) 
+                  )}
+                  // Opciones seleccionadas
+                  value={(editableUser.pronombres || diversidadInfo.pronombres|| []).map(value => {
+                    const foundOption = pronombresOptions.find(o => o.value === value);
+                    return foundOption || { value, label: value };
+                  })}
+                  onChange={handleSelectChange}
+                />
+              ) : (
+                diversidadInfo.pronombres.join(', ')
+              )}
+            </div>
+                      
+          <div className='div-modal'>
+        <b>Expresiones de genero: </b>
+        {isEditing ? (
+          <Select
+            isMulti
+            placeholder='Seleccione expresiones'
+            className='form-react-select'
+            name="expresiones_de_genero"
+            // Opciones disponibles, excluyendo las ya seleccionadas
+            options={expresionesOptions.filter(option => 
+              !( editableUser.expresiones_de_genero || diversidadInfo.expresiones_de_genero).includes(option.value && option.label) 
+            )}
+            // Opciones seleccionadas
+            value={(editableUser.expresiones_de_genero || diversidadInfo.expresiones_de_genero|| []).map(value => {
+              const foundOption = expresionesOptions.find(o => o.value === value);
+              return foundOption || { value, label: value };
+            })}
+            onChange={handleSelectChange}
+          />
+        ) : (
+          diversidadInfo.expresiones_de_genero.join(', ')
+        )}
+        </div>
+                                  
+        <div className='div-modal'>
+        <b>Orientaciones sexuales: </b>
+        {isEditing ? (
+          <Select
+            isMulti
+            placeholder='Seleccione expresiones'
+            className='form-react-select'
+            name="orientaciones_sexuales"
+            // Opciones disponibles, excluyendo las ya seleccionadas
+            options={orientacionOptions.filter(option => 
+              !( editableUser.orientaciones_sexuales || diversidadInfo.orientaciones_sexuales).includes(option.value && option.label) 
+            )}
+            // Opciones seleccionadas
+            value={(editableUser.orientaciones_sexuales || diversidadInfo.orientaciones_sexuales|| []).map(value => {
+              const foundOption = orientacionOptions.find(o => o.value === value);
+              return foundOption || { value, label: value };
+            })}
+            onChange={handleSelectChange}
+          />
+        ) : (
+          diversidadInfo.orientaciones_sexuales.join(', ')
+        )}
+        </div>              
+                  
                   <div className='div-modal'><b>Cambio nombre/sexo en el documento:</b>
             {isEditing ? (
               <input type="text" name="cambio_nombre_sexo_documento" value={editableUser.cambio_nombre_sexo_documento || '' } onChange={handleInputChange}
               />) : (diversidadInfo.cambio_nombre_sexo_documento)} </div>
               </Col>
-                  <Col className="form-column" xs={"10"} md={"6"}>               
-                  <div className='div-modal'><b>Respuesta a cambio de documento:</b> {diversidadInfo.respuestas_cambio_documento.join(', ')}</div>                
-                  <div className='div-modal'><b>Identidades de género:</b> {diversidadInfo.identidades_de_genero.join(', ')}</div>  
+                  <Col className="form-column" xs={"10"} md={"6"}>  
+
+                  <div className='div-modal'>
+                    
+        <b>Repuestas cambio de documento: </b>
+        {isEditing ? (
+          <Select
+            isMulti
+            placeholder='Seleccione expresiones'
+            className='form-react-select'
+            name="respuestas_cambio_documento"
+            // Opciones disponibles, excluyendo las ya seleccionadas
+            options={documentoOptions.filter(option => 
+              !( editableUser.respuestas_cambio_documento || diversidadInfo.respuestas_cambio_documento).includes(option.value && option.label) 
+            )}
+            // Opciones seleccionadas
+            value={(editableUser.respuestas_cambio_documento || diversidadInfo.respuestas_cambio_documento|| []).map(value => {
+              const foundOption = documentoOptions.find(o => o.value === value);
+              return foundOption || { value, label: value };
+            })}
+            onChange={handleSelectChange}
+          />
+        ) : (
+          diversidadInfo.respuestas_cambio_documento.join(', ')
+        )}
+        </div>      
+
+        <div className='div-modal'>
+        <b>Identidades de genero: </b>
+        {isEditing ? (
+          <Select
+            isMulti
+            placeholder='Seleccione expresiones'
+            className='form-react-select'
+            name="identidades_de_genero"
+            // Opciones disponibles, excluyendo las ya seleccionadas
+            options={identidadesGeneroOptions.filter(option => 
+              !( editableUser.identidades_de_genero || diversidadInfo.identidades_de_genero).includes(option.value && option.label) 
+            )}
+            // Opciones seleccionadas
+            value={(editableUser.identidades_de_genero || diversidadInfo.identidades_de_genero|| []).map(value => {
+              const foundOption = identidadesGeneroOptions.find(o => o.value === value);
+              return foundOption || { value, label: value };
+            })}
+            onChange={handleSelectChange}
+          />
+        ) : (
+          diversidadInfo.identidades_de_genero.join(', ')
+        )}
+        </div>   
+                    
           <div className='div-modal'><b>Recibir orientacion en cambio de documento: </b>
             {isEditing ? (
               <input type="checkbox" name="recibir_orientacion_cambio_en_documento" checked={editableUser.recibir_orientacion_cambio_en_documento ?? diversidadInfo.recibir_orientacion_cambio_en_documento} onChange={handleCheckboxChange}
@@ -199,7 +370,11 @@ const ModalEstudiantes = ({
                   <Col className="form-column" xs={"10"} md={"6"}>
 
                   <div className='div-modal'><b>Dedicación externa:</b> {generalInfo.dedicacion_externa}</div>                
-                  <div className='div-modal'><b>¿Tiene EPS?:</b> {generalInfo.tiene_eps}</div>                
+                  <div className='div-modal'><b>¿Tiene EPS?:</b> {generalInfo.tiene_eps}</div>
+                  <div className='div-modal'><b>¿Tiene EPS?: </b>
+            {isEditing ? (
+              <input type="text" name="tiene_eps" value={editableUser.tiene_eps || ''} onChange={handleInputChange}
+              />) : (generalInfo.tiene_eps)} </div>                
                   <div className='div-modal'><b>Nombre de la EPS:</b> {generalInfo.nombre_eps}</div>                
                   <div className='div-modal'><b>Regimen de la EPS:</b> {generalInfo.regimen_eps}</div>
                   <div className='div-modal'><b>Tipo de entidad que brinda acompañamiento:</b> {generalInfo.tipo_entidad_acompanamiento_recibido}</div>
@@ -244,18 +419,37 @@ const ModalEstudiantes = ({
                       ))}
                     </ul>
                   </div>                  
-                  
-                  <div className='div-modal'><b>Factores de riesgo:</b>
-                    <ul className='ul-style'>
-                      {generalInfo.factores_de_riesgo.map((factor, index) => (
-                        <li className='li-style' key={index}>
-                          <div><b>Nombre:</b> {factor.nombre_factor_riesgo}</div>
-                          <div className='div-observacion'><b>Observación:</b> {factor.observacion_factor_riesgo}</div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
+    {/*              
+   <div className='div-modal'>
+      <b>Factores de riesgo:</b>
+      <ul className='ul-style'>
+        {editableRiskFactors.map((factor, index) => (
+          <li className='li-style' key={index}>
+            <div>
+              <b>Nombre:</b> {factor.nombre_factor_riesgo}
+            </div>
+            <div className='div-observacion'>
+              <b>Observación:</b>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={factor.observacion_factor_riesgo}
+                  onChange={(e) => handleObservationChange(index, e)}
+                />
+              ) : (
+                factor.observacion_factor_riesgo
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+      {isEditing && (
+        <button type="button" onClick={handleAddRiskFactor}>
+          Añadir observación
+        </button>
+      )}
+    </div>
+     */}
                   <div className='div-modal'><b>Convivencias en vivienda:</b>
                     <ul className='ul-style'>
                       {generalInfo.convivencias_en_vivienda.map((convivencia, index) => (
@@ -304,26 +498,106 @@ const ModalEstudiantes = ({
                   </div>
              )}
 
-              {currentPage === 3 && academicoInfo && (
-                <div>
-                  <Row>
-                  <Col className="form-column" xs={"10"} md={"6"}>
+                {currentPage === 3 && academicoInfo && (
+                  <div>
+                    <Row>
+                      <Col className="form-column" xs={"10"} md={"6"}>
+                        <div className='div-modal'>
+                          <b>Código de estudiante:</b>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              name="codigo_estudiante"
+                              value={editableUser.codigo_estudiante || ''}
+                              onChange={handleInputChange}
+                            />
+                          ) : (
+                            academicoInfo.codigo_estudiante
+                          )}
+                        </div>
+                        <div className='div-modal'>
+                          <b>Sede de la universidad:</b>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              name="sede_universidad"
+                              value={editableUser.sede_universidad || ''}
+                              onChange={handleInputChange}
+                            />
+                          ) : (
+                            academicoInfo.sede_universidad
+                          )}
+                        </div>
+                        <div className='div-modal'>
+                          <b>Nombre de programa académico:</b>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              name="nombre_programa_academico"
+                              value={editableUser.nombre_programa_academico || ''}
+                              onChange={handleInputChange}
+                            />
+                          ) : (
+                            academicoInfo.nombre_programa_academico
+                          )}
+                        </div>
+                        <div className='div-modal'>
+                          <b>Semestre académico:</b>
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              name="semestre_academico"
+                              value={editableUser.semestre_academico || ''}
+                              onChange={handleInputChange}
+                            />
+                          ) : (
+                            academicoInfo.semestre_academico
+                          )}
+                        </div>
+                      </Col>
+                      <Col className="form-column" xs={"10"} md={"6"}>
+                      
+                        <div className='div-modal'>
+                          <b>Pertenencia a univalle:</b>
+                          {isEditing ? (
+                            <input
+                              type="checkbox"
+                              name="pertenencia_univalle"
+                              checked={editableUser.pertenencia_univalle ?? academicoInfo.pertenencia_univalle}
+                              onChange={handleCheckboxChange}
+                            />
+                          ) : (
+                            academicoInfo.pertenencia_univalle ? 'Sí' : 'No'
+                          )}
+                        </div>
 
-                  <div className='div-modal'><b>Código de estudiante:</b> {academicoInfo.codigo_estudiante}</div>   
-                  <div className='div-modal'><b>Sede de la universidad:</b> {academicoInfo.sede_universidad}</div>                             
-                  <div className='div-modal'><b>Nombre de programa académico:</b> {academicoInfo.nombre_programa_academico}</div>                
-                  <div className='div-modal'><b>Semestre académico:</b> {academicoInfo.semestre_academico}</div>
 
-                  </Col>
-                  <Col className="form-column" xs={"10"} md={"6"}>               
-                  <div className='div-modal'><b>Pertenencia a univalle:</b> {academicoInfo.respuestas_cambio_documento ? 'Sí' : 'No'}</div>                
-                  <div className='div-modal'><b>Estamentos:</b> {academicoInfo.estamentos.join(', ')}</div>                
-
-                  </Col> 
-                  </Row>
-
+                        <div className='div-modal'>
+          <b>Estamentos:</b>
+          {isEditing ? (
+            <div>
+              {(editableUser.estamentos || []).map((profesional, index) => (
+                <div key={index}>
+                  <input
+                    type="text"
+                    placeholder='Ingrese estamento'
+                    value={profesional}
+                    onChange={(e) => handleArrayChange('estamentos', index, e.target.value)}
+                  />
+                  <Button className='boton-container' onClick={() => handleDeleteItem('estamentos', index)}>Eliminar</Button>
+                </div>
+              ))}
+              <Button className='boton-container' onClick={() => handleAddItem('estamentos')}>Agregar estamento</Button>
+            </div>
+          ) : (
+            academicoInfo.estamentos.join(', ')
+          )}
+                        </div>
+                      </Col>
+                    </Row>
                   </div>
-             )}
+                )}
+
               
             
               {currentPage === 4 && documentosInfo && (
@@ -389,10 +663,12 @@ const ModalEstudiantes = ({
               <Button variant="success" onClick={() => {
                 handleFormSubmit(editableUser);
                 setIsEditing(false);
+                setEditableUser({selectedUser});
               }}>
                 Guardar
               </Button>
-              <Button variant="secondary" onClick={() => setIsEditing(false)}>
+              <Button variant="secondary" onClick={handleCancel}            
+                >
                 Cancelar
               </Button>
             </>

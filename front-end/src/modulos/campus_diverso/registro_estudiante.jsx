@@ -721,6 +721,7 @@ const steps = [
       handleArrayChange={handleArrayChange}
       handleAddItem={handleAddItem}
       handleDeleteItem={handleDeleteItem}
+      handleCheckboxChange={handleCheckboxChange}
       /> },
   { component: <DocumentosAutorizacion
     state={state}

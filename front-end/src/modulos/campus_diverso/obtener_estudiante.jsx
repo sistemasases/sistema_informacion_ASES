@@ -15,7 +15,8 @@ const ObtenerEstudiante = () => {
   const [seguimientosInfo, setSeguimientosInfo] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const [editableUser, setEditableUser] = useState({ ...selectedUser });
+  const [editableUser, setEditableUser] = useState({ ...selectedUser, });
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/persona/persona/`)
@@ -74,13 +75,33 @@ const ObtenerEstudiante = () => {
 };
 
   const closeModal = () => {
+
+    const resetGeneralInfo = {
+      ...generalInfo, // Copiar todas las propiedades de generalInfo
+      factores_de_riesgo: [], // Solo restablecer factores_de_riesgo a un array vacío
+    };
+    
+    // Establecer las otras propiedades a null
+    for (const key in resetGeneralInfo) {
+    
+      if (key !== 'factores_de_riesgo' || 'profesionales_que_brindo_atencion') {
+        resetGeneralInfo[key] = null;
+      }
+    }
+  
+
+    setEditableUser(selectedUser);
     setModalOpen(false);
+    setIsEditing(false);
     setSelectedUser(null);
     setDiversidadInfo(null);
     setGeneralInfo(null);
     setDocumentosInfo(null);
     setSeguimientosInfo(null);
     setAcademcioInfo(null);
+    
+    
+    
   };
 
   const filteredUsers = users.filter((user) =>
@@ -107,6 +128,91 @@ const updateUser = async (endpoint, userId, updatedData) => {
   }
 };
 
+//Getters de la API y guardado de datos
+  //Persona
+  const [razasOptions, setRazasOptions] = useState([]);
+
+// Diversidad sexual
+  const [orientacionOptions, setOrientacionOptions] = useState([]);
+  const [documentoOptions, setDocumentoOptions] = useState([]);
+  const [pronombresOptions, setPronombresOptions] = useState([]);
+  const [expresionesOptions, setExpresionesOptions] = useState([]);
+  const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
+
+// Getters de las listas
+useEffect(() => {
+  Promise.all([
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/pertenencia_grupo_poblacional/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/expresion-genero/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/pronombre/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/respuesta-cambio-documento/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/orientacion-sexual/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
+
+  ])
+    .then((responses) => {
+      //persona
+      const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse] = responses;
+      
+      const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
+        value: item.id_grupo_poblacional,
+        label: item.nombre_grupo_poblacional
+      }));
+      
+      const expresionesOpciones = expresionesResponse.data.map((item) => ({
+        value: item.id_expresion_genero,
+        label: item.nombre_expresion_genero
+      }));
+      
+      const pronombreOpciones = pronomeopcionesResponse.data.map((item) => ({
+        value: item.id_pronombre,
+        label: item.nombre_pronombre
+      }));
+
+      const respuestaCambioDocumentoOpciones = respuestaCambioDocumentoResponse.data.map((item) => ({
+        value: item.id_respuesta_cambio_documento,
+        label: item.nombre_respuesta_cambio_documento
+      }));
+
+      const orientacionOpciones = orientacionResponse.data.map((item) => ({
+        value: item.id_orientacion_sexual,
+        label: item.nombre_orientacion_sexual
+      }));
+      
+      const identidadesGeneroOpciones = identiadesGeneroResponse.data.map((item) => ({
+        value: item.id_identidad_genero,
+        label: item.nombre_identidad_genero
+      }));
+         
+      setRazasOptions(grupoPoblacionOpciones);
+      setExpresionesOptions(expresionesOpciones);
+      setPronombresOptions(pronombreOpciones);
+      setDocumentoOptions(respuestaCambioDocumentoOpciones);
+      setOrientacionOptions(orientacionOpciones);
+      setIdentidadesGeneroOptions(identidadesGeneroOpciones);
+      
+    })
+    .catch((error) => {
+
+      console.error('Error al obtener opciones:', error);
+      
+
+    });
+}, []);
+
+//Handle del multi-select
+const handleSelectChange = (selectedOptions, actionMeta) => {
+  const { name } = actionMeta;
+
+  const values = selectedOptions ? selectedOptions.map(option => option.label) : [];
+  setEditableUser(prevState => ({
+    ...prevState,
+    [name]: values
+  }));
+  console.log('selectedOptions', selectedOptions)
+
+};
+
 
 const handleUpdateUser = async (endpoint, userId, updatedData) => {
   try {
@@ -123,16 +229,69 @@ const handleUpdateUser = async (endpoint, userId, updatedData) => {
     );
     setSelectedUser(fullUser); // Actualiza el usuario seleccionado con la información completa
 
-    // Si el endpoint es de diversidad sexual, también actualiza la información de diversidad sexual
+    // Actualiza el estado según el endpoint
     if (endpoint === 'diversidad-sexual/diversidad-sexual') {
-      setDiversidadInfo(updatedUser);
+      setDiversidadInfo(fullUser.diversidad_sexual);
+    } else if (endpoint === 'documentos-autorizacion/documentos-autorizacion') {
+      setDocumentosInfo(fullUser.documentos_autorizacion);
+    } else if (endpoint === 'informacion-academica/informacion-academica') {
+      setAcademcioInfo(fullUser.informacion_academica);
+    } else if (endpoint === 'informacion-general/informacion-general') {
+      setGeneralInfo(fullUser.informacion_general);
     }
+
   } catch (error) {
     console.error('Error al actualizar el usuario:', error);
   }
 };
 
 
+//handle para atributos de un solo item 
+const handleArrayChange = (fieldName, index, value) => {
+  console.log(`Changing ${fieldName} at index ${index}, value ${value}`);
+
+  const updatedArray = [...(editableUser[fieldName] || [])];
+  updatedArray[index] = value;
+
+  setEditableUser({
+    ...editableUser,
+    [fieldName]: updatedArray,
+  });
+};
+
+
+
+const handleArrayFieldChange = (fieldName, index, field, value) => {
+  console.log(`Changing ${fieldName} at index ${index}, field ${field}, value ${value}`);
+
+  const updatedArray = [...editableUser[fieldName]];
+  updatedArray[index][field] = value;
+
+  setEditableUser({
+    ...editableUser,
+    [fieldName]: updatedArray,
+  });
+};
+const handleAddItem = (fieldName, newItem = '') => {
+  console.log(`Adding new item to ${fieldName}`);
+
+  setEditableUser({
+    ...editableUser,
+    [fieldName]: [...(editableUser[fieldName] || []), newItem],
+  });
+};
+
+const handleDeleteItem = (fieldName, index) => {
+  console.log(`Deleting item from ${fieldName} at index ${index}`);
+
+  const updatedArray = [...(editableUser[fieldName] || [])];
+  updatedArray.splice(index, 1);
+
+  setEditableUser({
+    ...editableUser,
+    [fieldName]: updatedArray,
+  });
+};
 
 
 // Handle form submit
@@ -162,11 +321,23 @@ const handleFormSubmit = (e) => {
      barrio_residencia: editableUser.barrio_residencia,
      ciudad_residencia: editableUser.ciudad_residencia,
      direccion_residencia: editableUser.direccion_residencia,
-     
 
      //Diversidad sexual
      cambio_nombre_sexo_documento: editableUser.cambio_nombre_sexo_documento,
      recibir_orientacion_cambio_en_documento: editableUser.recibir_orientacion_cambio_en_documento,
+     pronombres: editableUser.pronombres,
+     orientaciones_sexuales: editableUser.orientaciones_sexuales,
+     expresiones_de_genero: editableUser.expresiones_de_genero,
+     respuestas_cambio_documento: editableUser.respuestas_cambio_documento,
+     identidades_de_genero: editableUser.identidades_de_genero,
+
+     //Documentos
+     codigo_estudiante: editableUser.codigo_estudiante,
+     sede_universidad: editableUser.sede_universidad,
+     nombre_programa_academico: editableUser.nombre_programa_academico,
+     semestre_academico: editableUser.semestre_academico,
+     pertenencia_univalle: editableUser.pertenencia_univalle,
+     estamentos: editableUser.estamentos,
     };
     let endpoint = '';
 
@@ -177,6 +348,12 @@ const handleFormSubmit = (e) => {
       case 1:
         endpoint = 'diversidad-sexual/diversidad-sexual';
         break;
+      case 2:
+        endpoint = 'informacion-general/informacion-general';
+        break;        
+      case 3:
+        endpoint = 'informacion-academica/informacion-academica';
+        break;
       // Añade más casos para otras páginas si es necesario
       default:
         console.error('Página no válida');
@@ -184,6 +361,89 @@ const handleFormSubmit = (e) => {
     }
 
     handleUpdateUser(endpoint, numero_documento, updatedData);
+
+
+    setEditableUser({
+      nombre_identitario: "",
+      nombre_y_apellido: "",
+      email: "",
+      nombre_persona_confianza: "",
+      tipo_documento: "",
+      numero_documento: "",
+      relacion_persona_de_confianza: "",
+      estrato_socioeconomico: 0,
+      ciudad_nacimiento: "",
+      fecha_nacimiento: "",
+      departamento_nacimiento: "",
+      pais_nacimiento: "",
+      ciudad_residencia: "",
+      zona_residencial: "",
+      direccion_residencia: "",
+      barrio_residencia: "",
+      comuna_barrio: "",
+      estado_civil: "",
+      identidad_etnico_racial: "",
+      nombre_persona_de_confianza: "",
+      telefono_persona_de_confianza: "",
+      pertenencia_grupo_poblacional: [],
+
+      //Informacion academica -- por revisar
+      sede_universidad: "",
+      nombre_programa_academico: "",
+      codigo_estudiante: "",
+      semestre_academico: "",
+      pertenencia_univalle: false,
+      estamentos: [],
+
+      //Documentos autorización
+      autorizacion_manejo_de_datos: false,
+      firma_consentimiento_informado: false,
+      firma_terapia_hormonal: false,
+      documento_digital_y_archivo: false,
+      apgar_familiar: 0,
+      ecomapa: false,
+      arbol_familiar: false,
+
+      //Diversidad sexual
+      expresiones_de_genero: [],
+      recibir_orientacion_cambio_en_documento: false,
+      cambio_nombre_sexo_documento: "",
+      pronombres: [],
+      orientaciones_sexuales: [],
+      respuestas_cambio_documento: [],
+      identidades_de_genero: [],
+
+      //Informacion general
+      dedicacion_externa: "",
+      tiene_eps: "",
+      nombre_eps: "",
+      regimen_eps: "",
+      tipo_entidad_acompanamiento_recibido: "",
+      calificacion_acompanamiento_recibido: "",
+      motivo_calificacion_acompanamiento: "",
+      actividades_especificas_tiempo_libre: "",
+      observacion_general_fuente_de_ingresos: "",
+      calificacion_relacion_familiar: "",
+      observacion_general_redes_de_apoyo: "",
+      observacion_general_factores_de_riesgo: "",
+      creencia_religiosa: "",
+      decision_encuentro_inicial_con_profesional: "",
+      observacion_horario: "",
+      origen_descubrimiento_campus_diverso: "",
+      comentarios_o_sugerencias_de_usuario: "",
+      observacion_general_actividades_especificas_tiempo_libre: "",
+      observacion_general_relacion_convivencia_vivienda: "",
+      profesionales_que_brindo_atencion: [],
+      redes_de_apoyo: [],
+      ocupaciones_actuales: [],
+      factores_de_riesgo: [],
+      encuentro_dias_horas: [],
+      actividades_tiempo_libre: [],
+      acompanamientos_recibido: [],
+      convivencias_en_vivienda: [],
+      fuentes_de_ingresos: [],
+      
+    });
   }
 };
 //checkbox
@@ -250,6 +510,19 @@ const handleInputChange = (e) => {
             editableUser={editableUser}
             setEditableUser={setEditableUser}
             handleCheckboxChange={handleCheckboxChange}
+            razasOptions={razasOptions}
+            handleSelectChange={handleSelectChange}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            pronombresOptions={pronombresOptions}
+            expresionesOptions={expresionesOptions}
+            orientacionOptions={orientacionOptions}
+            identidadesGeneroOptions={identidadesGeneroOptions}
+            documentoOptions={documentoOptions}
+            handleArrayFieldChange={handleArrayFieldChange}
+            handleAddItem={handleAddItem}
+            handleDeleteItem={handleDeleteItem}
+            handleArrayChange={handleArrayChange}
           />
         </div>
       </Container>
