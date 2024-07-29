@@ -3,6 +3,10 @@ import {Container} from 'react-bootstrap';
 import '../../Scss/campus_diverso/campus_diverso.css';
 import ModalEstudiantes from './components/modalEstudiantes';
 import axios from 'axios';
+import {
+  decryptTokenFromSessionStorage,
+  desencriptar,
+} from "../utilidades_seguridad/utilidades_seguridad";
 
 const ObtenerEstudiante = () => {
   const [users, setUsers] = useState([]);
@@ -18,6 +22,14 @@ const ObtenerEstudiante = () => {
   const [editableUser, setEditableUser] = useState({ ...selectedUser, });
   const [isEditing, setIsEditing] = useState(false);
 
+  //Desencripta el token para la API
+  const config = {
+    headers: {
+      // Obtención del token de sesión
+      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+    },
+  };
+  
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/persona/persona/`)
       .then((response) => response.json())
@@ -148,7 +160,7 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/respuesta-cambio-documento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/orientacion-sexual/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
-
+    
   ])
     .then((responses) => {
       //persona
@@ -238,7 +250,7 @@ const handleUpdateUser = async (endpoint, userId, updatedData) => {
       setAcademcioInfo(fullUser.informacion_academica);
     } else if (endpoint === 'informacion-general/informacion-general') {
       setGeneralInfo(fullUser.informacion_general);
-    }
+    } 
 
   } catch (error) {
     console.error('Error al actualizar el usuario:', error);
@@ -331,13 +343,22 @@ const handleFormSubmit = (e) => {
      respuestas_cambio_documento: editableUser.respuestas_cambio_documento,
      identidades_de_genero: editableUser.identidades_de_genero,
 
-     //Documentos
+     //Info academica
      codigo_estudiante: editableUser.codigo_estudiante,
      sede_universidad: editableUser.sede_universidad,
      nombre_programa_academico: editableUser.nombre_programa_academico,
      semestre_academico: editableUser.semestre_academico,
      pertenencia_univalle: editableUser.pertenencia_univalle,
      estamentos: editableUser.estamentos,
+     
+     //documentos
+     autorizacion_manejo_de_datos: editableUser.autorizacion_manejo_de_datos,
+     firma_consentimiento_informado: editableUser.firma_consentimiento_informado,
+     firma_terapia_hormonal: editableUser.firma_terapia_hormonal,
+     apgar_familiar: editableUser.apgar_familiar,
+     documento_digital_y_archivo: editableUser.documento_digital_y_archivo,
+     ecomapa: editableUser.ecomapa,
+     arbol_familiar: editableUser.arbol_familiar,
     };
     let endpoint = '';
 
@@ -353,6 +374,9 @@ const handleFormSubmit = (e) => {
         break;        
       case 3:
         endpoint = 'informacion-academica/informacion-academica';
+        break;
+      case 4:
+        endpoint = 'documentos-autorizacion/documentos-autorizacion';
         break;
       // Añade más casos para otras páginas si es necesario
       default:

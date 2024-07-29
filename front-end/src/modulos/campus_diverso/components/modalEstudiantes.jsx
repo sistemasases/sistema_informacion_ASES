@@ -600,28 +600,108 @@ const ModalEstudiantes = ({
 
               
             
-              {currentPage === 4 && documentosInfo && (
-                <div>
+        {currentPage === 4 && documentosInfo && (
+          <div>
+            <Row>
+              <Col className="form-column" xs={"10"} md={"6"}>
+                <div className='div-modal'>
+                  <b>Autorización manejo de datos:</b>
+                  {isEditing ? (
+                    <input
+                      type="checkbox"
+                      name="autorizacion_manejo_de_datos"
+                      checked={editableUser.autorizacion_manejo_de_datos ?? documentosInfo.autorizacion_manejo_de_datos}
+                      onChange={handleCheckboxChange}
+                    />
+                  ) : (
+                    documentosInfo.autorizacion_manejo_de_datos ? 'Sí' : 'No'
+                  )}
+                </div>
+                <div className='div-modal'>
+                  <b>Firma consentimiento informado:</b>
+                  {isEditing ? (
+                    <input
+                      type="checkbox"
+                      name="firma_consentimiento_informado"
+                      checked={editableUser.firma_consentimiento_informado ?? documentosInfo.firma_consentimiento_informado}
+                      onChange={handleCheckboxChange}
+                    />
+                  ) : (
+                    documentosInfo.firma_consentimiento_informado ? 'Sí' : 'No'
+                  )}
+                </div>
+                <div className='div-modal'>
+                  <b>Firma terapia hormonal:</b>
+                  {isEditing ? (
+                    <input
+                      type="checkbox"
+                      name="firma_terapia_hormonal"
+                      checked={editableUser.firma_terapia_hormonal ?? documentosInfo.firma_terapia_hormonal}
+                      onChange={handleCheckboxChange}
+                    />
+                  ) : (
+                    documentosInfo.firma_terapia_hormonal ? 'Sí' : 'No'
+                  )}
+                </div>
+                <div className='div-modal'>
+                  <b>Apgar familiar:</b>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="apgar_familiar"
+                      value={editableUser.apgar_familiar || ''}
+                      onChange={handleInputChange}
+                    />
+                  ) : (
+                    documentosInfo.apgar_familiar
+                  )}
+                </div>
+                <div className='div-modal'>
+                  <b>Documento digital y archivo:</b>
+                  {isEditing ? (
+                    <input
+                      type="checkbox"
+                      name="documento_digital_y_archivo"
+                      checked={editableUser.documento_digital_y_archivo ?? documentosInfo.documento_digital_y_archivo}
+                      onChange={handleCheckboxChange}
+                    />
+                  ) : (
+                    documentosInfo.documento_digital_y_archivo ? 'Sí' : 'No'
+                  )}
+                </div>
+              </Col>
+              <Col className="form-column" xs={"10"} md={"6"}>
+                <div className='div-modal'>
+                  <b>Ecomapa:</b>
+                  {isEditing ? (
+                    <input
+                      type="checkbox"
+                      name="ecomapa"
+                      checked={editableUser.ecomapa ?? documentosInfo.ecomapa}
+                      onChange={handleCheckboxChange}
+                    />
+                  ) : (
+                    documentosInfo.ecomapa ? 'Sí' : 'No'
+                  )}
+                </div>
+                <div className='div-modal'>
+                  <b>Árbol familiar:</b>
+                  {isEditing ? (
+                    <input
+                      type="checkbox"
+                      name="arbol_familiar"
+                      checked={editableUser.arbol_familiar ?? documentosInfo.arbol_familiar}
+                      onChange={handleCheckboxChange}
+                    />
+                  ) : (
+                    documentosInfo.arbol_familiar ? 'Sí' : 'No'
+                  )}
+                </div>
+              </Col>
+            </Row>
+          </div>
+        )}
 
-                  <Row>
-                  <Col className="form-column" xs={"10"} md={"6"}>
-
-                  <div className='div-modal'><b>Autorización manejo de datos:</b> {documentosInfo.autorizacion_manejo_de_datos ? 'Sí' : 'No'}</div>                
-                  <div className='div-modal'><b>Firma consentimiento informado:</b> {documentosInfo.firma_consentimiento_informado ? 'Sí' : 'No'}</div>                
-                  <div className='div-modal'><b>Firma terapia hormonal:</b> {documentosInfo.firma_terapia_hormonal ? 'Sí' : 'No'}</div>   
-                  <div className='div-modal'><b>Apgar familiar:</b> {documentosInfo.apgar_familiar}</div>                             
-                  <div className='div-modal'><b>Documento digital y archivo:</b> {documentosInfo.documento_digital_y_archivo ? 'Sí' : 'No'}</div>                
-
-                  </Col>
-                  <Col className="form-column" xs={"10"} md={"6"}>               
-                  <div className='div-modal'><b>Ecomapa:</b> {documentosInfo.ecomapa ? 'Sí' : 'No'}</div>                
-                  <div className='div-modal'><b>Arbol familiar:</b> {documentosInfo.arbol_familiar ? 'Sí' : 'No'}</div>                
-
-                  </Col> 
-                  </Row>
-
-                  </div>
-             )}
               {currentPage === 5   && seguimientosInfo && (
                 <div className='div-observacion'>
 

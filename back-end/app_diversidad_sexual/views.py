@@ -5,7 +5,7 @@ from rest_framework import generics
 from .models import DiversidadSexual, Pronombre, IdentidadGenero, ExpresionGenero, OrientacionSexual, RespuestaCambioDocumento
 from .serializers import DiversidadSexualSerializer,PronombreSerializer, IdentidadGeneroSerializer, ExpresionGeneroSerializer, OrientacionSexualSerializer, RespuestaCambioDocumentoSerializer
 from app_registro.serializers import PersonaSerializer
-
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
