@@ -1,6 +1,32 @@
+/* Restablecer márgenes y relleno predeterminados */
 
 
 
+/* registro_estudiante.css */
+.registro-estudiante-container {
+  background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg');
+  background-size:cover;
+  background-position:center;
+  background-attachment: fixed;
+
+  width: 100%;
+  min-height: 100vh; /* Asegura que cubra al menos toda la altura de la vista */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #070707; /* Ajusta el color del texto para que sea visible sobre la imagen */
+}
+
+.registro-estudiante-form {
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1000px; /* Ajusta según necesites */
+  box-sizing: border-box;
+  text-align: left;
+}
 
 label {
     color: #3d3d3d;

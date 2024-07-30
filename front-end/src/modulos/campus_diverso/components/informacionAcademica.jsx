@@ -1,5 +1,7 @@
 import React from 'react';
 import { Container, Col, Button,} from 'react-bootstrap';
+import Select from 'react-select';
+
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 
@@ -7,10 +9,14 @@ export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].inclu
 const InformacionAcademica = ({
     state,
     handleChange,
+    handleSelectChange,
     handleArrayChange,
     handleAddItem,
     handleDeleteItem,
-    handleCheckboxChange
+    handleCheckboxChange,
+    estamentoOptions,
+    isLoading,
+    handleSelectChange2
 }) => {
   return (
     <>
@@ -92,21 +98,27 @@ const InformacionAcademica = ({
         </div>
 
         <div>
-      <label className="custom-div"> Estamento </label>
-      {state.estamentos.map((profesional, index) => (
-        <div key={index}>
-          <input
-            type="text"
-            placeholder='Ingrese estamento'
-            value={profesional}
-            onChange={(e) => handleArrayChange('estamentos', index, e.target.value)}
-          />
-          <Button className='boton-container' onClick={() => handleDeleteItem('estamentos', index)}>Eliminar</Button>
-        </div>
-      ))}
-      <Button className='boton-container' onClick={() => handleAddItem('estamentos')}>Agregar estamento</Button>
-    </div>
-
+              <label className='custom-div'>Estamentos</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='form-react-select'
+                  name="estamentos"
+                  placeholder='Seleccione estamentos'
+                  options={estamentoOptions}
+                  value={state.estamentos.map(option => ({
+                  label: option,
+                  value: estamentoOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
 
     </Col>
     </Container>

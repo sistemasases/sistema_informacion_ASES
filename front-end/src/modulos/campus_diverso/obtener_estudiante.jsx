@@ -150,6 +150,7 @@ const updateUser = async (endpoint, userId, updatedData) => {
   const [pronombresOptions, setPronombresOptions] = useState([]);
   const [expresionesOptions, setExpresionesOptions] = useState([]);
   const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
+  const [estamentoOptions, setEstamentoOptions]= useState([]);
 
 // Getters de las listas
 useEffect(() => {
@@ -160,11 +161,13 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/respuesta-cambio-documento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/orientacion-sexual/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
-    
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/estamento/`),
+
   ])
     .then((responses) => {
       //persona
-      const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse] = responses;
+      const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
+        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -195,14 +198,20 @@ useEffect(() => {
         value: item.id_identidad_genero,
         label: item.nombre_identidad_genero
       }));
-         
+      
+      const estamentoOpciones = estamentoResponse.data.map((item) => ({
+        value: item.id_estamento,
+        label: item.nombre_estamento
+      }));
+
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
       setDocumentoOptions(respuestaCambioDocumentoOpciones);
       setOrientacionOptions(orientacionOpciones);
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
-      
+      setEstamentoOptions(estamentoOpciones);
+
     })
     .catch((error) => {
 
@@ -305,6 +314,19 @@ const handleDeleteItem = (fieldName, index) => {
   });
 };
 
+const handleDelete = async (userId) => {
+  try {
+    console.log('usuario', userId);
+    await axios.delete(`${process.env.REACT_APP_API_URL}/persona/persona/${userId}/`);
+    // Aquí podrías hacer una llamada para actualizar la lista de usuarios o cerrar el modal
+    alert('Usuario eliminado con éxito');
+    closeModal(); // Opcional, para cerrar el modal después de eliminar
+    setUsers((prevUsers) => prevUsers.filter((user) => user.numero_documento !== userId));
+  } catch (error) {
+    console.error('Error eliminando el usuario:', error);
+    alert('Hubo un error al eliminar el usuario');
+  }
+};
 
 // Handle form submit
 const handleFormSubmit = (e) => {
@@ -543,10 +565,12 @@ const handleInputChange = (e) => {
             orientacionOptions={orientacionOptions}
             identidadesGeneroOptions={identidadesGeneroOptions}
             documentoOptions={documentoOptions}
+            estamentoOptions={estamentoOptions}
             handleArrayFieldChange={handleArrayFieldChange}
             handleAddItem={handleAddItem}
             handleDeleteItem={handleDeleteItem}
             handleArrayChange={handleArrayChange}
+            handleDelete={handleDelete}
           />
         </div>
       </Container>

@@ -32,7 +32,7 @@ import SideBar from "./components/componentes_generales/sideBar.jsx";
 import Path from './modulos/path/path.jsx';
 import Pagina_no_encontrada from "./components/componentes_generales/pagina_no_encontrada.jsx";
 import ObtenerEstudiante from './modulos/campus_diverso/obtener_estudiante.jsx';
-import Regristo_estudiante from "./modulos/campus_diverso/registro_estudiante.jsx"
+import Registro_estudiante from './modulos/campus_diverso/registro_estudiante.jsx';
 
 const App = () => {
   const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / ");
@@ -42,12 +42,12 @@ const App = () => {
 
     return (
         <BrowserRouter>
+        <Routes><Route path="/campus-diverso/formulario" element={<Registro_estudiante/>}/></Routes>
+        
             <Row> 
                 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
                     <Routes>
                         <Route path="/"element={<Path usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/campus_diverso/registro_estudiante" element={<Regristo_estudiante/>}/>
-                        <Route path="/campus_diverso/obtener_estudiante" element={<ObtenerEstudiante/>}/>
                         <Route path="*"element={<Pagina_no_encontrada/>}/>
                     </Routes>
                 </SideBar>

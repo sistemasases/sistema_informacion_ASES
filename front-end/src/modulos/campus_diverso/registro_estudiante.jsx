@@ -117,6 +117,7 @@ import DocumentosAutorizacion from './components/documentosAutorizacion';
   const [pronombresOptions, setPronombresOptions] = useState([]);
   const [expresionesOptions, setExpresionesOptions] = useState([]);
   const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
+  const [estamentoOptions, setEstamentoOptions]= useState([]);
 
 // Getters de las listas
 useEffect(() => {
@@ -127,11 +128,13 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/respuesta-cambio-documento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/orientacion-sexual/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/estamento/`),
 
   ])
     .then((responses) => {
       //persona
-      const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse] = responses;
+      const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
+        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse, estamentoResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -162,13 +165,19 @@ useEffect(() => {
         value: item.id_identidad_genero,
         label: item.nombre_identidad_genero
       }));
-         
+     
+      const estamentoOpciones = estamentoResponse.data.map((item) => ({
+        value: item.id_estamento,
+        label: item.nombre_estamento
+      }));
+
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
       setDocumentoOptions(respuestaCambioDocumentoOpciones);
       setOrientacionOptions(orientacionOpciones);
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
+      setEstamentoOptions(estamentoOpciones);
       setIsLoading(false);
       
     })
@@ -245,8 +254,24 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
   console.log('selectedOptions', selectedOptions)
 
 };
+
+// HANDLE SELECT EXCLUSIVO PARA ESTAMENTOS -- REVISAR DESPUES
+const handleSelectChange2 = (selectedOptions, actionMeta) => {
+  const { name } = actionMeta;
+
+  // Extraer los labels de las opciones seleccionadas
+  const labels = selectedOptions ? selectedOptions.map(option => option.label) : [];
+  
+  // Actualizar el estado con los labels
+  set_state(prevState => ({
+    ...prevState,
+    [name]: labels
+  }));
+};
  
 console.log('state.orientaciones_sexuales:', state.orientaciones_sexuales);
+console.log('state de estamentos', state.estamentos);
+
 console.log('state.identidades:', state.identidades_de_genero);
 
 
@@ -715,13 +740,10 @@ const steps = [
       state={state}
       handleChange={handleChange}
       handleSelectChange={handleSelectChange}
-      handleArrayFieldChange={handleArrayFieldChange}
-      handleAgregarItem={handleAgregarItem}
-      handleEliminarItem={handleEliminarItem}
-      handleArrayChange={handleArrayChange}
-      handleAddItem={handleAddItem}
-      handleDeleteItem={handleDeleteItem}
       handleCheckboxChange={handleCheckboxChange}
+      estamentoOptions={estamentoOptions}
+      isLoading={isLoading}
+      handleSelectChange2={handleSelectChange2}
       /> },
   { component: <DocumentosAutorizacion
     state={state}
@@ -737,26 +759,27 @@ const prevStep = () => {
 };
 
   return (
-    <Container >
-    <div >{steps[currentStep].component}</div>
-    <div className='buttons-container'>
-    <Button onClick={prevStep} disabled={currentStep === 0}>Atrás</Button>
-    <Button onClick={nextStep} disabled={currentStep === steps.length - 1}>Siguiente</Button>
-    {currentStep === steps.length - 1 && <Button onClick={handleSubmit}>Enviar</Button>}
-    </div>
-    {/* Alerta de éxito como modal */}
-    <Alert
-      show={showSuccessAlert}
-      variant="success"
-      onClose={() => setShowSuccessAlert(false)}
-      dismissible
-      className='alert-style'
-    >
-      <Alert.Heading>¡Éxito!</Alert.Heading>
-      <p>El formulario se envió correctamente.</p>
-    </Alert>
+    <Container className='registro-estudiante-container'>
+    <div className='registro-estudiante-form'>
+      <div>{steps[currentStep].component}</div>
+      <div className='buttons-container'>
+        <Button onClick={prevStep} disabled={currentStep === 0}>Atrás</Button>
+        <Button onClick={nextStep} disabled={currentStep === steps.length - 1}>Siguiente</Button>
+        {currentStep === steps.length - 1 && <Button onClick={handleSubmit}>Enviar</Button>}
+      </div>
+      {/* Alerta de éxito como modal */}
+      <Alert
+        show={showSuccessAlert}
+        variant="success"
+        onClose={() => setShowSuccessAlert(false)}
+        dismissible
+        className='alert-style'
+      >
+        <Alert.Heading>¡Éxito!</Alert.Heading>
+        <p>El formulario se envió correctamente.</p>
+      </Alert>
 
-    {/* Alerta de error */}
+      {/* Alerta de error */}
       <Alert
         show={showErrorAlert}
         variant="danger"
@@ -767,6 +790,7 @@ const prevStep = () => {
         <Alert.Heading>Error</Alert.Heading>
         <p>{mensaje}</p>
       </Alert>
+    </div>
   </Container>
     
   );

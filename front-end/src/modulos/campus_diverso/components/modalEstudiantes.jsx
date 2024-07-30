@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Container, Row, Col } from 'react-bootstrap';
 import ModalSeguimientos from './modalSeguimientos';
 import Select from 'react-select';
+import axios from 'axios';
 
 
 const ModalEstudiantes = ({
@@ -30,10 +31,12 @@ const ModalEstudiantes = ({
   orientacionOptions,
   identidadesGeneroOptions,
   documentoOptions,
+  estamentoOptions,
   handleArrayFieldChange,
   handleAddItem,
   handleDeleteItem,
   handleArrayChange,
+  handleDelete
 }) => {
 
   const titles = [
@@ -58,6 +61,8 @@ const ModalEstudiantes = ({
   const closeSeguimientoModal = () => {
     setSeguimientoModalOpen(false);
   };
+
+ 
 
  /* const [editableRiskFactors, setEditableRiskFactors] = useState(generalInfo.factores_de_riesgo);
 
@@ -297,7 +302,7 @@ const ModalEstudiantes = ({
         )}
         </div>              
                   
-                  <div className='div-modal'><b>Cambio nombre/sexo en el documento:</b>
+          <div className='div-modal'><b>Cambio nombre/sexo en el documento:</b>
             {isEditing ? (
               <input type="text" name="cambio_nombre_sexo_documento" value={editableUser.cambio_nombre_sexo_documento || '' } onChange={handleInputChange}
               />) : (diversidadInfo.cambio_nombre_sexo_documento)} </div>
@@ -573,26 +578,28 @@ const ModalEstudiantes = ({
 
 
                         <div className='div-modal'>
-          <b>Estamentos:</b>
-          {isEditing ? (
-            <div>
-              {(editableUser.estamentos || []).map((profesional, index) => (
-                <div key={index}>
-                  <input
-                    type="text"
-                    placeholder='Ingrese estamento'
-                    value={profesional}
-                    onChange={(e) => handleArrayChange('estamentos', index, e.target.value)}
-                  />
-                  <Button className='boton-container' onClick={() => handleDeleteItem('estamentos', index)}>Eliminar</Button>
-                </div>
-              ))}
-              <Button className='boton-container' onClick={() => handleAddItem('estamentos')}>Agregar estamento</Button>
-            </div>
-          ) : (
-            academicoInfo.estamentos.join(', ')
-          )}
-                        </div>
+        <b>Estamentos: </b>
+        {isEditing ? (
+          <Select
+            isMulti
+            placeholder='Seleccione expresiones'
+            className='form-react-select'
+            name="estamentos"
+            // Opciones disponibles, excluyendo las ya seleccionadas
+            options={estamentoOptions.filter(option => 
+              !( editableUser.estamentos || academicoInfo.estamentos).includes(option.label)
+            )}
+            // Opciones seleccionadas
+            value={(editableUser.estamentos || academicoInfo.estamentos|| []).map(value => {
+              const foundOption = estamentoOptions.find(o => o.value === value);
+              return foundOption || { value, label: value };
+            })}
+            onChange={handleSelectChange}
+          />
+        ) : (
+          academicoInfo.estamentos.join(', ')
+        )}
+        </div> 
                       </Col>
                     </Row>
                   </div>
@@ -770,6 +777,9 @@ const ModalEstudiantes = ({
                   Adelante
                 </Button>
               )}
+              <Button variant="outline-danger" onClick={() => handleDelete(selectedUser.numero_documento)}>
+                Eliminar
+              </Button>
               <Button variant="outline-danger" onClick={closeModal}>
                 Cerrar
               </Button>
