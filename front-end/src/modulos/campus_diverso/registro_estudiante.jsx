@@ -12,6 +12,11 @@ import DocumentosAutorizacion from './components/documentosAutorizacion';
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [mensaje, setMensaje] = useState(null);
+
+  //cant de caracteres para el formulario
+  const maxLengthBasicInput = 50; // Límite de caracteres
+
+
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => {
     setShowModal(false);
@@ -711,6 +716,7 @@ const steps = [
     isLoading={isLoading}
     razasOptions={razasOptions}
     handleSelectChange={handleSelectChange}
+    maxLengthBasicInput={maxLengthBasicInput}
     /> },
   { component:     <DiversidadSexual
     state={state}

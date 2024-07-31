@@ -6,7 +6,8 @@ const IngresoDatosBasicos = ({state,
     handleChange,
     isLoading,
     razasOptions,
-    handleSelectChange
+    handleSelectChange,
+    maxLengthBasicInput
 
 }) => {
   return (
@@ -22,19 +23,26 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div' >nombre identitario</label>
           <div >
             <input
+              className='input-updated'
               type="text"
               placeholder="Enter username"
               name="nombre_identitario"
               value={state.nombre_identitario}
               onChange={handleChange}
+              maxLength={maxLengthBasicInput} // Limita la cantidad de caracteres
+
             />
+            <span className="char-count">{`${maxLengthBasicInput - state.nombre_identitario.length}`}</span>
+
           </div>
+          
         </div>
 
         <div>
           <label className='custom-div'>nombre y apellido</label>
           <div>
             <input
+              className='input-updated'
               type="text"
               placeholder="Ingrese nombre y apellido"
               name="nombre_y_apellido"
@@ -48,6 +56,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Email</label>
           <div>
             <input
+               className='input-updated'
               type="text"
               placeholder="Ingrese email"
               name="email"
@@ -63,7 +72,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Tipo de documento</label>
           <div>
             <input
-              className='input'
+              className='input-updated'
               type="text"
               placeholder="CC, TI , CE , ETC.."
               name="tipo_documento"
@@ -77,7 +86,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Numero de documento</label>
           <div>
             <input
-              className='input'
+              className='input-updated'
               type="number"
               placeholder="123456"
               name="numero_documento"
@@ -94,6 +103,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Estrato socioeconomico</label>
           <div>
             <input
+            className='input-updated'
               type="number"
               placeholder="Estrato"
               name="estrato_socioeconomico"
@@ -110,6 +120,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Teléfono residencia</label>
           <div>
             <input
+            className='input-updated'
               type="number"
               placeholder="Ingrese número telefonico"
               name="telefono"
@@ -123,6 +134,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Estado civil</label>
           <div>
             <input
+            className='input-updated'
               type="text"
               placeholder="Ingrese estado civil"
               name="estado_civil"
@@ -136,6 +148,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Identidad etnico racial</label>
           <div>
             <input
+              className='input-updated'
               type="text"
               placeholder="Ingrese la identidad"
               name="identidad_etnico_racial"
@@ -151,6 +164,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Nombre de persona de confianza</label>
           <div>
             <input
+              className='input-updated'
               type="text"
               placeholder="Ingrese el nombre"
               name="nombre_persona_de_confianza"
@@ -164,6 +178,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>relación con la persona de confianza</label>
           <div>
             <input
+              className='input-updated'
               type="text"
               placeholder="Ingrese la relación"
               name="relacion_persona_de_confianza"
@@ -177,6 +192,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Número de persona de confianza</label>
           <div>
             <input
+              className='input-updated'
               type="number"
               placeholder="Ingrese numero"
               name="telefono_persona_de_confianza"
@@ -200,6 +216,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Ciudad de nacimiento</label>
           <div>
             <input
+              className='input-updated'
               type="text"
               placeholder="Ingrese ciudad de nacimiento"
               name="ciudad_nacimiento"
@@ -215,6 +232,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Corregimiento de nacimiento</label>
           <div>
             <input
+              className='input-updated'
               type="text"
               placeholder="Ingrese corregimiento de nacimiento"
               name="corregimiento_nacimiento"
@@ -229,6 +247,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Municipio de nacimiento</label>
           <div>
             <input
+              className='input-updated'
               type="text"
               placeholder="Ingrese municipio de nacimiento"
               name="municipio_nacimiento"
@@ -243,6 +262,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Fecha de nacimiento</label>
           <div>
             <input
+              className='input-updated'
               type="date"
               name="fecha_nacimiento"
               value={state.fecha_nacimiento}
@@ -279,6 +299,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Departamento de nacimiento</label>
           <div>
             <input
+                className='input-updated'
               type="text" 
               placeholder="Ingrese el departamento"
               name="departamento_nacimiento"
@@ -293,6 +314,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>País de nacimiento</label>
           <div>
             <input
+            className='input-updated'
               type="text" 
               placeholder="Ingrese el departamento"
               name="pais_nacimiento"
@@ -307,6 +329,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Ciudad de residencia</label>
           <div>
             <input
+            className='input-updated'
               type="text" 
               placeholder="Ingrese el departamento"
               name="ciudad_residencia"
@@ -321,6 +344,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Zona de residencia</label>
           <div>
             <input
+            className='input-updated'
               type="text" 
               placeholder="Ingrese el departamento"
               name="zona_residencial"
@@ -335,6 +359,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Direccion de residencia</label>
           <div>
             <input
+            className='input-updated'
               type="text" 
               placeholder="Ingrese su direccion"
               name="direccion_residencia"
@@ -348,6 +373,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Barrio de residencia</label>
           <div>
             <input
+            className='input-updated'
               type="text" 
               placeholder="Ingrese su barrio"
               name="barrio_residencia"
@@ -363,6 +389,7 @@ const IngresoDatosBasicos = ({state,
           <label className='custom-div'>Número de la comuna</label>
           <div>
             <input
+            className='input-updated'
               type="number" 
               placeholder="Ingrese la comuna"
               name="comuna_barrio"

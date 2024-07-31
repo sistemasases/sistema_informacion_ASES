@@ -28,7 +28,7 @@
   text-align: left;
 }
 
-label {
+.label {
     color: #3d3d3d;
     display: block;
     font-family: sans-serif;
@@ -54,19 +54,17 @@ label {
    
     padding: 10px;
   }
- input[type="text"],
-  input[type="checkbox"],
-  input[type="number"],
-  input[type="date"] {
-    border: 1px solid #d9d9d9;
+
+  .input-updated {
+    border: 0.1px solid #d9d9d9 !important;
     border-radius: 4px;
     box-sizing: borerd-box;
-    padding: 20px;
-    width: 90%;
-    height: 30px;
+    padding: 10px;
+    width: 100%;
+    height: auto;
   }
   
-  textarea {
+  .textarea {
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     box-sizing: border-box; /* Corrección de "borerd-box" a "border-box" */
@@ -75,24 +73,18 @@ label {
     height: auto; /* Usar 'auto' para permitir que el textarea ajuste su altura según el contenido */
   }
 
-  .form-select {
-    display: block;
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    padding: 10px;
-    width: 90%;
-    height: auto; 
-  }
+
   .form-react-select {
     border-radius: 1px;
     padding-top: 10px;
     padding-bottom: 10px;
-    width: 90%;
-    height: auto; 
+    width: 100%;
+    height:80%; 
   }
+
   .custom-div {
     width: 100%; 
-    height: auto; 
+    height: 90%; 
     font-size: 16px; 
     padding-top: 3px;
     }
@@ -312,4 +304,14 @@ label {
     .modal-seguimiento {
       position: absolute;
       left: 14px; /* Ajusta este valor según sea necesario */
+    }
+
+  
+    .char-count {
+      position: absolute;
+      right: 10px; /* Ajusta el valor según el espacio que necesitas */
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9em;
+      color: #888;
     }

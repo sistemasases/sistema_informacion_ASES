@@ -168,7 +168,10 @@ const InformacionGeneral = ({state,
               </div>             
             ))}
             <div>
-            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('encuentro_dias_horas', { dia: '', hora: '' })}>
+            <Button variant="secondary" className='boton-container' 
+            onClick={() => handleAgregarItem('encuentro_dias_horas', { dia: '', hora: '' })}
+            disabled={state.encuentro_dias_horas.length >= 3}
+            >
               Agregar Encuentro
             </Button></div>
           </div>
@@ -197,7 +200,9 @@ const InformacionGeneral = ({state,
               </div>             
             ))}
             <div>
-            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('redes_de_apoyo', { nombre_red_apoyo: '', observacion_red_apoyo: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('redes_de_apoyo', { nombre_red_apoyo: '', observacion_red_apoyo: '' })}
+              disabled={state.redes_de_apoyo.length >= 3}
+              >
               Agregar Red de apoyo
             </Button></div>
           </div>
@@ -216,7 +221,9 @@ const InformacionGeneral = ({state,
           <Button variant="danger" className='boton-container' onClick={() => handleDeleteItem('ocupaciones_actuales', index)}>Eliminar</Button>
         </div>
       ))}
-      <Button variant="secondary" className='boton-container' onClick={() => handleAddItem('ocupaciones_actuales')}>Agregar Ocupación</Button>
+      <Button variant="secondary" className='boton-container' onClick={() => handleAddItem('ocupaciones_actuales')}
+        disabled={state.ocupaciones_actuales.length >= 3}
+        >Agregar Ocupación</Button>
     </div>
 
     <div>
@@ -232,7 +239,9 @@ const InformacionGeneral = ({state,
           <Button variant="danger" className='boton-container' onClick={() => handleDeleteItem('profesionales_que_brindo_atencion', index)}>Eliminar</Button>
         </div>
       ))}
-      <Button variant="secondary" className='boton-container' onClick={() => handleAddItem('profesionales_que_brindo_atencion')}>Agregar profesional</Button>
+      <Button variant="secondary" className='boton-container' onClick={() => handleAddItem('profesionales_que_brindo_atencion')}
+        disabled={state.profesionales_que_brindo_atencion.length >= 3}
+        >Agregar profesional</Button>
     </div>
 
 
@@ -360,32 +369,38 @@ const InformacionGeneral = ({state,
         </div>
 
         <div>
-            <label className='custom-div'>Factores de Riesgo</label>
-            {state.factores_de_riesgo.map((factor, index) => (
-                
-              <div key={index}>
-                <input
-                  type="text"
-                  name="nombre_factor_riesgo"
-                  placeholder="Nombre del factor de riesgo"
-                  value={factor.nombre_factor_riesgo}
-                  onChange={(e) => handleArrayFieldChange('factores_de_riesgo', index, 'nombre_factor_riesgo', e.target.value)}
-                />
-                <input 
-                  type="text"
-                  name="observacion_factor_riesgo"
-                  placeholder="Observación del factor de riesgo"
-                  value={factor.observacion_factor_riesgo}
-                  onChange={(e) => handleArrayFieldChange('factores_de_riesgo', index, 'observacion_factor_riesgo', e.target.value)}
-                />
-                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('factores_de_riesgo', index)}>Eliminar</Button>
-              </div>             
-            ))}
-            <div >
-            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('factores_de_riesgo', { nombre_factor_riesgo: '', observacion_factor_riesgo: '' })}>
-              Agregar Factor de Riesgo
-            </Button></div>
-          </div>
+  <label className='custom-div'>Factores de Riesgo</label>
+  {state.factores_de_riesgo.map((factor, index) => (
+    <div key={index}>
+      <input
+        type="text"
+        name="nombre_factor_riesgo"
+        placeholder="Nombre del factor de riesgo"
+        value={factor.nombre_factor_riesgo}
+        onChange={(e) => handleArrayFieldChange('factores_de_riesgo', index, 'nombre_factor_riesgo', e.target.value)}
+      />
+      <input 
+        type="text"
+        name="observacion_factor_riesgo"
+        placeholder="Observación del factor de riesgo"
+        value={factor.observacion_factor_riesgo}
+        onChange={(e) => handleArrayFieldChange('factores_de_riesgo', index, 'observacion_factor_riesgo', e.target.value)}
+      />
+      <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('factores_de_riesgo', index)}>Eliminar</Button>
+    </div>             
+  ))}
+  <div>
+    <Button
+      variant="secondary"
+      className='boton-container'
+      onClick={() => handleAgregarItem('factores_de_riesgo', { nombre_factor_riesgo: '', observacion_factor_riesgo: '' })}
+      disabled={state.factores_de_riesgo.length >= 3} // Deshabilitar si hay 3 o más elementos
+    >
+      Agregar Factor de Riesgo
+    </Button>
+  </div>
+</div>
+
 
 
 
@@ -413,7 +428,9 @@ const InformacionGeneral = ({state,
               </div>             
             ))}
             <div>
-            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('convivencias_en_vivienda', { nombre_convivencia_vivienda: '', observacion_convivencia_vivienda: '' })}>
+            <Button variant="secondary" className='boton-container' onClick={() => 
+              handleAgregarItem('convivencias_en_vivienda', { nombre_convivencia_vivienda: '', observacion_convivencia_vivienda: '' })}
+              disabled={state.convivencias_en_vivienda.length >= 3}>
               Agregar Convivencia
             </Button></div>
           </div>
@@ -442,7 +459,10 @@ const InformacionGeneral = ({state,
               </div>             
             ))}
             <div>
-            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('fuentes_de_ingresos', { nombre_fuente_ingresos: '', observacion_fuente_ingresos: '' })}>
+            <Button variant="secondary" className='boton-container' 
+            onClick={() => handleAgregarItem('fuentes_de_ingresos', { nombre_fuente_ingresos: '', observacion_fuente_ingresos: '' })}
+            disabled={state.fuentes_de_ingresos.length >= 3}
+            >
               Agregar Fuente de Ingresos
             </Button></div>
           </div>
@@ -471,7 +491,10 @@ const InformacionGeneral = ({state,
               </div>             
             ))}
             <div >
-            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('actividades_tiempo_libre', { nombre_actividad_tiempo_libre: '', observacion_actividad_tiempo_libre: '' })}>
+            <Button variant="secondary" className='boton-container' 
+            onClick={() => handleAgregarItem('actividades_tiempo_libre', { nombre_actividad_tiempo_libre: '', observacion_actividad_tiempo_libre: '' })}
+            disabled={state.actividades_tiempo_libre.length >= 3}
+            >
               Agregar Actividad
             </Button></div>
           </div>
@@ -500,7 +523,10 @@ const InformacionGeneral = ({state,
               </div>             
             ))}
             <div>
-            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('acompanamientos_recibido', { nombre_acompanamiento_recibido: '', observacion_acompanamiento_recibido: '' })}>
+            <Button variant="secondary" className='boton-container' 
+            onClick={() => handleAgregarItem('acompanamientos_recibido', { nombre_acompanamiento_recibido: '', observacion_acompanamiento_recibido: '' })}
+            disabled={state.acompanamientos_recibido.length >= 3}
+            >
               Agregar Acompañamiento
             </Button></div>
           </div>
