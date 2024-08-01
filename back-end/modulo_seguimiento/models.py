@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from modulo_usuario_rol.models import estudiante
+from modulo_instancia.models import semestre
 
 # Create your models here.
 class seguimiento_individual (models.Model):
@@ -10,6 +11,8 @@ class seguimiento_individual (models.Model):
     hora_inicio = models.TimeField()
     hora_finalización= models.TimeField()
     objetivos= models.CharField(null=True,blank=True,max_length=10000)
+    objetivos2= models.CharField(null=True,blank=True,max_length=10000)
+    objetivos3= models.CharField(null=True,blank=True,max_length=10000)
     individual= models.CharField(null=True,blank=True,max_length=10000)
     riesgo_individual= models.IntegerField(null=True)
     autoconocimiento= models.BooleanField()
@@ -62,6 +65,19 @@ class seguimiento_individual (models.Model):
     rem_externa = models.BooleanField(default=False)
     Ninguna_acción_realizada = models.BooleanField(default=False)
 
+    asist_actividades_grupales=models.BooleanField(default=None, null=True)
+    asist_monitoria_aca=models.BooleanField(default=None, null=True)
+    asist_matricula_financiera=models.BooleanField(default=None, null=True)
+    asist_desa_humano=models.BooleanField(default=None, null=True)
+    asist_proyect_uni=models.BooleanField(default=None, null=True)
+    asist_dir_programa=models.BooleanField(default=None, null=True)
+    asist_prof_se=models.BooleanField(default=None, null=True)
+    asist_servi_salud=models.BooleanField(default=None, null=True)
+    asist_grupo_uni=models.BooleanField(default=None, null=True)
+    asist_practicante_se=models.BooleanField(default=None, null=True)
+    asist_regis_academico=models.BooleanField(default=None, null=True)
+    asist_rem_externa=models.BooleanField(default=None, null=True)
+
     observaciones=models.CharField(null=True,blank=True,max_length=10000)
     revisado_profesional = models.BooleanField(default=False)
     revisado_practicante = models.BooleanField(default=False)
@@ -94,6 +110,15 @@ class inasistencia (models.Model):
     class Meta:
         db_table = "inasistencia"
 
+class historial_ficha (models.Model):
+
+    id_ficha = models.ForeignKey(seguimiento_individual,on_delete=models.CASCADE,null=True,related_name='id_ficha_in_historial_ficha')
+    id_user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name='id_user_in_historial_ficha')
+    fecha= models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "historial_ficha"
+
 class riesgo_individual (models.Model):
 
     fecha = models.DateField(auto_now_add=False, null=True)
@@ -103,6 +128,7 @@ class riesgo_individual (models.Model):
     riesgo_economico = models.IntegerField(null=True)
     riesgo_vida_universitaria_ciudad = models.IntegerField(null=True)
     id_estudiante = models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
+    id_semestre= models.ForeignKey(semestre,on_delete=models.CASCADE,default=40,related_name='id_semestre_in_riesgo_individual')
 
     class Meta:
         db_table = "riesgo_individual"
