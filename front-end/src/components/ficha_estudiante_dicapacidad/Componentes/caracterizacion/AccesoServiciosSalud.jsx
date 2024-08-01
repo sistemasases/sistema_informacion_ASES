@@ -73,6 +73,71 @@ const AccesoServiciosSalud = () => {
           </div>
         </div>
 
+
+        <div className="full-width">
+          <p className="titulo">
+            Servicios adicionales
+          </p>
+          <p>
+            ¿Cuenta con un servicio de salud prepagada?
+          </p>
+          <div className="checkbox_container sin_borde">
+            <div className="checkbox_group">
+              <input type="radio" name="salud-prepagada" />
+              <label>Sí</label>
+            </div>
+            <div className="checkbox_group">
+              <input type="radio" name="salud-prepagada" />
+              <label>No</label>
+            </div>
+          </div>
+          <div className="inline-input-group">
+            <label>Nombre de la institución</label>
+            <input type="text" />
+          </div>
+
+          <p></p>
+
+          <p>
+            ¿Cuenta con un servicio de plan complementario?
+          </p>
+          <div className="checkbox_container sin_borde">
+            <div className="checkbox_group">
+              <input type="radio" name="plan-complementario" />
+              <label>Sí</label>
+            </div>
+            <div className="checkbox_group">
+              <input type="radio" name="plan-complementario" />
+              <label>No</label>
+            </div>
+          </div>
+          <div className="inline-input-group">
+            <label>Nombre de la institución</label>
+            <input type="text" />
+          </div>
+
+          <p></p>
+          
+
+          <p>
+            ¿Cuenta con un servicio de salud estudiantil?
+          </p>
+          <div className="checkbox_container sin_borde">
+            <div className="checkbox_group">
+              <input type="radio" name="salud-estudiantil" />
+              <label>Sí</label>
+            </div>
+            <div className="checkbox_group">
+              <input type="radio" name="salud-estudiantil" />
+              <label>No</label>
+            </div>
+          </div>
+          <div className="inline-input-group">
+            <label>Nombre de la institución</label>
+            <input type="text" />
+          </div>
+        </div>
+
         <div className="full-width">
           <p className="titulo">
             Actualmente usted es usuario de los servicios de

@@ -5,10 +5,20 @@ import Instrumental from "./Instrumental";
 import Metodologia from "./Metodologia";
 import Programatica from "./Programatica";
 import withSwal from "../withSwal";
+import { decryptTokenFromSessionStorage, desencriptar } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad";
+
 
 const Accesibilidad = () => {
+  const config = {
+    Authorization: 'Bearer ' +  decryptTokenFromSessionStorage
+  };
+  const semestre = desencriptar(sessionStorage.semestre_actual);
   return (
     <div className="container-acordion container-subacordion">
+      <p>Periodo de Accesibilidad:</p>
+      <select name="periodo" id="periodo">
+        <option value={semestre}>{semestre}</option>
+      </select>
       <p className="title">COMPONENTES DE ACCESIBILIDAD:</p>
       <Acordion
         title="Accesibilidad Comunicacional"
