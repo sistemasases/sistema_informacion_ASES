@@ -21,8 +21,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from two_factor.urls import urlpatterns as tf_urls
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('modulo_base.urls')),
@@ -34,7 +32,6 @@ urlpatterns = [
     path('reportes/', include('modulo_reportes.routers')),
     path('alertas/', include('modulo_alertas.routers')),
     path('correos/', include('modulo_correos.routers')),
-    # path('correos/', include('modulo_correos.urls')),
     path('academico/', include('modulo_academico.routers')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

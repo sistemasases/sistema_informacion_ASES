@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import timedelta
 import environ
 env = environ.Env()
 environ.Env.read_env()
@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_totp',
     'django_otp.plugins.otp_static',
-    'two_factor',
     'modulo_usuario_rol',
     'modulo_geografico',
     'modulo_asignacion',
@@ -77,12 +76,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 ]
 
-# Usando la base de datos para almacenar sesiones
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_NAME = 'ases_extra'  # Nombre de la cookie de sesión
-SESSION_COOKIE_AGE = 86400    # Un día
-SESSION_SAVE_EVERY_REQUEST = True  # Guarda la sesión en cada solicitud
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # No expira al cerrar el navegador
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -155,11 +149,6 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACK_LIST_AFTER_ROTATION': True
 }
-
-# AUTHENTICATION_BACKENDS = (
-#     'django.contrib.auth.backends.ModelBackend',
-#     'two_factor.auth_backends.OtpBackend',
-# )
 
 
 # Password validation

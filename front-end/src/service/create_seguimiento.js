@@ -105,7 +105,7 @@ const create_seguimiento = async (formData) => {
       id_creador: formData.id_creador,
       id_modificador: formData.id_modificador,
       id_estudiante: formData.id_estudiante,
-            "id_semestre":formData.id_semestre,,
+            "id_semestre":formData.id_semestre,
     };
     // Conexion con la API
     await axios
