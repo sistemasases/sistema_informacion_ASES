@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riesgos Altos</title>
+  </head>
+  <body>
+    <h2 style="color: #000000">Riesgos Altos Registrados</h2>
+    <label> Se registra riesgo alto para el estudiante: </label><br /><br />
+    <label style="color: #000000; font-weight: 700">Nombre completo:</label>
+    {{nombre_estudiante}} <br />
+    <label style="color: #000000; font-weight: 700">Código:</label>
+    {{cod_uv_estudiante}} - {{cod_carrera}}<br />
+    <label style="color: #000000; font-weight: 700">Correo electrónico:</label>
+    {{correo_estudiante}} <br />
+    <label style="color: #000000; font-weight: 200">En el componente:</label>
+    <br />
+    <p style="color: #000000; padding-left: 20px">
+      {{ dimensiones | safe | linebreaksbr }}
+    </p>
+    <br /><br />
+    <label style="color: #000000; font-weight: 700"
+      >Fecha de seguimiento: {{fecha_seguimiento}}.</label
+    >
+    <br />
+    <label style="color: #000000; font-weight: 200"
+      >El registro fue realizado por:
+    </label>
+    <label style="color: #000000; font-weight: 700"
+      >{{usuario_envia_correo}}</label
+    >
+    <br />
+    <br />
+    <label style="color: #000000; font-weight: 200">
+      Puede revisar el registro de seguimiento haciendo clic
+      <a
+        href="https://sistemaases.univalle.edu.co"
+        style="color: inherit; text-decoration: underline"
+        >aquí</a
+      >.
+    </label>
+  </body>
+</html>

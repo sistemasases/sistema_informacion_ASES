@@ -172,8 +172,8 @@ class rol_permiso (models.Model):
 
 class cohorte_estudiante(models.Model):
 
-    id_cohorte= models.ForeignKey(cohorte,on_delete=models.CASCADE,default=0)
-    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
+    id_cohorte= models.ForeignKey(cohorte,on_delete=models.CASCADE,default=0,related_name='id_cohorte_in_cohorte_estudiante')
+    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0,related_name='id_estudiante_in_cohorte_estudiante')
     tiempo_creacion= models.DateTimeField(auto_now_add=True)
     
     class Meta:
