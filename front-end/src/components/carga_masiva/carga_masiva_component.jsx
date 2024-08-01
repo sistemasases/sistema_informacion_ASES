@@ -11,7 +11,8 @@ import axios from 'axios';
 import {Container, Row, Col, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import DataTable from 'react-data-table-component';
-import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx'
+
 
 /**
  * Carga_masiva_component
