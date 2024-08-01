@@ -30,6 +30,8 @@ const create_seguimiento = async (formData) => {
             "hora_inicio": formData.hora_inicio,
             "hora_finalización": formData.hora_finalización,
             "objetivos": formData.objetivos,
+            "objetivos2": formData.objetivos2,
+            "objetivos3": formData.objetivos3,
             "individual": formData.individual,
             "riesgo_individual": formData.riesgo_individual,
             "autoconocimiento": formData.autoconocimiento,
@@ -80,6 +82,18 @@ const create_seguimiento = async (formData) => {
             "rem_grupos_universidad": formData.rem_grupos_universidad,
             "rem_externa": formData.rem_externa,
             "Ninguna_acción_realizada": formData.Ninguna_acción_realizada,
+            "asist_actividades_grupales": formData.asist_actividades_grupales,
+            "asist_monitoria_aca": formData.asist_monitoria_aca,
+            "asist_matricula_financiera": formData.asist_matricula_financiera,
+            "asist_desa_humano": formData.asist_desa_humano,
+            "asist_proyect_uni": formData.asist_proyect_uni,
+            "asist_dir_programa": formData.asist_dir_programa,
+            "asist_prof_se": formData.asist_prof_se,
+            "asist_servi_salud": formData.asist_servi_salud,
+            "asist_grupo_uni": formData.asist_grupo_uni,
+            "asist_practicante_se": formData.asist_practicante_se,
+            "asist_regis_academico": formData.asist_regis_academico,
+            "asist_rem_externa": formData.asist_rem_externa,
             "observaciones": formData.observaciones,
             "revisado_profesional": formData.revisado_profesional,
             "revisado_practicante": formData.revisado_practicante,
@@ -87,7 +101,8 @@ const create_seguimiento = async (formData) => {
             "cierre": formData.cierre,
             "id_creador": formData.id_creador,
             "id_modificador": formData.id_modificador,
-            "id_estudiante": formData.id_estudiante
+            "id_estudiante": formData.id_estudiante,
+            "id_semestre":formData.id_semestre,
         }
         // Conexion con la API
         await axios.post(url_axios, seguimiento, config)

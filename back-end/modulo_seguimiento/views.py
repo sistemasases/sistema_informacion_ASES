@@ -355,10 +355,19 @@ class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
                             'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente['riesgo_economico']),
                             'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad'])
                         }
-                        conteo = {
-                            'conteo_seguimientos': conteo_seguimiento_individual,
-                            'conto_inasistencias': conteo_inasistencia,
-                        }
+                        if conteo_seguimiento_individual > 6 :
+                            conteo = {
+                                'conteo_seguimientos': conteo_seguimiento_individual,
+                                'conto_inasistencias': conteo_inasistencia,
+                                'culmino_acompañamiento' : True,
+                            }
+                        else :
+                            conteo = {
+                                'conteo_seguimientos': conteo_seguimiento_individual,
+                                'conto_inasistencias': conteo_inasistencia,
+                                'culmino_acompañamiento' : False,
+                            }
+
                     else:
                         riesgo = {
                         'riesgo_individual': 'SIN RIESGO',
@@ -368,8 +377,8 @@ class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
                         'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
                         }
                         conteo = {
-                            'conteo_seguimientos': conteo_seguimiento_individual,
-                            'conto_inasistencias': conteo_inasistencia,
+                            'conteo_seguimientos': '0',
+                            'conto_inasistencias': '0',
                         }
                 except seguimiento_individual.DoesNotExist:
                     # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía

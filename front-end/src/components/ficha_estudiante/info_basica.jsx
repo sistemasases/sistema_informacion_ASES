@@ -3,6 +3,7 @@ import Select from "react-select";
 import { Row, Col } from "styled-bootstrap-grid";
 import { Button } from "react-bootstrap";
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual";
+import Seguimiento_individual_v2 from '../seguimiento_forms/form_seguimiento_individual_v2';
 import { useEffect } from "react";
 import axios from "axios";
 import Selector from "../../components/ficha_estudiante/selector";
@@ -327,7 +328,7 @@ const Info_basica = (props) => {
 
   return (
     <Row className="row_prueba">
-      <Seguimiento_individual
+      <Seguimiento_individual_v2
         estudiante_seleccionado={state.seleccionado}
         recarga_ficha_estudiante={true}
         show={show}

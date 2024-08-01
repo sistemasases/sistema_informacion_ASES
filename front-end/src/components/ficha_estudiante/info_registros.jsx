@@ -5,9 +5,10 @@ import {Row, Col} from "styled-bootstrap-grid";
 
 import Seguimiento_individual from '../seguimiento_forms/form_seguimiento_individual';
 import Inasistencia from '../seguimiento_forms/form_inasistencia';
+import Seguimiento_individual_v2 from '../seguimiento_forms/form_seguimiento_individual_v2';
 import {useEffect} from 'react';
 import axios from 'axios';
-import {desencriptar, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import {desencriptar, decryptTokenFromSessionStorage,desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 const Info_registros = (props) =>{
 
@@ -30,12 +31,16 @@ const Info_registros = (props) =>{
       })
 
       useEffect(()=>{
+        let formData = new FormData();
+        formData.append("id_estudiante", props.id_estudiante);
+        formData.append("id_semestre",desencriptarInt(sessionStorage.getItem('id_semestre_actual')));
        
       axios({
-          // Endpoint to send files
-          url:  `${process.env.REACT_APP_API_URL}/usuario_rol/ultimo_seguimiento_individual/` + props.id_estudiante+ "/",
-          method: "GET",
-          headers: config,
+            // Endpoint to send files
+            url:  `${process.env.REACT_APP_API_URL}/usuario_rol/ultimo_seguimiento_individual/ultimo_seguimiento_semestre/`,
+            method: "POST",
+            headers: config,
+            data: formData,
         })
         .then((respuesta)=>{
           set_state({
@@ -53,7 +58,7 @@ const Info_registros = (props) =>{
 
     return (
         <Row className="container_info_registro">
-            <Seguimiento_individual estudiante_seleccionado={props.id_estudiante} recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn}  size="lg"/>
+            <Seguimiento_individual_v2 estudiante_seleccionado={props.id_estudiante} recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} handleModalIn={handleModalIn}  size="lg"/>
             <Inasistencia estudiante_seleccionado={props.id_estudiante} recarga_ficha_estudiante={true}  show={showIn} onHide={handleCloseIn} handleCloseIn={handleCloseIn} handleModal={handleModal} size="lg"/>
             {}
             <div class="d-none d-lg-block col-1">

@@ -73,6 +73,10 @@ class user_viewsets (viewsets.ModelViewSet):
     update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
     partial_update: Maneja las solicitudes PATCH para realizar una actualización parcial de un recurso específico por su clave primaria.
     destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
+
+    END-POINT extra:
+    desactivar_usuarios_sede
+    actualizar_info_monitor
     """
 
     serializer_class = user_serializer
@@ -269,6 +273,12 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
     partial_update: Maneja las solicitudes PATCH para realizar una actualización parcial de un recurso específico por su clave primaria.
     destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
+
+    END-POINT extra:
+    datos_ficha_estudiante
+    estudiantes_por_sede
+    estudiantes_de_un_monitor
+    actualizacion_info_ficha_estuidante
     """
     serializer_class = estudiante_serializer
     permission_classes = (IsAuthenticated,)
@@ -579,13 +589,13 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
         if request_rol == "socioeducativo" or request_rol == "super_ases" or request_rol  == "socioeducativo_reg":
             list_id_programas = programa.objects.filter(id_sede=request_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes,estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
         elif request_rol == "profesional":
             list_id_practicantes= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
             list_id_monitores= usuario_rol.objects.filter(id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
             list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes,estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
         for data_del_estudiante in serializer_estudiantes.data:
@@ -1198,12 +1208,12 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
     
-
-    def retrieve(self, request,pk):
+    @action(detail=False, methods=['post'], url_path='ultimo_seguimiento_semestre')
+    def ultimo_seguimiento_semestre(self, request,pk=None):
 
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
-            seguimiento_reciente = riesgo_individual.objects.get(id_estudiante=pk)
+            seguimiento_reciente = riesgo_individual.objects.get(id_estudiante=request.data["id_estudiante"],id_semestre=request.data["id_semestre"])
 
             # Crear un diccionario con los datos de riesgo del seguimiento
             riesgo = {

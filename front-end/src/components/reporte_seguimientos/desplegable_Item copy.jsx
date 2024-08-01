@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual_sin_boton";
 import Seguimiento_inasistencia from "../seguimiento_forms/form_inasistencia_sin_boton";
+import Seguimiento_individual_edit_v2 from '../seguimiento_forms/form_seguimiento_individual_edit_v2';
 import { desencriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 /**
@@ -31,6 +32,10 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
 
   // Constante que guarda el rol del usuario
   const userRole = desencriptar(sessionStorage.getItem("rol"));
+  const fechaReferencia = new Date('2024-07-10'); // Fecha desde que corre la versión 2 de la ficha
+
+  // Convierte la fecha de item a un objeto Date si es necesario
+  const itemFecha = new Date(item.fecha);
 
   /**
    * Envia los datos del Usuario socieducativo y lo actualiza
@@ -102,23 +107,45 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
               )}
             </Col>
 
-            <Seguimiento_inasistencia
-              updateDataUserSocioedu={enviar_datos}
-              show={show2}
-              onHide={handleCloseIn}
-              handleCloseIn={handleCloseIn}
-              item={item}
-              size="lg"
-            />
-
-            <Seguimiento_individual
-              updateDataUserSocioedu={enviar_datos}
-              show={show}
-              onHide={handleClose}
-              handleClose={handleClose}
-              item={item}
-              size="lg"
-            />
+            {itemFecha < fechaReferencia ? (
+                    <>
+                        <Seguimiento_inasistencia 
+                            recarga_ficha_estudiante={true} 
+                            show={show2} 
+                            onHide={handleCloseIn} 
+                            handleCloseIn={handleCloseIn} 
+                            item={item} 
+                            size="lg" 
+                        />
+                        <Seguimiento_individual 
+                            recarga_ficha_estudiante={true} 
+                            show={show} 
+                            onHide={handleClose} 
+                            handleClose={handleClose} 
+                            item={item} 
+                            size="lg" 
+                        />
+                    </>
+                ) : (
+                    <>
+                        <Seguimiento_inasistencia  
+                            recarga_ficha_estudiante={true} 
+                            show={show2} 
+                            onHide={handleCloseIn} 
+                            handleCloseIn={handleCloseIn} 
+                            item={item} 
+                            size="lg" 
+                        />
+                        <Seguimiento_individual_edit_v2 
+                            recarga_ficha_estudiante={true} 
+                            show={show} 
+                            onHide={handleClose} 
+                            handleClose={handleClose} 
+                            item={item} 
+                            size="lg" 
+                        />
+                    </>
+                )}
           </Row>
         )}
       </>

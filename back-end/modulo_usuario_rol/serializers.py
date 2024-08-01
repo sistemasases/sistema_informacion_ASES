@@ -239,13 +239,6 @@ class ficha_estudiante_serializer(serializers.ModelSerializer):
 	el_id_de_etnia=serializers.SerializerMethodField(source='id_etnia',allow_null=True)
 	cohorte= cohorte_estudiante_ficha_serializer(source='id_estudiante_in_cohorte_estudiante',many=True)
 	programas= programa_estudiante_ficha_serializer(source='id_estudiante_in_programa_estudiante',many=True)
-	# profesional=
-	# practicante=
-	# monitor= asignacion_monitor_serializer(source='id_estudiante_in_asignacion',many=True)
-	# riesgos=
-	# fecha_seguimiento=
-	# firma_tratamiento =
-	# create a meta class
 	class Meta:
 		model = estudiante
 		fields = '__all__'
