@@ -58,8 +58,8 @@
   .input-updated {
     border: 0.1px solid #d9d9d9 !important;
     border-radius: 4px;
-    box-sizing: borerd-box;
-    padding: 10px;
+    box-sizing: border-box;    
+    padding: 7px;
     width: 100%;
     height: auto;
   }
@@ -73,14 +73,77 @@
     height: auto; /* Usar 'auto' para permitir que el textarea ajuste su altura según el contenido */
   }
 
-
+ /* Descontinuado para el select*/
   .form-react-select {
     border-radius: 1px;
-    padding-top: 10px;
-    padding-bottom: 10px;
     width: 100%;
-    height:80%; 
+    height:60% !important; 
+    min-height: 40px !important;
+    padding: 1px !important;
+    margin: 1px !important;
+    
   }
+
+  
+  .create-select-grande {
+    width: 100%;
+    height: auto;
+    float: right;
+    color: #000;
+    
+    [class$="ValueContainer"] {
+        min-height: 35px !important;
+        height: auto !important;
+        max-height: 50px; /* Altura máxima permitida */
+        overflow-y: auto; /* Permitir scroll si se excede la altura máxima */
+    }
+
+    [class$="IndicatorsContainer"] {
+        min-height: 38px !important;
+        height: auto !important;
+        max-height: 60px; /* Altura máxima permitida */
+        overflow-y: auto; /* Permitir scroll si se excede la altura máxima */
+    }
+
+    [class$="-Input"] {
+        min-height: 18px !important;
+        height: auto !important;
+        max-height: 48px; /* Altura máxima permitida */
+        overflow-y: auto; /* Permitir scroll si se excede la altura máxima */
+    }
+
+    [class$="-control"] {
+        min-height: 38px !important;
+        height: auto !important;
+        max-height: 88px; /* Altura máxima permitida */
+        overflow-y: auto; /* Permitir scroll si se excede la altura máxima */
+    }
+}
+
+.create-select {
+  width: 100%;
+  float: right;
+  color: #000;
+  [class$="ValueContainer"] {
+      min-height: 35px !important;
+      max-height: 20px;
+  }
+  [class$="IndicatorsContainer"] {
+      min-height: 38px !important;
+      max-height: 18px; 
+  }
+  [class$="-Input"] {
+      min-height: 38px !important;
+      max-height: 28px !important;
+  }
+  [class$="-control"] {
+      min-height: 38px !important;
+      max-height: 18px;
+
+  }
+}
+
+
 
   .custom-div {
     width: 100%; 
@@ -279,7 +342,7 @@
 
 
 
-    button {
+    .button-inicial {
       margin: 10px;
       padding: 10px 20px;
       background-color: #007bff;
@@ -290,7 +353,7 @@
      
     }
     
-    button:disabled {
+    .button:disabled {
       background-color: #cccccc;
     }
 
@@ -307,11 +370,94 @@
     }
 
   
+    .input-container {
+      position: relative;
+    
+    }
+    
     .char-count {
-      position: absolute;
-      right: 10px; /* Ajusta el valor según el espacio que necesitas */
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.9em;
+      font-size: 0.8em; /* Tamaño de fuente pequeño */
       color: #888;
+      margin-top: 0; /* Espacio entre el input y el contador */
+      display: block; /* Asegura que el contador aparezca en una nueva línea */
+    }
+
+
+    .custom-div-check {
+      display: flex;
+      align-items: center;
+      margin-top: 60px;
+      margin-right: 30px;
+      justify-content: space-between; /* Asegura que el contenido se distribuya entre los extremos */
+    }
+    
+    .custom-div-check-documentos {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      margin-right: 30px;
+      justify-content: space-between; 
+    }
+
+    .custom-checkbox-label {
+      font-size: 1em;
+      color: #333;
+      white-space: nowrap;
+    }
+    
+    .custom-checkbox {
+      position: relative;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      margin-left: 35px;
+    }
+    
+    .custom-checkbox input {
+      opacity: 0;
+      width: 60%;
+      height: 60%;
+    }
+    
+    .custom-checkbox .checkmark {
+      position:absolute;
+      top: 0;
+      bottom: 26%;
+      left: 0;
+      height: 22px;
+      width: 22px;
+      background-color: #eee;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    
+    .custom-checkbox input:checked + .checkmark {
+      background-color: #4CAF50;
+      border-color: #4CAF50;
+    }
+    
+    .custom-checkbox .checkmark:after {
+      content: "";
+      position: absolute;
+      display:flex;
+    }
+    
+    .custom-checkbox input:checked + .checkmark:after {
+      display: block;
+    }
+    
+    .custom-checkbox .checkmark:after {
+      left: 5px;
+      top: 2px;
+      width: 10px;
+      height: 15px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      transform: rotate(45deg);
+    }
+    
+
+    .check-div {   
+      display: 'flex';
+      align-items:'center';
     }

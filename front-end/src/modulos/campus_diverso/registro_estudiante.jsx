@@ -31,7 +31,7 @@ import DocumentosAutorizacion from './components/documentosAutorizacion';
     relacion_persona_de_confianza:"",
     tipo_documento:"",
     numero_documento:"",
-    estrato_socioeconomico:0,
+    estrato_socioeconomico:"",
     ciudad_nacimiento:"",
     fecha_nacimiento:"",
     departamento_nacimiento:"",
@@ -541,7 +541,7 @@ const handleSubmit = async (e) => {
               tipo_documento: "",
               numero_documento: "",
               relacion_persona_de_confianza: "",
-              estrato_socioeconomico: 0,
+              estrato_socioeconomico: "",
               ciudad_nacimiento: "",
               fecha_nacimiento: "",
               departamento_nacimiento: "",
@@ -717,12 +717,15 @@ const steps = [
     razasOptions={razasOptions}
     handleSelectChange={handleSelectChange}
     maxLengthBasicInput={maxLengthBasicInput}
+    pronombresOptions={pronombresOptions}
+
     /> },
   { component:     <DiversidadSexual
     state={state}
     handleChange={handleChange}
     handleSelectChange={handleSelectChange}
     isLoading={isLoading}
+    razasOptions={razasOptions}
     pronombresOptions={pronombresOptions}
     documentoOptions={documentoOptions}
     expresionesOptions={expresionesOptions}
@@ -769,8 +772,8 @@ const prevStep = () => {
     <div className='registro-estudiante-form'>
       <div>{steps[currentStep].component}</div>
       <div className='buttons-container'>
-        <Button onClick={prevStep} disabled={currentStep === 0}>Atrás</Button>
-        <Button onClick={nextStep} disabled={currentStep === steps.length - 1}>Siguiente</Button>
+        <Button className='button-inicial' onClick={prevStep} disabled={currentStep === 0}>Atrás</Button>
+        <Button className='button-inicial' onClick={nextStep} disabled={currentStep === steps.length - 1}>Siguiente</Button>
         {currentStep === steps.length - 1 && <Button onClick={handleSubmit}>Enviar</Button>}
       </div>
       {/* Alerta de éxito como modal */}

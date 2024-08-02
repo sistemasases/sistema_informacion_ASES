@@ -178,7 +178,6 @@ const ModalEstudiantes = ({
     <Select
       isMulti
       placeholder='Seleccione grupo poblacional'
-      className='form-react-select'
       name="pertenencia_grupo_poblacional"
       // Opciones disponibles, excluyendo las ya seleccionadas
       options={razasOptions.filter(option => 

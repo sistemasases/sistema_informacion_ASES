@@ -24,6 +24,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Dedicacion externa</label>
                 <div>
                 <input
+                  className='input-updated'
                   type="text"
                   name="dedicacion_externa"
                   placeholder='Ingrese la dedicacion externa'
@@ -37,6 +38,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Tiene eps?</label>
                 <div>
                 <input
+                  className='input-updated'
                   type="text"
                   name="tiene_eps"
                   placeholder='Ingrese la EPS'
@@ -50,6 +52,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>regimen de la EPS</label>
                 <div>
                 <input
+                  className='input-updated'
                   type="text"
                   name="regimen_eps"
                   placeholder='Ingrese el regimen'
@@ -65,6 +68,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>tipo de entidad que brinda acompañamiento recibido</label>
                 <div>
                 <input
+                  className='input-updated'
                   type="text"
                   name="tipo_entidad_acompanamiento_recibido"
                   placeholder='Ingrese la entidad'
@@ -78,6 +82,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Calificacion de acompañamiento recibido</label>
                 <div>
                 <input
+                  className='input-updated'
                   type="number"
                   name="calificacion_acompanamiento_recibido"
                   placeholder='Ingrese calificacion'
@@ -94,6 +99,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Motivo de calificacion de acompañamiento recibido</label>
                 <div>
                 <input
+                className='input-updated'
                   type="text"
                   name="motivo_calificacion_acompanamiento"
                   placeholder='Ingrese el motivo'
@@ -107,6 +113,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Actividad específica en tiempo libre</label>
                 <div>
                 <input
+                className='input-updated'
                   type="text"
                   name="actividades_especificas_tiempo_libre"
                   placeholder='Ingrese la actividad'
@@ -120,6 +127,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Calificacion de relación familiar</label>
                 <div>
                 <input
+                className='input-updated'
                   type="number"
                   name="calificacion_relacion_familiar"
                   placeholder='Ingrese calificacion'
@@ -136,6 +144,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Observación general de fuente de ingresos</label>
                 <div>
                 <textarea
+                className='input-updated'
                   type="text"
                   name="observacion_general_fuente_de_ingresos"
                   placeholder='Ingrese la observación'
@@ -248,12 +257,13 @@ const InformacionGeneral = ({state,
     </Col>
 
 
-    <Col>
+    <Col className="form-column" xs={"10"} md={"6"}>
 
         <div>
                 <label className='custom-div'>Observación general de redes de apoyo</label>
                 <div>
                 <textarea
+                className='input-updated'
                   type="text"
                   name="observacion_general_redes_de_apoyo"
                   placeholder='Ingrese la observación'
@@ -267,6 +277,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Observación general factores de riesgo</label>
                 <div>
                 <textarea
+                className='input-updated'
                   type="text"
                   name="observacion_general_factores_de_riesgo"
                   placeholder='Ingrese la observación'
@@ -277,9 +288,10 @@ const InformacionGeneral = ({state,
         </div>  
 
         <div>
-                <label className='custom-div'>Creeencia religiosa</label>
+                <label className='custom-div'>Creencia religiosa</label>
                 <div>
                 <input
+                className='input-updated'
                   type="text"
                   name="creencia_religiosa"
                   placeholder='Ingrese la creencia'
@@ -293,6 +305,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Decisión encuentro inicial con profesional</label>
                 <div>
                 <input
+                className='input-updated'
                   type="text"
                   name="decision_encuentro_inicial_con_profesional"
                   placeholder='Ingrese la decisión'
@@ -306,6 +319,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Observación horario</label>
                 <div>
                 <input
+                className='input-updated'
                   type="text"
                   name="observacion_horario"
                   placeholder='Ingrese la observación'
@@ -320,6 +334,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Origen de descubrimiento de campus diverso</label>
                 <div>
                 <input
+                className='input-updated'
                   type="text"
                   name="origen_descubrimiento_campus_diverso"
                   placeholder='Ingrese el origen'
@@ -333,6 +348,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Comentarios o sugerencias de usuario</label>
                 <div>
                 <input
+                className='input-updated'
                   type="text"
                   name="comentarios_o_sugerencias_de_usuario"
                   placeholder='Ingrese el comentario o sugerencia'
@@ -347,6 +363,7 @@ const InformacionGeneral = ({state,
         <label className='custom-div'>Observación convivencia de vivienda</label>
         <div>
           <textarea
+          className='input-updated'
             name="observacion_general_relacion_convivencia_vivienda"
             placeholder='Ingrese la observación'
             value={state.observacion_general_relacion_convivencia_vivienda}
@@ -360,6 +377,7 @@ const InformacionGeneral = ({state,
                 <label className='custom-div'>Observación actividades especificas en tiempo libre</label>
                 <div>
                 <textarea
+                className='input-updated'
                   name="observacion_general_actividades_especificas_tiempo_libre"
                   placeholder='Ingrese la observación'
                   value={state.observacion_general_actividades_especificas_tiempo_libre}
