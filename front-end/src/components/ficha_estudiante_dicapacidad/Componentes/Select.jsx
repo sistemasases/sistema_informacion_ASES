@@ -14,7 +14,7 @@ const Select = () => {
     id: "identificación",
     nombre: null,
     codigo: null,
-    correo: "carlos.mauricio.tovar@correounivalle.edu.co",
+    correo: "correo",
     edad: "edad",
     imagen: null,
     programas: [],
