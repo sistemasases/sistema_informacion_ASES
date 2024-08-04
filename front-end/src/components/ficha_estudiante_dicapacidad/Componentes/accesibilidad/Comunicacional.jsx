@@ -1,7 +1,22 @@
 import AcordionesHijos from "../AcordionesHijos";
 import Columns from "../Columns";
+import React, { useState } from 'react';
 
 const Comunicacional = () => {
+  const [isYesSelected, setIsYesSelected] = useState(false);
+  const [elementId, setElementId] = useState("");
+
+  const handleRadioChange = (event) => {
+    if (event.target.value === "Si") {
+      setElementId(event.target.id);
+      setIsYesSelected(true);
+      console.log(event.target.id)
+    } else if (event.target.value === "No") {
+      setIsYesSelected(false);
+      console.log(event.target.id)
+    }
+  };
+
   return (
     <AcordionesHijos
       claseCon={"accordion-content"}
@@ -13,18 +28,21 @@ const Comunicacional = () => {
               columns={[
                 [
                   { type: "text", name: "Hablar" },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
+                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "1" },
+                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange },
                   {
                     type: "radio",
                     name: "tripleChoice",
                     value: "Independiente",
+                    disabled: !isYesSelected && elementId === "1",
                   },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
+                  { type: "radio", name: "tripleChoice", value: "Dependiente",
+                    disabled: !isYesSelected && elementId === "1", },
                   {
                     type: "radio",
                     name: "tripleChoice",
                     value: "Requiere apoyo",
+                    disabled: !isYesSelected && elementId === "1",
                   },
                 ],
                 [
@@ -32,18 +50,20 @@ const Comunicacional = () => {
                     type: "text",
                     name: "Producción de mensajes no verbales",
                   },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
+                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "2" },
+                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange },
                   {
                     type: "radio",
                     name: "tripleChoice",
                     value: "Independiente",
+                    disabled: !isYesSelected && elementId === "2",
                   },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
+                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "2" },
                   {
                     type: "radio",
                     name: "tripleChoice",
                     value: "Requiere apoyo",
+                    disabled: !isYesSelected && elementId === "2",
                   },
                 ],
                 [
