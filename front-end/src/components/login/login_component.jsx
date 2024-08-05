@@ -139,20 +139,23 @@ const Login_component = () => {
    */
   const handleClose = () => setShow(false);
 
-  const [mail, setMail] = useState("");
+  const [mail, setMail] = useState({
+    correo: "",
+    username: "",
+  });
   // const [show, setShow] = useState(false);
   const [mailSent, setMailSent] = useState(false);
   const enviar_correos_not_w = () => {
     // console.log("enviar correos");
     // console.log("HOLAAA");
-    // console.log(mail);
+    console.log(mail);
 
     // setShow(true);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/correos/enviar_correo_cambio_contra/`,
         {
-          params: { mail: mail.correo },
+          params: { mail: mail.correo, username: mail.username },
         }
       )
       .then((response) => {
@@ -275,7 +278,10 @@ const Login_component = () => {
                       type="text"
                       placeholder="Correo"
                       onChange={(e) => {
-                        handleForfottenPassword(e);
+                        setMail({
+                          ...mail,
+                          correo: e.target.value,
+                        });
                       }}
                     />
                   </Col>
@@ -294,6 +300,25 @@ const Login_component = () => {
                       Envíar
                     </Button>
                   </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Control
+                      style={{
+                        marginTop: "10px",
+                        width: "100%",
+                      }}
+                      type="text"
+                      placeholder="Nombre de Usuario"
+                      onChange={(e) => {
+                        setMail({
+                          ...mail,
+                          username: e.target.value,
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col></Col>
                 </Row>
               </Form.Group>
             </Modal.Body>

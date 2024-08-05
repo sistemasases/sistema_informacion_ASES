@@ -1,0 +1,63 @@
+/* Asegúrate de que el contenedor principal ocupe toda la pantalla */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(250, 227, 225);
+}
+
+.auth-form-div {
+  justify-content: center;
+  align-items: center;
+  /* height: 100vh; */
+  width: 50vw;
+  border-style: double;
+  background-color: white;
+}
+
+.auth-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-top: 1rem;
+  font-weight: 800;
+}
+
+.salute {
+  text-align: left;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  font-weight: 800;
+}
+
+.info-text {
+  text-align: left;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+  margin-bottom: 1rem;
+  font-weight: lighter;
+}
+
+.info-text-item {
+  text-align: left;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.1rem;
+  font-weight: lighter;
+}
+
+.channels-info {
+  /* text-align: left; */
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.1rem;
+  margin-left: 2rem;
+  padding-left: 0.7rem;
+  font-weight: lighter;
+}
+
+.mail-text {
+  font-weight: 600;
+}
