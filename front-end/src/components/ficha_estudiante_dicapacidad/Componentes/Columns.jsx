@@ -107,6 +107,7 @@ const Columns = ({ columns, twobold }) => {
                             [inputName]: e.target.value,
                           })
                         }
+                        disabled={element.disabled}
                       />
                     </label>
                   </div>
