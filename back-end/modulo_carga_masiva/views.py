@@ -5,7 +5,7 @@ import pandas as pd
 from modulo_usuario_rol.models import estudiante, cohorte_estudiante, cond_excepcion, usuario_rol, firma_tratamiento_datos, rol
 from django.contrib.auth.models import User
 from modulo_programa.models import programa, programa_estudiante, estado_programa,vcd_academico,dir_programa
-from modulo_carga_masiva.models import retiro, motivo
+from modulo_discapacidad.models import asignacion_discapacidad
 from modulo_academico.models import historial_academico, materia, facultad, matricula
 from modulo_instancia.models import semestre, sede, cohorte
 from modulo_seguimiento.models import seguimiento_individual, inasistencia
@@ -45,16 +45,12 @@ class Validador_carga(APIView):
                 return carga_materias(file)
             elif(tipo == "Matricula"):
                 return carga_matricula(file)
-            elif(tipo == "Retiro"):
-                return carga_retiros(file)
             elif(tipo == "Ficha"):
                 return carga_fichas(file)
-            elif(tipo == "Ficha2"):
+            elif(tipo == "FichaV2"):
                 return carga_fichas2(file)
             elif(tipo == "Inasistencia"):
                 return carga_inasistencias(file)
-            elif(tipo == "Inasistencia2"):
-                return carga_inasistencias2(file)
             elif(tipo == "Vcd_academico"):
                 return carga_vcd_academicos(file)
             elif(tipo == "Dir_programa"):
@@ -65,6 +61,14 @@ class Validador_carga(APIView):
                 return eliminar_matricula(file)
             elif(tipo == "Firma_datos"):
                 return carga_autorizacion(file)
+            elif(tipo == "estudiante_disc"):
+                return carga_estudiantes_disc(file)
+            elif(tipo == "volver_estudiante_disc"):
+                return volver_discapacidad(file)
+            elif(tipo == "quitar_estudiante_disc"):
+                return quitar_discapacidad(file)
+            elif(tipo == "asignacion_disc"):
+                return discapacidad_asignacion(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
             
@@ -658,61 +662,6 @@ def eliminar_matricula(file):
     return Response(list_dict_result)
 
 
-def carga_retiros(file):
-    list_dict_result = []
-    lista_retiros =[]
-    datos = pd.read_csv(file,header=0)
-    for i in range(datos.shape[0]):
-        if(estudiante.objects.filter(num_doc =datos.iat[i,0],cod_univalle=datos.iat[i,1]).first()):
-            consulta_estudiante= estudiante.objects.filter(num_doc =datos.iat[i,0],cod_univalle=datos.iat[i,1]).first()
-
-            if(motivo.objects.filter(id =datos.iat[i,2]).first()):
-                consulta_motivo= motivo.objects.filter(id =datos.iat[i,2]).first()
-
-                if(retiro.objects.filter(id_estudiante= consulta_estudiante,id_motivo= consulta_motivo)):
-
-                    dict_result = {
-                            'dato' : datos.iat[i,1],
-                            'mensaje' : 'Ya existe este retiro.'
-                        }
-                    list_dict_result.append(dict_result)
-
-                else:
-                    try:
-                        Retiro = retiro(
-                        id_estudiante= consulta_estudiante,
-                        id_motivo= consulta_motivo,
-                        detalle = str(datos.iat[i,3]),
-
-                        )
-                        lista_retiros.append(Retiro)
-                    
-                        dict_result = {
-                            'dato' : datos.iat[i,1],
-                            'mensaje' : 'Se cargó correctamente el retiro de este estudiante.'
-                        }
-                        list_dict_result.append(dict_result)
-                    except:
-                        dict_result = {
-                            'dato' : datos.iat[i,1],
-                            'mensaje' : 'Error al cargar el retiro de este estudiante.'
-                        }
-                        list_dict_result.append(dict_result)
-            else:        
-                dict_result = {
-                        'dato' : datos.iat[i,1],
-                        'mensaje' : 'No existe un motivo de retiro con este id: '+str(datos.iat[i,2])
-                    }
-                list_dict_result.append(dict_result)
-        else:        
-            dict_result = {
-                    'dato' : datos.iat[i,1],
-                    'mensaje' : 'No existe este estudiante.'
-                }
-            list_dict_result.append(dict_result)
-
-    retiro.objects.bulk_create(lista_retiros)
-    return Response(list_dict_result)
 
 def carga_fichas(file):
     list_dict_result = []
@@ -899,9 +848,9 @@ def carga_fichas2(file):
 
 
 
-            if (estudiante.objects.filter(cod_univalle = datos.iat[i,60]).values()):
-                consulta_estudiante= estudiante.objects.get(cod_univalle =datos.iat[i,60])
-                if (seguimiento_individual.objects.filter(fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
+            if (estudiante.objects.filter(id = datos.iat[i,60]).values()):
+                consulta_estudiante= estudiante.objects.get(id =datos.iat[i,60])
+                if (seguimiento_individual.objects.filter(fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
                                                         hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M'),
                                                         hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M'),
                                                         id_creador = consulta_creador,
@@ -967,7 +916,7 @@ def carga_fichas2(file):
 
                         try:
                             Seguimiento_individual =seguimiento_individual(
-                                fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
+                                fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
                                 lugar = str(datos.iat[i,1]),
                                 hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M'),
                                 hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M'),
@@ -1038,19 +987,19 @@ def carga_fichas2(file):
                             list_fichas.append(Seguimiento_individual)
                             dict_result = {
                                 'dato' : datos.iat[i,0],
-                                'mensaje' : 'Se cargó correctamente la fichaW del estudiante con código: '+str(datos.iat[i,60])+'.'
+                                'mensaje' : 'Se cargó correctamente la fichaW del estudiante con id: '+str(datos.iat[i,60])+'.'
                             }
                             list_dict_result.append(dict_result)
                         except:
                             dict_result = {
                                 'dato' : datos.iat[i,0],
-                                'mensaje' : 'Error al cargar la ficha del estudiante con código: '+str(datos.iat[i,60])+'.'
+                                'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,60])+'.'
                             }
                             list_dict_result.append(dict_result)
             else:
                 dict_result = {
                     'dato' : datos.iat[i,0],
-                    'mensaje' : 'Error al cargar la ficha del estudiante con código: '+str(datos.iat[i,60])+'.'
+                    'mensaje' : 'Error al cargar la ficha del estudiante con id: '+str(datos.iat[i,60])+'.'
                 }
                 list_dict_result.append(dict_result)
         else:
@@ -1128,74 +1077,6 @@ def carga_inasistencias(file):
             list_dict_result.append(dict_result)
     inasistencia.objects.bulk_create(list_inasistencia)
     return Response(list_dict_result)
-
-def carga_inasistencias2(file):
-    list_dict_result = []
-    list_inasistencia = []
-    datos = pd.read_csv(file,header=0)
-    for i in range(datos.shape[0]):
-        if (User.objects.filter(id = datos.iat[i,4]).values()):
-            consulta_creador= User.objects.get(id =datos.iat[i,4])
-
-
-            if (estudiante.objects.filter(cod_univalle = datos.iat[i,6]).values()):
-                consulta_estudiante= estudiante.objects.get(cod_univalle =datos.iat[i,6])
-
-                if (inasistencia.objects.filter(fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
-                                                        id_creador = consulta_creador,
-                                                        id_estudiante =  consulta_estudiante,).first()):
-                    dict_result = {
-                        'dato' : datos.iat[i,0],
-                        'mensaje' : 'Ya existe esta inasistencia.'
-                    }
-                    list_dict_result.append(dict_result)
-                else:
-
-                    try:
-                        if str(datos.iat[i,1]) == "nan":
-                            observacion_dato = str("")
-                        else:
-                            observacion_dato =  str(datos.iat[i,1])
-
-                        Inasistencia =inasistencia(
-                            fecha = datetime.strptime(str(datos.iat[i,0]),'%d/%m/%Y'),
-                            observaciones=observacion_dato,
-                            revisado_profesional = bool(datos.iat[i,2]),
-                            revisado_practicante = bool(datos.iat[i,3]),
-
-                            id_creador = consulta_creador,
-                            id_modificador = None,
-                            id_estudiante =  consulta_estudiante,
-
-                        )
-                        list_inasistencia.append(Inasistencia)
-                        dict_result = {
-                            'dato' : datos.iat[i,0],
-                            'mensaje' : 'Se cargó correctamente la ficha del estudiante con código: '+str(datos.iat[i,6])+'.'
-                        }
-                        list_dict_result.append(dict_result)
-                    except:
-                        dict_result = {
-                            'dato' : datos.iat[i,0],
-                            'mensaje' : 'Error al cargar la ficha del estudiante con código: '+str(datos.iat[i,6])+'.'
-                        }
-                        list_dict_result.append(dict_result)
-            else:
-                dict_result = {
-                    'dato' : datos.iat[i,0],
-                    'mensaje' : 'Error al cargar la ficha del estudiante con código: '+str(datos.iat[i,6])+'.'
-                }
-                list_dict_result.append(dict_result)
-
-        else:
-            dict_result = {
-                'dato' : datos.iat[i,0],
-                'mensaje' : 'El usuario suministrado como creador de la ficha no existe.'
-            }
-            list_dict_result.append(dict_result)
-    inasistencia.objects.bulk_create(list_inasistencia)
-    return Response(list_dict_result)
-
 
 
 def carga_autorizacion(file):
@@ -1405,3 +1286,219 @@ def cambio_contrasena(file):
 
         
     return Response(list_dict_result)
+
+def carga_estudiantes_disc(file):
+    list_dict_result = []
+    lista_estudiantes =[]
+    
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+        if (estudiante.objects.filter(cod_univalle = datos.iat[i,22]).values()):
+            consulta_estudiante = estudiante.objects.filter(cod_univalle = datos.iat[i,22]).first()
+            consulta_programa = programa.objects.filter(codigo_univalle= datos.iat[i,23],id_sede = datos.iat[i,24]).first()
+            if(programa_estudiante.objects.filter(id_estudiante = consulta_estudiante,id_programa=consulta_programa).values()):
+                dict_result = {
+                    'dato' : datos.iat[i,22],
+                    'mensaje' : 'Ya existe en la BD este estudiante.'
+                }
+                list_dict_result.append(dict_result)
+            else:
+                dict_result = {
+                    'dato' : datos.iat[i,22],
+                    'mensaje' : 'El estudiante existe pero No en este programa.'
+                }
+                list_dict_result.append(dict_result)
+        else:
+            try:
+                if(datos.iat[i,25]):
+                    consulta_cond_excep= cond_excepcion.objects.filter(alias = datos.iat[i,25]).first()
+                    Estudiante = estudiante(
+                    tipo_doc_ini = str(datos.iat[i,0]),
+                    num_doc_ini = int(datos.iat[i,1]),
+                    tipo_doc = str(datos.iat[i,2]),
+                    num_doc = str(datos.iat[i,3]),
+                    barrio_ini_id = int(datos.iat[i,4]),
+                    ciudad_ini_id = int(datos.iat[i,5]),
+                    dir_ini = str(datos.iat[i,6]),
+                    telefono_ini = datos.iat[i,7],
+                    dir_res = str(datos.iat[i,8]),
+                    telefono_res = str(datos.iat[i,9]),
+                    email = str(datos.iat[i,10]),
+                    acudiente = str(datos.iat[i,11]),
+                    telefono_acudiente =str( datos.iat[i,12]),
+                    sexo = str(datos.iat[i,13]),
+                    colegio = str(datos.iat[i,14]),
+                    estamento = str(datos.iat[i,15]),
+                    celular = datos.iat[i,16],
+                    hijos = datos.iat[i,17],
+                    barrio_res_id = int(datos.iat[i,18]),
+                    ciudad_res_id = int(datos.iat[i,19]),
+                    nombre = str(datos.iat[i,20]),
+                    apellido = str(datos.iat[i,21]),
+                    cod_univalle = str(datos.iat[i,22]),
+                    id_cond_excepcion=consulta_cond_excep,
+                    es_discapacidad=True
+                    )
+                else:
+                    Estudiante = estudiante(
+                    tipo_doc_ini = str(datos.iat[i,0]),
+                    num_doc_ini = int(datos.iat[i,1]),
+                    tipo_doc = str(datos.iat[i,2]),
+                    num_doc = str(datos.iat[i,3]),
+                    barrio_ini_id = int(datos.iat[i,4]),
+                    ciudad_ini_id = int(datos.iat[i,5]),
+                    dir_ini = str(datos.iat[i,6]),
+                    telefono_ini = datos.iat[i,7],
+                    dir_res = str(datos.iat[i,8]),
+                    telefono_res = int(datos.iat[i,9]),
+                    email = str(datos.iat[i,10]),
+                    acudiente = str(datos.iat[i,11]),
+                    telefono_acudiente =int( datos.iat[i,12]),
+                    sexo = str(datos.iat[i,13]),
+                    colegio = str(datos.iat[i,14]),
+                    estamento = str(datos.iat[i,15]),
+                    celular = datos.iat[i,16],
+                    hijos = datos.iat[i,17],
+                    barrio_res_id = int(datos.iat[i,18]),
+                    ciudad_res_id = int(datos.iat[i,19]),
+                    nombre = str(datos.iat[i,20]),
+                    apellido = str(datos.iat[i,21]),
+                    cod_univalle = str(datos.iat[i,22]),
+                    es_discapacidad=True
+                    )
+                lista_estudiantes.append(Estudiante)
+                dict_result = {
+                    'dato' : datos.iat[i,22],
+                    'mensaje' : 'Se cargó correctamente este estudiante.'
+                }
+                list_dict_result.append(dict_result)
+            except:
+                dict_result = {
+                    'dato' : datos.iat[i,22],
+                    'mensaje' : 'Error al cargar este estudiante.'
+                }
+                list_dict_result.append(dict_result)
+
+    estudiante.objects.bulk_create(lista_estudiantes)
+
+    return Response(list_dict_result)
+
+def volver_discapacidad(file):
+    list_dict_result = []
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+        consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle =datos.iat[i,1]).first()
+        if (consulta_estudiante):
+            try:
+                consulta_estudiante.es_discapacidad = True
+                consulta_estudiante.save()
+                dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Se activo correctamente este estudiante.' 
+                        }
+                list_dict_result.append(dict_result)
+            except:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'Error al activar el estudiante.'
+                }
+                list_dict_result.append(dict_result)   
+        
+        else:
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'No existe un estudiante con este numero de documento y código: ' + str(datos.iat[i,1])
+            }
+            list_dict_result.append(dict_result)
+
+    return Response(list_dict_result)
+
+def quitar_discapacidad(file):
+    list_dict_result = []
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+        consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle =datos.iat[i,1]).first()
+        if (consulta_estudiante):
+            try:
+                consulta_estudiante.es_discapacidad = False
+                consulta_estudiante.save()
+                dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Se desactivo correctamente este estudiante.' 
+                        }
+                list_dict_result.append(dict_result)
+            except:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'Error al activar el estudiante.'
+                }
+                list_dict_result.append(dict_result)   
+        
+        else:
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'No existe un estudiante con este numero de documento y código: ' + str(datos.iat[i,1])
+            }
+            list_dict_result.append(dict_result)
+
+    return Response(list_dict_result)
+
+def discapacidad_asignacion(file):
+    list_dict_result = []
+    lista_asignaciones =[]
+    datos = pd.read_csv(file,header=0)
+    for i in range(datos.shape[0]):
+        consulta_estudiante = estudiante.objects.filter(cod_univalle =datos.iat[i,0]).first()
+        if (consulta_estudiante):
+            consulta_usuario= User.objects.filter(username =datos.iat[i,1]).first()
+            consulta_usuario_rol= usuario_rol.objects.filter(id_usuario =consulta_usuario,id_semestre=datos.iat[i,2],estado='ACTIVO').first()
+            if(consulta_usuario_rol):
+                if(asignacion_discapacidad.objects.filter(id_usuario =consulta_usuario,id_estudiante = consulta_estudiante,id_semestre=datos.iat[i,2]).first()):
+                    dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Ya existe esta realción.'
+                        }
+                    list_dict_result.append(dict_result)
+                     
+                else: 
+                    try:
+                        Asignacion= asignacion_discapacidad(
+                            id_usuario = consulta_usuario,
+                            id_estudiante = consulta_estudiante,
+                            id_semestre = semestre.objects.get(id = int(datos.iat[i,2])),
+                            estado = True
+                        )
+                        lista_asignaciones.append(Asignacion)
+
+                        dict_result = {
+                                    'dato' : datos.iat[i,0],
+                                    'mensaje' : 'Se relacionó correctamente este estudiante.' 
+                                }
+                        list_dict_result.append(dict_result)
+                    except:
+                        dict_result = {
+                            'dato' : datos.iat[i,0],
+                            'mensaje' : 'Error al relacionar este estudiante.'
+                        }
+                        list_dict_result.append(dict_result)        
+                    
+            else:        
+                dict_result = {
+                        'dato' : datos.iat[i,0],
+                        'mensaje' : 'No existe un usuario_rol relacionado a este usuario: ' + str(datos.iat[i,1])
+                    }
+                list_dict_result.append(dict_result) 
+        
+        else:
+            dict_result = {
+                'dato' : datos.iat[i,0],
+                'mensaje' : 'No existe un estudiante con este código.'
+            }
+            list_dict_result.append(dict_result)
+    
+    asignacion_discapacidad.objects.bulk_create(lista_asignaciones)
+
+    return Response(list_dict_result)
+
+
+
