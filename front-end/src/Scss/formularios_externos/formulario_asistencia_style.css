@@ -1,6 +1,6 @@
 /* Asegúrate de que el contenedor principal ocupe toda la pantalla */
-body,
-html {
+.asis-all-background {
+  height: 100vh;
   margin: 0;
   padding: 0;
   display: flex;

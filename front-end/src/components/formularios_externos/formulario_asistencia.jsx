@@ -70,6 +70,15 @@ const FormularioAsistencia = (props) => {
   const send_data = (e) => {
     // console.log(e);
     console.log(data);
+    // Crear tabla de asistencias
+    // Datos del formulario
+    // * añadir sede
+    // Crear tabla monitorias
+
+    if (data.codigo === "" || data.monitoria_asistencia === "") {
+      alert("Por favor llene todos los campos obligatorios");
+      return;
+    }
   };
 
   /**
@@ -80,75 +89,78 @@ const FormularioAsistencia = (props) => {
    */
 
   return (
-    <div className="asis-form-div">
-      <Container>
-        <Col>
-          <Row>
-            <h4 className="asis-title">FORMULARIO DE ASISTENCIA</h4>
-          </Row>
-          <hr></hr>
-          <Row>
-            <Col>
-              <Form>
-                <Form.Group controlId="formCode">
-                  <Form.Label className="asis-subtitle">
-                    Código estudiante <label style={{ color: "red" }}> *</label>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Tu respuesta"
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        codigo: e.target.value,
-                      })
-                    }
-                  />
-                </Form.Group>
-                <hr></hr>
+    <div className="asis-all-background">
+      <div className="asis-form-div">
+        <Container>
+          <Col>
+            <Row>
+              <h4 className="asis-title">FORMULARIO DE ASISTENCIA</h4>
+            </Row>
+            <hr></hr>
+            <Row>
+              <Col>
+                <Form>
+                  <Form.Group controlId="formCode">
+                    <Form.Label className="asis-subtitle">
+                      Código estudiante{" "}
+                      <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          codigo: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
 
-                <Form.Group controlId="formMonitoria">
-                  <Form.Label className="asis-subtitle">
-                    Monitoria a la qué asiste{" "}
-                    <label style={{ color: "red" }}> *</label>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Tu respuesta"
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        monitoria_asistencia: e.target.value,
-                      })
-                    }
-                  />
-                </Form.Group>
-                <hr></hr>
+                  <Form.Group controlId="formMonitoria">
+                    <Form.Label className="asis-subtitle">
+                      Monitoria a la qué asiste{" "}
+                      <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          monitoria_asistencia: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
 
-                <Form.Group controlId="formDate">
-                  <Form.Label className="asis-subtitle">Fecha</Form.Label>
-                  <Form.Control
-                    type="date"
-                    disabled
-                    value={new Date().toISOString().split("T")[0]}
-                  />
-                </Form.Group>
-                <hr></hr>
-                <div style={{ textAlign: "center", alignItems: "center" }}>
-                  <Button
-                    variant="primary"
-                    // type="submit"
-                    onClick={(e) => send_data(e)}
-                  >
-                    Autorizar
-                  </Button>
-                </div>
-              </Form>
-            </Col>
-          </Row>
-        </Col>
-      </Container>
-      <br />
+                  <Form.Group controlId="formDate">
+                    <Form.Label className="asis-subtitle">Fecha</Form.Label>
+                    <Form.Control
+                      type="date"
+                      disabled
+                      value={new Date().toISOString().split("T")[0]}
+                    />
+                  </Form.Group>
+                  <hr></hr>
+                  <div style={{ textAlign: "center", alignItems: "center" }}>
+                    <Button
+                      variant="primary"
+                      // type="submit"
+                      onClick={(e) => send_data(e)}
+                    >
+                      Autorizar
+                    </Button>
+                  </div>
+                </Form>
+              </Col>
+            </Row>
+          </Col>
+        </Container>
+        <br />
+      </div>
     </div>
   );
 };
