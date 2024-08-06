@@ -31,10 +31,14 @@ const FormularioPrimerIngreso = (props) => {
   });
   const opciones = [];
 
-  //   const url = encriptar("formulario_primer_ingreso");
-  //   console.log(url);
-  //   const decrypt_url = desencriptar("U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7");
-  //   console.log(decrypt_url);
+  // const url = encriptar("formulario_autorizacion");
+  // console.log(url);
+  // const decrypt_url = desencriptar("url");
+  // console.log(decrypt_url);
+
+  // URL: Asistencias : U2FsdGVkX19rLu/6uWbJJimIQLdYOg9C1x5ik8/+NlWI7bOkLOSOd1Q5Pi0NE/a/
+  // URL: Autorización: U2FsdGVkX18hjszpddLoSgU/HywzCP8D13edFaHOV+PmxYYqsxUx7dICZxdkz/bz
+  // URL: Primer Ingreso: U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7
 
   useEffect(() => {
     All_sedes_formularios_externos.all_sedes_formularios_externos()
@@ -119,6 +123,25 @@ const FormularioPrimerIngreso = (props) => {
   const send_data = (e) => {
     // console.log(e);
     console.log(data);
+
+    // es_academico
+    // crea estudiante
+
+    if (
+      data.codigo === "" ||
+      data.nombre === "" ||
+      data.apellidos === "" ||
+      data.tipo_documento === "" ||
+      data.documento === "" ||
+      data.sexo === "" ||
+      data.correo === "" ||
+      data.celular === "" ||
+      data.programa === "" ||
+      data.sede === ""
+    ) {
+      alert("Por favor llene todos los campos obligatorios");
+      return;
+    }
   };
 
   const customStyles = {
@@ -130,8 +153,9 @@ const FormularioPrimerIngreso = (props) => {
       "&:hover": {
         borderColor: "darkred", // Cambia el color del borde al pasar el ratón
       },
-      margin: "10px", // Agregar margen alrededor del control
+      // margin: "10px", // Agregar margen alrededor del control
       padding: "5px", // Agregar padding dentro del control
+      marginBottom: "2rem",
     }),
     menu: (provided) => ({
       ...provided,
@@ -156,243 +180,249 @@ const FormularioPrimerIngreso = (props) => {
   };
 
   return (
-    <div className="prim-form-div">
-      <Container>
-        <Col>
-          <Row>
-            <h4 className="prim-title">FORMULARIO DE PRIMER INGRESO</h4>
-          </Row>
-          <hr></hr>
-          <Row>
-            <Form>
-              <Row>
-                <Col>
-                  <Form.Group controlId="formCode">
-                    <Form.Label className="prim-subtitle">
-                      Código estudiante{" "}
-                      <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Tu respuesta"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          codigo: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <hr></hr>
+    <div className="prim-all-background">
+      <div className="prim-form-div">
+        <Container>
+          <Col>
+            <Row>
+              <h4 className="prim-title">FORMULARIO DE PRIMER INGRESO</h4>
+            </Row>
+            <hr></hr>
+            <Row>
+              <Form>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="formCode">
+                      <Form.Label className="prim-subtitle">
+                        Código estudiante{" "}
+                        <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            codigo: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    <hr></hr>
 
-                  <Form.Group controlId="formLastName">
-                    <Form.Label className="prim-subtitle">
-                      Apellidos <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Tu respuesta"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          apellidos: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <hr></hr>
+                    <Form.Group controlId="formLastName">
+                      <Form.Label className="prim-subtitle">
+                        Apellidos <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            apellidos: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    <hr></hr>
 
-                  <Form.Group controlId="formEmail">
-                    <Form.Label className="prim-subtitle">
-                      Correo <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Tu respuesta"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          correo: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <hr></hr>
+                    <Form.Group controlId="formEmail">
+                      <Form.Label className="prim-subtitle">
+                        Correo <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            correo: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    <hr></hr>
 
-                  <Form.Group controlId="formSede">
-                    <Form.Label className="prim-subtitle">
-                      Sede <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Select
-                      styles={customStyles}
-                      // class="option"
-                      className="option"
-                      options={opciones}
-                      onMenuOpen={handle_open_sedes}
-                      placeholder="Cambie de Sede"
-                      onChange={(e) => {
-                        setData({
-                          ...data,
-                          sede: e.id,
-                        });
-                      }}
-                    ></Select>
-                  </Form.Group>
-                  <hr></hr>
+                    <Form.Group controlId="formSede">
+                      <Form.Label className="prim-subtitle">
+                        Sede <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Select
+                        styles={customStyles}
+                        // class="option"
+                        className="option"
+                        options={opciones}
+                        onMenuOpen={handle_open_sedes}
+                        placeholder="Cambie de Sede"
+                        onChange={(e) => {
+                          setData({
+                            ...data,
+                            sede: e.id,
+                          });
+                        }}
+                      ></Select>
+                    </Form.Group>
+                    <hr></hr>
 
-                  <Form.Group controlId="formDocumentType">
-                    <Form.Label className="prim-subtitle">
-                      Tipo documento de identidad{" "}
-                      <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Check
-                      type="radio"
-                      id="documentTypeTI"
-                      label="T.I."
-                      value="T.I."
-                      name="documentType"
-                      checked={documentType === "T.I."}
-                      onChange={handleDocumentTypeChange}
-                    />
-                    <Form.Check
-                      type="radio"
-                      id="documentTypeCC"
-                      label="C.C."
-                      value="C.C."
-                      name="documentType"
-                      checked={documentType === "C.C."}
-                      onChange={handleDocumentTypeChange}
-                    />
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <Form.Group controlId="formDocumentType">
+                      <Form.Label className="prim-subtitle">
+                        Tipo documento de identidad{" "}
+                        <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
                       <Form.Check
                         type="radio"
-                        id="documentTypeOther"
-                        label="Otros: "
-                        value="Otros"
+                        id="documentTypeTI"
+                        label="T.I."
+                        value="T.I."
                         name="documentType"
-                        checked={documentType === "Otros"}
+                        checked={documentType === "T.I."}
                         onChange={handleDocumentTypeChange}
                       />
-                      {documentType === "Otros" ? (
-                        <Form.Control
-                          type="text"
-                          placeholder="Especificar"
-                          value={otherDocumentType}
-                          onChange={(e) => handle_otherDocumentType(e)}
-                          style={{ marginLeft: "10px" }} // Ajusta el margen según sea necesario
+                      <Form.Check
+                        type="radio"
+                        id="documentTypeCC"
+                        label="C.C."
+                        value="C.C."
+                        name="documentType"
+                        checked={documentType === "C.C."}
+                        onChange={handleDocumentTypeChange}
+                      />
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <Form.Check
+                          type="radio"
+                          id="documentTypeOther"
+                          label="Otros: "
+                          value="Otros"
+                          name="documentType"
+                          checked={documentType === "Otros"}
+                          onChange={handleDocumentTypeChange}
                         />
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  </Form.Group>
-                  {/* <hr></hr> */}
-                </Col>
+                        {documentType === "Otros" ? (
+                          <Form.Control
+                            type="text"
+                            placeholder="Especificar"
+                            value={otherDocumentType}
+                            onChange={(e) => handle_otherDocumentType(e)}
+                            style={{ marginLeft: "10px" }} // Ajusta el margen según sea necesario
+                          />
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    </Form.Group>
+                    {/* <hr></hr> */}
+                  </Col>
 
-                {/* Columna Derecha */}
-                <Col>
-                  <Form.Group controlId="formName">
-                    <Form.Label className="prim-subtitle">
-                      Nombre <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Tu respuesta"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          nombre: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <hr></hr>
+                  {/* Columna Derecha */}
+                  <Col>
+                    <Form.Group controlId="formName">
+                      <Form.Label className="prim-subtitle">
+                        Nombre <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            nombre: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    <hr></hr>
 
-                  <Form.Group controlId="formSex">
-                    <Form.Label className="prim-subtitle">
-                      Sexo <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Tu respuesta"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          sexo: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <hr></hr>
+                    <Form.Group controlId="formSex">
+                      <Form.Label className="prim-subtitle">
+                        Sexo <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            sexo: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    <hr></hr>
 
-                  <Form.Group controlId="formCellphone">
-                    <Form.Label className="prim-subtitle">
-                      Celular <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Tu respuesta"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          celular: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <hr></hr>
-                  <Form.Group controlId="formProgram">
-                    <Form.Label className="prim-subtitle">
-                      Código Programa <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Tu respuesta"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          programa: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <br />
+                    <Form.Group controlId="formCellphone">
+                      <Form.Label className="prim-subtitle">
+                        Celular <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            celular: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    <hr></hr>
+                    <Form.Group
+                      controlId="formProgram"
+                      style={{ marginBottom: "1rem" }}
+                    >
+                      <Form.Label className="prim-subtitle">
+                        Código Programa{" "}
+                        <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            programa: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    <br />
 
-                  <hr></hr>
+                    <hr></hr>
 
-                  <Form.Group controlId="formDocument">
-                    <Form.Label className="prim-subtitle">
-                      Documento <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Tu respuesta"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          documento: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  {/* <hr></hr> */}
-                </Col>
-              </Row>
-              <br />
-              <div style={{ textAlign: "center", alignItems: "center" }}>
-                <Button
-                  variant="primary"
-                  // type="submit"
-                  onClick={(e) => send_data(e)}
-                >
-                  Autorizar
-                </Button>
-              </div>
-            </Form>
-          </Row>
-        </Col>
-      </Container>
-      <br />
+                    <Form.Group controlId="formDocument">
+                      <Form.Label className="prim-subtitle">
+                        Documento <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            documento: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    {/* <hr></hr> */}
+                  </Col>
+                </Row>
+                <br />
+                <div style={{ textAlign: "center", alignItems: "center" }}>
+                  <Button
+                    variant="primary"
+                    // type="submit"
+                    onClick={(e) => send_data(e)}
+                  >
+                    Autorizar
+                  </Button>
+                </div>
+              </Form>
+            </Row>
+          </Col>
+        </Container>
+        <br />
+      </div>
     </div>
   );
 };

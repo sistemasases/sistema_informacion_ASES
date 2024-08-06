@@ -1,12 +1,13 @@
 /* Asegúrate de que el contenedor principal ocupe toda la pantalla */
-body,
-html {
+.auth-all-background {
+  height: 100%;
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: rgb(250, 227, 225);
+  /* background-repeat: repeat; */
 }
 
 .auth-form-div {
