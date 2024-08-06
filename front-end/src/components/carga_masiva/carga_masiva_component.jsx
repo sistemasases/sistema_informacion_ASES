@@ -133,16 +133,18 @@ const Carga_masiva_component = () =>{
                   <option value="Programa">Programa</option>
                   <option value="Materia">Materia</option>
                   <option value="Matricula">Matricula</option>
-                  <option value="Retiro">Retiro</option>
                   <option value="Ficha">Ficha de seguimiento</option>
-                  <option value="Ficha2">Ficha de seguimiento con Código</option>
+                  <option value="FichaV2">Ficha de seguimiento con Código</option>
                   <option value="Inasistencia">Inasistencia</option>
-                  <option value="Inasistencia2">Inasistencia con Código</option>
                   <option value="Dir_programa">Director de programa</option>
                   <option value="Vcd_academico">Vicedecano</option>
                   <option value="Cambio_contrasena">Contraseña</option>
                   <option value="Eliminar_matricula">Eliminar matricula</option>
                   <option value="Firma_datos">Firma Trtamiento de Datos</option>
+                  <option value="estudiante_disc">Estudiante Discapacidad</option>
+                  <option value="volver_estudiante_disc">Activar estudiante Discapacidad</option>
+                  <option value="quitar_estudiante_disc">Eliminar estudiante Discapacidad</option>
+                  <option value="asignacion_disc">Asignación Discapacidad</option>
                 </Form.Select>
               </Col>
             </Row>
