@@ -30,6 +30,10 @@ class semestre_viewsets (viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = semestre_serializer.Meta.model.objects.all()
 
+    def list(self, request):
+        lista_sedes_discapacidad = semestre.objects.filter().distinct().order_by('-fecha_inicio')
+        respuesta = semestre_serializer(lista_sedes_discapacidad, many=True)
+        return Response(respuesta.data)
     def retrieve(self, request, pk=None):
         """
         Recupera la información del 'semestre' actual para una sede especifica.

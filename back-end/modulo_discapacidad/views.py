@@ -3,8 +3,8 @@ from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, status
 
-from .serializers import ficha_estudiante_disc_serializer, asignacion_disc_serializer, accesibilidad_serializer
-from .models import asignacion_discapacidad, accesibilidad
+from .serializers import ficha_estudiante_disc_serializer, asignacion_disc_serializer, accesibilidad_serializer, ficha_estudiante_disc_info_extra_serializer
+from .models import asignacion_discapacidad, accesibilidad, info_extra_disc
 from modulo_usuario_rol.models import estudiante
 from modulo_usuario_rol.serializers import estudiante_serializer
 from modulo_instancia.models import semestre
@@ -32,6 +32,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
         serializer_estudiante = ficha_estudiante_disc_serializer(var_estudiante)
         dic_asignaciones={}
         diccionario_programas = {}
+        diccionario_info_extra = {}
 
         try:
             semestre_activo = semestre.objects.filter(semestre_actual=True, id_sede =request_sede).values('id')
@@ -40,7 +41,14 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             dic_asignaciones = {'asignaciones': asig_serializado.data}
         except:
             dic_asignaciones = {'asignaciones': list()}
-        
+
+        try:
+            info_extra = info_extra_disc.objects.filter(id_estudiante=serializer_estudiante.data['id'])
+            info_extra_serializado = ficha_estudiante_disc_info_extra_serializer(info_extra, many=True)
+            diccionario_info_extra = {'tipo_disc':info_extra_serializado.data}
+        except:
+            diccionario_info_extra = {'tipo_disc':list()}
+
         lista_programas = []
         try :
 
@@ -61,7 +69,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             diccionario_programas = {'programas': lista_programas}
             
 
-        result = dict(serializer_estudiante.data, **dic_asignaciones, **diccionario_programas)
+        result = dict(serializer_estudiante.data, **dic_asignaciones, **diccionario_programas, **diccionario_info_extra)
         return Response(result)
     
     @action(detail=True, methods=['get'], url_path='datos_accesibilidad')
