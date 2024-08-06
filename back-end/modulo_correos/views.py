@@ -233,18 +233,21 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
 
         params = request.data.get('params')
         correo = params.get('mail')
-        usuario = User.objects.filter(email=correo).values(
+        received_username = params.get('username')
+        print(correo)
+        print(received_username)
+        usuario = User.objects.filter(email=correo, username=received_username).values(
             'id', 'username', 'first_name', 'last_name').first()
         user_object = None
         try:
             user_object = User.objects.get(id=usuario['id'])
         except:
             # print("No se halló un usuario con dicho correo: " + correo)
-            return Response({'error': 'No se halló un usuario con dicho correo: ' + correo}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'No se halló un usuario con dicho correo: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
         temporary_password = User.objects.make_random_password()
         # # print("Contraseña temporal: " + temporary_password)
         # # print(usuario)
-        fecha_actual = datetime.datetime.now()
+        fecha_actual = datetime.now()
         correo_admin_sistema = "sistemas.ases@correounivalle.edu.co"
         if user_object:
             user_object.set_password(temporary_password)
