@@ -28,32 +28,36 @@ const Two_fa_login = () => {
   };
 
   useEffect(() => {
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/correos/enviar_codigo_otp_correo/`,
-        {
-          id: decryptUserIdFromSessionStorage(),
-        },
-        config
-      )
-      .then((res) => {
-        console.log("Código OTP enviado al correo");
-        // console.log(res.data[0].otp);
-        sessionStorage.otp = res.data[0].otp;
-        sessionStorage.otp_status = true;
-        // Configura un temporizador de 3 minutos
-        // const timer = setTimeout(() => {
-        //   setTimerExpired(true);
-        //   sessionStorage.clear();
-        //   window.location.reload();
-        // }, 180000); // 180000 ms = 3 minutos
-        // return () => clearTimeout(timer);
-      })
-      .catch((error) => {
-        alert("Error al enviar el código OTP al correo");
-        console.error("Error al enviar el código OTP al correo:", error);
-        window.location.reload();
-      });
+    if (sessionStorage.getItem("otp")) {
+      return;
+    } else {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/correos/enviar_codigo_otp_correo/`,
+          {
+            id: decryptUserIdFromSessionStorage(),
+          },
+          config
+        )
+        .then((res) => {
+          console.log("Código OTP enviado al correo");
+          // console.log(res.data[0].otp);
+          sessionStorage.otp = res.data[0].otp;
+          sessionStorage.otp_status = true;
+          // Configura un temporizador de 3 minutos
+          // const timer = setTimeout(() => {
+          //   setTimerExpired(true);
+          //   sessionStorage.clear();
+          //   window.location.reload();
+          // }, 180000); // 180000 ms = 3 minutos
+          // return () => clearTimeout(timer);
+        })
+        .catch((error) => {
+          alert("Error al enviar el código OTP al correo");
+          console.error("Error al enviar el código OTP al correo:", error);
+          window.location.reload();
+        });
+    }
   }, []);
 
   return (
@@ -137,7 +141,7 @@ const Two_fa_login = () => {
             </div>
           </Container>
         ) : (
-          (sessionStorage.removeItem("otp"), (<App />))
+          <App />
         )}
       </Row>
     </Col>

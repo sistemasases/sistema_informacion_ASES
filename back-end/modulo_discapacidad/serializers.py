@@ -15,12 +15,21 @@ class accesibilidad_serializer(serializers.ModelSerializer):
 class asignacion_disc_serializer(serializers.ModelSerializer):
 	
     id_usuario = user_info_basica_serializer(allow_null=True)
-
-	# create a meta class
 	
     class Meta:
         model = asignacion_discapacidad
         fields =['id_usuario']
+
+class ficha_estudiante_disc_info_extra_serializer(serializers.ModelSerializer):
+	id_tipo_discapacidad = serializers.SerializerMethodField(allow_null=True)
+	class Meta:
+		model = info_extra_disc
+		fields =['id_tipo_discapacidad','categoria']
+	
+	def get_id_tipo_discapacidad(self, obj):
+		if obj.id_tipo_discapacidad:
+			return obj.id_tipo_discapacidad.nombre
+		return None
 class ficha_estudiante_disc_serializer(serializers.ModelSerializer):
 	barrio_ini = serializers.SerializerMethodField(allow_null=True)
 	ciudad_ini = serializers.SerializerMethodField(allow_null=True)
