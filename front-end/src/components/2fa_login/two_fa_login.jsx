@@ -32,7 +32,7 @@ const Two_fa_login = () => {
   useEffect(() => {
     axios
       .post(
-        "http://localhost:8000/correos/enviar_codigo_otp_correo/",
+        `${process.env.REACT_APP_API_URL}/correos/enviar_codigo_otp_correo/`,
         {
           id: decryptUserIdFromSessionStorage(),
         },
@@ -99,7 +99,7 @@ const Two_fa_login = () => {
                   if (otp.length === 6) {
                     axios
                       .post(
-                        "http://localhost:8000/correos/verificar_clave_otp/",
+                        `${process.env.REACT_APP_API_URL}/correos/verificar_clave_otp/`,
                         {
                           otp: otp,
                           id: decryptUserIdFromSessionStorage(),
@@ -147,4 +147,3 @@ const Two_fa_login = () => {
 };
 
 export default Two_fa_login;
-// Compare this snippet from front-end/src/components/2fa_login/two_fa_login.jsx:

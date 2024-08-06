@@ -1,0 +1,400 @@
+/**
+ * @file formulario_autorizacion.jsx
+ * @version 1.0.0
+ * @description Formulario de autorizacion de tratamiento de datos.
+ * @author Steven Bernal
+ * @contact steven.bernal@correounivalle.edu.co
+ * @date 4 de Julio del 2024
+ */
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Form from "react-bootstrap/Form";
+import DataTable from "react-data-table-component";
+import Select from "react-select";
+
+import {
+  encriptar,
+  desencriptar,
+  decryptTokenFromSessionStorage,
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+
+import { Container, Col, Row, Button, Modal } from "react-bootstrap";
+import "../../Scss/formularios_externos/formulario_primer_ingreso_style.css";
+
+import All_sedes_formularios_externos from "../../service/all_sedes_formularios_externos";
+
+const FormularioPrimerIngreso = (props) => {
+  const [documentType, setDocumentType] = useState("");
+  const [otherDocumentType, setOtherDocumentType] = useState("");
+  const [sede, setSede] = useState({
+    data_sede: [],
+  });
+  const opciones = [];
+
+  //   const url = encriptar("formulario_primer_ingreso");
+  //   console.log(url);
+  //   const decrypt_url = desencriptar("U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7");
+  //   console.log(decrypt_url);
+
+  useEffect(() => {
+    All_sedes_formularios_externos.all_sedes_formularios_externos()
+      .then((res) => {
+        console.log("Respuesta de la API:", res);
+        if (res) {
+          console.log(res);
+          setSede({
+            ...sede,
+            data_sede: res,
+          });
+        } else {
+          console.error("Respuesta de la API no es un arreglo válido:", res);
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener datos de la API:", error);
+      });
+  }, []);
+
+  const handle_open_sedes = () => {
+    // console.log(sede.data_sede);
+    // console.log("HOLAAA");
+    // console.log(semestres.data_semestre.length);
+    for (let i = 0; i < sede.data_sede.length; i++) {
+      opciones.pop(i);
+    }
+
+    for (let i = 0; i < sede.data_sede.length; i++) {
+      const dato = {
+        value: sede.data_sede[i]["nombre"],
+        label: sede.data_sede[i]["nombre"],
+        id: sede.data_sede[i]["id"],
+      };
+      //   console.log(dato);
+      opciones.push(dato);
+    }
+  };
+
+  const handleDocumentTypeChange = (e) => {
+    setDocumentType(e.target.value);
+
+    if (e.target.value === "C.C.") {
+      setData({
+        ...data,
+        tipo_documento: e.target.value,
+      });
+    } else if (e.target.value === "T.I.") {
+      setData({
+        ...data,
+        tipo_documento: e.target.value,
+      });
+    } else if (e.target.value === "Otros") {
+      setData({
+        ...data,
+        tipo_documento: "",
+      });
+    }
+  };
+
+  const handle_otherDocumentType = (e) => {
+    setOtherDocumentType(e.target.value);
+    setData({
+      ...data,
+      tipo_documento: e.target.value,
+    });
+  };
+
+  const [data, setData] = useState({
+    codigo: "",
+    nombre: "",
+    apellidos: "",
+    tipo_documento: "",
+    documento: "",
+    sexo: "",
+    correo: "",
+    celular: "",
+    programa: "",
+    sede: "",
+  });
+
+  const send_data = (e) => {
+    // console.log(e);
+    console.log(data);
+  };
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      position: "relative",
+      borderColor: "grey", // Cambia el color del borde
+      boxShadow: "none", // Remueve el sombreado
+      "&:hover": {
+        borderColor: "darkred", // Cambia el color del borde al pasar el ratón
+      },
+      margin: "10px", // Agregar margen alrededor del control
+      padding: "5px", // Agregar padding dentro del control
+    }),
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 2, // Asegúrate de que el menú se superponga a otros elementos
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "lightblue" : "white",
+      color: state.isSelected ? "black" : "blue",
+      "&:hover": {
+        backgroundColor: "lightgray",
+      },
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: "gray", // Cambia el color del texto del placeholder
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "black", // Cambia el color del texto seleccionado
+    }),
+  };
+
+  return (
+    <div className="prim-form-div">
+      <Container>
+        <Col>
+          <Row>
+            <h4 className="prim-title">FORMULARIO DE PRIMER INGRESO</h4>
+          </Row>
+          <hr></hr>
+          <Row>
+            <Form>
+              <Row>
+                <Col>
+                  <Form.Group controlId="formCode">
+                    <Form.Label className="prim-subtitle">
+                      Código estudiante{" "}
+                      <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          codigo: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
+
+                  <Form.Group controlId="formLastName">
+                    <Form.Label className="prim-subtitle">
+                      Apellidos <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          apellidos: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
+
+                  <Form.Group controlId="formEmail">
+                    <Form.Label className="prim-subtitle">
+                      Correo <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          correo: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
+
+                  <Form.Group controlId="formSede">
+                    <Form.Label className="prim-subtitle">
+                      Sede <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Select
+                      styles={customStyles}
+                      // class="option"
+                      className="option"
+                      options={opciones}
+                      onMenuOpen={handle_open_sedes}
+                      placeholder="Cambie de Sede"
+                      onChange={(e) => {
+                        setData({
+                          ...data,
+                          sede: e.id,
+                        });
+                      }}
+                    ></Select>
+                  </Form.Group>
+                  <hr></hr>
+
+                  <Form.Group controlId="formDocumentType">
+                    <Form.Label className="prim-subtitle">
+                      Tipo documento de identidad{" "}
+                      <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Check
+                      type="radio"
+                      id="documentTypeTI"
+                      label="T.I."
+                      value="T.I."
+                      name="documentType"
+                      checked={documentType === "T.I."}
+                      onChange={handleDocumentTypeChange}
+                    />
+                    <Form.Check
+                      type="radio"
+                      id="documentTypeCC"
+                      label="C.C."
+                      value="C.C."
+                      name="documentType"
+                      checked={documentType === "C.C."}
+                      onChange={handleDocumentTypeChange}
+                    />
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Form.Check
+                        type="radio"
+                        id="documentTypeOther"
+                        label="Otros: "
+                        value="Otros"
+                        name="documentType"
+                        checked={documentType === "Otros"}
+                        onChange={handleDocumentTypeChange}
+                      />
+                      {documentType === "Otros" ? (
+                        <Form.Control
+                          type="text"
+                          placeholder="Especificar"
+                          value={otherDocumentType}
+                          onChange={(e) => handle_otherDocumentType(e)}
+                          style={{ marginLeft: "10px" }} // Ajusta el margen según sea necesario
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  </Form.Group>
+                  {/* <hr></hr> */}
+                </Col>
+
+                {/* Columna Derecha */}
+                <Col>
+                  <Form.Group controlId="formName">
+                    <Form.Label className="prim-subtitle">
+                      Nombre <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          nombre: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
+
+                  <Form.Group controlId="formSex">
+                    <Form.Label className="prim-subtitle">
+                      Sexo <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          sexo: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
+
+                  <Form.Group controlId="formCellphone">
+                    <Form.Label className="prim-subtitle">
+                      Celular <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          celular: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
+                  <Form.Group controlId="formProgram">
+                    <Form.Label className="prim-subtitle">
+                      Código Programa <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          programa: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <br />
+
+                  <hr></hr>
+
+                  <Form.Group controlId="formDocument">
+                    <Form.Label className="prim-subtitle">
+                      Documento <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          documento: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  {/* <hr></hr> */}
+                </Col>
+              </Row>
+              <br />
+              <div style={{ textAlign: "center", alignItems: "center" }}>
+                <Button
+                  variant="primary"
+                  // type="submit"
+                  onClick={(e) => send_data(e)}
+                >
+                  Autorizar
+                </Button>
+              </div>
+            </Form>
+          </Row>
+        </Col>
+      </Container>
+      <br />
+    </div>
+  );
+};
+
+export default FormularioPrimerIngreso;
