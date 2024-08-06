@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'modulo_correos',
     'modulo_alertas',
     'modulo_discapacidad',
+    'modulo_interapp',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',
