@@ -61,8 +61,8 @@ const Two_fa_login = () => {
       <Row>
         {(sessionStorage.otp === undefined &&
           sessionStorage.otp_status == false) ||
-        sessionStorage.otp_status === undefined ||
-        sessionStorage.access_otp === undefined ? (
+          sessionStorage.otp_status === undefined ||
+          sessionStorage.access_otp === undefined ? (
           <Container className="prinicipal_container">
             <div className="otp_tittle">
               <h2>Código OTP ASES</h2>
@@ -81,7 +81,7 @@ const Two_fa_login = () => {
                   renderInput={(props) => (
                     <input {...props} className="otp_input" />
                   )}
-                  // containerStyle="otp_container"
+                // containerStyle="otp_container"
                 />
               </did>
               <br />
