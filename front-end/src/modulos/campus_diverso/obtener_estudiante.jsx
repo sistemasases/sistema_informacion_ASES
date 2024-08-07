@@ -88,18 +88,7 @@ const ObtenerEstudiante = () => {
 
   const closeModal = () => {
 
-    const resetGeneralInfo = {
-      ...generalInfo, // Copiar todas las propiedades de generalInfo
-      factores_de_riesgo: [], // Solo restablecer factores_de_riesgo a un array vacío
-    };
-    
-    // Establecer las otras propiedades a null
-    for (const key in resetGeneralInfo) {
-    
-      if (key !== 'factores_de_riesgo' || 'profesionales_que_brindo_atencion') {
-        resetGeneralInfo[key] = null;
-      }
-    }
+
   
 
     setEditableUser(selectedUser);
@@ -152,6 +141,12 @@ const updateUser = async (endpoint, userId, updatedData) => {
   const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
   const [estamentoOptions, setEstamentoOptions]= useState([]);
 
+  //Informacion general
+  const [factoresOptions, setFactoresOptions] = useState([]);
+  const [actividadesOptions, setActividadesOptions] = useState([]);
+  const [fuentesOptions, setFuentesOptions] = useState([]);
+  const [redesOptions, setRedesOptions] = useState([]);
+
 // Getters de las listas
 useEffect(() => {
   Promise.all([
@@ -162,12 +157,17 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/orientacion-sexual/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/estamento/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/factor-riesgo/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/actividad-tiempo-libre/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/fuente-ingresos/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/red-apoyo/`),
+
 
   ])
     .then((responses) => {
       //persona
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
-        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse] = responses;
+        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse, factorResponse, actividadResponse, fuenteResponse, redResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -204,6 +204,26 @@ useEffect(() => {
         label: item.nombre_estamento
       }));
 
+      const factorOpciones = factorResponse.data.map((item) => ({
+        value: item.id_factor_de_riesgo,
+        label: item.nombre_factor_de_riesgo
+      }));
+
+      const actividadOpciones = actividadResponse.data.map((item) => ({
+        value: item.id_actividad_de_tiempo_libre,
+        label: item.nombre_actividad_de_tiempo_libre
+      }));
+
+      const fuenteOpciones = fuenteResponse.data.map((item) => ({
+        value: item.id_fuente_de_ingreso,
+        label: item.nombre_fuente_de_ingreso
+      }));
+
+      const redesOpciones = redResponse.data.map((item) => ({
+        value: item.id_red_de_apoyo,
+        label: item.nombre_red_de_apoyo
+      }));
+
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -211,7 +231,10 @@ useEffect(() => {
       setOrientacionOptions(orientacionOpciones);
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
       setEstamentoOptions(estamentoOpciones);
-
+      setFactoresOptions(factorOpciones);
+      setActividadesOptions(actividadOpciones);
+      setFuentesOptions(fuenteOpciones);
+      setRedesOptions(redesOpciones);
     })
     .catch((error) => {
 
@@ -364,7 +387,28 @@ const handleFormSubmit = (e) => {
      expresiones_de_genero: editableUser.expresiones_de_genero,
      respuestas_cambio_documento: editableUser.respuestas_cambio_documento,
      identidades_de_genero: editableUser.identidades_de_genero,
+     
+     //Info general
+     tiene_eps: editableUser.tiene_eps,
+     calificacion_relacion_familiar: editableUser.calificacion_relacion_familiar,
+     creencia_religiosa: editableUser.creencia_religiosa,
+     decision_encuentro_inicial_con_profesional: editableUser.decision_encuentro_inicial_con_profesional,
+     origen_descubrimiento_campus_diverso: editableUser.origen_descubrimiento_campus_diverso,
+     comentarios_o_sugerencias_de_usuario: editableUser.comentarios_o_sugerencias_de_usuario,
+     actividades_especificas_tiempo_libre: editableUser.actividades_especificas_tiempo_libre,
 
+     factores_riesgos: editableUser.factores_riesgos,
+     Ocupaciones_actules: editableUser.Ocupaciones_actules,
+     profesionales_que_brindaron_atencion: editableUser.profesionales_que_brindaron_atencion,
+     acompanamiento_que_recibio: editableUser.acompanamiento_que_recibio,
+     fuentes_ingresos: editableUser.fuentes_ingresos,
+     actividadesOptions: editableUser.actividadesOptions,
+     redes_apoyo: editableUser.redes_apoyo,
+     observacion_general_actividades_especificas_tiempo_libre: editableUser.observacion_general_actividades_especificas_tiempo_libre,
+     observacion_general_fuente_de_ingresos: editableUser.observacion_general_fuente_de_ingresos,
+     observacion_horario: editableUser.observacion_horario,
+     observacion_general_redes_de_apoyo: editableUser.observacion_general_redes_de_apoyo,
+     observacion_general_factores_de_riesgo: editableUser.observacion_general_factores_de_riesgo,
      //Info academica
      codigo_estudiante: editableUser.codigo_estudiante,
      sede_universidad: editableUser.sede_universidad,
@@ -395,9 +439,12 @@ const handleFormSubmit = (e) => {
         endpoint = 'informacion-general/informacion-general';
         break;        
       case 3:
-        endpoint = 'informacion-academica/informacion-academica';
+        endpoint = 'informacion-general/informacion-general';
         break;
       case 4:
+        endpoint = 'informacion-academica/informacion-academica';
+        break;
+      case 5:
         endpoint = 'documentos-autorizacion/documentos-autorizacion';
         break;
       // Añade más casos para otras páginas si es necesario
@@ -417,7 +464,7 @@ const handleFormSubmit = (e) => {
       tipo_documento: "",
       numero_documento: "",
       relacion_persona_de_confianza: "",
-      estrato_socioeconomico: 0,
+      estrato_socioeconomico: "",
       ciudad_nacimiento: "",
       fecha_nacimiento: "",
       departamento_nacimiento: "",
@@ -479,15 +526,15 @@ const handleFormSubmit = (e) => {
       comentarios_o_sugerencias_de_usuario: "",
       observacion_general_actividades_especificas_tiempo_libre: "",
       observacion_general_relacion_convivencia_vivienda: "",
-      profesionales_que_brindo_atencion: [],
-      redes_de_apoyo: [],
-      ocupaciones_actuales: [],
-      factores_de_riesgo: [],
+      Ocupaciones_actules: "",
+      acompanamiento_que_recibio: "",
+      profesionales_que_brindaron_atencion: "",
+      redes_apoyo: [],
+      factores_riesgos: [],
       encuentro_dias_horas: [],
       actividades_tiempo_libre: [],
       acompanamientos_recibido: [],
-      convivencias_en_vivienda: [],
-      fuentes_de_ingresos: [],
+      fuentes_ingresos: [],
       
     });
   }
@@ -571,6 +618,10 @@ const handleInputChange = (e) => {
             handleDeleteItem={handleDeleteItem}
             handleArrayChange={handleArrayChange}
             handleDelete={handleDelete}
+            factoresOptions={factoresOptions}
+            fuentesOptions={fuentesOptions}
+            redesOptions={redesOptions}
+            actividadesOptions={actividadesOptions}
           />
         </div>
       </Container>

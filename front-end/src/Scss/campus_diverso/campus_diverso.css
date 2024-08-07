@@ -124,23 +124,16 @@
   width: 100%;
   float: right;
   color: #000;
-  [class$="ValueContainer"] {
-      min-height: 35px !important;
-      max-height: 20px;
-  }
+ 
   [class$="IndicatorsContainer"] {
       min-height: 38px !important;
-      max-height: 18px; 
+      max-height: 28px;
   }
   [class$="-Input"] {
-      min-height: 38px !important;
-      max-height: 28px !important;
+      min-height: 28px !important;
+      max-height: 18px !important;
   }
-  [class$="-control"] {
-      min-height: 38px !important;
-      max-height: 18px;
 
-  }
 }
 
 
@@ -386,6 +379,8 @@
     .custom-div-check {
       display: flex;
       align-items: center;
+      padding: 4px ;
+
       margin-top: 60px;
       margin-right: 30px;
       justify-content: space-between; /* Asegura que el contenido se distribuya entre los extremos */
@@ -402,7 +397,10 @@
     .custom-checkbox-label {
       font-size: 1em;
       color: #333;
-      white-space: nowrap;
+      white-space: normal;
+      word-wrap: break-word;
+      text-align: justify;
+
     }
     
     .custom-checkbox {
@@ -411,6 +409,7 @@
       height: 15px;
       cursor: pointer;
       margin-left: 35px;
+      
     }
     
     .custom-checkbox input {

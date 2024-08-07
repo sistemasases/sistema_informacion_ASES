@@ -75,7 +75,7 @@ const InformacionAcademica = ({
 
     </Col>
 
-    <Col>
+    <Col className="form-column" xs={"10"} md={"6"}>
     
         <div>
                 <label className='custom-div'>Codigo del estudiante</label>

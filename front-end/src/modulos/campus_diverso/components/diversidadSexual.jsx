@@ -177,7 +177,7 @@ const DiversidadSexual = ({
                 <Select
                   isMulti
                   placeholder='Seleccione identidades de género'
-                  className='create-select-grande'
+                  className='create-select'
                   name="identidades_de_genero"
                   options={identidadesGeneroOptions}
                   value={state.identidades_de_genero.map(option => ({

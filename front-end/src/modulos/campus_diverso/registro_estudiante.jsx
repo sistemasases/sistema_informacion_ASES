@@ -98,15 +98,14 @@ import DocumentosAutorizacion from './components/documentosAutorizacion';
     comentarios_o_sugerencias_de_usuario:"",
     observacion_general_actividades_especificas_tiempo_libre: "",
     observacion_general_relacion_convivencia_vivienda:"",
-    profesionales_que_brindo_atencion: [],
-    redes_de_apoyo: [],
-    ocupaciones_actuales:[],
-    factores_de_riesgo: [],
+    profesionales_que_brindaron_atencion: "",
+    redes_apoyo: [],
+    Ocupaciones_actules:"",
+    factores_riesgos: [],
     encuentro_dias_horas:[],
     actividades_tiempo_libre:[],
-    acompanamientos_recibido:[],
-    convivencias_en_vivienda:[],
-    fuentes_de_ingresos:[],
+    acompanamiento_que_recibio:"",
+    fuentes_ingresos:[],
 
   });
 
@@ -124,6 +123,15 @@ import DocumentosAutorizacion from './components/documentosAutorizacion';
   const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
   const [estamentoOptions, setEstamentoOptions]= useState([]);
 
+//Informacion general
+const [factoresOptions, setFactoresOptions] = useState([]);
+const [actividadesOptions, setActividadesOptions] = useState([]);
+const [fuentesOptions, setFuentesOptions] = useState([]);
+const [redesOptions, setRedesOptions] = useState([]);
+
+
+
+
 // Getters de las listas
 useEffect(() => {
   Promise.all([
@@ -134,12 +142,20 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/orientacion-sexual/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/estamento/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/factor-riesgo/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/actividad-tiempo-libre/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/fuente-ingresos/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/red-apoyo/`),
+
+
+
 
   ])
     .then((responses) => {
       //persona
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
-        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse, estamentoResponse] = responses;
+        respuestaCambioDocumentoResponse, orientacionResponse, 
+        identiadesGeneroResponse, estamentoResponse, factorResponse, actividadResponse, fuenteResponse, redResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -176,6 +192,26 @@ useEffect(() => {
         label: item.nombre_estamento
       }));
 
+      const factorOpciones = factorResponse.data.map((item) => ({
+        value: item.id_factor_de_riesgo,
+        label: item.nombre_factor_de_riesgo
+      }));
+
+      const actividadOpciones = actividadResponse.data.map((item) => ({
+        value: item.id_actividad_de_tiempo_libre,
+        label: item.nombre_actividad_de_tiempo_libre
+      }));
+
+      const fuenteOpciones = fuenteResponse.data.map((item) => ({
+        value: item.id_fuente_de_ingreso,
+        label: item.nombre_fuente_de_ingreso
+      }));
+
+      const redesOpciones = redResponse.data.map((item) => ({
+        value: item.id_red_de_apoyo,
+        label: item.nombre_red_de_apoyo
+      }));
+
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -183,6 +219,10 @@ useEffect(() => {
       setOrientacionOptions(orientacionOpciones);
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
       setEstamentoOptions(estamentoOpciones);
+      setFactoresOptions(factorOpciones);
+      setActividadesOptions(actividadOpciones);
+      setFuentesOptions(fuenteOpciones);
+      setRedesOptions(redesOpciones);
       setIsLoading(false);
       
     })
@@ -448,7 +488,7 @@ const handleSubmit = async (e) => {
 
   const InformacionGeneralData = removeEmptyFields ({
     dedicacion_externa: state.dedicacion_externa,
-    factores_de_riesgo: state.factores_de_riesgo,
+    factores_riesgos: state.factores_riesgos,
     observacion_general_factores_de_riesgo: state.observacion_general_factores_de_riesgo,
     observacion_general_fuente_de_ingresos: state.observacion_general_fuente_de_ingresos,
     tiene_eps: state.tiene_eps,
@@ -467,14 +507,13 @@ const handleSubmit = async (e) => {
     observacion_horario: state.observacion_horario,
     origen_descubrimiento_campus_diverso: state.origen_descubrimiento_campus_diverso,
     comentarios_o_sugerencias_de_usuario: state.comentarios_o_sugerencias_de_usuario,
-    redes_de_apoyo: state.redes_de_apoyo,
+    redes_apoyo: state.redes_apoyo,
     encuentro_dias_horas: state.encuentro_dias_horas,
-    convivencias_en_vivienda: state.convivencias_en_vivienda,
     actividades_tiempo_libre: state.actividades_tiempo_libre,
-    fuentes_de_ingresos: state.fuentes_de_ingresos,
-    acompanamientos_recibido: state.acompanamientos_recibido,
-    ocupaciones_actuales: state.ocupaciones_actuales,
-    profesionales_que_brindo_atencion: state.profesionales_que_brindo_atencion,
+    fuentes_ingresos: state.fuentes_ingresos,
+    acompanamiento_que_recibio: state.acompanamiento_que_recibio,
+    Ocupaciones_actules: state.Ocupaciones_actules,
+    profesionales_que_brindaron_atencion: state.profesionales_que_brindaron_atencion,
   });
 
   const InformacionAcademicaData = removeEmptyFields ({
@@ -603,15 +642,14 @@ const handleSubmit = async (e) => {
               comentarios_o_sugerencias_de_usuario: "",
               observacion_general_actividades_especificas_tiempo_libre: "",
               observacion_general_relacion_convivencia_vivienda: "",
-              profesionales_que_brindo_atencion: [],
-              redes_de_apoyo: [],
-              ocupaciones_actuales: [],
-              factores_de_riesgo: [],
+              profesionales_que_brindaron_atencion: "",
+              redes_apoyo: [],
+              Ocupaciones_actules: "",
+              factores_riesgos: [],
               encuentro_dias_horas: [],
               actividades_tiempo_libre: [],
-              acompanamientos_recibido: [],
-              convivencias_en_vivienda: [],
-              fuentes_de_ingresos: [],
+              acompanamiento_que_recibio: "",
+              fuentes_ingresos: [],
               
             });
             setCurrentStep(0);
@@ -737,13 +775,19 @@ const steps = [
     state={state}
     handleChange={handleChange}
     handleSelectChange={handleSelectChange}
-    factoresRiesgo={state.factores_de_riesgo}
     handleArrayFieldChange={handleArrayFieldChange}
     handleAgregarItem={handleAgregarItem}
     handleEliminarItem={handleEliminarItem}
     handleArrayChange={handleArrayChange}
     handleAddItem={handleAddItem}
     handleDeleteItem={handleDeleteItem}
+    factoresOptions={factoresOptions}
+    actividadesOptions={actividadesOptions}
+    fuentesOptions={fuentesOptions}
+    redesOptions={redesOptions}
+    isLoading={isLoading}
+    handleSelectChange2={handleSelectChange2}
+
     /> },
     { component:   <InformacionAcademica
       state={state}

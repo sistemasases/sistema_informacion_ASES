@@ -17,7 +17,7 @@ const DocumentosAutorizacion = ({
             
             <div className="custom-div-check-documentos ">
       <div className="custom-checkbox-label">
-        ¿Autoriza manejo de datos?
+      Autorizo de manera voluntaria, previa, explícita, informada e inequívoca a la Universidad del Valle, para actuar responsablemente en el tratamiento de mis datos personales aquí registrados, de acuerdo con los términos establecidos en la Ley Estatutaria 1581 de 2012 y la Ley 1712 de 2014.
       </div>
       <label className="custom-checkbox">
         <input

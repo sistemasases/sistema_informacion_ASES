@@ -11,7 +11,7 @@ const ModalEstudiantes = ({
   selectedUser,
   diversidadInfo,
   academicoInfo,
-  generalInfo = { factores_de_riesgo: [], profesionales_que_brindo_atencion:[] },
+  generalInfo,
   documentosInfo,
   seguimientosInfo,
   currentPage,
@@ -32,17 +32,18 @@ const ModalEstudiantes = ({
   identidadesGeneroOptions,
   documentoOptions,
   estamentoOptions,
-  handleArrayFieldChange,
-  handleAddItem,
-  handleDeleteItem,
-  handleArrayChange,
-  handleDelete
+  handleDelete,
+  factoresOptions,
+  fuentesOptions,
+  redesOptions,
+  actividadesOptions
 }) => {
 
   const titles = [
     'Datos Básicos',
     'Información de Diversidad Sexual',
     'Información General ',
+    'Observaciones',
     'Información Académica',
     'Documentos Autorización',
     'Seguimientos'
@@ -62,21 +63,7 @@ const ModalEstudiantes = ({
     setSeguimientoModalOpen(false);
   };
 
- 
 
- /* const [editableRiskFactors, setEditableRiskFactors] = useState(generalInfo.factores_de_riesgo);
-
-
-
-  const handleObservationChange = (index, event) => {
-    const newRiskFactors = [...editableRiskFactors];
-    newRiskFactors[index].observacion_factor_riesgo = event.target.value;
-    setEditableRiskFactors(newRiskFactors);
-  };
-
-  const handleAddRiskFactor = () => {
-    setEditableRiskFactors([...editableRiskFactors, { nombre_factor_riesgo: '', observacion_factor_riesgo: '' }]);
-  }; */
 
   return (
     <>
@@ -374,135 +361,373 @@ const ModalEstudiantes = ({
                   <Col className="form-column" xs={"10"} md={"6"}>
 
                   <div className='div-modal'><b>Dedicación externa:</b> {generalInfo.dedicacion_externa}</div>                
-                  <div className='div-modal'><b>¿Tiene EPS?:</b> {generalInfo.tiene_eps}</div>
+
                   <div className='div-modal'><b>¿Tiene EPS?: </b>
             {isEditing ? (
               <input type="text" name="tiene_eps" value={editableUser.tiene_eps || ''} onChange={handleInputChange}
-              />) : (generalInfo.tiene_eps)} </div>                
-                  <div className='div-modal'><b>Nombre de la EPS:</b> {generalInfo.nombre_eps}</div>                
-                  <div className='div-modal'><b>Regimen de la EPS:</b> {generalInfo.regimen_eps}</div>
-                  <div className='div-modal'><b>Tipo de entidad que brinda acompañamiento:</b> {generalInfo.tipo_entidad_acompanamiento_recibido}</div>
-                  <div className='div-modal'><b>Calificación de acompañamiento recibido:</b> {generalInfo.calificacion_acompanamiento_recibido}</div>
-                  <div className='div-modal'><b>Profesionales que brindaron atención:</b> {generalInfo.profesionales_que_brindo_atencion.join(', ')}</div>
+              />) : (generalInfo.tiene_eps)} </div>
 
+        <div className='div-modal'>
+          <b>Nombre de la EPS:</b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="nombre_eps"
+              value={editableUser.nombre_eps || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            generalInfo.nombre_eps
+          )}
+        </div>
+        <div className='div-modal'>
+          <b>Régimen de la EPS:</b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="regimen_eps"
+              value={editableUser.regimen_eps || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            generalInfo.regimen_eps
+          )}
+        </div>
+        <div className='div-modal'>
+          <b>Tipo de entidad que brinda acompañamiento:</b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="tipo_entidad_acompanamiento_recibido"
+              value={editableUser.tipo_entidad_acompanamiento_recibido || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            generalInfo.tipo_entidad_acompanamiento_recibido
+          )}
+        </div>
+        <div className='div-modal'>
+          <b>Calificación de acompañamiento recibido:</b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="calificacion_acompanamiento_recibido"
+              value={editableUser.calificacion_acompanamiento_recibido || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            generalInfo.calificacion_acompanamiento_recibido
+          )}
+        </div>
+                  
+
+                  
+                  <div className='div-modal'><b>Acompañamiento recibido: </b>
+            {isEditing ? (
+              <input type="text" className="input-updated" name="acompanamiento_que_recibio" value={editableUser.acompanamiento_que_recibio || ''} onChange={handleInputChange}
+              />) : (generalInfo.acompanamiento_que_recibio)} </div>
+
+              <div className='div-modal'><b>Profesional que brindaron atención: </b>
+            {isEditing ? (
+              <input type="text" className="input-updated" name="profesionales_que_brindaron_atencion" value={editableUser.profesionales_que_brindaron_atencion || ''} onChange={handleInputChange}
+              />) : (generalInfo.profesionales_que_brindaron_atencion)} </div>
+
+
+              <div className='div-modal'><b>Ocupaciones actuales: </b>
+            {isEditing ? (
+              <input type="text" className="input-updated" name="Ocupaciones_actules" value={editableUser.Ocupaciones_actules || ''} onChange={handleInputChange}
+              />) : (generalInfo.Ocupaciones_actules)} </div>
 
 
 
 
                   </Col>
                   <Col className="form-column" xs={"10"} md={"6"}>  
-                  <div className='div-modal'><b>Calificación relacion familiar:</b> {generalInfo.calificacion_relacion_familiar}</div>
-                  <div className='div-modal'><b>Creencia religiosa:</b> {generalInfo.creencia_religiosa}</div>
-                  <div className='div-modal'><b>Decisión encuentro inicial con profesional:</b> {generalInfo.decision_encuentro_inicial_con_profesional}</div>
-                  <div className='div-modal'><b>Origen de descubrimiento de campus diverso:</b> {generalInfo.origen_descubrimiento_campus_diverso}</div>
-                  <div className='div-modal'><b>Comentarios o sugerencias:</b> {generalInfo.comentarios_o_sugerencias_de_usuario}</div>
-                  <div className='div-modal'><b>Creencia religiosa:</b> {generalInfo.creencia_religiosa}</div>             
-                  <div className='div-modal'><b>Actividades específicas en tiempo libre:</b> {generalInfo.actividades_especificas_tiempo_libre}</div>
-                  <div className='div-modal'><b>Ocupaciones actuales:</b> {generalInfo.ocupaciones_actuales.join(', ')}</div>
+              <div className='div-modal'>
+                <b>Calificación relación familiar: </b>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="calificacion_relacion_familiar"
+                    value={editableUser.calificacion_relacion_familiar || ''}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  generalInfo.calificacion_relacion_familiar
+                )}
+              </div>
+              <div className='div-modal'>
+                <b>Creencia religiosa:</b>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="creencia_religiosa"
+                    value={editableUser.creencia_religiosa || ''}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  generalInfo.creencia_religiosa
+                )}
+              </div>
+              <div className='div-modal'>
+                <b>Decisión encuentro inicial con profesional: </b>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="decision_encuentro_inicial_con_profesional"
+                    value={editableUser.decision_encuentro_inicial_con_profesional || ''}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  generalInfo.decision_encuentro_inicial_con_profesional
+                )}
+              </div>
+              <div className='div-modal'>
+                <b>Origen de descubrimiento de campus diverso: </b>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="origen_descubrimiento_campus_diverso"
+                    value={editableUser.origen_descubrimiento_campus_diverso || ''}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  generalInfo.origen_descubrimiento_campus_diverso
+                )}
+              </div>
+              <div className='div-modal'>
+                <b>Comentarios o sugerencias: </b>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="comentarios_o_sugerencias_de_usuario"
+                    value={editableUser.comentarios_o_sugerencias_de_usuario || ''}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  generalInfo.comentarios_o_sugerencias_de_usuario
+                )}
+              </div>
+              <div className='div-modal'>
+                <b>Actividades específicas en tiempo libre: </b>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="actividades_especificas_tiempo_libre"
+                    value={editableUser.actividades_especificas_tiempo_libre || ''}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  generalInfo.actividades_especificas_tiempo_libre
+                )}
+              </div>
+
+                  
+
+                <div className='div-modal'>
+                  <b>factores de riesgo: </b>
+                  {isEditing ? (
+                    <Select
+                      isMulti
+                      placeholder='Seleccione factores de riesgo'
+                      className='form-react-select'
+                      name="factores_riesgos"
+                      // Opciones disponibles, excluyendo las ya seleccionadas
+                      options={factoresOptions.filter(option => 
+                        !( editableUser.factores_riesgos || generalInfo.factores_riesgos).includes(option.label)
+                      )}
+                      // Opciones seleccionadas
+                      value={(editableUser.factores_riesgos || generalInfo.factores_riesgos|| []).map(value => {
+                        const foundOption = factoresOptions.find(o => o.value === value);
+                        return foundOption || { value, label: value };
+                      })}
+                      onChange={handleSelectChange}
+                    />
+                  ) : (
+                    generalInfo.factores_riesgos.join(', ')
+                  )}
+                </div> 
 
 
                   </Col> 
 
                   </Row>
-                  <Row>
-
-                  <div className='div-modal'><b>Observación general fuente de ingresos:</b> {generalInfo.observacion_general_fuente_de_ingresos}</div>
-                  <div className='div-modal'><b>Observación general redes de apoyo:</b> {generalInfo.observacion_general_redes_de_apoyo}</div>
-                  <div className='div-modal'><b>Observación general factores de riesgo:</b> {generalInfo.observacion_general_factores_de_riesgo}</div>
-                  <div className='div-modal'><b>Observación horario:</b> {generalInfo.observacion_horario}</div>
-                  <div className='div-modal'><b>Observación general actividades específicas en tiempo libre:</b> {generalInfo.observacion_general_actividades_especificas_tiempo_libre}</div>
-                  <div className='div-modal'><b>Observación general relacion convivencia vivienda:</b> {generalInfo.observacion_general_relacion_convivencia_vivienda}</div>
-
-                  <div className='div-modal'><b>Redes de apoyo:</b>
-                    <ul>
-                      {generalInfo.redes_de_apoyo.map((redes, index) => (
-                        <li key={index}>
-                          <div><b>Nombre:</b> {redes.nombre_red_apoyo}</div>
-                          <div className='div-observacion'><b>Observación:</b> {redes.observacion_red_apoyo}</div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>                  
-    {/*              
-   <div className='div-modal'>
-      <b>Factores de riesgo:</b>
-      <ul className='ul-style'>
-        {editableRiskFactors.map((factor, index) => (
-          <li className='li-style' key={index}>
-            <div>
-              <b>Nombre:</b> {factor.nombre_factor_riesgo}
-            </div>
-            <div className='div-observacion'>
-              <b>Observación:</b>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={factor.observacion_factor_riesgo}
-                  onChange={(e) => handleObservationChange(index, e)}
-                />
-              ) : (
-                factor.observacion_factor_riesgo
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
-      {isEditing && (
-        <button type="button" onClick={handleAddRiskFactor}>
-          Añadir observación
-        </button>
-      )}
-    </div>
-     */}
-                  <div className='div-modal'><b>Convivencias en vivienda:</b>
-                    <ul className='ul-style'>
-                      {generalInfo.convivencias_en_vivienda.map((convivencia, index) => (
-                        <li className='li-style' key={index}>
-                          <div><b>Nombre:</b> {convivencia.nombre_convivencia_vivienda}</div>
-                          <div className='div-observacion'><b>Observación:</b> {convivencia.observacion_convivencia_vivienda}</div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>  
-
-                  <div className='div-modal'><b>Fuentes de ingresos:</b>
-                    <ul className='ul-style'>
-                      {generalInfo.fuentes_de_ingresos.map((fuentes, index) => (
-                        <li className='li-style' key={index}>
-                          <div><b>Nombre:</b> {fuentes.nombre_fuente_ingreso}</div>
-                          <div className='div-observacion'><b>Observación:</b> {fuentes.observacion_fuente_ingresos}</div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div> 
-
-                  <div className='div-modal'><b>Actividades en tiempo libre:</b>
-                    <ul className='ul-style'>
-                      {generalInfo.actividades_tiempo_libre.map((actividades, index) => (
-                        <li className='li-style' key={index}>
-                          <div><b>Nombre:</b> {actividades.nombre_actividad_tiempo_libre}</div>
-                          <div className='div-observacion'><b>Observación:</b> {actividades.observacion_actividad_tiempo_libre}</div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div> 
-
-                  <div className='div-modal'><b>Acompañamiento recibido:</b>
-                    <ul className='ul-style'>
-                      {generalInfo.acompanamientos_recibido.map((acompañamiento, index) => (
-                        <li className='li-style' key={index}>
-                          <div><b>Nombre:</b> {acompañamiento.nombre_acompanamiento_recibido}</div>
-                          <div className='div-observacion'><b>Observación:</b> {acompañamiento.observacion_acompanamiento_recibido}</div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div> 
-                  </Row>
-
                   </div>
              )}
+                {currentPage === 3 && generalInfo && (
+                  <div>
+                    <Row>
+                    <Col className="form-column" xs={"10"} md={"6"}>
 
-                {currentPage === 3 && academicoInfo && (
+                    <div className='div-modal'>
+                      <b>Observación general fuente de ingresos:</b>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          name="observacion_general_fuente_de_ingresos"
+                          value={editableUser.observacion_general_fuente_de_ingresos || ''}
+                          onChange={handleInputChange}
+                        />
+                      ) : (
+                        generalInfo.observacion_general_fuente_de_ingresos
+                      )}
+                    </div>
+                    <div className='div-modal'>
+                      <b>Observación general redes de apoyo:</b>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          name="observacion_general_redes_de_apoyo"
+                          value={editableUser.observacion_general_redes_de_apoyo || ''}
+                          onChange={handleInputChange}
+                        />
+                      ) : (
+                        generalInfo.observacion_general_redes_de_apoyo
+                      )}
+                    </div>
+                    <div className='div-modal'>
+                      <b>Observación general factores de riesgo:</b>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          name="observacion_general_factores_de_riesgo"
+                          value={editableUser.observacion_general_factores_de_riesgo || ''}
+                          onChange={handleInputChange}
+                        />
+                      ) : (
+                        generalInfo.observacion_general_factores_de_riesgo
+                      )}
+                    </div>
+                    <div className='div-modal'>
+                      <b>Observación horario:</b>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          name="observacion_horario"
+                          value={editableUser.observacion_horario || ''}
+                          onChange={handleInputChange}
+                        />
+                      ) : (
+                        generalInfo.observacion_horario
+                      )}
+                    </div>
+                    <div className='div-modal'>
+                      <b>Observación general actividades específicas en tiempo libre:</b>
+                      {isEditing ? (
+                        <textarea
+                          type="text"
+                          name="observacion_general_actividades_especificas_tiempo_libre"
+                          value={editableUser.observacion_general_actividades_especificas_tiempo_libre !== undefined ? editableUser.observacion_general_actividades_especificas_tiempo_libre : generalInfo.observacion_general_actividades_especificas_tiempo_libre || ''}
+                          onChange={handleInputChange}
+                        />
+                      ) : (
+                        generalInfo.observacion_general_actividades_especificas_tiempo_libre
+                      )}
+                    </div>
+
+
+
+                    </Col>
+                  <Col className="form-column" xs={"10"} md={"6"}>
+                  
+                  <div className='div-modal'>
+                  <b>factores de riesgo: </b>
+                  {isEditing ? (
+                    <Select
+                      isMulti
+                      placeholder='Seleccione factores de riesgo'
+                      name="factores_riesgos"
+                      // Opciones disponibles, excluyendo las ya seleccionadas
+                      options={factoresOptions.filter(option => 
+                        !( editableUser.factores_riesgos || generalInfo.factores_riesgos).includes(option.label)
+                      )}
+                      // Opciones seleccionadas
+                      value={(editableUser.factores_riesgos || generalInfo.factores_riesgos|| []).map(value => {
+                        const foundOption = factoresOptions.find(o => o.value === value);
+                        return foundOption || { value, label: value };
+                      })}
+                      onChange={handleSelectChange}
+                    />
+                  ) : (
+                    generalInfo.factores_riesgos.join(', ')
+                  )}
+                </div> 
+
+
+                <div className='div-modal'>
+                  <b>Fuentes de ingresos: </b>
+                  {isEditing ? (
+                    <Select
+                      isMulti
+                      placeholder='Seleccione las fuentes de ingresos'
+                      name="fuentes_ingresos"
+                      // Opciones disponibles, excluyendo las ya seleccionadas
+                      options={fuentesOptions.filter(option => 
+                        !( editableUser.fuentes_ingresos || generalInfo.fuentes_ingresos).includes(option.label)
+                      )}
+                      // Opciones seleccionadas
+                      value={(editableUser.fuentes_ingresos || generalInfo.fuentes_ingresos|| []).map(value => {
+                        const foundOption = fuentesOptions.find(o => o.value === value);
+                        return foundOption || { value, label: value };
+                      })}
+                      onChange={handleSelectChange}
+                    />
+                  ) : (
+                    generalInfo.fuentes_ingresos.join(', ')
+                  )}
+                </div> 
+                
+                <div className='div-modal'>
+                  <b>Redes de apoyo: </b>
+                  {isEditing ? (
+                    <Select
+                      isMulti
+                      placeholder='Seleccione las redes de apoyo'
+                      name="redes_apoyo"
+                      // Opciones disponibles, excluyendo las ya seleccionadas
+                      options={redesOptions.filter(option => 
+                        !( editableUser.redes_apoyo || generalInfo.redes_apoyo).includes(option.label)
+                      )}
+                      // Opciones seleccionadas
+                      value={(editableUser.redes_apoyo || generalInfo.redes_apoyo|| []).map(value => {
+                        const foundOption = redesOptions.find(o => o.value === value);
+                        return foundOption || { value, label: value };
+                      })}
+                      onChange={handleSelectChange}
+                    />
+                  ) : (
+                    generalInfo.redes_apoyo.join(', ')
+                  )}
+                </div> 
+
+                <div className='div-modal'>
+                  <b>Actividades en tiempo libre: </b>
+                  {isEditing ? (
+                    <Select
+                      isMulti
+                      placeholder='Seleccione las actividades de tiempo libre'
+                      name="actividades_tiempo_libre"
+                      // Opciones disponibles, excluyendo las ya seleccionadas
+                      options={actividadesOptions.filter(option => 
+                        !( editableUser.actividades_tiempo_libre || generalInfo.actividades_tiempo_libre).includes(option.label)
+                      )}
+                      // Opciones seleccionadas
+                      value={(editableUser.actividades_tiempo_libre || generalInfo.actividades_tiempo_libre|| []).map(value => {
+                        const foundOption = actividadesOptions.find(o => o.value === value);
+                        return foundOption || { value, label: value };
+                      })}
+                      onChange={handleSelectChange}
+                    />
+                  ) : (
+                    generalInfo.actividades_tiempo_libre.join(', ')
+                  )}
+                </div> 
+
+                  </Col>
+                    </Row>
+                  </div>
+                )}
+                {currentPage === 4 && academicoInfo && (
                   <div>
                     <Row>
                       <Col className="form-column" xs={"10"} md={"6"}>
@@ -606,7 +831,7 @@ const ModalEstudiantes = ({
 
               
             
-        {currentPage === 4 && documentosInfo && (
+        {currentPage === 5 && documentosInfo && (
           <div>
             <Row>
               <Col className="form-column" xs={"10"} md={"6"}>
@@ -708,7 +933,7 @@ const ModalEstudiantes = ({
           </div>
         )}
 
-              {currentPage === 5   && seguimientosInfo && (
+              {currentPage === 6   && seguimientosInfo && (
                 <div className='div-observacion'>
 
 <Row>
@@ -771,7 +996,7 @@ const ModalEstudiantes = ({
                   Atrás
                 </Button>
               )}
-              {currentPage < 5 && (
+              {currentPage < 6 && (
                 <Button variant="primary" onClick={nextPage}>
                   Adelante
                 </Button>

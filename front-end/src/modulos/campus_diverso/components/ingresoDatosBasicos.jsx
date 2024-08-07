@@ -34,7 +34,7 @@ const IngresoDatosBasicos = ({state,
   <input
     className='input-updated'
     type="text"
-    placeholder="Enter username"
+    placeholder="Ingrese su nombre identitario"
     name="nombre_identitario"
     value={state.nombre_identitario}
     onChange={handleChange}
@@ -57,27 +57,7 @@ const IngresoDatosBasicos = ({state,
   <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_y_apellido.length}`}</span>
 </div>
 
-<div>
-              <label className='custom-div'>Pronombres</label>
-              <div>
-                {isLoading ? (
-                  <p>Cargando...</p>
-                ):(
-                <Select
-                  isMulti
-                  name="pronombres"
-                  placeholder='Seleccione pronombres'
-                  options={pronombresOptions}
-                  value={state.pronombres.map(option => ({
-                  value: option,
-                  label: pronombresOptions.find(o => o.value === option).label
-                  }))}
-                  onChange={handleSelectChange}
-    
-                  />
-                  )}
-              </div>
-            </div>
+
 
 <div className="input-container">
   <label className='custom-div'>Email</label>

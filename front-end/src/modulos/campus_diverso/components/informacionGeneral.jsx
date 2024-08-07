@@ -1,16 +1,25 @@
 import React from 'react';
 import { Container, Col, Button, } from 'react-bootstrap';
+import Select from 'react-select';
+
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 
 const InformacionGeneral = ({state,
     handleChange,
+    handleSelectChange,
     handleArrayFieldChange,
     handleAgregarItem,
     handleEliminarItem,
     handleArrayChange,
     handleAddItem,
     handleDeleteItem,
+    factoresOptions,
+    actividadesOptions,
+    fuentesOptions,
+    redesOptions,
+    isLoading,
+    handleSelectChange2,
 
 }) => {
   return (
@@ -187,71 +196,32 @@ const InformacionGeneral = ({state,
 
 
           <div>
-            <label className='custom-div'>redes de apoyo</label>
-            {state.redes_de_apoyo.map((red, index) => (
-                
-              <div key={index}>
-                <input
-                  type="text"
-                  name="nombre_red_apoyo"
-                  placeholder="Nombre de la red de apoyo"
-                  value={red.nombre_red_apoyo}
-                  onChange={(e) => handleArrayFieldChange('redes_de_apoyo', index, 'nombre_red_apoyo', e.target.value)}
-                />
-                <input 
-                  type="text"
-                  name="observacion_red_apoyo"
-                  placeholder="ingrese obersvacion"
-                  value={red.observacion_red_apoyo}
-                  onChange={(e) => handleArrayFieldChange('redes_de_apoyo', index, 'observacion_red_apoyo', e.target.value)}
-                />
-                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('redes_de_apoyo', index)}>Eliminar</Button>
-              </div>             
-            ))}
-            <div>
-            <Button variant="secondary" className='boton-container' onClick={() => handleAgregarItem('redes_de_apoyo', { nombre_red_apoyo: '', observacion_red_apoyo: '' })}
-              disabled={state.redes_de_apoyo.length >= 3}
-              >
-              Agregar Red de apoyo
-            </Button></div>
-          </div>
+              <label className='custom-div'>Redes de apoyo</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="redes_apoyo"
+                  placeholder='Seleccione sus redes de apoyo'
+                  options={redesOptions}
+                  value={state.redes_apoyo.map(option => ({
+                  label: option,
+                  value: redesOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
 
 
-          <div>
-      <label className="custom-div">Ocupaciones Actuales</label>
-      {state.ocupaciones_actuales.map((ocupacion, index) => (
-        <div key={index}>
-          <input
-            type="text"
-            placeholder='ingrese ocupación'
-            value={ocupacion}
-            onChange={(e) => handleArrayChange('ocupaciones_actuales', index, e.target.value)}
-          />
-          <Button variant="danger" className='boton-container' onClick={() => handleDeleteItem('ocupaciones_actuales', index)}>Eliminar</Button>
-        </div>
-      ))}
-      <Button variant="secondary" className='boton-container' onClick={() => handleAddItem('ocupaciones_actuales')}
-        disabled={state.ocupaciones_actuales.length >= 3}
-        >Agregar Ocupación</Button>
-    </div>
+  
 
-    <div>
-      <label className="custom-div">Profesionales que brindarion atención</label>
-      {state.profesionales_que_brindo_atencion.map((profesional, index) => (
-        <div key={index}>
-          <input
-            type="text"
-            placeholder='Ingrese profesional'
-            value={profesional}
-            onChange={(e) => handleArrayChange('profesionales_que_brindo_atencion', index, e.target.value)}
-          />
-          <Button variant="danger" className='boton-container' onClick={() => handleDeleteItem('profesionales_que_brindo_atencion', index)}>Eliminar</Button>
-        </div>
-      ))}
-      <Button variant="secondary" className='boton-container' onClick={() => handleAddItem('profesionales_que_brindo_atencion')}
-        disabled={state.profesionales_que_brindo_atencion.length >= 3}
-        >Agregar profesional</Button>
-    </div>
+ 
 
 
     </Col>
@@ -387,167 +357,124 @@ const InformacionGeneral = ({state,
         </div>
 
         <div>
-  <label className='custom-div'>Factores de Riesgo</label>
-  {state.factores_de_riesgo.map((factor, index) => (
-    <div key={index}>
-      <input
-        type="text"
-        name="nombre_factor_riesgo"
-        placeholder="Nombre del factor de riesgo"
-        value={factor.nombre_factor_riesgo}
-        onChange={(e) => handleArrayFieldChange('factores_de_riesgo', index, 'nombre_factor_riesgo', e.target.value)}
-      />
-      <input 
-        type="text"
-        name="observacion_factor_riesgo"
-        placeholder="Observación del factor de riesgo"
-        value={factor.observacion_factor_riesgo}
-        onChange={(e) => handleArrayFieldChange('factores_de_riesgo', index, 'observacion_factor_riesgo', e.target.value)}
-      />
-      <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('factores_de_riesgo', index)}>Eliminar</Button>
-    </div>             
-  ))}
-  <div>
-    <Button
-      variant="secondary"
-      className='boton-container'
-      onClick={() => handleAgregarItem('factores_de_riesgo', { nombre_factor_riesgo: '', observacion_factor_riesgo: '' })}
-      disabled={state.factores_de_riesgo.length >= 3} // Deshabilitar si hay 3 o más elementos
-    >
-      Agregar Factor de Riesgo
-    </Button>
-  </div>
-</div>
+                <label className='custom-div'>¿Ocupación actual?</label>
+                <div>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="Ocupaciones_actules"
+                  placeholder='Ingrese su ocupación'
+                  value={state.Ocupaciones_actules}
+                  onChange={handleChange}
+                />
+                </div>
+        </div>  
 
+        <div>
+                <label className='custom-div'>¿Qué profesionales le han brindado atención?</label>
+                <div>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="profesionales_que_brindaron_atencion"
+                  placeholder='Ingrese los profesionales'
+                  value={state.profesionales_que_brindaron_atencion}
+                  onChange={handleChange}
+                />
+                </div>
+        </div>  
+
+        <div>
+                <label className='custom-div'>¿Qué acompañamiento ha recibido?</label>
+                <div>
+                <textarea
+                className='input-updated'
+                  type="text"
+                  name="acompanamiento_que_recibio"
+                  placeholder='Ingrese el acompañamiento que ha recibido'
+                  value={state.acompanamiento_que_recibio}
+                  onChange={handleChange}
+                />
+                </div>
+        </div>  
 
 
 
 
         <div>
-            <label className='custom-div'>Convivencias en vivienda</label>
-            {state.convivencias_en_vivienda.map((convivencias, index) => (
-                
-              <div key={index}>
-                <input
-                  type="text"
-                  name="nombre_convivencia_vivienda"
-                  placeholder="Nombre de la convivencia"
-                  value={convivencias.nombre_convivencia_vivienda}
-                  onChange={(e) => handleArrayFieldChange('convivencias_en_vivienda', index, 'nombre_convivencia_vivienda', e.target.value)}
-                />
-                <input 
-                  type="text"
-                  name="observacion_convivencia_vivienda"
-                  placeholder="ingrese observacion"
-                  value={convivencias.observacion_convivencia_vivienda}
-                  onChange={(e) => handleArrayFieldChange('convivencias_en_vivienda', index, 'observacion_convivencia_vivienda', e.target.value)}
-                />
-                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('convivencias_en_vivienda', index)}>Eliminar</Button>
-              </div>             
-            ))}
+              <label className='custom-div'>Factores de riesgo</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="factores_riesgos"
+                  placeholder='Seleccione sus factores de riesgo'
+                  options={factoresOptions}
+                  value={state.factores_riesgos.map(option => ({
+                  label: option,
+                  value: factoresOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
+
+
+
+
             <div>
-            <Button variant="secondary" className='boton-container' onClick={() => 
-              handleAgregarItem('convivencias_en_vivienda', { nombre_convivencia_vivienda: '', observacion_convivencia_vivienda: '' })}
-              disabled={state.convivencias_en_vivienda.length >= 3}>
-              Agregar Convivencia
-            </Button></div>
-          </div>
+              <label className='custom-div'>Fuentes de ingresos</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="fuentes_ingresos"
+                  placeholder='Seleccione sus fuentes de ingresos'
+                  options={fuentesOptions}
+                  value={state.fuentes_ingresos.map(option => ({
+                  label: option,
+                  value: fuentesOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
 
-
-          <div>
-            <label className='custom-div'>Fuentes de ingresos</label>
-            {state.fuentes_de_ingresos.map((fuentes, index) => (
-                
-              <div key={index}>
-                <input
-                  type="text"
-                  name="nombre_fuente_ingresos"
-                  placeholder="Nombre de la fuente de ingresos"
-                  value={fuentes.nombre_fuente_ingresos}
-                  onChange={(e) => handleArrayFieldChange('fuentes_de_ingresos', index, 'nombre_fuente_ingresos', e.target.value)}
-                />
-                <input 
-                  type="text"
-                  name="observacion_fuente_ingresos"
-                  placeholder="ingrese observacion"
-                  value={fuentes.observacion_fuente_ingresos}
-                  onChange={(e) => handleArrayFieldChange('fuentes_de_ingresos', index, 'observacion_fuente_ingresos', e.target.value)}
-                />
-                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('fuentes_de_ingresos', index)}>Eliminar</Button>
-              </div>             
-            ))}
             <div>
-            <Button variant="secondary" className='boton-container' 
-            onClick={() => handleAgregarItem('fuentes_de_ingresos', { nombre_fuente_ingresos: '', observacion_fuente_ingresos: '' })}
-            disabled={state.fuentes_de_ingresos.length >= 3}
-            >
-              Agregar Fuente de Ingresos
-            </Button></div>
-          </div>
+              <label className='custom-div'>Actividades en tiempo libre</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="actividades_tiempo_libre"
+                  placeholder='Seleccione sus Actividades en tiempo libre'
+                  options={actividadesOptions}
+                  value={state.actividades_tiempo_libre.map(option => ({
+                  label: option,
+                  value: actividadesOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
 
 
-          <div>
-            <label className='custom-div'>Actividades en tiempo libre</label>
-            {state.actividades_tiempo_libre.map((actividad, index) => (
-                
-              <div key={index}>
-                <input
-                  type="text"
-                  name="nombre_actividad_tiempo_libre"
-                  placeholder="Nombre de la actividad"
-                  value={actividad.nombre_actividad_tiempo_libre}
-                  onChange={(e) => handleArrayFieldChange('actividades_tiempo_libre', index, 'nombre_actividad_tiempo_libre', e.target.value)}
-                />
-                <input 
-                  type="text"
-                  name="observacion_actividad_tiempo_libre"
-                  placeholder="ingrese observacion"
-                  value={actividad.observacion_actividad_tiempo_libre}
-                  onChange={(e) => handleArrayFieldChange('actividades_tiempo_libre', index, 'observacion_actividad_tiempo_libre', e.target.value)}
-                />
-                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('actividades_tiempo_libre', index)}>Eliminar</Button>
-              </div>             
-            ))}
-            <div >
-            <Button variant="secondary" className='boton-container' 
-            onClick={() => handleAgregarItem('actividades_tiempo_libre', { nombre_actividad_tiempo_libre: '', observacion_actividad_tiempo_libre: '' })}
-            disabled={state.actividades_tiempo_libre.length >= 3}
-            >
-              Agregar Actividad
-            </Button></div>
-          </div>
 
-
-          <div>
-            <label className='custom-div'>Acompañamiento recibido</label>
-            {state.acompanamientos_recibido.map((acompañamiento, index) => (
-                
-              <div key={index}>
-                <input
-                  type="text"
-                  name="nombre_acompanamiento_recibido"
-                  placeholder="Nombre del acompañamiento"
-                  value={acompañamiento.nombre_acompanamiento_recibido}
-                  onChange={(e) => handleArrayFieldChange('acompanamientos_recibido', index, 'nombre_acompanamiento_recibido', e.target.value)}
-                />
-                <input 
-                  type="text"
-                  name="observacion_acompanamiento_recibido"
-                  placeholder="ingrese observacion"
-                  value={acompañamiento.observacion_acompanamiento_recibido}
-                  onChange={(e) => handleArrayFieldChange('acompanamientos_recibido', index, 'observacion_acompanamiento_recibido', e.target.value)}
-                />
-                <Button variant='danger' className='boton-container' onClick={() => handleEliminarItem('acompanamientos_recibido', index)}>Eliminar</Button>
-              </div>             
-            ))}
-            <div>
-            <Button variant="secondary" className='boton-container' 
-            onClick={() => handleAgregarItem('acompanamientos_recibido', { nombre_acompanamiento_recibido: '', observacion_acompanamiento_recibido: '' })}
-            disabled={state.acompanamientos_recibido.length >= 3}
-            >
-              Agregar Acompañamiento
-            </Button></div>
-          </div>
     </Col>
     </Container>
     </>
