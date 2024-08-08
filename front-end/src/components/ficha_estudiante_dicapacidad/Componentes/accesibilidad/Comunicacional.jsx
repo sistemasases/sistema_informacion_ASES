@@ -3,20 +3,62 @@ import Columns from "../Columns";
 import React, { useState } from 'react';
 
 const Comunicacional = () => {
-  const [isYesSelected, setIsYesSelected] = useState(false);
-  const [elementId, setElementId] = useState("");
+  
+  const [selection, setSelection] = useState(() => {
+    const initialSelection = {};
+    for (let i = 1; i <= 16; i++) {
+      initialSelection[i] = { binaryChoice: '', tripleChoiceDisabled: false, tripleChoice: '' };
+    }
+    return initialSelection;
+  });
+
 
   const handleRadioChange = (event) => {
-    if (event.target.value === "Si") {
-      setElementId(event.target.id);
-      setIsYesSelected(true);
-      console.log(event.target.id)
-    } else if (event.target.value === "No") {
-      setElementId(event.target.id);
-      setIsYesSelected(false);
-      console.log(event.target.id)
-    }
+    const { id, value, name } = event.target;
+    setSelection(prevState => ({
+      ...prevState,
+      [id]: {
+        ...prevState[id],
+        [name.includes('binaryChoice') ? 'binaryChoice' : 'tripleChoice']: value,
+        tripleChoiceDisabled: name.includes('binaryChoice') && value === "No"
+      }
+    }));
   };
+
+  const createColumns = (id, name) => (
+    [
+      { type: "text", name },
+      { type: "radio", name: `binaryChoice-${id}`, value: "Si", onChange: handleRadioChange, id: id.toString(), checked: selection[id].binaryChoice === "Si" },
+      { type: "radio", name: `binaryChoice-${id}`, value: "No", onChange: handleRadioChange, id: id.toString(), checked: selection[id].binaryChoice === "No" },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Independiente",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Independiente"
+      },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Dependiente",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Dependiente"
+      },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Requiere apoyo",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Requiere apoyo"
+      },
+    ]
+  )
 
   return (
     <AcordionesHijos
@@ -27,104 +69,13 @@ const Comunicacional = () => {
           content: (
             <Columns
               columns={[
-                [
-                  { type: "text", name: "Hablar" },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "1" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "1" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "1",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente",
-                    disabled: !isYesSelected && elementId === "1", },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "1",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Producción de mensajes no verbales",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "2" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "2" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "2",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "2" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "2",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Producción de mensajes en lenguaje de signos convencional",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "3" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "3" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "3",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "3", },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "3",
-                  },
-                ],
-                [
-                  { type: "text", name: "Mensajes escritos" },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "4"  },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "4" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "4"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "4" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "4"
-                  },
-                ],
-                [
-                  { type: "text", name: "Otras formas de producciones" },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "5" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "5" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "5"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "5" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "5"
-                  },
-                ],
+                createColumns(1, "Hablar"),
+                createColumns(2, "Producción de mensajes no verbales"),
+                createColumns(3, "Producción de mensajes en lenguaje de signos convencional"),
+                createColumns(4, "Mensajes escritos"),
+                createColumns(5, "Otras formas de producciones"),
               ]}
+
             />
           ),
         },
@@ -133,109 +84,13 @@ const Comunicacional = () => {
           content: (
             <Columns
               columns={[
-                [
-                  { type: "text", name: "Recepción de mensajes hablados" },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "6" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "6" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "6"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "6" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "6"
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Recepción de mensajes no verbales",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "7" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "7" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "7"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "7" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "7"
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Recepción de mensajes en lenguaje de signos convencional",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "8" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "8" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "8"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "8" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "8"
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Ayudas técnicas que favorecen la cotidianidad escolar",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "9" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "9" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "9"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "9" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "9"
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Apoyo natural: guía interprete, interprete, tutor y también profesionales como tiflólogo o monitor",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "10" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "10" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "10"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "10" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "10"
-                  },
-                ],
+                createColumns(6, "Discusión"),
+                createColumns(7, "Recepción de mensajes no verbales"),
+                createColumns(8, "Recepción de mensajes en lenguaje de signos convencional"),
+                createColumns(9, "Ayudas técnicas que favorecen la cotidianidad escolar"),
+                createColumns(10, "Apoyo natural: guía interprete, interprete, tutor y también profesionales como tiflólogo o monitor"),
               ]}
+
             />
           ),
         },
@@ -244,123 +99,12 @@ const Comunicacional = () => {
           content: (
             <Columns
               columns={[
-                [
-                  { type: "text", name: "Discusión" },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "11" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "11" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "11"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "11" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "11"
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Utilización de dispositivos y técnicas de comunicación",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "12" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "12" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "12"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "12" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "12"
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Recepción de mensajes en lenguaje de signos convencional",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "13" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "13" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "13"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "13" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "13"
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Conversación y utilización de dispositivos y técnicas de comunicación, otros especificados y no especificados",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "14" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "14" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "14"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "14" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "14"
-                  },
-                ],
-                [
-                  { type: "text", name: "Comunicación, otra especificada" },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "15" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "15" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "15"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "15" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "15"
-                  },
-                ],
-                [
-                  { type: "text", name: "Comunicación, no especificada" },
-                  { type: "radio", name: "binaryChoice", value: "Si", onChange: handleRadioChange, id: "16" },
-                  { type: "radio", name: "binaryChoice", value: "No", onChange: handleRadioChange, id: "16" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                    disabled: !isYesSelected && elementId === "16"
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente", disabled: !isYesSelected && elementId === "16" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                    disabled: !isYesSelected && elementId === "16"
-                  },
-                ],
+                createColumns(11, "Recepción de mensajes hablados"),
+                createColumns(12, "Utilización de dispositivos y técnicas de comunicación"),
+                createColumns(13, "Recepción de mensajes en lenguaje de signos convencional"),
+                createColumns(14, "Conversación y utilización de dispositivos y técnicas de comunicación, otros especificados y no especificados"),
+                createColumns(15, "Comunicación, otra especificada"),
+                createColumns(16, "Comunicación, no especificada"),
               ]}
             />
           ),
