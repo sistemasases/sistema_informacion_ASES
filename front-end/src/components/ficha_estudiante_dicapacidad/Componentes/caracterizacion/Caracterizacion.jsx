@@ -6,21 +6,37 @@ import DatosAcademicosAdicionales from "./DatosAcademicosAdicionales";
 import AccesoServiciosSalud from "./AccesoServiciosSalud";
 import PercepcionCaracteristicasDiscapacidad from "./PercepcionCaracteristicasDiscapacidad";
 import ConclusionJornadaCaracterizacion from "./ConclusionJornadaCaracterizacion";
+import semestres_discapacidad from "../../../../service/semestres_discapacidad";
 import withSwal from "../withSwal";
 import DatosAcademicos from "./DatosAcademicos";
 import { decryptTokenFromSessionStorage, desencriptar } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad";
+import { useEffect, useState } from "react";
 
 
 const Caracterizacion = () => {
   const config = {
     Authorization: 'Bearer ' +  decryptTokenFromSessionStorage
   };
-  const semestre = desencriptar(sessionStorage.semestre_actual);
+  const [semestres, setSemestres] = useState([]);
+  const [semestreActual, setSemestreActual] = useState("");
+
+  useEffect(() => {
+    semestres_discapacidad.semestres_discapacidad().then((res) => {
+      setSemestres(res);
+    });
+
+    const semestre = desencriptar(sessionStorage.semestre_actual);
+    setSemestreActual(semestre);
+  }, []);
   return (
     <div className="container-acordion container-subacordion">
       <p>Periodo de Caracterización:</p>
-      <select name="periodo" id="periodo">
-        <option value={semestre}>{semestre}</option>
+      <select name="periodo" id="periodo" value={semestreActual} onChange={(e) => setSemestreActual(e.target.value)}>
+        {semestres.map((semestre) => (
+          <option key={semestre.id} value={semestre.id}>
+            {semestre.nombre}
+          </option>
+        ))}
       </select>
       <p className="title">COMPONENTES DE CARACTERIZACIÓN:</p>
       <Acordion

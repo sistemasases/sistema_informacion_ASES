@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/auth";
 import perfilUsuario from "./Usuario.png";
 import "../../../Scss/ficha_estudiante_discapacidad/select.css";
+import all_estudiantes_discapacidad from "../../../service/all_estudiantes_discapacidad";
+import estudiante_discapacidad from "../../../service/estudiante_discapacidad";
 
 // Componente de Select
 // Este componente se encarga de obtener al estudiante seleccionado,
@@ -9,78 +11,74 @@ import "../../../Scss/ficha_estudiante_discapacidad/select.css";
 // componentes lo puedan usar y mostrar su informacion básica
 const Select = () => {
   const [estudiantes, setEstudiantes] = useState([]);
-  const { estudiantesDiscapacidad, setEstudianteSelected } = useAuthStore();
-  const [selectedStudent, setSelectedStudent] = useState({
-    id: "identificación",
-    nombre: null,
-    codigo: null,
-    correo: "carlos.mauricio.tovar@correounivalle.edu.co",
-    edad: "edad",
-    imagen: null,
-    programas: [],
-    seguimientos: [],
-    condicion: "condición",
-    profesional: null,
-    practicante: null,
-    monitor: null,
-    ultimaActualizacion: null,
-    telefono: "0000000000",
-    tipo_discapacidad: "tipo_discapacidad",
-    diagnosticos: ["diagnostico1", "diagnostico2"],
-  });
+  const { setEstudianteSelected, estudianteSelected } = useAuthStore(); // Obtener y establecer estudiante seleccionado
 
   const handleSelectStudent = (student) => {
-    setSelectedStudent({
+    const newSelectedStudent = {
       id: student.id,
-      codigo: student.codigo,
-      correo: student.correo,
+      tipo_documento: student.tipo_doc,
+      documento: student.num_doc,
+      nombre: student.nombre,
+      apellido: student.apellido,
+      sexo: student.sexo,
+      identidad_genero: student.el_id_de_identidad_gen,
+      deporte: student.actividades_ocio_deporte,
+      contacto_emergencia: student.contacto_emergencia,
+      programas: student.programas,
+      anio_ingreso: student.anio_ingreso,
+      codigo: student.cod_univalle,
+      email: student.email,
       edad: student.edad,
       imagen: student.imagen,
-      programas: student.programas,
       seguimientos: student.seguimientos,
-      condicion: student.condicion,
+      condicion: student.el_id_de_cond_excepcion,
       profesional: student.profesional,
       practicante: student.practicante,
       monitor: student.monitor,
       ultimaActualizacion: student.ultimaActualizacion,
-      telefono: student.telefono,
+      telefono: student.telefono_res,
+      celular: student.celular,
+      direccion_residencia: student.dir_res,
+      barrio: student.barrio,
       tipo_discapacidad: student.tipo_discapacidad,
       diagnosticos: student.diagnosticos,
-    });
-    setEstudianteSelected(selectedStudent);
+    };
+    setEstudianteSelected(newSelectedStudent);
   };
 
   useEffect(() => {
-    if (estudiantesDiscapacidad.length > 0) return;
-    setEstudiantes(estudiantesDiscapacidad);
-  }, [estudiantesDiscapacidad]);
+    all_estudiantes_discapacidad.all_estudiantes_discapacidad().then((res) => {
+      setEstudiantes(res);
+    });
+  }, []);
+
+  const handleChange = async (e) => {
+    const studentCodigo = e.target.value;
+    const selectedStudent = estudiantes.find(
+      (estudiante) => estudiante.cod_univalle === studentCodigo
+    );
+
+    if (selectedStudent) {
+      const studentDetails = await estudiante_discapacidad.estudiante_discapacidad(selectedStudent.id);
+      handleSelectStudent(studentDetails);
+    }
+  };
 
   return (
     <div className="container-main">
       <div className="container-submain">
         <div className="container-basic">
-          <select
-            onChange={(e) => {
-              const studentCodigo = e.target.value;
-              const selectedStudent = estudiantes.find(
-                (estudiante) => estudiante.codigo === studentCodigo
-              );
-              handleSelectStudent(selectedStudent);
-            }}
-            className="select-item"
-          >
+          <select onChange={handleChange} className="select-item">
             <option>Select a student</option>
             {estudiantes.map((estudiante) => (
-              <option value={estudiante.codigo}>
-                {estudiante.codigo} - {estudiante.nombre}
+              <option key={estudiante.cod_univalle} value={estudiante.cod_univalle}>
+                {estudiante.cod_univalle} - {estudiante.nombre} {estudiante.apellido}
               </option>
             ))}
           </select>
 
           <div className="general-info">
-            <p><b>Tipo Discapacidad: </b>{selectedStudent.tipo_discapacidad}</p>
-            <p><b>Diagnóstico/s: </b> {selectedStudent.diagnosticos.join(', ')}</p>
-            <p><b>Correo: </b>{selectedStudent.correo}</p>
+            <p><b>Correo: </b>{estudianteSelected ? estudianteSelected.email : "Correo no disponible"}</p>
           </div>
         </div>
 
@@ -93,57 +91,48 @@ const Select = () => {
           </div>
         </div>
 
-        <div className="condicion">
-          <p>Condición de excepción {selectedStudent.condicion}</p>
-        </div>
-
         <div className="info-prof-programa">
-          {selectedStudent.programas.length === 0 ? (
+          {estudianteSelected.programas.length === 0 ? (
             <p className="dimen-prog desertor"></p>
           ) : (
-            selectedStudent.programas.map((programa) => {
+            estudianteSelected.programas.map((programa) => {
               let color;
-              if (programa.estado === "egresado") {
+              if (programa.id_estado_id === 3) {
                 color = "egresado";
-              } else if (programa.estado === "en curso") {
+              } else if (programa.id_estado_id === 1) {
                 color = "encurso";
-              } else if (programa.estado === "desertor") {
+              } else if (programa.id_estado_id === 6) {
                 color = "desertor";
               }
               return (
                 <p className={`dimen-prog ${color}`}>
-                  {programa.codigoEst} - {programa.codigo} - {programa.nombre}
+                  {programa.codigo_estudiante} - {programa.cod_univalle} - {programa.nombre_programa}
                 </p>
               );
             })
           )}
         </div>
 
+        <div className="condicion">
+          <p>Condición de excepción {estudianteSelected ? estudianteSelected.condicion : "Condición no disponible"}</p>
+        </div>
+
         <div className="container-otros-datos">
           <div className="more-stud-info">
-            <p>Profesional: {selectedStudent.profesional}</p>
-            <p>Practicante: {selectedStudent.practicante}</p>
-            <p>Monitor: {selectedStudent.monitor}</p>
-            <p>Actualización: {selectedStudent.ultimaActualizacion}</p>
+            <p>Profesional: {estudianteSelected ? estudianteSelected.profesional : "No disponible"}</p>
+            <p>Practicante: {estudianteSelected ? estudianteSelected.practicante : "No disponible"}</p>
+            <p>Monitor: {estudianteSelected ? estudianteSelected.monitor : "No disponible"}</p>
+            <p>Actualización: {estudianteSelected ? estudianteSelected.ultimaActualizacion : "No disponible"}</p>
           </div>
         </div>
       </div>
       <div className="container-img">
-      <a href={`https://wa.me/57${selectedStudent.telefono}`} target="_blank">
-        <img
-          className="img"
-          src={perfilUsuario}
-          alt="Student"
-        />
+        <a href={`https://wa.me/57${estudianteSelected ? estudianteSelected.telefono : "0000000000"}`} target="_blank">
+          <img className="img" src={perfilUsuario} alt="Student" />
         </a>
       </div>
       <div className="links">
-        <a className="link" href="#trayectoria">
-          TRAYECTORIA
-        </a>
-        <a className="link" href={`tel:+57${selectedStudent.telefono}`}>
-        + 57 {selectedStudent.telefono.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3')}
-        </a>
+        <a className="link" href="#trayectoria">TRAYECTORIA</a>
       </div>
     </div>
   );

@@ -40,51 +40,50 @@ const General = () => {
       </button>
       <p className="title">
         Información del estudiante:
-        {/* {estudianteSelected.nombre} */}
       </p>
       <Columns
         twobold="si"
         columns={[
           [
             { type: "text", name: "Tipo Documento" },
-            { type: "text", name: "tipo_documento" },
+            { type: "text", name: estudianteSelected.tipo_documento },
             { type: "text", name: "Número documento" },
-            { type: "text", name: "numero_documento" },
+            { type: "text", name: estudianteSelected.documento ? estudianteSelected.documento : "No especifica" },
           ],
           [
             { type: "text", name: "Nombres" },
-            { type: "text", name: "Sin nombre" },
+            { type: "text", name: estudianteSelected.nombre ? estudianteSelected.nombre : "No especifica" },
             { type: "text", name: "Apellidos" },
-            { type: "text", name: "Sin apellido" },
+            { type: "text", name: estudianteSelected.apellido ? estudianteSelected.apellido : "No especifica" },
           ],
           [
             { type: "text", name: "Año ingreso Univalle" },
-            { type: "text", name: "año_ingreso" },
+            { type: "text", name: estudianteSelected.ano_ingreso ? estudianteSelected.ano_ingreso : "No especifica" },
             { type: "text", name: "Correo Electrónico" },
             editar
-              ? { type: "input", name: "" }
-              : { type: "text", name: "Sin correo" },
+              ? { type: "input", name: estudianteSelected.correo }
+              : { type: "text", name: estudianteSelected.correo ? estudianteSelected.correo : "No especifica" },
           ],
           [
-            
+
             { type: "text", name: "Celular" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: "Sin Celular" },
-              { type: "text", name: "Teléfono residencia" },
+              : { type: "text", name: estudianteSelected.celular ? estudianteSelected.celular : "No especifica" },
+            { type: "text", name: "Teléfono residencia" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: "Sin teléfono" },
+              : { type: "text", name: estudianteSelected.telefono ? estudianteSelected.telefono : "No especifica" },
           ],
           [
             { type: "text", name: "Dirección residencia" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: "Sin dirección" },
-              { type: "text", name: "Barrio" },
+              : { type: "text", name: estudianteSelected.direccion_residencia ? estudianteSelected.direccion_residencia : "No especifica" },
+            { type: "text", name: "Barrio" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: "Sin barrio" },
+              : { type: "text", name: estudianteSelected.barrio ? estudianteSelected.barrio : "No especifica" },
           ],
           [
             { type: "text", name: "Grupo étnico" },
@@ -96,25 +95,25 @@ const General = () => {
             { type: "text", name: "Sexo" },
             editar
               ? { type: "select", name: "", options: ["op1", "op2"] }
-              : { type: "text", name: "Sin sexo" },
+              : { type: "text", name: estudianteSelected.sexo ? estudianteSelected.sexo : "No especifica" },
           ],
           [
             { type: "text", name: "Identidad de género" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: "Sin genero" },
+              : { type: "text", name: estudianteSelected.identidad_genero ? estudianteSelected.identidad_genero : "No especifica" },
           ],
           [
             { type: "text", name: "Deportes que practica" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: "Sin deportes" },
+              : { type: "text", name: estudianteSelected.deporte ? estudianteSelected.deporte : "No especifica" },
           ],
           [
-            { type: "text", name: "Condición de excepciòn" },
+            { type: "text", name: "Condición de excepción" },
             editar
               ? { type: "select", name: "", options: [] }
-              : { type: "text", name: "Excepción" },
+              : { type: "text", name: estudianteSelected.condicion ? estudianteSelected.condicion : "No aplica" },
           ],
         ]}
       />
@@ -126,11 +125,22 @@ const General = () => {
             { type: "text", name: "Nombre Completo" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: "Sin nombre" },
-            { type: "text", name: "Parentesco y Teléfono" },
+              : { type: "text", name: "No especifica" },
+          ],
+        ]}
+      />
+      <Columns
+        twobold="si"
+        columns={[
+          [
+            { type: "text", name: "Parentesco" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: "Sin apellido" },
+              : { type: "text", name: "No especifica" },
+            { type: "text", name: "Teléfono" },
+            editar
+              ? { type: "input", name: "" }
+              : { type: "text", name: "No especifica" },
           ],
         ]}
       />

@@ -21,9 +21,9 @@ const Acordiones = () => {
       <Acordion title="ACCESIBILIDAD" claseAcordion={"acordion"}>
         <Accesibilidad />
       </Acordion>
-      <Acordion title="SEGUIMIENTO" claseAcordion={"acordion"}>
+      {/* <Acordion title="SEGUIMIENTO" claseAcordion={"acordion"}>
         <Seguimiento />
-      </Acordion>
+      </Acordion> */}
     </div>
   );
 };
