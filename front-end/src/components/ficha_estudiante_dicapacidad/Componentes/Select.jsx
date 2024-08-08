@@ -59,7 +59,10 @@ const Select = () => {
     );
 
     if (selectedStudent) {
-      const studentDetails = await estudiante_discapacidad.estudiante_discapacidad(selectedStudent.id);
+      const studentDetails =
+        await estudiante_discapacidad.estudiante_discapacidad(
+          selectedStudent.id
+        );
       handleSelectStudent(studentDetails);
     }
   };
@@ -71,14 +74,23 @@ const Select = () => {
           <select onChange={handleChange} className="select-item">
             <option>Select a student</option>
             {estudiantes.map((estudiante) => (
-              <option key={estudiante.cod_univalle} value={estudiante.cod_univalle}>
-                {estudiante.cod_univalle} - {estudiante.nombre} {estudiante.apellido}
+              <option
+                key={estudiante.cod_univalle}
+                value={estudiante.cod_univalle}
+              >
+                {estudiante.cod_univalle} - {estudiante.nombre}{" "}
+                {estudiante.apellido}
               </option>
             ))}
           </select>
 
           <div className="general-info">
-            <p><b>Correo: </b>{estudianteSelected ? estudianteSelected.email : "Correo no disponible"}</p>
+            <p>
+              <b>Correo: </b>
+              {estudianteSelected
+                ? estudianteSelected.email
+                : "Correo no disponible"}
+            </p>
           </div>
         </div>
 
@@ -92,10 +104,14 @@ const Select = () => {
         </div>
 
         <div className="info-prof-programa">
-          {estudianteSelected.programas.length === 0 ? (
+          {estudianteSelected &&
+          estudianteSelected.programas &&
+          estudianteSelected.programas.length === 0 ? (
             <p className="dimen-prog desertor"></p>
           ) : (
-            estudianteSelected.programas.map((programa) => {
+            estudianteSelected &&
+            estudianteSelected.programas &&
+            estudianteSelected.programas.map((programa, index) => {
               let color;
               if (programa.id_estado_id === 3) {
                 color = "egresado";
@@ -105,8 +121,9 @@ const Select = () => {
                 color = "desertor";
               }
               return (
-                <p className={`dimen-prog ${color}`}>
-                  {programa.codigo_estudiante} - {programa.cod_univalle} - {programa.nombre_programa}
+                <p key={index} className={`dimen-prog ${color}`}>
+                  {programa.codigo_estudiante} - {programa.cod_univalle} -{" "}
+                  {programa.nombre_programa}
                 </p>
               );
             })
@@ -114,25 +131,57 @@ const Select = () => {
         </div>
 
         <div className="condicion">
-          <p>Condición de excepción {estudianteSelected ? estudianteSelected.condicion : "Condición no disponible"}</p>
+          <p>
+            Condición de excepción{" "}
+            {estudianteSelected
+              ? estudianteSelected.condicion
+              : "Condición no disponible"}
+          </p>
         </div>
 
         <div className="container-otros-datos">
           <div className="more-stud-info">
-            <p>Profesional: {estudianteSelected ? estudianteSelected.profesional : "No disponible"}</p>
-            <p>Practicante: {estudianteSelected ? estudianteSelected.practicante : "No disponible"}</p>
-            <p>Monitor: {estudianteSelected ? estudianteSelected.monitor : "No disponible"}</p>
-            <p>Actualización: {estudianteSelected ? estudianteSelected.ultimaActualizacion : "No disponible"}</p>
+            <p>
+              Profesional:{" "}
+              {estudianteSelected
+                ? estudianteSelected.profesional
+                : "No disponible"}
+            </p>
+            <p>
+              Practicante:{" "}
+              {estudianteSelected
+                ? estudianteSelected.practicante
+                : "No disponible"}
+            </p>
+            <p>
+              Monitor:{" "}
+              {estudianteSelected
+                ? estudianteSelected.monitor
+                : "No disponible"}
+            </p>
+            <p>
+              Actualización:{" "}
+              {estudianteSelected
+                ? estudianteSelected.ultimaActualizacion
+                : "No disponible"}
+            </p>
           </div>
         </div>
       </div>
       <div className="container-img">
-        <a href={`https://wa.me/57${estudianteSelected ? estudianteSelected.telefono : "0000000000"}`} target="_blank">
+        <a
+          href={`https://wa.me/57${
+            estudianteSelected ? estudianteSelected.telefono : "0000000000"
+          }`}
+          target="_blank"
+        >
           <img className="img" src={perfilUsuario} alt="Student" />
         </a>
       </div>
       <div className="links">
-        <a className="link" href="#trayectoria">TRAYECTORIA</a>
+        <a className="link" href="#trayectoria">
+          TRAYECTORIA
+        </a>
       </div>
     </div>
   );
