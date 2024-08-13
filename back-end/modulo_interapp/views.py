@@ -3,89 +3,153 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from datetime import datetime, timedelta
 from django.db import transaction
-from .models import SirhIntegracion
-from .serializers import SirhIntegracion_Serializer
+from modulo_usuario_rol.serializers import estudiante_serializer
+from modulo_usuario_rol.models import estudiante
+from modulo_instancia.models import semestre, sede
+from modulo_instancia.serializers import semestre_serializer
+from modulo_seguimiento.models import seguimiento_individual, inasistencia, riesgo_individual
+from .serializers import ases_dexia_serializer
 
 class send_ases(viewsets.GenericViewSet):
-    queryset = SirhIntegracion.objects.all()
-    serializer_class = SirhIntegracion_Serializer
-    permission_classes = [IsAuthenticated]
+    queryset = estudiante.objects.all()
+    serializer_class = estudiante_serializer
+    # permission_classes = [IsAuthenticated]
+
+    def get_nivel_riesgo(self, riesgo):
+        if riesgo == 0:
+            return 'BAJO'
+        if riesgo == 1:
+            return 'MEDIO'
+        elif riesgo == 2:
+            return 'ALTO'
+        elif riesgo == None or riesgo == 'None':
+            return 'SIN RIESGO'
 
     def list(self, request):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        lista_estudiantes = list()
+        request_sede = sede.objects.get(codigo_univalle =int(request.GET.get('id_sede')))
+        var_semestre = semestre.objects.get(semestre_actual=True,id_sede=request_sede.id)
+        serializer_semestre = semestre_serializer(var_semestre)
+        fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
+        fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
+        var_estudiante = estudiante.objects.filter(estudiante_elegible = True)
+        for estudiante23 in var_estudiante :
+            serializer_estudiante = ases_dexia_serializer(estudiante23)
+            conteo_seguimientos = seguimiento_individual.objects.filter(
+                                                            id_estudiante = estudiante23,
+                                                            fecha__gt = fecha_inicio,
+                                                            fecha__lt =fecha_fin,
+                                                            ).count()
+            conteo_inasistencia = inasistencia.objects.filter(
+                                                            id_estudiante = estudiante23,
+                                                            fecha__gt = fecha_inicio,
+                                                            fecha__lt =fecha_fin,
+                                                            ).count()
+            seguimiento_reciente = riesgo_individual.objects.filter( id_estudiante = estudiante23).values('id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad', 'fecha')
+            if seguimiento_reciente:
+                riesgo = {
+                                'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_individual']),
+                                'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_familiar']),
+                                'riesgo_academico': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_academico']),
+                                'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_economico']),
+                                'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_vida_universitaria_ciudad']),
+                            }
+            else:
+                riesgo = {
+                            'riesgo_individual': "SIN RIESGO",
+                            'riesgo_familiar': "SIN RIESGO",
+                            'riesgo_academico': "SIN RIESGO",
+                            'riesgo_economico': "SIN RIESGO",
+                            'riesgo_vida_universitaria_ciudad': "SIN RIESGO",
+                        }
+
+            if conteo_seguimientos > 6 :
+                conteo = {
+                    'conteo_seguimientos': conteo_seguimientos,
+                    'conto_inasistencias': conteo_inasistencia,
+                    'culmino_acompañamiento' : True,
+                }
+            else :
+                conteo = {
+                    'conteo_seguimientos': conteo_seguimientos,
+                    'conto_inasistencias': conteo_inasistencia,
+                    'culmino_acompañamiento' : False,
+                }
+
+            data = dict(serializer_estudiante.data,**conteo,**riesgo)
+            lista_estudiantes.append(data)
+        return Response(lista_estudiantes,status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        lista_estudiantes = list()
+        request_sede = sede.objects.get(codigo_univalle =int(request.GET.get('id_sede')))
+        var_semestre = semestre.objects.get(semestre_actual=True,id_sede=request_sede.id)
+        serializer_semestre = semestre_serializer(var_semestre)
+        fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
+        fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
 
-    @action(detail=False, methods=['post'],url_path='nombre_funcion')
-    def custom_action(self, request):
-        data = "hola"
-        # Realizar alguna acción personalizada
-        return Response({'data': data},status=status.HTTP_200_OK)
+        var_estudiante = estudiante.objects.filter(num_doc = pk)
+        for estudiante23 in var_estudiante :
+            serializer_estudiante = ases_dexia_serializer(estudiante23)
+            
+            conteo_seguimientos = seguimiento_individual.objects.filter(
+                                                            id_estudiante = estudiante23,
+                                                            fecha__gt = fecha_inicio,
+                                                            fecha__lt =fecha_fin,
+                                                            ).count()
+            conteo_inasistencia = inasistencia.objects.filter(
+                                                            id_estudiante = estudiante23,
+                                                            fecha__gt = fecha_inicio,
+                                                            fecha__lt =fecha_fin,
+                                                            ).count()
+            seguimiento_reciente = riesgo_individual.objects.filter( id_estudiante = estudiante23).values('id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad', 'fecha')
+            if seguimiento_reciente:
+                riesgo = {
+                                'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_individual']),
+                                'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_familiar']),
+                                'riesgo_academico': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_academico']),
+                                'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_economico']),
+                                'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente[0]['riesgo_vida_universitaria_ciudad']),
+                            }
+            else:
+                riesgo = {
+                            'riesgo_individual': "SIN RIESGO",
+                            'riesgo_familiar': "SIN RIESGO",
+                            'riesgo_academico': "SIN RIESGO",
+                            'riesgo_economico': "SIN RIESGO",
+                            'riesgo_vida_universitaria_ciudad': "SIN RIESGO",
+                        }
+
+            if conteo_seguimientos > 6 :
+                conteo = {
+                    'conteo_seguimientos': conteo_seguimientos,
+                    'conto_inasistencias': conteo_inasistencia,
+                    'culmino_acompañamiento' : True,
+                }
+            else :
+                conteo = {
+                    'conteo_seguimientos': conteo_seguimientos,
+                    'conto_inasistencias': conteo_inasistencia,
+                    'culmino_acompañamiento' : False,
+                }
+
+            data = dict(serializer_estudiante.data,**conteo,**riesgo)
+            lista_estudiantes.append(data)
+        return Response(lista_estudiantes,status=status.HTTP_200_OK)
     
 class receive_ases(viewsets.GenericViewSet):
-    queryset = SirhIntegracion.objects.all()
-    serializer_class = SirhIntegracion_Serializer
+    queryset = estudiante.objects.all()
+    serializer_class = estudiante_serializer
     permission_classes = [IsAuthenticated]
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data, many=True)
-        serializer.is_valid(raise_exception=True)
+class send_disc(viewsets.GenericViewSet):
+    queryset = estudiante.objects.all()
+    serializer_class = estudiante_serializer
+    permission_classes = [IsAuthenticated]
 
-        # Obtener los datos validados
-        data = serializer.validated_data
-        
-        # Preparar una lista de objetos nuevos para el bulk_create
-        objects_to_create = []
-
-        # Verificar existencia y preparar objetos nuevos
-        for item in data:
-            # Aquí puedes definir la lógica para verificar si el registro ya existe
-            exists = SirhIntegracion.objects.filter(
-                documento=item['documento'],
-                tipo_documento=item['tipo_documento'],
-                primer_nombre=item['primer_nombre'],
-                # Agrega más campos si es necesario para identificar de manera única
-            ).exists()
-
-            if not exists:
-                # Crear una instancia del modelo con los datos validados
-                obj = SirhIntegracion(
-                    documento=item['documento'],
-                    tipo_documento=item['tipo_documento'],
-                    primer_nombre=item['primer_nombre'],
-                    segundo_nombre=item.get('segundo_nombre', None),
-                    primer_apellido=item['primer_apellido'],
-                    segundo_apellido=item.get('segundo_apellido', None),
-                    nombre_estamento=item['nombre_estamento'],
-                    grupo_liquidacion_codigo=item.get('grupo_liquidacion_codigo', None),
-                    telefono_residencia=item.get('telefono_residencia', None),
-                    telefono_movil=item.get('telefono_movil', None),
-                    elemento_estructura_codigo=item.get('elemento_estructura_codigo', None),
-                    fecha_inicio=item['fecha_inicio'],
-                    fecha_fin=item.get('fecha_fin', None),
-                    codigo_empleado=item.get('codigo_empleado', None),
-                    estado=item.get('estado', None),
-                    codigo_facultad=item.get('codigo_facultad', None),
-                    tipo_empleado=item.get('tipo_empleado', None),
-                    fecha_registro=item.get('fecha_registro', None),
-                    cargo=item.get('cargo', None)
-                )
-                objects_to_create.append(obj)
-        
-        # Insertar los registros nuevos en la base de datos
-        with transaction.atomic():
-            SirhIntegracion.objects.bulk_create(objects_to_create)
-
-        return Response({'status': 'Data created'}, status=status.HTTP_201_CREATED)
-
-    @action(detail=False, methods=['post'],url_path='nombre_funcion')
-    def custom_action(self, request):
-        data = request.data
-        # Realizar alguna acción personalizada
-        return Response({'data': data},status=status.HTTP_200_OK)
+class receive_disc(viewsets.GenericViewSet):
+    queryset = estudiante.objects.all()
+    serializer_class = estudiante_serializer
+    permission_classes = [IsAuthenticated]

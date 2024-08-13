@@ -2,6 +2,7 @@ from django.db import models
 from modulo_usuario_rol.models import estudiante
 from modulo_instancia.models import semestre
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 
 class tipo_discapacidad (models.Model):
@@ -20,6 +21,8 @@ class asignacion_discapacidad (models.Model):
     
 class user_extended_disc (models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=0, related_name='id_usuario_in_user_extended_disc')
+    celular=models.CharField(max_length=20, default=None, validators=[RegexValidator(regex=r'^[()\-0-9\s]+$', message='Por favor ingresa un teléfono o celular valido')])
+    profesion =models.CharField(max_length=100, default=None)
 
 class datos_economicos (models.Model):
     estrato_socio = models.IntegerField(default=None,null=True)
@@ -46,7 +49,7 @@ class datos_academicos (models.Model):
     observaciones = models.CharField(max_length=500, default=None,null=True)
     dificultades = models.CharField(max_length=500, default=None,null=True)
     
-class consideracion_discapacidad_pd (models.Model):
+class percepcion_discapacidad (models.Model):
     considera_discapacidad = models.BooleanField(default=False)
     consideracion = models.CharField(max_length=500, default=None,null=True)
     adquisicion = models.CharField(max_length=500, default=None,null=True)
@@ -55,7 +58,6 @@ class consideracion_discapacidad_pd (models.Model):
     certificado_invalidez = models.BooleanField(default=False)
     documento_soporte = models.BooleanField(default=False)
     
-class dificultad_permanente_pd (models.Model):
     vision = models.BooleanField(default=False)
     vision_texto = models.CharField(max_length=50, default=None,null=True)
     audicion = models.BooleanField(default=False)
@@ -74,8 +76,7 @@ class dificultad_permanente_pd (models.Model):
     deglucion_texto = models.CharField(max_length=50, default=None,null=True)
     otra = models.BooleanField(default=False)
     otra_texto = models.CharField(max_length=50, default=None,null=True)
-
-class salud_tener_cuenta_pd (models.Model):
+    
     ojos = models.BooleanField(default=False)
     ojos_texto = models.CharField(max_length=50, default=None,null=True)
     oidos = models.BooleanField(default=False)
@@ -97,11 +98,10 @@ class salud_tener_cuenta_pd (models.Model):
     sistema_genital = models.BooleanField(default=False)
     sistema_genital_texto = models.CharField(max_length=50, default=None,null=True)
     sistema_digestivo = models.BooleanField(default=False)
-    sistema_gigestivo_texto = models.CharField(max_length=50, default=None,null=True)
+    sistema_digestivo_texto = models.CharField(max_length=50, default=None,null=True)
     otra = models.BooleanField(default=False)
     otra_texto = models.CharField(max_length=50, default=None,null=True)
     
-class experimenta_dificultad_pd (models.Model):
     cursos = models.BooleanField(default=False)
     cursos_texto = models.CharField(max_length=50, default=None,null=True)
     clases_magistrales = models.BooleanField(default=False)
@@ -133,12 +133,11 @@ class experimenta_dificultad_pd (models.Model):
     otra = models.BooleanField(default=False)
     otra_texto = models.CharField(max_length=50, default=None,null=True)
 
-class factores_pd (models.Model):
     condicion_discapacidad = models.BooleanField(default=False)
     contexto_universitario = models.BooleanField(default=False)
     ausencia_ayuda_tec = models.BooleanField(default=False)
     ausencia_espacios_fisicos = models.BooleanField(default=False)
-    curausencia_materiales_impresossos = models.BooleanField(default=False)
+    ausencia_materiales_impresos = models.BooleanField(default=False)
     ausencia_personas_apoyo = models.BooleanField(default=False)
     actitudes_negativas_personas = models.BooleanField(default=False)
     ausencia_servicios_discapacidad = models.BooleanField(default=False)
@@ -147,8 +146,7 @@ class factores_pd (models.Model):
     condicion_psicoemocional = models.BooleanField(default=False)
     otra_psicoemocional = models.BooleanField(default=False)
     otra_psicoemocional_texto = models.CharField(max_length=250, default=None,null=True)
-    
-class posibilidad_actividades_pd (models.Model):
+
     escritos_impresos = models.BooleanField(default=False)
     escritos_impresos_numero = models.IntegerField(default=None,null=True)
     imagenes_pantalla = models.BooleanField(default=False)
@@ -191,8 +189,7 @@ class posibilidad_actividades_pd (models.Model):
     evacuar_numero = models.IntegerField(default=None,null=True)
     otro = models.BooleanField(default=False)
     otro_texto = models.CharField(max_length=100, default=None,null=True)
-    
-class personas_apoyo_pd (models.Model):
+
     amigo_apoyo = models.BooleanField(default=False)
     pareja_apoyo = models.BooleanField(default=False)
     familia_apoyo = models.BooleanField(default=False)
@@ -207,15 +204,6 @@ class personas_apoyo_pd (models.Model):
     apoyo_inst = models.BooleanField(default=False)
     nombre_institucion = models.CharField(max_length=200, default=None,null=True)
     tipo_apoyo = models.CharField(max_length=200, default=None,null=True)
-    
-class percepcion_discapacidad (models.Model):
-    id_consideracion_discapacidad = models.ForeignKey(consideracion_discapacidad_pd, on_delete=models.CASCADE, default=0, related_name='id_consideracion_discapacidad_in_percepcion_discapacidad')
-    id_dificultad_permanente = models.ForeignKey(dificultad_permanente_pd, on_delete=models.CASCADE, default=0, related_name='id_dificultad_permanente_in_percepcion_discapacidad')
-    id_salud_tener_cuenta = models.ForeignKey(salud_tener_cuenta_pd, on_delete=models.CASCADE, default=0, related_name='id_salud_tener_cuenta_in_percepcion_discapacidad')
-    id_experimenta_dificultad = models.ForeignKey(experimenta_dificultad_pd, on_delete=models.CASCADE, default=0, related_name='id_experimenta_dificultad_in_percepcion_discapacidad')
-    id_factores = models.ForeignKey(factores_pd, on_delete=models.CASCADE, default=0, related_name='id_factores_in_percepcion_discapacidad')
-    id_posibilidad_actividades = models.ForeignKey(posibilidad_actividades_pd, on_delete=models.CASCADE, default=0, related_name='id_posibilidad_actividades_in_percepcion_discapacidad')
-    id_personas_apoyo = models.ForeignKey(personas_apoyo_pd, on_delete=models.CASCADE, default=0, related_name='id_personas_apoyo_in_percepcion_discapacidad')
     
 class acceso_servi_salud (models.Model):
     regimen_vinculado = models.BooleanField(default=False)
@@ -240,6 +228,10 @@ class caracterizacion (models.Model):
     id_acceso_servi_salud = models.ForeignKey(acceso_servi_salud, on_delete=models.CASCADE, default=0, related_name='id_acceso_servi_salud_in_caracterizacion')
     id_semestre = models.ForeignKey(semestre, on_delete=models.CASCADE, default=0, related_name='id_semestre_in_caracterizacion')
     id_estudiante = models.ForeignKey(estudiante, on_delete=models.CASCADE, default=0, related_name='id_estudiante_in_caracterizacion')
+    fecha= models.DateField(auto_now_add=False,default=None,null=True)
+    lugar = models.CharField(max_length=500,default=None,null=True)
+    id_creador = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name='id_user_in_caracterizacion')
+    
     
 class produccion_ac (models.Model):
     hablar = models.BooleanField(default=False)

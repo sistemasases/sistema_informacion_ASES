@@ -38,4 +38,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('usuario_rol_firma/', include('modulo_usuario_rol.urls')),
     path('discapacidad/', include('modulo_discapacidad.routers')),
+    path('interapp/', include('modulo_interapp.urls')),
 ]

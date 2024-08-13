@@ -4,7 +4,20 @@ from modulo_usuario_rol.models import estudiante
 from .models import *
 
 
+class estudiante_actualizacion_disc(serializers.ModelSerializer):
+	class Meta:
+		model = estudiante
+		fields = ['telefono_res', 'celular', 'email', 'sexo', 'actividades_ocio_deporte',
+                  'acudiente', 'telefono_acudiente', 'id_etnia', 'id_identidad_gen',
+                  'id_cond_excepcion', 'ult_modificacion']
 
+class caracterizacion_serializer(serializers.ModelSerializer):
+
+	# create a meta class
+	
+    class Meta:
+        model = caracterizacion
+        fields ='__all__'
 class accesibilidad_serializer(serializers.ModelSerializer):
 
 	# create a meta class
