@@ -7,6 +7,7 @@ import InformacionGeneral from './components/informacionGeneral';
 import IngresoDatosBasicos from './components/ingresoDatosBasicos';
 import InformacionAcademica from './components/informacionAcademica';
 import DocumentosAutorizacion from './components/documentosAutorizacion';
+import ReCAPTCHA from 'react-google-recaptcha';
 
   const Registro_estudiante = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -110,8 +111,8 @@ import DocumentosAutorizacion from './components/documentosAutorizacion';
   });
 
   const [isLoading, setIsLoading] = useState(true);
-
-
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   //Persona
   const [razasOptions, setRazasOptions] = useState([]);
 
@@ -387,6 +388,11 @@ const handleDeleteItem = (fieldName, index) => {
   });
 };
 
+//handle del captcha
+const handleRecaptchaChange = (token) => {
+  setRecaptchaToken(token);
+};
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -397,6 +403,23 @@ const handleSubmit = async (e) => {
   
     // Add other required fields here
   ];
+
+
+
+  if (!recaptchaToken) {
+    setShowErrorAlert(true);
+    setMensaje('Por favor completa el reCAPTCHA.');
+    return;
+  }
+  console.log('Enviando formulario con token reCAPTCHA:', recaptchaToken);
+
+
+
+
+  // Remueve elementos vacios del formulario a la base de datos
+  const removeEmptyFields = (data) => {
+    return Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== ""));
+  };
 
   const invalidFields = requiredFields.filter(field => !state[field]);
 
@@ -410,11 +433,6 @@ const handleSubmit = async (e) => {
     }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
     return;
   }
-
-  // Remueve elementos vacios del formulario a la base de datos
-  const removeEmptyFields = (data) => {
-    return Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== ""));
-  };
 
   setTimeout(() => {
     // Mostrar alerta de éxito
@@ -455,6 +473,7 @@ const handleSubmit = async (e) => {
     identidad_etnico_racial: state.identidad_etnico_racial,
     nombre_persona_de_confianza: state.nombre_persona_de_confianza,
     telefono_persona_de_confianza: state.telefono_persona_de_confianza,
+    recaptchaToken: recaptchaToken // token captcha REVISAR--
   });
 
   const DiversidadSexualData = removeEmptyFields ({
@@ -540,6 +559,7 @@ const handleSubmit = async (e) => {
     const personaResponse = await axios.post(`${process.env.REACT_APP_API_URL}/persona/persona/`, personaData);
     console.log('Respuesta del servidor (persona):', personaResponse.data);
     const personaId = personaResponse.data.numero_documento; // Utiliza el número de documento como ID
+    setIsSubmitting(true);
 
     try {
       const diversidadSexualResponse = await axios.post(`${process.env.REACT_APP_API_URL}/diversidad-sexual/diversidad-sexual/`, {
@@ -571,6 +591,8 @@ const handleSubmit = async (e) => {
 
             setShowModal(true);
             setMensaje("El formulario se envió con éxito.");
+            setIsSubmitting(false);
+            setRecaptchaToken("");// se reinicia el captcha
             // Restablecer los valores del formulario a vacío
             set_state({
               nombre_identitario: "",
@@ -595,6 +617,7 @@ const handleSubmit = async (e) => {
               nombre_persona_de_confianza: "",
               telefono_persona_de_confianza: "",
               pertenencia_grupo_poblacional: [],
+              
 
               //Informacion academica -- por revisar
               sede_universidad: "",
@@ -815,11 +838,32 @@ const prevStep = () => {
     <Container className='registro-estudiante-container'>
     <div className='registro-estudiante-form'>
       <div>{steps[currentStep].component}</div>
-      <div className='buttons-container'>
-        <Button className='button-inicial' onClick={prevStep} disabled={currentStep === 0}>Atrás</Button>
-        <Button className='button-inicial' onClick={nextStep} disabled={currentStep === steps.length - 1}>Siguiente</Button>
-        {currentStep === steps.length - 1 && <Button onClick={handleSubmit}>Enviar</Button>}
-      </div>
+
+      <div className='buttons-container-captcha'>
+  {currentStep === steps.length - 1 && (
+    <ReCAPTCHA 
+      className="captcha"
+      size='normal'
+      sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+      onChange={handleRecaptchaChange}
+    />
+  )}
+  </div>
+
+ <div className='buttons-container'>
+  <Button className='button-inicial' onClick={() => {
+    setRecaptchaToken(''); // Restablece el token de reCAPTCHA
+    prevStep(); // Llama a la función para ir al paso anterior
+  }} disabled={currentStep === 0}>Atrás</Button>
+
+  <Button className='button-inicial' onClick={nextStep} disabled={currentStep === steps.length - 1}>Siguiente</Button>
+
+  {currentStep === steps.length - 1 && (
+    <Button className="button-inicial" onClick={handleSubmit} disabled={!recaptchaToken || isSubmitting}>Enviar</Button>
+  )}
+</div>
+
+
       {/* Alerta de éxito como modal */}
       <Alert
         show={showSuccessAlert}

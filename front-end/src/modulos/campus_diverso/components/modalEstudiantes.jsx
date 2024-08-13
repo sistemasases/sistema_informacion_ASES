@@ -36,7 +36,8 @@ const ModalEstudiantes = ({
   factoresOptions,
   fuentesOptions,
   redesOptions,
-  actividadesOptions
+  actividadesOptions,
+  Usuariorevisado
 }) => {
 
   const titles = [
@@ -54,6 +55,8 @@ const ModalEstudiantes = ({
     setEditableUser({selectedUser});
     setIsEditing(false);
   };
+
+ 
 
   const openSeguimientoModal = () => {
     setSeguimientoModalOpen(true);
@@ -985,12 +988,21 @@ const ModalEstudiantes = ({
             </>
           ) : (
             <>
+
+              <Button variant="primary" onClick={Usuariorevisado}>
+                Revisado
+              </Button>
+
               <Button variant="primary" onClick={() => setIsEditing(true)}>
                 Editar
               </Button>
+
+       
+
               <Button variant="primary" className='modal-seguimiento' onClick={openSeguimientoModal}>
                 Seguimientos
               </Button>
+              
               {currentPage > 0 && (
                 <Button variant="outline-primary" onClick={prevPage}>
                   Atrás

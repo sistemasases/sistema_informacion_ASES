@@ -1,6 +1,6 @@
 from django.db import models
-from datetime import date
-
+from datetime import date, datetime
+from django.utils import timezone
 
 class PertenenciaGrupoPoblacional(models.Model):
     id_grupo_poblacional = models.AutoField(primary_key=True)
@@ -37,6 +37,11 @@ class Persona(models.Model):
     estado_civil = models.CharField(max_length=70,blank=True, default="Estado civil no registrado")
     identidad_etnico_racial = models.CharField(max_length=70,blank=True,default="Identidad etnico racial no registrado")
     nombre_persona_de_confianza = models.CharField(max_length=200,blank=True, default="Nombre de persona de confianza no registrado")
+
+    recaptchaToken = models.CharField(max_length=450)
+    fecha_creacion_usuario = models.DateTimeField(default=timezone.now, blank=True)
+    revision_usiario=models.BooleanField(null=True, default=False)
+
     relacion_persona_de_confianza = models.CharField(max_length=200,blank=True, default="Relacion con persona de confianza no registrado")
     telefono_persona_de_confianza = models.CharField(max_length=100,blank=True, default="Telefono de persona de confianza no registrado")
     pertenencia_grupo_poblacional = models.ManyToManyField(PertenenciaGrupoPoblacional,max_length=300, related_name="personas", blank=True) 

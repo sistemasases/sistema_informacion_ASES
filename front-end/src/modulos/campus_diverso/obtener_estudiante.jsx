@@ -21,6 +21,7 @@ const ObtenerEstudiante = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [editableUser, setEditableUser] = useState({ ...selectedUser, });
   const [isEditing, setIsEditing] = useState(false);
+  const [isRevisado, setRevisado] = useState(false);
 
   //Desencripta el token para la API
   const config = {
@@ -287,6 +288,18 @@ const handleUpdateUser = async (endpoint, userId, updatedData) => {
   } catch (error) {
     console.error('Error al actualizar el usuario:', error);
   }
+};
+
+
+const Usuariorevisado = async () => {
+  const endpoint = 'persona/persona'; // Cambia esto si tienes un endpoint específico para la actualización del usuario
+  const userId = selectedUser.numero_documento;
+  const updatedData = { revision_usiario: true };
+
+  await handleUpdateUser(endpoint, userId, updatedData);
+
+  // Puedes cerrar el modal o hacer cualquier otra acción adicional aquí si es necesario
+  closeModal();
 };
 
 
@@ -558,34 +571,36 @@ const handleInputChange = (e) => {
   });
 };
   return (
-    <>
-      <h1 className='title-search'>Lista de personas</h1>
-      <Container>
-
-      <input
-            type="text"
-            placeholder="Buscar por nombre"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="search-input"
-          />
-          <p className="result-count">Resultados: {filteredUsers.length}</p>
-        <div className="div-search">
-         
-          <ul className="user-list">
-            {filteredUsers.map((user) => (
-              <li
-                key={user.numero_documento}
-                className="list-item"
-                onClick={() => openModal(user)}
-              >
-                <h2 className="user-name">{user.nombre_y_apellido}</h2>
-                <p className="user-email"> {user.nombre_identitario}</p>
-                <p className="user-email"> {user.numero_documento}</p>
-              </li>
-            ))}
-          </ul>
-
+<>
+  <h1 className='title-search'>Lista de personas</h1>
+  <Container>
+    <input
+      type="text"
+      placeholder="Buscar por nombre"
+      value={searchText}
+      onChange={(e) => setSearchText(e.target.value)}
+      className="search-input"
+    />
+    <p className="result-count">Resultados: {filteredUsers.length}</p>
+    <div className="div-search">
+      <ul className="user-list">
+        {filteredUsers
+          .sort((a, b) => new Date(b.fecha_creacion_usuario) - new Date(a.fecha_creacion_usuario)) // Ordena por fecha de creación
+          .map((user) => (
+            <li
+              key={user.numero_documento}
+              className={`list-item ${user.isNew ? 'new-user' : ''} ${!user.revision_usiario ? 'pending-review' : ''}`}
+              onClick={() => openModal(user)}
+            >
+              <h2 className="user-name">
+                {!user.revision_usiario && <span className="new-indicator">!</span>}
+                {user.nombre_y_apellido}
+              </h2>
+              <p className="user-email"> {user.nombre_identitario}</p>
+              <p className="user-email"> {user.numero_documento}</p>
+            </li>
+          ))}
+      </ul>
           <ModalEstudiantes
             isModalOpen={isModalOpen}
             closeModal={closeModal}
@@ -622,6 +637,9 @@ const handleInputChange = (e) => {
             fuentesOptions={fuentesOptions}
             redesOptions={redesOptions}
             actividadesOptions={actividadesOptions}
+            Usuariorevisado={Usuariorevisado}
+            isRevisado={isRevisado}
+            setRevisado={setRevisado}
           />
         </div>
       </Container>

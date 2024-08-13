@@ -208,17 +208,12 @@
       }
       
       .list-item {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px;
-        margin-bottom: 10px;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+        padding: 10px;
+        margin-bottom: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
         cursor: pointer;
-        transition: background-color 0.3s, box-shadow 0.3s;
       }
       
       .list-item:hover {
@@ -357,6 +352,15 @@
       height: 100%; /* Asegúrate de que el contenedor ocupe toda la altura disponible */
     }
 
+    .buttons-container-captcha {
+      display:flex;
+      flex-direction: column;
+      align-items: center; /* Centrar verticalmente */
+      height: 100%; /* Asegúrate de que el contenedor ocupe toda la altura disponible */
+    }
+    .recaptcha-container {
+      margin-bottom: 20px; /* Espacio entre el reCAPTCHA y los botones */
+    }
     .modal-seguimiento {
       position: absolute;
       left: 14px; /* Ajusta este valor según sea necesario */
@@ -383,8 +387,10 @@
 
       margin-top: 60px;
       margin-right: 30px;
-      justify-content: space-between; /* Asegura que el contenido se distribuya entre los extremos */
+      justify-content: space-between; 
     }
+
+    /* Estilos para los checkbox */
     
     .custom-div-check-documentos {
       display: flex;
@@ -459,4 +465,21 @@
     .check-div {   
       display: 'flex';
       align-items:'center';
+    }
+
+ 
+  /* Estilos del indicador de usuario nuevo*/
+    .new-user {
+      font-weight: bold;
+    }
+    
+   
+    .new-indicator {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: 24px; /* Tamaño más grande para el signo de admiración */
+      color: red;
+      font-weight: bold;
     }

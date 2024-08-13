@@ -8,7 +8,11 @@ from app_documentos_autorizacion.serializers import DocumentosAutorizacionSerial
 from app_informacion_academica.serializers import InformacionAcademicaSerializer
 from app_informacion_general.serializers import InformacionGeneralSerializer
 from app_seguimiento.serializers import SeguimientoSerializer
-
+import requests
+import os
+import environ
+env = environ.Env()
+environ.Env.read_env()
 class PertenenciaGrupoPoblacionalSerializer(serializers.ModelSerializer):
     nombre_grupo_poblacional = serializers.CharField(max_length=300, required=True)
     class Meta:
@@ -62,15 +66,31 @@ class PersonaSerializer(serializers.ModelSerializer):
     #     child=serializers.CharField(max_length=300),
     #     write_only=True #! Sin este campo aparecen errores
     # ) 
-    
+    recaptchaToken = serializers.CharField(required=True)  # Aquí es obligatorio
     class Meta:
         model = Persona
         fields = '__all__'
-   
+    def validate_recaptchaToken(self, value):
+            # Verifica el token de reCAPTCHA con el endpoint de Google
+            secret_key = os.environ.get('RECAPTCHA_SECRET_KEY')
+            response = requests.post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                data={
+                    'secret': secret_key,
+                    'response': value
+                }
+            )
+            result = response.json()
+            print("reCAPTCHA verification result:", result)
+            if not result.get('success'):
+                raise serializers.ValidationError('Invalid reCAPTCHA token.')
+            return value
 
     def create(self, validated_data):
         
         pertenencia_grupo_poblacional_names = validated_data.pop('pertenencia_grupo_poblacional',[]) 
+        recaptcha_token = validated_data.pop('recaptchaToken')  # Obtén el token de reCAPTCHA
+
         persona = Persona.objects.create(**validated_data) 
         print(pertenencia_grupo_poblacional_names)
         
