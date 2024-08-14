@@ -14,7 +14,7 @@ const Select = () => {
   const { setEstudianteSelected, estudianteSelected } = useAuthStore(); // Obtener y establecer estudiante seleccionado
 
   const handleSelectStudent = (student) => {
-    console.log(student)
+    console.log(student);
     const newSelectedStudent = {
       id: student.id,
       tipo_doc: student.tipo_doc,
@@ -44,8 +44,9 @@ const Select = () => {
       tipo_discapacidad: student.tipo_discapacidad,
       diagnosticos: student.diagnosticos,
       el_id_de_etnia: student.el_id_de_etnia,
-      // vive_con: student.vive_con.acudiente,
+      vive_con: student.vive_con,
     };
+    console.log(newSelectedStudent.vive_con);
     setEstudianteSelected(newSelectedStudent);
   };
 
@@ -62,7 +63,7 @@ const Select = () => {
     );
 
     if (selectedStudent) {
-      console.log("Click Select")
+      console.log("Click Select");
       const studentDetails =
         await estudiante_discapacidad.estudiante_discapacidad(
           selectedStudent.id
