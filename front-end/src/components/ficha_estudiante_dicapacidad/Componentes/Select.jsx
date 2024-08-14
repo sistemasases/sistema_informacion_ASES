@@ -14,34 +14,37 @@ const Select = () => {
   const { setEstudianteSelected, estudianteSelected } = useAuthStore(); // Obtener y establecer estudiante seleccionado
 
   const handleSelectStudent = (student) => {
+    console.log(student)
     const newSelectedStudent = {
       id: student.id,
-      tipo_documento: student.tipo_doc,
-      documento: student.num_doc,
+      tipo_doc: student.tipo_doc,
+      num_doc: student.num_doc,
       nombre: student.nombre,
       apellido: student.apellido,
       sexo: student.sexo,
-      identidad_genero: student.el_id_de_identidad_gen,
-      deporte: student.actividades_ocio_deporte,
+      el_id_de_identidad_gen: student.el_id_de_identidad_gen,
+      actividades_ocio_deporte: student.actividades_ocio_deporte,
       contacto_emergencia: student.contacto_emergencia,
       programas: student.programas,
       anio_ingreso: student.anio_ingreso,
-      codigo: student.cod_univalle,
+      cod_univalle: student.cod_univalle,
       email: student.email,
       edad: student.edad,
       imagen: student.imagen,
       seguimientos: student.seguimientos,
-      condicion: student.el_id_de_cond_excepcion,
+      el_id_de_cond_excepcion: student.el_id_de_cond_excepcion,
       profesional: student.profesional,
       practicante: student.practicante,
       monitor: student.monitor,
       ultimaActualizacion: student.ultimaActualizacion,
-      telefono: student.telefono_res,
+      telefono_res: student.telefono_res,
       celular: student.celular,
-      direccion_residencia: student.dir_res,
-      barrio: student.barrio,
+      dir_res: student.dir_res,
+      barrio_res: student.barrio_res,
       tipo_discapacidad: student.tipo_discapacidad,
       diagnosticos: student.diagnosticos,
+      el_id_de_etnia: student.el_id_de_etnia,
+      // vive_con: student.vive_con.acudiente,
     };
     setEstudianteSelected(newSelectedStudent);
   };
@@ -59,6 +62,7 @@ const Select = () => {
     );
 
     if (selectedStudent) {
+      console.log("Click Select")
       const studentDetails =
         await estudiante_discapacidad.estudiante_discapacidad(
           selectedStudent.id

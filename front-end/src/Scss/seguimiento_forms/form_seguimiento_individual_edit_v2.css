@@ -1,3 +1,21 @@
-#opcion_actual_select{
-    display: none;
+#opcion_actual_select {
+  display: none;
+}
+
+.observation-modal .modal-content {
+  background-color: #e6e1e1; /* Color de fondo personalizado */
+  border-radius: 10px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interior */
+  border: 3px solid #444; /* Borde de 2px de grosor y color gris oscuro */
+  padding: 20px; /* Espaciado interior */
+}
+
+.observation-modal .modal-header {
+  background-color: rgb(244, 32, 32); /* Fondo del encabezado */
+  color: white; /* Color del texto */
+}
+
+.observation-modal .modal-footer {
+  border-top: none; /* Eliminar el borde superior del pie de página */
+  justify-content: center; /* Centrar los botones */
 }

@@ -46,9 +46,9 @@ const General = () => {
         columns={[
           [
             { type: "text", name: "Tipo Documento" },
-            { type: "text", name: estudianteSelected.tipo_documento },
+            { type: "text", name: estudianteSelected.tipo_doc },
             { type: "text", name: "Número documento" },
-            { type: "text", name: estudianteSelected.documento ? estudianteSelected.documento : "No especifica" },
+            { type: "text", name: estudianteSelected.num_doc ? estudianteSelected.num_doc : "No especifica" },
           ],
           [
             { type: "text", name: "Nombres" },
@@ -58,11 +58,11 @@ const General = () => {
           ],
           [
             { type: "text", name: "Año ingreso Univalle" },
-            { type: "text", name: estudianteSelected.ano_ingreso ? estudianteSelected.ano_ingreso : "No especifica" },
+            { type: "text", name: estudianteSelected.anio_ingreso ? estudianteSelected.anio_ingreso : "No especifica" },
             { type: "text", name: "Correo Electrónico" },
             editar
-              ? { type: "input", name: estudianteSelected.correo }
-              : { type: "text", name: estudianteSelected.correo ? estudianteSelected.correo : "No especifica" },
+              ? { type: "input", name: estudianteSelected.email }
+              : { type: "text", name: estudianteSelected.email ? estudianteSelected.email : "No especifica" },
           ],
           [
 
@@ -73,23 +73,23 @@ const General = () => {
             { type: "text", name: "Teléfono residencia" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: estudianteSelected.telefono ? estudianteSelected.telefono : "No especifica" },
+              : { type: "text", name: estudianteSelected.telefono_res  ? estudianteSelected.telefono_res : "No especifica" },
           ],
           [
             { type: "text", name: "Dirección residencia" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: estudianteSelected.direccion_residencia ? estudianteSelected.direccion_residencia : "No especifica" },
+              : { type: "text", name: estudianteSelected.dir_res ? estudianteSelected.dir_res : "No especifica" },
             { type: "text", name: "Barrio" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: estudianteSelected.barrio ? estudianteSelected.barrio : "No especifica" },
+              : { type: "text", name: estudianteSelected.barrio_res ? estudianteSelected.barrio_res : "No especifica" },
           ],
           [
             { type: "text", name: "Grupo étnico" },
             editar
-              ? { type: "select", name: "", options: [] }
-              : { type: "text", name: "Sin grupo etnico" },
+              ? { type: "select", name: "" , options: []}
+              : { type: "text", name: estudianteSelected.el_id_de_etnia ? estudianteSelected.el_id_de_etnia : "No especifica"},
           ],
           [
             { type: "text", name: "Sexo" },
@@ -101,19 +101,19 @@ const General = () => {
             { type: "text", name: "Identidad de género" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: estudianteSelected.identidad_genero ? estudianteSelected.identidad_genero : "No especifica" },
+              : { type: "text", name: estudianteSelected.el_id_de_identidad_gen ? estudianteSelected.el_id_de_identidad_gen : "No especifica" },
           ],
           [
             { type: "text", name: "Deportes que practica" },
             editar
               ? { type: "input", name: "" }
-              : { type: "text", name: estudianteSelected.deporte ? estudianteSelected.deporte : "No especifica" },
+              : { type: "text", name: estudianteSelected.actividades_ocio_deporte ? estudianteSelected.actividades_ocio_deporte : "No especifica" },
           ],
           [
             { type: "text", name: "Condición de excepción" },
             editar
               ? { type: "select", name: "", options: [] }
-              : { type: "text", name: estudianteSelected.condicion ? estudianteSelected.condicion : "No aplica" },
+              : { type: "text", name: estudianteSelected.el_id_de_cond_excepcion ? estudianteSelected.el_id_de_cond_excepcion : "No aplica" },
           ],
         ]}
       />
