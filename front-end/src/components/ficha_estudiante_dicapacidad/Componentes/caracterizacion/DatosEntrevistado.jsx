@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 
-const DatosEntrevistado = () => {
+const DatosEntrevistado = ({ datos_entrevistado }) => {
   const [desarrollaActividad, setDesarrollaActividad] = useState("");
   const [actividadesOcio, setActividadesOcio] = useState("");
   const [actividadDeportiva, setActividadDeportiva] = useState("");

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 
-const DatosEconomicos = () => {
+const DatosEconomicos = ({ datos_economicos }) => {
   const [recibeBeneficio, setRecibeBeneficio] = useState(false);
   const [requiereMateriales, setRequiereMateriales] = useState(false);
   const [vivienda, setVivienda] = useState("");
@@ -30,8 +30,18 @@ const DatosEconomicos = () => {
         <div className="container_carac">
           <div className="full-width">
             <div className="checkbox_group">
-              <label>Estrato socio-económico de acuerdo con el recibo de servicios públicos de su vivienda es</label>
+              <label>
+                Estrato socio-económico de acuerdo con el recibo de servicios
+                públicos de su vivienda es
+              </label>
               <select id="estrato" name="estrato" style={{ width: "70px" }}>
+                {datos_economicos.estrato_socio ? (
+                  <option value={datos_economicos.estrato_socio} selected>
+                    {datos_economicos.estrato_socio}
+                  </option>
+                ) : (
+                  <option value="">Seleccione un estrato </option>
+                )}
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -60,23 +70,59 @@ const DatosEconomicos = () => {
             <div className="separator" />
             <div className="checkbox_container sin_borde">
               <div className="checkbox_group">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={
+                    datos_economicos.recibe_prestacion_econo
+                      ? datos_economicos.recibe_prestacion_econo
+                      : false
+                  }
+                />
                 <label>Recibe alguna prestación económica</label>
               </div>
               <div className="checkbox_group">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={
+                    datos_economicos.recibe_beca
+                      ? datos_economicos.recibe_beca
+                      : false
+                  }
+                />
                 <label>Recibe alguna beca</label>
               </div>
               <div className="checkbox_group">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={
+                    datos_economicos.recibe_transporte
+                      ? datos_economicos.recibe_transporte
+                      : false
+                  }
+                />
                 <label>Recibe ayuda para el transporte</label>
               </div>
+
               <div className="checkbox_group">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={
+                    datos_economicos.recibe_finan_materiales
+                      ? datos_economicos.recibe_finan_materiales
+                      : false
+                  }
+                />
                 <label>Recibe ayuda para financiar materiales</label>
               </div>
               <div className="checkbox_group">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={
+                    datos_economicos.solvencia_economica
+                      ? datos_economicos.solvencia_economica
+                      : false
+                  }
+                />
                 <label>Solvencia económica</label>
               </div>
             </div>
@@ -91,7 +137,10 @@ const DatosEconomicos = () => {
               </select>
               {requiereMateriales && (
                 <div>
-                  <label>¿Cuál es el valor aproximado en materiales, durante un semestre?</label>
+                  <label>
+                    ¿Cuál es el valor aproximado en materiales, durante un
+                    semestre?
+                  </label>
                   <select>
                     <option value="">Seleccione...</option>
                     <option value="0-50k">Desde $0 a $50.000</option>
@@ -125,13 +174,20 @@ const DatosEconomicos = () => {
                 <input type="text" />
               </div>
               <div>
-                <label>¿Cuál es el valor aproximado para el transporte, durante un semestre?</label>
+                <label>
+                  ¿Cuál es el valor aproximado para el transporte, durante un
+                  semestre?
+                </label>
                 <input type="number" min="0" step="1000" />
               </div>
             </div>
             <div className="separator" />
             <div className="checkbox_group">
-              <label>¿Cuál es el valor aproximado en sostenimiento (alimentación, arriendo, servicios públicos incluido internet, entre otros), durante un semestre?</label>
+              <label>
+                ¿Cuál es el valor aproximado en sostenimiento (alimentación,
+                arriendo, servicios públicos incluido internet, entre otros),
+                durante un semestre?
+              </label>
               <select>
                 <option value="">Seleccione...</option>
                 <option value="0-50k">Desde $0 a $50.000</option>
@@ -152,7 +208,9 @@ const DatosEconomicos = () => {
               </select>
               {vivienda === "acompanado" && (
                 <div>
-                  <label>Describa el parentesco con quién vive actualmente:</label>
+                  <label>
+                    Describa el parentesco con quién vive actualmente:
+                  </label>
                   <input type="text" />
                 </div>
               )}
@@ -190,9 +248,17 @@ const DatosEconomicos = () => {
             </div>
             <div className="select_space">
               <label>Expectativas laborales</label>
-              <textarea name="expectativas_laborales" id="expectativas_laborales" />
+              <textarea
+                name="expectativas_laborales"
+                id="expectativas_laborales"
+                value={
+                  datos_economicos.expectativas_laborales
+                    ? datos_economicos.expectativas_laborales
+                    : ""
+                }
+              />
             </div>
-          <div className='separator'/>
+            <div className="separator" />
           </div>
           <div>
             <p className="titulo">Informacion del padre (si aplica)</p>
@@ -200,7 +266,16 @@ const DatosEconomicos = () => {
               <div className="select_space">
                 <label>Nivel educativo (Máximo alcanzado)</label>
                 <select>
-                  <option value="">Seleccione una opción</option>
+                  {datos_economicos.nivel_educativo_padre ? (
+                    <option
+                      value={datos_economicos.nivel_educativo_padre}
+                      selected
+                    >
+                      {datos_economicos.nivel_educativo_padre}
+                    </option>
+                  ) : (
+                    <option value="">Seleccione una opción</option>
+                  )}
                   <option value="primaria completo">Primaria completo</option>
                   <option value="primaria incompleto">
                     Primaria incompleto
@@ -235,7 +310,13 @@ const DatosEconomicos = () => {
               <div className="select_space">
                 <label>Situación económica</label>
                 <select>
-                  <option value="">Seleccione una opción</option>
+                  {datos_economicos.situacion_padre ? (
+                    <option value={datos_economicos.situacion_padre} selected>
+                      {datos_economicos.situacion_padre}
+                    </option>
+                  ) : (
+                    <option value="">Seleccione una opción</option>
+                  )}
                   <option value="trabajando">Trabajando</option>
                   <option value="cesante">Cesante</option>
                   <option value="trabajo ocasional">Trabajo ocasional</option>
@@ -247,7 +328,14 @@ const DatosEconomicos = () => {
               </div>
               <div className="select_space">
                 <label>Actividad económica (Si está trabajando)</label>
-                <input type="text" />
+                <input
+                  type="text"
+                  value={
+                    datos_economicos.ocupacion_padre
+                      ? datos_economicos.ocupacion_padre
+                      : "Sin definir"
+                  }
+                />
               </div>
               <div className="select_space">
                 <label>Labor que desempeña</label>
@@ -255,14 +343,23 @@ const DatosEconomicos = () => {
               </div>
             </div>
           </div>
-          
+
           <div>
             <p className="titulo">Informacion de la madre (si aplica)</p>
             <div>
               <div className="select_space">
                 <label>Nivel educativo (Máximo alcanzado)</label>
                 <select>
-                  <option value="">Seleccione una opción</option>
+                  {datos_economicos.nivel_educativo_madre ? (
+                    <option
+                      value={datos_economicos.nivel_educativo_madre}
+                      selected
+                    >
+                      {datos_economicos.nivel_educativo_madre}
+                    </option>
+                  ) : (
+                    <option value="">Seleccione una opción</option>
+                  )}
                   <option value="primaria completo">Primaria completo</option>
                   <option value="primaria incompleto">
                     Primaria incompleto
@@ -294,10 +391,17 @@ const DatosEconomicos = () => {
                   <option value="analfabeta">Analfabeta</option>
                 </select>
               </div>
+
               <div className="select_space">
                 <label>Situación económica</label>
                 <select>
-                  <option value="">Seleccione una opción</option>
+                  {datos_economicos.situacion_madre ? (
+                    <option value={datos_economicos.situacion_madre} selected>
+                      {datos_economicos.situacion_madre}
+                    </option>
+                  ) : (
+                    <option value="">Seleccione una opción</option>
+                  )}
                   <option value="trabajando">Trabajando</option>
                   <option value="cesante">Cesante</option>
                   <option value="trabajo ocasional">Trabajo ocasional</option>
@@ -307,9 +411,17 @@ const DatosEconomicos = () => {
                   <option value="fallecido">Fallecido</option>
                 </select>
               </div>
+
               <div className="select_space">
                 <label>Actividad económica (Si está trabajando)</label>
-                <input type="text" />
+                <input
+                  type="text"
+                  value={
+                    datos_economicos.ocupacion_madre
+                      ? datos_economicos.ocupacion_madre
+                      : "Sin definir"
+                  }
+                />
               </div>
               <div className="select_space">
                 <label>Labor que desempeña</label>
@@ -317,68 +429,75 @@ const DatosEconomicos = () => {
               </div>
             </div>
           </div>
-          <div className='full-width'>
-          <div>
-            <p className="titulo">Información de otros familiares que se hayan hecho a cargo en caso diferente a los anteriores</p>
+          <div className="full-width">
             <div>
-              <div className="select_space">
-                <label>Nivel educativo (Máximo alcanzado)</label>
-                <select>
-                  <option value="">Seleccione una opción</option>
-                  <option value="primaria completo">Primaria completo</option>
-                  <option value="primaria incompleto">
-                    Primaria incompleto
-                  </option>
-                  <option value="secundaria completo">
-                    Secundaria completo
-                  </option>
-                  <option value="secundaria incompleto">
-                    Secundaria incompleto
-                  </option>
-                  <option value="técnico completo">Técnico completo</option>
-                  <option value="técnico incompleto">Técnico incompleto</option>
-                  <option value="tecnólogo completo">Tecnólogo completo</option>
-                  <option value="tecnólogo incompleto">
-                    Tecnólogo incompleto
-                  </option>
-                  <option value="profesional pregrado completo">
-                    Profesional pregrado completo
-                  </option>
-                  <option value="profesional pregrado incompleto">
-                    Profesional pregrado incompleto
-                  </option>
-                  <option value="profesional posgrado completo">
-                    Profesional posgrado completo
-                  </option>
-                  <option value="profesional posgrado incompleto">
-                    Profesional posgrado incompleto
-                  </option>
-                  <option value="analfabeta">Analfabeta</option>
-                </select>
-              </div>
-              <div className="select_space">
-                <label>Situación económica</label>
-                <select>
-                  <option value="">Seleccione una opción</option>
-                  <option value="trabajando">Trabajando</option>
-                  <option value="cesante">Cesante</option>
-                  <option value="trabajo ocasional">Trabajo ocasional</option>
-                  <option value="dependiente">Dependiente</option>
-                  <option value="independiente">Independiente</option>
-                  <option value="pensionado">Pensionado</option>
-                  <option value="fallecido">Fallecido</option>
-                </select>
-              </div>
-              <div className="select_space">
-                <label>Actividad económica (Si está trabajando)</label>
-                <input type="text" />
-              </div>
-              <div className="select_space">
-                <label>Labor que desempeña</label>
-                <input type="text" />
+              <p className="titulo">
+                Información de otros familiares que se hayan hecho a cargo en
+                caso diferente a los anteriores
+              </p>
+              <div>
+                <div className="select_space">
+                  <label>Nivel educativo (Máximo alcanzado)</label>
+                  <select>
+                    <option value="">Seleccione una opción</option>
+                    <option value="primaria completo">Primaria completo</option>
+                    <option value="primaria incompleto">
+                      Primaria incompleto
+                    </option>
+                    <option value="secundaria completo">
+                      Secundaria completo
+                    </option>
+                    <option value="secundaria incompleto">
+                      Secundaria incompleto
+                    </option>
+                    <option value="técnico completo">Técnico completo</option>
+                    <option value="técnico incompleto">
+                      Técnico incompleto
+                    </option>
+                    <option value="tecnólogo completo">
+                      Tecnólogo completo
+                    </option>
+                    <option value="tecnólogo incompleto">
+                      Tecnólogo incompleto
+                    </option>
+                    <option value="profesional pregrado completo">
+                      Profesional pregrado completo
+                    </option>
+                    <option value="profesional pregrado incompleto">
+                      Profesional pregrado incompleto
+                    </option>
+                    <option value="profesional posgrado completo">
+                      Profesional posgrado completo
+                    </option>
+                    <option value="profesional posgrado incompleto">
+                      Profesional posgrado incompleto
+                    </option>
+                    <option value="analfabeta">Analfabeta</option>
+                  </select>
+                </div>
+                <div className="select_space">
+                  <label>Situación económica</label>
+                  <select>
+                    <option value="">Seleccione una opción</option>
+                    <option value="trabajando">Trabajando</option>
+                    <option value="cesante">Cesante</option>
+                    <option value="trabajo ocasional">Trabajo ocasional</option>
+                    <option value="dependiente">Dependiente</option>
+                    <option value="independiente">Independiente</option>
+                    <option value="pensionado">Pensionado</option>
+                    <option value="fallecido">Fallecido</option>
+                  </select>
+                </div>
+                <div className="select_space">
+                  <label>Actividad económica (Si está trabajando)</label>
+                  <input type="text" />
+                </div>
+                <div className="select_space">
+                  <label>Labor que desempeña</label>
+                  <input type="text" />
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
       </form>
