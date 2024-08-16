@@ -2,7 +2,7 @@ import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { useState } from "react";
 
-const AccesoServiciosSalud = () => {
+const AccesoServiciosSalud = ({ servicio_salud }) => {
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleOptionChange = (event) => {
@@ -69,38 +69,59 @@ const AccesoServiciosSalud = () => {
               type="text"
               id="otra-text"
               disabled={selectedOption !== "Otra"}
+              value={
+                servicio_salud.salud_otra_texto
+                  ? servicio_salud.salud_otra_texto
+                  : ""
+              }
             />
           </div>
         </div>
 
-
         <div className="full-width">
-          <p className="titulo">
-            Servicios adicionales
-          </p>
-          <p>
-            ¿Cuenta con un servicio de salud prepagada?
-          </p>
+          <p className="titulo">Servicios adicionales</p>
+          <p>¿Cuenta con un servicio de salud prepagada?</p>
           <div className="checkbox_container sin_borde">
             <div className="checkbox_group">
-              <input type="radio" name="salud-prepagada" />
+              <input
+                type="radio"
+                name="salud-prepagada"
+                checked={
+                  servicio_salud.servicio_salud === true
+                    ? servicio_salud.servicio_salud
+                    : false
+                }
+              />
               <label>Sí</label>
             </div>
             <div className="checkbox_group">
-              <input type="radio" name="salud-prepagada" />
+              <input
+                type="radio"
+                name="salud-prepagada"
+                checked={
+                  servicio_salud.servicio_salud === true
+                    ? !servicio_salud.servicio_salud
+                    : false
+                }
+              />
               <label>No</label>
             </div>
           </div>
           <div className="inline-input-group">
             <label>Nombre de la institución</label>
-            <input type="text" />
+            <input
+              type="text"
+              value={
+                servicio_salud.nombre_institucion
+                  ? servicio_salud.nombre_institucion
+                  : ""
+              }
+            />
           </div>
 
           <p></p>
 
-          <p>
-            ¿Cuenta con un servicio de plan complementario?
-          </p>
+          <p>¿Cuenta con un servicio de plan complementario?</p>
           <div className="checkbox_container sin_borde">
             <div className="checkbox_group">
               <input type="radio" name="plan-complementario" />
@@ -117,11 +138,8 @@ const AccesoServiciosSalud = () => {
           </div>
 
           <p></p>
-          
 
-          <p>
-            ¿Cuenta con un servicio de salud estudiantil?
-          </p>
+          <p>¿Cuenta con un servicio de salud estudiantil?</p>
           <div className="checkbox_container sin_borde">
             <div className="checkbox_group">
               <input type="radio" name="salud-estudiantil" />
@@ -144,47 +162,124 @@ const AccesoServiciosSalud = () => {
           </p>
           <div className="checkbox_container sin_borde">
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_general
+                    ? servicio_salud.servicio_general
+                    : false
+                }
+              />
               <label>Medicina general</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_especializado
+                    ? servicio_salud.servicio_especializado
+                    : false
+                }
+              />
               <label>Medicina especializada</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_fonoaudiologia
+                    ? servicio_salud.servicio_fonoaudiologia
+                    : false
+                }
+              />
               <label>Fonoaudiología</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_optometra
+                    ? servicio_salud.servicio_optometra
+                    : false
+                }
+              />
               <label>Optómetra</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_fisioterapia
+                    ? servicio_salud.servicio_fisioterapia
+                    : false
+                }
+              />
               <label>Fisioterapia</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_psicologia
+                    ? servicio_salud.servicio_psicologia
+                    : false
+                }
+              />
               <label>Psicología</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_psiquiatria
+                    ? servicio_salud.servicio_psiquiatria
+                    : false
+                }
+              />
               <label>Psiquiatría</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_otro
+                    ? servicio_salud.servicio_otro
+                    : false
+                }
+              />
               <label>Otro servicio</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_social
+                    ? servicio_salud.servicio_social
+                    : false
+                }
+              />
               <label>Trabajo social</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_alternativas
+                    ? servicio_salud.servicio_alternativas
+                    : false
+                }
+              />
               <label>Terapia alternativas</label>
             </div>
             <div className="checkbox_group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={
+                  servicio_salud.servicio_ocupacional
+                    ? servicio_salud.servicio_ocupacional
+                    : false
+                }
+              />
               <label>Terapia ocupacional</label>
             </div>
           </div>

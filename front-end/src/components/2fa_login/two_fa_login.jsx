@@ -42,7 +42,8 @@ const Two_fa_login = () => {
         .then((res) => {
           console.log("Código OTP enviado al correo");
           // console.log(res.data[0].otp);
-          sessionStorage.otp = res.data[0].otp;
+          const encrypted_otp = encriptarInt(res.data[0].otp);
+          sessionStorage.otp = encrypted_otp;
           sessionStorage.otp_status = true;
           // Configura un temporizador de 3 minutos
           // const timer = setTimeout(() => {
