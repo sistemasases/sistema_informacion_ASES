@@ -518,7 +518,8 @@ const Caracterizacion = () => {
         });
       })
       .catch((error) => {});
-  }, []);
+  }, [estudianteSelected.id]);
+  console.log(estudianteSelected.id);
 
   console.log(semestreActual);
 
