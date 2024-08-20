@@ -39,4 +39,5 @@ urlpatterns = [
     path('usuario_rol_firma/', include('modulo_usuario_rol.urls')),
     path('discapacidad/', include('modulo_discapacidad.routers')),
     path('interapp/', include('modulo_interapp.urls')),
+    path('forms/', include('modulo_formularios_externos.routers')),
 ]

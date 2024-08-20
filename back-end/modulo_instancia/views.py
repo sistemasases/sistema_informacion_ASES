@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from .serializers import  semestre_serializer, sede_serializer, cohorte_serializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 
 class sede_viewsets (viewsets.ModelViewSet):
     """
@@ -29,6 +30,12 @@ class semestre_viewsets (viewsets.ModelViewSet):
     serializer_class = semestre_serializer
     permission_classes = (IsAuthenticated,)
     queryset = semestre_serializer.Meta.model.objects.all()
+
+    @action(detail=True, methods=['get'], url_path='semestre_sede')
+    def semestre_sede(self, request, pk=None):
+        lista_semestres_sede = semestre.objects.filter(id_sede = pk).distinct().order_by('-fecha_inicio')
+        respuesta = semestre_serializer(lista_semestres_sede, many=True)
+        return Response(respuesta.data)
 
     def list(self, request):
         lista_sedes_discapacidad = semestre.objects.filter().distinct().order_by('-fecha_inicio')

@@ -7,6 +7,7 @@ import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_indivi
 import Inasistencia from "../seguimiento_forms/form_inasistencia";
 import Seguimiento_individual_v2 from "../seguimiento_forms/form_seguimiento_individual_v2";
 import All_semestres from "../../service/all_semestres.js";
+import Semestre_por_sede from "../../service/semestres_por_sede.js";
 import { useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
@@ -65,7 +66,7 @@ const Info_registros = (props) => {
   }, [props.id_estudiante]);
 
   useEffect(() => {
-    All_semestres.all_semestres().then((res) => {
+    Semestre_por_sede.semestre_por_sede(desencriptarInt(sessionStorage.getItem("sede_id"))).then((res) => {
       // console.log(res);
       set_semestres({
         ...semestres,

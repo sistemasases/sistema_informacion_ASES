@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'modulo_alertas',
     'modulo_discapacidad',
     'modulo_interapp',
+    'modulo_formularios_externos',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',

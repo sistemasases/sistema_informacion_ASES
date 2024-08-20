@@ -728,11 +728,13 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
         serializer =caracterizacion_serializer(var_caracterizacion)
         if (var_caracterizacion):
             var_user_extended_disc = user_extended_disc.objects.filter(id_usuario= var_caracterizacion.id_creador.id).values()
+            var_user = User.objects.filter(id= var_caracterizacion.id_creador.id).values('first_name','last_name')
             var_datos_academicos = datos_academicos.objects.filter(id= var_caracterizacion.id_datos_academicos.id).values()
             var_datos_economicos = datos_economicos.objects.filter(id= var_caracterizacion.id_datos_economicos.id).values()
             var_percepcion_discapacidad = percepcion_discapacidad.objects.filter(id= var_caracterizacion.id_percepcion_discapacidad.id).values()
             var_acceso_servi_salud = acceso_servi_salud.objects.filter(id= var_caracterizacion.id_acceso_servi_salud.id).values()
             dict_caracterizacion = {
+                "datos_user":var_user[0],
                 "datos_caracterizacion" : serializer.data,
                 "datos_entrevistador" : var_user_extended_disc[0],
                 "datos_academicos" : var_datos_academicos[0],
