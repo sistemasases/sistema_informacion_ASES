@@ -1,8 +1,12 @@
 import React from 'react';
-import { Container, Col, Button, } from 'react-bootstrap';
+import { Container, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import Select from 'react-select';
-
-export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
+export const preventNonNumericValues = (e) => {
+  const nonNumericKeys = ["e", "E", "+", "-", ".", ",", "ArrowLeft", "ArrowRight", "Backspace", "Delete", "Tab", "Enter", "Shift", "Control", "Alt", "CapsLock"];
+  if (!/^[1-5]$/.test(e.key) && !nonNumericKeys.includes(e.key)) {
+    e.preventDefault();
+  }
+};export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 
 const InformacionGeneral = ({state,
@@ -20,6 +24,8 @@ const InformacionGeneral = ({state,
     redesOptions,
     isLoading,
     handleSelectChange2,
+    maxLengthBasicInput,
+    maxLengthTextAreas
 
 }) => {
   return (
@@ -31,7 +37,7 @@ const InformacionGeneral = ({state,
 
         <div>
                 <label className='custom-div'>Dedicacion externa</label>
-                <div>
+                
                 <input
                   className='input-updated'
                   type="text"
@@ -39,13 +45,13 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese la dedicacion externa'
                   value={state.dedicacion_externa}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.dedicacion_externa.length}`}</span>
         </div>
 
         <div>
-                <label className='custom-div'>Tiene eps?</label>
-                <div>
+                <label className='custom-div'>¿Tiene eps?</label>
                 <input
                   className='input-updated'
                   type="text"
@@ -53,13 +59,13 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese la EPS'
                   value={state.tiene_eps}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.tiene_eps.length}`}</span>
         </div>
 
         <div>
                 <label className='custom-div'>regimen de la EPS</label>
-                <div>
                 <input
                   className='input-updated'
                   type="text"
@@ -67,15 +73,15 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese el regimen'
                   value={state.regimen_eps}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.regimen_eps.length}`}</span>
         </div>
 
 
 
         <div>
                 <label className='custom-div'>tipo de entidad que brinda acompañamiento recibido</label>
-                <div>
                 <input
                   className='input-updated'
                   type="text"
@@ -83,44 +89,51 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese la entidad'
                   value={state.tipo_entidad_acompanamiento_recibido}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.tipo_entidad_acompanamiento_recibido.length}`}</span>
         </div>
 
         <div>
-                <label className='custom-div'>Calificacion de acompañamiento recibido</label>
-                <div>
-                <input
-                  className='input-updated'
-                  type="number"
-                  name="calificacion_acompanamiento_recibido"
-                  placeholder='Ingrese calificacion'
-                  pattern='[0-9]*'
-                  onKeyDown={preventNegativeValues}
-                  min="0"
-                  value={state.calificacion_acompanamiento_recibido}
-                  onChange={handleChange}
-                />
-                </div>
+          <label className='custom-div'>
+            Calificación de acompañamiento recibido
+            <span className="tooltip-icon">?
+              <span className="tooltip-text">
+                Por favor califique del 1 al 5. (1 significa muy malo, 5 significa muy bueno)
+              </span>
+            </span>
+          </label>
+          <input
+            className='input-updated'
+            type="text"
+            name="calificacion_acompanamiento_recibido"
+            placeholder='Ingrese la calificación'
+            pattern='[0-9]*'
+            onKeyDown={preventNonNumericValues}
+            min="0"
+            value={state.calificacion_acompanamiento_recibido}
+            onChange={handleChange}
+            maxLength="1"
+          />
         </div>
+
         
         <div>
                 <label className='custom-div'>Motivo de calificacion de acompañamiento recibido</label>
-                <div>
-                <input
+                <textarea
                 className='input-updated'
                   type="text"
                   name="motivo_calificacion_acompanamiento"
                   placeholder='Ingrese el motivo'
                   value={state.motivo_calificacion_acompanamiento}
                   onChange={handleChange}
+                  maxLength={maxLengthTextAreas}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthTextAreas - state.motivo_calificacion_acompanamiento.length}`}</span>
         </div>
 
         <div>
                 <label className='custom-div'>Actividad específica en tiempo libre</label>
-                <div>
                 <input
                 className='input-updated'
                   type="text"
@@ -128,30 +141,29 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese la actividad'
                   value={state.actividades_especificas_tiempo_libre}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.actividades_especificas_tiempo_libre.length}`}</span>
         </div>
 
         <div>
                 <label className='custom-div'>Calificacion de relación familiar</label>
-                <div>
                 <input
                 className='input-updated'
-                  type="number"
+                  type="text"
                   name="calificacion_relacion_familiar"
-                  placeholder='Ingrese calificacion'
+                  placeholder='Califíque del 1 al 5. (1 significa muy malo, 5 significa muy bueno)'
                   pattern='[0-9]*'
-                  onKeyDown={preventNegativeValues}
+                  onKeyDown={preventNonNumericValues}
                   min="0"
                   value={state.calificacion_relacion_familiar}
                   onChange={handleChange}
+                  maxLength="1"
                 />
-                </div>
         </div>
 
         <div>
                 <label className='custom-div'>Observación general de fuente de ingresos</label>
-                <div>
                 <textarea
                 className='input-updated'
                   type="text"
@@ -160,9 +172,8 @@ const InformacionGeneral = ({state,
                   value={state.observacion_general_fuente_de_ingresos}
                   onChange={handleChange}
                 />
-                </div>
         </div>  
-
+    {/*
         <div>
             <label className='custom-div'>Encuentro Dias/horas</label>
             {state.encuentro_dias_horas.map((encuentro, index) => (
@@ -193,7 +204,7 @@ const InformacionGeneral = ({state,
               Agregar Encuentro
             </Button></div>
           </div>
-
+      */}
 
           <div>
               <label className='custom-div'>Redes de apoyo</label>
@@ -259,7 +270,6 @@ const InformacionGeneral = ({state,
 
         <div>
                 <label className='custom-div'>Creencia religiosa</label>
-                <div>
                 <input
                 className='input-updated'
                   type="text"
@@ -267,13 +277,14 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese la creencia'
                   value={state.creencia_religiosa}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.creencia_religiosa.length}`}</span>
         </div> 
 
         <div>
                 <label className='custom-div'>Decisión encuentro inicial con profesional</label>
-                <div>
+                
                 <input
                 className='input-updated'
                   type="text"
@@ -281,8 +292,9 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese la decisión'
                   value={state.decision_encuentro_inicial_con_profesional}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.decision_encuentro_inicial_con_profesional.length}`}</span>
         </div> 
 
         <div>
@@ -302,7 +314,6 @@ const InformacionGeneral = ({state,
 
         <div>
                 <label className='custom-div'>Origen de descubrimiento de campus diverso</label>
-                <div>
                 <input
                 className='input-updated'
                   type="text"
@@ -310,13 +321,13 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese el origen'
                   value={state.origen_descubrimiento_campus_diverso}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.origen_descubrimiento_campus_diverso.length}`}</span>
         </div> 
 
         <div>
                 <label className='custom-div'>Comentarios o sugerencias de usuario</label>
-                <div>
                 <input
                 className='input-updated'
                   type="text"
@@ -324,8 +335,9 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese el comentario o sugerencia'
                   value={state.comentarios_o_sugerencias_de_usuario}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.comentarios_o_sugerencias_de_usuario.length}`}</span>
         </div> 
 
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Container, Col, Button,} from 'react-bootstrap';
 import Select from 'react-select';
+import { preventNonNumericValues } from './ingresoDatosBasicos';
 
-export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 
 
@@ -16,7 +16,8 @@ const InformacionAcademica = ({
     handleCheckboxChange,
     estamentoOptions,
     isLoading,
-    handleSelectChange2
+    handleSelectChange2,
+    maxLengthBasicInput
 }) => {
   return (
     <>
@@ -27,7 +28,6 @@ const InformacionAcademica = ({
 
         <div>
                 <label className='custom-div'>Sede de la universidad</label>
-                <div>
                 <input
                 className='input-updated'
                   type="text"
@@ -35,13 +35,13 @@ const InformacionAcademica = ({
                   placeholder='Ingrese la sede'
                   value={state.sede_universidad}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.sede_universidad.length}`}</span>
         </div>
 
         <div>
                 <label className='custom-div'>Nombre del programa academico</label>
-                <div>
                 <input
                 className='input-updated'
                   type="text"
@@ -49,8 +49,9 @@ const InformacionAcademica = ({
                   placeholder='Ingrese el programa academico'
                   value={state.nombre_programa_academico}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_programa_academico.length}`}</span>
         </div>
 
 
@@ -82,27 +83,31 @@ const InformacionAcademica = ({
                 <div>
                 <input
                 className='input-updated'
-                  type="number"
+                  type="text"
                   name="codigo_estudiante"
                   placeholder='Ingrese el código'
                   value={state.codigo_estudiante}
                   onChange={handleChange}
+                  onKeyDown={preventNonNumericValues}
+                  maxLength="15"
                 />
                 </div>
         </div>
     
         <div>
                 <label className='custom-div'>Semestre del estudiante</label>
-                <div>
+                
                 <input
                 className='input-updated'
-                  type="number"
+                  type="text"
                   name="semestre_academico"
-                  placeholder='Ingrese el semestre'
+                  placeholder='Ingrese el número de su semestre'
+                  onKeyDown={preventNonNumericValues}
                   value={state.semestre_academico}
                   onChange={handleChange}
+                  maxLength="2"
                 />
-                </div>
+             
         </div>
 
         <div>

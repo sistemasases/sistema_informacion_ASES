@@ -79,10 +79,36 @@ const ModalEstudiantes = ({
           <Row>
             
             
-              {currentPage === 0 && selectedUser && (
+              {currentPage === 0 && selectedUser && diversidadInfo && (
                 <div>
                 <Row>
                 <Col className="form-column" xs={"10"} md={"6"}>
+
+                <div className='div-modal'>
+
+                <b>Pronombres: </b>
+                {isEditing ? (
+                  <Select
+                    isMulti
+                    placeholder='Seleccione pronombres'
+                    className='create-select'
+                    name="pronombres"
+                    // Opciones disponibles, excluyendo las ya seleccionadas
+                    options={pronombresOptions.filter(option => 
+                      !( editableUser.pronombres || diversidadInfo.pronombres).includes(option.value && option.label) 
+                    )}
+                    // Opciones seleccionadas
+                    value={(editableUser.pronombres || diversidadInfo.pronombres|| []).map(value => {
+                      const foundOption = pronombresOptions.find(o => o.value === value);
+                      return foundOption || { value, label: value };
+                    })}
+                    onChange={handleSelectChange}
+                  />
+                ) : (
+                  diversidadInfo.pronombres.join(', ')
+                )}
+                </div>
+
                 <div className='div-modal'>
                         <b>Nombre:</b> 
                         {isEditing ? (
@@ -167,6 +193,7 @@ const ModalEstudiantes = ({
   {isEditing ? (
     <Select
       isMulti
+      className='create-select'
       placeholder='Seleccione grupo poblacional'
       name="pertenencia_grupo_poblacional"
       // Opciones disponibles, excluyendo las ya seleccionadas
@@ -225,7 +252,7 @@ const ModalEstudiantes = ({
                 <Select
                   isMulti
                   placeholder='Seleccione pronombres'
-                  className='form-react-select'
+                  className='create-select'
                   name="pronombres"
                   // Opciones disponibles, excluyendo las ya seleccionadas
                   options={pronombresOptions.filter(option => 
@@ -249,7 +276,7 @@ const ModalEstudiantes = ({
           <Select
             isMulti
             placeholder='Seleccione expresiones'
-            className='form-react-select'
+            className='create-select'
             name="expresiones_de_genero"
             // Opciones disponibles, excluyendo las ya seleccionadas
             options={expresionesOptions.filter(option => 
@@ -273,7 +300,7 @@ const ModalEstudiantes = ({
           <Select
             isMulti
             placeholder='Seleccione expresiones'
-            className='form-react-select'
+            className='create-select'
             name="orientaciones_sexuales"
             // Opciones disponibles, excluyendo las ya seleccionadas
             options={orientacionOptions.filter(option => 
@@ -305,7 +332,7 @@ const ModalEstudiantes = ({
           <Select
             isMulti
             placeholder='Seleccione expresiones'
-            className='form-react-select'
+            className='create-select'
             name="respuestas_cambio_documento"
             // Opciones disponibles, excluyendo las ya seleccionadas
             options={documentoOptions.filter(option => 
@@ -329,7 +356,7 @@ const ModalEstudiantes = ({
           <Select
             isMulti
             placeholder='Seleccione expresiones'
-            className='form-react-select'
+            className='create-select'
             name="identidades_de_genero"
             // Opciones disponibles, excluyendo las ya seleccionadas
             options={identidadesGeneroOptions.filter(option => 
@@ -533,7 +560,7 @@ const ModalEstudiantes = ({
                     <Select
                       isMulti
                       placeholder='Seleccione factores de riesgo'
-                      className='form-react-select'
+                      className='create-select'
                       name="factores_riesgos"
                       // Opciones disponibles, excluyendo las ya seleccionadas
                       options={factoresOptions.filter(option => 
@@ -639,6 +666,7 @@ const ModalEstudiantes = ({
                     <Select
                       isMulti
                       placeholder='Seleccione factores de riesgo'
+                      className='create-select'
                       name="factores_riesgos"
                       // Opciones disponibles, excluyendo las ya seleccionadas
                       options={factoresOptions.filter(option => 
@@ -663,6 +691,7 @@ const ModalEstudiantes = ({
                     <Select
                       isMulti
                       placeholder='Seleccione las fuentes de ingresos'
+                      className='create-select'
                       name="fuentes_ingresos"
                       // Opciones disponibles, excluyendo las ya seleccionadas
                       options={fuentesOptions.filter(option => 
@@ -685,6 +714,7 @@ const ModalEstudiantes = ({
                   {isEditing ? (
                     <Select
                       isMulti
+                      className='create-select'
                       placeholder='Seleccione las redes de apoyo'
                       name="redes_apoyo"
                       // Opciones disponibles, excluyendo las ya seleccionadas
@@ -708,6 +738,7 @@ const ModalEstudiantes = ({
                   {isEditing ? (
                     <Select
                       isMulti
+                      className='create-select'
                       placeholder='Seleccione las actividades de tiempo libre'
                       name="actividades_tiempo_libre"
                       // Opciones disponibles, excluyendo las ya seleccionadas
@@ -810,7 +841,7 @@ const ModalEstudiantes = ({
           <Select
             isMulti
             placeholder='Seleccione expresiones'
-            className='form-react-select'
+            className='create-select'
             name="estamentos"
             // Opciones disponibles, excluyendo las ya seleccionadas
             options={estamentoOptions.filter(option => 

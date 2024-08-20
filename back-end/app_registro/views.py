@@ -4,6 +4,7 @@ from .models import Persona, PertenenciaGrupoPoblacional
 from .serializers import PersonaSerializer, PertenenciaGrupoPoblacionalSerializer
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 # Persona
 """ class PersonaListCreateView(generics.ListCreateAPIView):
@@ -24,6 +25,13 @@ class persona_viewsets (viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = PersonaSerializer.Meta.model.objects.all()
     lookup_field = 'numero_documento'
+
+    def get_permissions(self):
+        if self.action == 'create':  # Solo para el método POST (crear)
+            self.permission_classes = [AllowAny]  # Permite acceso sin autenticación
+        else:
+            self.permission_classes = [IsAuthenticated]  # Requiere autenticación para otros métodos
+        return super().get_permissions()    
     
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True

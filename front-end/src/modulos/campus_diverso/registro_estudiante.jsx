@@ -8,14 +8,22 @@ import IngresoDatosBasicos from './components/ingresoDatosBasicos';
 import InformacionAcademica from './components/informacionAcademica';
 import DocumentosAutorizacion from './components/documentosAutorizacion';
 import ReCAPTCHA from 'react-google-recaptcha';
+import {
+  decryptTokenFromSessionStorage,
+  desencriptar,
+} from "../utilidades_seguridad/utilidades_seguridad";
+
 
   const Registro_estudiante = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [mensaje, setMensaje] = useState(null);
-
+  const headers = {
+    Authorization: "Bearer " + decryptTokenFromSessionStorage(),  
+  };
   //cant de caracteres para el formulario
   const maxLengthBasicInput = 50; // Límite de caracteres
+  const maxLengthTextAreas = 150;
 
 
   const [showModal, setShowModal] = useState(false);
@@ -135,6 +143,9 @@ const [redesOptions, setRedesOptions] = useState([]);
 
 // Getters de las listas
 useEffect(() => {
+
+
+
   Promise.all([
     axios.get(`${process.env.REACT_APP_API_URL}/persona/pertenencia_grupo_poblacional/`),
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/expresion-genero/`),
@@ -793,6 +804,7 @@ const steps = [
     orientacionOptions={orientacionOptions}
     identidadesGeneroOptions={identidadesGeneroOptions}
     handleCheckboxChange={handleCheckboxChange}
+    maxLengthBasicInput={maxLengthBasicInput}
   /> },
   { component:   <InformacionGeneral
     state={state}
@@ -810,6 +822,8 @@ const steps = [
     redesOptions={redesOptions}
     isLoading={isLoading}
     handleSelectChange2={handleSelectChange2}
+    maxLengthBasicInput={maxLengthBasicInput}
+    maxLengthTextAreas={maxLengthTextAreas}
 
     /> },
     { component:   <InformacionAcademica
@@ -820,6 +834,7 @@ const steps = [
       estamentoOptions={estamentoOptions}
       isLoading={isLoading}
       handleSelectChange2={handleSelectChange2}
+      maxLengthBasicInput={maxLengthBasicInput}
       /> },
   { component: <DocumentosAutorizacion
     state={state}

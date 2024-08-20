@@ -31,8 +31,12 @@ const ObtenerEstudiante = () => {
     },
   };
   
+  const headers = {
+    Authorization: "Bearer " + decryptTokenFromSessionStorage(),  
+  };
+  
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/persona/persona/`)
+    fetch(`${process.env.REACT_APP_API_URL}/persona/persona/`, {headers})
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error('Error al obtener usuarios:', error));
@@ -119,16 +123,24 @@ const ObtenerEstudiante = () => {
   };
 
 // PUT request function
-const updateUser = async (endpoint, userId, updatedData) => {
-  try {
-    const response = await axios.put(`${process.env.REACT_APP_API_URL}/${endpoint}/${userId}/`, updatedData);
-    console.log('Usuario actualizado:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error al actualizar usuario:', error);
-    throw error;
+const updateUser = async (endpointsList, userId, updatedData) => {
+  const results = [];
+
+  for (const endpoint of endpointsList) {
+    try {
+      console.log("ROPEPEWER");
+      console.log(editableUser);
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/${endpoint}/${userId}/`, updatedData, { headers });
+      console.log(`Usuario actualizado en ${endpoint}:`, response.data);
+      results.push(response.data);
+    } catch (error) {
+      console.error(`Error al actualizar usuario en ${endpoint}:`, error);
+    }
   }
+
+  return results;
 };
+
 
 //Getters de la API y guardado de datos
   //Persona
@@ -245,27 +257,33 @@ useEffect(() => {
     });
 }, []);
 
-//Handle del multi-select
+// Handle del multi-select
+// Handle del multi-select
 const handleSelectChange = (selectedOptions, actionMeta) => {
   const { name } = actionMeta;
 
-  const values = selectedOptions ? selectedOptions.map(option => option.label) : [];
+  // Verifica si selectedOptions es un array y tiene elementos
+  const values = selectedOptions && selectedOptions.length > 0
+    ? selectedOptions.map(option => option.label)
+    : []; // Setea como [] si no hay opciones seleccionadas
+
   setEditableUser(prevState => ({
     ...prevState,
     [name]: values
   }));
-  console.log('selectedOptions', selectedOptions)
 
+  console.log('selectedOptions:', selectedOptions);
+  console.log('updatedValues:', values);
 };
 
 
-const handleUpdateUser = async (endpoint, userId, updatedData) => {
+const handleUpdateUser = async (endpointsList, userId, updatedData) => {
   try {
     // Realizar la actualización
-    const updatedUser = await updateUser(endpoint, userId, updatedData);
+    const updatedUsers = await updateUser(endpointsList, userId, updatedData);
 
     // Obtener la información completa del usuario después de la actualización
-    const fullUserResponse = await axios.get(`${process.env.REACT_APP_API_URL}/persona/persona/${userId}/`);
+    const fullUserResponse = await axios.get(`${process.env.REACT_APP_API_URL}/persona/persona/${userId}/`, { headers });
     const fullUser = fullUserResponse.data;
 
     // Actualizar el estado con la información completa del usuario
@@ -275,15 +293,20 @@ const handleUpdateUser = async (endpoint, userId, updatedData) => {
     setSelectedUser(fullUser); // Actualiza el usuario seleccionado con la información completa
 
     // Actualiza el estado según el endpoint
-    if (endpoint === 'diversidad-sexual/diversidad-sexual') {
+    console.log('Datos a enviar:', editableUser);
+    if (endpointsList.includes('diversidad-sexual/diversidad-sexual')) {
       setDiversidadInfo(fullUser.diversidad_sexual);
-    } else if (endpoint === 'documentos-autorizacion/documentos-autorizacion') {
+      setSelectedUser(fullUser);
+    }
+    if (endpointsList.includes('documentos-autorizacion/documentos-autorizacion')) {
       setDocumentosInfo(fullUser.documentos_autorizacion);
-    } else if (endpoint === 'informacion-academica/informacion-academica') {
+    }
+    if (endpointsList.includes('informacion-academica/informacion-academica')) {
       setAcademcioInfo(fullUser.informacion_academica);
-    } else if (endpoint === 'informacion-general/informacion-general') {
+    }
+    else if (endpointsList.includes('informacion-general/informacion-general')) {
       setGeneralInfo(fullUser.informacion_general);
-    } 
+    }
 
   } catch (error) {
     console.error('Error al actualizar el usuario:', error);
@@ -298,7 +321,6 @@ const Usuariorevisado = async () => {
 
   await handleUpdateUser(endpoint, userId, updatedData);
 
-  // Puedes cerrar el modal o hacer cualquier otra acción adicional aquí si es necesario
   closeModal();
 };
 
@@ -353,7 +375,7 @@ const handleDeleteItem = (fieldName, index) => {
 const handleDelete = async (userId) => {
   try {
     console.log('usuario', userId);
-    await axios.delete(`${process.env.REACT_APP_API_URL}/persona/persona/${userId}/`);
+    await axios.delete(`${process.env.REACT_APP_API_URL}/persona/persona/${userId}/`, { headers });
     // Aquí podrías hacer una llamada para actualizar la lista de usuarios o cerrar el modal
     alert('Usuario eliminado con éxito');
     closeModal(); // Opcional, para cerrar el modal después de eliminar
@@ -439,26 +461,26 @@ const handleFormSubmit = (e) => {
      ecomapa: editableUser.ecomapa,
      arbol_familiar: editableUser.arbol_familiar,
     };
-    let endpoint = '';
+    let endpointsList = [];
 
     switch (currentPage) {
       case 0:
-        endpoint = 'persona/persona';
+        endpointsList = ['persona/persona','diversidad-sexual/diversidad-sexual'];
         break;
       case 1:
-        endpoint = 'diversidad-sexual/diversidad-sexual';
+        endpointsList = ['diversidad-sexual/diversidad-sexual'];
         break;
       case 2:
-        endpoint = 'informacion-general/informacion-general';
-        break;        
+        endpointsList = ['informacion-general/informacion-general'];
+        break;
       case 3:
-        endpoint = 'informacion-general/informacion-general';
+        endpointsList = ['informacion-general/informacion-general'];
         break;
       case 4:
-        endpoint = 'informacion-academica/informacion-academica';
+        endpointsList = ['informacion-academica/informacion-academica'];
         break;
       case 5:
-        endpoint = 'documentos-autorizacion/documentos-autorizacion';
+        endpointsList = ['documentos-autorizacion/documentos-autorizacion'];
         break;
       // Añade más casos para otras páginas si es necesario
       default:
@@ -466,7 +488,7 @@ const handleFormSubmit = (e) => {
         return;
     }
 
-    handleUpdateUser(endpoint, numero_documento, updatedData);
+    handleUpdateUser(endpointsList, numero_documento, updatedData);
 
 
     setEditableUser({

@@ -14,7 +14,8 @@ const DiversidadSexual = ({
     expresionesOptions,
     orientacionOptions,
     identidadesGeneroOptions,
-    handleCheckboxChange
+    handleCheckboxChange,
+    maxLengthBasicInput
 
   }) => {
 
@@ -126,7 +127,6 @@ const DiversidadSexual = ({
 
             <div>
                 <label className='custom-div'>¿Cambio de nombre/sexo?</label>
-                <div>
                 <input
                   className='input-updated'
                   type="text"
@@ -134,8 +134,10 @@ const DiversidadSexual = ({
                   name="cambio_nombre_sexo_documento"
                   value={state.cambio_nombre_sexo_documento}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
+
                 />
-                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.cambio_nombre_sexo_documento.length}`}</span>
         </div>
 
       </Col>
