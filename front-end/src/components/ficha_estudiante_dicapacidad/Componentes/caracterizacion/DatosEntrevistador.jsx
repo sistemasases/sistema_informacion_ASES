@@ -52,10 +52,18 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
             <p className="titulo">Informacion de la entrevista</p>
             <div className="inline-input-group">
               <label>Fecha de Aplicación</label>
-              <input type="date" />
+              <input type="date" value={datos_entrevistador.fecha_aplicacion} />
               <label>Lugar o Medio de Aplicación</label>
               <select>
-                <option value="">Seleccione una opción</option>
+                {datos_entrevistador.lugar ? (
+                  <option value={datos_entrevistador.lugar} selected>
+                    {" "}
+                    {datos_entrevistador.lugar}
+                  </option>
+                ) : (
+                  <option value="">Seleccione una opción</option>
+                )}
+                {/* <option value="">Seleccione una opción</option> */}
                 <option value="presencial">Presencial</option>
                 <option value="virtual">Virtual</option>
               </select>

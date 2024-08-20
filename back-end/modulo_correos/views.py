@@ -329,7 +329,7 @@ class enviar_correo_observaciones_viewsets(ViewSet):
 
         mail_practicante = User.objects.filter(
             is_active=True, id=var_practicante[0]['id_usuario_id']).values('email')
-
+        print(mail_practicante[0]['email'])
         mail_profesional = User.objects.filter(
             is_active=True, id=var_profesional[0]['id_usuario_id']).values('email')
 
@@ -341,30 +341,32 @@ class enviar_correo_observaciones_viewsets(ViewSet):
 
         obj_rol_creador = usuario_rol.objects.filter(
             id_usuario=id_creador, estado="ACTIVO").values()
-        # # print(obj_rol_creador)
-        list_correos_test.append("steven.bernal@correounivalle.edu.co")
-        list_correos_test.append("sistemas.ases@correounivalle.edu.co")
+        # print(obj_rol_creador)
+        # list_correos_test.append("steven.bernal@correounivalle.edu.co")
+        # list_correos_test.append("sistemas.ases@correounivalle.edu.co")
         if obj_rol_creador[0]['id_rol_id'] == 1:        # super_ases
             # # print("Enviar Correo a Sistemas (Para Pruebas)")
             # list_correos_test.append("steven.bernal@correounivalle.edu.co")
             list_correos_test.append(user_email[0]['email'])
             list_correos_test.append("sistemas.ases@correounivalle.edu.co")
+            # print("CORREOS")
+            # print(list_correos_test)
             return list_correos_test
 
         elif obj_rol_creador[0]['id_rol_id'] == 3:         # "profesional"
             "Enviar Correo a Practicante y Monitor"
             list_correos.append(mail_practicante[0]['email'])
             list_correos.append(mail_monitor[0]['email'])
+            # print("CORREOS")
+            # print(list_correos)
             return list_correos
-            # # print("CORREOS")
-            # # print(list_correos)
         elif obj_rol_creador[0]['id_rol_id'] == 4:         # "practicante"
             "Enviar Correo a Profesional y Monitor"
             list_correos.append(mail_profesional[0]['email'])
             list_correos.append(mail_monitor[0]['email'])
+            # print("CORREOS")
+            # print(list_correos)
             return list_correos
-            # # print("CORREOS")
-            # # print(list_correos)
 
         # # print(mail_practicante[0]['email'])
         # # print(mail_profesional[0]['email'])
@@ -372,8 +374,8 @@ class enviar_correo_observaciones_viewsets(ViewSet):
         # list_correos.append("sistemas.ases@correounivalle.edu.co")
         # list_correos.append(mail_practicante[0]['email'])
         # list_correos.append(mail_profesional[0]['email'])
-        # # print("LISTA DE CORREOS:")
-        # # print(list_correos)
+        # print("LISTA DE CORREOS:")
+        # print(list_correos)
 
         # return list_correos_test
 
@@ -384,16 +386,16 @@ class enviar_correo_observaciones_viewsets(ViewSet):
             request.data.get("id_estudiante"))
 
         obj_usuario_creador = user_serializer(
-            User.objects.get(id=request.data.get("id_creador"))).data
+            User.objects.get(id=request.data.get("id_modificador"))).data
         # # print("AQUI VA EL USUARIO")
         # # print(obj_usuario_creador)
         obj_rol_creador = usuario_rol.objects.filter(
-            id_usuario=request.data.get("id_creador"), estado="ACTIVO").values()
+            id_usuario=request.data.get("id_modificador"), estado="ACTIVO").values()
         # # print("AQUI VA EL USUARIO ROL")
         # # print(obj_rol_creador)
         message_text = ""
         destinatarios = self.get_usuarios_asignados(
-            request.data.get("id_estudiante"), request.data.get("id_creador"))
+            request.data.get("id_estudiante"), request.data.get("id_modificador"))
         # # print("DESTINATARIOS")
         # # print(destinatarios)
 
@@ -444,7 +446,7 @@ class enviar_correo_observaciones_viewsets(ViewSet):
         )
         email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
         email.send()
-        # # print("Correo enviado")
+        print("Correo enviado")
         return Response({'mensaje': message_text}, status=status.HTTP_200_OK)
 
     """

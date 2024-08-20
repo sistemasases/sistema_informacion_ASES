@@ -262,11 +262,23 @@ const Caracterizacion = () => {
       .then((res) => {
         console.log(res);
         // setDatosEntrevistador
+        const fechaOriginal = res.datos_caracterizacion.fecha;
+
+        // Dividir la fecha en partes [año, mes, día]
+        const [año, mes, día] = fechaOriginal.split("-");
+
+        // Reorganizar y formar la nueva fecha en formato día-mes-año
+        const fechaConvertida = `${día}-${mes}-${año}`;
+        console.log(fechaConvertida);
+
         setDatosEntrevistador({
-          entrevistador: res.datos_entrevistador.id,
+          entrevistador:
+            res.datos_user.first_name + " " + res.datos_user.last_name,
           cargo: res.datos_entrevistador.cargo,
           celular: res.datos_entrevistador.celular,
           profesion: res.datos_entrevistador.profesion,
+          fecha_aplicacion: res.datos_caracterizacion.fecha,
+          lugar: res.datos_caracterizacion.lugar,
         });
 
         // setDatosEntrevistado
@@ -287,6 +299,54 @@ const Caracterizacion = () => {
           situacion_madre: res.datos_economicos.situacion_madre,
           situacion_padre: res.datos_economicos.situacion_padre,
           solvencia_economica: res.datos_economicos.solvencia_economica,
+          // Falta
+          // *
+          //           ¿Cómo sostiene su permanencia en la universidad?
+          // Ingresos propios
+          // permanencia_ingreso_propio: ,
+          // Ingresos Familiares
+          // permanencia_ingreso_familiar: ,
+          // Otros ¿cuáles?:
+          // permanencia_otro: true || false
+          // permanencia_otro_texto: ,
+
+          // ¿Requiere materiales durante su carrera?
+          // req_materiales: ,
+          // *
+          //           Para desplazarse a la universidad usted:
+          // Paga transporte privado
+          // transporte_privado: ,
+          // Paga el transporte público
+          // transporte_prublico: ,
+          // Tiene transporte propio
+          // transporte_propio: ,
+          // Otro ¿Cuál?:
+          // transporte_otro_texto: ,
+          // ¿Cuál es el valor aproximado para el transporte, durante un semestre?
+          // transporte_valor: ,
+          // ¿Cuál es el valor aproximado en sostenimiento (alimentación, arriendo, servicios públicos incluido internet, entre otros), durante un semestre?
+          // valor_sostenimiento: res.datos_economicos.valor_sostenimiento,
+          // Actualmente vive:
+          // actualmente_vive_con: ,
+          // ¿Tiene hijos/as?
+          // *
+          // tiene_hijos: ,
+          // *
+          //           ¿Qué le motivó el ingreso a su carrera?
+          // motivacion_ingreso: ,
+          // ¿Cuáles son sus expectativas en esta carrera?
+          // expectativas_carrera: ,
+          // ¿Cuáles son sus expectativas al graduarse?
+          // expectativas_graduarse: ,
+          //
+          // Info padre/madre
+          // labor_padre: ,
+          // labor_madre: ,
+          // * Información de otros familiares que se hayan hecho a cargo en caso diferente a los anteriores
+          // acargo_nivel_educativo: ,
+          // acargo_situacion_económica: ,
+          // acargo_actividad_economica: ,
+          // acargo_labor_desempeña: ,
         });
 
         // setDatosAcademicos

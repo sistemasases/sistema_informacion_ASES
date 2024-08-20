@@ -86,6 +86,16 @@ const FormularioAsistencia = (props) => {
    *  Código
    *  Monitoria a la que asiste
    *  Fecha (autogenerada)
+   *
+   *  ****Agregar "Algo" para identificar a los qué asisten por x o y motivo hasta un día de diciembre
+   * Te acercas a la monitoria académica de ASES con el objetivo de conseguir el aval de la Estrategia para acogerte al acuerdo 006
+   *
+   *
+   *  Alertas:
+   *  Al no encontrar el código
+   *  Implementar listado de monitorias
+   *  Implementar Selector Lugar  (Sede)
+   *
    */
 
   return (

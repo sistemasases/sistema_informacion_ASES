@@ -1,8 +1,7 @@
-
 import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import axios from "axios";
 
-const all_sedes_formularios_externos = async () => {
+const all_program_formularios_externos = async () => {
   try {
     // Constante que va en el header con información del token para el axios
     // const config = {
@@ -21,5 +20,5 @@ const all_sedes_formularios_externos = async () => {
 };
 
 export default {
-  all_sedes_formularios_externos,
+  all_program_formularios_externos,
 };
