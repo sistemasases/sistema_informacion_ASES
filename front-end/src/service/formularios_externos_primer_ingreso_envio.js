@@ -23,24 +23,24 @@ const formularios_externos_primer_ingreso_envio = async (formData) => {
       .post(url_axios, formData)
       .then((response) => {
         console.log(response);
-        // if (response.status === 200) {
-        //   return true;
-        // } else {
         return response;
         // }
       })
       .catch((error) => {
-        console.warn(error);
+        console.error(error);
         if (error.response.status === 400) {
-          alert(error.response.data.Respuesta);
-        } else if (error.response.status === 208) {
-          alert(error.response.data.Respuesta);
+          alert(error.response.data.mensaje);
+          return false;
+        } else if (error.response.status === 409) {
+          alert(error.response.data.mensaje);
+          return false;
         } else if (error.response.status === 500) {
-          alert(error.response.data.Respuesta);
+          alert(error.response.data.mensaje);
+          return false;
         } else {
-          alert("Error al enviar los datos, vuelva a intentarlo");
+          alert("Error al enviar los datos");
+          return false;
         }
-        return false;
       });
   } catch (error) {
     console.error(error);

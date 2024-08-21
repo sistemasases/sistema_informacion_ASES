@@ -187,7 +187,7 @@ const FormularioPrimerIngreso = (props) => {
           if (res) {
             alert("Datos enviados correctamente");
           } else {
-            alert("Error al enviar los datos, vuelva a intentarlo");
+            alert("Error al enviar los datos");
           }
         })
         .catch((error) => {
