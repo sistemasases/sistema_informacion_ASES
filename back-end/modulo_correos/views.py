@@ -223,15 +223,15 @@ class enviar_correos_riesgos_viewset(ViewSet):
             # # # print(destinatarios)
 
             # envío con EmailMessage
-            # email = EmailMessage(
-            #     asunto,
-            #     cuerpo_correo,
-            #     EMAIL_HOST_USER,
-            #     # Cambia esto por el correo del destinatario
-            #     destinatarios
-            # )
-            # email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
-            # email.send()
+            email = EmailMessage(
+                asunto,
+                cuerpo_correo,
+                EMAIL_HOST_USER,
+                # Cambia esto por el correo del destinatario
+                destinatarios
+            )
+            email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
+            email.send()
         else:
             return Response(({"message": "No hay Altos"}))
 
@@ -704,15 +704,15 @@ class enviar_riesgo_editado_viewset(ViewSet):
                 # # # print(destinatarios)
 
                 # envío con EmailMessage
-                # email = EmailMessage(
-                #     asunto,
-                #     cuerpo_correo,
-                #     EMAIL_HOST_USER,
-                #     # Cambia esto por el correo del destinatario
-                #     destinatarios
-                # )
-                # email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
-                # email.send()
+                email = EmailMessage(
+                    asunto,
+                    cuerpo_correo,
+                    EMAIL_HOST_USER,
+                    # Cambia esto por el correo del destinatario
+                    destinatarios
+                )
+                email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
+                email.send()
             else:
                 return Response(({"message": "No hay Altos"}))
         else:
