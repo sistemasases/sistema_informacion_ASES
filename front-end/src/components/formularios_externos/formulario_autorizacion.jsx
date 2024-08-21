@@ -11,7 +11,7 @@ import axios from "axios";
 import Form from "react-bootstrap/Form";
 import DataTable from "react-data-table-component";
 import { decryptTokenFromSessionStorage } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
-
+import Formularios_externos_firma_tratamiento_datos_envio from "../../service/formularios_externos_firma_tratamiento_datos_envio.js";
 import { Container, Col, Row, Button, Modal } from "react-bootstrap";
 import "../../Scss/formularios_externos/formulario_autorizacion_style.css";
 
@@ -25,22 +25,22 @@ const FormularioActualizacion = (props) => {
     if (e.target.value === "C.C.") {
       setData({
         ...data,
-        tipo_documento: e.target.value,
+        tipo_id_estudiante: e.target.value,
       });
     } else if (e.target.value === "T.I.") {
       setData({
         ...data,
-        tipo_documento: e.target.value,
+        tipo_id_estudiante: e.target.value,
       });
     } else if (e.target.value === "Otros") {
       setData({
         ...data,
-        tipo_documento: "",
+        tipo_id_estudiante: "",
       });
     }
     // setData({
     //   ...data,
-    //   nombre: e.target.value,
+    //   nombre_firma: e.target.value,
     // });
   };
 
@@ -48,32 +48,51 @@ const FormularioActualizacion = (props) => {
     setOtherDocumentType(e.target.value);
     setData({
       ...data,
-      tipo_documento: e.target.value,
+      tipo_id_estudiante: e.target.value,
     });
   };
 
   const [data, setData] = useState({
-    nombre: "",
-    tipo_documento: "",
-    numero_documento: "",
-    autorizacion_datos: "",
-    autorizacion_datos_imagenes: "",
+    nombre_firma: "",
+    tipo_id_estudiante: "",
+    documento: "",
+    correo_firma: "",
+    autoriza_tratamiento_datos: "",
+    autoriza_tratamiento_imagen: "",
+    fecha_firma: new Date().toISOString().split("T")[0],
   });
   const send_data = (e) => {
     // console.log(e);
-    console.log(data);
+    // console.log(data);
     // usuario_rol
 
     // virificar que los campos obligatorios no esten vacios
     if (
-      data.nombre === "" ||
-      data.tipo_documento === "" ||
-      data.numero_documento === "" ||
-      data.autorizacion_datos === "" ||
-      data.autorizacion_datos_imagenes === ""
+      data.nombre_firma === "" ||
+      data.tipo_id_estudiante === "" ||
+      data.documento === "" ||
+      data.correo_firma === "" ||
+      data.autoriza_tratamiento_datos === "" ||
+      data.autoriza_tratamiento_imagen === ""
     ) {
       alert("Por favor llene todos los campos obligatorios");
       return;
+    } else {
+      Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
+        data
+      )
+        .then((res) => {
+          // console.log(res);
+          if (res) {
+            alert("Datos enviados correctamente");
+          } else {
+            alert("Error al enviar los datos, vuelva a intentarlo");
+          }
+        })
+        .catch((error) => {
+          // console.error(error);
+          alert("Error al enviar los datos, vuelva a intentarlo");
+        });
     }
   };
 
@@ -193,6 +212,24 @@ const FormularioActualizacion = (props) => {
             <Row>
               <Col>
                 <Form>
+                  <Form.Group controlId="formAuthMail">
+                    <Form.Label>
+                      Correo electrónico{" "}
+                      <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Tu respuesta"
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          correo_firma: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+                  <hr></hr>
+
                   <Form.Group controlId="formAuthFullname">
                     <Form.Label>
                       Nombre y Apellidos{" "}
@@ -204,7 +241,7 @@ const FormularioActualizacion = (props) => {
                       onChange={(e) =>
                         setData({
                           ...data,
-                          nombre: e.target.value,
+                          nombre_firma: e.target.value,
                         })
                       }
                     />
@@ -269,7 +306,7 @@ const FormularioActualizacion = (props) => {
                       onChange={(e) =>
                         setData({
                           ...data,
-                          numero_documento: e.target.value,
+                          documento: e.target.value,
                         })
                       }
                     />
@@ -290,7 +327,7 @@ const FormularioActualizacion = (props) => {
                       onChange={(e) =>
                         setData({
                           ...data,
-                          autorizacion_datos: e.target.value,
+                          autoriza_tratamiento_datos: e.target.value,
                         })
                       }
                     />
@@ -304,7 +341,7 @@ const FormularioActualizacion = (props) => {
                       onChange={(e) =>
                         setData({
                           ...data,
-                          autorizacion_datos: e.target.value,
+                          autoriza_tratamiento_datos: e.target.value,
                         })
                       }
                     />
@@ -325,7 +362,7 @@ const FormularioActualizacion = (props) => {
                       onChange={(e) =>
                         setData({
                           ...data,
-                          autorizacion_datos_imagenes: e.target.value,
+                          autoriza_tratamiento_imagen: e.target.value,
                         })
                       }
                     />
@@ -339,7 +376,7 @@ const FormularioActualizacion = (props) => {
                       onChange={(e) =>
                         setData({
                           ...data,
-                          autorizacion_datos_imagenes: e.target.value,
+                          autoriza_tratamiento_imagen: e.target.value,
                         })
                       }
                     />

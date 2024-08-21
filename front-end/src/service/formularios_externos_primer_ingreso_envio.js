@@ -1,9 +1,9 @@
 /**
  * @file foromularios_externos_primer_ingreso_envio.js
  * @version 1.0.0
- * @description Service para envíar observaciones desde el registro de una ficha.
+ * @description Service para envíar 
  * @author @iMrStevenS2.
- * @contact steven.bernalz@correounivalle.edu.co
+ * @contact steven.bernal@correounivalle.edu.co
  * @date 25 de Junio del 2024
  */
 
@@ -22,7 +22,7 @@ const formularios_externos_primer_ingreso_envio = async (formData) => {
     axios
       .post(url_axios, formData)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           return true;
         } else {
@@ -30,14 +30,14 @@ const formularios_externos_primer_ingreso_envio = async (formData) => {
         }
       })
       .catch((error) => {
-        console.error(error);
+        // console.error(error);
         return false;
       });
 
     // const response = await axios.post(url_axios, formData, config);
 
     // if (response) {
-    //   console.log(response);
+    //   // console.log(response);
     // }
 
     // if (response.status === 200) {
@@ -46,7 +46,7 @@ const formularios_externos_primer_ingreso_envio = async (formData) => {
     //   return false;
     // }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return false;
   }
 };

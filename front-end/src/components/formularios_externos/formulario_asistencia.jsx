@@ -1,5 +1,5 @@
 /**
- * @file formulario_autorizacion.jsx
+ * @file formulario_asistencia.jsx
  * @version 1.0.0
  * @description Formulario de autorizacion de tratamiento de datos.
  * @author Steven Bernal
@@ -36,7 +36,7 @@ const FormularioAsistencia = (props) => {
     // Obtener las monitorias
     All_monitorias_formularios_externos.all_monitorias_formularios_externos()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setOpcionesMonitoria({
           data_monitorias: res,
         });
@@ -87,8 +87,8 @@ const FormularioAsistencia = (props) => {
   });
 
   const send_data = (e) => {
-    // console.log(e);
-    console.log(data);
+    // // console.log(e);
+    // console.log(data);
     // *- Crear tabla de asistencias
     // *- Datos del formulario
     // *- Crear tabla monitorias
@@ -102,12 +102,12 @@ const FormularioAsistencia = (props) => {
         data
       )
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           // if (res) {
           //   alert("Datos enviados correctamente");
           // } else {
           //   alert("Error al enviar los datos, vuelva a intentarlo");
-          //   // console.log("Error al enviar los datos, vuelva a intentarlo");
+          //   // // console.log("Error al enviar los datos, vuelva a intentarlo");
           // }
         })
         .catch((error) => {
@@ -135,9 +135,9 @@ const FormularioAsistencia = (props) => {
    */
 
   const handle_open_monitorias = () => {
-    // console.log(sede.data_sede);
-    // console.log("HOLAAA");
-    // console.log(semestres.data_semestre.length);
+    // // console.log(sede.data_sede);
+    // // console.log("HOLAAA");
+    // // console.log(semestres.data_semestre.length);
     for (let i = 0; i < opciones_monitoria.data_monitorias.length; i++) {
       opciones.pop(i);
     }
@@ -151,7 +151,7 @@ const FormularioAsistencia = (props) => {
           opciones_monitoria.data_monitorias[i]["nombre_monitor"],
         id: opciones_monitoria.data_monitorias[i]["id"],
       };
-      //   console.log(dato);
+      //   // console.log(dato);
       opciones.push(dato);
     }
   };

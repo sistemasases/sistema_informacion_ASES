@@ -1,3 +1,12 @@
+/**
+ * @file all_sedes_formularios_externos.js
+ * @version 1.0.0
+ * @description Service para traer las sedes a los formularios externos.
+ * @author @iMrStevenS2.
+ * @contact steven.bernal@correounivalle.edu.co
+ * @date 25 de Junio del 2024
+ */
+
 import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import axios from "axios";
 
@@ -15,7 +24,7 @@ const all_sedes_formularios_externos = async () => {
     const resInst = await axios.get(url_axios);
     return resInst.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 

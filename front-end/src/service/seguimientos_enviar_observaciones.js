@@ -3,7 +3,7 @@
  * @version 1.0.0
  * @description Service para envíar observaciones desde el registro de una ficha.
  * @author @iMrStevenS2.
- * @contact steven.bernalz@correounivalle.edu.co
+ * @contact steven.bernal@correounivalle.edu.co
  * @date 25 de Junio del 2024
  */
 

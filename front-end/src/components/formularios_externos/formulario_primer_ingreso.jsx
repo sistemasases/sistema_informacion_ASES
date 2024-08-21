@@ -1,5 +1,5 @@
 /**
- * @file formulario_autorizacion.jsx
+ * @file formulario_primer_ingreso.jsx
  * @version 1.0.0
  * @description Formulario de autorizacion de tratamiento de datos.
  * @author Steven Bernal
@@ -38,9 +38,9 @@ const FormularioPrimerIngreso = (props) => {
   const opciones_programa = [];
 
   // const url = encriptar("formulario_autorizacion");
-  // console.log(url);
+  // // console.log(url);
   // const decrypt_url = desencriptar("url");
-  // console.log(decrypt_url);
+  // // console.log(decrypt_url);
 
   // URL: Asistencias : U2FsdGVkX19rLu/6uWbJJimIQLdYOg9C1x5ik8/+NlWI7bOkLOSOd1Q5Pi0NE/a/
   // URL: Autorización: U2FsdGVkX18hjszpddLoSgU/HywzCP8D13edFaHOV+PmxYYqsxUx7dICZxdkz/bz
@@ -49,9 +49,9 @@ const FormularioPrimerIngreso = (props) => {
   useEffect(() => {
     All_sedes_formularios_externos.all_sedes_formularios_externos()
       .then((res) => {
-        console.log("Respuesta de la API:", res);
+        // console.log("Respuesta de la API:", res);
         if (res) {
-          console.log(res);
+          // console.log(res);
           setSede({
             ...sede,
             data_sede: res,
@@ -66,7 +66,7 @@ const FormularioPrimerIngreso = (props) => {
     All_program_formularios_externos.all_program_formularios_externos()
       .then((pro_res) => {
         if (pro_res) {
-          console.log("Respuesta de la API programas:", pro_res);
+          // console.log("Respuesta de la API programas:", pro_res);
 
           setProgram({
             ...program,
@@ -81,9 +81,9 @@ const FormularioPrimerIngreso = (props) => {
   }, []);
 
   const handle_open_sedes = () => {
-    // console.log(sede.data_sede);
-    // console.log("HOLAAA");
-    // console.log(semestres.data_semestre.length);
+    // // console.log(sede.data_sede);
+    // // console.log("HOLAAA");
+    // // console.log(semestres.data_semestre.length);
     for (let i = 0; i < sede.data_sede.length; i++) {
       opciones.pop(i);
     }
@@ -94,15 +94,15 @@ const FormularioPrimerIngreso = (props) => {
         label: sede.data_sede[i]["nombre"],
         id: sede.data_sede[i]["id"],
       };
-      //   console.log(dato);
+      //   // console.log(dato);
       opciones.push(dato);
     }
   };
 
   const handle_open_program = () => {
-    // console.log(sede.data_sede);
-    // console.log("HOLAAA");
-    // console.log(semestres.data_semestre.length);
+    // // console.log(sede.data_sede);
+    // // console.log("HOLAAA");
+    // // console.log(semestres.data_semestre.length);
     for (let i = 0; i < program.data_program.length; i++) {
       opciones_programa.pop(i);
     }
@@ -113,7 +113,7 @@ const FormularioPrimerIngreso = (props) => {
         label: program.data_program[i]["nombre"],
         id: program.data_program[i]["id"],
       };
-      //   console.log(dato);
+      //   // console.log(dato);
       opciones_programa.push(dato);
     }
   };
@@ -161,8 +161,8 @@ const FormularioPrimerIngreso = (props) => {
   });
 
   const send_data = (e) => {
-    // console.log(e);
-    console.log(data);
+    // // console.log(e);
+    // console.log(data);
 
     // Importar servicio
 
@@ -183,7 +183,7 @@ const FormularioPrimerIngreso = (props) => {
     } else {
       Formulario_primer_ingreso.formularios_externos_primer_ingreso_envio(data)
         .then((res) => {
-          console.log("Respuesta de la API:", res);
+          // console.log("Respuesta de la API:", res);
           if (res) {
             alert("Datos enviados correctamente");
           } else {
@@ -435,7 +435,7 @@ const FormularioPrimerIngreso = (props) => {
                         onMenuOpen={handle_open_program}
                         placeholder="Cambie de programa"
                         onChange={(e) => {
-                          console.log(e.value);
+                          // console.log(e.value);
                           setData({
                             ...data,
                             programa: e.value,
