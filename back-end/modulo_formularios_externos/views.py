@@ -86,9 +86,10 @@ class form_primer_ingreso(viewsets.GenericViewSet):
         print(request.data)
 
         try:
+            print(request.data["codigo_estudiante"])
             estudiante_request = estudiante.objects.get(
                 cod_univalle=int(request.data["codigo_estudiante"]))
-            return Response({'mensaje': 'El estudiante ya está registrado en el sistema.'}, status=status.HTTP_200_OK)
+            return Response({'mensaje': 'El estudiante ya está registrado en el sistema.'}, status=status.HTTP_208_ALREADY_REPORTED)
         except:
 
             Estudiante = estudiante.objects.create(

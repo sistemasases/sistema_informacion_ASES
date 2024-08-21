@@ -114,7 +114,7 @@ class enviar_correos_riesgos_viewset(ViewSet):
         # # # # print(var_estudiante[0])
         asignacion_estudiante = asignacion.objects.filter(
             estado=True, id_estudiante=var_estudiante[0]['id']).values()
-        # # # print(asignacion_estudiante)
+        print(asignacion_estudiante)
         var_monitor = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
         # # # print(var_monitor)
@@ -136,8 +136,8 @@ class enviar_correos_riesgos_viewset(ViewSet):
         list_correos.append("sistemas.ases@correounivalle.edu.co")
         list_correos.append(mail_practicante[0]['email'])
         list_correos.append(mail_profesional[0]['email'])
-        # # # print("LISTA DE CORREOS:")
-        # # # print(list_correos)
+        print("LISTA DE CORREOS:")
+        print(list_correos)
 
         # list_correos_test = list()
         # list_correos_test.append("steven.bernal@correounivalle.edu.co")
@@ -223,15 +223,15 @@ class enviar_correos_riesgos_viewset(ViewSet):
             # # # print(destinatarios)
 
             # envío con EmailMessage
-            email = EmailMessage(
-                asunto,
-                cuerpo_correo,
-                EMAIL_HOST_USER,
-                # Cambia esto por el correo del destinatario
-                destinatarios
-            )
-            email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
-            email.send()
+            # email = EmailMessage(
+            #     asunto,
+            #     cuerpo_correo,
+            #     EMAIL_HOST_USER,
+            #     # Cambia esto por el correo del destinatario
+            #     destinatarios
+            # )
+            # email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
+            # email.send()
         else:
             return Response(({"message": "No hay Altos"}))
 
@@ -308,8 +308,15 @@ class enviar_correo_observaciones_viewsets(ViewSet):
             id=id_estudiante_selected).values()
         # # # # print(var_estudiante[0])
 
+        user_email = User.objects.filter(
+            is_active=True, id=id_creador).values('email')
+
+        obj_rol_creador = usuario_rol.objects.filter(
+            id_usuario=id_creador, estado="ACTIVO").values()
+        # # print(obj_rol_creador)
+
         asignacion_estudiante = asignacion.objects.filter(
-            estado=True, id_estudiante=var_estudiante[0]['id']).values()
+            estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
         # # # print(asignacion_estudiante)
 
         var_monitor = usuario_rol.objects.filter(
@@ -336,12 +343,6 @@ class enviar_correo_observaciones_viewsets(ViewSet):
         list_correos_test = list()
         list_correos = list()
 
-        user_email = User.objects.filter(
-            is_active=True, id=id_creador).values('email')
-
-        obj_rol_creador = usuario_rol.objects.filter(
-            id_usuario=id_creador, estado="ACTIVO").values()
-        # # print(obj_rol_creador)
         # list_correos_test.append("steven.bernal@correounivalle.edu.co")
         # list_correos_test.append("sistemas.ases@correounivalle.edu.co")
         if obj_rol_creador[0]['id_rol_id'] == 1:        # super_ases
@@ -403,7 +404,7 @@ class enviar_correo_observaciones_viewsets(ViewSet):
             request.data.get("id_estudiante"))
 
         asignacion_estudiante = asignacion.objects.filter(
-            estado=True, id_estudiante=var_estudiante[0]['id']).values()
+            estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
         # # # print(asignacion_estudiante)
 
         var_monitor = usuario_rol.objects.filter(
@@ -531,15 +532,22 @@ class enviar_riesgo_editado_viewset(ViewSet):
         # data_sede = request.GET.get('sede')
         var_estudiante = estudiante.objects.filter(
             id=id_estudiante_selected).values()
+
+        user_email = User.objects.filter(
+            is_active=True, id=id_creador).values('email')
+
+        obj_rol_creador = usuario_rol.objects.filter(
+            id_usuario=id_creador, estado="ACTIVO").values()
         # # # # print(var_estudiante[0])
 
         asignacion_estudiante = asignacion.objects.filter(
-            estado=True, id_estudiante=var_estudiante[0]['id']).values()
-        # # # print(asignacion_estudiante)
+            estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
+        print("ASIGNACION ESTUDIANTE")
+        print(asignacion_estudiante)
 
         var_monitor = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
-        # # # print(var_monitor)
+        print(var_monitor)
 
         var_practicante = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=var_monitor[0]['id_jefe_id']).values()
@@ -548,6 +556,9 @@ class enviar_riesgo_editado_viewset(ViewSet):
         var_profesional = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=var_practicante[0]['id_jefe_id']).values()
         # # # print(var_profesional[0])
+
+        mail_monitor = User.objects.filter(
+            is_active=True, id=var_monitor[0]['id_usuario_id']).values('email')
 
         mail_practicante = User.objects.filter(
             is_active=True, id=var_practicante[0]['id_usuario_id']).values('email')
@@ -558,11 +569,6 @@ class enviar_riesgo_editado_viewset(ViewSet):
         list_correos_test = list()
         list_correos = list()
 
-        user_email = User.objects.filter(
-            is_active=True, id=id_creador).values('email')
-
-        obj_rol_creador = usuario_rol.objects.filter(
-            id_usuario=id_creador, estado="ACTIVO").values()
         # # # print(obj_rol_creador)
         # list_correos_test.append("steven.bernal@correounivalle.edu.co")
         # list_correos_test.append("sistemas.ases@correounivalle.edu.co")
@@ -576,18 +582,18 @@ class enviar_riesgo_editado_viewset(ViewSet):
         elif obj_rol_creador[0]['id_rol_id'] == 3:         # "profesional"
             "Enviar Correo a Practicante y Monitor"
             list_correos.append(mail_practicante[0]['email'])
-            list_correos.append(mail_profesional[0]['email'])
+            list_correos.append(mail_monitor[0]['email'])
 
+            print("CORREOS")
+            print(list_correos)
             return list_correos
-            # # # print("CORREOS")
-            # # # print(list_correos)
         elif obj_rol_creador[0]['id_rol_id'] == 4:         # "practicante"
             "Enviar Correo a Profesional y Monitor"
-            list_correos.append(mail_practicante[0]['email'])
+            list_correos.append(mail_monitor[0]['email'])
             list_correos.append(mail_profesional[0]['email'])
+            print("CORREOS")
+            print(list_correos)
             return list_correos
-            # # # print("CORREOS")
-            # # # print(list_correos)
 
         # # # print(mail_practicante[0]['email'])
         # # # print(mail_profesional[0]['email'])
@@ -595,14 +601,14 @@ class enviar_riesgo_editado_viewset(ViewSet):
         # list_correos.append("sistemas.ases@correounivalle.edu.co")
         # list_correos.append(mail_practicante[0]['email'])
         # list_correos.append(mail_profesional[0]['email'])
-        # # # print("LISTA DE CORREOS:")
-        # # # print(list_correos)
+        # print("LISTA DE CORREOS:")
+        # print(list_correos)
 
         # return list_correos_test
 
     def create(self, request, *args, **kwargs):
         # # # print("DATOS RECIBIDOS")
-        # # # print(request.data)
+        print(request.data)
         info = request.data
         # Deserializar la cadena JSON en una lista de diccionarios
         # info = json.loads(info_json)
@@ -698,15 +704,15 @@ class enviar_riesgo_editado_viewset(ViewSet):
                 # # # print(destinatarios)
 
                 # envío con EmailMessage
-                email = EmailMessage(
-                    asunto,
-                    cuerpo_correo,
-                    EMAIL_HOST_USER,
-                    # Cambia esto por el correo del destinatario
-                    destinatarios
-                )
-                email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
-                email.send()
+                # email = EmailMessage(
+                #     asunto,
+                #     cuerpo_correo,
+                #     EMAIL_HOST_USER,
+                #     # Cambia esto por el correo del destinatario
+                #     destinatarios
+                # )
+                # email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
+                # email.send()
             else:
                 return Response(({"message": "No hay Altos"}))
         else:
