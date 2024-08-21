@@ -183,12 +183,11 @@ const FormularioPrimerIngreso = (props) => {
     } else {
       Formulario_primer_ingreso.formularios_externos_primer_ingreso_envio(data)
         .then((res) => {
-          // console.log("Respuesta de la API:", res);
+          console.log("Respuesta de la API:", res);
           if (res) {
             alert("Datos enviados correctamente");
           } else {
-            console.error("Respuesta de la API no es un arreglo válido:", res);
-            alert("Ocurrió un error al enviar los datos");
+            alert("Error al enviar los datos, vuelva a intentarlo");
           }
         })
         .catch((error) => {
