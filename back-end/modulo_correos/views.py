@@ -105,15 +105,18 @@ class enviar_correos_riesgos_viewset(ViewSet):
             id=id_estudiante_selected).values()
         return var_estudiante
 
-    def get_usuarios_asignados(self, id_estudiante_selected):
+    def get_usuarios_asignados(self, id_estudiante_selected, id_creador):
         # # # # print("ID ESTUDIANTE")
         # # # # print(id_estudiante_selected)
         # data_sede = request.GET.get('sede')
         var_estudiante = estudiante.objects.filter(
             id=id_estudiante_selected).values()
         # # # # # print(var_estudiante[0])
+        obj_rol_creador = usuario_rol.objects.filter(
+            id_usuario=id_creador, estado="ACTIVO").values()
+
         asignacion_estudiante = asignacion.objects.filter(
-            estado=True, id_estudiante=var_estudiante[0]['id']).values()
+            estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
         # print(asignacion_estudiante)
         var_monitor = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
@@ -133,7 +136,7 @@ class enviar_correos_riesgos_viewset(ViewSet):
         # # # # print(mail_profesional[0]['email'])
         # list_correos =  "['" + mail_practicante[0]['email'] + "'], "['" + mail_profesional[0]['email'] + ']"'
         list_correos = list()
-        list_correos.append("sistemas.ases@correounivalle.edu.co")
+        # list_correos.append("sistemas.ases@correounivalle.edu.co")
         list_correos.append(mail_practicante[0]['email'])
         list_correos.append(mail_profesional[0]['email'])
         # print("LISTA DE CORREOS:")
@@ -182,7 +185,8 @@ class enviar_correos_riesgos_viewset(ViewSet):
         ]
         # self.get_dimensiones(riesgos)
         id_estudiante_seleccionado = data_riesgos['id_estudiante']
-        destinatarios = self.get_usuarios_asignados(id_estudiante_seleccionado)
+        destinatarios = self.get_usuarios_asignados(
+            id_estudiante_seleccionado, data_riesgos['id_creador'])
         # # # # print(self.get_usuarios_asignados(id_estudiante_seleccionado))
         # # # # # print(riesgos)
         estudiante = self.get_data_estudiante(id_estudiante_seleccionado)
@@ -248,10 +252,15 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         params = request.data.get('params')
         correo = params.get('mail')
         received_username = params.get('username')
-        # # # # print(correo)
-        # # # # print(received_username)
-        usuario = User.objects.filter(email=correo, username=received_username).values(
-            'id', 'username', 'first_name', 'last_name').first()
+        print(correo)
+        print(received_username)
+
+        try:
+            usuario = User.objects.filter(email=correo, username=received_username).values(
+                'id', 'username', 'first_name', 'last_name').first()
+        except:
+            return Response({'error': 'No se halló un usuario con dicho correo: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
+
         user_object = None
         try:
             user_object = User.objects.get(id=usuario['id'])
@@ -266,6 +275,8 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         if user_object:
             user_object.set_password(temporary_password)
             user_object.save()
+            # print("Correo enviado")
+            # print(temporary_password)
             cuerpo_correo = render_to_string(
                 'correos/cambio_contraseña.html', {'nombre': usuario['first_name'], 'apellido': usuario['last_name'],
                                                    'usuario': usuario['username'], 'password': temporary_password,
@@ -274,6 +285,7 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
             EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
             destinatarios = [correo]
             # envío con EmailMessage
+
             email = EmailMessage(
                 asunto,
                 cuerpo_correo,
@@ -283,6 +295,7 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
             )
             email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
             email.send()
+
             return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No se halló un usuario con dicho correo: ' + correo}, status=status.HTTP_400_BAD_REQUEST)
@@ -590,6 +603,13 @@ class enviar_riesgo_editado_viewset(ViewSet):
         elif obj_rol_creador[0]['id_rol_id'] == 4:         # "practicante"
             "Enviar Correo a Profesional y Monitor"
             list_correos.append(mail_monitor[0]['email'])
+            list_correos.append(mail_profesional[0]['email'])
+            # print("CORREOS")
+            # print(list_correos)
+            return list_correos
+        elif obj_rol_creador[0]['id_rol_id'] == 5:          # "monitor"
+            "Enviar Correo a Profesional y Practicante"
+            list_correos.append(mail_practicante[0]['email'])
             list_correos.append(mail_profesional[0]['email'])
             # print("CORREOS")
             # print(list_correos)
