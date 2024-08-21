@@ -78,7 +78,7 @@ const FormularioActualizacion = (props) => {
   };
 
   return (
-    <div className="auth-form-div">
+    <div className="auth-all-background">
       <div className="auth-form-div">
         <Container>
           <Col>

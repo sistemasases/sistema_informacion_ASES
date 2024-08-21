@@ -35,6 +35,7 @@ const FormularioPrimerIngreso = (props) => {
     data_program: [],
   });
   const opciones = [];
+  const opciones_programa = [];
 
   // const url = encriptar("formulario_autorizacion");
   // console.log(url);
@@ -103,17 +104,17 @@ const FormularioPrimerIngreso = (props) => {
     // console.log("HOLAAA");
     // console.log(semestres.data_semestre.length);
     for (let i = 0; i < program.data_program.length; i++) {
-      opciones.pop(i);
+      opciones_programa.pop(i);
     }
 
     for (let i = 0; i < program.data_program.length; i++) {
       const dato = {
-        value: program.data_program[i]["nombre"],
+        value: program.data_program[i]["codigo_univalle"],
         label: program.data_program[i]["nombre"],
         id: program.data_program[i]["id"],
       };
       //   console.log(dato);
-      opciones.push(dato);
+      opciones_programa.push(dato);
     }
   };
 
@@ -430,13 +431,14 @@ const FormularioPrimerIngreso = (props) => {
                       <Select
                         styles={customStyles}
                         className="option"
-                        options={opciones}
+                        options={opciones_programa}
                         onMenuOpen={handle_open_program}
                         placeholder="Cambie de programa"
                         onChange={(e) => {
+                          console.log(e.value);
                           setData({
                             ...data,
-                            programa: e.target.value,
+                            programa: e.value,
                           });
                         }}
                       ></Select>
