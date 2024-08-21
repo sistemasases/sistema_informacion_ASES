@@ -56,6 +56,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
             </div>
           </div>
           <textarea
+            className="textarea-input"
             name="adquisicion_discapacidad"
             id="adquisicion_discapacidad"
             placeholder="Describa la consideración"
@@ -73,6 +74,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
           </label>
           <label>Adquisición por</label>
           <textarea
+            className="textarea-input"
             name="adquisicion_discapacidad"
             id="adquisicion_discapacidad"
             value={
@@ -97,6 +99,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
           </div>
           <label>Tipo</label>
           <textarea
+            className="textarea-input"
             name="diagnostico_discapacidad"
             id="diagnostico_discapacidad"
             value={

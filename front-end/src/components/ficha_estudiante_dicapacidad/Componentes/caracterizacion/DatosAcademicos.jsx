@@ -57,6 +57,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
           <p>
             Seleccione el año de ingreso del estudiante:{" "}
             <input
+              className="input-type-number"
               type="number"
               id="year"
               name="year"
@@ -86,12 +87,14 @@ const DatosAcademicos = ({ datos_academicos }) => {
                   />
                   <input
                     type="text"
+                    className="input-type-text"
                     name="programaAcademico"
                     value={programa.programaAcademico}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Programa académico"
                   />
                   <select
+                    className="select-type"
                     name="motivoNo"
                     value={programa.motivoNo}
                     onChange={(e) => handleMotivoChange(index, e)}
@@ -106,6 +109,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
                   {programa.motivoNo === "Otra" && (
                     <input
                       type="text"
+                      className="input-type-text"
                       name="especificarMotivo"
                       value={programa.especificarMotivo}
                       onChange={(e) => handleChange(index, e)}
@@ -137,11 +141,11 @@ const DatosAcademicos = ({ datos_academicos }) => {
           </p>
           <div className="inline-input-group">
             <label>Nombre de la institución</label>
-            <input type="text" />
+            <input type="text" className="input-type-text" />
           </div>
           <div className="inline-input-group">
             <label>Título obtenido</label>
-            <input type="text" />
+            <input type="text" className="input-type-text" />
           </div>
           <div className="inline-input-group">
             <label>Tipo de institución</label>
@@ -175,26 +179,26 @@ const DatosAcademicos = ({ datos_academicos }) => {
               <tbody>
                 <tr>
                   <td>
-                    <input type="text" />
+                    <input type="text" className="input-type-text" />
                   </td>
                   <td>
-                    <input type="text" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input type="text" />
-                  </td>
-                  <td>
-                    <input type="text" />
+                    <input type="text" className="input-type-text" />
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <input type="text" />
+                    <input type="text" className="input-type-text" />
                   </td>
                   <td>
-                    <input type="text" />
+                    <input type="text" className="input-type-text" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="text" className="input-type-text" />
+                  </td>
+                  <td>
+                    <input type="text" className="input-type-text" />
                   </td>
                 </tr>
               </tbody>
@@ -212,6 +216,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
               <label>Nombre de la institución</label>
               <input
                 type="text"
+                className="input-type-text"
                 value={
                   datos_academicos.institucion
                     ? datos_academicos.institucion
@@ -223,6 +228,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
               <label>Título obtenido</label>
               <input
                 type="text"
+                className="input-type-text"
                 value={
                   datos_academicos.titulo_obtenido
                     ? datos_academicos.titulo_obtenido
@@ -262,26 +268,26 @@ const DatosAcademicos = ({ datos_academicos }) => {
                 <tbody>
                   <tr>
                     <td>
-                      <input type="text" />
+                      <input type="text" className="input-type-text" />
                     </td>
                     <td>
-                      <input type="text" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input type="text" />
-                    </td>
-                    <td>
-                      <input type="text" />
+                      <input type="text" className="input-type-text" />
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <input type="text" />
+                      <input type="text" className="input-type-text" />
                     </td>
                     <td>
-                      <input type="text" />
+                      <input type="text" className="input-type-text" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="text" className="input-type-text" />
+                    </td>
+                    <td>
+                      <input type="text" className="input-type-text" />
                     </td>
                   </tr>
                 </tbody>
@@ -300,7 +306,12 @@ const DatosAcademicos = ({ datos_academicos }) => {
             </p>
             <p>
               Seleccione el periodo:{" "}
-              <input type="date" name="anio_ingreso" id="anio_ingreso" />
+              <input
+                type="date"
+                className="input-type-date"
+                name="anio_ingreso"
+                id="anio_ingreso"
+              />
             </p>
           </div>
           <div className="select_space">
@@ -308,6 +319,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
             <textarea
               name="observaciones_adicionales"
               id="observaciones_adicionales"
+              className="textarea-input"
             />
           </div>
         </div>
