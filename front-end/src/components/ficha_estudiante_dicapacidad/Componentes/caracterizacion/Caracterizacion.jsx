@@ -587,6 +587,7 @@ const Caracterizacion = () => {
     <div className="container-acordion container-subacordion">
       <p>Periodo de Caracterización:</p>
       <select
+        className="select-type"
         name="periodo"
         id="periodo"
         value={semestreActual}

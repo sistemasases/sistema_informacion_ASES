@@ -34,7 +34,12 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 Estrato socio-económico de acuerdo con el recibo de servicios
                 públicos de su vivienda es
               </label>
-              <select id="estrato" name="estrato" style={{ width: "70px" }}>
+              <select
+                className="select-type"
+                id="estrato"
+                name="estrato"
+                style={{ width: "70px" }}
+              >
                 {datos_economicos.estrato_socio ? (
                   <option value={datos_economicos.estrato_socio} selected>
                     {datos_economicos.estrato_socio}
@@ -64,7 +69,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <div>
                 <input type="checkbox" />
                 <label>Otros ¿cuáles?:</label>
-                <input type="text" />
+                <input type="text" className="input-type-text" />
               </div>
             </div>
             <div className="separator" />
@@ -129,7 +134,10 @@ const DatosEconomicos = ({ datos_economicos }) => {
             <div className="separator" />
             <div className="checkbox_group">
               <label>¿Requiere materiales durante su carrera?</label>
-              <select onChange={handleRequiereMaterialesChange}>
+              <select
+                className="select-type"
+                onChange={handleRequiereMaterialesChange}
+              >
                 <option value="">Seleccione...</option>
                 <option value="si">Sí</option>
                 <option value="no">No</option>
@@ -141,7 +149,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
                     ¿Cuál es el valor aproximado en materiales, durante un
                     semestre?
                   </label>
-                  <select>
+                  <select className="select-type">
                     <option value="">Seleccione...</option>
                     <option value="0-50k">Desde $0 a $50.000</option>
                     <option value="100k-200k">Desde $100.000 a $200.000</option>
@@ -171,14 +179,19 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <div>
                 <input type="checkbox" />
                 <label>Otro ¿Cuál?:</label>
-                <input type="text" />
+                <input type="text" className="input-type-text" />
               </div>
               <div>
                 <label>
                   ¿Cuál es el valor aproximado para el transporte, durante un
                   semestre?
                 </label>
-                <input type="number" min="0" step="1000" />
+                <input
+                  className="input-type-number"
+                  type="number"
+                  min="0"
+                  step="1000"
+                />
               </div>
             </div>
             <div className="separator" />
@@ -188,7 +201,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 arriendo, servicios públicos incluido internet, entre otros),
                 durante un semestre?
               </label>
-              <select>
+              <select className="select-type">
                 <option value="">Seleccione...</option>
                 <option value="0-50k">Desde $0 a $50.000</option>
                 <option value="100k-200k">Desde $100.000 a $200.000</option>
@@ -201,7 +214,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
             <div className="separator" />
             <div className="checkbox_group">
               <label>Actualmente vive:</label>
-              <select onChange={handleViviendaChange}>
+              <select className="select-type" onChange={handleViviendaChange}>
                 <option value="">Seleccione...</option>
                 <option value="solo">Solo(a)</option>
                 <option value="acompanado">Acompañado(a)</option>
@@ -211,14 +224,14 @@ const DatosEconomicos = ({ datos_economicos }) => {
                   <label>
                     Describa el parentesco con quién vive actualmente:
                   </label>
-                  <input type="text" />
+                  <input type="text" className="input-type-text" />
                 </div>
               )}
             </div>
             <div className="separator" />
             <div className="checkbox_group">
               <label>¿Tiene hijos/as?</label>
-              <select onChange={handleTieneHijosChange}>
+              <select className="select-type" onChange={handleTieneHijosChange}>
                 <option value="">Seleccione...</option>
                 <option value="si">Sí</option>
                 <option value="no">No</option>
@@ -226,7 +239,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
               {tieneHijos === "si" && (
                 <div>
                   <label>¿Cuántos?:</label>
-                  <input type="number" min="1" />
+                  <input className="input-type-number" type="number" min="1" />
                 </div>
               )}
             </div>
@@ -235,20 +248,30 @@ const DatosEconomicos = ({ datos_economicos }) => {
             <div className="checkbox_group">
               <div>
                 <label>¿Qué le motivó el ingreso a su carrera?</label>
-                <textarea name="motivoIngresoCarrera" />
+                <textarea
+                  className="textarea-input"
+                  name="motivoIngresoCarrera"
+                />
               </div>
               <div>
                 <label>¿Cuáles son sus expectativas en esta carrera?</label>
-                <textarea name="expectativasCarrera" />
+                <textarea
+                  className="textarea-input"
+                  name="expectativasCarrera"
+                />
               </div>
               <div>
                 <label>¿Cuáles son sus expectativas al graduarse?</label>
-                <textarea name="expectativasGraduacion" />
+                <textarea
+                  className="textarea-input"
+                  name="expectativasGraduacion"
+                />
               </div>
             </div>
             <div className="select_space">
               <label>Expectativas laborales</label>
               <textarea
+                className="textarea-input"
                 name="expectativas_laborales"
                 id="expectativas_laborales"
                 value={
@@ -265,7 +288,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
             <div>
               <div className="select_space">
                 <label>Nivel educativo (Máximo alcanzado)</label>
-                <select>
+                <select className="select-type">
                   {datos_economicos.nivel_educativo_padre ? (
                     <option
                       value={datos_economicos.nivel_educativo_padre}
@@ -309,7 +332,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
               </div>
               <div className="select_space">
                 <label>Situación económica</label>
-                <select>
+                <select className="select-type">
                   {datos_economicos.situacion_padre ? (
                     <option value={datos_economicos.situacion_padre} selected>
                       {datos_economicos.situacion_padre}
@@ -330,6 +353,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 <label>Actividad económica (Si está trabajando)</label>
                 <input
                   type="text"
+                  className="input-type-text"
                   value={
                     datos_economicos.ocupacion_padre
                       ? datos_economicos.ocupacion_padre
@@ -339,7 +363,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
               </div>
               <div className="select_space">
                 <label>Labor que desempeña</label>
-                <input type="text" />
+                <input type="text" className="input-type-text" />
               </div>
             </div>
           </div>
@@ -349,7 +373,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
             <div>
               <div className="select_space">
                 <label>Nivel educativo (Máximo alcanzado)</label>
-                <select>
+                <select className="select-type">
                   {datos_economicos.nivel_educativo_madre ? (
                     <option
                       value={datos_economicos.nivel_educativo_madre}
@@ -394,7 +418,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
 
               <div className="select_space">
                 <label>Situación económica</label>
-                <select>
+                <select className="select-type">
                   {datos_economicos.situacion_madre ? (
                     <option value={datos_economicos.situacion_madre} selected>
                       {datos_economicos.situacion_madre}
@@ -416,6 +440,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 <label>Actividad económica (Si está trabajando)</label>
                 <input
                   type="text"
+                  className="input-type-text"
                   value={
                     datos_economicos.ocupacion_madre
                       ? datos_economicos.ocupacion_madre
@@ -425,7 +450,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
               </div>
               <div className="select_space">
                 <label>Labor que desempeña</label>
-                <input type="text" />
+                <input type="text" className="input-type-text" />
               </div>
             </div>
           </div>
@@ -438,7 +463,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <div>
                 <div className="select_space">
                   <label>Nivel educativo (Máximo alcanzado)</label>
-                  <select>
+                  <select className="select-type">
                     <option value="">Seleccione una opción</option>
                     <option value="primaria completo">Primaria completo</option>
                     <option value="primaria incompleto">
@@ -477,7 +502,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 </div>
                 <div className="select_space">
                   <label>Situación económica</label>
-                  <select>
+                  <select className="select-type">
                     <option value="">Seleccione una opción</option>
                     <option value="trabajando">Trabajando</option>
                     <option value="cesante">Cesante</option>
@@ -490,11 +515,11 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 </div>
                 <div className="select_space">
                   <label>Actividad económica (Si está trabajando)</label>
-                  <input type="text" />
+                  <input type="text" className="input-type-text" />
                 </div>
                 <div className="select_space">
                   <label>Labor que desempeña</label>
-                  <input type="text" />
+                  <input type="text" className="input-type-text" />
                 </div>
               </div>
             </div>

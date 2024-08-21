@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 
@@ -7,11 +7,13 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
   const [actividadesOcio, setActividadesOcio] = useState("");
   const [actividadDeportiva, setActividadDeportiva] = useState("");
   const [programaAcompanamiento, setProgramaAcompanamiento] = useState("");
-  const [programaAcompanamientoOtro, setProgramaAcompanamientoOtro] = useState(""); // Estado para programa de acompañamiento
+  const [programaAcompanamientoOtro, setProgramaAcompanamientoOtro] =
+    useState(""); // Estado para programa de acompañamiento
   const [orientacionSexual, setOrientacionSexual] = useState("");
   const [orientacionSexualOtro, setOrientacionSexualOtro] = useState(""); // Estado para orientación sexual
   const [autoreconocimientoEtnico, setAutoreconocimientoEtnico] = useState("");
-  const [autoreconocimientoEtnicoOtro, setAutoreconocimientoEtnicoOtro] = useState(""); // Estado para autoreconocimiento étnico
+  const [autoreconocimientoEtnicoOtro, setAutoreconocimientoEtnicoOtro] =
+    useState(""); // Estado para autoreconocimiento étnico
 
   const handleProgramaAcompanamientoChange = (e) => {
     const value = e.target.value;
@@ -46,15 +48,26 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
 
             <div className="inline-input-group">
               <label>Fecha de nacimiento</label>
-              <input type="date" />
+              <input type="date" className="input-type-date" />
               <label>Procedencia</label>
-              <input type="text" placeholder="Ciudad" />
-              <input type="text" placeholder="País" />
+              <input
+                type="text"
+                className="input-type-text"
+                placeholder="Ciudad"
+              />
+              <input
+                type="text"
+                className="input-type-text"
+                placeholder="País"
+              />
             </div>
-            <div className='separator'/>
+            <div className="separator" />
             <div className="inline-input-group">
-              <label>¿Desarrolla alguna otra actividad en la Universidad?</label>
+              <label>
+                ¿Desarrolla alguna otra actividad en la Universidad?
+              </label>
               <select
+                className="select-type"
                 value={desarrollaActividad}
                 onChange={(e) => setDesarrollaActividad(e.target.value)}
               >
@@ -65,21 +78,24 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
               {desarrollaActividad === "Si" && (
                 <div className="conditional-activities">
                   <label>¿Cuál?</label>
-                  <select>
+                  <select className="select-type">
                     <option>Monitor(a)</option>
                     <option>Docente</option>
                     <option>Empleado(a)</option>
                     <option>Representante estudiantil</option>
-                    <option>Integrante de algún colectivo/grupo estudiantil</option>
+                    <option>
+                      Integrante de algún colectivo/grupo estudiantil
+                    </option>
                     <option>Otra ¿Cuál?</option>
                   </select>
                 </div>
               )}
             </div>
-            <div className='separator'/>
+            <div className="separator" />
             <div className="inline-input-group">
               <label>Orientación sexual</label>
               <select
+                className="select-type"
                 value={orientacionSexual}
                 onChange={handleOrientacionSexualChange}
               >
@@ -97,6 +113,7 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
                   <label>Especifica:</label>
                   <input
                     type="text"
+                    className="input-type-text"
                     placeholder="Especifica aquí"
                     value={orientacionSexualOtro}
                     onChange={(e) => setOrientacionSexualOtro(e.target.value)}
@@ -104,21 +121,32 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
                 </div>
               )}
             </div>
-            <div className='separator'/>
+            <div className="separator" />
             <div className="inline-input-group">
               <label>Autoreconocimiento Étnico</label>
               <select
+                className="select-type"
                 value={autoreconocimientoEtnico}
                 onChange={handleAutoreconocimientoEtnicoChange}
               >
                 <option value="">Seleccionar</option>
                 <option value="Indígena">Indígena</option>
                 <option value="ROM">ROM</option>
-                <option value="Raizal del archipiélago de San Andrés y Providencia">Raizal del archipiélago de San Andrés y Providencia</option>
-                <option value="Palenquero de San Basilio">Palenquero de San Basilio</option>
-                <option value="Negro(a), Mulato(a), Afrocolombiano(a), Afrodescendiente">Negro(a), Mulato(a), Afrocolombiano(a), Afrodescendiente</option>
-                <option value="Blanco(a), Mestizo(a)">Blanco(a), Mestizo(a)</option>
-                <option value="Ninguno de los anteriores">Ninguno de los anteriores</option>
+                <option value="Raizal del archipiélago de San Andrés y Providencia">
+                  Raizal del archipiélago de San Andrés y Providencia
+                </option>
+                <option value="Palenquero de San Basilio">
+                  Palenquero de San Basilio
+                </option>
+                <option value="Negro(a), Mulato(a), Afrocolombiano(a), Afrodescendiente">
+                  Negro(a), Mulato(a), Afrocolombiano(a), Afrodescendiente
+                </option>
+                <option value="Blanco(a), Mestizo(a)">
+                  Blanco(a), Mestizo(a)
+                </option>
+                <option value="Ninguno de los anteriores">
+                  Ninguno de los anteriores
+                </option>
                 <option value="Otro">Otro ¿Cuál?</option>
               </select>
               {autoreconocimientoEtnico === "Otro" && (
@@ -126,17 +154,20 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
                   <label>Especifica:</label>
                   <input
                     type="text"
+                    className="input-type-text"
                     placeholder="Especifica aquí"
                     value={autoreconocimientoEtnicoOtro}
-                    onChange={(e) => setAutoreconocimientoEtnicoOtro(e.target.value)}
+                    onChange={(e) =>
+                      setAutoreconocimientoEtnicoOtro(e.target.value)
+                    }
                   />
                 </div>
               )}
             </div>
-            <div className='separator'/>
+            <div className="separator" />
             <div className="inline-input-group">
               <label>Estado civil</label>
-              <select>
+              <select className="select-type">
                 <option>Casado/a</option>
                 <option>Soltero/a</option>
                 <option>Divorciado/a</option>
@@ -145,10 +176,11 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
                 <option>Viudo/a</option>
               </select>
             </div>
-            <div className='separator'/>
+            <div className="separator" />
             <div className="inline-input-group">
               <label>¿Práctica actividades de ocio y tiempo libre?</label>
               <select
+                className="select-type"
                 value={actividadesOcio}
                 onChange={(e) => setActividadesOcio(e.target.value)}
               >
@@ -159,14 +191,15 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
               {actividadesOcio === "Si" && (
                 <div className="conditional-activities">
                   <label>¿Qué actividades práctica?</label>
-                  <input type="text" />
+                  <input type="text" className="input-type-text" />
                 </div>
               )}
             </div>
-            <div className='separator'/>
+            <div className="separator" />
             <div className="inline-input-group">
               <label>¿Práctica alguna actividad deportiva?</label>
               <select
+                className="select-type"
                 value={actividadDeportiva}
                 onChange={(e) => setActividadDeportiva(e.target.value)}
               >
@@ -177,14 +210,18 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
               {actividadDeportiva === "Si" && (
                 <div className="conditional-activities">
                   <label>¿Qué actividades práctica?</label>
-                  <input type="text" />
+                  <input type="text" className="input-type-text" />
                 </div>
               )}
             </div>
-            <div className='separator'/>
+            <div className="separator" />
             <div className="inline-input-group">
-              <label>¿Pertenece a otro programa o proyecto de acompañamiento de la universidad?</label>
+              <label>
+                ¿Pertenece a otro programa o proyecto de acompañamiento de la
+                universidad?
+              </label>
               <select
+                className="select-type"
                 value={programaAcompanamiento}
                 onChange={handleProgramaAcompanamientoChange}
               >
@@ -196,18 +233,34 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
                 <div>
                   <label>¿Cuál?</label>
                   <select
-                    className='programa-acompañamiento-selected'
+                    className="programa-acompañamiento-selected"
                     value={programaAcompanamientoOtro}
-                    onChange={(e) => setProgramaAcompanamientoOtro(e.target.value)}
+                    onChange={(e) =>
+                      setProgramaAcompanamientoOtro(e.target.value)
+                    }
                   >
                     <option value="">Seleccionar</option>
-                    <option value="Estrategia de acompañamiento Ases">Estrategia de acompañamiento Ases</option>
-                    <option value="Acompañamiento Graca">Acompañamiento Graca</option>
-                    <option value="Proyecto de Etnicidad">Proyecto de Etnicidad</option>
-                    <option value="Proyecto de Género">Proyecto de Género</option>
-                    <option value="Proyecto Campus Diverso">Proyecto Campus Diverso</option>
-                    <option value="Universidad Saludable">Universidad Saludable</option>
-                    <option value="Práctica profesional Rediversia">Práctica profesional Rediversia</option>
+                    <option value="Estrategia de acompañamiento Ases">
+                      Estrategia de acompañamiento Ases
+                    </option>
+                    <option value="Acompañamiento Graca">
+                      Acompañamiento Graca
+                    </option>
+                    <option value="Proyecto de Etnicidad">
+                      Proyecto de Etnicidad
+                    </option>
+                    <option value="Proyecto de Género">
+                      Proyecto de Género
+                    </option>
+                    <option value="Proyecto Campus Diverso">
+                      Proyecto Campus Diverso
+                    </option>
+                    <option value="Universidad Saludable">
+                      Universidad Saludable
+                    </option>
+                    <option value="Práctica profesional Rediversia">
+                      Práctica profesional Rediversia
+                    </option>
                     <option value="Proyecto Cultura">Proyecto Cultura</option>
                     <option value="Otro">Otro ¿Cuál?</option>
                   </select>
@@ -216,6 +269,7 @@ const DatosEntrevistado = ({ datos_entrevistado }) => {
                       <label>Especifica:</label>
                       <input
                         type="text"
+                        className="input-type-text"
                         placeholder="Especifica aquí"
                       />
                     </div>

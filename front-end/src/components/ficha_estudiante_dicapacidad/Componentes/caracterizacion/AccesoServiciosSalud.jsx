@@ -67,6 +67,7 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
             <label htmlFor="otra-text">Escriba aquí</label>
             <input
               type="text"
+              className="input-type-text"
               id="otra-text"
               disabled={selectedOption !== "Otra"}
               value={
@@ -111,6 +112,7 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
             <label>Nombre de la institución</label>
             <input
               type="text"
+              className="input-type-text"
               value={
                 servicio_salud.nombre_institucion
                   ? servicio_salud.nombre_institucion
@@ -134,7 +136,7 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
           </div>
           <div className="inline-input-group">
             <label>Nombre de la institución</label>
-            <input type="text" />
+            <input type="text" className="input-type-text" />
           </div>
 
           <p></p>
@@ -152,7 +154,7 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
           </div>
           <div className="inline-input-group">
             <label>Nombre de la institución</label>
-            <input type="text" />
+            <input type="text" className="input-type-text" />
           </div>
         </div>
 
