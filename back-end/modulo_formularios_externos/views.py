@@ -85,6 +85,9 @@ class form_primer_ingreso(viewsets.GenericViewSet):
     def create(self, request):
         print(request.data)
 
+        programa_data = programa.objects.get(codigo_univalle=int(
+            request.data["programa"]), id_sede=request.data["sede"])
+        # print(programa_data)
         try:
             print(request.data["codigo_estudiante"])
             estudiante_request = estudiante.objects.get(

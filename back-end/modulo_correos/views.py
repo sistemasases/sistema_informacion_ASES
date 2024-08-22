@@ -46,6 +46,8 @@ from django.core.mail import EmailMessage
 env = environ.Env()
 environ.Env.read_env()
 
+# Create your views here.
+
 
 class enviar_correos_riesgos_viewset(ViewSet):
     # @action(methods=['post'], detail=False, url_name="enviar_correos_riesgos", url_path="enviar_correos_riesgos", )
@@ -149,11 +151,11 @@ class enviar_correos_riesgos_viewset(ViewSet):
         return list_correos
 
     def create(self, request, *args, **kwargs):
-        # # # # # print("DATOS RECIBIDOS")
-        # # # # # print(request.data.get('params'))
+        # print("DATOS RECIBIDOS")
+        # print(request.data.get('params'))
         data_estudiante = request.data.get('params')
         data_riesgos = data_estudiante.get('estudiante_seleccionado')
-        # # # # print(data_estudiante)
+        # print(data_riesgos)
         """
         Escala de Riesgos del Formulario
         0 = Bajo
@@ -188,7 +190,7 @@ class enviar_correos_riesgos_viewset(ViewSet):
         destinatarios = self.get_usuarios_asignados(
             id_estudiante_seleccionado, data_riesgos['id_creador'])
         # # # # print(self.get_usuarios_asignados(id_estudiante_seleccionado))
-        # # # # # print(riesgos)
+        # print(riesgos)
         estudiante = self.get_data_estudiante(id_estudiante_seleccionado)
         obj_programa = programa_estudiante.objects.get(
             id_estudiante_id=id_estudiante_seleccionado)
@@ -214,17 +216,19 @@ class enviar_correos_riesgos_viewset(ViewSet):
             asunto = "Riesgo de alto nivel: (Prueba) " + \
                 estudiante[0]['nombre'] + "  " + estudiante[0]['apellido']
         #     # # # print("Enviando a Sistemas")
-        # # # # print(destinatarios)
+        # print(destinatarios)
+        # destinatarios.clear()
+        # destinatarios = ["sistemas.ases@correounivalle.edu.co"]
 
-        if riesgos[0]['riesgo_individual'] == 2 or riesgos[0]['riesgo_familiar'] == 2 or riesgos[0]['riesgo_academico'] == 2 or riesgos[0]['riesgo_economico'] == 2 or riesgos[0]['riesgo_vida_universitaria_ciudad'] == 2:
+        if riesgos[0]['riesgo_individual'] == 2 or riesgos[1]['riesgo_familiar'] == 2 or riesgos[2]['riesgo_academico'] == 2 or riesgos[3]['riesgo_economico'] == 2 or riesgos[4]['riesgo_vida_universitaria_ciudad'] == 2:
             # # # # # print(id_estudiante)
             cuerpo_correo = render_to_string(
                 'correos/riesgo_alto.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'cod_uv_estudiante': estudiante[0]['cod_univalle'], 'cod_carrera': cod_programa[0]['codigo_univalle'], 'correo_estudiante': estudiante[0]['email'], 'dimensiones': self.get_dimensiones(riesgos), 'fecha_seguimiento': data_riesgos['fecha'], 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name']})
             asunto
             EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
-            # # # # print("Enviando correo...")
-            # # # # print("ENVIANDO A:")
-            # # # # print(destinatarios)
+            # print("Enviando correo...")
+            # print("ENVIANDO A:")
+            # print(destinatarios)
 
             # envío con EmailMessage
             email = EmailMessage(
@@ -252,8 +256,8 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         params = request.data.get('params')
         correo = params.get('mail')
         received_username = params.get('username')
-        print(correo)
-        print(received_username)
+        # print(correo)
+        # print(received_username)
 
         try:
             usuario = User.objects.filter(email=correo, username=received_username).values(
@@ -273,8 +277,11 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         fecha_actual = datetime.now()
         correo_admin_sistema = "sistemas.ases@correounivalle.edu.co"
         if user_object:
-            user_object.set_password(temporary_password)
-            user_object.save()
+            try:
+                user_object.set_password(temporary_password)
+                user_object.save()
+            except:
+                return Response({'error': 'No se pudo cambiar la contraseña del usuario: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
             # print("Correo enviado")
             # print(temporary_password)
             cuerpo_correo = render_to_string(
@@ -300,8 +307,6 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         else:
             return Response({'error': 'No se halló un usuario con dicho correo: ' + correo}, status=status.HTTP_400_BAD_REQUEST)
         # return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
-
-# Create your views here.
 
     # @action(methods=['post'], detail=False, url_name="enviar_correos_riesgos", url_path="enviar_correos_riesgos", )
 
@@ -781,7 +786,7 @@ class enviar_codigo_otp_correo_viewsets(ViewSet):
             step=30
         )
         TOTPDevice.objects.filter(user=user).exclude(id=otp_device.id).delete()
-        # # # # print(otp_device.key)
+        print(otp_device.key)
 
         # Generar el OTP actual
         # otp = otp_device.token()
