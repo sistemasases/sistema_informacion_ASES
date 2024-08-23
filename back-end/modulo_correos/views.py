@@ -280,35 +280,37 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         correo_admin_sistema = "sistemas.ases@correounivalle.edu.co"
 
         try:
+            cuerpo_correo = render_to_string(
+                'correos/cambio_contraseña.html', {'nombre': usuario.first_name, 'apellido': usuario.last_name,
+                                                   'usuario': usuario.username, 'password': temporary_password,
+                                                   'fecha_actual': fecha_actual, 'correo_admin': correo_admin_sistema})
+            asunto = "Cambio de Contraseña"
+            EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
+            destinatarios = [correo]
+            # envío con EmailMessage
+
+            # # print("Envio Correo")
+            # # print(2)
+            email = EmailMessage(
+                asunto,
+                cuerpo_correo,
+                EMAIL_HOST_USER,
+                # Cambia esto por el correo del destinatario
+                destinatarios
+            )
+            email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
+            email.send()
+
             # # print("Inicio TRY")
             usuario.set_password(temporary_password)
             usuario.save()
             # # print("Final del Try")
             # # print(1)
+
         except:
             return Response({'error': 'No se pudo cambiar la contraseña del usuario: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
         # # print("Correo enviado")
         # # print(temporary_password)
-        cuerpo_correo = render_to_string(
-            'correos/cambio_contraseña.html', {'nombre': usuario.first_name, 'apellido': usuario.last_name,
-                                               'usuario': usuario.username, 'password': temporary_password,
-                                               'fecha_actual': fecha_actual, 'correo_admin': correo_admin_sistema})
-        asunto = "Cambio de Contraseña"
-        EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
-        destinatarios = [correo]
-        # envío con EmailMessage
-
-        # # print("Envio Correo")
-        # # print(2)
-        email = EmailMessage(
-            asunto,
-            cuerpo_correo,
-            EMAIL_HOST_USER,
-            # Cambia esto por el correo del destinatario
-            destinatarios
-        )
-        email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
-        email.send()
 
         return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
         # else:
