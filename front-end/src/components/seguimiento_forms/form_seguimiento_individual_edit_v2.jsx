@@ -43,6 +43,8 @@ const Seguimiento_individual_edit_v2 = (props) => {
   const recargarPagina = () => {
     if (props.recarga_ficha_estudiante) {
       // Cambiar la URL a la página con el ID del estudiante seleccionado
+      // const actual_path = sessionStorage.getItem("path");
+      // console.log(desencriptar(actual_path));
       sessionStorage.setItem(
         "path",
         encriptar(`/ficha_estudiante/${form.id_estudiante}`)
@@ -376,16 +378,28 @@ const Seguimiento_individual_edit_v2 = (props) => {
           form,
           props.item
         ).then((res_mail) => {
-          console.log(res_mail);
+          console.log(form);
+          console.log(props.item);
+
           if (res_mail == true) {
-            window.alert(
-              "Se ha notificado por correo el cambio a riesgo alto en el seguimiento."
-            );
-          } else {
-            window.alert(
-              "Hubo un error al momento de enviar el correo, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria."
-            );
+            if (
+              form.riesgo_individual == 2 ||
+              form.riesgo_familiar == 2 ||
+              form.riesgo_academico == 2 ||
+              form.riesgo_economico == 2 ||
+              form.riesgo_vida_universitaria_ciudad == 2
+            ) {
+              window.alert(
+                "Se ha notificado por correo el cambio a riesgo alto en el seguimiento."
+              );
+            }
           }
+          // Puede cambiarse en algún momento
+          // else {
+          //   window.alert(
+          //     "Hubo un error al momento de enviar el correo, por favor verifique si los datos que ingreso son correctos y que llenó toda la información obligatoria."
+          //   );
+          // }
         });
 
         props.handleClose();
@@ -2220,8 +2234,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
                 <Modal.Header closeButton>
                   <Modal.Title>Envío de observaciones</Modal.Title>
                 </Modal.Header>
-                <Modal.Body
-                >
+                <Modal.Body>
                   <Row className="g-2">
                     <h6>Observaciones:</h6>
                   </Row>
