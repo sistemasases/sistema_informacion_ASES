@@ -11,7 +11,7 @@ const Riesgos = () => {
 
   return (
     <div className="container-riesgos">
-      <button className="buttonR" onClick={() => setIsModalOpen(true)} disabled>
+      <button className="buttonR" onClick={() => setIsModalOpen(true)}>
         NUEVO SEGUIMIENTO
       </button>
       <Modal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)}>

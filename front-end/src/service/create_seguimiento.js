@@ -118,8 +118,8 @@ const create_seguimiento = async (formData) => {
         console.log(err);
       });
 
+    // Cambiar condición de envío ?
     // if (seguimiento.observaciones !== "") {
-    if (seguimiento.observaciones !== "") {
       axios
         .post(`${process.env.REACT_APP_API_URL}/correos/enviar_correos_riesgos/`, {
           params: { estudiante_seleccionado: seguimiento },
@@ -130,9 +130,9 @@ const create_seguimiento = async (formData) => {
         .catch((err) => {
           console.log(err);
         });
-    } else {
-      console.log("No se envió el correo porque no hay observaciones");
-    }
+    // } else {
+    //   console.log("No se envió el correo porque no hay observaciones");
+    // }
   } catch (error) {
     console.log(error);
   }

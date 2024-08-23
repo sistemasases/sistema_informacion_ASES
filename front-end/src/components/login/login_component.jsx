@@ -159,17 +159,17 @@ const Login_component = () => {
         }
       )
       .then((response) => {
-        console.log(response.data);
+        // console.log(response);
         setMailSent(true);
-        if (mailSent) {
-          alert("Correo enviado correctamente");
+        if (response.status === 200) {
+          alert(response.data.mensaje);
           handleClose();
         }
       })
       .catch((err) => {
-        // console.log(err.response);
+        // console.error(err.response);
         setMailSent(false);
-        if (!mailSent) {
+        if (err.response.status === 400) {
           alert(err.response.data.error);
         }
       });

@@ -23,6 +23,7 @@ import Delete_seguimiento from "../../service/delete_seguimiento";
 import Seguimientos_enviar_observaciones from "../../service/seguimientos_enviar_observaciones";
 import Correo_editar_seguimiento from "../../service/update_enviar_riesgo_edicion";
 import { CSVLink } from "react-csv";
+import "../../Scss/seguimiento_forms/form_seguimiento_individual_edit_v2.css";
 import {
   desencriptarInt,
   desencriptar,
@@ -855,6 +856,7 @@ const Seguimiento_individual = (props) => {
       props.item.riesgo_vida_universitaria_ciudad === 2
     );
   }, []);
+  
   const enviar_observaciones = () => {
     console.log("Boton enviar observaciones");
     console.log(form);
@@ -1685,8 +1687,9 @@ const Seguimiento_individual = (props) => {
               <Modal
                 show={showModalMail}
                 onHide={handleCloseMail}
-                size="lg"
+                size="md"
                 backdrop="static"
+                className="observation-modal"
               >
                 <Modal.Header closeButton>
                   <Modal.Title>Envio de observaciones</Modal.Title>

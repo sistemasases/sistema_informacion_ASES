@@ -1,5 +1,5 @@
 /**
- * @file formulario_autorizacion.jsx
+ * @file formulario_primer_ingreso.jsx
  * @version 1.0.0
  * @description Formulario de autorizacion de tratamiento de datos.
  * @author Steven Bernal
@@ -22,6 +22,8 @@ import { Container, Col, Row, Button, Modal } from "react-bootstrap";
 import "../../Scss/formularios_externos/formulario_primer_ingreso_style.css";
 
 import All_sedes_formularios_externos from "../../service/all_sedes_formularios_externos";
+import All_program_formularios_externos from "../../service/all_programas_formularios_externos";
+import Formulario_primer_ingreso from "../../service/formularios_externos_primer_ingreso_envio";
 
 const FormularioPrimerIngreso = (props) => {
   const [documentType, setDocumentType] = useState("");
@@ -29,12 +31,16 @@ const FormularioPrimerIngreso = (props) => {
   const [sede, setSede] = useState({
     data_sede: [],
   });
+  const [program, setProgram] = useState({
+    data_program: [],
+  });
   const opciones = [];
+  const opciones_programa = [];
 
   // const url = encriptar("formulario_autorizacion");
-  // console.log(url);
+  // // console.log(url);
   // const decrypt_url = desencriptar("url");
-  // console.log(decrypt_url);
+  // // console.log(decrypt_url);
 
   // URL: Asistencias : U2FsdGVkX19rLu/6uWbJJimIQLdYOg9C1x5ik8/+NlWI7bOkLOSOd1Q5Pi0NE/a/
   // URL: Autorización: U2FsdGVkX18hjszpddLoSgU/HywzCP8D13edFaHOV+PmxYYqsxUx7dICZxdkz/bz
@@ -43,9 +49,9 @@ const FormularioPrimerIngreso = (props) => {
   useEffect(() => {
     All_sedes_formularios_externos.all_sedes_formularios_externos()
       .then((res) => {
-        console.log("Respuesta de la API:", res);
+        // console.log("Respuesta de la API:", res);
         if (res) {
-          console.log(res);
+          // console.log(res);
           setSede({
             ...sede,
             data_sede: res,
@@ -57,12 +63,27 @@ const FormularioPrimerIngreso = (props) => {
       .catch((error) => {
         console.error("Error al obtener datos de la API:", error);
       });
+    All_program_formularios_externos.all_program_formularios_externos()
+      .then((pro_res) => {
+        if (pro_res) {
+          // console.log("Respuesta de la API programas:", pro_res);
+
+          setProgram({
+            ...program,
+            data_program: pro_res,
+          });
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.erro("Error al obtener datos de la API:", error);
+      });
   }, []);
 
   const handle_open_sedes = () => {
-    // console.log(sede.data_sede);
-    // console.log("HOLAAA");
-    // console.log(semestres.data_semestre.length);
+    // // console.log(sede.data_sede);
+    // // console.log("HOLAAA");
+    // // console.log(semestres.data_semestre.length);
     for (let i = 0; i < sede.data_sede.length; i++) {
       opciones.pop(i);
     }
@@ -73,8 +94,27 @@ const FormularioPrimerIngreso = (props) => {
         label: sede.data_sede[i]["nombre"],
         id: sede.data_sede[i]["id"],
       };
-      //   console.log(dato);
+      //   // console.log(dato);
       opciones.push(dato);
+    }
+  };
+
+  const handle_open_program = () => {
+    // // console.log(sede.data_sede);
+    // // console.log("HOLAAA");
+    // // console.log(semestres.data_semestre.length);
+    for (let i = 0; i < program.data_program.length; i++) {
+      opciones_programa.pop(i);
+    }
+
+    for (let i = 0; i < program.data_program.length; i++) {
+      const dato = {
+        value: program.data_program[i]["codigo_univalle"],
+        label: program.data_program[i]["nombre"],
+        id: program.data_program[i]["id"],
+      };
+      //   // console.log(dato);
+      opciones_programa.push(dato);
     }
   };
 
@@ -84,17 +124,17 @@ const FormularioPrimerIngreso = (props) => {
     if (e.target.value === "C.C.") {
       setData({
         ...data,
-        tipo_documento: e.target.value,
+        tipo_doc: e.target.value,
       });
     } else if (e.target.value === "T.I.") {
       setData({
         ...data,
-        tipo_documento: e.target.value,
+        tipo_doc: e.target.value,
       });
     } else if (e.target.value === "Otros") {
       setData({
         ...data,
-        tipo_documento: "",
+        tipo_doc: "",
       });
     }
   };
@@ -103,16 +143,16 @@ const FormularioPrimerIngreso = (props) => {
     setOtherDocumentType(e.target.value);
     setData({
       ...data,
-      tipo_documento: e.target.value,
+      tipo_doc: e.target.value,
     });
   };
 
   const [data, setData] = useState({
-    codigo: "",
+    codigo_estudiante: "",
     nombre: "",
-    apellidos: "",
-    tipo_documento: "",
-    documento: "",
+    apellido: "",
+    tipo_doc: "",
+    num_doc: "",
     sexo: "",
     correo: "",
     celular: "",
@@ -121,18 +161,17 @@ const FormularioPrimerIngreso = (props) => {
   });
 
   const send_data = (e) => {
-    // console.log(e);
-    console.log(data);
+    // // console.log(e);
+    // console.log(data);
 
-    // es_academico
-    // crea estudiante
+    // Importar servicio
 
     if (
-      data.codigo === "" ||
+      data.codigo_estudiante === "" ||
       data.nombre === "" ||
-      data.apellidos === "" ||
-      data.tipo_documento === "" ||
-      data.documento === "" ||
+      data.apellido === "" ||
+      data.tipo_doc === "" ||
+      data.num_doc === "" ||
       data.sexo === "" ||
       data.correo === "" ||
       data.celular === "" ||
@@ -141,6 +180,20 @@ const FormularioPrimerIngreso = (props) => {
     ) {
       alert("Por favor llene todos los campos obligatorios");
       return;
+    } else {
+      Formulario_primer_ingreso.formularios_externos_primer_ingreso_envio(data)
+        .then((res) => {
+          console.log("Respuesta de la API:", res);
+          if (res) {
+            alert("Datos enviados correctamente");
+          } else {
+            alert("Error al enviar los datos");
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener datos de la API:", error);
+          alert("Ocurrió un error al enviar los datos");
+        });
     }
   };
 
@@ -203,7 +256,7 @@ const FormularioPrimerIngreso = (props) => {
                         onChange={(e) =>
                           setData({
                             ...data,
-                            codigo: e.target.value,
+                            codigo_estudiante: e.target.value,
                           })
                         }
                       />
@@ -220,7 +273,7 @@ const FormularioPrimerIngreso = (props) => {
                         onChange={(e) =>
                           setData({
                             ...data,
-                            apellidos: e.target.value,
+                            apellido: e.target.value,
                           })
                         }
                       />
@@ -374,16 +427,20 @@ const FormularioPrimerIngreso = (props) => {
                         Código Programa{" "}
                         <label style={{ color: "red" }}> *</label>
                       </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Tu respuesta"
-                        onChange={(e) =>
+                      <Select
+                        styles={customStyles}
+                        className="option"
+                        options={opciones_programa}
+                        onMenuOpen={handle_open_program}
+                        placeholder="Cambie de programa"
+                        onChange={(e) => {
+                          // console.log(e.value);
                           setData({
                             ...data,
-                            programa: e.target.value,
-                          })
-                        }
-                      />
+                            programa: e.value,
+                          });
+                        }}
+                      ></Select>
                     </Form.Group>
                     <br />
 
@@ -399,7 +456,7 @@ const FormularioPrimerIngreso = (props) => {
                         onChange={(e) =>
                           setData({
                             ...data,
-                            documento: e.target.value,
+                            num_doc: e.target.value,
                           })
                         }
                       />

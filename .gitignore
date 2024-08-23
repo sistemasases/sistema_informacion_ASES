@@ -1,4 +1,13 @@
 
+# Ignorar archivos de basura 
+*~
+*.tgz
+*.tar.gz
+*.DS_Store
+nbproject/*
+.scannerwork
+sonar-project.properties
+
 # General
 *.pyc
 *.pyo
@@ -8,6 +17,7 @@ __pycache__
 dist/
 build/
 .vscode/
+.vscode-server/
 
 # Environment
 venv/

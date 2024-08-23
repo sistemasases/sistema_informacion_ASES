@@ -9,6 +9,7 @@ const ConclusionJornadaCaracterizacion = () => {
                 <textarea
                     name="conclusion_jornada_caracterizacion"
                     id="conclusion_jornada_caracterizacion"
+                    className="textarea-jornada"
                 />
             </div>
         </div>

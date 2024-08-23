@@ -1,10 +1,10 @@
 /**
- * @file update_seguimiento.js
+ * @file update_enviar_riesgo_edicion.js
  * @version 1.0.0
- * @description service que actualiza un seguimiento.
- * @author Deiby A. Rodriguez R.
- * @contact deiby.rodriguez@correounivalle.edu.co
- * @date 13 de febrero del 2024
+ * @description Service para envíar alerta de riesgos altos desde el registro de un seguimiento.
+ * @author @iMrStevenS2.
+ * @contact steven.bernal@correounivalle.edu.co
+ * @date 25 de Junio del 2024
  */
 
 import {
@@ -27,7 +27,7 @@ const Correo_editar_seguimiento = async (formData, oldFormData) => {
     const url_axios = `${process.env.REACT_APP_API_URL}/correos/enviar_riesgo_editado/`;
     // Json con la información del seguimiento
     const seguimiento = {
-        fecha: formData.fecha,
+      fecha: formData.fecha,
       //   lugar: formData.lugar,
       //   hora_inicio: formData.hora_inicio,
       //   hora_finalización: formData.hora_finalización,
@@ -96,7 +96,7 @@ const Correo_editar_seguimiento = async (formData, oldFormData) => {
       id_estudiante: formData.id_estudiante,
     };
     const antiguo_seguimiento = {
-        fecha: formData.fecha,
+      fecha: formData.fecha,
       //   lugar: formData.lugar,
       //   hora_inicio: formData.hora_inicio,
       //   hora_finalización: formData.hora_finalización,

@@ -26,6 +26,7 @@ const DatosAcademicosAdicionales = ({ datos_academicos }) => {
             <label>Número de resolución</label>
             <input
               type="text"
+              className="input-type-text"
               value={
                 datos_academicos.numero_resolucion
                   ? datos_academicos.numero_resolucion
@@ -34,6 +35,7 @@ const DatosAcademicosAdicionales = ({ datos_academicos }) => {
             />
             <label>Créditos del programa</label>
             <input
+              className="input-type-number"
               type="number"
               value={
                 datos_academicos.creditos_programa
@@ -55,7 +57,7 @@ const DatosAcademicosAdicionales = ({ datos_academicos }) => {
           </div>
           <div className="inline-input-group">
             <label>Título académico obtenido</label>
-            <input type="text" />
+            <input type="text" className="input-type-text" />
           </div>
           <p className="titulo">
             Resalte aspectos positivos que favorecieron el desempeño, avance y
@@ -64,15 +66,15 @@ const DatosAcademicosAdicionales = ({ datos_academicos }) => {
           <div className="checkbox_container sin_borde">
             <div>
               <label>Institución</label>
-              <input type="text" />
+              <input type="text" className="input-type-text" />
             </div>
             <div>
               <label>Nivel de formación</label>
-              <input type="text" />
+              <input type="text" className="input-type-text" />
             </div>
             <div>
               <label>Apoyos recibidos</label>
-              <input type="text" />
+              <input type="text" className="input-type-text" />
             </div>
           </div>
           <div className="checkbox_container sin_borde">
@@ -81,6 +83,7 @@ const DatosAcademicosAdicionales = ({ datos_academicos }) => {
               <textarea
                 name="observaciones"
                 id="observaciones"
+                className="textarea-input"
                 value={
                   datos_academicos.observaciones
                     ? datos_academicos.observaciones
@@ -93,6 +96,7 @@ const DatosAcademicosAdicionales = ({ datos_academicos }) => {
               <textarea
                 name="dificultades"
                 id="dificultades"
+                className="textarea-input"
                 value={
                   datos_academicos.dificultades
                     ? datos_academicos.dificultades
