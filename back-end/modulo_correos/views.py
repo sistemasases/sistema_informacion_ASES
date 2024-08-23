@@ -280,6 +280,16 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         correo_admin_sistema = "sistemas.ases@correounivalle.edu.co"
 
         try:
+            # # print("Inicio TRY")
+            usuario.set_password(temporary_password)
+            usuario.save()
+            # # print("Final del Try")
+            # # print(1)
+        except:
+            return Response({'error': 'No se pudo cambiar la contraseña del usuario: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
+
+        #  try envio de correos
+        try:
             cuerpo_correo = render_to_string(
                 'correos/cambio_contraseña.html', {'nombre': usuario.first_name, 'apellido': usuario.last_name,
                                                    'usuario': usuario.username, 'password': temporary_password,
@@ -300,15 +310,9 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
             )
             email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
             email.send()
-
-            # # print("Inicio TRY")
-            usuario.set_password(temporary_password)
-            usuario.save()
-            # # print("Final del Try")
-            # # print(1)
-
         except:
-            return Response({'error': 'No se pudo cambiar la contraseña del usuario: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'No se pudo envíar el correoa : ' + correo}, status=status.HTTP_400_BAD_REQUEST)
+
         # # print("Correo enviado")
         # # print(temporary_password)
 
