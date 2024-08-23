@@ -110,7 +110,7 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
             {itemFecha < fechaReferencia ? (
                     <>
                         <Seguimiento_inasistencia 
-                            recarga_ficha_estudiante={true} 
+                            updateDataUserSocioedu={enviar_datos}
                             show={show2} 
                             onHide={handleCloseIn} 
                             handleCloseIn={handleCloseIn} 
@@ -118,7 +118,7 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
                             size="lg" 
                         />
                         <Seguimiento_individual 
-                            recarga_ficha_estudiante={true} 
+                            updateDataUserSocioedu={enviar_datos} 
                             show={show} 
                             onHide={handleClose} 
                             handleClose={handleClose} 
@@ -129,7 +129,7 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
                 ) : (
                     <>
                         <Seguimiento_inasistencia  
-                            recarga_ficha_estudiante={true} 
+                            updateDataUserSocioedu={enviar_datos}
                             show={show2} 
                             onHide={handleCloseIn} 
                             handleCloseIn={handleCloseIn} 
@@ -137,7 +137,7 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
                             size="lg" 
                         />
                         <Seguimiento_individual_edit_v2 
-                            recarga_ficha_estudiante={true} 
+                            updateDataUserSocioedu={enviar_datos} 
                             show={show} 
                             onHide={handleClose} 
                             handleClose={handleClose} 

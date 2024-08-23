@@ -1,6 +1,7 @@
 from .models import *
 from .serializers import *
 from modulo_academico.models import monitoria_academica
+from modulo_academico.serializers import monitoria_academica_serializer
 from modulo_instancia.models import sede
 from modulo_usuario_rol.models import cohorte_estudiante
 from modulo_usuario_rol.serializers import estudiante_serializer
@@ -26,9 +27,17 @@ class enviar_programas_viewsets(viewsets.ModelViewSet):
     """
     Viewset para la gestión de 'programa'.
     """
-    serializer_class = sede_serializer
+    serializer_class = programa_serializer
 
     queryset = programa_serializer.Meta.model.objects.all()
+
+class monitorias_viewsets(viewsets.ModelViewSet):
+    """
+    Viewset para la gestión de 'programa'.
+    """
+    serializer_class = monitoria_academica_serializer
+
+    queryset = monitoria_academica_serializer.Meta.model.objects.all()
 
 class form_asistencia_academica(viewsets.GenericViewSet):
     queryset = asistencia.objects.all()
@@ -83,7 +92,8 @@ class form_primer_ingreso(viewsets.GenericViewSet):
                     ciudad_res_id = '1',
                     nombre = str(request.data["nombre"]),
                     apellido = str(request.data["apellido"]),
-                    cod_univalle = int(request.data["codigo_estudiante"])
+                    cod_univalle = int(request.data["codigo_estudiante"]),
+                    es_academico = True
                     )
             estudiante_prog = programa_estudiante.objects.create(
                 id_programa =  programa.objects.get(id=int(request.data["programa"])),

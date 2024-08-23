@@ -2185,7 +2185,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           <h6>
             <b>Historial de Ediciones:</b>
           </h6>
-          {props.item.id_editors.map((editor, index) => (
+          {props?.item?.id_editors?.map((editor, index) => (
             <Row key={index}>
               <h6>
                 {editor.id_user} - {new Date(editor.fecha).toLocaleDateString()}{" "}
