@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
-from .models import Persona, PertenenciaGrupoPoblacional
+from .models import Persona, PertenenciaGrupoPoblacional, TipoDocumento
 from app_diversidad_sexual.serializers import DiversidadSexualSerializer
 from app_diversidad_sexual.models import DiversidadSexual
 from app_diversidad_sexual.serializers import DiversidadSexualSerializer
@@ -19,6 +19,12 @@ class PertenenciaGrupoPoblacionalSerializer(serializers.ModelSerializer):
         model = PertenenciaGrupoPoblacional
         fields = '__all__'
 
+class TipoDocumentoSerializer(serializers.ModelSerializer):
+    nombre_tipo_documento = serializers.CharField(max_length=300, required=True)
+    class Meta:
+        model = TipoDocumento
+        fields = '__all__'
+
 class PertenenciaGrupoPoblacionalListingField(serializers.RelatedField):
     def to_representation(self, value):
         return value.nombre_grupo_poblacional
@@ -30,7 +36,17 @@ class PertenenciaGrupoPoblacionalListingField(serializers.RelatedField):
             return data['nombre_grupo_poblacional'].strip()
         raise serializers.ValidationError('Invalid input format.')
     
+class TipoDocumentoListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.nombre_tipo_documento
     
+    def to_internal_value(self, data):
+        if isinstance(data, str):
+            return data.strip()
+        elif isinstance(data, dict) and 'nombre_tipo_documento' in data:
+            return data['nombre_tipo_documento'].strip()
+        raise serializers.ValidationError('Invalid input format.')
+        
 
 class PersonaSerializer(serializers.ModelSerializer):
     
@@ -61,6 +77,11 @@ class PersonaSerializer(serializers.ModelSerializer):
         queryset=PertenenciaGrupoPoblacional.objects.all(),
         required=False, 
         )
+    tipo_documento = TipoDocumentoListingField(
+        many=True, 
+        queryset=TipoDocumento.objects.all(),
+        required=False, 
+        )
     # pertenencia_grupo_poblacional = PertenenciaGrupoPoblacionalSerializer(many=True, required=False)
     # pertenencia_grupo_poblacional = serializers.ListField(
     #     child=serializers.CharField(max_length=300),
@@ -89,6 +110,9 @@ class PersonaSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         
         pertenencia_grupo_poblacional_names = validated_data.pop('pertenencia_grupo_poblacional',[]) 
+
+        tipo_documento_names = validated_data.pop('tipo_documento',[]) 
+        
         recaptcha_token = validated_data.pop('recaptchaToken')  # Obtén el token de reCAPTCHA
 
         persona = Persona.objects.create(**validated_data) 
@@ -100,11 +124,19 @@ class PersonaSerializer(serializers.ModelSerializer):
             except PertenenciaGrupoPoblacional.DoesNotExist: 
                 pertenencia_grupo_poblacional = PertenenciaGrupoPoblacional.objects.create(nombre_grupo_poblacional=pertenencia_grupo_poblacional_name.strip())    
             persona.pertenencia_grupo_poblacional.add(pertenencia_grupo_poblacional)
+        
+        for tipo_documento_name in tipo_documento_names:  
+            try: 
+                tipo_documento = TipoDocumento.objects.get (nombre_tipo_documento=tipo_documento_name.strip()) 
+            except TipoDocumento.DoesNotExist: 
+                tipo_documento = TipoDocumento.objects.create(nombre_tipo_documento=tipo_documento_name.strip())    
+            persona.tipo_documento.add(tipo_documento)
          
         return persona
         
     def update(self, instance, validated_data):
         pertenencia_grupo_poblacional = validated_data.pop('pertenencia_grupo_poblacional',[])
+        tipo_documento = validated_data.pop('tipo_documento',[])
         
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -118,6 +150,15 @@ class PersonaSerializer(serializers.ModelSerializer):
                 if not estamento:
                     raise NotFound(detail=f'The grupo poblacional "{nombre_grupo_poblacional}" don\'t exist', code=404)  
                 instance.pertenencia_grupo_poblacional.add(estamento)
+
+
+        if tipo_documento:
+            instance.tipo_documento.clear()
+            for nombre_tipo_documento in tipo_documento:
+                estamento = TipoDocumento.objects.filter(nombre_tipo_documento=nombre_tipo_documento).first()
+                if not estamento:
+                    raise NotFound(detail=f'The tipo documento "{nombre_tipo_documento}" don\'t exist', code=404)  
+                instance.tipo_documento.add(estamento)
                 
         return super().update(instance, validated_data) 
     

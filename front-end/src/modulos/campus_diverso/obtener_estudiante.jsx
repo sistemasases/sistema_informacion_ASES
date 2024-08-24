@@ -130,6 +130,7 @@ const updateUser = async (endpointsList, userId, updatedData) => {
     try {
       console.log("ROPEPEWER");
       console.log(editableUser);
+      console.log(endpoint);
       const response = await axios.put(`${process.env.REACT_APP_API_URL}/${endpoint}/${userId}/`, updatedData, { headers });
       console.log(`Usuario actualizado en ${endpoint}:`, response.data);
       results.push(response.data);
@@ -145,7 +146,7 @@ const updateUser = async (endpointsList, userId, updatedData) => {
 //Getters de la API y guardado de datos
   //Persona
   const [razasOptions, setRazasOptions] = useState([]);
-
+  const [tipoDocumentoOptions, setTipoDocumentoOptions] = useState([]);
 // Diversidad sexual
   const [orientacionOptions, setOrientacionOptions] = useState([]);
   const [documentoOptions, setDocumentoOptions] = useState([]);
@@ -174,13 +175,13 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/actividad-tiempo-libre/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/fuente-ingresos/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/red-apoyo/`),
-
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/tipo-documento/`),
 
   ])
     .then((responses) => {
       //persona
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
-        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse, factorResponse, actividadResponse, fuenteResponse, redResponse] = responses;
+        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse, factorResponse, actividadResponse, fuenteResponse, redResponse, tipoDocumentoResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -236,7 +237,10 @@ useEffect(() => {
         value: item.id_red_de_apoyo,
         label: item.nombre_red_de_apoyo
       }));
-
+      const tipoDocumentoOpciones = tipoDocumentoResponse.data.map((item) => ({
+        value: item.id_tipo_documento,
+        label: item.nombre_tipo_documento
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -248,6 +252,8 @@ useEffect(() => {
       setActividadesOptions(actividadOpciones);
       setFuentesOptions(fuenteOpciones);
       setRedesOptions(redesOpciones);
+      setTipoDocumentoOptions(tipoDocumentoOpciones);
+
     })
     .catch((error) => {
 
@@ -315,7 +321,7 @@ const handleUpdateUser = async (endpointsList, userId, updatedData) => {
 
 
 const Usuariorevisado = async () => {
-  const endpoint = 'persona/persona'; // Cambia esto si tienes un endpoint específico para la actualización del usuario
+  const endpoint = ['persona/persona']; // Cambia esto si tienes un endpoint específico para la actualización del usuario
   const userId = selectedUser.numero_documento;
   const updatedData = { revision_usiario: true };
 
@@ -324,6 +330,16 @@ const Usuariorevisado = async () => {
   closeModal();
 };
 
+const handleSelectChange3 = (selectedOption, actionMeta) => {
+  const { name } = actionMeta;
+
+  const labels = selectedOption ? [selectedOption.label] : [];
+  // Actualiza el estado dinámicamente en función del campo proporcionado
+  setEditableUser(prevState => ({
+    ...prevState,
+    [name]: labels
+  }));
+};
 
 //handle para atributos de un solo item 
 const handleArrayChange = (fieldName, index, value) => {
@@ -496,7 +512,7 @@ const handleFormSubmit = (e) => {
       nombre_y_apellido: "",
       email: "",
       nombre_persona_confianza: "",
-      tipo_documento: "",
+      tipo_documento: [],
       numero_documento: "",
       relacion_persona_de_confianza: "",
       estrato_socioeconomico: "",
@@ -662,6 +678,8 @@ const handleInputChange = (e) => {
             Usuariorevisado={Usuariorevisado}
             isRevisado={isRevisado}
             setRevisado={setRevisado}
+            handleSelectChange3={handleSelectChange3}
+            tipoDocumentoOptions={tipoDocumentoOptions}
           />
         </div>
       </Container>

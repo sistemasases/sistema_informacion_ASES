@@ -12,12 +12,17 @@ import {
   decryptTokenFromSessionStorage,
   desencriptar,
 } from "../utilidades_seguridad/utilidades_seguridad";
+import { FooterCampus } from './components/footerCampus';
+import FooterCampusDos from './components/footerCampusDos';
 
 
   const Registro_estudiante = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [mensaje, setMensaje] = useState(null);
+  const handleClose2 = () => setShow(false);
+  const [show, setShow] = useState(false);
+
   const headers = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),  
   };
@@ -38,7 +43,7 @@ import {
     email:"",
     pertenencia_grupo_poblacional:[],
     relacion_persona_de_confianza:"",
-    tipo_documento:"",
+    tipo_documento:[],
     numero_documento:"",
     estrato_socioeconomico:"",
     ciudad_nacimiento:"",
@@ -123,6 +128,7 @@ import {
   const [isSubmitting, setIsSubmitting] = useState(false);
   //Persona
   const [razasOptions, setRazasOptions] = useState([]);
+  const [tipoDocumentoOptions, setTipoDocumentoOptions] = useState([]);
 
 // Diversidad sexual
   const [orientacionOptions, setOrientacionOptions] = useState([]);
@@ -158,6 +164,7 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/actividad-tiempo-libre/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/fuente-ingresos/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/red-apoyo/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/tipo-documento/`),
 
 
 
@@ -167,7 +174,8 @@ useEffect(() => {
       //persona
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
         respuestaCambioDocumentoResponse, orientacionResponse, 
-        identiadesGeneroResponse, estamentoResponse, factorResponse, actividadResponse, fuenteResponse, redResponse] = responses;
+        identiadesGeneroResponse, estamentoResponse, factorResponse, 
+        actividadResponse, fuenteResponse, redResponse,tipoDocumentoResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -223,7 +231,10 @@ useEffect(() => {
         value: item.id_red_de_apoyo,
         label: item.nombre_red_de_apoyo
       }));
-
+      const tipoDocumentoOpciones = tipoDocumentoResponse.data.map((item) => ({
+        value: item.id_tipo_documento,
+        label: item.nombre_tipo_documento
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -235,6 +246,7 @@ useEffect(() => {
       setActividadesOptions(actividadOpciones);
       setFuentesOptions(fuenteOpciones);
       setRedesOptions(redesOpciones);
+      setTipoDocumentoOptions(tipoDocumentoOpciones);
       setIsLoading(false);
       
     })
@@ -307,10 +319,24 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
     ...prevState,
     [name]: values
   }));
-  console.log(`react-select-event! : ${state[name]}`);
-  console.log('selectedOptions', selectedOptions)
 
 };
+
+const handleSelectNoMultiChange = (selectedOption, actionMeta) => {
+  const { name } = actionMeta;
+
+  const labels = selectedOption ? [selectedOption.label] : [];
+
+  set_state(prevState => ({
+    ...prevState,
+    [name]: labels
+  }));
+
+  console.log(`eventooo : ${state[name]}`);
+  console.log('selectedOption no multi select', selectedOption);
+  console.log('state de tipo de documento', state.tipo_documento)
+};
+
 
 // HANDLE SELECT EXCLUSIVO PARA ESTAMENTOS -- REVISAR DESPUES
 const handleSelectChange2 = (selectedOptions, actionMeta) => {
@@ -326,10 +352,25 @@ const handleSelectChange2 = (selectedOptions, actionMeta) => {
   }));
 };
  
-console.log('state.orientaciones_sexuales:', state.orientaciones_sexuales);
-console.log('state de estamentos', state.estamentos);
 
-console.log('state.identidades:', state.identidades_de_genero);
+const handleSelectChange3 = (selectedOption, fieldName) => {
+  // Conviértelo a un array con el valor seleccionado o un array vacío si no se selecciona nada
+  console.log("selectedOption", selectedOption); // Verifica qué datos están llegando
+  const labels = selectedOption ? [selectedOption.label] : [];
+
+  // Actualiza el estado dinámicamente en función del campo proporcionado
+  set_state(prevState => ({
+    ...prevState,
+    [fieldName]: labels
+  }));
+  console.log("documentoo", state.tipo_documento);
+};
+
+
+
+useEffect(() => {
+  console.log("dooocumentoo", state.tipo_documento);
+}, [state.tipo_documento]);
 
 
 const handleArrayFieldChange = (fieldName, index, field, value) => {
@@ -610,7 +651,7 @@ const handleSubmit = async (e) => {
               nombre_y_apellido: "",
               email: "",
               nombre_persona_confianza: "",
-              tipo_documento: "",
+              tipo_documento:[],
               numero_documento: "",
               relacion_persona_de_confianza: "",
               estrato_socioeconomico: "",
@@ -763,13 +804,17 @@ const handleSubmit = async (e) => {
     }
   } catch (personaError) {
     console.error('Error al enviar la solicitud de persona:', personaError);
-    // Manejo de error de persona
     if (personaError.response) {
+      const { status, data } = personaError.response;
       let errorMessage = "Hubo un error al enviar el formulario en los campos de persona. Por favor, inténtalo de nuevo.";
-      if (personaError.response.data) {
+      
+      if (status === 400 && data.numero_documento) {
+        // Manejar caso específico del número de documento ya existente
+        errorMessage = "El usuario ya ha enviado el formulario. Por favor, verifique los datos.";
+      } else if (data) {
         errorMessage += "\n\nDetalles del error:\n";
-        for (const field in personaError.response.data) {
-          errorMessage += `- ${field}: ${personaError.response.data[field][0]}\n`;
+        for (const field in data) {
+          errorMessage += `- ${field}: ${data[field][0]}\n`;
         }
       }
       setMensaje(errorMessage);
@@ -790,7 +835,10 @@ const steps = [
     handleSelectChange={handleSelectChange}
     maxLengthBasicInput={maxLengthBasicInput}
     pronombresOptions={pronombresOptions}
-
+    tipoDocumentoOptions={tipoDocumentoOptions}
+    handleSelectNoMultiChange = {handleSelectNoMultiChange}
+    handleSelectChange2={handleSelectChange2}
+    handleSelectChange3={handleSelectChange3}
     /> },
   { component:     <DiversidadSexual
     state={state}
@@ -850,7 +898,9 @@ const prevStep = () => {
 };
 
   return (
-    <Container className='registro-estudiante-container'>
+    <>
+    <div className='registro-estudiante-container'>
+    <Container >
     <div className='registro-estudiante-form'>
       <div>{steps[currentStep].component}</div>
 
@@ -904,7 +954,11 @@ const prevStep = () => {
       </Alert>
     </div>
   </Container>
-    
+
+  </div>
+  <FooterCampusDos/>
+
+  </>
   );
 }
 

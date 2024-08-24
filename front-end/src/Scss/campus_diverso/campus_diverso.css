@@ -1,7 +1,8 @@
 
 /* registro_estudiante.css */
 .registro-estudiante-container {
-  background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg') !important;
+  /*background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg') !important;*/
+  background-color: #F5F5DC;
   background-size: cover !important;
   background-position: center !important;
   background-attachment: fixed !important;
@@ -18,10 +19,11 @@
   padding: 5px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 1000px; /* Ajusta según necesites */
+  width: 90%;
+  max-width: 100%; /* Ajusta según necesites */
   box-sizing: border-box;
   text-align: left;
+  margin: 0 auto;
 }
 
 .label {
@@ -325,23 +327,34 @@
     .button-inicial {
       margin: 10px;
       padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
+      background-color: #91341dd7;
+      color: rgb(245, 239, 236);
       border: none;
       border-radius: 5px;
       cursor: pointer;
-     
+      transition: background-color 0.3s ease; 
     }
     
-    .button:disabled {
-      background-color: #cccccc;
-    }
 
+    .button-inicial:hover {
+      background-color: #e0751c; /* Color cuando se pasa el mouse por encima */
+    }
+    .button-inicial:active {
+      background-color: #c7641b !important; /* Color cuando se presiona el botón */
+      outline: none ; /* Elimina el borde azul predeterminado */
+      box-shadow: none ;  /* Elimina la sombra del borde predeterminado */
+    }
+    .button-inicial:disabled {
+      background-color: #f5d082; 
+      color: #747373; 
+      cursor: not-allowed; 
+    }
+ 
     .buttons-container {
       display:flex;
       justify-content: center; /* Centrar horizontalmente */
       align-items: center; /* Centrar verticalmente */
-      height: 100%; /* Asegúrate de que el contenedor ocupe toda la altura disponible */
+      height: 100%; 
     }
 
     .buttons-container-captcha {

@@ -11,13 +11,22 @@ class PertenenciaGrupoPoblacional(models.Model):
     
     def __str__(self):
         return self.nombre_grupo_poblacional
+    
+class TipoDocumento(models.Model):
+    id_tipo_documento = models.AutoField(primary_key=True)
+    nombre_tipo_documento = models.CharField(max_length=300) 
+
+    class Meta:
+        db_table = "Tipo_documento"
+    
+    def __str__(self):
+        return self.nombre_tipo_documento
 
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
     email = models.CharField(max_length=100, blank=True, default="Email no registrado")
     nombre_identitario = models.CharField(max_length=150, blank=True, default="Nomber identitario no registrado")
     nombre_y_apellido = models.CharField(max_length=150, blank=True, default="No especifica nombre y/o apellido")
-    tipo_documento = models.CharField(max_length=50,blank=True, default="Tipo de documento no especificado")
     numero_documento = models.CharField(max_length=30, unique=True)
     fecha_nacimiento = models.DateField(default=date.today, blank=True,)
     estrato_socioeconomico = models.IntegerField(default=0,blank=True)
@@ -45,7 +54,8 @@ class Persona(models.Model):
     relacion_persona_de_confianza = models.CharField(max_length=200,blank=True, default="Relacion con persona de confianza no registrado")
     telefono_persona_de_confianza = models.CharField(max_length=100,blank=True, default="Telefono de persona de confianza no registrado")
     pertenencia_grupo_poblacional = models.ManyToManyField(PertenenciaGrupoPoblacional,max_length=300, related_name="personas", blank=True) 
-    
+    tipo_documento = models.ManyToManyField(TipoDocumento, max_length=300,blank=True)
+
     def __str__(self):
         return f"Persona ID: {self.id_persona}, número documento: {self.numero_documento}, nombre: {self.nombre_y_apellido}" #! TODO: Cambiarlo con la info de todos los campos después
 

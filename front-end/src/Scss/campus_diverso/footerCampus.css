@@ -1,0 +1,150 @@
+.container_footer_campus{
+    width: 100%;
+    background:red;
+    word-break: break-all;
+}
+
+.footer_icons_campus{
+    margin-bottom: 50px;
+    display: flex;
+    width: 100%;
+    justify-content: right;
+}
+.footer_facebook_campus{
+    margin: 5px;
+    font-size: 25px;
+    background: blue;
+    border-radius: 10px;
+    width: 55px;
+    height: 35px;
+    color:white;
+}
+.footer_twitter_campus{
+    margin: 5px;
+    font-size: 25px;
+    background: lightseagreen;
+    border-radius: 10px;
+    width: 55px;
+    height: 35px;
+    color:white;
+}
+.footer_instagram_campus{
+    margin: 5px;
+    font-size: 25px;
+    background: purple;
+    border-radius: 10px;
+    width: 55px;
+    height: 35px;
+    color:white;
+}
+.footer_youtube_campus{
+    margin: 5px;
+    font-size: 25px;
+    background: red;
+    border-radius: 10px;
+    width: 55px;
+    height: 35px;
+    color:white;
+}
+
+
+.footer_links_campus{
+    color: white;
+    padding-left: 40px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: grey;
+    width: 100%;
+}
+.footer_links_bajo_campus{
+    color:rgb(128, 128, 128);
+    padding-left: 40px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: lightgrey;
+    width: 100%;
+}
+
+
+
+.footer_links_pequeño_campus{
+    color: white;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: grey;
+}
+.footer_links_bajo_pequeño_campus{
+    color:grey;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: lightgrey;
+}
+.texto_footer_pequeño_campus{
+    font-size: 9pt;
+
+}
+.texto_pequeño_campus{
+    font-size: 12pt;
+    
+}
+ 
+/* ESTILOS FOOTER CAMPUS DOS*/
+
+.footer-container {
+    background-color: #007bff; /* bg-primary color */
+    color: #fff;
+  }
+  
+  .logo-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+  }
+  
+  .footer-bottom {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  .footer-container {
+    background-color: #542077; 
+    color: #fff; /* Color del texto */
+    align-items: center;
+    
+    
+  }
+ 
+  /* contactos */
+  .contacto-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .contacto-col h5 {
+    text-transform: uppercase;
+  }
+  
+  .contacto-col ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .contacto-col li {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    
+  }
+  
+  .contacto-col i {
+    margin-right: 0.5rem;
+    text-wrap: nowrap;
+  }
+  

@@ -17,7 +17,11 @@ const IngresoDatosBasicos = ({state,
     razasOptions,
     handleSelectChange,
     maxLengthBasicInput,
-    pronombresOptions
+    pronombresOptions,
+    tipoDocumentoOptions,
+    handleSelectNoMultiChange,
+    handleSelectChange2,
+    handleSelectChange3
 
 }) => {
   return (
@@ -57,6 +61,27 @@ const IngresoDatosBasicos = ({state,
   <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_y_apellido.length}`}</span>
 </div>
 
+<div>
+  <label className='custom-div'>Tipo documento</label>
+  <div>
+    {isLoading ? (
+      <p>Cargando...</p>
+    ) : (
+      <Select
+        className='create-select'
+        name="tipo_documento"
+        placeholder='Seleccione su documento'
+        options={tipoDocumentoOptions}
+        value={tipoDocumentoOptions.find(option => option.value === state.tipo_documento)}
+        onChange={handleSelectNoMultiChange}
+      />
+    )}
+  </div>
+</div>
+
+
+
+
 
 
 <div className="input-container">
@@ -73,19 +98,7 @@ const IngresoDatosBasicos = ({state,
   <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.email.length}`}</span>
 </div>
 
-<div className="input-container">
-  <label className='custom-div'>Tipo de documento</label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="CC, TI, CE, ETC.."
-    name="tipo_documento"
-    value={state.tipo_documento}
-    onChange={handleChange}
-    maxLength={maxLengthBasicInput}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.tipo_documento.length}`}</span>
-</div>
+
 
 <div className="input-container">
   <label className='custom-div'>Número de documento</label>

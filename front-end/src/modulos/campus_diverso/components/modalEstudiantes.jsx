@@ -37,7 +37,9 @@ const ModalEstudiantes = ({
   fuentesOptions,
   redesOptions,
   actividadesOptions,
-  Usuariorevisado
+  Usuariorevisado,
+  handleSelectChange3,
+  tipoDocumentoOptions,
 }) => {
 
   const titles = [
@@ -123,10 +125,30 @@ const ModalEstudiantes = ({
                         )}
                       </div>                  <div className='div-modal'><b>Nombre identitario:</b> {selectedUser.nombre_identitario}</div>
                   <div className='div-modal'><b>Identificación:</b> {selectedUser.numero_documento}</div>
-                  <div className='div-modal'><b>Tipo de identificación:</b> 
-                  {isEditing ? (
-                      <input type="text" name="tipo_documento" value={editableUser.tipo_documento || '' } onChange={handleInputChange}
-                      /> ) : ( selectedUser.tipo_documento )} </div>
+                  <div className='div-modal'>
+
+        <b>Tipo de documento: </b>
+              {isEditing ? (
+        <Select
+          className='create-select'
+          name="tipo_documento"
+          placeholder='Seleccione su documento'
+          options={tipoDocumentoOptions}
+          value={
+            editableUser.tipo_documento && editableUser.tipo_documento.length
+              ? tipoDocumentoOptions.find(option => option.value === editableUser.tipo_documento[0])
+              : null
+          }
+          onChange={handleSelectChange3}
+        />
+      ) : (
+        (selectedUser.tipo_documento && selectedUser.tipo_documento.length)
+          ? selectedUser.tipo_documento.join(', ')
+          : 'No especificado'
+      )}
+        </div>                  
+
+                  
                   <div className='div-modal'><b>Email:</b> 
                   {isEditing ? (
                       <input type="text" name="email" value={editableUser.email || ''} onChange={handleInputChange}

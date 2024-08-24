@@ -162,17 +162,7 @@ const InformacionGeneral = ({state,
                 />
         </div>
 
-        <div>
-                <label className='custom-div'>Observación general de fuente de ingresos</label>
-                <textarea
-                className='input-updated'
-                  type="text"
-                  name="observacion_general_fuente_de_ingresos"
-                  placeholder='Ingrese la observación'
-                  value={state.observacion_general_fuente_de_ingresos}
-                  onChange={handleChange}
-                />
-        </div>  
+
     {/*
         <div>
             <label className='custom-div'>Encuentro Dias/horas</label>
@@ -240,33 +230,8 @@ const InformacionGeneral = ({state,
 
     <Col className="form-column" xs={"10"} md={"6"}>
 
-        <div>
-                <label className='custom-div'>Observación general de redes de apoyo</label>
-                <div>
-                <textarea
-                className='input-updated'
-                  type="text"
-                  name="observacion_general_redes_de_apoyo"
-                  placeholder='Ingrese la observación'
-                  value={state.observacion_general_redes_de_apoyo}
-                  onChange={handleChange}
-                />
-                </div>
-        </div>  
 
-        <div>
-                <label className='custom-div'>Observación general factores de riesgo</label>
-                <div>
-                <textarea
-                className='input-updated'
-                  type="text"
-                  name="observacion_general_factores_de_riesgo"
-                  placeholder='Ingrese la observación'
-                  value={state.observacion_general_factores_de_riesgo}
-                  onChange={handleChange}
-                />
-                </div>
-        </div>  
+
 
         <div>
                 <label className='custom-div'>Creencia religiosa</label>
@@ -297,19 +262,7 @@ const InformacionGeneral = ({state,
                 <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.decision_encuentro_inicial_con_profesional.length}`}</span>
         </div> 
 
-        <div>
-                <label className='custom-div'>Observación horario</label>
-                <div>
-                <input
-                className='input-updated'
-                  type="text"
-                  name="observacion_horario"
-                  placeholder='Ingrese la observación'
-                  value={state.observacion_horario}
-                  onChange={handleChange}
-                />
-                </div>
-        </div> 
+
 
 
         <div>
@@ -341,32 +294,6 @@ const InformacionGeneral = ({state,
         </div> 
 
 
-              <div>
-        <label className='custom-div'>Observación convivencia de vivienda</label>
-        <div>
-          <textarea
-          className='input-updated'
-            name="observacion_general_relacion_convivencia_vivienda"
-            placeholder='Ingrese la observación'
-            value={state.observacion_general_relacion_convivencia_vivienda}
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-
-
-        <div>
-                <label className='custom-div'>Observación actividades especificas en tiempo libre</label>
-                <div>
-                <textarea
-                className='input-updated'
-                  name="observacion_general_actividades_especificas_tiempo_libre"
-                  placeholder='Ingrese la observación'
-                  value={state.observacion_general_actividades_especificas_tiempo_libre}
-                  onChange={handleChange}
-                />
-                </div>
-        </div>
 
         <div>
                 <label className='custom-div'>¿Ocupación actual?</label>
