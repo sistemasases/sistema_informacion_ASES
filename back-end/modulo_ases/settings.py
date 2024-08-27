@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import os
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import timedelta
 import environ
 env = environ.Env()
 environ.Env.read_env()
@@ -30,8 +30,19 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_INSECURE_SETTINGS') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') or ['localhost']
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS', '').split(',') or ['localhost']
 
+# MAIL SENDING
+EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST')
+EMAIL_PORT = os.environ.get('DJANGO_EMAIL_PORT')
+
+EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('DJANGO_EMAIL_HOST_PASSWORD')
+
+EMAIL_USE_TLS = os.environ.get('DJANGO_EMAIL_USE_TLS')
+# EMAIL_USE_SSL = os.environ.get('DJANGO_EMAIL_USE_SSL')
+#
 
 # Application definition
 
@@ -48,6 +59,9 @@ INSTALLED_APPS = [
     'app_informacion_general',
     'app_documentos_autorizacion',
     'app_seguimiento',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
     'modulo_usuario_rol',
     'modulo_geografico',
     'modulo_asignacion',
@@ -58,8 +72,11 @@ INSTALLED_APPS = [
     'modulo_programa',
     'modulo_academico',
     'modulo_reportes',
+    'modulo_correos',
     'modulo_alertas',
     'modulo_discapacidad',
+    'modulo_interapp',
+    'modulo_formularios_externos',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',
@@ -67,16 +84,20 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',   
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'modulo_ases.urls'
 
@@ -124,10 +145,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DJANGO_DB_NAME'),
-        'USER' : os.environ.get('DJANGO_DB_USER'),
-        'PASSWORD' : os.environ.get('DJANGO_DB_PASSWORD'),
-        'HOST' : os.environ.get('DJANGO_DB_HOST'),
-        'DATABASE_PORT' : os.environ.get('DJANGO_DB_PORT'),
+        'USER': os.environ.get('DJANGO_DB_USER'),
+        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD'),
+        'HOST': os.environ.get('DJANGO_DB_HOST'),
+        'DATABASE_PORT': os.environ.get('DJANGO_DB_PORT'),
     }
 }
 
@@ -138,10 +159,11 @@ REST_FRAMEWORK = {
      )
 }
 
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=300),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS' : True,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACK_LIST_AFTER_ROTATION': True
 }
 
@@ -194,5 +216,3 @@ CSP_DEFAULT_SRC = ("'self'",)
 SECURE_BROWSER_XSS_FILTER = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
 SESSION_COOKIE_SECURE = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
 CSRF_COOKIE_SECURE = os.environ.get('DJANGO_SECURE_SETTINGS') == 'True'
-
-

@@ -637,6 +637,7 @@ const ModalEstudiantes = ({
                       {isEditing ? (
                         <input
                           type="text"
+                          className='input-updated'
                           name="observacion_general_fuente_de_ingresos"
                           value={editableUser.observacion_general_fuente_de_ingresos || ''}
                           onChange={handleInputChange}
@@ -689,6 +690,7 @@ const ModalEstudiantes = ({
                       {isEditing ? (
                         <textarea
                           type="text"
+                          className='input-updated'
                           name="observacion_general_actividades_especificas_tiempo_libre"
                           value={editableUser.observacion_general_actividades_especificas_tiempo_libre !== undefined ? editableUser.observacion_general_actividades_especificas_tiempo_libre : generalInfo.observacion_general_actividades_especificas_tiempo_libre || ''}
                           onChange={handleInputChange}

@@ -1,7 +1,7 @@
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 
-const DatosAcademicosAdicionales = () => {
+const DatosAcademicosAdicionales = ({ datos_academicos }) => {
   const current_semestre = "2019-B";
   const nombre_colegio = "COLEGIO DEPARTAMENTAL DE LLORENTE (OFICIAL)";
   return (
@@ -24,14 +24,32 @@ const DatosAcademicosAdicionales = () => {
           </p>
           <div className="select_space">
             <label>Número de resolución</label>
-            <input type="text" />
+            <input
+              type="text"
+              className="input-type-text"
+              value={
+                datos_academicos.numero_resolucion
+                  ? datos_academicos.numero_resolucion
+                  : ""
+              }
+            />
             <label>Créditos del programa</label>
-            <input type="number" />
+            <input
+              className="input-type-number"
+              type="number"
+              value={
+                datos_academicos.creditos_programa
+                  ? datos_academicos.creditos_programa
+                  : ""
+              }
+            />
           </div>
         </div>
 
         <div className="full-width">
-          <p className="descripcion">Datos académicos adicionales en otras instituciones educativas</p>
+          <p className="descripcion">
+            Datos académicos adicionales en otras instituciones educativas
+          </p>
           <hr className="styled-hr" />
           <div className="inline-input-group">
             <p>Colegio en el que estudió: </p>
@@ -39,7 +57,7 @@ const DatosAcademicosAdicionales = () => {
           </div>
           <div className="inline-input-group">
             <label>Título académico obtenido</label>
-            <input type="text" />
+            <input type="text" className="input-type-text" />
           </div>
           <p className="titulo">
             Resalte aspectos positivos que favorecieron el desempeño, avance y
@@ -48,31 +66,43 @@ const DatosAcademicosAdicionales = () => {
           <div className="checkbox_container sin_borde">
             <div>
               <label>Institución</label>
-              <input type="text" />
+              <input type="text" className="input-type-text" />
             </div>
             <div>
               <label>Nivel de formación</label>
-              <input type="text" />
+              <input type="text" className="input-type-text" />
             </div>
             <div>
               <label>Apoyos recibidos</label>
-              <input type="text" />
+              <input type="text" className="input-type-text" />
             </div>
           </div>
           <div className="checkbox_container sin_borde">
             <div>
               <label>Observaciones</label>
               <textarea
-                  name="observaciones"
-                  id="observaciones"
-                />
+                name="observaciones"
+                id="observaciones"
+                className="textarea-input"
+                value={
+                  datos_academicos.observaciones
+                    ? datos_academicos.observaciones
+                    : ""
+                }
+              />
             </div>
             <div>
               <label>Dificultades</label>
               <textarea
-                  name="dificultades"
-                  id="dificultades"
-                />
+                name="dificultades"
+                id="dificultades"
+                className="textarea-input"
+                value={
+                  datos_academicos.dificultades
+                    ? datos_academicos.dificultades
+                    : ""
+                }
+              />
             </div>
           </div>
         </div>

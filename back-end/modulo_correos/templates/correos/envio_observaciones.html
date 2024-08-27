@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Observaciones</title>
+  </head>
+  <body>
+    {% comment %} <h1 style="color: #000000">PRUEBAS DE ENVÍO DE CORREOS</h1>
+    <h6>
+      (IGNORE ÉSTO EN CASO DE QUÉ NO SEA PARTE DEL COMPONENTE DE SISTEMAS)
+    </h6>
+    <br /> {% endcomment %}
+    <h2 style="color: #000000">OBSERVACIÓN</h2>
+    <label style="color: #000000"> Estimado monitor </label
+    ><label style="color: #000000; font-weight: 700">{{nombre_monitor}}</label>
+    <br />
+    <label style="color: #000000"
+      >Revisando el seguimiento realizado al estudiante</label
+    >
+    <label style="color: #000000; font-weight: 700"
+      >{{nombre_estudiante}}</label
+    >
+    <label style="color: #000000; font-weight: 700">el dia</label>
+    <label style="color: #000000; font-weight: 700"
+      >{{fecha_seguimiento}}</label
+    >
+    <label style="color: #000000">, mis comentarios son los siguientes:</label
+    ><br />
+    <p
+      style="
+        color: #000000;
+        font-weight: 200;
+        font-style: italic;
+        font-size: small;
+      "
+    >
+      {{observaciones}}
+    </p>
+
+    <label style="color: #000000"
+      >Revise dicha ficha en:
+      <a href="https://sistemaases.univalle.edu.co">
+        sistemaases.univalle.edu.co</a
+      ><br
+    /></label>
+
+    <label style="color: #000000">Cordialmente,</label><br />
+    <label style="color: #000000; font-weight: 700"
+      >{{usuario_envia_correo}}</label
+    >
+  </body>
+</html>

@@ -112,7 +112,7 @@ const Reporte = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
             id_usuario.toString() +
-            "/",  
+            "/",
           { params: { usuario_rol: rol, sede: sede } }
         );
         set_state({
@@ -468,11 +468,25 @@ const Reporte = () => {
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: ESTADOS
     if (e.target.name === "ASES") {
-      const data_filtered = filtered.filter((row) =>
-        row.estado_ases.toLowerCase().includes(e.target.value.toLowerCase())
-      );
+      const filterValue = e.target.value.toLowerCase();
+      let estado_select = e.target.value.toLowerCase();
+      const data_filtered = filtered.filter((row) => {
+        const estado = row.estado_ases.toLowerCase();
+        // estado_select = e.target.value.toLowerCase();
+        // row.estado_ases.toLowerCase().includes(e.target.value.toLowerCase());
+        return (
+          (filterValue === "activo/a" && estado === "activo/a") ||
+          (filterValue === "inactivo/a" && estado === "inactivo/a")
+        );
+      });
+      const empty_estado = state.estudiante;
+      console.log(estado_select);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : empty_stuff;
+        data_filtered.length > 0
+          ? data_filtered
+          : estado_select === "null"
+          ? empty_estado
+          : empty_stuff;
       setFiltered(filtered_data);
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: REGISTRO
@@ -627,24 +641,49 @@ const Reporte = () => {
    */
   const add_search_bar = (selected) => {
     const new_search_bar_data = [];
-    new_search_bar_data.push({
-      name: (
-        <Row className="center_tabla_sin_seguimientos">
-          <h4 className="texto_mas_pequeño">{selected.name}</h4>
-          <input
-            name={selected.name}
-            internal_name={selected.value}
-            onChange={(e) => {
-              handle_column_search(e, selected);
-            }}
-          />
-        </Row>
-      ),
-      value: selected.value,
-      selector: selected.selector,
-      sortable: true,
-      isCheck: selected.isCheck,
-    });
+    selected.name === "ASES"
+      ? new_search_bar_data.push({
+          name: (
+            <Row className="center_tabla_sin_seguimientos">
+              <h4 className="texto_mas_pequeño">{selected.name}</h4>
+              <select
+                name={selected.name}
+                internal_name={selected.value}
+                onChange={(e) => {
+                  handle_column_search(e, selected);
+                }}
+                style={{ marginBottom: "20px" }}
+              >
+                <option value="null">Estado</option>
+                <option value="activo/a">ACTIVO/A</option>
+                <option value="inactivo/a">INACTIVO/A</option>
+              </select>
+            </Row>
+          ),
+          value: selected.value,
+          selector: selected.selector,
+          sortable: false,
+          isCheck: selected.isCheck,
+        })
+      : new_search_bar_data.push({
+          name: (
+            <Row className="center_tabla_sin_seguimientos">
+              <h4 className="texto_mas_pequeño">{selected.name}</h4>
+              <input
+                name={selected.name}
+                internal_name={selected.value}
+                onChange={(e) => {
+                  handle_column_search(e, selected);
+                }}
+              />
+            </Row>
+          ),
+          value: selected.value,
+          selector: selected.selector,
+          sortable: true,
+          isCheck: selected.isCheck,
+        });
+    // );
     return new_search_bar_data;
   };
   /**

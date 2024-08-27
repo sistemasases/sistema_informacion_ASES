@@ -5,4 +5,5 @@ djangorestframework-simplejwt
 django-environ
 psycopg2-binary
 pandas
+django_otp
 requests

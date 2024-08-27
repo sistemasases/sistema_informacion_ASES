@@ -222,7 +222,7 @@ const Pagina_inicio = () => {
             <Link to={`https://asesinteractiva.univalle.edu.co/semaforoalertas/`} target="_blank"> 
               <img src={boton2} className="boton" alt='/'></img>
             </Link>
-            <Link to={`https://caja-de-herramientas-univalle.vercel.app/`} target="_blank"> 
+            <Link to={`https://sistemaases.univalle.edu.co/caja-herramientas/`} target="_blank"> 
               <img src={boton3} className="boton" alt='/'></img>
             </Link>
             <Link to={`https://ases.univalle.edu.co/`} target="_blank"> 
