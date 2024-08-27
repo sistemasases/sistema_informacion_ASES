@@ -98,8 +98,8 @@
   }
   
   .logo-container {
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -116,7 +116,7 @@
     background-color: #542077; 
     color: #fff; /* Color del texto */
     align-items: center;
-    
+
     
   }
  

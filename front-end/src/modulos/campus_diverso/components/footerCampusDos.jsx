@@ -15,6 +15,7 @@ const FooterCampusDos = () => {
               <li><a className="text-white px-2" href="#!"><i className="bi-facebook"></i></a></li>
               <li><a className="text-white px-2" href="#!"><i className="bi-instagram"></i></a></li>
               <li><a className="text-white ps-2" href="#!"><i className="bi-youtube"></i></a></li>
+              <li><a className="text-white ps-2" href="#!"><i className="bi-tiktok"></i></a></li>
             </ul>
           </Col>
 

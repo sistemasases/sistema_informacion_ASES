@@ -6,7 +6,11 @@ import axios from 'axios';
 
 
 
-const ModalSeguimientos = ({isSeguimientoModalOpen, closeSeguimientoModal, selectedUser}) => {
+const ModalSeguimientos = ({
+  isSeguimientoModalOpen, closeSeguimientoModal, selectedUser,
+  setSeguimientosInfo,
+  setSeguimientoModalOpen
+}) => {
   
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -137,6 +141,9 @@ const ModalSeguimientos = ({isSeguimientoModalOpen, closeSeguimientoModal, selec
       fecha:"",
       // Reset other fields as necessary
     });
+    const updatedSeguimientos = await axios.get(`${process.env.REACT_APP_API_URL}/seguimiento-campus/seguimiento/?numero_documento=${selectedUser.numero_documento}`);
+    setSeguimientosInfo(updatedSeguimientos.data);
+    closeSeguimientoModal();
 
   } catch (seguimientoError) {
     console.error('Error al enviar la solicitud de seguimiento:', seguimientoError);
@@ -172,6 +179,7 @@ const ModalSeguimientos = ({isSeguimientoModalOpen, closeSeguimientoModal, selec
           <div>
             <input
               type="date"
+              className='input-updated'
               name="fecha"
               value={state.fecha}
               onChange={handleChange}
@@ -183,8 +191,9 @@ const ModalSeguimientos = ({isSeguimientoModalOpen, closeSeguimientoModal, selec
         <div>
           <label className='custom-div'>Observación </label>
           <div>
-            <input
+            <textarea
               type="Text"
+              className='input-updated'
               name="observacion"
               value={state.observacion}
               onChange={handleChange}
@@ -202,7 +211,7 @@ const ModalSeguimientos = ({isSeguimientoModalOpen, closeSeguimientoModal, selec
                 <Select
                 isMulti
                 placeholder='Ingrese profesionales'
-                className='form-react-select'
+                className='create-select'
                 name="profesionales"
                 options={profesionalesOptions}
                 value={state.profesionales.map(id => ({

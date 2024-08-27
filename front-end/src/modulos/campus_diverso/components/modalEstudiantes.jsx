@@ -40,6 +40,7 @@ const ModalEstudiantes = ({
   Usuariorevisado,
   handleSelectChange3,
   tipoDocumentoOptions,
+  setSeguimientosInfo
 }) => {
 
   const titles = [
@@ -52,6 +53,27 @@ const ModalEstudiantes = ({
     'Seguimientos'
   ];
   const [isSeguimientoModalOpen, setSeguimientoModalOpen] = useState(false);
+
+   // Estados para los modales
+   const [showFirstModal, setShowFirstModal] = useState(false);
+   const [showSecondModal, setShowSecondModal] = useState(false);
+ 
+   // Funciones para manejar los modales
+   const handleOpenFirstModal = () => setShowFirstModal(true);
+   const handleCloseFirstModal = () => setShowFirstModal(false);
+ 
+   const handleOpenSecondModal = () => {
+     setShowFirstModal(false);  // Cerrar el primer modal
+     setShowSecondModal(true);  // Abrir el segundo modal
+   };
+   const handleCloseSecondModal = () => setShowSecondModal(false);
+ 
+   const handleFinalDelete = () => {
+     handleDelete(selectedUser.numero_documento);  // Llamar a la función de eliminación
+     handleCloseSecondModal();  // Cerrar el segundo modal después de la eliminación
+   };
+ 
+
 
   const handleCancel = () => {
     setEditableUser({selectedUser});
@@ -67,7 +89,6 @@ const ModalEstudiantes = ({
   const closeSeguimientoModal = () => {
     setSeguimientoModalOpen(false);
   };
-
 
 
   return (
@@ -989,7 +1010,8 @@ const ModalEstudiantes = ({
           </div>
         )}
 
-              {currentPage === 6   && seguimientosInfo && (
+              {currentPage === 6   && seguimientosInfo &&  (
+                
                 <div className='div-observacion'>
 
 <Row>
@@ -1066,9 +1088,45 @@ const ModalEstudiantes = ({
                   Adelante
                 </Button>
               )}
-              <Button variant="outline-danger" onClick={() => handleDelete(selectedUser.numero_documento)}>
-                Eliminar
-              </Button>
+      <Button variant="outline-danger" onClick={handleOpenFirstModal}>
+        Eliminar
+      </Button>
+
+      {/* Primer Modal */}
+      <Modal show={showFirstModal} onHide={handleCloseFirstModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmación de Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Estás seguro de que deseas eliminar este usuario?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseFirstModal}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={handleOpenSecondModal}>
+            Sí, estoy seguro
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Segundo Modal */}
+      <Modal show={showSecondModal} onHide={handleCloseSecondModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmación Final</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Realmente estás seguro de que deseas <span className='texto-enfatico'> eliminar </span> este usuario?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseSecondModal}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={handleFinalDelete}>
+            Sí, eliminar definitivamente
+          </Button>
+        </Modal.Footer>
+      </Modal>
               <Button variant="outline-danger" onClick={closeModal}>
                 Cerrar
               </Button>
@@ -1080,6 +1138,8 @@ const ModalEstudiantes = ({
           isSeguimientoModalOpen={isSeguimientoModalOpen}
           closeSeguimientoModal={closeSeguimientoModal}
           selectedUser={selectedUser}
+          setSeguimientosInfo={setSeguimientosInfo}
+          
         />
         </>
   );

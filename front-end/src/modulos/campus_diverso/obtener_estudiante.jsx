@@ -309,6 +309,9 @@ const handleUpdateUser = async (endpointsList, userId, updatedData) => {
     }
     if (endpointsList.includes('informacion-academica/informacion-academica')) {
       setAcademcioInfo(fullUser.informacion_academica);
+    } 
+    if (endpointsList.includes('seguimiento-campus/seguimiento/')) {
+      setSeguimientosInfo(fullUser.seguimientosInfo);
     }
     else if (endpointsList.includes('informacion-general/informacion-general')) {
       setGeneralInfo(fullUser.informacion_general);
@@ -321,7 +324,7 @@ const handleUpdateUser = async (endpointsList, userId, updatedData) => {
 
 
 const Usuariorevisado = async () => {
-  const endpoint = ['persona/persona']; // Cambia esto si tienes un endpoint específico para la actualización del usuario
+  const endpoint = ['persona/persona']; 
   const userId = selectedUser.numero_documento;
   const updatedData = { revision_usiario: true };
 
@@ -680,6 +683,7 @@ const handleInputChange = (e) => {
             setRevisado={setRevisado}
             handleSelectChange3={handleSelectChange3}
             tipoDocumentoOptions={tipoDocumentoOptions}
+            setSeguimientosInfo={setSeguimientosInfo}
           />
         </div>
       </Container>
