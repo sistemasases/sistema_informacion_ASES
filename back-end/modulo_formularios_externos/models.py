@@ -6,4 +6,5 @@ from modulo_usuario_rol.models import estudiante
 class asistencia(models.Model):
     id_monitoria = models.ForeignKey(monitoria_academica, on_delete=models.CASCADE, default=None, null=True,related_name='id_monitoria_in_asistencia')
     id_estudiante = models.ForeignKey(estudiante, on_delete=models.CASCADE, default=None, null=True,related_name='id_estudiante_in_asistencia')
+    check_asistencia = models.BooleanField(default=False)
     fecha = models.DateField(auto_now_add=True)

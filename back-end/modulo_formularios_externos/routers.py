@@ -8,6 +8,6 @@ router.register(r'enviar_programas', enviar_programas_viewsets, basename = 'envi
 router.register(r'enviar_monitorias', enviar_monitorias_viewsets, basename = 'enviar_monitorias')
 router.register(r'form_primer_ingreso', form_primer_ingreso, basename = 'form_primer_ingreso')
 router.register(r'form_asistencia_academica', form_asistencia_academica, basename = 'form_asistencia_academica')
-
+router.register(r'firma_tratamiento_datos', firma_tratamiento_datos_view, basename = 'firma_tratamiento_datos')
 
 urlpatterns = router.urls
