@@ -26,6 +26,20 @@ class programa_serializer(serializers.ModelSerializer):
         model = programa
         fields = '__all__'
 
+class programa_serializer_form(serializers.ModelSerializer):
+
+    nombre_sede=serializers.SerializerMethodField(source='id_sede',allow_null=True)
+    class Meta:
+        model = programa
+        fields = '__all__'
+
+    def get_nombre_sede(self, obj):
+        if obj.id_sede:
+            return obj.id_sede.nombre
+        return None
+
+    
+
 
 class facultad_serializer(serializers.ModelSerializer):
 

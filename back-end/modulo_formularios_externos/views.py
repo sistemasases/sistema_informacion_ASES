@@ -7,7 +7,7 @@ from modulo_usuario_rol.models import cohorte_estudiante
 from modulo_usuario_rol.serializers import estudiante_serializer
 from rest_framework.response import Response
 from modulo_instancia.serializers import sede_serializer
-from modulo_programa.serializers import programa_serializer
+from modulo_programa.serializers import programa_serializer_form
 from modulo_programa.models import programa_estudiante, programa, estado_programa
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -28,9 +28,9 @@ class enviar_programas_viewsets(viewsets.ModelViewSet):
     """
     Viewset para la gestión de 'programa'.
     """
-    serializer_class = programa_serializer
+    serializer_class = programa_serializer_form
 
-    queryset = programa_serializer.Meta.model.objects.all()
+    queryset = programa_serializer_form.Meta.model.objects.all()
 
 
 class enviar_monitorias_viewsets(viewsets.GenericViewSet):
