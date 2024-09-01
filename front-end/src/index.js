@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import App from "./App.js";
 import Login from "./modulos/login/login.jsx";
 import FormularioAutorizacion from "./components/formularios_externos/formulario_autorizacion.jsx";

@@ -12,7 +12,7 @@ import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/
 
 const formularios_externos_firma = async (formData) => {
   try {
-    const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol_firma/firma_tratamiento_datos/`;
+    const url_axios = `${process.env.REACT_APP_API_URL}/formularios_externos/firma_tratamiento_datos/`;
 
     axios
       .post(url_axios, formData)
