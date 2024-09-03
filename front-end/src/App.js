@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Row} from "react-bootstrap";
 import "@fontsource/manrope";
 
-import 'styled-components';
+// import 'styled-components';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Scss/navbar/navbar.css";
 import "./Scss/sidebar/sidebar.css";
@@ -31,10 +31,6 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SideBar from "./components/componentes_generales/sideBar.jsx";
 import Path from './modulos/path/path.jsx';
 import Pagina_no_encontrada from "./components/componentes_generales/pagina_no_encontrada.jsx";
-import FormularioActualizacion from "../src/components/formularios_externos/formulario_autorizacion.jsx";
-import FormularioAsistenica from "../src/components/formularios_externos/formulario_asistencia.jsx";
-import FormularioPrimerIngreso from "../src/components/formularios_externos/formulario_primer_ingreso.jsx";
-
 
 const App = () => {
   const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / ");
@@ -48,7 +44,6 @@ const App = () => {
                 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
                     <Routes>
                         <Route path="/"element={<Path usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        {/* <Route path="/U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7" component={<FormularioPrimerIngreso />}/> */}
                         <Route path="*"element={<Pagina_no_encontrada/>}/>
                     </Routes>
                 </SideBar>

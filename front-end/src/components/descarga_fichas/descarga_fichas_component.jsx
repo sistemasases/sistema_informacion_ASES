@@ -308,15 +308,18 @@ const Descarga_fichas_component = () => {
                   className="hidden"
                   separator="|"
                 >
-                    Descargar Inasistencias
-                </CSVLink> : <></>
-                }
-                { seguimientosData[1] ? <CSVLink
-                    data={seguimientosData}
-                    headers={Object.keys(seguimientosData[0])}
-                    filename="seguimientos.csv"
-                    className="hidden"
-                    separator="*"
+                  Descargar Inasistencias
+                </CSVLink>
+              ) : (
+                <></>
+              )}
+              {seguimientosData[1] ? (
+                <CSVLink
+                  data={seguimientosData}
+                  headers={Object.keys(seguimientosData[0])}
+                  filename="seguimientos.csv"
+                  className="hidden"
+                  separator="*"
                 >
                   Descargar Seguimientos
                 </CSVLink>
