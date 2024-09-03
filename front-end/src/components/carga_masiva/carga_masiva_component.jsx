@@ -8,13 +8,11 @@
 */
 import React, {useState} from 'react';
 import axios from 'axios';
-import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button,Modal} from "react-bootstrap";
+import {Container, Row, Col, Button,Modal} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
-import carga_masiva_service from '../../service/carga_masiva';
-import DataTable, {createTheme} from 'react-data-table-component';
-import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import DataTable from 'react-data-table-component';
+import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx'
+
 
 /**
  * Carga_masiva_component
@@ -89,7 +87,7 @@ const Carga_masiva_component = () =>{
       data: formData,
     })
     .then((res)=>{
-      console.log(res)
+      //console.log(res)
       set_state({
         ...state,
         mensaje : res.data,
@@ -135,16 +133,18 @@ const Carga_masiva_component = () =>{
                   <option value="Programa">Programa</option>
                   <option value="Materia">Materia</option>
                   <option value="Matricula">Matricula</option>
-                  <option value="Retiro">Retiro</option>
                   <option value="Ficha">Ficha de seguimiento</option>
-                  <option value="Ficha2">Ficha de seguimiento con Código</option>
+                  <option value="FichaV2">Ficha de seguimiento con Código</option>
                   <option value="Inasistencia">Inasistencia</option>
-                  <option value="Inasistencia2">Inasistencia con Código</option>
                   <option value="Dir_programa">Director de programa</option>
                   <option value="Vcd_academico">Vicedecano</option>
                   <option value="Cambio_contrasena">Contraseña</option>
                   <option value="Eliminar_matricula">Eliminar matricula</option>
                   <option value="Firma_datos">Firma Trtamiento de Datos</option>
+                  <option value="estudiante_disc">Estudiante Discapacidad</option>
+                  <option value="volver_estudiante_disc">Activar estudiante Discapacidad</option>
+                  <option value="quitar_estudiante_disc">Eliminar estudiante Discapacidad</option>
+                  <option value="asignacion_disc">Asignación Discapacidad</option>
                 </Form.Select>
               </Col>
             </Row>

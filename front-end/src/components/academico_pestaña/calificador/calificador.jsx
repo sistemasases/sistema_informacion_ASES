@@ -69,12 +69,12 @@ const Cabecera = () => {
 
   // Efecto para obtener los parámetros del URL y establecer los estados correspondientes
   useEffect(() => {
-    const currentUrl = window.location.href;
+    const currentUrl = desencriptar(sessionStorage.getItem('path'));
     const urlParts = currentUrl.split('/');
-    const cursoParam = urlParts[4]; // Obtiene el valor del curso
-    const profesorParam = urlParts[5]; // Obtiene el valor del profesor
-    const codParam = urlParts[6]; // Obtiene el valor del curso
-    const franjaParam = urlParts[7]; // Obtiene el valor del curso
+    const cursoParam = urlParts[2]; // Obtiene el valor del curso
+    const profesorParam = urlParts[3]; // Obtiene el valor del profesor
+    const codParam = urlParts[4]; // Obtiene el valor del curso
+    const franjaParam = urlParts[5]; // Obtiene el valor del curso
 
     setProfesor(profesorParam);
     setCurso(cursoParam);
@@ -133,7 +133,7 @@ const Cabecera = () => {
 
         setCurso_datos_generales(response.data);
 
-        console.log('Datos del curso capturados correctamente');
+        //console.log('Datos del curso capturados correctamente');
       } catch (error) {
         console.log('No se pudo obtener el dato del curso');
       }

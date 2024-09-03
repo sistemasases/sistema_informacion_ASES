@@ -26,7 +26,7 @@ const Delete_inasistencia = async (id) => {
         // Conexion con la API
         await axios.delete(url_axios, config)
         .then(res=>{
-            console.log(res);
+            // console.log(res);
             respuesta = true;
         })
         .catch(err=>{

@@ -1,11 +1,11 @@
 * {
   box-sizing: border-box;
-  font-family: "Manrope";
 }
 .z_index_2 {
   z-index: 1;
 }
 body {
+  font-family: "Manrope";
   margin: 0;
 }
 

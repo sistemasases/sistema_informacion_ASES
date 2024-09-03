@@ -7,11 +7,9 @@
   * @date 13 de febrero del 2024
 */
 import React, { useMemo, useState } from 'react';
-import ReactDOM from 'react-dom';
 import { Container, Row } from 'react-bootstrap';
 import DataTableExtensions from 'react-data-table-component-extensions';
 import DataTable from 'react-data-table-component';
-import MOCK_DATA from './MOCK_DATA.json';
 import Cabecera from './cabecera.jsx';
 import { useEffect } from 'react';
 import axios from 'axios';

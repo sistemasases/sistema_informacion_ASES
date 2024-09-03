@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaGraduationCap, FaUser} from "react-icons/fa";
+import {Row, Col} from "react-bootstrap";
 
 const Programas_academicos = (props) => {
 
@@ -11,7 +9,7 @@ const Programas_academicos = (props) => {
         return (
             <Row className="infoRow23_activo"> 
                   <Col xs={"12"} md={"12"}>
-                    <h4 className="texto_pequeño">{props.item.codigo_estudiante} - {props.item.cod_univalle} - {props.item.nombre_programa} </h4>
+                    <h4 className="texto_pequeño">{props.item.codigo_estudiante} - {props.item.cod_univalle} - {props.item.nombre_programa} - {props.item.jornada} </h4>
                   </Col>
                   {/* {
                     props.rolUsuario==='superSistemas' ?
@@ -36,7 +34,7 @@ const Programas_academicos = (props) => {
         return (
             <Row className="infoRow23_inactivo"> 
                 <Col xs={"12"} md={"12"}>
-                  <h4 className="texto_pequeño">{props.item.codigo_estudiante} - {props.item.cod_univalle} - {props.item.nombre_programa} </h4>
+                  <h4 className="texto_pequeño">{props.item.codigo_estudiante} - {props.item.cod_univalle} - {props.item.nombre_programa} - {props.item.jornada} </h4>
                 </Col>
                 {/* {
                   props.rolUsuario==='superSistemas' ?
@@ -62,7 +60,7 @@ const Programas_academicos = (props) => {
         return (
             <Row className="infoRow23_finalizado"> 
                 <Col xs={"12"} md={"12"}>
-                  <h4 className="texto_pequeño">{props.item.codigo_estudiante} - {props.item.cod_univalle} - {props.item.nombre_programa} </h4>
+                  <h4 className="texto_pequeño">{props.item.codigo_estudiante} - {props.item.cod_univalle} - {props.item.nombre_programa} - {props.item.jornada} </h4>
                 </Col>
                 {/* {
                   props.rolUsuario==='superSistemas' ?

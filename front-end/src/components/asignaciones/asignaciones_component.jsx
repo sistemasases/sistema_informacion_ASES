@@ -5,7 +5,7 @@ import Listas from './listas'
 import Listas_no_seleccion from './listas_no_seleccion';
 import axios from 'axios';
 import {decryptTokenFromSessionStorage, desencriptar, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
-import {Scrollbars} from 'react-custom-scrollbars'; 
+import {Scrollbars} from 'react-custom-scrollbars-2'; 
 
 
 const Asignaciones_component = (props) =>{
@@ -16,7 +16,11 @@ const Asignaciones_component = (props) =>{
     }
   };
 
+  const config2 = {
+    Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
+  };
 
+  const [opciones_retiro, set_opciones_retiro] = useState([]);
 
 
 
@@ -211,7 +215,7 @@ const isTabSelected_monitor = (username) => {
     let formData = new FormData();
     formData.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
 
-    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`+name+'/', formData,config)
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+name+'/'+'estudiantes_de_un_monitor/', formData,config)
       .then(response => {
         set_state(prevState => ({
           ...prevState,
@@ -249,6 +253,22 @@ const isTabSelected_monitor = (username) => {
                 ...state,
                 estudiante_filtro : ''
           })
+  }
+
+  const actualizar_opciones = async () => {
+    await axios({
+      // Endpoint to send files
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/motivo/`,
+      method: "GET",
+      headers: config2,
+    })
+    .then((res)=>{
+        set_opciones_retiro(res.data)
+        console.log(res.data)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
   }
 
 
@@ -294,6 +314,7 @@ const isTabSelected_monitor = (username) => {
                           <Listas  
                             key={index} item={item} rol={rol} 
                             profesional_seleccionado={state.profesional_seleccionado}
+                            opciones_retiro={opciones_retiro}
                             childClicked={(name)=>practicante_seleccion(name)}
                             childClicked2={(name) => monitor_seleccion(name)}>
                           </Listas>
@@ -321,6 +342,7 @@ const isTabSelected_monitor = (username) => {
                             onClick={() => selectTab_practicante(item.username)}>
                           <Listas 
                           key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
+                          opciones_retiro={opciones_retiro}
                           childClicked={(name)=>practicante_seleccion(name)}/>
                         </Col>
                        
@@ -388,10 +410,11 @@ const isTabSelected_monitor = (username) => {
 
 
                       <Col className={isTabSelected_monitor(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'}  
-                            onClick={() => selectTab_monitor(item.username)}>
+                            onClick={() => {selectTab_monitor(item.username); actualizar_opciones()}}>
                         <Listas 
                           key={index} item={item} rol={rol2} 
                           practicante_seleccionado={state.practicante_seleccionado}
+                          opciones_retiro={opciones_retiro}
                           childClicked2={(name)=>monitor_seleccion(name)}>
                         </Listas>
                       </Col>
@@ -413,11 +436,12 @@ const isTabSelected_monitor = (username) => {
                       item.last_name.toLowerCase().includes(state.monitor_filtro);                      
                     }).map((item, index) =>   
                   <Col className={isTabSelected_monitor(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'}  
-                        onClick={() => selectTab_monitor(item.username)}>
+                        onClick={() => {selectTab_monitor(item.username); actualizar_opciones()}}>
 
                     <Listas 
                       key={index} item={item} rol={rol2} 
                       practicante_seleccionado={state.practicante_seleccionado}
+                      opciones_retiro={opciones_retiro}
                       childClicked2={(name)=>monitor_seleccion(name)}
                       childClicked={(name)=>practicante_seleccion(name)}>
                     </Listas>
@@ -490,6 +514,7 @@ const isTabSelected_monitor = (username) => {
                           <Listas 
                           key={index} item={item} rol={rol3} 
                           monitor_seleccionado={state.monitor_seleccionado}
+                          opciones_retiro={opciones_retiro}
                           filtro={state.estudiante_filtro}
                           />
 
@@ -514,6 +539,7 @@ const isTabSelected_monitor = (username) => {
                         key={index} item={item} rol={rol3} 
                         filtro={state.estudiante_filtro}
                         monitor_seleccionado={state.monitor_seleccionado}
+                        opciones_retiro={opciones_retiro}
                         childClicked2={(name)=>monitor_seleccion(name)}>
                       </Listas>
 

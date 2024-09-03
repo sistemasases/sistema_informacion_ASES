@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-
 import {Row} from "react-bootstrap";
 import "@fontsource/manrope";
 
@@ -28,33 +27,14 @@ import "./Scss/carga_masiva/carga_masiva.css";
 import "./Scss/descarga_fichas/descarga_fichas.css";
 import "./Scss/reporte_desercion/desercion.css";
 import "./Scss/inicio/inicio.css";
-
-
-
-import "bootstrap/dist/css/bootstrap.min.css";
-
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SideBar from "./components/componentes_generales/sideBar.jsx";
-// import Login from "./modulos/login/login.jsx";
-//import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
-import Ficha_estudiante from "./modulos/ficha_estudiante/ficha_estudiante.jsx";
-import Ficha_monitor from "./modulos/ficha_monitor/ficha_monitor.jsx";
-import Reporte_seguimientos from "./modulos/reporte_seguimientos/reporte_seguimientos.jsx";
-import Sin_seguimientos from "./modulos/sin_seguimientos/sin_seguimiento.jsx";
-import Desercion from "./modulos/desercion/desercion.jsx";
-import Academico_pestaña from "./modulos/academico_pestaña/academico_pestaña.jsx";
-import Calificador from "./modulos/academico_pestaña/calificador.jsx";
-import Academico_reportes from "./modulos/academico_reportes/academico_reportes.jsx";
-import Inicio from "./modulos/pagina_inicio/pagina_inicio.jsx";
-import Gestion_usuario_rol from "./modulos/gestion_usuario_rol/gestion_usuario_rol.jsx";
-import Carga_masiva from "./modulos/carga_masiva/carga_masiva.jsx";
-import Descarga_fichas from "./modulos/descarga_fichas/descarga_fichas.jsx";
-import Asignaciones from "./modulos/asignaciones/asignaciones.jsx";
-import Inicio_semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas_instancia.jsx";
-import Semestre_sistemas from "./modulos/inicio_semestre_sistemas/inicio_semestre_sistemas.jsx";
-import Reporte from "./modulos/reportes/reporte.jsx";
-import Alertas from './modulos/alertas/alertas.jsx';
-// import Footer from './components/componentes_generales/footer.jsx';
+import Path from './modulos/path/path.jsx';
+import Pagina_no_encontrada from "./components/componentes_generales/pagina_no_encontrada.jsx";
+import FormularioActualizacion from "../src/components/formularios_externos/formulario_autorizacion.jsx";
+import FormularioAsistenica from "../src/components/formularios_externos/formulario_asistencia.jsx";
+import FormularioPrimerIngreso from "../src/components/formularios_externos/formulario_primer_ingreso.jsx";
+
 
 const App = () => {
   const[nombreUsuario] = useState("Marcela Pérez Gaviria / Sede Cali / ");
@@ -67,23 +47,9 @@ const App = () => {
             <Row> 
                 <SideBar usuario={nombreUsuario} rolUsuario={rolUsuario} periodo={periodo} >
                     <Routes>
-                        <Route path="/ficha_estudiante/:id" element={<Ficha_estudiante path_actual={"Ficha Estudiante"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/ficha_monitor" element={<Ficha_monitor path_actual={"Ficha Monitor"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/reporte_seguimientos"element={<Reporte_seguimientos path_actual={"Reporte seguimientos"} usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
-                        <Route path="/sin_seguimientos"element={<Sin_seguimientos path_actual={"Cantidad seguimientos"} usuario={nombreUsuario}/>}/>
-                        <Route path="/desercion"element={<Desercion path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
-                        <Route path="/academico"element={<Academico_pestaña path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
-                        <Route path="/academico_reportes"element={<Academico_reportes path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
-                        <Route path="/calificador/:profesor/:curso/:cod/:franja"element={<Calificador path_actual={"Deserción"} usuario={nombreUsuario}/>}/>
-                        <Route path="/gestion_usuario_rol" element={<Gestion_usuario_rol path_actual={"Gestion usuarios"} usuario={nombreUsuario}/>}/>
-                        <Route path="/carga_masiva" element={<Carga_masiva/>}/>
-                        <Route path="/descarga_fichas" element={<Descarga_fichas/>}/>
-                        <Route path="/asignaciones" element={<Asignaciones/>}/>
-                        <Route path="/inicio_semestre_sistemas"element={<Inicio_semestre_sistemas/>}/>
-                        <Route path="/crear_semestre_sistemas"element={<Semestre_sistemas/>}/>
-                        <Route path="/reporte"element={<Reporte/>}/>
-                        <Route path="/alertas"element={<Alertas/>}/>
-                        <Route path="/"element={<Inicio/>}/>
+                        <Route path="/"element={<Path usuario={nombreUsuario} rolUsuario={rolUsuario} area={area} periodo={periodo}/>}/>
+                        {/* <Route path="/U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7" component={<FormularioPrimerIngreso />}/> */}
+                        <Route path="*"element={<Pagina_no_encontrada/>}/>
                     </Routes>
                 </SideBar>
             </Row>
@@ -93,5 +59,3 @@ const App = () => {
 }
 
 export default App
-
-

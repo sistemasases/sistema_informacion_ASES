@@ -4,7 +4,7 @@ import Info_general from "./tabs/info_general"
 import Academico from "./tabs/academico"
 import Socieducativa from "./tabs/socieducativa"
 import Modal from 'react-bootstrap/Modal';
-import {Dropdown, Button} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import {useEffect} from 'react';
 import {desencriptar, desencriptarInt, decryptTokenFromSessionStorage} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 import myGif from "../../modulos/reportes/loading_data.gif";

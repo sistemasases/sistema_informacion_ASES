@@ -75,7 +75,6 @@ class estudiante (models.Model):
     sexo=models.CharField(max_length=20)
     colegio=models.CharField(max_length=100, default=None)
     estamento=models.CharField(max_length=20, default=None)
-    estudiante_elegible= models.BooleanField(default=True)
     celular=models.CharField(max_length=20, default=None, validators=[RegexValidator(regex=r'^[()\-0-9\s]+$', message='Por favor ingresa un teléfono o celular valido')])
     hijos=models.IntegerField(default=0)
     acudiente=models.CharField(max_length=100, default=None)
@@ -95,7 +94,11 @@ class estudiante (models.Model):
     puntaje_icfes=models.IntegerField(default=None,null=True)
     id_etnia=models.ForeignKey(etnia,on_delete=models.CASCADE,default=None,null=True,related_name='etnia_in_estudiante')
     ult_modificacion=models.DateTimeField(auto_now_add=False,null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True,null=True)
+
+    estudiante_elegible= models.BooleanField(default=True)
     es_discapacidad = models.BooleanField(default=False, null=True)
+    es_academico = models.BooleanField(default=False, null=True)
     encuesta_admitido = models.BooleanField(default=False, null=True)
 
     class Meta:
@@ -172,8 +175,8 @@ class rol_permiso (models.Model):
 
 class cohorte_estudiante(models.Model):
 
-    id_cohorte= models.ForeignKey(cohorte,on_delete=models.CASCADE,default=0)
-    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
+    id_cohorte= models.ForeignKey(cohorte,on_delete=models.CASCADE,default=0,related_name='id_cohorte_in_cohorte_estudiante')
+    id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0,related_name='id_estudiante_in_cohorte_estudiante')
     tiempo_creacion= models.DateTimeField(auto_now_add=True)
     
     class Meta:

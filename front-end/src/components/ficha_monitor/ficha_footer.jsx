@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaThList, FaBars, FaFontAwesome} from "react-icons/fa";
-import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-
+import {Container, Row} from "react-bootstrap";
 const Ficha_footer = () =>{
 
     const [state,set_state] = useState({

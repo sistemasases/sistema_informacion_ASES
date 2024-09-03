@@ -10,6 +10,7 @@
 import React from "react";
 import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
+import { encriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 
 /**
  * Cierra los menus que se enceuntran abiertos
@@ -19,7 +20,17 @@ import { Row, Col } from "react-bootstrap";
 const Sidebar_item_closed = (props) => {
   // Varialbe de estado que se encarga de abrir y cerrar los menus
   const [open, setOpen] = useState(false);
-
+  /**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+  */
+  const cambiar_ruta = (e) => {
+    if(e) {
+      sessionStorage.setItem("path", encriptar(e));
+    }
+    window.location.reload();
+  };
   if (props.item.childrens) {
     return (
       <Row
@@ -41,7 +52,7 @@ const Sidebar_item_closed = (props) => {
     );
   } else if (props.sub_item) {
     return (
-      <a href={props.item.path || "#"} className="sidebar-item-closed-final">
+      <a onClick={()=> cambiar_ruta(props.item.path)} className="sidebar-item-closed-final">
         <span className="tamaño_icon">
           {props.item.icon && (
             <i className={props.item.icon} title={props.item.name}></i>
@@ -52,7 +63,7 @@ const Sidebar_item_closed = (props) => {
   } else {
     return (
       <a
-        href={props.item.path || "#"}
+        onClick={()=> cambiar_ruta(props.item.path)}
         className="sidebar-item-closed-final-con-margen"
       >
         <span className="tamaño_icon">

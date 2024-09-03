@@ -143,18 +143,10 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             else:
                 ina = datetime.strptime(inasistencia, "%Y-%m-%d")
                 if date_obj.date() <= ina.date():
-                    # return str(ina.date())
                     return "INASISTENCIA"
+                elif (date_obj.date() > fecha_limite.date()):
+                    return "SEGUIMIENTO RECIENTE"
                 else:
-                    # # print(date_obj)
-                    # # print(ina)
-                    # # print(fecha_limite)
-                    # # print("ENTRO")
-                    # # print(date_obj)
-                    # # print("ina")
-                    # # print(ina)
-                    # # print(fecha_limite)
-                # return str(ina.date())
                     return "FICHA FALTANTE"
             return "SEGUIMIENTO RECIENTE"
 

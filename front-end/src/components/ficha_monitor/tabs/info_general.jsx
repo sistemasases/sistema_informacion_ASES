@@ -1,13 +1,7 @@
 import React, {useState} from 'react';
-import Select from 'react-select'  ;
-import Switch from 'react-switch'
-import {Container, Row, Col, Dropdown, Button} from "react-bootstrap";
-import {FaRegChartBar, FaThList, FaBars} from "react-icons/fa";
-import {DropdownItem, DropdownToggle, DropdownMenu} from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import  {useEffect, componentDidUpdate} from 'react';
+import {Container, Row, Col, Button} from "react-bootstrap";
+import  {useEffect} from 'react';
 import axios from 'axios';
-import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { decryptTokenFromSessionStorage } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
@@ -109,28 +103,33 @@ const Info_general = (props) =>{
 
 
   const handle_upload_estudiante = (e) => {
-
+      const fechaHoraActual = new Date().toISOString();
       let formData = new FormData();
       formData.append('first_name', state.nuevo_nombres);
       formData.append('last_name', state.nuevo_apellidos);
+      formData.append('id_user', props.datos.id);
+      formData.append('telefono', state.nuevo_telefono_res)
+      formData.append('celular', state.nuevo_celular)
+      formData.append("observacion", state.nuevo_observaciones);
+      formData.append("ult_modificacion", fechaHoraActual);
         
         axios({
-        url: `${process.env.REACT_APP_API_URL}/usuario_rol/user_actualizacion/`+props.datos.id+'/',
-        method: "PUT", // O "PATCH"
+        url: `${process.env.REACT_APP_API_URL}/usuario_rol/user/actualizar_info_monitor/`,
+        method: "POST", // O "PATCH"
         data: formData,
         headers: config,
         })
         .then((res)=>{
-              set_state({
-              ...state,
-              nombres:state.nuevo_nombres,
-              apellidos:state.nuevo_apellidos,
-              correo:state.nuevo_correo,
+            set_state({
+            ...state,
+            nombres:state.nuevo_nombres,
+            apellidos:state.nuevo_apellidos,
+            correo:state.nuevo_correo,
+            telefono_res:state.nuevo_telefono_res,
+            celular:state.nuevo_celular,
   
-              editar : false,
-              })
-
-        handle_upload_info_extra()
+            editar : false,
+            })
 
         })
         .catch(err=>{
@@ -148,50 +147,6 @@ const Info_general = (props) =>{
         })
   
     }
-
-
-const handle_upload_info_extra = (e) => {
-      const fechaHoraActual = new Date().toISOString();
-
-    let formData = new FormData();
-      formData.append('telefono_res', state.nuevo_telefono_res)
-      formData.append('celular', state.nuevo_celular)
-      formData.append("observacion", state.nuevo_observaciones);
-      formData.append("ult_modificacion", fechaHoraActual);
-
-
-      axios({
-      url: `${process.env.REACT_APP_API_URL}/usuario_rol/monitor_actualizacion/`+props.datos.id+'/',
-      method: "POST",
-      data: formData,
-      headers: config,
-      })
-      .then((res)=>{
-            set_state({
-            ...state,
-            telefono_res:state.nuevo_telefono_res,
-            celular:state.nuevo_celular,
-
-            editar : false,
-            })
-              alert("el monitor fue editado correctamente")
-      })
-      .catch(err=>{
-            
-            set_state({
-                  ...state,
-                  telefono_res:state.nuevo_telefono_res,
-                  celular:state.nuevo_celular,
-                  
-                  editar : false,
-                  })
-              alert("el monitor fue editado correctamente")
-                  
-            //console.log("entra al malo")
-            //alert("error al editar el estudiante : " + props.datos.id);
-      })
-    }
-
 
 
     const cambiar_dato = (e) =>{

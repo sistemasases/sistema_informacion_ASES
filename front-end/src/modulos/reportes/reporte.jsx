@@ -1,26 +1,25 @@
 /**
-  * @file reporte.jsx
-  * @version 1.0.0
-  * @description modulo para visualizar las alertas.
-  * @author Steven Bernal
-  * @contact steven.bernal@correounivalle.edu.co
-  * @date 28 de marzo de 2023
-*/
+ * @file reporte.jsx
+ * @version 1.0.0
+ * @description modulo para visualizar las alertas.
+ * @author Steven Bernal
+ * @contact steven.bernal@correounivalle.edu.co
+ * @date 28 de marzo de 2023
+ */
 
-import {Container, Col, Row, Button, Form} from "react-bootstrap";
+import { Container, Col, Row, Button, Form } from "react-bootstrap";
 import {
   desencriptar,
   desencriptarInt,
   decryptTokenFromSessionStorage,
+  encriptar,
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import DataTable from "react-data-table-component";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import myGif from "../reportes/loading_data.gif";
-import { useNavigate } from "react-router-dom";
 import writeXlsxFile from "write-excel-file";
-import {CSVLink} from "react-csv";
+import { CSVLink } from "react-csv";
 import axios from "axios";
-
 
 // Columnas del reporte
 var columns = [
@@ -121,8 +120,7 @@ const Reporte = () => {
           estudiante: response.data,
         });
         setFiltered(response.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     estudiantes_por_rol();
   }, []);
@@ -132,6 +130,7 @@ const Reporte = () => {
     let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
     let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
 
+    // Funcion que busca el reporte del estudiante logueado.
     const riesgos_estudiante = async () => {
       try {
         const response = await axios.get(
@@ -160,8 +159,7 @@ const Reporte = () => {
         for (let i = 0; i < header_checks.length; i++) {
           header_checks[i].firstElementChild.removeAttribute("disabled");
         }
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     riesgos_estudiante();
   }, []);
@@ -213,16 +211,13 @@ const Reporte = () => {
   prueba = state.estudiante;
   inner_column_data = 0;
   /**
-    * Función para buscar según un evento de busqueda.
-    * @param {Event} e Información del evento con el valor a buscar.
-  */
+   * Función para buscar según un evento de busqueda.
+   * @param {Event} e Información del evento con el valor a buscar.
+   */
   const on_search_base = (e) => {
     var longitud_busqueda = e.target.value;
     if (longitud_busqueda.length == 0) {
       setFiltered(prueba);
-      console.log(
-        "LA SOLEDAD ES CAPAZ INUNDAR NUESTROS CORAZONES AUNQUE ESTEMOS EN COMPAÑIA"
-      );
     } else {
       const data_filtered = prueba.filter(
         (row) =>
@@ -239,7 +234,7 @@ const Reporte = () => {
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
-      console.log(filtered);
+      //console.log(filtered);
     }
   };
   // Columnas usadas para almacenar la información de la consulta con el back
@@ -424,16 +419,16 @@ const Reporte = () => {
   // Constante si no hay resultados
   const [noResults, setNoResults] = useState(false);
   /**
-    * Función para buscar según un evento de busqueda.
-    * @param {Event} e Información del evento con el valor a buscar.
-    * @param {Event} selected Información del evento con el valor a seleccionado.
-  */
+   * Función para buscar según un evento de busqueda.
+   * @param {Event} e Información del evento con el valor a buscar.
+   * @param {Event} selected Información del evento con el valor a seleccionado.
+   */
   const handle_column_search = (e, selected) => {
     // POR SI LLEGASE A INTENTAR LEER EL EVENTO Y NO ENCONTRASE NADA
     if (e.target.name === undefined) {
       const data_filtered = state.estudiante;
       setFiltered(data_filtered);
-      console.log("UNDEFINED");
+      //console.log("UNDEFINED");
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: DOCUMENTO
     if (e.target.name === "Tipo de documento") {
@@ -473,11 +468,25 @@ const Reporte = () => {
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: ESTADOS
     if (e.target.name === "ASES") {
-      const data_filtered = filtered.filter((row) =>
-        row.estado_ases.toLowerCase().includes(e.target.value.toLowerCase())
-      );
+      const filterValue = e.target.value.toLowerCase();
+      let estado_select = e.target.value.toLowerCase();
+      const data_filtered = filtered.filter((row) => {
+        const estado = row.estado_ases.toLowerCase();
+        // estado_select = e.target.value.toLowerCase();
+        // row.estado_ases.toLowerCase().includes(e.target.value.toLowerCase());
+        return (
+          (filterValue === "activo/a" && estado === "activo/a") ||
+          (filterValue === "inactivo/a" && estado === "inactivo/a")
+        );
+      });
+      const empty_estado = state.estudiante;
+      console.log(estado_select);
       const filtered_data =
-        data_filtered.length > 0 ? data_filtered : empty_stuff;
+        data_filtered.length > 0
+          ? data_filtered
+          : estado_select === "null"
+          ? empty_estado
+          : empty_stuff;
       setFiltered(filtered_data);
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: REGISTRO
@@ -511,7 +520,7 @@ const Reporte = () => {
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
       inner_column_data = e.target.value;
-      console.log(inner_column_data);
+      //console.log(inner_column_data);
     }
     // BUSQUEDA INDIVIDUAL POR FILTRO: SEDE
     if (e.target.name === "Sede") {
@@ -627,35 +636,60 @@ const Reporte = () => {
     }
   };
   /**
-    * Función para agregar una busqueda.
-    * @param {Event} selected Información del evento con el valor a seleccionado.
-  */
+   * Función para agregar una busqueda.
+   * @param {Event} selected Información del evento con el valor a seleccionado.
+   */
   const add_search_bar = (selected) => {
     const new_search_bar_data = [];
-    new_search_bar_data.push({
-      name: (
-        <Row className="center_tabla_sin_seguimientos">
-          <h4 className="texto_mas_pequeño">{selected.name}</h4>
-          <input
-            name={selected.name}
-            internal_name={selected.value}
-            onChange={(e) => {
-              handle_column_search(e, selected);
-            }}
-          />
-        </Row>
-      ),
-      value: selected.value,
-      selector: selected.selector,
-      sortable: true,
-      isCheck: selected.isCheck,
-    });
+    selected.name === "ASES"
+      ? new_search_bar_data.push({
+          name: (
+            <Row className="center_tabla_sin_seguimientos">
+              <h4 className="texto_mas_pequeño">{selected.name}</h4>
+              <select
+                name={selected.name}
+                internal_name={selected.value}
+                onChange={(e) => {
+                  handle_column_search(e, selected);
+                }}
+                style={{ marginBottom: "20px" }}
+              >
+                <option value="null">Estado</option>
+                <option value="activo/a">ACTIVO/A</option>
+                <option value="inactivo/a">INACTIVO/A</option>
+              </select>
+            </Row>
+          ),
+          value: selected.value,
+          selector: selected.selector,
+          sortable: false,
+          isCheck: selected.isCheck,
+        })
+      : new_search_bar_data.push({
+          name: (
+            <Row className="center_tabla_sin_seguimientos">
+              <h4 className="texto_mas_pequeño">{selected.name}</h4>
+              <input
+                name={selected.name}
+                internal_name={selected.value}
+                onChange={(e) => {
+                  handle_column_search(e, selected);
+                }}
+              />
+            </Row>
+          ),
+          value: selected.value,
+          selector: selected.selector,
+          sortable: true,
+          isCheck: selected.isCheck,
+        });
+    // );
     return new_search_bar_data;
   };
   /**
-    * Función para manejar los cambios en los filtro.
-    * @param {Event} e Información del evento con el valor a filtrar.
-  */
+   * Función para manejar los cambios en los filtro.
+   * @param {Event} e Información del evento con el valor a filtrar.
+   */
   const handleChange = (e) => {
     const seleccionado_contacto = filtros_Contacto.find(
       (item) => item.name === e.target.name
@@ -675,9 +709,10 @@ const Reporte = () => {
     const seleccionado_cabeceras_filtros = cabecerasFiltros.find(
       (item) => item.name === e.target.name
     );
-    const seleccionado_condiciones_excepcion_prueba = filtros_Condicion_Excepcion_prueba.find(
-      (item) => item.name === "Condición de Excepción"
-    );
+    const seleccionado_condiciones_excepcion_prueba =
+      filtros_Condicion_Excepcion_prueba.find(
+        (item) => item.name === "Condición de Excepción"
+      );
     const seleccionado_cohorte = filtro_cohorte.find(
       (item) => item.name === e.target.name
     );
@@ -1364,8 +1399,8 @@ const Reporte = () => {
     },
   };
   /**
-    * Función para pasar el csv a excel.
-  */
+   * Función para pasar el csv a excel.
+   */
   const imprimir_excel = () => {
     let new_data_excel = [];
     for (let i = 0; i < filtered.length; i++) {
@@ -1384,7 +1419,16 @@ const Reporte = () => {
         "Reporte general Campus Virtual Ases universidad del Valle Excel.xlsx",
     });
   };
-  let navigate = useNavigate();
+
+  /**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+   */
+  const cambiar_ruta = (e) => {
+    sessionStorage.setItem("path", encriptar(e));
+    window.location.reload();
+  };
 
   return (
     <>
@@ -1579,7 +1623,7 @@ const Reporte = () => {
               highlightOnHover
               onRowClicked={(row) => {
                 // redirect(`/ficha_estudiante/${row.id}`);
-                navigate(`/ficha_estudiante/${row.id}`);
+                cambiar_ruta(`/ficha_estudiante/${row.id}`);
                 // // // // console.log(row);
               }}
               responsive

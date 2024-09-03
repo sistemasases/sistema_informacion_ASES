@@ -65,7 +65,7 @@ const Pagina_inicio = () => {
     if (bandera_option === true && state.tabs.length === 0) {
       All_sede_service.all_sede()
         .then((res) => {
-          console.log("Respuesta de la API:", res);
+          //console.log("Respuesta de la API:", res);
           if (res && Array.isArray(res)) {
             set_state({
               ...state,
@@ -88,8 +88,8 @@ const Pagina_inicio = () => {
    * @description Prop que toma las sedes y las transforma en opciones para el select
   */
   const handle_sedes = () => {
-    console.log("ENTRO");
-    console.log(state.tabs);
+    //console.log("ENTRO");
+    //console.log(state.tabs);
     if (bandera_option === true) {
       for (var i = 0; i < state.tabs["length"]; i++) {
         const dato = {
@@ -125,10 +125,22 @@ const Pagina_inicio = () => {
     });
     setShow(true);
   };
-  //Cambia las sedes para visualizarse
+  /**
+   * @function handle_storage
+   * @description Actualiza la sede según lo seleccionado en el select
+  */
   const handle_storage = () => {
     sessionStorage.setItem("sede", encriptar(temp.value));
     sessionStorage.setItem("sede_id", encriptarInt(temp.id));
+    window.location.reload();
+  };
+  /**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+  */
+  const cambiar_ruta = (e) => {
+    sessionStorage.setItem("path", encriptar(e));
     window.location.reload();
   };
 
@@ -181,34 +193,20 @@ const Pagina_inicio = () => {
         <Row> 
           <Col xs={"12"} md={"5"} className="botones-container">
             {(userRole === "super_ases" || userRole === "sistemas")&&(
-            <Link to={`/gestion_usuario_rol`}> 
-              <img src={boton6} className="boton" alt='/'></img>
-            </Link>)}
+              <img src={boton6} className="boton" alt='/' onClick={() => cambiar_ruta(`/gestion_usuario_rol`)}></img>)}
             {(userRole === 'dir_academico' || userRole === 'dir_programa' || userRole === 'vcd_academico' || userRole === 'practicante' || userRole === 'monitor' || userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' || userRole === "super_ases" || userRole === "sistemas")&& (
-            <Link to={`/ficha_estudiante/sin_seleccion`}> 
-              <img src={boton9} className="boton" alt='/'></img>
-            </Link>)}
+              <img src={boton9} className="boton" alt='/' onClick={() => cambiar_ruta(`/ficha_estudiante/sin_seleccion`)}></img>)}
             {(userRole === 'dir_academico' ||userRole === 'dir_programa' || userRole === 'vcd_academico' || userRole === 'practicante' || userRole === 'monitor' || userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' || userRole === "super_ases" || userRole === "sistemas")&& (
-            <Link to={`/reporte`}> 
-              <img src={boton15} className="boton" alt='/'></img>
-            </Link>)}
+              <img src={boton15} className="boton" alt='/' onClick={() => cambiar_ruta(`/reporte`)}></img>)}
             {(userRole === "super_ases" || userRole === "sistemas")&& (
-            <Link to={`/carga_masiva`}> 
-              <img src={boton21} className="boton" alt='/'></img>
-            </Link>)}
+              <img src={boton21} className="boton" alt='/' onClick={() => cambiar_ruta(`/carga_masiva`)}></img>)}
             {(userRole === 'practicante'|| userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' )&& (
-            <Link to={`/reporte_seguimientos`}> 
-              <img src={boton17} className="boton" alt='/'></img>
-            </Link>)}
+              <img src={boton17} className="boton" alt='/' onClick={() => cambiar_ruta(`/reporte_seguimientos`)}></img>)}
             {( userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' || userRole === 'profesional')&& (
-            <Link to={`/sin_seguimientos`}> 
-              <img src={boton8} className="boton" alt='/'></img>
-            </Link>)}
+              <img src={boton8} className="boton" alt='/' onClick={() => cambiar_ruta(`/sin_seguimientos`)}></img>)}
             {(userRole === 'dir_academico' )&& (
-            <Link to={`/academico`}> 
-              <img src={boton20} className="boton" alt='/'></img>
-            </Link>)}
-            {(userRole === 'profesor' )&& (<meta http-equiv="Refresh" content="0; url='/academico'" />)}
+              <img src={boton20} className="boton" alt='/' onClick={() => cambiar_ruta(`/academico`)}></img>)}
+            {(userRole === 'profesor')?<>{cambiar_ruta(`/academico`)}</>:<>{}</>}
           </Col>
           <Col className="vertical-line-col"><div className="vertical"></div></Col>
           <Col xs={"12"} md={"5"} className="botones-container">
@@ -218,7 +216,7 @@ const Pagina_inicio = () => {
             <Link to={`https://asesinteractiva.univalle.edu.co/semaforoalertas/`} target="_blank"> 
               <img src={boton2} className="boton" alt='/'></img>
             </Link>
-            <Link to={`https://caja-de-herramientas-univalle.vercel.app/`} target="_blank"> 
+            <Link to={`https://sistemaases.univalle.edu.co/caja-herramientas/`} target="_blank"> 
               <img src={boton3} className="boton" alt='/'></img>
             </Link>
             <Link to={`https://ases.univalle.edu.co/`} target="_blank"> 

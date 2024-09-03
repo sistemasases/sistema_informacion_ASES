@@ -5,8 +5,6 @@ import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import { desencriptar, decryptTokenFromSessionStorage, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
-//import DatePicker from 'react-datepicker';
-
 
 
 const Info_general = (props) =>{
@@ -383,35 +381,35 @@ const cambiar_datos = (e) => {
       const cambiar_datos_select_etnia = (e) => {
             set_state({
               ...state,
-              nuevo_grupo_etnico: e.value,
+              nuevo_grupo_etnico: e.id,
               nuevo_grupo_etnico_id: e.label
             });     
       }
       const cambiar_datos_select_actividad_simultanea = (e) => {
             set_state({
               ...state,
-              nuevo_actividad_simultanea: e.value,
+              nuevo_actividad_simultanea: e.id,
               nuevo_actividad_simultanea_id: e.label
             });     
       }
       const cambiar_datos_select_identidad_de_genero = (e) => {
             set_state({
               ...state,
-              nuevo_identidad_de_genero: e.value,
+              nuevo_identidad_de_genero: e.id,
               nuevo_identidad_de_genero_id: e.label
             });     
       }
       const cambiar_datos_select_estado_civil = (e) => {
             set_state({
               ...state,
-              nuevo_estado_civil: e.value,
+              nuevo_estado_civil: e.id,
               nuevo_estado_civil_id: e.label
             });     
       }
       const cambiar_datos_select_condicion_de_excepcion = (e) => {
             set_state({
               ...state,
-              nuevo_condicion_de_excepcion: e.value,
+              nuevo_condicion_de_excepcion: e.id,
               nuevo_condicion_de_excepcion_id: e.label
             });     
       }
@@ -446,6 +444,7 @@ const cambiar_datos = (e) => {
       formData.append('observacion', state.nuevo_observaciones !== null ? [state.nuevo_observaciones] : [null])
 
       formData.append('id_etnia', state.nuevo_grupo_etnico !== null ? state.nuevo_grupo_etnico : [null]);
+      console.log(state.nuevo_grupo_etnico)
       formData.append('id_act_simultanea', state.nuevo_actividad_simultanea !== null ? state.nuevo_actividad_simultanea : [null]);
       formData.append('id_identidad_gen', state.nuevo_identidad_de_genero !== null ? state.nuevo_identidad_de_genero : [null]);
       formData.append('id_estado_civil', state.nuevo_estado_civil !== null ? state.nuevo_estado_civil : [null]);
@@ -455,7 +454,7 @@ const cambiar_datos = (e) => {
       formData.append("ult_modificacion", fechaHoraActual);
 
       axios({
-      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_actualizacion/`+ props.datos.id+'/',
+      url: `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`+ props.datos.id+'/actualizacion_info_ficha_estuidante/',
       method: "POST",
       data: formData,
       headers: config2,
@@ -511,7 +510,7 @@ const cambiar_datos = (e) => {
                   })
                   alert("error al editar el estudiante :" + err)
                   
-            console.log('celular'+state.celular)
+            //console.log('celular'+state.celular)
             //console.log("entra al malo")
             //alert("error al editar el estudiante : " + props.datos.id);
       })
@@ -790,7 +789,7 @@ const cambiar_datos = (e) => {
                                                       className="bold_select"
                                                       options={state.lista_etnico}
                                                       onMenuOpen={opciones_lista_Etico}
-                                                      onChange={cambiar_datos_select_etnia}
+                                                      onChange={(e) => cambiar_datos_select_etnia(e)}
                                                 />
                                           </Col>      
                                           ):

@@ -10,7 +10,7 @@ para la creación, actualización y recuperación del actual objeto 'semestre' b
 from queue import Empty
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, act_simultanea, cond_excepcion, discap_men, estado_civil,  etnia, identidad_gen, cohorte_estudiante
+from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, act_simultanea, cond_excepcion, estado_civil,  etnia, identidad_gen, cohorte_estudiante
 from modulo_geografico.models import barrio, municipio
 from modulo_programa.models import programa_estudiante, programa, historial_estado_programa_estudiante, programa_monitor
 from modulo_instancia.models import semestre, cohorte
@@ -21,19 +21,18 @@ from django.db.models import Q, Subquery, OuterRef
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from modulo_usuario_rol import serializers
-from django.db.models import F
+from django.db.models import F, Prefetch
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from .serializers import  *
-from modulo_programa.serializers import historial_estado_programa_estudiante_serializer
+from modulo_programa.serializers import historial_estado_programa_estudiante_serializer, programa_estudiante_ficha_serializer
 from modulo_instancia.serializers import semestre_serializer, cohorte_serializer
-from modulo_asignacion.serializers import asignacion_serializer
+from modulo_asignacion.serializers import asignacion_serializer,asignacion_monitor_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import get_object_or_404
 from django.core import serializers
-
+from rest_framework.decorators import action
 
 """
 POR EL GRAN TAMAÑO DE ESTA VISTA SE DIVIDIÓ LA MISMA EN VARIAS PARTES
@@ -74,61 +73,93 @@ class user_viewsets (viewsets.ModelViewSet):
     update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
     partial_update: Maneja las solicitudes PATCH para realizar una actualización parcial de un recurso específico por su clave primaria.
     destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
+
+    END-POINT extra:
+    desactivar_usuarios_sede
+    actualizar_info_monitor
     """
 
     serializer_class = user_serializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = user_serializer.Meta.model.objects.all()
 
-class user_actualizacion_viewsets(viewsets.ViewSet):
-    """
-    Vista para actualizar información de usuarios.
-
-    Esta vista permite actualizar el nombre y apellido de un usuario existente, esta llamada se ejecuta en la vista de ficha del monitor.
-
-    Permisos:
-    - El usuario debe estar autenticado para acceder a esta vista.
-
-    Serializer:
-    - Se utiliza 'user_actualizacion' para serializar los datos de actualización.
-
-    Métodos HTTP admitidos:
-    - PUT: Actualiza el nombre y apellido de un usuario.
-
-    Gestión de solicutudes HTTP VIEWSETS:
-    update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
-
-    """
-    serializer_class = user_actualizacion
-    permission_classes = (IsAuthenticated,)
-
-    def update(self, request, pk=None):
+    @action(detail=False, methods=['post'], url_path='desactivar_usuarios_sede')
+    def desactivar_usuarios_sede(self, request, pk=None):
         """
-        Actualiza el nombre y apellido de un usuario.
+        Desactiva todos los usuarios del semestre actual de la sede especificada.
 
         Args:
-        - request: Solicitud HTTP recibida.
-        - pk: Clave primaria del usuario a actualizar.
+        - request: Solicitud HTTP recibida, debe contener 'id_sede' en el cuerpo.
+
+        Returns:
+        - Response: Respuesta HTTP indicando el resultado de la desactivación.
+        """
+
+        # Filtrar para obtener el semestre actual de la sede especificada en la solicitud.
+        try:
+            semestre_actual = semestre.objects.filter(semestre_actual=True, id_sede=request.data["id_sede"]).values('id')
+        # Si no se encuentra un semestre actual, retornar un error.
+        except semestre.DoesNotExist:
+            return Response({'error': 'La sede suministrada no tiene un semestre activo.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Realizar la actualización masiva de usuarios, desactivándolos.
+        usuarios_desactivados = usuario_rol.objects.filter(id_semestre=semestre_actual[0]['id']).update(estado="INACTIVO")
+        
+        # Retornar una respuesta exitosa.
+        return Response({'mensaje': 'usuarios desactivados con éxito'}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'], url_path='actualizar_info_monitor')
+    def actualizar_info_monitor(self, request, pk=None):
+        """
+        Actualiza la información personal de un monitor, incluyendo nombre, teléfono y observaciones.
+
+        Args:
+        - request: Solicitud HTTP recibida, debe contener los campos a actualizar.
 
         Returns:
         - Response: Respuesta HTTP indicando el resultado de la actualización.
         """
-        serializer = self.serializer_class(data=request.data)
+        
+        # Crear un serializador con los datos recibidos en la solicitud.
+        serializer = user_actualizacion(data=request.data)
 
+        # Verificar si los datos del serializador son válidos.
         if serializer.is_valid():
+            # Extraer los datos validados del serializador.
             first_name_request = serializer.validated_data['first_name']
             last_name_request = serializer.validated_data['last_name']
+            telefono_res_request = serializer.validated_data['telefono']
+            celular_request = serializer.validated_data['celular']
+            observacion_request = serializer.validated_data['observacion']
+            ult_modificacion_request = serializer.validated_data['ult_modificacion']
+
             try:
-                user = User.objects.get(pk=pk)
+                # Intentar obtener el usuario con la clave primaria proporcionada.
+                user = User.objects.get(pk=serializer.validated_data['id_user'])
+
+                # Obtener el monitor asociado al usuario.
+                var_monitor = monitor.objects.get(id_user=user.id)
+
+                # Actualizar los campos del usuario y del monitor.
                 user.first_name = first_name_request
                 user.last_name = last_name_request
-                user.save()
+                var_monitor.telefono = telefono_res_request
+                var_monitor.celular = celular_request
+                var_monitor.observacion = observacion_request
+                var_monitor.ult_modificacion = ult_modificacion_request
 
+                # Guardar los cambios en la base de datos.
+                user.save()
+                var_monitor.save()
+
+                # Retornar una respuesta exitosa.
                 return Response({'Respuesta': 'True'}, status=status.HTTP_200_OK)
+
             except User.DoesNotExist:
-                # Si el usuario no se encuentra, devolver un error 404
+                # Si el usuario no se encuentra, devolver un error 404.
                 return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        # Si los datos del serializador no son válidos, devolver un error 400
+
+        # Si los datos del serializador no son válidos, devolver un error 400.
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 """
@@ -171,6 +202,50 @@ class retiro_viewsets(viewsets.ModelViewSet):
     serializer_class = retiro_serializer
     permission_classes = (IsAuthenticated,)
     queryset = retiro_serializer.Meta.model.objects.all()
+    
+class motivo_viewsets(viewsets.ModelViewSet):
+    """
+    Viewsets del modelo de Motivo.
+
+    Esta vista permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar)
+    en el modelo de motivo.
+
+    Permisos:
+    - El usuario debe estar autenticado para acceder a esta vista.
+
+    Serializer:
+    - Se utiliza 'motivo_serializer' para serializar los datos del modelo.
+
+    Atributos:
+    - serializer_class: Clase del serializador utilizado.
+    - permission_classes: Clases de permisos aplicadas a la vista.
+    - queryset: Conjunto de objetos del modelo 'Retiro'.
+
+    Métodos HTTP admitidos:
+    - GET: Obtiene una lista de retiros.
+    - POST: Crea un nuevo retiro.
+    - PUT: Actualiza un retiro existente.
+    - DELETE: Elimina un retiro existente.
+
+    Gestión de solicutudes HTTP VIEWSETS:
+    (Redefinida)list: Maneja las solicitudes GET para obtener una lista de recursos, solo trae los motivos que estan activos, es decir, los que tienen el campo motivo_activo en True.
+    create: Maneja las solicitudes POST para crear un nuevo recurso.
+    retrieve: Maneja las solicitudes GET para obtener un recurso específico por su clave primaria.
+    update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
+    partial_update: Maneja las solicitudes PATCH para realizar una actualización parcial de un recurso específico por su clave primaria.
+    destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
+    """
+
+    serializer_class = motivo_serializer
+    permission_classes = (IsAuthenticated,)
+    queryset = motivo_serializer.Meta.model.objects.all()
+
+    def list(self, request):
+
+        lista_motivos_activos = motivo.objects.filter(motivo_activo = True).distinct().order_by('id')
+        respuesta = motivo_serializer (lista_motivos_activos, many=True)
+        return Response(respuesta.data, status=status.HTTP_200_OK)
+
 
 class estudiante_viewsets(viewsets.ModelViewSet):
     """
@@ -198,6 +273,12 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
     partial_update: Maneja las solicitudes PATCH para realizar una actualización parcial de un recurso específico por su clave primaria.
     destroy: Maneja las solicitudes DELETE para eliminar un recurso específico por su clave primaria.
+
+    END-POINT extra:
+    datos_ficha_estudiante
+    estudiantes_por_sede
+    estudiantes_de_un_monitor
+    actualizacion_info_ficha_estuidante
     """
     serializer_class = estudiante_serializer
     permission_classes = (IsAuthenticated,)
@@ -219,6 +300,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         fech_actual = datetime.now()
         fecha_ = timedelta(days=7)
         fecha_limite = fech_actual - fecha_
+
         if fecha == None or fecha == 'None' or fecha == '' or fecha == ' ' or fecha == 'Null' or fecha == 'null' or fecha == 'NULL' or fecha == 'null' or fecha == 'NoneType':
             if inasistencia == None or inasistencia == '' or inasistencia == 'None':
                 return "FICHA FALTANTE"
@@ -234,10 +316,14 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             if inasistencia == None or inasistencia == '' or inasistencia == 'None':
                 if date_obj.date() <= fecha_limite.date():
                     return "FICHA FALTANTE"
+                elif (date_obj.date() > fecha_limite.date()):
+                    return "SEGUIMIENTO RECIENTE"
             else:
                 ina = datetime.strptime(inasistencia, "%Y-%m-%d")
                 if date_obj.date() <= ina.date():
                     return "INASISTENCIA"
+                elif (date_obj.date() > fecha_limite.date()):
+                    return "SEGUIMIENTO RECIENTE"
                 else:
                     return "FICHA FALTANTE"
             return "SEGUIMIENTO RECIENTE"
@@ -256,202 +342,39 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             return "SIN FIRMAR"
     # Se redefine la función retrieve para poder traer todos los campos que se relacionan con el estudiante, independeinte de si estan en el modelo estudiante o no.
     # Esta función es utlizada en la vista Ficha del Estudiante.
-    def retrieve(self, request, pk=None):
-        
+
+    @action(detail=True, methods=['get'], url_path='datos_ficha_estudiante')
+    def datos_ficha_estudiante(self, request, pk=None):
+
         request_sede = int(request.GET.get('id_sede'))
-        var_estudiante = estudiante.objects.get(id=pk)
-        serializer_estudiante = estudiante_serializer(var_estudiante)
-        diccionario_estudiante = serializer_estudiante.data
-        #llamado y seteo de barrios, ciudades y otros campos que hagan llamada a otra tabla ademas de estudiante (osea, estudiante tiene el id del campo a llamar de otra tabla)
-        #barrio_ini         barrio_res
-        barrio_ini_id = diccionario_estudiante['barrio_ini']
-        barrio_res_id = diccionario_estudiante['barrio_res']
-        try:
-            barrio_ini_obj = barrio.objects.get(codigo_barrio=barrio_ini_id)
-            diccionario_estudiante['barrio_ini'] = barrio_ini_obj.nombre
-        except barrio.DoesNotExist:
-            diccionario_estudiante['barrio_ini'] = None
-        try:
-            barrio_res_obj = barrio.objects.get(codigo_barrio=barrio_res_id)
-            diccionario_estudiante['barrio_res'] = barrio_res_obj.nombre
-            estrato_obj = barrio.objects.get(codigo_barrio=barrio_res_id)
-            estrato_nombre = estrato_obj.estrato
-            diccionario_estrato = {'estrato': estrato_nombre}
-            diccionario_estudiante.update(diccionario_estrato)
-        except barrio.DoesNotExist:
-            diccionario_estudiante['barrio_res'] = None
-        #municipio_nac          municipio_ini          municipio_res
-        municipio_nac_id = diccionario_estudiante['ciudad_nac']
-        municipio_ini_id = diccionario_estudiante['ciudad_ini']
-        municipio_res_id = diccionario_estudiante['ciudad_res']
-        try:
-            municipio_nac_obj = municipio.objects.get(codigo_divipola=municipio_nac_id)
-            diccionario_estudiante['ciudad_nac'] = municipio_nac_obj.nombre
-        except municipio.DoesNotExist:
-            diccionario_estudiante['ciudad_nac'] = None
-        try:
-            municipio_ini_obj = municipio.objects.get(codigo_divipola=municipio_ini_id)
-            diccionario_estudiante['ciudad_ini'] = municipio_ini_obj.nombre
-        except municipio.DoesNotExist:
-            diccionario_estudiante['ciudad_ini'] = None
-        try:
-            municipio_res_obj = municipio.objects.get(codigo_divipola=municipio_res_id)
-            diccionario_estudiante['ciudad_res'] = municipio_res_obj.nombre
-        except municipio.DoesNotExist:
-            diccionario_estudiante['ciudad_res'] = None
-        #cond_excepcion          discap_men
-        cond_excepcion_id = diccionario_estudiante['id_cond_excepcion']
-        discap_men_id = diccionario_estudiante['id_discapacidad']
-        try:
-            cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_id)
-            diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_obj.alias}
-            diccionario_estudiante.update(diccionarion_cond_excepcion)
-        except cond_excepcion.DoesNotExist:
-            diccionario_estudiante['id_cond_excepcion'] = None
-        except MultipleObjectsReturned:
-            cond_excepcion_obj = cond_excepcion.objects.filter(id=cond_excepcion_id).first()
-            diccionarion_cond_excepcion = {'el_id_de_cond_excepcion':cond_excepcion_obj.alias}
-            diccionario_estudiante.update(diccionarion_cond_excepcion)
-        try:
-            discap_men_obj = discap_men.objects.get(codigo_men=discap_men_id)
-            diccionario_estudiante['id_discapacidad'] = discap_men_obj.nombre
-        except discap_men.DoesNotExist:
-            diccionario_estudiante['id_discapacidad'] = None
-        #identidad_gen          etnia       estado_civil        act_simultanea
-        identidad_gen_id = diccionario_estudiante['id_identidad_gen']
-        etnia_id = diccionario_estudiante['id_etnia']
-        estado_civil_id = diccionario_estudiante['id_estado_civil']
-        act_simultanea_id = diccionario_estudiante['id_act_simultanea']
+        var_estudiante = estudiante.objects.prefetch_related(Prefetch('id_estudiante_in_cohorte_estudiante')).get(id=pk)
+        serializer_estudiante = ficha_estudiante_serializer(var_estudiante)
+        dic_asignaciones={}
+        riesgo ={}
+        firma = {}
+        diccionario_programas = {}
 
         try:
-            cohorte_obj = cohorte_estudiante.objects.get(id_estudiante=pk)
-            serializer_id_cohorte = cohorte_estudiante_serializer(cohorte_obj)
-            id_cohorte = serializer_id_cohorte.data['id_cohorte']
-            nombre_cohorte = cohorte.objects.get(id=id_cohorte)
-            diccionarion_cohorte = {'nombre_cohorte':nombre_cohorte.nombre}
-            diccionario_estudiante.update(diccionarion_cohorte)
-        except cohorte_estudiante.DoesNotExist:
-            diccionario_estudiante['nombre_cohorte'] = None
-        except MultipleObjectsReturned:
-            cohorte_obj = cohorte_estudiante.objects.filter(id_estudiante=pk).first()
-            serializer_id_cohorte = cohorte_estudiante_serializer(cohorte_obj)
-            id_cohorte = serializer_id_cohorte.data['id_cohorte']
-            nombre_cohorte = cohorte.objects.get(id=id_cohorte)
-            diccionarion_cohorte = {'nombre_cohorte':nombre_cohorte.nombre}
-            diccionario_estudiante.update(diccionarion_cohorte)
-        try:
-            identidad_gen_obj = identidad_gen.objects.get(opcion_general=identidad_gen_id)
-            diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
-            diccionario_estudiante.update(diccionarion_identidad_gen)
-        except identidad_gen.DoesNotExist:
-            diccionario_estudiante['id_identidad_gen'] = None
-        except MultipleObjectsReturned:
-            identidad_gen_obj = identidad_gen.objects.filter(opcion_general=identidad_gen_id).first()
-            diccionarion_identidad_gen = {'el_id_de_identidad_gen':identidad_gen_obj.genero}
-            diccionario_estudiante.update(diccionarion_identidad_gen)
-        try:
-            etnia_obj = etnia.objects.get(opcion_general=etnia_id)
-            diccionarion_etnia = {'el_id_de_etnia':etnia_obj.etnia}
-            diccionario_estudiante.update(diccionarion_etnia)
-        except etnia.DoesNotExist:
-            diccionario_estudiante['id_etnia'] = None
-        except MultipleObjectsReturned:
-            etnia_obj = etnia.objects.filter(opcion_general=etnia_id).first()
-            diccionarion_etnia = {'el_id_de_etnia':etnia_obj.etnia}
-            diccionario_estudiante.update(diccionarion_etnia)
-        try:
-            estado_civil_obj = estado_civil.objects.get(id=estado_civil_id)
-            diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_obj.estado_civil}
-            diccionario_estudiante.update(diccionarion_estado_civil)
-        except estado_civil.DoesNotExist:
-            diccionario_estudiante['id_estado_civil'] = None
-        except MultipleObjectsReturned:
-            estado_civil_obj = estado_civil.objects.filter(id=estado_civil_id).first()
-            diccionarion_estado_civil = {'el_id_de_estado_civil':estado_civil_obj.estado_civil}
-            diccionario_estudiante.update(diccionarion_estado_civil)
-        try:
-            act_simultanea_obj = act_simultanea.objects.get(opcion_general=act_simultanea_id)
-            diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_obj.actividad}
-            diccionario_estudiante.update(diccionarion_act_simultanea)
-        except act_simultanea.DoesNotExist:
-            diccionario_estudiante['id_act_simultanea'] = None
-        except MultipleObjectsReturned:
-            act_simultanea_obj = act_simultanea.objects.filter(opcion_general=act_simultanea_id).first()
-            diccionarion_act_simultanea = {'el_id_de_act_simultanea':act_simultanea_obj.actividad}
-            diccionario_estudiante.update(diccionarion_act_simultanea)
-
-        lista_programas = []
-        try :
-            ids_del_estudiante_para_sus_progamas = estudiante.objects.filter(num_doc=serializer_estudiante.data['num_doc']).values('id', 'cod_univalle')
-            for id_estudiante_programa in ids_del_estudiante_para_sus_progamas:
-                programa_seleccionado = programa_estudiante.objects.filter(id_estudiante=id_estudiante_programa['id']).values('id_programa','id_estado','traker')
-                for programa_id in programa_seleccionado :
-                    var_programa = programa.objects.filter(id=programa_id['id_programa']).values()
-                    dic_programa = {'id': id_estudiante_programa['id'], 
-                                    'nombre_programa': var_programa[0]['nombre'], 
-                                    'cod_univalle': var_programa[0]['codigo_univalle'],
-                                    'codigo_estudiante': id_estudiante_programa['cod_univalle'],
-                                    'id_estado_id': programa_id['id_estado'],
-                                    'traker': programa_id['traker']
-                                    }  # Agregar el estado del curso al diccionario
-                    dic = {}
-                    dic.update(dic_programa)
-                    lista_programas.append(dic)
-
-            diccionario_programas = {'programas': lista_programas}
-
-            diccionario_estudiante.update(diccionario_programas)
-
-        except :
-            dic_programa = {'error': 'sin programa asignado o no se encontraro coincidencias'
-                            }  # Agregar el estado del curso al diccionario
-
-            dic = id_estudiante_programa
-            dic.update(dic_programa)
-            lista_programas.append(dic)
-            diccionario_programas = {'programas': lista_programas}
-            print(diccionario_programas)
-            diccionario_estudiante.update(diccionario_programas)
-
-        try:
-            semestre_activo = semestre.objects.get(semestre_actual=True, id_sede =request_sede)
-            serializer_semestre = semestre_serializer(semestre_activo)
-            el_monitor_asignado = asignacion.objects.get(id_semestre=serializer_semestre.data['id'], id_estudiante=pk,estado=True)
-            serializer_monitor_asignado = asignacion_serializer(el_monitor_asignado)
-
-            info_monitor = usuario_rol.objects.get(id_usuario = serializer_monitor_asignado.data['id_usuario'], id_semestre=serializer_semestre.data['id'])
-
-            serilalizer_info_monitor = usuario_rol_serializer(info_monitor)
-
-            su_practicante = usuario_rol.objects.get(id_usuario=serilalizer_info_monitor.data['id_jefe'], id_semestre=serializer_semestre.data['id'])
-            serializer_su_practicante = usuario_rol_serializer(su_practicante)
-
-            su_profesional = usuario_rol.objects.get(id_usuario=serializer_su_practicante.data['id_jefe'], id_semestre=serializer_semestre.data['id'])
-            serializer_su_profesional = usuario_rol_serializer(su_profesional)
-
-            consulta_practicante = User.objects.get(id =serializer_su_practicante.data['id_usuario'])
-            serializer_practicante = user_selected(consulta_practicante)
-
-            consulta_profesional = User.objects.get(id =serializer_su_profesional.data['id_usuario'])
-            serializer_profesional = user_selected(consulta_profesional)
-
-            consulta_monitor = User.objects.get(id =serilalizer_info_monitor.data['id_usuario'])
-            serializer_monitor = user_selected(consulta_monitor)
-
-            datos_encargados = {
-                    'profesional': serializer_profesional.data, 
-                    'practicante': serializer_practicante.data,
-                    'info_monitor': serializer_monitor.data
-                    }
+            semestre_activo = semestre.objects.filter(semestre_actual=True, id_sede =request_sede).values('id')
+            consulta_monitor = asignacion.objects.select_related('id_usuario').filter(id_estudiante=serializer_estudiante.data['id'], estado=True,id_semestre=semestre_activo[0]['id'])
+            monitor_serializado = asignacion_monitor_serializer(consulta_monitor,  many=True)
+            consulta_practicante = usuario_rol.objects.select_related('id_jefe').filter(id_usuario=monitor_serializado.data[0]['id_usuario']['id'],id_semestre=semestre_activo[0]['id'], estado="ACTIVO")
+            practicante_serializado = usuario_rol_jefe_serializer(consulta_practicante, many=True)
+            consulta_profesional = usuario_rol.objects.select_related('id_jefe').filter(id_usuario=practicante_serializado.data[0]['id_jefe']['id'],id_semestre=semestre_activo[0]['id'], estado="ACTIVO")
+            profesional_serializado = usuario_rol_jefe_serializer(consulta_profesional, many=True)
+            dic_asignaciones = {
+                'info_monitor':monitor_serializado.data[0]['id_usuario'],
+                'practicante': practicante_serializado.data[0]['id_jefe'],
+                'profesional': profesional_serializado.data[0]['id_jefe'],
+            }
         except:
-            datos_encargados = {
-                    'profesional': 'sin asignacion', 
-                    'practicante': 'sin asignacion',
-                    'info_monitor': 'sin asignacion'
-                    }
+            dic_asignaciones = {
+                'info_monitor': 'Sin Asignar',
+                'practicante': 'Sin Asignar',
+                'profesional': 'Sin Asignar'
+            }
 
-        diccionario_estudiante.update(datos_encargados)
-        
+
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
             seguimiento_reciente = seguimiento_individual.objects.filter(
@@ -459,11 +382,6 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             inasistencias_registradas = inasistencia.objects.filter(
             id_estudiante= pk).latest('fecha')
             riesgo = {
-                'riesgo_individual': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_individual)),
-                'riesgo_familiar': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_familiar)),
-                'riesgo_academico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_academico)),
-                'riesgo_economico': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_economico)),
-                'riesgo_vida_universitaria_ciudad': str(self.get_nivel_riesgo(seguimiento_reciente.riesgo_vida_universitaria_ciudad)),
                 'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(inasistencias_registradas.fecha))),
             }
         except seguimiento_individual.DoesNotExist:
@@ -472,20 +390,11 @@ class estudiante_viewsets(viewsets.ModelViewSet):
                 inasistencias_registradas = inasistencia.objects.filter(
                 id_estudiante= pk).latest('fecha')
                 riesgo = {
-                    'riesgo_individual': 'SIN SEGUIMIENTO',
-                    'riesgo_familiar': 'SIN SEGUIMIENTO',
-                    'riesgo_academico': 'SIN SEGUIMIENTO',
-                    'riesgo_economico': 'SIN SEGUIMIENTO',
-                    'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
                     'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(inasistencias_registradas.fecha))),
                 }
             except:
                 riesgo = {
-                        'riesgo_individual': 'SIN SEGUIMIENTO',
-                        'riesgo_familiar': 'SIN SEGUIMIENTO',
-                        'riesgo_academico': 'SIN SEGUIMIENTO',
-                        'riesgo_economico': 'SIN SEGUIMIENTO',
-                        'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
+
                         'fecha_seguimiento': (self.get_fecha_seguimiento(str(None), str(None))),
                     }
 
@@ -493,17 +402,10 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             seguimiento_reciente = seguimiento_individual.objects.filter(
                 id_estudiante=pk).latest('fecha')
             riesgo = {
-                'riesgo_individual': 'SIN SEGUIMIENTO',
-                'riesgo_familiar': 'SIN SEGUIMIENTO',
-                'riesgo_academico': 'SIN SEGUIMIENTO',
-                'riesgo_economico': 'SIN SEGUIMIENTO',
-                'riesgo_vida_universitaria_ciudad': 'SIN SEGUIMIENTO',
                 'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente.fecha), str(None))),
-
             }
-            
-        diccionario_estudiante.update(riesgo)
-        
+
+                  
         try:
             firma_tratamiento = firma_tratamiento_datos.objects.filter(
                     id_estudiante=pk).values()
@@ -514,35 +416,33 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             firma = {
                 'firma_tratamiento_datos': 'SIN FIRMAR'
             }
+
+        
+        lista_programas = []
+        try :
+
+            ids_del_estudiante_para_sus_progamas = estudiante.objects.filter(num_doc=serializer_estudiante.data['num_doc']).values('id', 'cod_univalle')
+            ids_estudiantes = [item['id'] for item in ids_del_estudiante_para_sus_progamas]
+            consulta_programa = programa_estudiante.objects.select_related('id_programa').filter(id_estudiante__in=ids_estudiantes)
+            programas_serializados =programa_estudiante_ficha_serializer(consulta_programa,many=True)
+            diccionario_programas = {'programas': programas_serializados.data}
+
+
+        except :
+            dic_programa = {'error': 'sin programa asignado o no se encontraro coincidencias'
+                            }  # Agregar el estado del curso al diccionario
+
+            dic = {}
+            dic.update(dic_programa)
+            lista_programas.append(dic)
+            diccionario_programas = {'programas': lista_programas}
             
-        diccionario_estudiante.update(firma)
-        return Response(diccionario_estudiante)
 
-class estudiante_por_sede_viewsets(viewsets.ModelViewSet):
-    """
-    Vista para obtener estudiantes por sede.
-
-    Esta vista permite obtener una lista de estudiantes asociados a una sede específica.
-
-    Permisos:
-    - El usuario debe estar autenticado para acceder a esta vista.
-
-    Serializer:
-    - Se utiliza 'usuario_rol_serializer' para serializar los datos del modelo 'UsuarioRol'.
-
-    Métodos HTTP admitidos:
-    - GET: Obtiene una lista de estudiantes por sede.
-
-    Gestión de solicutudes HTTP VIEWSETS:
-    (Redefinida) retrieve: Maneja las solicitudes GET para obtener un recurso específico por su clave primaria. 
+        result = dict(serializer_estudiante.data, **dic_asignaciones,**riesgo,**firma, **diccionario_programas)
+        return Response(result)
     
-    """
-
-    serializer_class = usuario_rol_serializer
-    permission_classes = (IsAuthenticated,)
-    queryset = usuario_rol_serializer.Meta.model.objects.all()
-
-    def retrieve(self, request, pk=None):
+    @action(detail=True, methods=['get'], url_path='estudiantes_por_sede')
+    def estudiantes_por_sede(self, request, pk=None):
         #Obtener los programas asociados a la sede especificada
         programas_sede = programa.objects.filter(id_sede=pk)
         # Filtrar los estudiantes asociados a los programas de la sede
@@ -553,36 +453,20 @@ class estudiante_por_sede_viewsets(viewsets.ModelViewSet):
         # Devolver la lista de estudiantes como respuesta
         return Response(list_estudiantes.data, status=status.HTTP_200_OK)
     
-class estudiante_selected_viewsets(viewsets.ModelViewSet):
-    """
-    Vista para manejar la selección de estudiantes.
+    @action(detail=True, methods=['put'], url_path='estudiantes_de_un_monitor')
+    def estudiantes_de_un_monitor(self, request, pk):
+        """
+            Vista para manejar la selección de estudiantes.
 
-    Esta vista permite actualizar la selección de estudiantes para un usuario específico.
-    Esta función se encarga de devolver un listado de los estudiantes que actualmente tiene asignado el monitor selecionado
-    y los que aun no. Este endpoint es llamado en la vista de Asignaciones, especificamente al seleccionar un monitor.
-
-    Permisos:
-    - El usuario debe estar autenticado para acceder a esta vista.
-
-    Serializer:
-    - Se utiliza 'usuario_rol_serializer' para serializar los datos del modelo 'UsuarioRol'.
-
-    Métodos HTTP admitidos:
-    - PUT: Actualiza la selección de estudiantes para un usuario específico.
-
-    Gestión de solicutudes HTTP VIEWSETS:
-    (Redefinida)update: Maneja las solicitudes PUT para actualizar un recurso específico por su clave primaria.
-   
-    """
-    serializer_class = usuario_rol_serializer
-    permission_classes = (IsAuthenticated,)
-    queryset = usuario_rol_serializer.Meta.model.objects.all()
-
-    def update(self, request, pk):
+            Esta vista permite actualizar la selección de estudiantes para un usuario específico.
+            Esta función se encarga de devolver un listado de los estudiantes que actualmente tiene asignado el monitor selecionado
+            y los que aun no. Este endpoint es llamado en la vista de Asignaciones, especificamente al seleccionar un monitor.
+        
+        """
         var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=request.data["id_sede"])
         serializer_semestre = semestre_serializer(var_semestre)
         # Filtrar los estudiantes asignados al usuario para el semestre actual
-        estudiantes_asignados = estudiante.objects.filter(asignacion__id_usuario=pk, asignacion__estado=True, asignacion__id_semestre=serializer_semestre.data['id']).distinct()
+        estudiantes_asignados = estudiante.objects.filter(id_estudiante_in_asignacion__id_usuario=pk, id_estudiante_in_asignacion__estado=True, id_estudiante_in_asignacion__id_semestre=serializer_semestre.data['id']).distinct()
         # Obtener los programas asociados a la sede proporcionada en la solicitud
         programas_sede = programa.objects.filter(id_sede=request.data["id_sede"])
         # Subconsulta para obtener las asignaciones en el semestre actual con estado True
@@ -599,10 +483,6 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         ).exclude(
             id__in=Subquery(asignaciones_semestre_actual_true.values('id_estudiante'))
         ).distinct()
-        # Filtrar los estudiantes no asignados para el semestre actual
-        # estudiantes_no_asignados = estudiante.objects.filter(Q(asignacion__id_semestre=serializer_semestre.data['id'],asignacion__estado=True)).distinct()
-        # # Excluir los estudiantes no asignados de la lista total de estudiantes
-        # estudiantes_totales = estudiantes_totales.exclude(id__in=estudiantes_no_asignados.values_list('id', flat=True))
         # Serializar los datos de los estudiantes asignados y no asignados
         list_estudiantes_selected = estudiante_serializer(estudiantes_asignados, many=True) 
         list_estudiantes = estudiante_serializer(estudiantes_totales, many=True)
@@ -611,255 +491,67 @@ class estudiante_selected_viewsets(viewsets.ModelViewSet):
         # Devolver los datos como respuesta
         return Response(datos, status=status.HTTP_200_OK)
     
-class estudiante_actualizacion_viewsets (viewsets.ModelViewSet):
-    """
-    Vista para actualizar la información del estudiante.
+    @action(detail=True, methods=['post'], url_path='actualizacion_info_ficha_estuidante')
+    def actualizacion_info_ficha_estuidante(self, request, pk=None):
+        """
+            Vista para actualizar la información del estudiante.
 
-    Esta vista permite actualizar la información del estudiante, independientemente de si los campos
-    están en el modelo de estudiante o no. Se utiliza para la vista de ficha del estudiante.
-
-    Permisos:
-    - El usuario debe estar autenticado para acceder a esta vista.
-
-    Serializer:
-    - Se utiliza 'Estudiante_actualizacion' para serializar los datos del estudiante.
-
-    Métodos HTTP admitidos:
-    - POST: Actualiza la información del estudiante.
-    """
-    serializer_class = Estudiante_actualizacion
-    permission_classes = (IsAuthenticated,)
-    queryset = estudiante_serializer.Meta.model.objects.all()
-
-    # Se define la función post para poder editar todos los campos que se relacionan con el estudiante, independeinte de si estan en el modelo estudiante o no.
-    # Esta función es utlizada en la vista Ficha del Estudiante.
-    def post(self, request, pk=None):
-        # serializer = self.serializer_class(data=request.data)
-        # if (serializer.is_valid()):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-
-            puntaje_icfes_request = serializer.data['puntaje_icfes']
-            telefono_res_request = serializer.data['telefono_res']
-            celular_request = serializer.data['celular']
-            email_request = serializer.data['email']
-            sexo_request = serializer.data['sexo']
-            cantidad_hijo_request = serializer.data['hijos']
-            deporte_request = serializer.data['actividades_ocio_deporte']
-            acudiente_emergencia_request = serializer.data['acudiente']
-            tel_acudiente_emergencia_request = serializer.data['telefono_acudiente']
-
-            etnia_request = serializer.data['id_etnia']
-            act_simultanea_request = serializer.data['id_act_simultanea']
-            identidad_gen_request = serializer.data['id_identidad_gen']
-            estado_civil_request = serializer.data['id_estado_civil']
-            cond_excepcion_request = serializer.data['id_cond_excepcion']
-
-            vive_con_request = serializer.data['vive_con']
-            ult_modificacion_request = serializer.data['ult_modificacion']
-
-            var_estudiante = estudiante.objects.get(id=pk)
-            serializer_estudiante = estudiante_serializer(var_estudiante)
-
-            try:
-                var_old_estudiante = estudiante.objects.get(pk = serializer_estudiante.data['id'])
-                var_estudiante = var_old_estudiante
-
-                var_estudiante.puntaje_icfes = puntaje_icfes_request
-                var_estudiante.telefono_res = telefono_res_request
-                var_estudiante.celular = celular_request
-                var_estudiante.email = email_request
-                var_estudiante.sexo = sexo_request
-                var_estudiante.actividades_ocio_deporte = deporte_request
-                var_estudiante.hijos = cantidad_hijo_request
-                var_estudiante.acudiente = acudiente_emergencia_request
-                var_estudiante.telefono_acudiente = tel_acudiente_emergencia_request
-                var_estudiante.vive_con = vive_con_request
-                var_estudiante.ult_modificacion = ult_modificacion_request
-
-                try:
-                    etnia_obj = etnia.objects.get(id=etnia_request)
-                    var_estudiante.id_etnia = etnia_obj
-                except:
-                    print('no hiz etnia')
-
-                try:
-                    act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
-                    var_estudiante.id_act_simultanea = act_simultanea_obj
-                except:
-                    print('no hiz act_simultanea')
-
-                try:
-                    identidad_gen_obj = identidad_gen.objects.filter(id=identidad_gen_request).first()
-                    var_estudiante.id_identidad_gen = identidad_gen_obj
-                except:
-                    print('no hiz identidad_gen')
-
-                try:
-                    estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
-                    var_estudiante.id_estado_civil = estado_civil_obj
-                except:
-                    print('no hiz estado_civil')
-
-                try:
-                    cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
-                    var_estudiante.id_cond_excepcion = cond_excepcion_obj
-                except:
-                    print('no hiz cond_excepcion')
-
-                var_estudiante.save()
-                return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
-            except estudiante.DoesNotExist:
-                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class trayectoria_viewsets(viewsets.ModelViewSet):
-    serializer_class = seguimiento_individual_serializer
-    queryset = seguimiento_individual_serializer.Meta.model.objects.all()
-
-    def retrieve(self, request, pk):
-        request_sede = int(request.GET.get('id_sede'))
-        list_semestre = semestre.objects.all().get(semestre_actual=True,id_sede = request_sede)
-        fecha_inicio_semestre = list_semestre.fecha_inicio
-
-        listas = []
-        fechas = []
-        riesgo_individual = []
-        riesgo_familiar = []
-        riesgo_academico = []
-        riesgo_economico = []
-        riesgo_vida_universitaria_ciudad = []
-
+            Esta vista permite actualizar la información del estudiante, independientemente de si los campos
+            están en el modelo de estudiante o no. Se utiliza para la vista de ficha del estudiante.
+        """
         try:
-            seguimiento_reciente = seguimiento_individual.objects.filter(
-                id_estudiante=pk, fecha__gt=fecha_inicio_semestre
-            ).order_by('fecha')
-            print (seguimiento_reciente)
-            for i in seguimiento_reciente:
-                seguimiento = seguimiento_individual_serializer(i)
-                fechas.append(seguimiento.data['fecha'])
-                riesgo_individual.append(seguimiento.data['riesgo_individual'])
-                riesgo_familiar.append(seguimiento.data['riesgo_familiar'])
-                riesgo_academico.append(seguimiento.data['riesgo_academico'])
-                riesgo_economico.append(seguimiento.data['riesgo_economico'])
-                riesgo_vida_universitaria_ciudad.append(seguimiento.data['riesgo_vida_universitaria_ciudad'])
-
-            fechas_lista = {'fechas': fechas}
-            riesgo_individual_lista = {'riesgo_individual': riesgo_individual}
-            riesgo_familiar_lista = {'riesgo_familiar': riesgo_familiar}
-            riesgo_academico_lista = {'riesgo_academico': riesgo_academico}
-            riesgo_economico_lista = {'riesgo_economico': riesgo_economico}
-            riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad': riesgo_vida_universitaria_ciudad}
-
-            listas.append(fechas_lista)
-            listas.append(riesgo_individual_lista)
-            listas.append(riesgo_familiar_lista)
-            listas.append(riesgo_academico_lista)
-            listas.append(riesgo_economico_lista)
-            listas.append(riesgo_vida_universitaria_ciudad_lista)
-            print(listas)
-            return Response(listas)
-        except seguimiento_individual.DoesNotExist:
-            return Response({})
-        
-class mas_con_quien_vive_viewsets (viewsets.ModelViewSet):
-    serializer_class = Estudiante_actualizacion
-    queryset = estudiante_serializer.Meta.model.objects.all()
-
-    def post(self, request, pk=None):
-        # serializer = self.serializer_class(data=request.data)
-        # if (serializer.is_valid()):
-        serializer = self.serializer_class(data=request.data)
-
+            var_estudiante = estudiante.objects.get(id = pk)
+        except estudiante.DoesNotExist:
+                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = Estudiante_actualizacion(data=request.data)
         if serializer.is_valid():
-
-            puntaje_icfes_request = serializer.data['puntaje_icfes']
-            telefono_res_request = serializer.data['telefono_res']
-            celular_request = serializer.data['celular']
-            email_request = serializer.data['email']
-            sexo_request = serializer.data['sexo']
-            cantidad_hijo_request = serializer.data['hijos']
-            deporte_request = serializer.data['actividades_ocio_deporte']
-            acudiente_emergencia_request = serializer.data['acudiente']
-            tel_acudiente_emergencia_request = serializer.data['telefono_acudiente']
-
-            etnia_request = serializer.data['id_etnia']
-            act_simultanea_request = serializer.data['id_act_simultanea']
-            identidad_gen_request = serializer.data['id_identidad_gen']
-            estado_civil_request = serializer.data['id_estado_civil']
-            cond_excepcion_request = serializer.data['id_cond_excepcion']
-
-            var_estudiante = estudiante.objects.get(id=pk)
-            serializer_estudiante = estudiante_serializer(var_estudiante)
+            var_estudiante.puntaje_icfes = serializer.data['puntaje_icfes']
+            var_estudiante.telefono_res = serializer.data['telefono_res']
+            var_estudiante.celular = serializer.data['celular']
+            var_estudiante.email = serializer.data['email']
+            var_estudiante.sexo = serializer.data['sexo']
+            var_estudiante.actividades_ocio_deporte = serializer.data['actividades_ocio_deporte']
+            var_estudiante.hijos = serializer.data['hijos']
+            var_estudiante.acudiente = serializer.data['acudiente']
+            var_estudiante.telefono_acudiente = serializer.data['telefono_acudiente']
+            var_estudiante.vive_con = serializer.data['vive_con']
+            var_estudiante.ult_modificacion = serializer.data['ult_modificacion']
+            try:
+                etnia_obj = etnia.objects.get(id=serializer.data['id_etnia'])
+                var_estudiante.id_etnia = etnia_obj
+            except:
+                print('no hiz etnia')
 
             try:
-                var_old_estudiante = estudiante.objects.get(pk = serializer_estudiante.data['id'])
-                var_estudiante = var_old_estudiante
+                act_simultanea_obj = act_simultanea.objects.get(id=serializer.data['id_act_simultanea'])
+                var_estudiante.id_act_simultanea = act_simultanea_obj
+            except:
+                print('no hiz act_simultanea')
 
-                var_estudiante.puntaje_icfes = puntaje_icfes_request
-                var_estudiante.telefono_res = telefono_res_request
-                var_estudiante.celular = celular_request
-                var_estudiante.email = email_request
-                var_estudiante.sexo = sexo_request
-                var_estudiante.actividades_ocio_deporte = deporte_request
-                var_estudiante.hijos = cantidad_hijo_request
-                var_estudiante.acudiente = acudiente_emergencia_request
-                var_estudiante.telefono_acudiente = tel_acudiente_emergencia_request
+            try:
+                identidad_gen_obj = identidad_gen.objects.get(id=serializer.data['id_identidad_gen'])
+                var_estudiante.id_identidad_gen = identidad_gen_obj
+            except:
+                print('no hiz identidad_gen')
 
-                try:
-                    etnia_obj = etnia.objects.get(id=etnia_request)
-                    var_estudiante.id_etnia = etnia_obj
-                except:
-                    print('no hiz etnia')
+            try:
+                estado_civil_obj = estado_civil.objects.get(id=serializer.data['id_estado_civil'])
+                var_estudiante.id_estado_civil = estado_civil_obj
+            except:
+                print('no hiz estado_civil')
 
-                try:
-                    act_simultanea_obj = act_simultanea.objects.get(id=act_simultanea_request)
-                    var_estudiante.id_act_simultanea = act_simultanea_obj
-                except:
-                    print('no hiz act_simultanea')
+            try:
+                cond_excepcion_obj = cond_excepcion.objects.get(id=serializer.data['id_cond_excepcion'])
+                var_estudiante.id_cond_excepcion = cond_excepcion_obj
+            except:
+                print('no hiz cond_excepcion')
+            var_estudiante.save()
 
-                try:
-                    identidad_gen_obj = identidad_gen.objects.filter(id=identidad_gen_request).first()
-                    var_estudiante.id_identidad_gen = identidad_gen_obj
-                except:
-                    print('no hiz identidad_gen')
-
-                try:
-                    estado_civil_obj = estado_civil.objects.get(id=estado_civil_request)
-                    var_estudiante.id_estado_civil = estado_civil_obj
-                except:
-                    print('no hiz estado_civil')
-
-                try:
-                    cond_excepcion_obj = cond_excepcion.objects.get(id=cond_excepcion_request)
-                    var_estudiante.id_cond_excepcion = cond_excepcion_obj
-                except:
-                    print('no hiz cond_excepcion')
-
-                var_estudiante.save()
-                return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
-            except estudiante.DoesNotExist:
-                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
+        return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
 class Grupo_etnico_viewsets(viewsets.ModelViewSet):
     serializer_class = Grupo_etnico_serializer
     permission_classes = (IsAuthenticated,)
     queryset = etnia.objects.all()
-
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class Actividad_simultanea_viewsets(viewsets.ModelViewSet):
@@ -867,54 +559,25 @@ class Actividad_simultanea_viewsets(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = act_simultanea.objects.all()
 
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class Identidad_gen_viewsets(viewsets.ModelViewSet):
     serializer_class = Identidad_de_genero_serializer
     permission_classes = (IsAuthenticated,)
     queryset = identidad_gen.objects.all()
 
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class Estado_civil_viewsets(viewsets.ModelViewSet):
     serializer_class = Estado_civil_serializer
     permission_classes = (IsAuthenticated,)
     queryset = estado_civil.objects.all()
-
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class Condicion_de_excepcion_viewsets(viewsets.ModelViewSet):
     serializer_class = Condicion_de_excepcion_serializer
     permission_classes = (IsAuthenticated,)
     queryset = cond_excepcion.objects.all()
 
-    def list(self, request):
-        try:
-            serializer = self.get_serializer(self.queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
     serializer_class = usuario_rol_serializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
     def retrieve(self, request, pk):
@@ -926,13 +589,13 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
         if request_rol == "socioeducativo" or request_rol == "super_ases" or request_rol  == "socioeducativo_reg":
             list_id_programas = programa.objects.filter(id_sede=request_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes,estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
         elif request_rol == "profesional":
             list_id_practicantes= usuario_rol.objects.filter(id_jefe=pk, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
             list_id_monitores= usuario_rol.objects.filter(id_jefe__in=list_id_practicantes, id_semestre=var_semestre.id, estado="ACTIVO").values('id_usuario')
             list_id_estudiantes = asignacion.objects.filter(id_usuario__in=list_id_monitores, id_semestre=var_semestre.id, estado=True).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes,estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
         for data_del_estudiante in serializer_estudiantes.data:
@@ -1515,50 +1178,6 @@ class monitor_info_extra_viewsets(viewsets.ModelViewSet):
         diccionario_monitor.update(datos_encargados)
 
         return Response(diccionario_monitor)
-
-
-
-
-class monitor_actualizacion_viewsets (viewsets.ModelViewSet):
-    serializer_class = Monitor_actualizacion
-    permission_classes = (IsAuthenticated,)
-    queryset = monitor_serializer.Meta.model.objects.all()
-
-    def post(self, request, pk=None):
-        # serializer = self.serializer_class(data=request.data)
-        # if (serializer.is_valid()):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-
-            telefono_res_request = serializer.data['telefono_res']
-            celular_request = serializer.data['celular']
-           
-            observacion_request = serializer.data['observacion']
-            ult_modificacion_request = serializer.data['ult_modificacion']
-
-            var_monitor = monitor.objects.get(id=pk)
-            serializer_monitor = monitor_serializer(var_monitor)
-
-            try:
-                var_old_estudiante = monitor.objects.get(pk = serializer_monitor.data['id'])
-                var_monitor = var_old_estudiante
-
-                var_monitor.telefono_res = telefono_res_request
-                var_monitor.celular = celular_request
-
-                var_monitor.observacion = observacion_request
-                var_monitor.ult_modificacion = ult_modificacion_request
-
-                var_monitor.save()
-                return Response({'Respuesta': 'True'},status=status.HTTP_200_OK)
-            except estudiante.DoesNotExist:
-
-                return Response({'Respuesta': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 """
 PARTE 4: VIEWS QUE SE BASAN EN EL MODELO SEGUIMIENTO INDIVIDUAL E INASISTENCIA__________________________________________________________________________________________________
 """
@@ -1589,12 +1208,12 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset =  seguimiento_individual_serializer.Meta.model.objects.all()
     
-
-    def retrieve(self, request,pk):
+    @action(detail=False, methods=['post'], url_path='ultimo_seguimiento_semestre')
+    def ultimo_seguimiento_semestre(self, request,pk=None):
 
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
-            seguimiento_reciente = riesgo_individual.objects.get(id_estudiante=pk)
+            seguimiento_reciente = riesgo_individual.objects.get(id_estudiante=request.data["id_estudiante"],id_semestre=request.data["id_semestre"])
 
             # Crear un diccionario con los datos de riesgo del seguimiento
             riesgo = {

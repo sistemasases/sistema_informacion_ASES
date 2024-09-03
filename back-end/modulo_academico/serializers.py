@@ -14,10 +14,18 @@ from .models import (
     items_semestre,
     notas_historico,
     notas_semestre,
+    monitoria_academica
 )
 from modulo_usuario_rol.serializers import user_basic_info_serializer
 
 
+class monitoria_academica_serializer(serializers.ModelSerializer):
+    # id_programa_estudiante = programa_estudiante_serializer()
+    # id_semestre = semestre_serializer()
+
+    class Meta:
+        model = monitoria_academica
+        fields = '__all__'
 class historial_academico_serializer(serializers.ModelSerializer):
     # id_programa_estudiante = programa_estudiante_serializer()
     # id_semestre = semestre_serializer()

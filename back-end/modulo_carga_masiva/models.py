@@ -5,6 +5,7 @@ from modulo_usuario_rol.models import estudiante
 
 class motivo (models.Model):
     descripcion= models.CharField(max_length=150)
+    motivo_activo = models.BooleanField(default=True)
 
 class retiro (models.Model):
     id_estudiante= models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0,related_name='id_estudiante_in_retiro')

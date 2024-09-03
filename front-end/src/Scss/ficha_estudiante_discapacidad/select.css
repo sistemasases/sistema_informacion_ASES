@@ -1,0 +1,324 @@
+.container-main{
+    font-family: inherit;
+    width: 100%;
+    color: #606060;
+    display: grid;
+    grid-template-columns: 80% 20%;
+    grid-template-areas: 
+    "bigC imgE"
+    "bigC imgE" 
+    "bigC links";
+    font-size: 1rem;
+}
+
+.container-submain {
+    grid-area: bigC;
+    width: 100%;
+    background-color: rgba(155, 155, 155, 0.432);
+    border-radius: 30px 30px 0px 30px;
+    display: grid;
+    padding: 20px;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+        "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+        "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+        "infoP infoP infoP infoP condicion condicion condicion"
+        "profIP profIP profIP profIP otraInfo otraInfo otraInfo";
+}
+
+.container-basic {
+    grid-area: cont-basic;
+    width: 100%;
+    display: grid; 
+    gap: 10px;
+    justify-items: center; 
+    align-items: center;
+}
+
+.select-item {
+    text-transform: uppercase;
+    font-weight: 700;
+    color: inherit;
+    height: 40px;
+    width: 100%;
+    border-radius: 20px;
+}
+
+.basic-info {
+    width: 90%;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: space-between;
+}
+
+
+.general-info {
+    width: 100%;
+    display:table-column;
+    justify-content: left;
+    margin-top: 0; /* Elimina el espacio encima de los párrafos */
+    margin-bottom: 0; /* Reduce el espacio debajo de los párrafos */
+    line-height: 1; /* Restaura la altura de línea a un valor normal */
+    
+}
+.container-img {
+    grid-area: imgE;
+    border-radius: 30px;
+    align-self: center;
+}
+
+.img{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    border-radius: 30px;
+}
+
+.img:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 0px 2px rgba(191,191,191,1);
+    transition: 0.2s;
+    opacity: 1.8;
+}
+
+
+.container-programa {
+    grid-area: infoP;
+}
+
+.condicion {
+    font-weight: 700;
+    grid-area: condicion;
+}
+
+.info-prof-programa {
+    grid-area: profIP;
+}
+
+.dimen-prog {
+    width: 100%;
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 25px;
+    border-radius: 6px;
+}
+
+.container-otros-datos {
+    grid-area: otraInfo;
+    color:  #838381;
+    padding-left: 30px;
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.more-stud-info p {
+    margin-top: 0; /* Elimina el espacio encima de los párrafos */
+    margin-bottom: -1em; /* Reduce el espacio debajo de los párrafos */
+    line-height: 2.2; /* Restaura la altura de línea a un valor normal */
+}
+
+.links {
+    grid-area: links;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    text-decoration: none;
+    background-color: rgba(155, 155, 155, 0.432);
+    border-radius: 0px 30px 30px 0px;
+}
+
+.link{
+    width: 90%;
+    min-width: 110px;
+    height: auto;
+    margin: 0px auto 10px;
+    min-height: 30px;
+    text-decoration: none;
+    background-color: transparent;
+    color:  #838381;
+    border: 1px solid #838381; 
+    border-radius: 10px;
+    font-size: 0.9rem;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.link:hover {
+    background-color: #838381;
+    color: white;
+}
+
+.info-programas {
+    grid-area: info-programas;
+}
+
+.title-prog {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.short-info-programa {
+    color: white;
+    font-size: 0.9rem;
+    width: 80px;
+    height: 30px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 30px;
+}
+
+.egresado {
+    background-color: #1ec3c5;
+}
+
+.encurso {
+    background-color: #41af1c;
+}
+
+.desertor {
+    background-color: #838381;
+}
+
+@media (max-width: 500px){
+    .container-main{
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+        "bigC bigC"
+        "bigC bigC" 
+        "imgE links";
+    }
+
+    .container-submain {
+        grid-template-areas:
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "condicion condicion condicion condicion condicion condicion condicion"
+            "infoP infoP infoP infoP infoP infoP infoP"
+            "otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo"
+            "profIP profIP profIP profIP profIP profIP profIP";   
+    }
+
+    .img{
+        margin-top: 15px;
+        cursor: pointer;
+    }
+
+
+    .container-otros-datos {
+        padding-left: 0px;
+        margin-bottom: 20px; 
+    }
+
+    .links {
+        border-radius: 0px 0px 30px 30px;
+        padding-top: 40px;
+    }
+
+    .link{
+        width: 80%;
+    }
+}
+
+@media (min-width: 500px) and (max-width: 800px){
+    .container-main{
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+        "bigC bigC"
+        "bigC bigC" 
+        "imgE links";
+        font-size: 0.8rem;
+    }
+
+    .container-submain {
+        grid-template-areas:
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "condicion condicion condicion condicion condicion condicion condicion"
+            "infoP infoP infoP infoP infoP infoP infoP"
+            "otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo otraInfo"
+            "profIP profIP profIP profIP profIP profIP profIP";   
+    }
+
+    .container-otros-datos {
+        padding-left: 0px;
+        margin-bottom: 20px; 
+    }
+
+    .short-info-programa {
+        font-size: 0.7rem;
+        width: 70px;
+        margin-right: 10px;
+    }
+
+    .links {
+        border-radius: 0px 0px 30px 30px;
+        padding-top: 30px;
+    }
+    
+    .link{
+        width: 80%;
+        font-size: 0.7rem;
+    }
+
+    .title-prog {
+        font-size: inherit;
+    }
+}
+
+@media (min-width: 801px) and (max-width: 1200px){
+    .container-main{
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+        "bigC bigC"
+        "bigC bigC" 
+        "imgE links";
+        font-size: 0.7rem;
+    }
+
+    .container-submain {
+        grid-template-areas:
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic cont-basic"
+            "condicion condicion condicion condicion condicion condicion condicion"
+            "infoP infoP infoP infoP otraInfo otraInfo otraInfo"
+            "infoP infoP infoP infoP otraInfo otraInfo otraInfo"
+            "profIP profIP profIP profIP profIP profIP profIP";  
+    }
+
+    .container-otros-datos {
+        padding-left: 0px;
+    }
+
+    .short-info-programa {
+        font-size: 0.6rem;
+        width: 60px;
+        margin-right: 10px;
+    }
+
+    .more-stud-info p {
+        font-size: 0.7rem;
+    }
+
+    .img{
+        display: block;
+        margin: 10px auto 0px;
+        width: 75%;
+        height: 90%;
+        border: solid rgb(255, 255, 255);
+        border-radius: 30px;
+    }
+
+    .links {
+        border-radius: 0px 0px 30px 30px;
+        padding-top: 50px;
+    }
+
+    .title-prog {
+        font-size: inherit;
+    }
+}

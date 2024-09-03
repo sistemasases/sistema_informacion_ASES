@@ -10,7 +10,7 @@ import React, { useMemo, useState } from 'react';
 import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
-import { decryptTokenFromSessionStorage } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { decryptTokenFromSessionStorage, encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
 /**
  * Componente para mostrar listas desplegables de materias, cursos, franjas, profesores y estudiantes.
@@ -101,6 +101,16 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
       [e.target.name]: e.target.value
     })
   }
+
+  /**
+   * @function cambiar_ruta
+   * @param e Es el nombre de la ruta
+   * @description Cambia la vista según los links seleccionados
+  */
+  const cambiar_ruta = (e) => {
+    sessionStorage.setItem("path", encriptar(e));
+    window.location.reload();
+  };
   
   // Renderizado condicional según el tipo de dato
   if (item.materias) {
@@ -122,7 +132,7 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
                     <Row>
                         <Col className="contenido_fichas_academico2">
                         { item.materias.filter((item)=>{
-                          console.log(state.filtro)
+                          //console.log(state.filtro)
                                 return state.filtro === '' ? item 
                                 : 
                                 item.nombre.toLowerCase().includes(state.filtro.toLowerCase()) ||
@@ -171,7 +181,7 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
 
         <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
           <Row className="link_text_academico_hover4" >
-            <a href={`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`}
+            <a onClick={() => cambiar_ruta(`/calificador/${encodeURIComponent(item.id)}/${encodeURIComponent(item.id_profesor)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`)}
               rel="noopener noreferrer" className="link_text_academico_hover4">
               Grupo {item.franja}     :     {item.profesor_data.first_name}   {item.profesor_data.last_name}
             </a>
@@ -199,7 +209,7 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
         <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
           <Row className="link_academico1_sin_borde" >
             <Col className="contenido_fichas_academico2" >
-              <a href={`/calificador/${encodeURIComponent(franja)}/${encodeURIComponent(item.id)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`}
+              <a onClick={() => cambiar_ruta(`/calificador/${encodeURIComponent(franja)}/${encodeURIComponent(item.id)}/${encodeURIComponent(item.cod_materia)}/${encodeURIComponent(item.franja)}`)}
                 rel="noopener noreferrer" className="link_text_academico_hover4">
                 {item.first_name} {item.last_name}
               </a>
@@ -229,7 +239,7 @@ const Desplegable_item_listas_materias = ({ item, franja }) => {
         <Col className={open ? "fichas_academico4 open" : "fichas_academico4"}>
           <Row className="link_academico1_sin_borde" onClick={() => setOpen(!open)}>
             <Col className="link_text_academico1_sin_borde" xs={4}>
-              <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+              <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
                 {item.nombre} {item.apellido} - {item.cod_univalle}
               </Link>
             </Col>
