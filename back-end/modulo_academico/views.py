@@ -18,17 +18,17 @@ from modulo_usuario_rol import serializers
 from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from .serializers import historial_academico_serializer, materia_serializer, matricula_serializer, matricula_serializer, items_historico_serializer, items_semestre_serializer, notas_historico_serializer, notas_semestre_serializer
+from .serializers import *
 
 from modulo_programa.serializers import  programa_estudiante_serializer, programa_serializer, facultad_serializer
 from modulo_instancia.serializers import semestre_serializer
 from modulo_asignacion.serializers import asignacion_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer, inasistencia_serializer
 from modulo_usuario_rol.serializers import estudiante_serializer, user_serializer, usuario_rol_serializer
-
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
+from django.db.models import Q
 from rest_framework.decorators import action
 
 
@@ -44,30 +44,29 @@ class lista_de_facultades_viewsets(viewsets.ModelViewSet):
         serializer = facultad_serializer(queryset, many=True)
         return Response(serializer.data)
 
-
-
 class lista_de_profesores_viewsets(viewsets.ModelViewSet):
     serializer_class = user_serializer
-    # permission_classes = (IsAuthenticated,)
     queryset = user_serializer.Meta.model.objects.all()
 
     def list(self, request, pk=None):
         nombre_rol = rol.objects.get(nombre='profesor')
         # Obtener los registros de usuario_rol que tengan el rol de "Profesor"
-        profesores = usuario_rol.objects.filter(id_rol=nombre_rol.id).values()
-        # Lista para almacenar los datos de los profesores
-        lista_profesores = []
-        # Obtener los usuarios asociados a los registros de usuario_rol
-        for lista in profesores:
-            usuario_id = lista['id_usuario_id']
-            datos_profesor = User.objects.get(id=usuario_id)
-            lista_profesores.append(datos_profesor)
+        profesores = usuario_rol.objects.filter(id_rol=nombre_rol.id).values('id_usuario_id')
+        
+        # Obtener los IDs de los profesores
+        lista_profesores_ids = [profesor['id_usuario_id'] for profesor in profesores]
+        
+        # Filtrar los profesores según la relación con la materia
+        profesores_con_materia = materia.objects.filter(id_profesor__in=lista_profesores_ids)
+
+        # Obtener los IDs de los profesores que tienen relación con alguna materia
+        profesores_con_materia_ids = [profesor_materia.id_profesor_id for profesor_materia in profesores_con_materia]
+
+        # Filtrar los profesores según los IDs obtenidos
+        lista_profesores = User.objects.filter(id__in=profesores_con_materia_ids)
 
         serializer = user_serializer(lista_profesores, many=True)
         return Response(serializer.data)
-
-
-
 
 class cursos_facultad2_viewsets(viewsets.ModelViewSet):
     serializer_class = materia_serializer
@@ -150,14 +149,6 @@ class cursos_facultad_viewsets(viewsets.ModelViewSet):
 
         return Response(list_cursos)
 
-
-
-
-
-
-
-
-
 class traer_cursos_del_profesor_viewsets(viewsets.ModelViewSet):
     serializer_class = materia_serializer
     #permission_classes = (IsAuthenticated,)
@@ -175,6 +166,7 @@ class traer_cursos_del_profesor_viewsets(viewsets.ModelViewSet):
             list_cursos.append(data_curso)
 
         return Response(list_cursos)
+
 
 
 class traer_cursos_del_estudiante_viewsets(viewsets.ModelViewSet):
@@ -359,7 +351,7 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
 
         for i in estudiantes_ids:
             serializer = matricula_serializer(i)
-            estudiante_info = estudiante.objects.filter(id=serializer.data['id_estudiante']).values('id', 'nombre', 'apellido', 'cod_univalle')
+            estudiante_info = estudiante.objects.filter(id=serializer.data['id_estudiante']).values('id', 'nombre', 'apellido', 'cod_univalle', 'num_doc')
 
             parcelacion = items_semestre.objects.filter(id_curso=curso_param, id_profesor=proferos_param)
             list_notas = []
@@ -504,4 +496,23 @@ class todo_item_viewsets(viewsets.ModelViewSet):
     serializer_class = items_semestre_serializer
 
 
+class reporte_calificador_viewsets(viewsets.ModelViewSet):
+    queryset = materia.objects.all()
+    serializer_class = materia_serializer_full
+    def create(self, request):
+        materias = materia.objects.filter(id_sede=request.data['id_sede'])
+        return Response(materias, status=status.HTTP_200_OK)
+    
+class reporte_calificador_estudiante_viewsets(viewsets.ModelViewSet):
+    serializer_class = items_estudiante_serializer
 
+    def get_queryset(self):
+        return estudiante.objects.filter(
+            Q(notas_semestre__calificacion__gte=0)  
+        ).distinct()
+    def create(self, request):
+        return Response(request.data, status=status.HTTP_200_OK)
+    
+    
+    
+    

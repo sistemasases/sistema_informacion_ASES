@@ -33,6 +33,12 @@ class user_info_basica_serializer(serializers.ModelSerializer):
 		model = User
 		fields = ['id', 'first_name','last_name']
 
+class user_basic_info_serializer(serializers.ModelSerializer):
+    # create a meta class
+	class Meta:
+		model = User
+		fields = ['id','username','first_name','last_name','email']
+
 class estudiante_serializer(serializers.ModelSerializer):
 
 	# create a meta class

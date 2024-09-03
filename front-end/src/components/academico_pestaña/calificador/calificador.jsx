@@ -290,6 +290,14 @@ const handleDeleteItem = async () => {
             Cod. Estudiante
           </Col>
 
+          <Col className="contenido_fichas_academico2" xs={2} >
+            Documento
+          </Col>
+
+          <Col className="contenido_fichas_academico2" xs={2} >
+            Programa
+          </Col>
+
           {datos_del_curso.length > 0 ? (
             datos_del_curso.map((item, index) => (
               <Col key={index} >

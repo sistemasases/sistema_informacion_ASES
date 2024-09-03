@@ -31,8 +31,8 @@ from modulo_asignacion.serializers import asignacion_serializer,asignacion_monit
 from modulo_seguimiento.serializers import seguimiento_individual_serializer
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import get_object_or_404
+from django.core import serializers
 from rest_framework.decorators import action
-
 
 """
 POR EL GRAN TAMAÑO DE ESTA VISTA SE DIVIDIÓ LA MISMA EN VARIAS PARTES

@@ -13,9 +13,9 @@ import React, {  useState } from 'react';
 import { Row, Col, Form } from "react-bootstrap";
 import axios from 'axios';
 import { Link } from "react-router-dom";
-import { decryptTokenFromSessionStorage, desencriptar, encriptar} from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { decryptTokenFromSessionStorage, desencriptar, encriptar, desencriptarInt } from '../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
 
-const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
+const Desplegable_item_listas_materias = ({ item, lista_parciales }) => {
     // Configuración para la autorización de la API
     const config = {
         headers: {
@@ -130,12 +130,72 @@ const Desplegable_item_listas_materias = ({ item,lista_parciales}) => {
                         :
                         (
                             <Col className="link_text_academico1_sin_borde" xs={2} >
-                                <Link onClick={()=>cambiar_ruta(`/ficha_estudiante/${item.id}`)} className="fichas_academico plain">
+                                <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
                                     {item.cod_univalle}
                                 </Link>
                             </Col>
                         )
                     }
+
+                        {desencriptar(sessionStorage.getItem('rol')) === 'profesor' ?
+                            (
+                                <Col className="link_text_academico1_sin_borde" xs={2}>
+                                    {console.log(item.num_doc)}
+                                </Col>
+                            ) :
+                            (
+                                <Col className="link_text_academico1_sin_borde" xs={2} >
+                                    <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                        {item.num_doc}
+                                    </Link>
+                                </Col>
+                            )
+                        }
+
+                        {desencriptar(sessionStorage.getItem('rol')) === 'profesor' ?
+                            (
+                                <Col className="link_text_academico1_sin_borde" xs={2}>
+                                    {console.log(item.programa)}
+                                </Col>
+                            ) :
+                            (
+                                <Col className="link_text_academico1_sin_borde" xs={2} >
+                                    <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                        {item.programa}
+                                    </Link>
+                                </Col>
+                            )
+                        }
+
+                        {desencriptar(sessionStorage.getItem('rol')) === 'profesor' ?
+                            (
+                                <Col className="link_text_academico1_sin_borde" xs={2}>
+                                    {console.log(item.num_doc)}
+                                </Col>
+                            ) :
+                            (
+                                <Col className="link_text_academico1_sin_borde" xs={2} >
+                                    <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                        {item.num_doc}
+                                    </Link>
+                                </Col>
+                            )
+                        }
+
+                        {desencriptar(sessionStorage.getItem('rol')) === 'profesor' ?
+                            (
+                                <Col className="link_text_academico1_sin_borde" xs={2}>
+                                    {console.log(item.programa)}
+                                </Col>
+                            ) :
+                            (
+                                <Col className="link_text_academico1_sin_borde" xs={2} >
+                                    <Link to={`/ficha_estudiante/${item.id}`} className="fichas_academico plain">
+                                        {item.programa}
+                                    </Link>
+                                </Col>
+                            )
+                        }
 
 
 
