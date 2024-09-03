@@ -22,28 +22,33 @@ const formularios_externos_primer_ingreso_envio = async (formData) => {
     axios
       .post(url_axios, formData)
       .then((response) => {
-        console.log(response);
-        return response;
-        // }
+        // console.log(response);
+        if (response.status === 201) {
+          alert(response.data.mensaje);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+        return true;
       })
       .catch((error) => {
-        console.error(error);
+        // console.error(error);
         if (error.response.status === 400) {
+          alert(error.response.data.mensaje);
+          return false;
+        } else if (error.response.status === 404) {
           alert(error.response.data.mensaje);
           return false;
         } else if (error.response.status === 409) {
           alert(error.response.data.mensaje);
           return false;
         } else if (error.response.status === 500) {
-          alert(error.response.data.mensaje);
-          return false;
-        } else {
-          alert("Error al enviar los datos");
+          alert("Error interno del servidor, por favor intente más tarde.");
           return false;
         }
       });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return false;
   }
 };

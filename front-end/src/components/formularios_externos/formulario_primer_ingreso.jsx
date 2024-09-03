@@ -28,14 +28,18 @@ import Formulario_primer_ingreso from "../../service/formularios_externos_primer
 const FormularioPrimerIngreso = (props) => {
   const [documentType, setDocumentType] = useState("");
   const [otherDocumentType, setOtherDocumentType] = useState("");
-  const [sede, setSede] = useState({
-    data_sede: [],
-  });
+
   const [program, setProgram] = useState({
     data_program: [],
   });
   const opciones = [];
   const opciones_programa = [];
+  const opciones_sexo = [
+    { id: 0, value: "M", label: "Masculino" },
+    { id: 1, value: "F", label: "Femenino" },
+    { id: 2, value: "NB", label: "No Binario" },
+    { id: 3, value: "O", label: "Otro" },
+  ];
 
   // const url = encriptar("formulario_autorizacion");
   // // console.log(url);
@@ -47,22 +51,6 @@ const FormularioPrimerIngreso = (props) => {
   // URL: Primer Ingreso: U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7
 
   useEffect(() => {
-    All_sedes_formularios_externos.all_sedes_formularios_externos()
-      .then((res) => {
-        // console.log("Respuesta de la API:", res);
-        if (res) {
-          // console.log(res);
-          setSede({
-            ...sede,
-            data_sede: res,
-          });
-        } else {
-          console.error("Respuesta de la API no es un arreglo válido:", res);
-        }
-      })
-      .catch((error) => {
-        console.error("Error al obtener datos de la API:", error);
-      });
     All_program_formularios_externos.all_program_formularios_externos()
       .then((pro_res) => {
         if (pro_res) {
@@ -80,27 +68,7 @@ const FormularioPrimerIngreso = (props) => {
       });
   }, []);
 
-  const handle_open_sedes = () => {
-    // // console.log(sede.data_sede);
-    // // console.log("HOLAAA");
-    // // console.log(semestres.data_semestre.length);
-    for (let i = 0; i < sede.data_sede.length; i++) {
-      opciones.pop(i);
-    }
-
-    for (let i = 0; i < sede.data_sede.length; i++) {
-      const dato = {
-        value: sede.data_sede[i]["nombre"],
-        label: sede.data_sede[i]["nombre"],
-        id: sede.data_sede[i]["id"],
-      };
-      //   // console.log(dato);
-      opciones.push(dato);
-    }
-  };
-
   const handle_open_program = () => {
-    // // console.log(sede.data_sede);
     // // console.log("HOLAAA");
     // // console.log(semestres.data_semestre.length);
     for (let i = 0; i < program.data_program.length; i++) {
@@ -110,7 +78,14 @@ const FormularioPrimerIngreso = (props) => {
     for (let i = 0; i < program.data_program.length; i++) {
       const dato = {
         value: program.data_program[i]["codigo_univalle"],
-        label: program.data_program[i]["nombre"],
+        label:
+          program.data_program[i]["codigo_univalle"] +
+          " - " +
+          program.data_program[i]["nombre"] +
+          " - " +
+          program.data_program[i]["nombre_sede"] +
+          " - " +
+          program.data_program[i]["jornada"],
         id: program.data_program[i]["id"],
       };
       //   // console.log(dato);
@@ -157,15 +132,9 @@ const FormularioPrimerIngreso = (props) => {
     correo: "",
     celular: "",
     programa: "",
-    sede: "",
   });
 
   const send_data = (e) => {
-    // // console.log(e);
-    // console.log(data);
-
-    // Importar servicio
-
     if (
       data.codigo_estudiante === "" ||
       data.nombre === "" ||
@@ -175,24 +144,22 @@ const FormularioPrimerIngreso = (props) => {
       data.sexo === "" ||
       data.correo === "" ||
       data.celular === "" ||
-      data.programa === "" ||
-      data.sede === ""
+      data.programa === ""
     ) {
       alert("Por favor llene todos los campos obligatorios");
       return;
+    } else if (data.celular <= 0 || data.num_doc <= 0) {
+      alert("El número de celular o documento no puede ser negativo");
     } else {
       Formulario_primer_ingreso.formularios_externos_primer_ingreso_envio(data)
         .then((res) => {
-          console.log("Respuesta de la API:", res);
-          if (res) {
-            alert("Datos enviados correctamente");
-          } else {
-            alert("Error al enviar los datos");
-          }
+          // console.log("Respuesta de la API:", res);
         })
         .catch((error) => {
-          console.error("Error al obtener datos de la API:", error);
-          alert("Ocurrió un error al enviar los datos");
+          // console.error("Error al obtener datos de la API:", error);
+          alert(
+            "Ocurrió un error al enviar los datos, reintente de nuevo más tarde"
+          );
         });
     }
   };
@@ -232,6 +199,23 @@ const FormularioPrimerIngreso = (props) => {
     }),
   };
 
+  const handle_sexo = () => {
+    // // console.log("HOLAAA");
+    // // console.log(semestres.data_semestre.length);
+    for (let i = 0; i < opciones_sexo.length; i++) {
+      opciones_sexo.pop(i);
+    }
+
+    for (let i = 0; i < opciones_sexo.length; i++) {
+      const dato = {
+        value: opciones_sexo[i]["value"],
+        label: opciones_sexo[i]["label"],
+      };
+      //   // console.log(dato);
+      opciones_sexo.push(dato);
+    }
+  };
+
   return (
     <div className="prim-all-background">
       <div className="prim-form-div">
@@ -261,8 +245,30 @@ const FormularioPrimerIngreso = (props) => {
                         }
                       />
                     </Form.Group>
-                    <hr></hr>
+                  </Col>
 
+                  <Col>
+                    <Form.Group controlId="formName">
+                      <Form.Label className="prim-subtitle">
+                        Nombre <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Tu respuesta"
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            nombre: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <hr></hr>
+
+                <Row>
+                  <Col>
                     <Form.Group controlId="formLastName">
                       <Form.Label className="prim-subtitle">
                         Apellidos <label style={{ color: "red" }}> *</label>
@@ -278,8 +284,35 @@ const FormularioPrimerIngreso = (props) => {
                         }
                       />
                     </Form.Group>
-                    <hr></hr>
+                  </Col>
 
+                  <Col>
+                    {/* Columna Derecha */}
+
+                    <Form.Group controlId="formSex">
+                      <Form.Label className="prim-subtitle">
+                        Sexo <label style={{ color: "red" }}> *</label>
+                      </Form.Label>
+                      <Select
+                        styles={customStyles}
+                        className="option"
+                        options={opciones_sexo}
+                        // onMenuOpen={handle_sexo}
+                        placeholder="Elija su sexo"
+                        onChange={(e) => {
+                          // console.log(e.value);
+                          setData({
+                            ...data,
+                            sexo: e.value,
+                          });
+                        }}
+                      ></Select>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <hr></hr>
+                <Row>
+                  <Col>
                     <Form.Group controlId="formEmail">
                       <Form.Label className="prim-subtitle">
                         Correo <label style={{ color: "red" }}> *</label>
@@ -295,29 +328,63 @@ const FormularioPrimerIngreso = (props) => {
                         }
                       />
                     </Form.Group>
-                    <hr></hr>
+                  </Col>
 
-                    <Form.Group controlId="formSede">
+                  <Col>
+                    <Form.Group controlId="formCellphone">
                       <Form.Label className="prim-subtitle">
-                        Sede <label style={{ color: "red" }}> *</label>
+                        Celular <label style={{ color: "red" }}> *</label>
                       </Form.Label>
-                      <Select
-                        styles={customStyles}
-                        // class="option"
-                        className="option"
-                        options={opciones}
-                        onMenuOpen={handle_open_sedes}
-                        placeholder="Cambie de Sede"
+                      <Form.Control
+                        type="number"
+                        min={0}
+                        max={9999999999}
+                        placeholder="Tu respuesta"
                         onChange={(e) => {
-                          setData({
-                            ...data,
-                            sede: e.id,
-                          });
+                          const value = e.target.value;
+                          console.log(value);
+                          if (value >= 0) {
+                            setData({
+                              ...data,
+                              celular: value,
+                            });
+                          } else {
+                            alert("El número de celular no puede ser negativo");
+                          }
                         }}
-                      ></Select>
+                      />
                     </Form.Group>
-                    <hr></hr>
+                  </Col>
+                </Row>
+                <hr></hr>
 
+                <Row>
+                  <Form.Group
+                    controlId="formProgram"
+                    style={{ marginBottom: "1rem" }}
+                  >
+                    <Form.Label className="prim-subtitle">
+                      Código Programa <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Select
+                      styles={customStyles}
+                      className="option"
+                      options={opciones_programa}
+                      onMenuOpen={handle_open_program}
+                      placeholder="Cambie de programa"
+                      onChange={(e) => {
+                        // console.log(e.value);
+                        setData({
+                          ...data,
+                          programa: e.id,
+                        });
+                      }}
+                    ></Select>
+                  </Form.Group>
+                </Row>
+                <hr></hr>
+                <Row>
+                  <Col>
                     <Form.Group controlId="formDocumentType">
                       <Form.Label className="prim-subtitle">
                         Tipo documento de identidad{" "}
@@ -364,88 +431,8 @@ const FormularioPrimerIngreso = (props) => {
                         )}
                       </div>
                     </Form.Group>
-                    {/* <hr></hr> */}
                   </Col>
-
-                  {/* Columna Derecha */}
                   <Col>
-                    <Form.Group controlId="formName">
-                      <Form.Label className="prim-subtitle">
-                        Nombre <label style={{ color: "red" }}> *</label>
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Tu respuesta"
-                        onChange={(e) =>
-                          setData({
-                            ...data,
-                            nombre: e.target.value,
-                          })
-                        }
-                      />
-                    </Form.Group>
-                    <hr></hr>
-
-                    <Form.Group controlId="formSex">
-                      <Form.Label className="prim-subtitle">
-                        Sexo <label style={{ color: "red" }}> *</label>
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Tu respuesta"
-                        onChange={(e) =>
-                          setData({
-                            ...data,
-                            sexo: e.target.value,
-                          })
-                        }
-                      />
-                    </Form.Group>
-                    <hr></hr>
-
-                    <Form.Group controlId="formCellphone">
-                      <Form.Label className="prim-subtitle">
-                        Celular <label style={{ color: "red" }}> *</label>
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Tu respuesta"
-                        onChange={(e) =>
-                          setData({
-                            ...data,
-                            celular: e.target.value,
-                          })
-                        }
-                      />
-                    </Form.Group>
-                    <hr></hr>
-                    <Form.Group
-                      controlId="formProgram"
-                      style={{ marginBottom: "1rem" }}
-                    >
-                      <Form.Label className="prim-subtitle">
-                        Código Programa{" "}
-                        <label style={{ color: "red" }}> *</label>
-                      </Form.Label>
-                      <Select
-                        styles={customStyles}
-                        className="option"
-                        options={opciones_programa}
-                        onMenuOpen={handle_open_program}
-                        placeholder="Cambie de programa"
-                        onChange={(e) => {
-                          // console.log(e.value);
-                          setData({
-                            ...data,
-                            programa: e.value,
-                          });
-                        }}
-                      ></Select>
-                    </Form.Group>
-                    <br />
-
-                    <hr></hr>
-
                     <Form.Group controlId="formDocument">
                       <Form.Label className="prim-subtitle">
                         Documento <label style={{ color: "red" }}> *</label>
@@ -461,9 +448,9 @@ const FormularioPrimerIngreso = (props) => {
                         }
                       />
                     </Form.Group>
-                    {/* <hr></hr> */}
                   </Col>
                 </Row>
+                <hr></hr>
                 <br />
                 <div style={{ textAlign: "center", alignItems: "center" }}>
                   <Button

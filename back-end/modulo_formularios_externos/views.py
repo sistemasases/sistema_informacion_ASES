@@ -86,8 +86,8 @@ class form_primer_ingreso(viewsets.GenericViewSet):
 
     def create(self, request):
         print(request.data)
-        if(programa.objects.filter(id=int(
-            request.data["programa"]))):
+        if (programa.objects.filter(id=int(
+                request.data["programa"]))):
             programa_data = programa.objects.get(id=int(
                 request.data["programa"]))
         else:
@@ -95,20 +95,20 @@ class form_primer_ingreso(viewsets.GenericViewSet):
         try:
             estudiante_request = estudiante.objects.get(
                 cod_univalle=int(request.data["codigo_estudiante"]))
-            if(programa_estudiante.objects.filter(
-                id_estudiante=estudiante_request,id_programa=programa_data)):
+            if (programa_estudiante.objects.filter(
+                    id_estudiante=estudiante_request, id_programa=programa_data)):
                 return Response({'mensaje': 'El estudiante ya está registrado en el sistema.'}, status=status.HTTP_409_CONFLICT)
             else:
                 estudiante_prog = programa_estudiante.objects.create(
-                id_programa=programa.objects.get(
-                    id=int(request.data["programa"])),
-                id_estudiante=estudiante_request,
-                id_estado=estado_programa.objects.get(id='1'),
-                traker=True
+                    id_programa=programa.objects.get(
+                        id=int(request.data["programa"])),
+                    id_estudiante=estudiante_request,
+                    id_estado=estado_programa.objects.get(id='1'),
+                    traker=True
 
                 )
                 return Response({'mensaje': 'El estudiante ya está registrado, pero en otro programa. Se asignó el estudiante al nuevo programa.'}, status=status.HTTP_201_CREATED)
-            
+
         except:
 
             Estudiante = estudiante.objects.create(
@@ -145,15 +145,19 @@ class form_primer_ingreso(viewsets.GenericViewSet):
 
             )
             return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
+
+
 class firma_tratamiento_datos_view(viewsets.GenericViewSet):
     queryset = firma_tratamiento_datos.objects.all()
     serializer_class = firma_tratamiento_datos_serializer
+
     def create(self, request):
         serializer = firma_tratamiento_datos_serializer(data=request.data)
         if serializer.is_valid():
             documento = serializer.data["documento"]
             if estudiante.objects.filter(num_doc=documento).exists():
-                consulta_estudiante = estudiante.objects.filter(num_doc=documento).first()
+                consulta_estudiante = estudiante.objects.filter(
+                    num_doc=documento).first()
                 if firma_tratamiento_datos.objects.filter(id_estudiante=consulta_estudiante).exists():
                     return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
                 try:
@@ -163,8 +167,10 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
                         tipo_id_estudiante=serializer.data["tipo_id_estudiante"],
                         nombre_firma=serializer.data["nombre_firma"],
                         correo_firma=serializer.data["correo_firma"],
-                        autoriza_tratamiento_datos=bool(serializer.data["autoriza_tratamiento_datos"]),
-                        autoriza_tratamiento_imagen=bool(serializer.data["autoriza_tratamiento_imagen"])
+                        autoriza_tratamiento_datos=bool(
+                            serializer.data["autoriza_tratamiento_datos"]),
+                        autoriza_tratamiento_imagen=bool(
+                            serializer.data["autoriza_tratamiento_imagen"])
                     )
                     return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
                 except Exception as e:
@@ -174,4 +180,3 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
                 return Response({'Respuesta': 'No existe un estudiante con ese documento'}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-  
