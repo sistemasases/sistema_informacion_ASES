@@ -42,11 +42,6 @@ class send_ases(viewsets.GenericViewSet):
                                                             fecha__gt = fecha_inicio,
                                                             fecha__lt =fecha_fin,
                                                             ).count()
-            conteo_inasistencia = inasistencia.objects.filter(
-                                                            id_estudiante = estudiante23,
-                                                            fecha__gt = fecha_inicio,
-                                                            fecha__lt =fecha_fin,
-                                                            ).count()
             seguimiento_reciente = riesgo_individual.objects.filter( id_estudiante = estudiante23).values('id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad', 'fecha')
             if seguimiento_reciente:
                 riesgo = {
@@ -64,17 +59,15 @@ class send_ases(viewsets.GenericViewSet):
                             'riesgo_economico': "SIN RIESGO",
                             'riesgo_vida_universitaria_ciudad': "SIN RIESGO",
                         }
-
-            if conteo_seguimientos > 6 :
+            porcentaje_avance = (conteo_seguimientos / 6) * 100
+            if porcentaje_avance >= 100 :
                 conteo = {
-                    'conteo_seguimientos': conteo_seguimientos,
-                    'conto_inasistencias': conteo_inasistencia,
+                    'porcentaje_avance': 100,
                     'culmino_acompañamiento' : True,
                 }
             else :
                 conteo = {
-                    'conteo_seguimientos': conteo_seguimientos,
-                    'conto_inasistencias': conteo_inasistencia,
+                    'porcentaje_avance': porcentaje_avance,
                     'culmino_acompañamiento' : False,
                 }
 
@@ -99,11 +92,6 @@ class send_ases(viewsets.GenericViewSet):
                                                             fecha__gt = fecha_inicio,
                                                             fecha__lt =fecha_fin,
                                                             ).count()
-            conteo_inasistencia = inasistencia.objects.filter(
-                                                            id_estudiante = estudiante23,
-                                                            fecha__gt = fecha_inicio,
-                                                            fecha__lt =fecha_fin,
-                                                            ).count()
             seguimiento_reciente = riesgo_individual.objects.filter( id_estudiante = estudiante23).values('id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad', 'fecha')
             if seguimiento_reciente:
                 riesgo = {
@@ -122,16 +110,15 @@ class send_ases(viewsets.GenericViewSet):
                             'riesgo_vida_universitaria_ciudad': "SIN RIESGO",
                         }
 
-            if conteo_seguimientos > 6 :
+            porcentaje_avance = (conteo_seguimientos / 6) * 100
+            if porcentaje_avance >= 100 :
                 conteo = {
-                    'conteo_seguimientos': conteo_seguimientos,
-                    'conto_inasistencias': conteo_inasistencia,
+                    'porcentaje_avance': 100,
                     'culmino_acompañamiento' : True,
                 }
             else :
                 conteo = {
-                    'conteo_seguimientos': conteo_seguimientos,
-                    'conto_inasistencias': conteo_inasistencia,
+                    'porcentaje_avance': porcentaje_avance,
                     'culmino_acompañamiento' : False,
                 }
 
