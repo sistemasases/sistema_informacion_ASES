@@ -93,7 +93,7 @@ const ModalEstudiantes = ({
 
   return (
     <>
-    <Modal show={isModalOpen} onHide={closeModal} size="lg">
+    <Modal className="registro-estudiante-form-modal-consulta" show={isModalOpen} onHide={closeModal} size="lg">
       <Modal.Header className='custom-modal-header' closeButton >
         <Modal.Title >{titles[currentPage]}</Modal.Title>
       </Modal.Header>
@@ -103,7 +103,7 @@ const ModalEstudiantes = ({
             
             
               {currentPage === 0 && selectedUser && diversidadInfo && (
-                <div>
+                <div className='div-scroll'>
                 <Row>
                 <Col className="form-column" xs={"10"} md={"6"}>
 
@@ -283,7 +283,7 @@ const ModalEstudiantes = ({
               )}
               
               {currentPage === 1 && diversidadInfo && (
-                <div>
+                <div className='div-scroll'>
 
                   <Row>
                   <Col className="form-column" xs={"10"} md={"6"}>
@@ -428,7 +428,7 @@ const ModalEstudiantes = ({
              )}
               
               {currentPage === 2 && generalInfo && (
-                <div>
+                <div className='div-scroll'>
 
                   <Row>
                   <Col className="form-column" xs={"10"} md={"6"}>
@@ -628,14 +628,15 @@ const ModalEstudiantes = ({
                   </div>
              )}
                 {currentPage === 3 && generalInfo && (
-                  <div>
+                  <div className='div-scroll'>
                     <Row>
                     <Col className="form-column" xs={"10"} md={"6"}>
 
                     <div className='div-modal'>
-                      <b>Observación general fuente de ingresos:</b>
+                      <b>Observación general fuente de ingresos: </b>
+                      <div className='div-modal-justify'> 
                       {isEditing ? (
-                        <input
+                        <textarea
                           type="text"
                           className='input-updated'
                           name="observacion_general_fuente_de_ingresos"
@@ -646,11 +647,15 @@ const ModalEstudiantes = ({
                         generalInfo.observacion_general_fuente_de_ingresos
                       )}
                     </div>
+                    </div>
+
                     <div className='div-modal'>
-                      <b>Observación general redes de apoyo:</b>
+                      <b>Observación general redes de apoyo: </b>
+                      <div className='div-modal-justify'> 
                       {isEditing ? (
                         <input
                           type="text"
+                          className='input-updated'
                           name="observacion_general_redes_de_apoyo"
                           value={editableUser.observacion_general_redes_de_apoyo || ''}
                           onChange={handleInputChange}
@@ -659,11 +664,14 @@ const ModalEstudiantes = ({
                         generalInfo.observacion_general_redes_de_apoyo
                       )}
                     </div>
+                     </div>
+
                     <div className='div-modal'>
-                      <b>Observación general factores de riesgo:</b>
+                      <b>Observación general factores de riesgo: </b>
                       {isEditing ? (
                         <input
                           type="text"
+                          className='input-updated'
                           name="observacion_general_factores_de_riesgo"
                           value={editableUser.observacion_general_factores_de_riesgo || ''}
                           onChange={handleInputChange}
@@ -674,19 +682,24 @@ const ModalEstudiantes = ({
                     </div>
                     <div className='div-modal'>
                       <b>Observación horario:</b>
+                      <div className='div-modal-justify'> 
                       {isEditing ? (
-                        <input
+                        <textarea
                           type="text"
+                          className='input-updated'
                           name="observacion_horario"
-                          value={editableUser.observacion_horario || ''}
+                          value={editableUser.observacion_horario !== undefined ? editableUser.observacion_horario : generalInfo.observacion_horario || ''}
                           onChange={handleInputChange}
                         />
                       ) : (
                         generalInfo.observacion_horario
                       )}
                     </div>
+                    </div>
+
                     <div className='div-modal'>
-                      <b>Observación general actividades específicas en tiempo libre:</b>
+                      <b>Observación general actividades específicas en tiempo libre: </b>
+                      <div className='div-modal-justify'>
                       {isEditing ? (
                         <textarea
                           type="text"
@@ -698,6 +711,7 @@ const ModalEstudiantes = ({
                       ) : (
                         generalInfo.observacion_general_actividades_especificas_tiempo_libre
                       )}
+                      </div>
                     </div>
 
 
@@ -807,7 +821,7 @@ const ModalEstudiantes = ({
                   </div>
                 )}
                 {currentPage === 4 && academicoInfo && (
-                  <div>
+                  <div className='div-scroll'>
                     <Row>
                       <Col className="form-column" xs={"10"} md={"6"}>
                         <div className='div-modal'>
@@ -911,7 +925,7 @@ const ModalEstudiantes = ({
               
             
         {currentPage === 5 && documentosInfo && (
-          <div>
+          <div className='div-scroll'>
             <Row>
               <Col className="form-column" xs={"10"} md={"6"}>
                 <div className='div-modal'>
@@ -1014,7 +1028,7 @@ const ModalEstudiantes = ({
 
               {currentPage === 6   && seguimientosInfo &&  (
                 
-                <div className='div-observacion'>
+                <div className='div-scroll'>
 
 <Row>
   <ul className='ul-style'>
@@ -1022,15 +1036,15 @@ const ModalEstudiantes = ({
       seguimientosInfo.map((seguimiento, index) => (
         <li className='li-style' key={index}>
           <div ><b>Fecha:</b> {seguimiento.fecha}</div>
-          <div ><b>Observación:</b> {seguimiento.observacion}</div>
+          <div className='div-observacion' ><b>Observación:</b> {seguimiento.observacion}</div>
           <div ><b>Profesionales:</b>
             <ul className='ul-style'>
               {seguimiento.profesional.map((prof, profIndex) => (
-                <li key={profIndex}>{prof.nombre_profesional}</li>
+                <li key={profIndex}>{prof.nombre_profesional} - {prof.cargo_profesional}</li>
               ))}
             </ul>
           </div>
-          <div><b>ID Creador Campus:</b> {seguimiento.id_creador_campus || 'N/A'}</div>
+         {/* <div><b>ID Creador Campus:</b> {seguimiento.id_creador_campus || 'N/A'}</div> */}
         </li>
       ))
     ) : (
@@ -1080,16 +1094,21 @@ const ModalEstudiantes = ({
                 Seguimientos
               </Button>
               
-              {currentPage > 0 && (
-                <Button variant="outline-primary" onClick={prevPage}>
+                <Button 
+                variant="outline-primary" 
+                onClick={prevPage}
+                disabled={currentPage === 0}>
                   Atrás
                 </Button>
-              )}
-              {currentPage < 6 && (
-                <Button variant="primary" onClick={nextPage}>
+              
+              
+                <Button 
+                variant="primary" 
+                onClick={nextPage}
+                disabled={currentPage === 6}>
                   Adelante
                 </Button>
-              )}
+              
       <Button variant="outline-danger" onClick={handleOpenFirstModal}>
         Eliminar
       </Button>

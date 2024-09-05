@@ -7,6 +7,8 @@ from datetime import date
 class Profesional(models.Model):
     id_profesional = models.AutoField(primary_key=True)
     nombre_profesional = models.TextField()
+    cargo_profesional = models.CharField(max_length=100, blank=True, default="sin cargo")
+
 
 class Seguimiento(models.Model):
     id_seguimiento = models.AutoField(primary_key=True)

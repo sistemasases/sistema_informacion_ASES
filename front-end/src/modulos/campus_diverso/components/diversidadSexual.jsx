@@ -24,6 +24,7 @@ const DiversidadSexual = ({
   return (
     <>
     <h1 className='title-banner'> Diversidad Sexual </h1>
+    <div className='div-scroll-registro'>
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
         <Col className="form-column" xs={"10"} md={"6"}>
@@ -197,24 +198,25 @@ const DiversidadSexual = ({
             </div> 
             
             <div className="custom-div-check">
-  <div className="custom-checkbox-label">
-    ¿Recibir orientación de cambio en documento?
-  </div>
-  <label className="custom-checkbox">
-    <input
-      type="checkbox"
-      checked={state.recibir_orientacion_cambio_en_documento}
-      name="recibir_orientacion_cambio_en_documento"
-      value={state.recibir_orientacion_cambio_en_documento}
-      onChange={handleCheckboxChange}
-    />
-    <span className="checkmark"></span>
-  </label>
-</div>
+          <div className="custom-checkbox-label">
+            ¿Recibir orientación de cambio en documento?
+          </div>
+          <label className="custom-checkbox">
+            <input
+              type="checkbox"
+              checked={state.recibir_orientacion_cambio_en_documento}
+              name="recibir_orientacion_cambio_en_documento"
+              value={state.recibir_orientacion_cambio_en_documento}
+              onChange={handleCheckboxChange}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
 
 
             </Col>
             </Container>
+            </div>
             </>
   );
 };

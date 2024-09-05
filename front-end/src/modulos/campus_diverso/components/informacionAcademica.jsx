@@ -22,6 +22,8 @@ const InformacionAcademica = ({
   return (
     <>
     <h1 className='title-banner'> Información Académica </h1>
+    <div className='div-scroll-registro'>
+
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
         <Col className="form-column" xs={"10"} md={"6"}>
@@ -135,6 +137,7 @@ const InformacionAcademica = ({
 
     </Col>
     </Container>
+    </div>
 
     
     </>

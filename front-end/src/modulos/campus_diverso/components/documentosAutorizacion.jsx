@@ -11,25 +11,13 @@ const DocumentosAutorizacion = ({
   return (
     <>
     <h1 className='title-banner'> Documentos de autorización</h1>
+    <div className='div-scroll-registro'>
+
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
         <Col className="form-column" xs={"10"} md={"6"}>
             
-            <div className="custom-div-check-documentos ">
-      <div className="custom-checkbox-label">
-      Autorizo de manera voluntaria, previa, explícita, informada e inequívoca a la Universidad del Valle, para actuar responsablemente en el tratamiento de mis datos personales aquí registrados, de acuerdo con los términos establecidos en la Ley Estatutaria 1581 de 2012 y la Ley 1712 de 2014.
-      </div>
-      <label className="custom-checkbox">
-        <input
-          type="checkbox"
-          checked={state.autorizacion_manejo_de_datos}
-          name="autorizacion_manejo_de_datos"
-          value={state.autorizacion_manejo_de_datos}
-          onChange={handleCheckboxChange}
-        />
-        <span className="checkmark"></span>
-      </label>
-    </div>
+
 
     <div className="custom-div-check-documentos ">
       <div className="custom-checkbox-label">
@@ -135,6 +123,7 @@ const DocumentosAutorizacion = ({
 
     </Col>
     </Container>
+    </div>
     </>
   );
 };

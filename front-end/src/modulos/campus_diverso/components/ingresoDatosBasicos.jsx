@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Col,   } from 'react-bootstrap';
+import { Container, Col  } from 'react-bootstrap';
 import Select from 'react-select';
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
@@ -13,6 +13,8 @@ const maxLengthNumber = 20;
 
 const IngresoDatosBasicos = ({state,
     handleChange,
+    handleChangeTextField,
+    handleChangeUniqueDigit,
     isLoading,
     razasOptions,
     handleSelectChange,
@@ -27,9 +29,10 @@ const IngresoDatosBasicos = ({state,
   return (
     <>
         <h1 className='title-banner'> Ingreso de datos básicos </h1>
-    <Container className="container_informacion_general" xs={"10"} sm={"6"}>
+        <div className='div-scroll-registro'>
+    <Container className="container_informacion_general" >
     
-      <Col className="form-column" xs={"10"} md={"6"}>
+      <Col className="form-column" xs={"15"} md={"13"}>
       
        
       
@@ -88,7 +91,8 @@ const IngresoDatosBasicos = ({state,
   <label className='custom-div'>Email</label>
   <input
     className='input-updated'
-    type="text"
+    type="email"
+    inputMode='email'
     placeholder="Ingrese email"
     name="email"
     value={state.email}
@@ -104,10 +108,10 @@ const IngresoDatosBasicos = ({state,
   <label className='custom-div'>Número de documento</label>
   <input
     className='input-updated'
-    type="text"
+    type="number"
     placeholder="123456"
     name="numero_documento"
-    pattern='[0-9]*'
+    inputMode="numeric"
     onKeyDown={preventNonNumericValues}
     min="0"
     value={state.numero_documento}
@@ -128,7 +132,7 @@ const IngresoDatosBasicos = ({state,
     onKeyDown={preventNonNumericValues}
     min="0"
     value={state.estrato_socioeconomico}
-    onChange={handleChange}
+    onChange={handleChangeUniqueDigit}
     maxLength="1"
      />
   
@@ -227,7 +231,7 @@ const IngresoDatosBasicos = ({state,
 
       
       
-      <Col className="form-column" xs={"10"} md={"6"}>
+      <Col className="form-column" xs={"15"} md={"13"}>
     
           <div className="input-container">
       <label className='custom-div'>Ciudad de nacimiento</label>
@@ -397,6 +401,7 @@ const IngresoDatosBasicos = ({state,
       
 
     </Container>
+    </div>
     </>
   );
 };

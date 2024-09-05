@@ -6,9 +6,9 @@
   background-size: cover !important;
   background-position: center !important;
   background-attachment: fixed !important;
-  width: 100% !important;
-  min-height: 100vh !important; /* Asegura que cubra al menos toda la altura de la vista */
-  display: flex !important;
+  width: 100% ;
+  min-height: 100vh;
+  display: flex;
   justify-content: center;
   align-items: center;
 
@@ -19,11 +19,125 @@
   padding: 5px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 100%; /* Ajusta según necesites */
-  box-sizing: border-box;
+  width: 100%;
   text-align: left;
-  margin: 0 auto;
+  
+}
+
+
+.div-scroll-registro {
+  height: 500px;
+  overflow-y: auto;  
+  padding-right: 10px; 
+  text-align: justify;
+  text-justify: inter-word; 
+  word-wrap: break-word;
+  overflow-x: auto;
+  
+}
+.input-updated {
+  border: 0.1px solid #d9d9d9 !important;
+  border-radius: 4px;
+  box-sizing: border-box;    
+  padding: 7px;
+  width: 100%;
+  height: auto;
+}
+
+.create-select {
+  width: 100%;
+  color: #000;
+ 
+  [class$="IndicatorsContainer"] {
+      min-height: 38px !important;
+      max-height: 28px;
+  }
+  [class$="-Input"] {
+      min-height: 28px !important;
+      max-height: 18px !important;
+  }
+
+}
+
+.container_informacion_general {
+  /* Estilo por defecto (para xs: 10 en Bootstrap) */
+  width: 100%; /* 100% para pantallas muy pequeñas */
+  max-width: 100%; /* Puedes ajustar esto según la proporción deseada */
+}
+
+/* Medidas del css para teléfono*/
+@media (max-width: 750px) {
+
+  .registro-estudiante-container {
+  /*background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg') !important;*/
+  background-color: #F5F5DC;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  width: 100% ;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.registro-estudiante-form {
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  text-align: left;
+}
+
+
+.div-scroll-registro {
+  height: 60em;
+  overflow-y: auto;  
+  padding-right: 1em; 
+  text-align: justify;
+  text-justify: inter-word; 
+  word-wrap: break-word;
+  overflow-x: auto;
+  font-size: 0.8em; /* Reduce ligeramente el tamaño de la fuente */
+  
+}
+.input-updated {
+  border: 0.1px solid #d9d9d9 !important;
+  border-radius: 0.3em;
+  box-sizing: border-box;    
+  padding: 0.5em;
+  width: 100%;
+  height: auto;
+}
+
+.create-select {
+  width: 100%;
+  color: #000;
+ 
+  [class$="IndicatorsContainer"] {
+      min-height: 38px !important;
+      max-height: 28px;
+  }
+  [class$="-Input"] {
+      min-height: 28px !important;
+      max-height: 18px !important;
+  }
+
+}
+
+.form-column {
+
+  padding: 10px;
+}
+
+.container_informacion_general {
+  /* Estilo por defecto (para xs: 10 en Bootstrap) */
+  width: 100%; /* 100% para pantallas muy pequeñas */
+  max-width: 100%; /* Puedes ajustar esto según la proporción deseada */
+}
+
 }
 
 .label {
@@ -49,43 +163,22 @@
   }
 
   .form-column {
-   
+
     padding: 10px;
   }
 
-  .input-updated {
-    border: 0.1px solid #d9d9d9 !important;
-    border-radius: 4px;
-    box-sizing: border-box;    
-    padding: 7px;
-    width: 100%;
-    height: auto;
-  }
+
   
   .textarea {
     border: 1px solid #d9d9d9;
     border-radius: 4px;
-    box-sizing: border-box; /* Corrección de "borerd-box" a "border-box" */
+    box-sizing: border-box; 
     padding: 20px;
     width: 90%;
-    height: auto; /* Usar 'auto' para permitir que el textarea ajuste su altura según el contenido */
+    height: auto; 
   }
 
  
-.create-select {
-  width: 100%;
-  color: #000;
- 
-  [class$="IndicatorsContainer"] {
-      min-height: 38px !important;
-      max-height: 28px;
-  }
-  [class$="-Input"] {
-      min-height: 28px !important;
-      max-height: 18px !important;
-  }
-
-}
 
 
 
@@ -202,6 +295,12 @@
       font-family: 'Arial', sans-serif; 
       font-size: 16px; 
     }
+    
+    .div-modal-justify {
+      text-justify: inter-word; 
+      word-wrap: break-word;
+      text-align: justify;
+    }
 
     .div-observacion{
       text-align: justify;
@@ -213,6 +312,17 @@
     .modal-content {
       border-radius: 10px;
       box-shadow: 2px 2px 5px rgba(236, 6, 6, 0.1);
+    }
+
+    .modal-content-seguimientos {
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(236, 6, 6, 0.1);
+      height: 400px;
+      max-height: 100%;
+      padding-right: 10px; 
+      text-justify: inter-word; 
+      word-wrap: break-word;
+      
     }
     
     .title-modal{
@@ -252,7 +362,7 @@
 
 
     .title-banner {
-      background-color: #91341dd7; 
+      background-color: #E55151; 
       padding: 20px; 
       text-align: center; 
       width: 100%; 
@@ -284,7 +394,7 @@
     .button-inicial {
       margin: 10px;
       padding: 10px 20px;
-      background-color: #91341dd7;
+      background-color: #E55151;
       color: rgb(245, 239, 236);
       border: none;
       border-radius: 5px;
@@ -294,15 +404,15 @@
     
 
     .button-inicial:hover {
-      background-color: #e0751c; /* Color cuando se pasa el mouse por encima */
+      background-color: #E55151; /* Color cuando se pasa el mouse por encima */
     }
     .button-inicial:active {
-      background-color: #c7641b !important; /* Color cuando se presiona el botón */
+      background-color: #d43737 !important; /* Color cuando se presiona el botón */
       outline: none ; /* Elimina el borde azul predeterminado */
       box-shadow: none ;  /* Elimina la sombra del borde predeterminado */
     }
     .button-inicial:disabled {
-      background-color: #f5d082; 
+      background-color: #fca5a2; 
       color: #747373; 
       cursor: not-allowed; 
     }
@@ -433,6 +543,18 @@
       color: red;
       font-weight: bold;
     }
+
+    .div-scroll {
+      height: 400px;
+      overflow-y: auto;  
+      padding-right: 10px; 
+      text-justify: inter-word; 
+      word-wrap: break-word;
+      overflow-x: hidden;
+      
+    }
+
+
  
   /* Estilos del indicador de usuario nuevo*/
     .new-user {

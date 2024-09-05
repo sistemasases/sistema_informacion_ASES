@@ -168,15 +168,17 @@ const ModalSeguimientos = ({
 
 
   return (
+     
     <Modal show={isSeguimientoModalOpen} onHide={closeSeguimientoModal} size="lg">
     <Modal.Header closeButton>
       <Modal.Title>Seguimiento</Modal.Title>
     </Modal.Header>
     <Modal.Body>
       {/* Contenido del modal de seguimiento */}
-      <div>
+      <div className='div-scroll'>
+
+        <div>
           <label className='custom-div'>Fecha del seguimiento </label>
-          <div>
             <input
               type="date"
               className='input-updated'
@@ -185,12 +187,11 @@ const ModalSeguimientos = ({
               onChange={handleChange}
             />
           </div>
-        </div> 
 
 
         <div>
           <label className='custom-div'>Observación </label>
-          <div>
+          
             <textarea
               type="Text"
               className='input-updated'
@@ -198,13 +199,12 @@ const ModalSeguimientos = ({
               value={state.observacion}
               onChange={handleChange}
             />
-          </div>
         </div>
 
 
-                <div>
+            <div>
               <label className='custom-div'>Profesionales que atendieron</label>
-              <div>
+              
                 {isLoading ? (
                   <p>Cargando...</p>
                 ):(
@@ -222,9 +222,9 @@ const ModalSeguimientos = ({
     
                   />
                   )}
-              </div>
-            </div>
-
+            </div> 
+            
+          </div> 
         </Modal.Body>
     <Modal.Footer>
     <Button onClick={handleSubmit}>Enviar</Button>
@@ -232,6 +232,7 @@ const ModalSeguimientos = ({
         Cerrar
       </Button>
     </Modal.Footer>
+    
     <Alert
       show={showSuccessAlert}
       variant="success"

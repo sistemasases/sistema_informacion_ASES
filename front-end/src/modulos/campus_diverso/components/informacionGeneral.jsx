@@ -11,6 +11,7 @@ export const preventNonNumericValues = (e) => {
 
 const InformacionGeneral = ({state,
     handleChange,
+    handleChangeTextField,
     handleSelectChange,
     handleArrayFieldChange,
     handleAgregarItem,
@@ -31,6 +32,7 @@ const InformacionGeneral = ({state,
   return (
     <>
     <h1 className='title-banner'> Información General </h1>
+    <div className='div-scroll-registro'>
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
         <Col className="form-column" xs={"10"} md={"6"}>
@@ -126,7 +128,7 @@ const InformacionGeneral = ({state,
                   name="motivo_calificacion_acompanamiento"
                   placeholder='Ingrese el motivo'
                   value={state.motivo_calificacion_acompanamiento}
-                  onChange={handleChange}
+                  onChange={handleChangeTextField}
                   maxLength={maxLengthTextAreas}
                 />
                 <span className="char-count">{`Caracteres restantes: ${maxLengthTextAreas - state.motivo_calificacion_acompanamiento.length}`}</span>
@@ -416,6 +418,7 @@ const InformacionGeneral = ({state,
 
     </Col>
     </Container>
+    </div>
     </>
   );
 };

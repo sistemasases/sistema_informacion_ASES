@@ -22,6 +22,7 @@ import FooterCampusDos from './components/footerCampusDos';
   const [mensaje, setMensaje] = useState(null);
   const handleClose2 = () => setShow(false);
   const [show, setShow] = useState(false);
+  const [showModalAutorizacion, setShowModalAutorizacion] = useState(true);
 
   const headers = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),  
@@ -29,9 +30,10 @@ import FooterCampusDos from './components/footerCampusDos';
   //cant de caracteres para el formulario
   const maxLengthBasicInput = 50; // Límite de caracteres
   const maxLengthTextAreas = 150;
+  const maxLengthUniqueDigit= 1;
 
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const handleClose = () => {
     setShowModal(false);
   };
@@ -266,46 +268,40 @@ const handleCheckboxChange = (event) => {
     [name]: checked,
   }));
   console.log(`Checkbox ${name} changed to ${checked}`);
+
+     // Cierra el modal si se aceptan el manejo de datos.
+     if (name === 'autorizacion_manejo_de_datos' && checked) {
+      setShowModal(false);
+    }
 };
 
 const handleChange = (event) => {
-  const { name, value, checked, options } = event.target;
-  console.log('handleChange called:', name, value);
-  console.log('Revisa el booleano', name, checked);
+  const { name, value } = event.target;
+  if (value.length <= maxLengthBasicInput) {
+    set_state((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }
+};
 
-  const config = {
-    'respuestas_cambio_documento': { isArray: true },
-    'expresiones_de_genero': { isArray: true },
-    'pronombres': { isArray: true },
-    'pertenencia_grupo_poblacional': { isArray: true },
-    'orientaciones_sexuales': { isMultiSelect: true },
-  };
+const handleChangeTextField = (event) => {
+  const { name, value } = event.target;
+  if (value.length <= maxLengthTextAreas) {
+    set_state((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }
+};
 
-  const updateState = (newState) => {
-    set_state({
-      ...state,
-      [name]: newState,
-    });
-  };
-
-  if (config[name]?.isCheckbox) {
-    config[name].handler(event);
-    updateState(checked);
-  } else if (config[name]?.isArray) {
-    updateState([value]);
-  } else if (config[name]?.isMultiSelect) {
-    console.log("Before state update:", state.orientaciones_sexuales);
-    const selectedOptions = Array.from(options)
-      .filter(option => option.selected)
-      .map(option => option.value);
-    const updatedOptions = state[name].includes(selectedOptions[0])
-      ? state[name].filter(option => option !== selectedOptions[0])
-      : [...state[name], ...selectedOptions];
-
-    console.log("After state update:", updatedOptions);
-    updateState(updatedOptions);
-  } else {
-    updateState(value);
+const handleChangeUniqueDigit = (event) => {
+  const { name, value } = event.target;
+  if (value.length <= maxLengthUniqueDigit) {
+    set_state((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   }
 };
 
@@ -490,7 +486,7 @@ const handleSubmit = async (e) => {
     // Mostrar alerta de éxito
     setShowSuccessAlert(true);
     // Ocultar después de unos segundos
-    setTimeout(() => setShowSuccessAlert(false), 3000);
+    setTimeout(() => setShowSuccessAlert(false), 30000);
   }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
  
 
@@ -830,6 +826,8 @@ const steps = [
   { component:   <IngresoDatosBasicos
     state={state}
     handleChange={handleChange}
+    handleChangeTextField={handleChangeTextField}
+    handleChangeUniqueDigit={handleChangeUniqueDigit}
     isLoading={isLoading}
     razasOptions={razasOptions}
     handleSelectChange={handleSelectChange}
@@ -857,6 +855,7 @@ const steps = [
   { component:   <InformacionGeneral
     state={state}
     handleChange={handleChange}
+    handleChangeTextField={handleChangeTextField}
     handleSelectChange={handleSelectChange}
     handleArrayFieldChange={handleArrayFieldChange}
     handleAgregarItem={handleAgregarItem}
@@ -928,6 +927,30 @@ const prevStep = () => {
   )}
 </div>
 
+ {/* Modal para autorización de manejo de datos */}
+ <Modal show={showModal} onHide={() => setShowModal(false)} backdrop="static" keyboard={false}>
+              <Modal.Header>
+                <Modal.Title>Autorización de Manejo de Datos</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="custom-div-check-documentos">
+                  <div className="custom-checkbox-label">
+                    Autorizo de manera voluntaria, previa, explícita, informada e inequívoca a la Universidad del Valle, para actuar responsablemente en el tratamiento de mis datos personales aquí registrados, de acuerdo con los términos establecidos en la Ley Estatutaria 1581 de 2012 y la Ley 1712 de 2014.
+                  </div>
+                  <label className="custom-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={state.autorizacion_manejo_de_datos}
+                      name="autorizacion_manejo_de_datos"
+                      value={state.autorizacion_manejo_de_datos}
+                      onChange={handleCheckboxChange}
+                    />
+                    <span className="checkmark"></span>
+                  </label>
+                </div>
+              </Modal.Body>
+
+            </Modal>
 
       {/* Alerta de éxito como modal */}
       <Alert
