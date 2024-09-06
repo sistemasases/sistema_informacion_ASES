@@ -62,14 +62,16 @@ class send_ases(viewsets.GenericViewSet):
             porcentaje_avance = (conteo_seguimientos / 6) * 100
             if porcentaje_avance >= 100 :
                 conteo = {
-                    'porcentaje_avance': 100,
-                    'culmino_acompañamiento' : True,
+                        'criterio': [{'id':6,'porcentaje_avance': 100,}],
+                        'culmino_acompañamiento' : True,
+                        'responsable': 'fabio.barbosa@univalle.edu.co'
                 }
             else :
                 conteo = {
-                    'porcentaje_avance': porcentaje_avance,
-                    'culmino_acompañamiento' : False,
-                }
+                        'criterio': [{'id':6,'porcentaje_avance': porcentaje_avance,}],
+                        'culmino_acompañamiento' : False,
+                        'responsable': 'fabio.barbosa@univalle.edu.co'
+                    }
 
             data = dict(serializer_estudiante.data,**conteo,**riesgo)
             lista_estudiantes.append(data)
@@ -113,14 +115,16 @@ class send_ases(viewsets.GenericViewSet):
             porcentaje_avance = (conteo_seguimientos / 6) * 100
             if porcentaje_avance >= 100 :
                 conteo = {
-                    'porcentaje_avance': 100,
-                    'culmino_acompañamiento' : True,
-                }
+                        'criterio': [{'id':6,'porcentaje_avance': 100,}],
+                        'culmino_acompañamiento' : True,
+                        'responsable': 'fabio.barbosa@univalle.edu.co'
+                    }
             else :
                 conteo = {
-                    'porcentaje_avance': porcentaje_avance,
-                    'culmino_acompañamiento' : False,
-                }
+                        'criterio': [{'id':6,'porcentaje_avance': porcentaje_avance,}],
+                        'culmino_acompañamiento' : False,
+                        'responsable': 'fabio.barbosa@univalle.edu.co'
+                    }
 
             data = dict(serializer_estudiante.data,**conteo,**riesgo)
             lista_estudiantes.append(data)
