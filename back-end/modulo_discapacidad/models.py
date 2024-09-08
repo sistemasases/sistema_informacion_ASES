@@ -13,6 +13,22 @@ class info_extra_disc (models.Model):
     id_tipo_discapacidad = models.ForeignKey(tipo_discapacidad, on_delete=models.CASCADE, default=0, related_name='id_tipo_discapacidad_in_info_extra_disc')
     categoria = models.CharField(max_length=100, default=None)
     
+class datos_entrevistado (models.Model):
+    desarrollaActividad = models.BooleanField(default=False, null=True)
+    desarrollaActividadData = models.CharField(max_length=100, default=None, null=True)
+    orientacionSexual = models.CharField(max_length=50, default=None, null=True)
+    orientacionSexualOtro = models.CharField(max_length=100, default=None, null=True)
+    autoreconocimientoEtnico = models.CharField(max_length=100, default=None, null=True)
+    autoreconocimientoEtnicoOtro = models.CharField(max_length=100, default=None, null=True)
+    estadoCivil = models.CharField(max_length=50, default=None, null=True)
+    actividadesOcio = models.BooleanField(default=False, null=True)
+    actividadesOcioData = models.CharField(max_length=100, default=None, null=True)
+    actividadDeportiva = models.BooleanField(default=False, null=True)
+    actividadDeportivaData = models.CharField(max_length=100, default=None, null=True)
+    programaAcompanamiento = models.BooleanField(default=False, null=True)
+    programaAcompanamientoOtro = models.CharField(max_length=100, default=None, null=True)
+    programaAcompanamientoOtroData = models.CharField(max_length=100, default=None, null=True)
+    
 class asignacion_discapacidad (models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=0, related_name='id_usuario_in_asignacion_discapacidad')
     id_estudiante = models.ForeignKey(estudiante, on_delete=models.CASCADE, default=0, related_name='id_estudiante_in_asignacion_discapacidad')
@@ -231,6 +247,7 @@ class caracterizacion (models.Model):
     fecha= models.DateField(auto_now_add=False,default=None,null=True)
     lugar = models.CharField(max_length=500,default=None,null=True)
     id_creador = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name='id_user_in_caracterizacion')
+    id_datos_entrevistado = models.ForeignKey(datos_entrevistado, on_delete=models.CASCADE, default=None, null=True, related_name='id_datos_entrevistado_in_caracterizacion')
     
     
 class produccion_ac (models.Model):

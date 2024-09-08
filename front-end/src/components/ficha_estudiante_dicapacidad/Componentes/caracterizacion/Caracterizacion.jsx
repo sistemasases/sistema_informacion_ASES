@@ -44,12 +44,13 @@ const Caracterizacion = () => {
     profesion: "",
   });
 
-  const [datos_entrevistado, setDatosEntrevistado] = useState({
-    entrevistado: "",
-    cargo: "",
-    celular: "",
-    profesion: "",
-  });
+  const [datos_estudiante_entrevistado, setDatosEstuidanteEntrevistado] =
+    useState({
+      fecha_nac: "",
+      ciudad: "lentuang",
+      pais: "paris",
+      // profesion: "",
+    });
 
   const [datos_economicos, setDatosEconomicos] = useState({
     estrato_socio: 3,
@@ -76,7 +77,7 @@ const Caracterizacion = () => {
     institucion: "Universidad Nacional",
     nivel_formacion: "Pregrado",
     apoyos_recibidos: "Beca parcial",
-    observaciones: "Excelente desempeño académico.",
+    observaciones: "Excelente desempenio académico.",
     dificultades: "Ninguna significativa",
   });
 
@@ -261,15 +262,28 @@ const Caracterizacion = () => {
     )
       .then((res) => {
         console.log(res);
+        console.log(estudianteSelected);
         // setDatosEntrevistador
         const fechaOriginal = res.datos_caracterizacion.fecha;
+        console.log(fechaOriginal);
+        // Dividir la fecha en partes [anio, mes, día]
+        const [anio, mes, día] = fechaOriginal.split("-");
 
-        // Dividir la fecha en partes [año, mes, día]
-        const [año, mes, día] = fechaOriginal.split("-");
-
-        // Reorganizar y formar la nueva fecha en formato día-mes-año
-        const fechaConvertida = `${día}-${mes}-${año}`;
+        // Reorganizar y formar la nueva fecha en formato día-mes-anio
+        const fechaConvertida = `${día}-${mes}-${anio}`;
         console.log(fechaConvertida);
+
+        // Fecha nacimiento
+        const fechaNacimiento = estudianteSelected.fecha_nac;
+        console.log(fechaNacimiento);
+
+        // Dividir la fecha en partes [anio, mes, día]
+        const fechaNacimientoMod = fechaNacimiento.split("T")[0]; // "1900-01-01"
+        const [anioF, mesF, diaF] = fechaNacimientoMod.split("-");
+
+        // Reorganizar y formar la nueva fecha en formato anio-mes-día
+        const fechaConvertidaNacimiento = `${anioF}-${mesF}-${diaF}`;
+        console.log(fechaConvertidaNacimiento);
 
         setDatosEntrevistador({
           entrevistador:
@@ -281,7 +295,29 @@ const Caracterizacion = () => {
           lugar: res.datos_caracterizacion.lugar,
         });
 
-        // setDatosEntrevistado
+        console.log("Datos entrevistador");
+        console.log(datos_entrevistador);
+
+        setDatosEstuidanteEntrevistado({
+          fecha_nac: fechaConvertidaNacimiento,
+          ciudad: estudianteSelected.ciudad_nac,
+          pais: "Colombia",
+
+          desarrollaActividad:res.datos_entrevistado.desarrollaActividad,
+          desarrollaActividadData: res.datos_entrevistado.desarrollaActividadData,
+          orientacionSexual: res.datos_entrevistado.orientacionSexual,
+          orientacionSexualOtro: res.datos_entrevistado.orientacionSexualOtro,
+          autoreconocimientoEtnico: res.datos_entrevistado.autoreconocimientoEtnico,
+          autoreconocimientoEtnicoOtro: res.datos_entrevistado.autoreconocimientoEtnicoOtro,
+          estadoCivil: res.datos_entrevistado.estadoCivil,
+          actividadesOcio: res.datos_entrevistado.actividadesOcio,
+          actividadesOcioData: res.datos_entrevistado.actividadesOcioData,
+          actividadDeportiva: res.datos_entrevistado.actividadDeportiva,
+          actividadDeportivaData: res.datos_entrevistado.actividadDeportivaData,
+          programaAcompanamiento: res.datos_entrevistado.programaAcompanamiento,
+          programaAcompanamientoOtro: res.datos_entrevistado.programaAcompanamientoOtro,
+          programaAcompanamientoOtroData: res.datos_entrevistado.programaAcompanamientoOtroData,
+        });
 
         // setDatosEconomicos
         setDatosEconomicos({
@@ -346,7 +382,7 @@ const Caracterizacion = () => {
           // acargo_nivel_educativo: ,
           // acargo_situacion_económica: ,
           // acargo_actividad_economica: ,
-          // acargo_labor_desempeña: ,
+          // acargo_labor_desempenia: ,
         });
 
         // setDatosAcademicos
@@ -577,7 +613,9 @@ const Caracterizacion = () => {
           servicio_social: res.acceso_servicios_salud.servicio_social,
         });
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.error(error);
+      });
   }, [estudianteSelected.id]);
   console.log(estudianteSelected.id);
 
@@ -640,7 +678,11 @@ const Caracterizacion = () => {
           />
         }
       >
-        <DatosEntrevistado />
+        <DatosEntrevistado
+          datos_estudiante_entrevistado={datos_estudiante_entrevistado}
+        />
+
+        {/* <DatosEntrevistado /> */}
       </Acordion>
       <Acordion
         title="Datos económicos"

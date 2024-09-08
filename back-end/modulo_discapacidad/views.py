@@ -190,7 +190,93 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     )
                 return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
             
+        elif request.data["tipo"] == 'datos_entrevistado':
+            print(request.data)
+            request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
+            request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
+            request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
+            request_lugar = request.data["lugar"]
+            request_creador = User.objects.get(id = int(request.data["id_creador"]))
             
+            
+            var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
+            
+            if var_caracterizacion:
+                var_caracterizacion.fecha = datetime.strptime(request.data["fecha"],'%Y-%m-%d')
+                var_caracterizacion.lugar = request.data["lugar"]
+                var_caracterizacion.save()
+
+                try:
+                    var_datos_entrevistado = datos_entrevistado.objects.filter(id= var_caracterizacion.id_datos_entrevistado.id).first()
+                except:
+                    var_datos_entrevistado = datos_entrevistado.objects.create(
+                    desarrollaActividad = request.data.get("desarrollaActividad", None),
+                    desarrollaActividadData = request.data.get("desarrollaActividadData", None),
+                    orientacionSexual = request.data.get("orientacionSexual", None),
+                    orientacionSexualOtro = request.data.get("orientacionSexualOtro", None),
+                    autoreconocimientoEtnico = request.data.get("autoreconocimientoEtnico", None),
+                    autoreconocimientoEtnicoOtro = request.data.get("autoreconocimientoEtnicoOtro", None),
+                    estadoCivil = request.data.get("estadoCivil", None),
+                    actividadesOcio = request.data.get("actividadesOcio", None),
+                    actividadesOcioData = request.data.get("actividadesOcioData", None),
+                    actividadDeportiva = request.data.get("actividadDeportiva", None),
+                    actividadDeportivaData = request.data.get("actividadDeportivaData", None),
+                    programaAcompanamiento = request.data.get("programaAcompanamiento", None),
+                    programaAcompanamientoOtro = request.data.get("programaAcompanamientoOtro", None),
+                    programaAcompanamientoOtroData = request.data.get("programaAcompanamientoOtroData", None),
+                    )
+                    var_caracterizacion.id_datos_entrevistado = var_datos_entrevistado
+                    var_caracterizacion.save()
+                    return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
+                        
+                if var_datos_entrevistado:
+                    var_datos_entrevistado.desarrollaActividad = request.data.get("desarrollaActividad", None)
+                    var_datos_entrevistado.desarrollaActividadData = request.data.get("desarrollaActividadData", None)
+                    var_datos_entrevistado.orientacionSexual = request.data.get("orientacionSexual", None)
+                    var_datos_entrevistado.orientacionSexualOtro = request.data.get("orientacionSexualOtro", None)
+                    var_datos_entrevistado.autoreconocimientoEtnico = request.data.get("autoreconocimientoEtnico", None)
+                    var_datos_entrevistado.autoreconocimientoEtnicoOtro = request.data.get("autoreconocimientoEtnicoOtro", None)
+                    var_datos_entrevistado.estadoCivil = request.data.get("estadoCivil", None)
+                    var_datos_entrevistado.actividadesOcio = request.data.get("actividadesOcio", None)
+                    var_datos_entrevistado.actividadesOcioData = request.data.get("actividadesOcioData", None)
+                    var_datos_entrevistado.actividadDeportiva = request.data.get("actividadDeportiva", None)
+                    var_datos_entrevistado.actividadDeportivaData = request.data.get("actividadDeportivaData", None)
+                    var_datos_entrevistado.programaAcompanamiento = request.data.get("programaAcompanamiento", None)
+                    var_datos_entrevistado.programaAcompanamientoOtro = request.data.get("programaAcompanamientoOtro", None)
+                    var_datos_entrevistado.programaAcompanamientoOtroData = request.data.get("programaAcompanamientoOtroData", None)
+                    var_datos_entrevistado.save()
+                else:
+                    return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
+                
+                return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
+            else:
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_caracterizacion_new.fecha = request_fecha
+                var_caracterizacion_new.lugar = request_lugar
+                
+                var_caracterizacion_new.save()
+                
+                var_datos_entrevistado = datos_entrevistado.objects.filter(id= var_caracterizacion_new.id_datos_entrevistado.id).first()
+                if var_datos_entrevistado:
+                    var_datos_entrevistado.desarrollaActividad = request.data.get("desarrollaActividad", None)
+                    var_datos_entrevistado.desarrollaActividadData = request.data.get("desarrollaActividadData", None)
+                    var_datos_entrevistado.orientacionSexual = request.data.get("orientacionSexual", None)
+                    var_datos_entrevistado.orientacionSexualOtro = request.data.get("orientacionSexualOtro", None)
+                    var_datos_entrevistado.autoreconocimientoEtnico = request.data.get("autoreconocimientoEtnico", None)
+                    var_datos_entrevistado.autoreconocimientoEtnicoOtro = request.data.get("autoreconocimientoEtnicoOtro", None)
+                    var_datos_entrevistado.estadoCivil = request.data.get("estadoCivil", None)
+                    var_datos_entrevistado.actividadesOcio = request.data.get("actividadesOcio", None)
+                    var_datos_entrevistado.actividadesOcioData = request.data.get("actividadesOcioData", None)
+                    var_datos_entrevistado.actividadDeportiva = request.data.get("actividadDeportiva", None)
+                    var_datos_entrevistado.actividadDeportivaData = request.data.get("actividadDeportivaData", None)
+                    var_datos_entrevistado.programaAcompanamiento = request.data.get("programaAcompanamiento", None)
+                    var_datos_entrevistado.programaAcompanamientoOtro = request.data.get("programaAcompanamientoOtro", None)
+                    var_datos_entrevistado.programaAcompanamientoOtroData = request.data.get("programaAcompanamientoOtroData", None)
+                    var_datos_entrevistado.save()
+                
+                else:
+                    return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
+                return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
         elif request.data["tipo"] == 'datos_economicos':
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
@@ -731,12 +817,14 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             var_user = User.objects.filter(id= var_caracterizacion.id_creador.id).values('first_name','last_name')
             var_datos_academicos = datos_academicos.objects.filter(id= var_caracterizacion.id_datos_academicos.id).values()
             var_datos_economicos = datos_economicos.objects.filter(id= var_caracterizacion.id_datos_economicos.id).values()
+            var_datos_entrevistado = datos_entrevistado.objects.filter(id= var_caracterizacion.id_datos_entrevistado.id).values()
             var_percepcion_discapacidad = percepcion_discapacidad.objects.filter(id= var_caracterizacion.id_percepcion_discapacidad.id).values()
             var_acceso_servi_salud = acceso_servi_salud.objects.filter(id= var_caracterizacion.id_acceso_servi_salud.id).values()
             dict_caracterizacion = {
                 "datos_user":var_user[0],
                 "datos_caracterizacion" : serializer.data,
                 "datos_entrevistador" : var_user_extended_disc[0],
+                "datos_entrevistado": var_datos_entrevistado[0],
                 "datos_academicos" : var_datos_academicos[0],
                 "datos_economicos" : var_datos_economicos[0],
                 "percepcion_discapacidad" :var_percepcion_discapacidad[0],

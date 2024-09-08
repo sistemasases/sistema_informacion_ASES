@@ -1,9 +1,33 @@
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { useAuthStore } from "../../store/auth";
+import { useState } from "react";
 
 const DatosEntrevistador = ({ datos_entrevistador }) => {
   // console.log(datos_entrevistador);
+  const [stateDisabled, setStateDisabled] = useState(true);
+
+  const [stateEntrevistador, setStateEntrevistador] = useState({
+    entrevistador: datos_entrevistador.entrevistador,
+    celular: datos_entrevistador.celular,
+    cargo: datos_entrevistador.cargo,
+    profesion: datos_entrevistador.profesion,
+    fecha_aplicacion: datos_entrevistador.fecha_aplicacion,
+    lugar: datos_entrevistador.lugar,
+  });
+
+  const handleUpdateEntrevistador = (e) => {
+    e.preventDefault();
+    setStateDisabled(true);
+    console.log("Entrevistador actualizado");
+    console.log(stateEntrevistador);
+    console.log(datos_entrevistador);
+  };
+
+  const updateStateDisabled = () => {
+    setStateDisabled(!stateDisabled);
+  };
+
   return (
     <div className="space_content">
       <form>
@@ -14,22 +38,57 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
             <input
               type="text"
               className="input-type-text"
-              value={datos_entrevistador.entrevistador}
+              value={stateEntrevistador.entrevistador}
+              onChange={(e) =>
+                stateDisabled ? (
+                  <></>
+                ) : (
+                  setStateEntrevistador({
+                    ...stateEntrevistador,
+                    entrevistador: e.target.value,
+                  })
+                )
+              }
+              disabled={stateDisabled}
             />
             <label>Celular</label>
             <input
               type="tel"
               className="input-type-text-tel"
-              value={datos_entrevistador.celular}
+              value={stateEntrevistador.celular}
+              onChange={(e) =>
+                stateDisabled ? (
+                  <></>
+                ) : (
+                  setStateEntrevistador({
+                    ...stateEntrevistador,
+                    celular: e.target.value,
+                  })
+                )
+              }
+              disabled={stateDisabled}
             />
           </div>
           <div className="inline-input-group">
             <label>Cargo</label>
-            <select className="select-type">
-              {datos_entrevistador.cargo ? (
-                <option value={datos_entrevistador.cargo} selected>
+            <select
+              className="select-type"
+              onChange={(e) =>
+                stateDisabled ? (
+                  <></>
+                ) : (
+                  setStateEntrevistador({
+                    ...stateEntrevistador,
+                    cargo: e.target.value,
+                  })
+                )
+              }
+              disabled={stateDisabled}
+            >
+              {stateEntrevistador.cargo ? (
+                <option value={stateEntrevistador.cargo} selected>
                   {" "}
-                  {datos_entrevistador.cargo}
+                  {stateEntrevistador.cargo}
                 </option>
               ) : (
                 <option value="">Seleccione una opción</option>
@@ -40,11 +99,25 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
               <option value="Ninguna">No definido</option>
             </select>
             <label>Profesión</label>
-            <select className="select-type">
-              {datos_entrevistador.profesion ? (
-                <option value={datos_entrevistador.profesion} selected>
+            {/* Select profesion */}
+            <select
+              className="select-type"
+              onChange={(e) =>
+                stateDisabled ? (
+                  <></>
+                ) : (
+                  setStateEntrevistador({
+                    ...stateEntrevistador,
+                    profesion: e.target.value,
+                  })
+                )
+              }
+              disabled={stateDisabled}
+            >
+              {stateEntrevistador.profesion ? (
+                <option value={stateEntrevistador.profesion} selected>
                   {" "}
-                  {datos_entrevistador.profesion}
+                  {stateEntrevistador.profesion}
                 </option>
               ) : (
                 <option value="">Seleccione una opción</option>
@@ -63,14 +136,39 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
               <input
                 type="date"
                 className="input-type-date"
-                value={datos_entrevistador.fecha_aplicacion}
+                value={stateEntrevistador.fecha_aplicacion}
+                onChange={(e) =>
+                  stateDisabled ? (
+                    <></>
+                  ) : (
+                    setStateEntrevistador({
+                      ...stateEntrevistador,
+                      fecha_aplicacion: e.target.value,
+                    })
+                  )
+                }
+                disabled={stateDisabled}
               />
               <label>Lugar o Medio de Aplicación</label>
-              <select className="select-type">
-                {datos_entrevistador.lugar ? (
-                  <option value={datos_entrevistador.lugar} selected>
+              {/* Campo Lugar o Medio de Aplicación */}
+              <select
+                className="select-type"
+                onChange={(e) =>
+                  stateDisabled ? (
+                    <></>
+                  ) : (
+                    setStateEntrevistador({
+                      ...stateEntrevistador,
+                      lugar: e.target.value,
+                    })
+                  )
+                }
+                disabled={stateDisabled}
+              >
+                {stateEntrevistador.lugar ? (
+                  <option value={stateEntrevistador.lugar} selected>
                     {" "}
-                    {datos_entrevistador.lugar}
+                    {stateEntrevistador.lugar}
                   </option>
                 ) : (
                   <option value="">Seleccione una opción</option>
@@ -82,8 +180,22 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
             </div>
           </div>
         </div>
-        <button className="full-size-button color_red">Editar</button>
       </form>
+      {stateDisabled === true ? (
+        <button
+          className="full-size-button color_red"
+          onClick={(e) => updateStateDisabled()}
+        >
+          Editar
+        </button>
+      ) : (
+        <button
+          className="full-size-button color_red"
+          onClick={handleUpdateEntrevistador}
+        >
+          Enviar
+        </button>
+      )}
     </div>
   );
 };

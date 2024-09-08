@@ -59,3 +59,7 @@ from modulo_discapacidad.models import *
 # # admin.site.register(accesibilidad)
 # # Seguimiento
 # admin.site.register(seguimiento)
+
+# Caracterizacion
+admin.site.register(caracterizacion)
+admin.site.register(datos_entrevistado)
