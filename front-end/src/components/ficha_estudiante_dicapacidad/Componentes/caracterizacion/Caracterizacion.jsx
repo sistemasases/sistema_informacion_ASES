@@ -107,8 +107,9 @@ const Caracterizacion = () => {
     dificultades: "Ninguna significativa",
   });
 
-  const [datos_academicos_adicionales, setDatosAcademicosAdicionales] =
-    useState({});
+  const [datos_jornada, setDatosJornada] = useState({
+    jornada_caracterizacion: "",
+  });
 
   const [percepcion_discapacidad, setPercepcionDiscapacidad] = useState({
     id: 1,
@@ -257,11 +258,6 @@ const Caracterizacion = () => {
     nombre_institucion: "Instituto Ejemplo",
     tipo_apoyo: "Apoyo educativo",
   });
-
-  const [
-    conclusion_jornada_caracterizacion,
-    setConclusionJornadaCaracterizacion,
-  ] = useState({});
 
   const [acceso_servicios_salud, setAccesoServiciosSalud] = useState({
     id: 1,
@@ -630,8 +626,6 @@ const Caracterizacion = () => {
           tipo_apoyo: res.percepcion_discapacidad.tipo_apoyo,
         });
 
-        // setConclusionJornadaCaracterizacion
-
         // setAccesoServiciosSalud
         setAccesoServiciosSalud({
           id: res.acceso_servi_salud.id,
@@ -660,6 +654,12 @@ const Caracterizacion = () => {
           servicio_estudiantil: res.acceso_servi_salud.servicio_estudiantil,
           servicio_estudiantil_nombre:
             res.acceso_servi_salud.servicio_estudiantil_nombre,
+        });
+
+        // setDatosJornada
+        setDatosJornada({
+          jornada_caracterizacion:
+            res.datos_caracterizacion.jornada_caracterizacion,
         });
       })
       .catch((error) => {
@@ -837,7 +837,7 @@ const Caracterizacion = () => {
       </Acordion>
       <hr></hr>
 
-      <ConclusionJornadaCaracterizacion />
+      <ConclusionJornadaCaracterizacion jornada={datos_jornada} />
     </div>
   );
 };

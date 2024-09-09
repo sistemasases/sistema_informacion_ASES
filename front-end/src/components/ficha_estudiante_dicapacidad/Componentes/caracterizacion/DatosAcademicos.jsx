@@ -140,6 +140,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
                     max="2090"
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Año"
+                    disabled
                   />
                   <input
                     type="text"
@@ -148,12 +149,14 @@ const DatosAcademicos = ({ datos_academicos }) => {
                     value={programa.programa_academico}
                     onChange={(e) => handleChange(index, e)}
                     placeholder="Programa académico"
+                    disabled
                   />
                   <select
                     className="select-type"
                     name="motivo_retiro"
                     value={programa.motivo_retiro}
                     onChange={(e) => handleMotivoChange(index, e)}
+                    disabled
                   >
                     <option value="">Motivo de retiro</option>
                     {motivosRetiro.map((motivo, i) => (

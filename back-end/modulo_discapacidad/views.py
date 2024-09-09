@@ -21,7 +21,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
 
-    def create_models_caracterizacion(self,estudiante,semestre,fecha,lugar, creador):
+    def create_models_caracterizacion(self,estudiante,semestre,fecha,lugar, creador, jornada):
 
         caracterizacion_creado = caracterizacion.objects.create(
             id_datos_economicos=datos_economicos.objects.create(),
@@ -33,6 +33,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             fecha= fecha,
             lugar = lugar,
             id_creador = creador,
+            jornada_caracterizacion = jornada
         )
         return (caracterizacion_creado)
 
@@ -141,13 +142,14 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'], url_path='datos_caracterizacion_edit')
     def datos_caracterizacion_edit(self, request, pk=None):
-
+        print(request.data)
         if request.data["tipo"] == 'datos_entrevistador':
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
+            jornada = request.data["jornada"]
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
 
             if(var_caracterizacion):
@@ -171,7 +173,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
             else:
-                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, jornada)
                 var_caracterizacion_new.fecha = request_fecha
                 var_caracterizacion_new.lugar = request_lugar
 
@@ -511,8 +513,8 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_percepcion_discapacidad.relaciones_sexuales_texto = request.data.get("relaciones_sexuales_texto", None)
                     var_percepcion_discapacidad.deglucion = request.data.get("deglucion", False)
                     var_percepcion_discapacidad.deglucion_texto = request.data.get("deglucion_texto", None)
-                    var_percepcion_discapacidad.otra = request.data.get("otra", False)
-                    var_percepcion_discapacidad.otra_texto = request.data.get("otra_texto", None)
+                    var_percepcion_discapacidad.otra_dif_permanente = request.data.get("otra_dif_permanente", False)
+                    var_percepcion_discapacidad.otra_dif_permanente_texto = request.data.get("otra_dif_permanente_texto", None)
                     
                     var_percepcion_discapacidad.ojos = request.data.get("ojos", False)
                     var_percepcion_discapacidad.ojos_texto = request.data.get("ojos_texto", None)
@@ -536,8 +538,8 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_percepcion_discapacidad.sistema_genital_texto = request.data.get("sistema_genital_texto", None)
                     var_percepcion_discapacidad.sistema_digestivo = request.data.get("sistema_digestivo", False)
                     var_percepcion_discapacidad.sistema_digestivo_texto = request.data.get("sistema_digestivo_texto", None)
-                    var_percepcion_discapacidad.otra = request.data.get("otra", False)
-                    var_percepcion_discapacidad.otra_texto = request.data.get("otra_texto", None)
+                    var_percepcion_discapacidad.otra_organos = request.data.get("otra_organos", False)
+                    var_percepcion_discapacidad.otra_organos_texto = request.data.get("otra_organos_texto", None)
                     
                     var_percepcion_discapacidad.cursos = request.data.get("cursos", False)
                     var_percepcion_discapacidad.cursos_texto = request.data.get("cursos_texto", None)
@@ -567,8 +569,8 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_percepcion_discapacidad.alimentos_cafeteria_texto = request.data.get("alimentos_cafeteria_texto", None)
                     var_percepcion_discapacidad.tramites = request.data.get("tramites", False)
                     var_percepcion_discapacidad.tramites_texto = request.data.get("tramites_texto", None)
-                    var_percepcion_discapacidad.otra = request.data.get("otra", False)
-                    var_percepcion_discapacidad.otra_texto = request.data.get("otra_texto", None)
+                    var_percepcion_discapacidad.otra_nec_diferente = request.data.get("otra_nec_diferente", False)
+                    var_percepcion_discapacidad.otra_nec_diferente_texto = request.data.get("otra_nec_diferente_texto", None)
 
                     var_percepcion_discapacidad.condicion_discapacidad = request.data.get("condicion_discapacidad", False)
                     var_percepcion_discapacidad.contexto_universitario = request.data.get("contexto_universitario", False)
@@ -679,8 +681,8 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_percepcion_discapacidad.relaciones_sexuales_texto = request.data.get("relaciones_sexuales_texto", None)
                     var_percepcion_discapacidad.deglucion = request.data.get("deglucion", False)
                     var_percepcion_discapacidad.deglucion_texto = request.data.get("deglucion_texto", None)
-                    var_percepcion_discapacidad.otra = request.data.get("otra", False)
-                    var_percepcion_discapacidad.otra_texto = request.data.get("otra_texto", None)
+                    var_percepcion_discapacidad.otra_dif_permanente = request.data.get("otra_dif_permanente", False)
+                    var_percepcion_discapacidad.otra_dif_permanente_texto = request.data.get("otra_dif_permanente_texto", None)
                     
                     var_percepcion_discapacidad.ojos = request.data.get("ojos", False)
                     var_percepcion_discapacidad.ojos_texto = request.data.get("ojos_texto", None)
@@ -704,8 +706,8 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_percepcion_discapacidad.sistema_genital_texto = request.data.get("sistema_genital_texto", None)
                     var_percepcion_discapacidad.sistema_digestivo = request.data.get("sistema_digestivo", False)
                     var_percepcion_discapacidad.sistema_digestivo_texto = request.data.get("sistema_digestivo_texto", None)
-                    var_percepcion_discapacidad.otra = request.data.get("otra", False)
-                    var_percepcion_discapacidad.otra_texto = request.data.get("otra_texto", None)
+                    var_percepcion_discapacidad.otra_organos = request.data.get("otra_organos", False)
+                    var_percepcion_discapacidad.otra_organos_texto = request.data.get("otra_organos_texto", None)
                     
                     var_percepcion_discapacidad.cursos = request.data.get("cursos", False)
                     var_percepcion_discapacidad.cursos_texto = request.data.get("cursos_texto", None)
@@ -735,8 +737,8 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_percepcion_discapacidad.alimentos_cafeteria_texto = request.data.get("alimentos_cafeteria_texto", None)
                     var_percepcion_discapacidad.tramites = request.data.get("tramites", False)
                     var_percepcion_discapacidad.tramites_texto = request.data.get("tramites_texto", None)
-                    var_percepcion_discapacidad.otra = request.data.get("otra", False)
-                    var_percepcion_discapacidad.otra_texto = request.data.get("otra_texto", None)
+                    var_percepcion_discapacidad.otra_nec_diferente = request.data.get("otra_nec_diferente", False)
+                    var_percepcion_discapacidad.otra_nec_diferente_texto = request.data.get("otra_nec_diferente_texto", None)
 
                     var_percepcion_discapacidad.condicion_discapacidad = request.data.get("condicion_discapacidad", False)
                     var_percepcion_discapacidad.contexto_universitario = request.data.get("contexto_universitario", False)
@@ -893,7 +895,42 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                 else:
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
                 return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
-            
+        elif request.data["tipo"] == 'jornada_caracterizacion':   
+            request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
+            request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
+            request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
+            request_lugar = request.data["lugar"]
+            request_creador = User.objects.get(id = int(request.data["id_creador"]))
+            var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
+
+            if(var_caracterizacion):
+
+                var_caracterizacion.fecha = request_fecha
+                var_caracterizacion.lugar = request_lugar
+
+                var_caracterizacion.save()
+                
+                var_jornada_caracterizacion = var_caracterizacion.jornada_caracterizacion
+                if var_jornada_caracterizacion:
+                    var_jornada_caracterizacion = request.data.get("jornada_caracterizacion", None)
+                    var_jornada_caracterizacion.save()
+                else:
+                    return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
+                return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
+            else:
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_caracterizacion_new.fecha = request_fecha
+                var_caracterizacion_new.lugar = request_lugar
+
+                var_caracterizacion_new.save()
+
+                var_jornada_caracterizacion = caracterizacion.objects.filter(_estudiante= var_caracterizacion_new.request_estudiante).first()
+                if var_jornada_caracterizacion:
+                    var_jornada_caracterizacion = request.data.get("jornada_caracterizacion", None)
+                    var_jornada_caracterizacion.save()
+                else:
+                    return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
+                return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
         else :
             return Response({'error': 'Tipo de edición no existente.'}, status=status.HTTP_400_BAD_REQUEST)
             

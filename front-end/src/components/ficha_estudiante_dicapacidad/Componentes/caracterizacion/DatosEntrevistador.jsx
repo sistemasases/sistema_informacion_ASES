@@ -2,10 +2,13 @@ import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { useAuthStore } from "../../store/auth";
 import { useState } from "react";
+import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
+import { desencriptar, desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const DatosEntrevistador = ({ datos_entrevistador }) => {
   // console.log(datos_entrevistador);
   const [stateDisabled, setStateDisabled] = useState(true);
+  const { estudianteSelected } = useAuthStore();
 
   const [stateEntrevistador, setStateEntrevistador] = useState({
     entrevistador: datos_entrevistador.entrevistador,
@@ -14,11 +17,25 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
     profesion: datos_entrevistador.profesion,
     fecha_aplicacion: datos_entrevistador.fecha_aplicacion,
     lugar: datos_entrevistador.lugar,
+    tipo: "datos_entrevistador",
+    // id_semestre: desencriptar(sessionStorage.getItem("id_")),
+    id_semestre: 40,
+    id_estudiante: estudianteSelected.id,
+    fecha: datos_entrevistador.fecha_aplicacion,
+    id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
+
   });
 
   const handleUpdateEntrevistador = (e) => {
     e.preventDefault();
     setStateDisabled(true);
+    UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateEntrevistador)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     console.log("Entrevistador actualizado");
     console.log(stateEntrevistador);
     console.log(datos_entrevistador);

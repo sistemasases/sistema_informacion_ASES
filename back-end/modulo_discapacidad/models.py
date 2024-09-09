@@ -127,8 +127,8 @@ class percepcion_discapacidad (models.Model):
     relaciones_sexuales_texto = models.CharField(max_length=50, default=None,null=True)
     deglucion = models.BooleanField(default=False)
     deglucion_texto = models.CharField(max_length=50, default=None,null=True)
-    otra = models.BooleanField(default=False)
-    otra_texto = models.CharField(max_length=50, default=None,null=True)
+    otra_dif_permanente = models.BooleanField(default=False)
+    otra_dif_permanente_texto = models.CharField(max_length=50, default=None,null=True)
     
     ojos = models.BooleanField(default=False)
     ojos_texto = models.CharField(max_length=50, default=None,null=True)
@@ -152,8 +152,8 @@ class percepcion_discapacidad (models.Model):
     sistema_genital_texto = models.CharField(max_length=50, default=None,null=True)
     sistema_digestivo = models.BooleanField(default=False)
     sistema_digestivo_texto = models.CharField(max_length=50, default=None,null=True)
-    otra = models.BooleanField(default=False)
-    otra_texto = models.CharField(max_length=50, default=None,null=True)
+    otra_organos = models.BooleanField(default=False)
+    otra_organos_texto = models.CharField(max_length=50, default=None,null=True)
     
     cursos = models.BooleanField(default=False)
     cursos_texto = models.CharField(max_length=50, default=None,null=True)
@@ -183,8 +183,8 @@ class percepcion_discapacidad (models.Model):
     alimentos_cafeteria_texto = models.CharField(max_length=50, default=None,null=True)
     tramites = models.BooleanField(default=False)
     tramites_texto = models.CharField(max_length=50, default=None,null=True)
-    otra = models.BooleanField(default=False)
-    otra_texto = models.CharField(max_length=50, default=None,null=True)
+    otra_nec_diferente = models.BooleanField(default=False)
+    otra_nec_diferente_texto = models.CharField(max_length=50, default=None,null=True)
 
     condicion_discapacidad = models.BooleanField(default=False)
     contexto_universitario = models.BooleanField(default=False)
@@ -291,7 +291,7 @@ class caracterizacion (models.Model):
     lugar = models.CharField(max_length=500,default=None,null=True)
     id_creador = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name='id_user_in_caracterizacion')
     id_datos_entrevistado = models.ForeignKey(datos_entrevistado, on_delete=models.CASCADE, default=None, null=True, related_name='id_datos_entrevistado_in_caracterizacion')
-    
+    jornada_caracterizacion = models.CharField(max_length=5000, default=None,null=True)
     
 class produccion_ac (models.Model):
     hablar = models.BooleanField(default=False)
