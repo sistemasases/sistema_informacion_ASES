@@ -289,12 +289,11 @@ const Caracterizacion = () => {
       .then((res) => {
         console.log(res);
         console.log(estudianteSelected);
-        // setDatosEntrevistador
+        // Reorganizar y formar la nueva fecha en formato día-mes-anio
         const fechaOriginal = res.datos_caracterizacion.fecha;
         console.log(fechaOriginal);
         // Dividir la fecha en partes [anio, mes, día]
         const [anio, mes, día] = fechaOriginal.split("-");
-
         // Reorganizar y formar la nueva fecha en formato día-mes-anio
         const fechaConvertida = `${día}-${mes}-${anio}`;
         console.log(fechaConvertida);
@@ -302,15 +301,20 @@ const Caracterizacion = () => {
         // Fecha nacimiento
         const fechaNacimiento = estudianteSelected.fecha_nac;
         console.log(fechaNacimiento);
-
         // Dividir la fecha en partes [anio, mes, día]
         const fechaNacimientoMod = fechaNacimiento.split("T")[0]; // "1900-01-01"
         const [anioF, mesF, diaF] = fechaNacimientoMod.split("-");
-
         // Reorganizar y formar la nueva fecha en formato anio-mes-día
         const fechaConvertidaNacimiento = `${anioF}-${mesF}-${diaF}`;
         console.log(fechaConvertidaNacimiento);
 
+        const fechaIngreso = estudianteSelected.anio_ingreso;
+        const fechaConvertidaTIngreso = fechaIngreso.split("T")[0];
+        const [anioIngreso, mesIngreso, diaIngreso] =
+          fechaConvertidaTIngreso.split("-");
+        const fechaConvertidaIngreso = `${anioIngreso}-${mesIngreso}-${diaIngreso}`;
+        console.log(fechaConvertidaIngreso);
+        // setDatosEntrevistador
         setDatosEntrevistador({
           entrevistador:
             res.datos_user.first_name + " " + res.datos_user.last_name,
@@ -415,6 +419,25 @@ const Caracterizacion = () => {
           apoyos_recibidos: res.datos_academicos.apoyos_recibidos,
           observaciones: res.datos_academicos.observaciones,
           dificultades: res.datos_academicos.dificultades,
+
+          anio_ingreso: fechaConvertidaIngreso,
+          otros_programas_academicos:
+            res.datos_academicos.otros_programas_academicos,
+          edu_media_nombre_institucion:
+            res.datos_academicos.edu_media_nombre_institucion,
+          edu_media_titulo_obtenido:
+            res.datos_academicos.edu_media_titulo_obtenido,
+          edu_media_tipo_institucion:
+            res.datos_academicos.edu_media_tipo_institucion,
+          edu_media_dificultad_apoyo:
+            res.datos_academicos.edu_media_dificultad_apoyo,
+          edu_superior_tipo_institucion:
+            res.datos_academicos.edu_superior_tipo_institucion,
+          edu_superior_dificultad_apoyo:
+            res.datos_academicos.edu_superior_dificultad_apoyo,
+          periodo_ingreso: res.datos_academicos.periodo_ingreso,
+          observaciones_adicionales:
+            res.datos_academicos.observaciones_adicionales,
         });
 
         // setDatosAcademicosAdicionales

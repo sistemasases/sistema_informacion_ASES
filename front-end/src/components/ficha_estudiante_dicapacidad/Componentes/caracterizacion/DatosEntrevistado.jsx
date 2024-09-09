@@ -299,6 +299,7 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
                         actividadesOcioData: e.target.value,
                       })
                     }
+                    disabled={stateDisabled}
                   />
                 </div>
               )}
@@ -411,6 +412,7 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
                             programaAcompanamientoOtroData: e.target.value,
                           })
                         }
+                        disabled={stateDisabled}
                       />
                     </div>
                   )}

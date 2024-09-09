@@ -419,6 +419,18 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_datos_academicos.apoyos_recibidos = request.data.get("apoyos_recibidos", None)
                     var_datos_academicos.observaciones = request.data.get("observaciones", None)
                     var_datos_academicos.dificultades = request.data.get("dificultades", None)
+                    
+                    var_datos_academicos.otros_programas_academicos = request.data.get("otros_programas_academicos", None)
+                    var_datos_academicos.edu_media_nombre_institucion = request.data.get("edu_media_nombre_institucion", None)
+                    var_datos_academicos.edu_media_titulo_obtenido = request.data.get("edu_media_titulo_obtenido", None)
+                    var_datos_academicos.edu_media_tipo_institucion = request.data.get("edu_media_tipo_institucion", None)
+                    var_datos_academicos.edu_media_dificultad_apoyo = request.data.get("edu_media_dificultad_apoyo", None)
+                    var_datos_academicos.edu_superior_tipo_institucion = request.data.get("edu_superior_tipo_institucion", None)
+                    var_datos_academicos.edu_superior_dificultad_apoyo = request.data.get("edu_superior_dificultad_apoyo", None)
+                    var_datos_academicos.periodo_ingreso = request.data.get("periodo_ingreso", None)
+                    var_datos_academicos.observaciones_adicionales = request.data.get("observaciones_adicionales", None)
+                    
+                    
                     var_datos_academicos.save()
                 else:
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
@@ -441,6 +453,17 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_datos_academicos.apoyos_recibidos = request.data.get("apoyos_recibidos", None)
                     var_datos_academicos.observaciones = request.data.get("observaciones", None)
                     var_datos_academicos.dificultades = request.data.get("dificultades", None)
+                    
+                    var_datos_academicos.otros_programas_academicos = request.data.get("otros_programas_academicos", None)
+                    var_datos_academicos.edu_media_nombre_institucion = request.data.get("edu_media_nombre_institucion", None)
+                    var_datos_academicos.edu_media_titulo_obtenido = request.data.get("edu_media_titulo_obtenido", None)
+                    var_datos_academicos.edu_media_tipo_institucion = request.data.get("edu_media_tipo_institucion", None)
+                    var_datos_academicos.edu_media_dificultad_apoyo = request.data.get("edu_media_dificultad_apoyo", None)
+                    var_datos_academicos.edu_superior_tipo_institucion = request.data.get("edu_superior_tipo_institucion", None)
+                    var_datos_academicos.edu_superior_dificultad_apoyo = request.data.get("edu_superior_dificultad_apoyo", None)
+                    var_datos_academicos.periodo_ingreso = request.data.get("periodo_ingreso", None)
+                    var_datos_academicos.observaciones_adicionales = request.data.get("observaciones_adicionales", None)
+                    
                     var_datos_academicos.save()
                 else:
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)

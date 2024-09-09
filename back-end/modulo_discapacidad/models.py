@@ -91,6 +91,16 @@ class datos_academicos (models.Model):
     apoyos_recibidos = models.CharField(max_length=100, default=None,null=True)
     observaciones = models.CharField(max_length=500, default=None,null=True)
     dificultades = models.CharField(max_length=500, default=None,null=True)
+    otros_programas_academicos = models.JSONField(default=None,null=True)
+    edu_media_nombre_institucion = models.CharField(max_length=100, default=None,null=True)
+    edu_media_titulo_obtenido = models.CharField(max_length=100, default=None,null=True)
+    edu_media_tipo_institucion = models.CharField(max_length=100, default=None,null=True)
+    edu_media_dificultad_apoyo = models.JSONField(default=None,null=True)
+    edu_superior_tipo_institucion = models.CharField(max_length=100, default=None,null=True)
+    edu_superior_dificultad_apoyo = models.JSONField(default=None,null=True)
+    periodo_ingreso = models.DateField(auto_now_add=True,null=True)
+    observaciones_adicionales = models.CharField(max_length=500, default=None,null=True)
+    
     
 class percepcion_discapacidad (models.Model):
     considera_discapacidad = models.BooleanField(default=False)
