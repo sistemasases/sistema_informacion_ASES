@@ -148,3 +148,11 @@
     text-wrap: nowrap;
   }
   
+  @media (max-width: 800px) {
+
+    .container_footer_campus{
+      width: 100%;
+      background:red;
+      word-break: break-all;
+  }
+  }

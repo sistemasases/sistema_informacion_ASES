@@ -3,6 +3,8 @@ import { Container, Row, Col, Image } from 'react-bootstrap';
 import '../../../Scss/campus_diverso/footerCampus.css';
 const FooterCampusDos = () => {
     return (
+      <div className="container_footer_campus">
+
       <Container fluid className="footer-container">
       <Container className="p-1">
         <Row className="my-3 d-flex justify-content-center">
@@ -43,6 +45,7 @@ const FooterCampusDos = () => {
         </Row>
       </Container>
     </Container>
+    </div>
   );
 }
 

@@ -28,6 +28,36 @@ const InformacionAcademica = ({
         
         <Col className="form-column" xs={"10"} md={"6"}>
 
+
+
+              <div className="custom-div-check-documentos">
+        <div className="custom-checkbox-label">
+          ¿Pertenece a univalle?
+        </div>
+        <label className="custom-radio">
+          <input
+            type="radio"
+            name="pertenencia_univalle"
+            value={true}
+            checked={state.pertenencia_univalle === true}
+            onChange={handleCheckboxChange}
+          />
+          Sí
+        </label>
+        <label className="custom-radio">
+          <input
+            type="radio"
+            name="pertenencia_univalle"
+            value={false}
+            checked={state.pertenencia_univalle === false}
+            onChange={handleCheckboxChange}
+
+          />
+          No
+        </label>
+      </div>
+
+
         <div>
                 <label className='custom-div'>Sede de la universidad</label>
                 <input
@@ -38,6 +68,7 @@ const InformacionAcademica = ({
                   value={state.sede_universidad}
                   onChange={handleChange}
                   maxLength={maxLengthBasicInput}
+                  disabled={state.pertenencia_univalle === false}
                 />
                 <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.sede_universidad.length}`}</span>
         </div>
@@ -52,6 +83,7 @@ const InformacionAcademica = ({
                   value={state.nombre_programa_academico}
                   onChange={handleChange}
                   maxLength={maxLengthBasicInput}
+                  disabled={state.pertenencia_univalle === false}
                 />
                 <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_programa_academico.length}`}</span>
         </div>
@@ -59,21 +91,7 @@ const InformacionAcademica = ({
 
 
 
-        <div className="custom-div-check-documentos ">
-  <div className="custom-checkbox-label">
-    ¿Pertenece a univalle?
-  </div>
-  <label className="custom-checkbox">
-    <input
-      type="checkbox"
-      checked={state.pertenencia_univalle}
-      name="pertenencia_univalle"
-      value={state.pertenencia_univalle}
-      onChange={handleCheckboxChange}
-    />
-    <span className="checkmark"></span>
-  </label>
-</div>
+ 
 
 
     </Col>
@@ -92,6 +110,7 @@ const InformacionAcademica = ({
                   onChange={handleChange}
                   onKeyDown={preventNonNumericValues}
                   maxLength="15"
+                  disabled={state.pertenencia_univalle === false}
                 />
                 </div>
         </div>
@@ -108,33 +127,28 @@ const InformacionAcademica = ({
                   value={state.semestre_academico}
                   onChange={handleChange}
                   maxLength="2"
+                  disabled={state.pertenencia_univalle === false}
+
                 />
              
         </div>
 
-        <div>
-              <label className='custom-div'>Estamentos</label>
               <div>
-                {isLoading ? (
-                  <p>Cargando...</p>
-                ):(
-                <Select
-                  isMulti
-                  className='create-select'
-                  name="estamentos"
-                  placeholder='Seleccione estamentos'
-                  options={estamentoOptions}
-                  value={state.estamentos.map(option => ({
-                  label: option,
-                  value: estamentoOptions.find(o => o.label === option).value
-                  }))}
-                  onChange={handleSelectChange2}
-    
-                  />
-                  )}
-              </div>
-            </div>
-
+        <label className='custom-div'>Estamentos</label>
+        <Select
+          isMulti
+          className='create-select'
+          name="estamentos"
+          placeholder='Seleccione estamentos'
+          options={estamentoOptions}
+          value={state.estamentos.map(option => ({
+            label: option,
+            value: estamentoOptions.find(o => o.label === option).value
+          }))}
+          onChange={handleSelectChange2}
+          isDisabled={state.pertenencia_univalle === false}
+        />
+      </div>
     </Col>
     </Container>
     </div>

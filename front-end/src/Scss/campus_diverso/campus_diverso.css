@@ -20,6 +20,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
+  max-height: 100%;
   text-align: left;
   
 }
@@ -35,14 +36,7 @@
   overflow-x: auto;
   
 }
-.input-updated {
-  border: 0.1px solid #d9d9d9 !important;
-  border-radius: 4px;
-  box-sizing: border-box;    
-  padding: 7px;
-  width: 100%;
-  height: auto;
-}
+
 
 .create-select {
   width: 100%;
@@ -66,70 +60,59 @@
 }
 
 /* Medidas del css para teléfono*/
-@media (max-width: 750px) {
+@media (max-width: 850px) {
 
-  .registro-estudiante-container {
-  /*background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg') !important;*/
-  background-color: #F5F5DC;
-  background-size: cover !important;
-  background-position: center !important;
-  background-attachment: fixed !important;
-  width: 100% ;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.custom-div {
+  width: 100%; 
+  height: 100%; 
+  font-size: 6em; 
+  padding-top: 3px;
+  color: #000000;
+  text-align:left;
+  overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+  word-wrap: break-word; /*ajusta palabras largas */
+  hyphens: auto; /* Habilita la separación de palabras si es necesario */
 
-}
+
+  }
+
+  .input-updated {
+    border: 0.1px solid #d9d9d9 !important;
+    border-radius: 0.3em;
+    box-sizing: border-box;    
+    padding: 0.5em;
+    width: 100%;
+    height: auto;
+  }
+
 
 .registro-estudiante-form {
   background-color: #ffffff;
   padding: 5px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   text-align: left;
 }
 
 
 .div-scroll-registro {
-  height: 60em;
+  height: 30em;
   overflow-y: auto;  
-  padding-right: 1em; 
-  text-align: justify;
+  padding-right: 0.8em; 
+ /* text-align: justify; */
   text-justify: inter-word; 
   word-wrap: break-word;
   overflow-x: auto;
   font-size: 0.8em; /* Reduce ligeramente el tamaño de la fuente */
   
 }
-.input-updated {
-  border: 0.1px solid #d9d9d9 !important;
-  border-radius: 0.3em;
-  box-sizing: border-box;    
-  padding: 0.5em;
-  width: 100%;
-  height: auto;
-}
 
-.create-select {
-  width: 100%;
-  color: #000;
- 
-  [class$="IndicatorsContainer"] {
-      min-height: 38px !important;
-      max-height: 28px;
-  }
-  [class$="-Input"] {
-      min-height: 28px !important;
-      max-height: 18px !important;
-  }
 
-}
+
 
 .form-column {
 
-  padding: 10px;
+  padding: 10em;
 }
 
 .container_informacion_general {
@@ -137,6 +120,40 @@
   width: 100%; /* 100% para pantallas muy pequeñas */
   max-width: 100%; /* Puedes ajustar esto según la proporción deseada */
 }
+
+
+.tooltip-icon {
+  position: relative;
+  display: inline-block;
+  margin-left: 3em;
+  color: #ff0000; /* Cambia el color según tu preferencia */
+  cursor: pointer;
+  font-weight: bold;
+}
+
+  .tooltip-icon:hover .tooltip-text {
+    visibility: visible;
+    max-height: 15em; /* Altura máxima del tooltip */
+
+    opacity: 1;
+    width: 13em;
+    position: absolute;
+    font-size: 0.85em;
+    white-space: normal; /* Texto junto */
+    text-align: justify;
+
+    background-color: #ec4c4c;
+    top: -300%;
+    bottom: 100%;
+        /* Ajustes para que salga justo arriba del componente */
+        
+        /* Otros estilos opcionales */
+    transition: opacity 1s;
+    transform: translateX(30%); /* Ajustar la posición horizontal del tooltip */
+  }
+
+
+
 
 }
 
@@ -168,7 +185,15 @@
   }
 
 
-  
+  .input-updated {
+    border: 0.1px solid #d9d9d9 !important;
+    border-radius: 0.3em;
+    box-sizing: border-box;    
+    padding: 7px;
+    width: 100%;
+    height: 90%;
+  }
+
   .textarea {
     border: 1px solid #d9d9d9;
     border-radius: 4px;
@@ -184,8 +209,8 @@
 
   .custom-div {
     width: 100%; 
-    height: 90%; 
-    font-size: 16px; 
+    height: 100%; 
+    font-size: 0.9em; 
     padding-top: 3px;
     color: #000000;
     }

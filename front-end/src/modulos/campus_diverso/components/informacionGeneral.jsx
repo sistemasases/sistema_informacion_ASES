@@ -35,7 +35,7 @@ const InformacionGeneral = ({state,
     <div className='div-scroll-registro'>
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
-        <Col className="form-column" xs={"10"} md={"6"}>
+        <Col className="form-column" xs={"6"} md={"6"}>
 
         <div>
                 <label className='custom-div'>Dedicacion externa</label>
@@ -230,7 +230,7 @@ const InformacionGeneral = ({state,
     </Col>
 
 
-    <Col className="form-column" xs={"10"} md={"6"}>
+    <Col className="form-column" xs={"6"} md={"6"}>
 
 
 
@@ -307,8 +307,11 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese su ocupación'
                   value={state.Ocupaciones_actules}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
                 </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.Ocupaciones_actules.length}`}</span>
+
         </div>  
 
         <div>
@@ -321,22 +324,28 @@ const InformacionGeneral = ({state,
                   placeholder='Ingrese los profesionales'
                   value={state.profesionales_que_brindaron_atencion}
                   onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
                 />
                 </div>
+              <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.profesionales_que_brindaron_atencion.length}`}</span>
+
         </div>  
 
         <div>
-                <label className='custom-div'>¿Qué acompañamiento ha recibido?</label>
+                <label className='custom-div'>¿tipo(s) de acompañamiento(s) recibido(s)?</label>
                 <div>
                 <textarea
                 className='input-updated'
-                  type="text"
+                  type="textarea"
                   name="acompanamiento_que_recibio"
                   placeholder='Ingrese el acompañamiento que ha recibido'
                   value={state.acompanamiento_que_recibio}
-                  onChange={handleChange}
+                  onChange={handleChangeTextField}
+                  maxLength={maxLengthTextAreas}
                 />
                 </div>
+              <span className="char-count">{`Caracteres restantes: ${maxLengthTextAreas - state.acompanamiento_que_recibio.length}`}</span>
+
         </div>  
 
 

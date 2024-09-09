@@ -31,7 +31,7 @@ import FooterCampusDos from './components/footerCampusDos';
   const maxLengthBasicInput = 50; // Límite de caracteres
   const maxLengthTextAreas = 150;
   const maxLengthUniqueDigit= 1;
-
+  const maxLengthNumber = 20;
 
   const [showModal, setShowModal] = useState(true);
   const handleClose = () => {
@@ -91,7 +91,7 @@ import FooterCampusDos from './components/footerCampusDos';
     nombre_programa_academico:"",
     codigo_estudiante:"",
     semestre_academico:"",
-    pertenencia_univalle:false,
+    pertenencia_univalle:null,
     estamentos: [],
     
     //Informacion general
@@ -262,17 +262,32 @@ useEffect(() => {
 }, []);
 
 const handleCheckboxChange = (event) => {
-  const { name, checked } = event.target;
-  set_state((prevState) => ({
-    ...prevState,
-    [name]: checked,
-  }));
-  console.log(`Checkbox ${name} changed to ${checked}`);
+  const { name, value, checked } = event.target;
 
-     // Cierra el modal si se aceptan el manejo de datos.
-     if (name === 'autorizacion_manejo_de_datos' && checked) {
-      setShowModal(false);
-    }
+  // Verifica si el cambio es para "pertenencia_univalle"
+  if (name === 'pertenencia_univalle') {
+    const booleanValue = JSON.parse(value); // Convierte el string "true" o "false" en booleano
+
+    set_state((prevState) => ({
+      ...prevState,
+      [name]: booleanValue, // Asigna el valor booleano al estado
+    }));
+
+    console.log(`Radio ${name} changed to ${booleanValue}`);
+  } else {
+    // Para otros checkboxes, usa el enfoque normal de "checked"
+    set_state((prevState) => ({
+      ...prevState,
+      [name]: checked, // Asigna el valor de checked
+    }));
+
+    console.log(`Checkbox ${name} changed to ${checked}`);
+  }
+
+  // Cierra el modal si se aceptan el manejo de datos
+  if (name === 'autorizacion_manejo_de_datos' && checked) {
+    setShowModal(false);
+  }
 };
 
 const handleChange = (event) => {
@@ -297,7 +312,9 @@ const handleChangeTextField = (event) => {
 
 const handleChangeUniqueDigit = (event) => {
   const { name, value } = event.target;
-  if (value.length <= maxLengthUniqueDigit) {
+
+  // Asegúrate de que el valor contenga solo dígitos y no exceda la longitud máxima
+  if (/^\d*$/.test(value) && value.length <= maxLengthUniqueDigit) {
     set_state((prevState) => ({
       ...prevState,
       [name]: value,
@@ -305,6 +322,16 @@ const handleChangeUniqueDigit = (event) => {
   }
 };
 
+
+const handleChangeNumber = (event) => {
+  const { name, value } = event.target;
+  if (/^\d*$/.test(value) && value.length <= maxLengthNumber) {
+    set_state((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }
+};
 
 
 const handleSelectChange = (selectedOptions, actionMeta) => {
@@ -470,6 +497,10 @@ const handleSubmit = async (e) => {
   };
 
   const invalidFields = requiredFields.filter(field => !state[field]);
+  if (state.pertenencia_univalle === null) {
+    // Añadir el campo 'pertenencia_univalle' a la lista de campos inválidos si es null
+    invalidFields.push('pertenencia_univalle');
+  }
 
   if (invalidFields.length > 0) {
     // alerta de campos vacíos que están en la lista de requiredFields
@@ -482,12 +513,7 @@ const handleSubmit = async (e) => {
     return;
   }
 
-  setTimeout(() => {
-    // Mostrar alerta de éxito
-    setShowSuccessAlert(true);
-    // Ocultar después de unos segundos
-    setTimeout(() => setShowSuccessAlert(false), 30000);
-  }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
+
  
 
   const personaData = removeEmptyFields ({
@@ -637,6 +663,12 @@ const handleSubmit = async (e) => {
             });
             console.log('Respuesta del servidor (documentos autorizacion):', documentosAutorizacionResponse.data);
 
+            setTimeout(() => {
+              // Mostrar alerta de éxito
+              setShowSuccessAlert(true);
+              // Ocultar después de unos segundos
+              setTimeout(() => setShowSuccessAlert(false), 30000);
+            }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
             setShowModal(true);
             setMensaje("El formulario se envió con éxito.");
             setIsSubmitting(false);
@@ -672,7 +704,7 @@ const handleSubmit = async (e) => {
               nombre_programa_academico: "",
               codigo_estudiante: "",
               semestre_academico: "",
-              pertenencia_univalle: false,
+              pertenencia_univalle: null,
               estamentos: [],
 
               //Documentos autorización
@@ -814,9 +846,10 @@ const handleSubmit = async (e) => {
         }
       }
       setMensaje(errorMessage);
-    } else {
-      setMensaje("Hubo un error al enviar el formulario de persona. Por favor, inténtalo de nuevo.");
-    }
+      setShowErrorAlert(true);
+      return; // Evita mostrar el modal en caso de error
+
+    } 
     setShowModal(true);
     setShowErrorAlert(true);
   }
@@ -828,6 +861,7 @@ const steps = [
     handleChange={handleChange}
     handleChangeTextField={handleChangeTextField}
     handleChangeUniqueDigit={handleChangeUniqueDigit}
+    handleChangeNumber={handleChangeNumber}
     isLoading={isLoading}
     razasOptions={razasOptions}
     handleSelectChange={handleSelectChange}

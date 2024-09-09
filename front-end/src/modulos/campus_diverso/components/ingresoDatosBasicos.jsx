@@ -4,10 +4,13 @@ import Select from 'react-select';
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 export const preventNonNumericValues = (e) => {
-  const nonNumericKeys = ["e", "E", "+", "-", ".", ",", "ArrowLeft", "ArrowRight", "Backspace", "Delete", "Tab", "Enter", "Shift", "Control", "Alt", "CapsLock"];
+  const nonNumericKeys = [ "ArrowLeft", "ArrowRight", "Backspace", "Delete", "Tab", "Enter", "Shift", "Control", "Alt", "CapsLock"];
   if (!/^[0-9]$/.test(e.key) && !nonNumericKeys.includes(e.key)) {
     e.preventDefault();
   }
+};
+export const disablePaste = (e) => {
+  e.preventDefault();  // Previene que el usuario pueda pegar algo
 };
 const maxLengthNumber = 20;
 
@@ -15,6 +18,7 @@ const IngresoDatosBasicos = ({state,
     handleChange,
     handleChangeTextField,
     handleChangeUniqueDigit,
+    handleChangeNumber,
     isLoading,
     razasOptions,
     handleSelectChange,
@@ -32,7 +36,7 @@ const IngresoDatosBasicos = ({state,
         <div className='div-scroll-registro'>
     <Container className="container_informacion_general" >
     
-      <Col className="form-column" xs={"15"} md={"13"}>
+      <Col className="form-column" xs={"6"} md={"6"}>
       
        
       
@@ -115,7 +119,7 @@ const IngresoDatosBasicos = ({state,
     onKeyDown={preventNonNumericValues}
     min="0"
     value={state.numero_documento}
-    onChange={handleChange}
+    onChange={handleChangeNumber}
     maxLength={maxLengthNumber}
   />
   <span className="char-count">{`Caracteres restantes: ${maxLengthNumber - state.numero_documento.length}`}</span>
@@ -147,7 +151,7 @@ const IngresoDatosBasicos = ({state,
     name="telefono"
     onKeyDown={preventNonNumericValues}
     value={state.telefono}
-    onChange={handleChange}
+    onChange={handleChangeNumber}
     maxLength={maxLengthNumber}
   />
 <span className="char-count">{`Caracteres restantes: ${maxLengthNumber - (state.telefono?.length || 0)}`}</span>
@@ -220,7 +224,7 @@ const IngresoDatosBasicos = ({state,
     onKeyDown={preventNonNumericValues}
     min="0"
     value={state.telefono_persona_de_confianza}
-    onChange={handleChange}
+    onChange={handleChangeNumber}
     maxLength={maxLengthNumber}
   />
   <span className="char-count">{`Caracteres restantes: ${maxLengthNumber - state.telefono_persona_de_confianza.length}`}</span>
@@ -231,7 +235,7 @@ const IngresoDatosBasicos = ({state,
 
       
       
-      <Col className="form-column" xs={"15"} md={"13"}>
+      <Col className="form-column" xs={"6"} md={"6"}>
     
           <div className="input-container">
       <label className='custom-div'>Ciudad de nacimiento</label>
