@@ -67,6 +67,32 @@ const Caracterizacion = () => {
     situacion_madre: "Empleo estable",
     situacion_padre: "Empleo estable",
     solvencia_economica: true,
+
+    permanencia_ingresos_propios: "",
+    permanencia_ingresos_familiares: "",
+    permanencia_ingresos_otros: "",
+    permanencia_ingresos_otros_texto: "",
+    requiere_materiales: "",
+    valor_materiales: "",
+    transporte_privado: "",
+    transporte_publico: "",
+    transporte_propio: "",
+    transporte_otro: "",
+    valor_transporte: "",
+    valor_sostenimiento: "",
+    actualmente_vive_estado: "",
+    actualmente_vive_parentezco: "",
+    tiene_hijos: "",
+    hijos_numero: "",
+    motivo_ingreso: "",
+    expectativas_carrera: "",
+    expectativas_grado: "",
+    labor_padre: "",
+    labor_madre: "",
+    otro_familiar_nivel_educativo: "",
+    otro_familiar_situacion_economica: "",
+    otro_familiar_actividad_economica: "",
+    otro_familiar_labor_desempena: "",
   });
 
   const [datos_academicos, setDatosAcademicos] = useState({
@@ -303,20 +329,25 @@ const Caracterizacion = () => {
           ciudad: estudianteSelected.ciudad_nac,
           pais: "Colombia",
 
-          desarrollaActividad:res.datos_entrevistado.desarrollaActividad,
-          desarrollaActividadData: res.datos_entrevistado.desarrollaActividadData,
+          desarrollaActividad: res.datos_entrevistado.desarrollaActividad,
+          desarrollaActividadData:
+            res.datos_entrevistado.desarrollaActividadData,
           orientacionSexual: res.datos_entrevistado.orientacionSexual,
           orientacionSexualOtro: res.datos_entrevistado.orientacionSexualOtro,
-          autoreconocimientoEtnico: res.datos_entrevistado.autoreconocimientoEtnico,
-          autoreconocimientoEtnicoOtro: res.datos_entrevistado.autoreconocimientoEtnicoOtro,
+          autoreconocimientoEtnico:
+            res.datos_entrevistado.autoreconocimientoEtnico,
+          autoreconocimientoEtnicoOtro:
+            res.datos_entrevistado.autoreconocimientoEtnicoOtro,
           estadoCivil: res.datos_entrevistado.estadoCivil,
           actividadesOcio: res.datos_entrevistado.actividadesOcio,
           actividadesOcioData: res.datos_entrevistado.actividadesOcioData,
           actividadDeportiva: res.datos_entrevistado.actividadDeportiva,
           actividadDeportivaData: res.datos_entrevistado.actividadDeportivaData,
           programaAcompanamiento: res.datos_entrevistado.programaAcompanamiento,
-          programaAcompanamientoOtro: res.datos_entrevistado.programaAcompanamientoOtro,
-          programaAcompanamientoOtroData: res.datos_entrevistado.programaAcompanamientoOtroData,
+          programaAcompanamientoOtro:
+            res.datos_entrevistado.programaAcompanamientoOtro,
+          programaAcompanamientoOtroData:
+            res.datos_entrevistado.programaAcompanamientoOtroData,
         });
 
         // setDatosEconomicos
@@ -335,54 +366,42 @@ const Caracterizacion = () => {
           situacion_madre: res.datos_economicos.situacion_madre,
           situacion_padre: res.datos_economicos.situacion_padre,
           solvencia_economica: res.datos_economicos.solvencia_economica,
-          // Falta
-          // *
-          //           ¿Cómo sostiene su permanencia en la universidad?
-          // Ingresos propios
-          // permanencia_ingreso_propio: ,
-          // Ingresos Familiares
-          // permanencia_ingreso_familiar: ,
-          // Otros ¿cuáles?:
-          // permanencia_otro: true || false
-          // permanencia_otro_texto: ,
 
-          // ¿Requiere materiales durante su carrera?
-          // req_materiales: ,
-          // *
-          //           Para desplazarse a la universidad usted:
-          // Paga transporte privado
-          // transporte_privado: ,
-          // Paga el transporte público
-          // transporte_prublico: ,
-          // Tiene transporte propio
-          // transporte_propio: ,
-          // Otro ¿Cuál?:
-          // transporte_otro_texto: ,
-          // ¿Cuál es el valor aproximado para el transporte, durante un semestre?
-          // transporte_valor: ,
-          // ¿Cuál es el valor aproximado en sostenimiento (alimentación, arriendo, servicios públicos incluido internet, entre otros), durante un semestre?
-          // valor_sostenimiento: res.datos_economicos.valor_sostenimiento,
-          // Actualmente vive:
-          // actualmente_vive_con: ,
-          // ¿Tiene hijos/as?
-          // *
-          // tiene_hijos: ,
-          // *
-          //           ¿Qué le motivó el ingreso a su carrera?
-          // motivacion_ingreso: ,
-          // ¿Cuáles son sus expectativas en esta carrera?
-          // expectativas_carrera: ,
-          // ¿Cuáles son sus expectativas al graduarse?
-          // expectativas_graduarse: ,
-          //
-          // Info padre/madre
-          // labor_padre: ,
-          // labor_madre: ,
-          // * Información de otros familiares que se hayan hecho a cargo en caso diferente a los anteriores
-          // acargo_nivel_educativo: ,
-          // acargo_situacion_económica: ,
-          // acargo_actividad_economica: ,
-          // acargo_labor_desempenia: ,
+          permanencia_ingresos_propios:
+            res.datos_economicos.permanencia_ingresos_propios,
+          permanencia_ingresos_familiares:
+            res.datos_economicos.permanencia_ingresos_familiares,
+          permanencia_ingresos_otros:
+            res.datos_economicos.permanencia_ingresos_otros,
+          permanencia_ingresos_otros_texto:
+            res.datos_economicos.permanencia_ingresos_otros_texto,
+          requiere_materiales: res.datos_economicos.requiere_materiales,
+          valor_materiales: res.datos_economicos.valor_materiales,
+          transporte_privado: res.datos_economicos.transporte_privado,
+          transporte_publico: res.datos_economicos.transporte_publico,
+          transporte_propio: res.datos_economicos.transporte_propio,
+          transporte_otro: res.datos_economicos.transporte_otro,
+          transporte_otro_data: res.datos_economicos.transporte_otro_data,
+          valor_transporte: res.datos_economicos.valor_transporte,
+          valor_sostenimiento: res.datos_economicos.valor_sostenimiento,
+          actualmente_vive_estado: res.datos_economicos.actualmente_vive_estado,
+          actualmente_vive_parentezco:
+            res.datos_economicos.actualmente_vive_parentezco,
+          tiene_hijos: res.datos_economicos.tiene_hijos,
+          hijos_numero: res.datos_economicos.hijos_numero,
+          motivo_ingreso: res.datos_economicos.motivo_ingreso,
+          expectativas_carrera: res.datos_economicos.expectativas_carrera,
+          expectativas_grado: res.datos_economicos.expectativas_grado,
+          labor_padre: res.datos_economicos.labor_padre,
+          labor_madre: res.datos_economicos.labor_madre,
+          otro_familiar_nivel_educativo:
+            res.datos_economicos.otro_familiar_nivel_educativo,
+          otro_familiar_situacion_economica:
+            res.datos_economicos.otro_familiar_situacion_economica,
+          otro_familiar_actividad_economica:
+            res.datos_economicos.otro_familiar_actividad_economica,
+          otro_familiar_labor_desempena:
+            res.datos_economicos.otro_familiar_labor_desempena,
         });
 
         // setDatosAcademicos

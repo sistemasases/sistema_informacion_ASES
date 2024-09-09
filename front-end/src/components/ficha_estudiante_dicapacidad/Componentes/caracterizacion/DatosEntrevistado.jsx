@@ -3,42 +3,6 @@ import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 
 const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
-  const [desarrollaActividad, setDesarrollaActividad] = useState("");
-  const [actividadesOcio, setActividadesOcio] = useState("");
-  const [actividadDeportiva, setActividadDeportiva] = useState("");
-  const [programaAcompanamiento, setProgramaAcompanamiento] = useState("");
-  const [programaAcompanamientoOtro, setProgramaAcompanamientoOtro] =
-    useState(""); // Estado para programa de acompañamiento
-  const [orientacionSexual, setOrientacionSexual] = useState("");
-  const [orientacionSexualOtro, setOrientacionSexualOtro] = useState(""); // Estado para orientación sexual
-  const [autoreconocimientoEtnico, setAutoreconocimientoEtnico] = useState("");
-  const [autoreconocimientoEtnicoOtro, setAutoreconocimientoEtnicoOtro] =
-    useState(""); // Estado para autoreconocimiento étnico
-
-  const handleProgramaAcompanamientoChange = (e) => {
-    const value = e.target.value;
-    setProgramaAcompanamiento(value);
-    if (value !== "Otro") {
-      setProgramaAcompanamientoOtro(""); // Limpiar el campo si no es "Otro"
-    }
-  };
-
-  const handleOrientacionSexualChange = (e) => {
-    const value = e.target.value;
-    setOrientacionSexual(value);
-    if (value !== "Otro") {
-      setOrientacionSexualOtro(""); // Limpiar el campo si no es "Otro"
-    }
-  };
-
-  const handleAutoreconocimientoEtnicoChange = (e) => {
-    const value = e.target.value;
-    setAutoreconocimientoEtnico(value);
-    if (value !== "Otro") {
-      setAutoreconocimientoEtnicoOtro(""); // Limpiar el campo si no es "Otro"
-    }
-  };
-
   const [stateDisabled, setStateDisabled] = useState(true);
 
   const [stateEntrevistado, setStateEntrevistado] = useState({
