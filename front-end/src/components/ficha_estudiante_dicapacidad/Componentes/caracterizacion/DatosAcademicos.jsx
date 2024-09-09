@@ -123,7 +123,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
               disabled={stateDisabled}
             />
           </p>
-          <div className="select_space">
+          {/* <div className="select_space">
             <p className="titulo">Otros programas académicos</p>
             <label>
               Si ha ingresado varias veces relacione los años y los programas
@@ -187,7 +187,8 @@ const DatosAcademicos = ({ datos_academicos }) => {
             <button type="button" onClick={handleAddProgram}>
               Añadir Programa
             </button>
-          </div>
+          </div> */}
+
         </div>
       </div>
       <hr className="styled-hr" />

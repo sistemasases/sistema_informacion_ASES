@@ -774,7 +774,7 @@ const Caracterizacion = () => {
         <DatosAcademicos datos_academicos={datos_academicos} />
       </Acordion>
 
-      <Acordion
+      {/* <Acordion
         claseContenido={"accordion-content"}
         title="Datos académicos adicionales"
         claseAcordion={"acordion subacordion"}
@@ -794,7 +794,7 @@ const Caracterizacion = () => {
         }
       >
         <DatosAcademicosAdicionales datos_academicos={datos_academicos} />
-      </Acordion>
+      </Acordion> */}
       <Acordion
         claseContenido={"accordion-content"}
         title="Percepción y características de la discapacidad"
