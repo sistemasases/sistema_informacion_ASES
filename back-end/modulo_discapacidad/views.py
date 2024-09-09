@@ -822,6 +822,13 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_acceso_servi_salud.servicio_fonoaudiologia = request.data.get("servicio_fonoaudiologia", False)
                     var_acceso_servi_salud.servicio_psicologia = request.data.get("servicio_psicologia", False)
                     var_acceso_servi_salud.servicio_social = request.data.get("servicio_social", False)
+                    
+                    var_acceso_servi_salud.salud_prepagada = request.data.get("salud_prepagada", False)
+                    var_acceso_servi_salud.salud_pre_nombre_institucion = request.data.get("salud_pre_nombre_institucion", False)
+                    var_acceso_servi_salud.servicio_complementario = request.data.get("servicio_complementario", False)
+                    var_acceso_servi_salud.servicio_complementario_nombre = request.data.get("servicio_complementario_nombre", False)
+                    var_acceso_servi_salud.servicio_estudiantil = request.data.get("servicio_estudiantil", False)
+                    var_acceso_servi_salud.servicio_estudiantil_nombre = request.data.get("servicio_estudiantil_nombre", False)
 
                     var_acceso_servi_salud.save()
                 else:
@@ -851,6 +858,13 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_acceso_servi_salud.servicio_fonoaudiologia = request.data.get("servicio_fonoaudiologia", False)
                     var_acceso_servi_salud.servicio_psicologia = request.data.get("servicio_psicologia", False)
                     var_acceso_servi_salud.servicio_social = request.data.get("servicio_social", False)
+                    
+                    var_acceso_servi_salud.salud_prepagada = request.data.get("salud_prepagada", False)
+                    var_acceso_servi_salud.salud_pre_nombre_institucion = request.data.get("salud_pre_nombre_institucion", False)
+                    var_acceso_servi_salud.servicio_complementario = request.data.get("servicio_complementario", False)
+                    var_acceso_servi_salud.servicio_complementario_nombre = request.data.get("servicio_complementario_nombre", False)
+                    var_acceso_servi_salud.servicio_estudiantil = request.data.get("servicio_estudiantil", False)
+                    var_acceso_servi_salud.servicio_estudiantil_nombre = request.data.get("servicio_estudiantil_nombre", False)
 
                     var_acceso_servi_salud.save()
                 else:

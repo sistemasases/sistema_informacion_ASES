@@ -250,7 +250,7 @@ class percepcion_discapacidad (models.Model):
     
 class acceso_servi_salud (models.Model):
     regimen_vinculado = models.BooleanField(default=False)
-    servicio_salud = models.BooleanField(default=False)
+    servicio_salud = models.CharField(max_length=50, default=None,null=True)
     salud_otra_texto = models.CharField(max_length=50, default=None,null=True)
     servicio_general = models.BooleanField(default=False)
     servicio_optometra = models.BooleanField(default=False)
@@ -263,6 +263,12 @@ class acceso_servi_salud (models.Model):
     servicio_fonoaudiologia = models.BooleanField(default=False)
     servicio_psicologia = models.BooleanField(default=False)
     servicio_social = models.BooleanField(default=False)
+    salud_prepagada = models.BooleanField(default=False)
+    salud_pre_nombre_institucion = models.CharField(max_length=50, default=None,null=True)
+    servicio_complementario = models.BooleanField(default=False)
+    servicio_complementario_nombre = models.CharField(max_length=50, default=None,null=True)
+    servicio_estudiantil = models.BooleanField(default=False)
+    servicio_estudiantil_nombre = models.CharField(max_length=50, default=None,null=True)
 
 class caracterizacion (models.Model):
     id_datos_economicos = models.ForeignKey(datos_economicos, on_delete=models.CASCADE, default=0, related_name='id_datos_economicos_in_caracterizacion')

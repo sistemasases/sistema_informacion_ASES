@@ -611,25 +611,32 @@ const Caracterizacion = () => {
 
         // setAccesoServiciosSalud
         setAccesoServiciosSalud({
-          id: res.acceso_servicios_salud.id,
-          regimen_vinculado: res.acceso_servicios_salud.regimen_vinculado,
-          servicio_salud: res.acceso_servicios_salud.servicio_salud,
-          salud_otra_texto: res.acceso_servicios_salud.salud_otra_texto,
-          servicio_general: res.acceso_servicios_salud.servicio_general,
-          servicio_optometra: res.acceso_servicios_salud.servicio_optometra,
-          servicio_psiquiatria: res.acceso_servicios_salud.servicio_psiquiatria,
-          servicio_alternativas:
-            res.acceso_servicios_salud.servicio_alternativas,
-          servicio_especializado:
-            res.acceso_servicios_salud.servicio_especializado,
-          servicio_fisioterapia:
-            res.acceso_servicios_salud.servicio_fisioterapia,
-          servicio_otro: res.acceso_servicios_salud.servicio_otro,
-          servicio_ocupacional: res.acceso_servicios_salud.servicio_ocupacional,
+          id: res.acceso_servi_salud.id,
+          regimen_vinculado: res.acceso_servi_salud.regimen_vinculado,
+          servicio_salud: res.acceso_servi_salud.servicio_salud,
+          salud_otra_texto: res.acceso_servi_salud.salud_otra_texto,
+          servicio_general: res.acceso_servi_salud.servicio_general,
+          servicio_optometra: res.acceso_servi_salud.servicio_optometra,
+          servicio_psiquiatria: res.acceso_servi_salud.servicio_psiquiatria,
+          servicio_alternativas: res.acceso_servi_salud.servicio_alternativas,
+          servicio_especializado: res.acceso_servi_salud.servicio_especializado,
+          servicio_fisioterapia: res.acceso_servi_salud.servicio_fisioterapia,
+          servicio_otro: res.acceso_servi_salud.servicio_otro,
+          servicio_ocupacional: res.acceso_servi_salud.servicio_ocupacional,
           servicio_fonoaudiologia:
-            res.acceso_servicios_salud.servicio_fonoaudiologia,
-          servicio_psicologia: res.acceso_servicios_salud.servicio_psicologia,
-          servicio_social: res.acceso_servicios_salud.servicio_social,
+            res.acceso_servi_salud.servicio_fonoaudiologia,
+          servicio_psicologia: res.acceso_servi_salud.servicio_psicologia,
+          servicio_social: res.acceso_servi_salud.servicio_social,
+          salud_prepagada: res.acceso_servi_salud.salud_prepagada,
+          salud_pre_nombre_institucion:
+            res.acceso_servi_salud.salud_pre_nombre_institucion,
+          servicio_complementario:
+            res.acceso_servi_salud.servicio_complementario,
+          servicio_complementario_nombre:
+            res.acceso_servi_salud.servicio_complementario_nombre,
+          servicio_estudiantil: res.acceso_servi_salud.servicio_estudiantil,
+          servicio_estudiantil_nombre:
+            res.acceso_servi_salud.servicio_estudiantil_nombre,
         });
       })
       .catch((error) => {
@@ -805,6 +812,7 @@ const Caracterizacion = () => {
       >
         <AccesoServiciosSalud servicio_salud={acceso_servicios_salud} />
       </Acordion>
+      <hr></hr>
 
       <ConclusionJornadaCaracterizacion />
     </div>
