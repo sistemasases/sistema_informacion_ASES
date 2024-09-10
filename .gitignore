@@ -23,6 +23,7 @@ build/
 venv/
 env/
 ENV/
+entornoBack/
 .env
 .htaccess
 front-end/.env

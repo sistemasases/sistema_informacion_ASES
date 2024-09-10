@@ -45,9 +45,9 @@ const Select = () => {
       diagnosticos: student.diagnosticos,
       el_id_de_etnia: student.el_id_de_etnia,
       vive_con: student.vive_con,
-      
+      fecha_nac: student.fecha_nac,
+      anio_ingreso: student.anio_ingreso,
     };
-    console.log(newSelectedStudent.vive_con);
     setEstudianteSelected(newSelectedStudent);
   };
 

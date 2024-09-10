@@ -32,8 +32,10 @@
 
 .textarea-jornada {
   height: 80px;
+  width: 96%;
   min-height: 50px;
   resize: vertical;
+  margin-left: 2px;
 }
 
 .table-style {
