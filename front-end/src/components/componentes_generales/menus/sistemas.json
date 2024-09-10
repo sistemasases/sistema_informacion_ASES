@@ -130,6 +130,11 @@
                 "path":"/academico_reportes",
                 "name":"Reportes Calificador",
                 "icon":"bi bi-body-text"
+            },
+            {
+                "path":"/academico_asistencia",
+                "name":"Control de asistencia",
+                "icon":"bi bi-pencil-square"
             }
         ]
     },
