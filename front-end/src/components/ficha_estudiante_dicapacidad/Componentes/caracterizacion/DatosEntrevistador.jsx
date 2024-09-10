@@ -1,7 +1,7 @@
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { useAuthStore } from "../../store/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
 import {
   desencriptar,
@@ -9,13 +9,15 @@ import {
 } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const DatosEntrevistador = ({ datos_entrevistador }) => {
-  // console.log(datos_entrevistador);
+  // //console.log(datos_entrevistador);
   const [stateDisabled, setStateDisabled] = useState(true);
   const { estudianteSelected } = useAuthStore();
 
   const [stateEntrevistador, setStateEntrevistador] = useState({
     tipo: "datos_entrevistador",
-    id_semestre: 40,
+    id_semestre: desencriptarInt(
+      sessionStorage.getItem("id_semestre_discapacidad")
+    ),
     id_estudiante: estudianteSelected.id,
     fecha: datos_entrevistador.fecha_aplicacion,
     lugar: datos_entrevistador.lugar,
@@ -33,17 +35,23 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
   const handleUpdateEntrevistador = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    console.log(stateEntrevistador.fecha);
+    //console.log(stateEntrevistador.fecha);
+    // setStateEntrevistador({
+    //   ...stateEntrevistador,
+    //   id_semestre: desencriptarInt(
+    //     sessionStorage.getItem("id_semestre_discapacidad")
+    //   ),
+    // });
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateEntrevistador)
       .then((res) => {
-        console.log(res);
+        //console.log(res);
       })
       .catch((error) => {
         console.error(error);
       });
-    console.log("Entrevistador actualizado");
-    console.log(stateEntrevistador);
-    console.log(datos_entrevistador);
+    //console.log("Entrevistador actualizado");
+    //console.log(stateEntrevistador);
+    //console.log(datos_entrevistador);
   };
 
   const updateStateDisabled = () => {

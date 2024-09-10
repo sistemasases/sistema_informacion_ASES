@@ -21,7 +21,10 @@ const DatosAcademicos = ({ datos_academicos }) => {
   const [stateDatosAcademicos, setStateDatosAcademicos] = useState({
     tipo: "datos_academicos",
     id_estudiante: estudianteSelected.id,
-    id_semestre: 40,
+    // id_semestre: datos_academicos.id_semestre,
+    id_semestre: desencriptarInt(
+      sessionStorage.getItem("id_semestre_discapacidad")
+    ),
     fecha: datos_academicos.fecha_nac,
 
     lugar: datos_academicos.lugar,
@@ -100,13 +103,13 @@ const DatosAcademicos = ({ datos_academicos }) => {
   const handleUpdateDatosAcademicos = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    console.log("Datos Academicos actualizados");
-    console.log(stateDatosAcademicos);
+    //console.log("Datos Academicos actualizados");
+    //console.log(stateDatosAcademicos);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
       stateDatosAcademicos
     )
       .then((res) => {
-        console.log(res);
+        //console.log(res);
       })
       .catch((error) => {
         console.error(error);

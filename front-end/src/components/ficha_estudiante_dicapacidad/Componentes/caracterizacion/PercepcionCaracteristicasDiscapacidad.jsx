@@ -1,12 +1,24 @@
 import { useState } from "react";
 
+import { desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import { useAuthStore } from "../../store/auth";
+import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
+
 const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
   const [stateDisabled, setStateDisabled] = useState(true);
+  const { estudianteSelected } = useAuthStore();
 
   const [statePercepcionDiscapacidad, setStatePercepcionDiscapacidad] =
     useState({
       lugar: percepcion_discapacidad.lugar,
-      
+      fecha: percepcion_discapacidad.fecha_nac,
+
+      tipo: "datos_percepcion_caracteristicas",
+      id_estudiante: estudianteSelected.id,
+      id_semestre: 40,
+      id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
+      jornada_caracterizacion: percepcion_discapacidad.jornada_caracterizacion,
+
       considera_discapacidad: percepcion_discapacidad.considera_discapacidad,
       consideracion: percepcion_discapacidad.consideracion,
       adquisicion: percepcion_discapacidad.adquisicion,
@@ -179,9 +191,23 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
   const handleUpdateDatosPercepcionDiscapacidad = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    console.log("Datos Percepción actualizados");
-    // console.log(datos_estudiante_entrevistado);
-    console.log(statePercepcionDiscapacidad);
+    //console.log("Datos Percepción actualizados");
+    // //console.log(datos_estudiante_entrevistado);
+    //console.log(statePercepcionDiscapacidad);
+
+    setStatePercepcionDiscapacidad({
+      ...statePercepcionDiscapacidad,
+      jornada_caracterizacion: percepcion_discapacidad.jornada_caracterizacion,
+    });
+    UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
+      statePercepcionDiscapacidad
+    )
+      .then((res) => {
+        //console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const updateStateDisabled = () => {
@@ -377,15 +403,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="vision"
                     name="vision"
-                    checked={
-                      statePercepcionDiscapacidad.vision === true
-                        ? statePercepcionDiscapacidad.vision
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.vision}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        vision: e.target.checked,
+                        vision: !statePercepcionDiscapacidad.vision,
                       })
                     }
                     disabled={stateDisabled}
@@ -396,11 +418,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                   <input
                     type="text"
                     name="vision_input"
-                    value={
-                      statePercepcionDiscapacidad.vision_texto
-                        ? statePercepcionDiscapacidad.vision_texto
-                        : ""
-                    }
+                    value={statePercepcionDiscapacidad.vision_texto}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
@@ -417,15 +435,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="audicion"
                     name="audicion"
-                    checked={
-                      statePercepcionDiscapacidad.audicion === true
-                        ? statePercepcionDiscapacidad.audicion
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.audicion}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        audicion: e.target.checked,
+                        audicion: !statePercepcionDiscapacidad.audicion,
                       })
                     }
                     disabled={stateDisabled}
@@ -436,11 +450,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                   <input
                     type="text"
                     name="audicion_input"
-                    value={
-                      statePercepcionDiscapacidad.audicion_texto
-                        ? statePercepcionDiscapacidad.audicion_texto
-                        : ""
-                    }
+                    value={statePercepcionDiscapacidad.audicion_texto}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
@@ -457,15 +467,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="voz_habla"
                     name="voz_habla"
-                    checked={
-                      statePercepcionDiscapacidad.voz_y_habla === true
-                        ? statePercepcionDiscapacidad.voz_y_habla
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.voz_y_habla}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        voz_y_habla: e.target.checked,
+                        voz_y_habla: !statePercepcionDiscapacidad.voz_y_habla,
                       })
                     }
                     disabled={stateDisabled}
@@ -497,15 +503,12 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="movimiento_cuerpo"
                     name="movimiento_cuerpo"
-                    checked={
-                      statePercepcionDiscapacidad.movimiento_cuerpo === true
-                        ? statePercepcionDiscapacidad.movimiento_cuerpo
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.movimiento_cuerpo}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        movimiento_cuerpo: e.target.checked,
+                        movimiento_cuerpo:
+                          !statePercepcionDiscapacidad.movimiento_cuerpo,
                       })
                     }
                     disabled={stateDisabled}
@@ -539,15 +542,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="cognicion"
                     name="cognicion"
-                    checked={
-                      statePercepcionDiscapacidad.cognicion === true
-                        ? statePercepcionDiscapacidad.cognicion
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.cognicion}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        cognicion: e.target.value,
+                        cognicion: !statePercepcionDiscapacidad.cognicion,
                       })
                     }
                     disabled={stateDisabled}
@@ -579,16 +578,12 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="estado_socioemocional"
                     name="estado_socioemocional"
-                    checked={
-                      statePercepcionDiscapacidad.estado_socio_emocional ===
-                      true
-                        ? statePercepcionDiscapacidad.estado_socio_emocional
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.estado_socio_emocional}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        estado_socio_emocional: e.target.checked,
+                        estado_socio_emocional:
+                          !statePercepcionDiscapacidad.estado_socio_emocional,
                       })
                     }
                     disabled={stateDisabled}
@@ -620,15 +615,12 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="miccion_relaciones_reproduccion"
                     name="miccion_relaciones_reproduccion"
-                    checked={
-                      statePercepcionDiscapacidad.relaciones_sexuales === true
-                        ? statePercepcionDiscapacidad.relaciones_sexuales
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.relaciones_sexuales}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        relaciones_sexuales: e.target.checked,
+                        relaciones_sexuales:
+                          !statePercepcionDiscapacidad.relaciones_sexuales,
                       })
                     }
                     disabled={stateDisabled}
@@ -662,15 +654,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="masticaion_deglucion"
                     name="masticaion_deglucion"
-                    checked={
-                      statePercepcionDiscapacidad.deglucion === true
-                        ? statePercepcionDiscapacidad.deglucion
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.deglucion}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        deglucion: e.target.checked,
+                        deglucion: !statePercepcionDiscapacidad.deglucion,
                       })
                     }
                     disabled={stateDisabled}
@@ -702,15 +690,12 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="otra"
                     name="otra"
-                    checked={
-                      statePercepcionDiscapacidad.otra_dif_permanente === true
-                        ? statePercepcionDiscapacidad.otra_dif_permanente
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.otra_dif_permanente}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        otra_dif_permanente: e.target.checked,
+                        otra_dif_permanente:
+                          !statePercepcionDiscapacidad.otra_dif_permanente,
                       })
                     }
                     disabled={stateDisabled}
@@ -755,15 +740,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="ojos"
                     name="ojos"
-                    checked={
-                      statePercepcionDiscapacidad.ojos === true
-                        ? statePercepcionDiscapacidad.ojos
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.ojos}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        ojos: e.target.checked,
+                        ojos: !statePercepcionDiscapacidad.ojos,
                       })
                     }
                     disabled={stateDisabled}
@@ -791,15 +772,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="oido"
                     name="oido"
-                    checked={
-                      statePercepcionDiscapacidad.oidos === true
-                        ? statePercepcionDiscapacidad.oidos
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.oidos}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        oidos: e.target.checked,
+                        oidos: !statePercepcionDiscapacidad.oidos,
                       })
                     }
                     disabled={stateDisabled}
@@ -831,15 +808,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="pliegues_labios_lengua_paladar"
                     name="pliegues_labios_lengua_paladar"
-                    checked={
-                      statePercepcionDiscapacidad.vocales === true
-                        ? statePercepcionDiscapacidad.vocales
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.vocales}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        vocales: e.target.checked,
+                        vocales: !statePercepcionDiscapacidad.vocales,
                       })
                     }
                     disabled={stateDisabled}
@@ -873,15 +846,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="brazos_manos"
                     name="brazos_manos"
-                    checked={
-                      statePercepcionDiscapacidad.manos === true
-                        ? statePercepcionDiscapacidad.manos
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.manos}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        manos: e.target.checked,
+                        manos: !statePercepcionDiscapacidad.manos,
                       })
                     }
                     disabled={stateDisabled}
@@ -913,15 +882,11 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="piernas"
                     name="piernas"
-                    checked={
-                      statePercepcionDiscapacidad.piernas === true
-                        ? statePercepcionDiscapacidad.piernas
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.piernas}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        piernas: e.target.checked,
+                        piernas: !statePercepcionDiscapacidad.piernas,
                       })
                     }
                     disabled={stateDisabled}
@@ -1212,7 +1177,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     }
                     disabled={stateDisabled}
                   />
-                  <label for="otra">Otra ¿Cuál?</label>
+                  <label for="otra_organos">Otra ¿Cuál?</label>
                 </td>
                 <td>
                   <input
@@ -1829,20 +1794,17 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="otra_nec_diferente"
                     name="otra_nec_diferente"
-                    checked={
-                      statePercepcionDiscapacidad.otra_nec_diferente === true
-                        ? statePercepcionDiscapacidad.otra_nec_diferente
-                        : false
-                    }
+                    checked={statePercepcionDiscapacidad.otra_nec_diferente}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({
                         ...statePercepcionDiscapacidad,
-                        otra_nec_diferente: e.target.checked,
+                        otra_nec_diferente:
+                          !statePercepcionDiscapacidad.otra_nec_diferente,
                       })
                     }
                     disabled={stateDisabled}
                   />
-                  <label for="otra">Otra ¿Cuál?</label>
+                  <label for="otra_nec_diferente">Otra ¿Cuál?</label>
                 </td>
                 <td>
                   <input
@@ -2114,7 +2076,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
               }
               disabled={stateDisabled}
             />
-            <label>Otra ¿Cual?</label>
+            <label>Otra ¿Cuál?</label>
             <input
               type="text"
               placeholder="Defina el factor del impacto"

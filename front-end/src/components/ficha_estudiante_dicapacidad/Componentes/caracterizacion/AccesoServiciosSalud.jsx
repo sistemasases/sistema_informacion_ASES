@@ -10,10 +10,13 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
   const { estudianteSelected } = useAuthStore();
 
   const [stateServicioSalud, setStateServicioSalud] = useState({
-    tipo: "datos_entrevistado",
+    tipo: "datos_servicios_salud",
     id_estudiante: estudianteSelected.id,
-    id_semestre: 40,
-    fecha: estudianteSelected.fecha_nac,
+    // id_semestre: servicio_salud.id_semestre,
+    id_semestre: desencriptarInt(
+      sessionStorage.getItem("id_semestre_discapacidad")
+    ),
+    fecha: servicio_salud.fecha_nac,
     lugar: servicio_salud.lugar,
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
 
@@ -46,11 +49,11 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
   const handleUpdateDatosServicioSalud = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    console.log("Datos servicio de salud actualizados");
-    console.log(stateServicioSalud);
+    //console.log("Datos servicio de salud actualizados");
+    //console.log(stateServicioSalud);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateServicioSalud)
       .then((res) => {
-        console.log(res);
+        //console.log(res);
       })
       .catch((error) => {
         console.error(error);
@@ -234,11 +237,7 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
             <input
               type="text"
               className="input-type-text"
-              value={
-                stateServicioSalud.salud_prepagada === true
-                  ? stateServicioSalud.salud_pre_nombre_institucion
-                  : ""
-              }
+              value={stateServicioSalud.salud_pre_nombre_institucion}
               onChange={(e) =>
                 setStateServicioSalud({
                   ...stateServicioSalud,

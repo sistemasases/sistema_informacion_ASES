@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import { useAuthStore } from "../../store/auth";
+import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
 
 const ConclusionJornadaCaracterizacion = ({ jornada }) => {
   const [stateDisabled, setStateDisabled] = useState(true);
@@ -11,20 +12,27 @@ const ConclusionJornadaCaracterizacion = ({ jornada }) => {
 
   const [stateJornadaCaracterizacion, setStateJornadaCaracterizacion] =
     useState({
+      fecha: "",
+      lugar: "",
       jornada_caracterizacion: "",
-      tipo: "datos_caracterizacion_jornada",
+      tipo: "datos_jornada_caracterizacion",
       id_estudiante: estudianteSelected.id,
-      id_semestre: 40,
-      fecha: jornada.fecha_nac,
-      lugar: jornada.lugar,
+      // id_semestre: jornada.id_semestre,
+      id_semestre: desencriptarInt(
+        sessionStorage.getItem("id_semestre_discapacidad")
+      ),
       id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
     });
 
+  // Se utiliza useEffect para establecer el valor inicial cuando 'jornada' cambia
   useEffect(() => {
-    if (jornada && jornada.jornada_caracterizacion) {
-      setStateJornadaCaracterizacion({
+    if (jornada) {
+      setStateJornadaCaracterizacion((prevState) => ({
+        ...prevState,
         jornada_caracterizacion: jornada.jornada_caracterizacion,
-      });
+        fecha: jornada.fecha_nac,
+        lugar: jornada.lugar,
+      }));
     }
   }, [jornada]);
 
@@ -32,12 +40,18 @@ const ConclusionJornadaCaracterizacion = ({ jornada }) => {
     e.preventDefault();
     setStateDisabled(true);
 
-    console.log("Jornada actualizado:");
-    console.log("Original:", jornada.jornada_caracterizacion);
-    console.log(
-      "Actualizado:",
-      stateJornadaCaracterizacion.jornada_caracterizacion
-    );
+    //console.log("Jornada actualizado:");
+    //console.log("Original:", jornada);
+    //console.log("Actualizado:", stateJornadaCaracterizacion);
+    UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
+      stateJornadaCaracterizacion
+    )
+      .then((res) => {
+        //console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const updateStateDisabled = () => {

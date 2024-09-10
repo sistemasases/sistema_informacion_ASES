@@ -12,7 +12,10 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
   const [stateEntrevistado, setStateEntrevistado] = useState({
     tipo: "datos_entrevistado",
     id_estudiante: estudianteSelected.id,
-    id_semestre: 40,
+    // id_semestre: datos_estudiante_entrevistado.id_semestre,
+    id_semestre: desencriptarInt(
+      sessionStorage.getItem("id_semestre_discapacidad")
+    ),
     fecha: datos_estudiante_entrevistado.fecha_nac,
     lugar: datos_estudiante_entrevistado.lugar,
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
@@ -47,12 +50,12 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
   const handleUpdateEntrevistado = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    console.log("Entrevistador actualizado");
-    // console.log(datos_estudiante_entrevistado);
-    console.log(stateEntrevistado);
+    //console.log("Entrevistador actualizado");
+    // //console.log(datos_estudiante_entrevistado);
+    //console.log(stateEntrevistado);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateEntrevistado)
       .then((res) => {
-        console.log(res);
+        //console.log(res);
       })
       .catch((error) => {
         console.error(error);

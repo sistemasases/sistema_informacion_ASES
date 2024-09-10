@@ -152,7 +152,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'], url_path='datos_caracterizacion_edit')
     def datos_caracterizacion_edit(self, request, pk=None):
-        print(request.data)
+        # print(request.data)
         if request.data["tipo"] == 'datos_entrevistador':
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
@@ -842,26 +842,26 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 var_acceso_servi_salud = acceso_servi_salud.objects.filter(id= var_caracterizacion.id_acceso_servi_salud.id).first()
                 if(var_acceso_servi_salud):
-                    var_acceso_servi_salud.regimen_vinculado = request.data.get("regimen_vinculado", False)
+                    var_acceso_servi_salud.regimen_vinculado = self.string_to_bool(request.data.get("regimen_vinculado", False))
                     var_acceso_servi_salud.servicio_salud = request.data.get("servicio_salud", False)
                     var_acceso_servi_salud.salud_otra_texto = request.data.get("salud_otra_texto", None)
-                    var_acceso_servi_salud.servicio_general = request.data.get("servicio_general", False)
-                    var_acceso_servi_salud.servicio_optometra = request.data.get("servicio_optometra", False)
-                    var_acceso_servi_salud.servicio_psiquiatria = request.data.get("servicio_psiquiatria", False)
-                    var_acceso_servi_salud.servicio_alternativas = request.data.get("servicio_alternativas", False)
-                    var_acceso_servi_salud.servicio_especializado = request.data.get("servicio_especializado", False)
-                    var_acceso_servi_salud.servicio_fisioterapia = request.data.get("servicio_fisioterapia", False)
-                    var_acceso_servi_salud.servicio_otro = request.data.get("servicio_otro", False)
-                    var_acceso_servi_salud.servicio_ocupacional = request.data.get("servicio_ocupacional", False)
-                    var_acceso_servi_salud.servicio_fonoaudiologia = request.data.get("servicio_fonoaudiologia", False)
-                    var_acceso_servi_salud.servicio_psicologia = request.data.get("servicio_psicologia", False)
-                    var_acceso_servi_salud.servicio_social = request.data.get("servicio_social", False)
+                    var_acceso_servi_salud.servicio_general = self.string_to_bool(request.data.get("servicio_general", False))
+                    var_acceso_servi_salud.servicio_optometra = self.string_to_bool(request.data.get("servicio_optometra", False))
+                    var_acceso_servi_salud.servicio_psiquiatria = self.string_to_bool(request.data.get("servicio_psiquiatria", False))
+                    var_acceso_servi_salud.servicio_alternativas = self.string_to_bool(request.data.get("servicio_alternativas", False))
+                    var_acceso_servi_salud.servicio_especializado = self.string_to_bool(request.data.get("servicio_especializado", False))
+                    var_acceso_servi_salud.servicio_fisioterapia = self.string_to_bool(request.data.get("servicio_fisioterapia", False))
+                    var_acceso_servi_salud.servicio_otro = self.string_to_bool(request.data.get("servicio_otro", False))
+                    var_acceso_servi_salud.servicio_ocupacional = self.string_to_bool(request.data.get("servicio_ocupacional", False))
+                    var_acceso_servi_salud.servicio_fonoaudiologia = self.string_to_bool(request.data.get("servicio_fonoaudiologia", False))
+                    var_acceso_servi_salud.servicio_psicologia = self.string_to_bool(request.data.get("servicio_psicologia", False))
+                    var_acceso_servi_salud.servicio_social = self.string_to_bool(request.data.get("servicio_social", False))
                     
-                    var_acceso_servi_salud.salud_prepagada = request.data.get("salud_prepagada", False)
+                    var_acceso_servi_salud.salud_prepagada = self.string_to_bool(request.data.get("salud_prepagada", False))
                     var_acceso_servi_salud.salud_pre_nombre_institucion = request.data.get("salud_pre_nombre_institucion", False)
-                    var_acceso_servi_salud.servicio_complementario = request.data.get("servicio_complementario", False)
+                    var_acceso_servi_salud.servicio_complementario = self.string_to_bool(request.data.get("servicio_complementario", False))
                     var_acceso_servi_salud.servicio_complementario_nombre = request.data.get("servicio_complementario_nombre", False)
-                    var_acceso_servi_salud.servicio_estudiantil = request.data.get("servicio_estudiantil", False)
+                    var_acceso_servi_salud.servicio_estudiantil = self.string_to_bool(request.data.get("servicio_estudiantil", False))
                     var_acceso_servi_salud.servicio_estudiantil_nombre = request.data.get("servicio_estudiantil_nombre", False)
 
                     var_acceso_servi_salud.save()
@@ -878,52 +878,52 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 var_acceso_servi_salud = acceso_servi_salud.objects.filter(id= var_caracterizacion_new.id_acceso_servi_salud.id).first()
                 if(var_acceso_servi_salud):
-                    var_acceso_servi_salud.regimen_vinculado = request.data.get("regimen_vinculado", False)
+                    var_acceso_servi_salud.regimen_vinculado = self.string_to_bool(request.data.get("regimen_vinculado", False))
                     var_acceso_servi_salud.servicio_salud = request.data.get("servicio_salud", False)
                     var_acceso_servi_salud.salud_otra_texto = request.data.get("salud_otra_texto", None)
-                    var_acceso_servi_salud.servicio_general = request.data.get("servicio_general", False)
-                    var_acceso_servi_salud.servicio_optometra = request.data.get("servicio_optometra", False)
-                    var_acceso_servi_salud.servicio_psiquiatria = request.data.get("servicio_psiquiatria", False)
-                    var_acceso_servi_salud.servicio_alternativas = request.data.get("servicio_alternativas", False)
-                    var_acceso_servi_salud.servicio_especializado = request.data.get("servicio_especializado", False)
-                    var_acceso_servi_salud.servicio_fisioterapia = request.data.get("servicio_fisioterapia", False)
-                    var_acceso_servi_salud.servicio_otro = request.data.get("servicio_otro", False)
-                    var_acceso_servi_salud.servicio_ocupacional = request.data.get("servicio_ocupacional", False)
-                    var_acceso_servi_salud.servicio_fonoaudiologia = request.data.get("servicio_fonoaudiologia", False)
-                    var_acceso_servi_salud.servicio_psicologia = request.data.get("servicio_psicologia", False)
-                    var_acceso_servi_salud.servicio_social = request.data.get("servicio_social", False)
+                    var_acceso_servi_salud.servicio_general = self.string_to_bool(request.data.get("servicio_general", False))
+                    var_acceso_servi_salud.servicio_optometra = self.string_to_bool(request.data.get("servicio_optometra", False))
+                    var_acceso_servi_salud.servicio_psiquiatria = self.string_to_bool(request.data.get("servicio_psiquiatria", False))
+                    var_acceso_servi_salud.servicio_alternativas = self.string_to_bool(request.data.get("servicio_alternativas", False))
+                    var_acceso_servi_salud.servicio_especializado = self.string_to_bool(request.data.get("servicio_especializado", False))
+                    var_acceso_servi_salud.servicio_fisioterapia = self.string_to_bool(request.data.get("servicio_fisioterapia", False))
+                    var_acceso_servi_salud.servicio_otro = self.string_to_bool(request.data.get("servicio_otro", False))
+                    var_acceso_servi_salud.servicio_ocupacional = self.string_to_bool(request.data.get("servicio_ocupacional", False))
+                    var_acceso_servi_salud.servicio_fonoaudiologia = self.string_to_bool(request.data.get("servicio_fonoaudiologia", False))
+                    var_acceso_servi_salud.servicio_psicologia = self.string_to_bool(request.data.get("servicio_psicologia", False))
+                    var_acceso_servi_salud.servicio_social = self.string_to_bool(request.data.get("servicio_social", False))
                     
-                    var_acceso_servi_salud.salud_prepagada = request.data.get("salud_prepagada", False)
+                    var_acceso_servi_salud.salud_prepagada = self.string_to_bool(request.data.get("salud_prepagada", False))
                     var_acceso_servi_salud.salud_pre_nombre_institucion = request.data.get("salud_pre_nombre_institucion", False)
-                    var_acceso_servi_salud.servicio_complementario = request.data.get("servicio_complementario", False)
+                    var_acceso_servi_salud.servicio_complementario = self.string_to_bool(request.data.get("servicio_complementario", False))
                     var_acceso_servi_salud.servicio_complementario_nombre = request.data.get("servicio_complementario_nombre", False)
-                    var_acceso_servi_salud.servicio_estudiantil = request.data.get("servicio_estudiantil", False)
+                    var_acceso_servi_salud.servicio_estudiantil = self.string_to_bool(request.data.get("servicio_estudiantil", False))
                     var_acceso_servi_salud.servicio_estudiantil_nombre = request.data.get("servicio_estudiantil_nombre", False)
 
                     var_acceso_servi_salud.save()
                 else:
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
                 return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
-        elif request.data["tipo"] == 'jornada_caracterizacion':   
+        elif request.data["tipo"] == 'datos_jornada_caracterizacion': 
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
-            request_jornada = request.data["jornada"]
+            request_jornada = request.data["jornada_caracterizacion"]
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
 
             if(var_caracterizacion):
-
                 var_caracterizacion.fecha = request_fecha
                 var_caracterizacion.lugar = request_lugar
 
                 var_caracterizacion.save()
                 
                 var_jornada_caracterizacion = var_caracterizacion.jornada_caracterizacion
-                if var_jornada_caracterizacion:
-                    var_jornada_caracterizacion = request.data.get("jornada_caracterizacion", None)
-                    var_jornada_caracterizacion.save()
+                if var_jornada_caracterizacion or var_jornada_caracterizacion == "":
+                    var_jornada_caracterizacion = request_jornada
+                    var_caracterizacion.jornada_caracterizacion = var_jornada_caracterizacion
+                    var_caracterizacion.save()
                 else:
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
@@ -937,8 +937,9 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 var_jornada_caracterizacion = caracterizacion.objects.filter(_estudiante= var_caracterizacion_new.request_estudiante).first()
                 if var_jornada_caracterizacion:
-                    var_jornada_caracterizacion = request.data.get("jornada_caracterizacion", None)
-                    var_jornada_caracterizacion.save()
+                    var_jornada_caracterizacion = request_jornada
+                    var_caracterizacion_new.jornada_caracterizacion = var_jornada_caracterizacion
+                    var_caracterizacion_new.save()
                 else:
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
                 return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)

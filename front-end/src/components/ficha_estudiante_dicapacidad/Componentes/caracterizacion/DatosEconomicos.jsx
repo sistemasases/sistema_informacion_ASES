@@ -18,7 +18,10 @@ const DatosEconomicos = ({ datos_economicos }) => {
   const [stateDatosEconomicos, setStateDatosEconomicos] = useState({
     tipo: "datos_economicos",
     id_estudiante: estudianteSelected.id,
-    id_semestre: 40,
+    // id_semestre: datos_economicos.id_semestre,
+    id_semestre: desencriptarInt(
+      sessionStorage.getItem("id_semestre_discapacidad")
+    ),
     fecha: datos_economicos.fecha_nac,
     lugar: datos_economicos.lugar,
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
@@ -73,14 +76,14 @@ const DatosEconomicos = ({ datos_economicos }) => {
   const handleUpdateDatosEconomicos = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    console.log("Datos Economicos actualizados");
-    // console.log(datos_estudiante_entrevistado);
-    console.log(stateDatosEconomicos);
+    //console.log("Datos Economicos actualizados");
+    // //console.log(datos_estudiante_entrevistado);
+    //console.log(stateDatosEconomicos);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
       stateDatosEconomicos
     )
       .then((res) => {
-        console.log(res);
+        //console.log(res);
       })
       .catch((error) => {
         console.error(error);
