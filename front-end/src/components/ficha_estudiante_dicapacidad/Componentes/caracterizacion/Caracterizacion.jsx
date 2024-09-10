@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import CaracterizacionDiscapacidad from "../../../../service/caracterizacion_discapacidad";
 import { useAuthStore } from "../../store/auth";
 import { set } from "date-fns";
+import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
 
 const Caracterizacion = () => {
   const config = {
@@ -291,7 +292,7 @@ const Caracterizacion = () => {
         // Dividir la fecha en partes [anio, mes, día]
         const [anio, mes, día] = fechaOriginal.split("-");
         // Reorganizar y formar la nueva fecha en formato día-mes-anio
-        const fechaConvertida = `${día}-${mes}-${anio}`;
+        const fechaConvertida = `${anio}-${mes}-${día}`;
         console.log(fechaConvertida);
 
         // Fecha nacimiento
@@ -325,6 +326,8 @@ const Caracterizacion = () => {
         console.log(datos_entrevistador);
 
         setDatosEstuidanteEntrevistado({
+          lugar: res.datos_caracterizacion.lugar,
+
           fecha_nac: fechaConvertidaNacimiento,
           ciudad: estudianteSelected.ciudad_nac,
           pais: "Colombia",
@@ -352,6 +355,9 @@ const Caracterizacion = () => {
 
         // setDatosEconomicos
         setDatosEconomicos({
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: res.datos_caracterizacion.fecha,
+
           estrato_socio: res.datos_economicos.estrato_socio,
           expectativas_laborales: res.datos_economicos.expectativas_laborales,
           id: res.datos_economicos.id,
@@ -406,6 +412,9 @@ const Caracterizacion = () => {
 
         // setDatosAcademicos
         setDatosAcademicos({
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: fechaConvertidaIngreso,
+
           id: res.datos_academicos.id,
           numero_resolucion: res.datos_academicos.numero_resolucion,
           creditos_programa: res.datos_academicos.creditos_programa,
@@ -440,6 +449,9 @@ const Caracterizacion = () => {
 
         // setPercepcionCaracteristicasDiscapacidad
         setPercepcionDiscapacidad({
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: res.datos_caracterizacion.fecha,
+
           id: res.percepcion_discapacidad.id,
           considera_discapacidad:
             res.percepcion_discapacidad.considera_discapacidad,
@@ -628,6 +640,9 @@ const Caracterizacion = () => {
 
         // setAccesoServiciosSalud
         setAccesoServiciosSalud({
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: res.datos_caracterizacion.fecha,
+
           id: res.acceso_servi_salud.id,
           regimen_vinculado: res.acceso_servi_salud.regimen_vinculado,
           servicio_salud: res.acceso_servi_salud.servicio_salud,
@@ -658,6 +673,9 @@ const Caracterizacion = () => {
 
         // setDatosJornada
         setDatosJornada({
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: res.datos_caracterizacion.fecha,
+
           jornada_caracterizacion:
             res.datos_caracterizacion.jornada_caracterizacion,
         });

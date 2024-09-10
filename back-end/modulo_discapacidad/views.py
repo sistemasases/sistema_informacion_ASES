@@ -21,6 +21,15 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = estudiante_serializer.Meta.model.objects.all()
 
+    def string_to_bool(self, string):
+        if string == True:
+            return True
+        elif str(string).lower() == 'true':
+            return True
+        else:
+            return False
+        
+        
     def create_models_caracterizacion(self,estudiante,semestre,fecha,lugar, creador, jornada):
 
         caracterizacion_creado = caracterizacion.objects.create(
@@ -28,6 +37,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             id_datos_academicos=datos_academicos.objects.create(),
             id_percepcion_discapacidad=percepcion_discapacidad.objects.create(),
             id_acceso_servi_salud=acceso_servi_salud.objects.create(),
+            id_datos_entrevistado=datos_entrevistado.objects.create(),
             id_semestre=semestre,
             id_estudiante=estudiante,
             fecha= fecha,
@@ -149,7 +159,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
-            jornada = request.data["jornada"]
+            request_jornada = request.data["jornada"]
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
 
             if(var_caracterizacion):
@@ -173,7 +183,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
             else:
-                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, jornada)
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, request_jornada)
                 var_caracterizacion_new.fecha = request_fecha
                 var_caracterizacion_new.lugar = request_lugar
 
@@ -232,18 +242,18 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
                         
                 if var_datos_entrevistado:
-                    var_datos_entrevistado.desarrollaActividad = request.data.get("desarrollaActividad", None)
+                    var_datos_entrevistado.desarrollaActividad = self.string_to_bool(request.data.get("desarrollaActividad", None))
                     var_datos_entrevistado.desarrollaActividadData = request.data.get("desarrollaActividadData", None)
                     var_datos_entrevistado.orientacionSexual = request.data.get("orientacionSexual", None)
                     var_datos_entrevistado.orientacionSexualOtro = request.data.get("orientacionSexualOtro", None)
                     var_datos_entrevistado.autoreconocimientoEtnico = request.data.get("autoreconocimientoEtnico", None)
                     var_datos_entrevistado.autoreconocimientoEtnicoOtro = request.data.get("autoreconocimientoEtnicoOtro", None)
                     var_datos_entrevistado.estadoCivil = request.data.get("estadoCivil", None)
-                    var_datos_entrevistado.actividadesOcio = request.data.get("actividadesOcio", None)
+                    var_datos_entrevistado.actividadesOcio = self.string_to_bool(request.data.get("actividadesOcio", None))
                     var_datos_entrevistado.actividadesOcioData = request.data.get("actividadesOcioData", None)
-                    var_datos_entrevistado.actividadDeportiva = request.data.get("actividadDeportiva", None)
+                    var_datos_entrevistado.actividadDeportiva = self.string_to_bool(request.data.get("actividadDeportiva", None))
                     var_datos_entrevistado.actividadDeportivaData = request.data.get("actividadDeportivaData", None)
-                    var_datos_entrevistado.programaAcompanamiento = request.data.get("programaAcompanamiento", None)
+                    var_datos_entrevistado.programaAcompanamiento = self.string_to_bool(request.data.get("programaAcompanamiento", None))
                     var_datos_entrevistado.programaAcompanamientoOtro = request.data.get("programaAcompanamientoOtro", None)
                     var_datos_entrevistado.programaAcompanamientoOtroData = request.data.get("programaAcompanamientoOtroData", None)
                     var_datos_entrevistado.save()
@@ -260,18 +270,18 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                 
                 var_datos_entrevistado = datos_entrevistado.objects.filter(id= var_caracterizacion_new.id_datos_entrevistado.id).first()
                 if var_datos_entrevistado:
-                    var_datos_entrevistado.desarrollaActividad = request.data.get("desarrollaActividad", None)
+                    var_datos_entrevistado.desarrollaActividad = self.string_to_bool(request.data.get("desarrollaActividad", None))
                     var_datos_entrevistado.desarrollaActividadData = request.data.get("desarrollaActividadData", None)
                     var_datos_entrevistado.orientacionSexual = request.data.get("orientacionSexual", None)
                     var_datos_entrevistado.orientacionSexualOtro = request.data.get("orientacionSexualOtro", None)
                     var_datos_entrevistado.autoreconocimientoEtnico = request.data.get("autoreconocimientoEtnico", None)
                     var_datos_entrevistado.autoreconocimientoEtnicoOtro = request.data.get("autoreconocimientoEtnicoOtro", None)
                     var_datos_entrevistado.estadoCivil = request.data.get("estadoCivil", None)
-                    var_datos_entrevistado.actividadesOcio = request.data.get("actividadesOcio", None)
+                    var_datos_entrevistado.actividadesOcio = self.string_to_bool(request.data.get("actividadesOcio", None))
                     var_datos_entrevistado.actividadesOcioData = request.data.get("actividadesOcioData", None)
-                    var_datos_entrevistado.actividadDeportiva = request.data.get("actividadDeportiva", None)
+                    var_datos_entrevistado.actividadDeportiva = self.string_to_bool(request.data.get("actividadDeportiva", None))
                     var_datos_entrevistado.actividadDeportivaData = request.data.get("actividadDeportivaData", None)
-                    var_datos_entrevistado.programaAcompanamiento = request.data.get("programaAcompanamiento", None)
+                    var_datos_entrevistado.programaAcompanamiento = self.string_to_bool(request.data.get("programaAcompanamiento", None))
                     var_datos_entrevistado.programaAcompanamientoOtro = request.data.get("programaAcompanamientoOtro", None)
                     var_datos_entrevistado.programaAcompanamientoOtroData = request.data.get("programaAcompanamientoOtroData", None)
                     var_datos_entrevistado.save()
@@ -297,11 +307,11 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                 var_datos_economicos = datos_economicos.objects.filter(id= var_caracterizacion.id_datos_economicos.id).first()
                 if(var_datos_economicos):
                     var_datos_economicos.estrato_socio = request.data.get("estrato_socio", None)
-                    var_datos_economicos.recibe_prestacion_econo = request.data.get("recibe_prestacion_econo", False)
-                    var_datos_economicos.recibe_beca = request.data.get("recibe_beca", False)
-                    var_datos_economicos.recibe_transporte = request.data.get("recibe_transporte", False)
-                    var_datos_economicos.recibe_finan_materiales = request.data.get("recibe_finan_materiales", False)
-                    var_datos_economicos.solvencia_economica = request.data.get("solvencia_economica", False)
+                    var_datos_economicos.recibe_prestacion_econo = self.string_to_bool(request.data.get("recibe_prestacion_econo", False))
+                    var_datos_economicos.recibe_beca = self.string_to_bool(request.data.get("recibe_beca", False))
+                    var_datos_economicos.recibe_transporte = self.string_to_bool(request.data.get("recibe_transporte", False))
+                    var_datos_economicos.recibe_finan_materiales = self.string_to_bool(request.data.get("recibe_finan_materiales", False))
+                    var_datos_economicos.solvencia_economica = self.string_to_bool(request.data.get("solvencia_economica", False))
                     var_datos_economicos.expectativas_laborales = request.data.get("expectativas_laborales", None)
                     var_datos_economicos.nivel_educativo_padre = request.data.get("nivel_educativo_padre", None)
                     var_datos_economicos.ocupacion_padre = request.data.get("ocupacion_padre", None)
@@ -310,22 +320,22 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_datos_economicos.ocupacion_madre = request.data.get("ocupacion_madre", None)
                     var_datos_economicos.situacion_madre = request.data.get("situacion_madre", None)
                     
-                    var_datos_economicos.permanencia_ingresos_propios = request.data.get("permanencia_ingresos_propios", None)
-                    var_datos_economicos.permanencia_ingresos_familiares = request.data.get("permanencia_ingresos_familiares", None)
-                    var_datos_economicos.permanencia_ingresos_otros = request.data.get("permanencia_ingresos_otros", None)
+                    var_datos_economicos.permanencia_ingresos_propios = self.string_to_bool(request.data.get("permanencia_ingresos_propios", None))
+                    var_datos_economicos.permanencia_ingresos_familiares = self.string_to_bool(request.data.get("permanencia_ingresos_familiares", None))
+                    var_datos_economicos.permanencia_ingresos_otros = self.string_to_bool(request.data.get("permanencia_ingresos_otros", None))
                     var_datos_economicos.permanencia_ingresos_otros_texto = request.data.get("permanencia_ingresos_otros_texto", None)
-                    var_datos_economicos.requiere_materiales = request.data.get("requiere_materiales", None)
-                    var_datos_economicos.valor_materiales = request.data.get("valor_materiales", None)
-                    var_datos_economicos.transporte_privado = request.data.get("transporte_privado", None)
-                    var_datos_economicos.transporte_publico = request.data.get("transporte_publico", None)
-                    var_datos_economicos.transporte_propio = request.data.get("transporte_propio", None)
-                    var_datos_economicos.transporte_otro = request.data.get("transporte_otro", None)
+                    var_datos_economicos.requiere_materiales = self.string_to_bool(request.data.get("requiere_materiales", None))
+                    var_datos_economicos.valor_materiales = self.string_to_bool(request.data.get("valor_materiales", None))
+                    var_datos_economicos.transporte_privado = self.string_to_bool(request.data.get("transporte_privado", None))
+                    var_datos_economicos.transporte_publico = self.string_to_bool(request.data.get("transporte_publico", None))
+                    var_datos_economicos.transporte_propio = self.string_to_bool(request.data.get("transporte_propio", None))
+                    var_datos_economicos.transporte_otro = self.string_to_bool(request.data.get("transporte_otro", None))
                     var_datos_economicos.transporte_otro_data = request.data.get("transporte_otro_data", None)
                     var_datos_economicos.valor_transporte = request.data.get("valor_transporte", None)
                     var_datos_economicos.valor_sostenimiento = request.data.get("valor_sostenimiento", None)
                     var_datos_economicos.actualmente_vive_estado = request.data.get("actualmente_vive_estado", None)
                     var_datos_economicos.actualmente_vive_parentezco = request.data.get("actualmente_vive_parentezco", None)
-                    var_datos_economicos.tiene_hijos = request.data.get("tiene_hijos", None)
+                    var_datos_economicos.tiene_hijos = self.string_to_bool(request.data.get("tiene_hijos", None))
                     var_datos_economicos.hijos_numero = request.data.get("hijos_numero", None)
                     var_datos_economicos.motivo_ingreso = request.data.get("motivo_ingreso", None)
                     var_datos_economicos.expectativas_carrera = request.data.get("expectativas_carrera", None)
@@ -351,11 +361,11 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                 var_datos_economicos = datos_economicos.objects.filter(id= var_caracterizacion_new.id_datos_economicos).first()
                 if(var_datos_economicos):
                     var_datos_economicos.estrato_socio = request.data.get("estrato_socio", None)
-                    var_datos_economicos.recibe_prestacion_econo = request.data.get("recibe_prestacion_econo", False)
-                    var_datos_economicos.recibe_beca = request.data.get("recibe_beca", False)
-                    var_datos_economicos.recibe_transporte = request.data.get("recibe_transporte", False)
-                    var_datos_economicos.recibe_finan_materiales = request.data.get("recibe_finan_materiales", False)
-                    var_datos_economicos.solvencia_economica = request.data.get("solvencia_economica", False)
+                    var_datos_economicos.recibe_prestacion_econo = self.string_to_bool(request.data.get("recibe_prestacion_econo", False))
+                    var_datos_economicos.recibe_beca = self.string_to_bool(request.data.get("recibe_beca", False))
+                    var_datos_economicos.recibe_transporte = self.string_to_bool(request.data.get("recibe_transporte", False))
+                    var_datos_economicos.recibe_finan_materiales = self.string_to_bool(request.data.get("recibe_finan_materiales", False))
+                    var_datos_economicos.solvencia_economica = self.string_to_bool(request.data.get("solvencia_economica", False))
                     var_datos_economicos.expectativas_laborales = request.data.get("expectativas_laborales", None)
                     var_datos_economicos.nivel_educativo_padre = request.data.get("nivel_educativo_padre", None)
                     var_datos_economicos.ocupacion_padre = request.data.get("ocupacion_padre", None)
@@ -364,22 +374,22 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_datos_economicos.ocupacion_madre = request.data.get("ocupacion_madre", None)
                     var_datos_economicos.situacion_madre = request.data.get("situacion_madre", None)
                     
-                    var_datos_economicos.permanencia_ingresos_propios = request.data.get("permanencia_ingresos_propios", None)
-                    var_datos_economicos.permanencia_ingresos_familiares = request.data.get("permanencia_ingresos_familiares", None)
-                    var_datos_economicos.permanencia_ingresos_otros = request.data.get("permanencia_ingresos_otros", None)
+                    var_datos_economicos.permanencia_ingresos_propios = self.string_to_bool(request.data.get("permanencia_ingresos_propios", None))
+                    var_datos_economicos.permanencia_ingresos_familiares = self.string_to_bool(request.data.get("permanencia_ingresos_familiares", None))
+                    var_datos_economicos.permanencia_ingresos_otros = self.string_to_bool(request.data.get("permanencia_ingresos_otros", None))
                     var_datos_economicos.permanencia_ingresos_otros_texto = request.data.get("permanencia_ingresos_otros_texto", None)
-                    var_datos_economicos.requiere_materiales = request.data.get("requiere_materiales", None)
-                    var_datos_economicos.valor_materiales = request.data.get("valor_materiales", None)
-                    var_datos_economicos.transporte_privado = request.data.get("transporte_privado", None)
-                    var_datos_economicos.transporte_publico = request.data.get("transporte_publico", None)
-                    var_datos_economicos.transporte_propio = request.data.get("transporte_propio", None)
-                    var_datos_economicos.transporte_otro = request.data.get("transporte_otro", None)
+                    var_datos_economicos.requiere_materiales = self.string_to_bool(request.data.get("requiere_materiales", None))
+                    var_datos_economicos.valor_materiales = self.string_to_bool(request.data.get("valor_materiales", None))
+                    var_datos_economicos.transporte_privado = self.string_to_bool(request.data.get("transporte_privado", None))
+                    var_datos_economicos.transporte_publico = self.string_to_bool(request.data.get("transporte_publico", None))
+                    var_datos_economicos.transporte_propio = self.string_to_bool(request.data.get("transporte_propio", None))
+                    var_datos_economicos.transporte_otro = self.string_to_bool(request.data.get("transporte_otro", None))
                     var_datos_economicos.transporte_otro_data = request.data.get("transporte_otro_data", None)
                     var_datos_economicos.valor_transporte = request.data.get("valor_transporte", None)
                     var_datos_economicos.valor_sostenimiento = request.data.get("valor_sostenimiento", None)
                     var_datos_economicos.actualmente_vive_estado = request.data.get("actualmente_vive_estado", None)
                     var_datos_economicos.actualmente_vive_parentezco = request.data.get("actualmente_vive_parentezco", None)
-                    var_datos_economicos.tiene_hijos = request.data.get("tiene_hijos", None)
+                    var_datos_economicos.tiene_hijos = self.string_to_bool(request.data.get("tiene_hijos", None))
                     var_datos_economicos.hijos_numero = request.data.get("hijos_numero", None)
                     var_datos_economicos.motivo_ingreso = request.data.get("motivo_ingreso", None)
                     var_datos_economicos.expectativas_carrera = request.data.get("expectativas_carrera", None)
@@ -390,7 +400,6 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     var_datos_economicos.otro_familiar_situacion_economica = request.data.get("otro_familiar_situacion_economica", None)
                     var_datos_economicos.otro_familiar_actividad_economica = request.data.get("otro_familiar_actividad_economica", None)
                     var_datos_economicos.otro_familiar_labor_desempena = request.data.get("otro_familiar_labor_desempena", None)
-                    
                     var_datos_economicos.save()
                 else:
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
@@ -901,6 +910,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
+            request_jornada = request.data["jornada"]
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
 
             if(var_caracterizacion):
@@ -918,9 +928,10 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
             else:
-                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, request_jornada)
                 var_caracterizacion_new.fecha = request_fecha
                 var_caracterizacion_new.lugar = request_lugar
+                var_caracterizacion_new.jornada_caracterizacion = request_jornada
 
                 var_caracterizacion_new.save()
 
@@ -963,7 +974,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                         
             return Response(data)
         else:
-            return Response({'error': 'No se encontraron datos'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'No se encontraron datos de caracterizacion'}, status=status.HTTP_400_BAD_REQUEST)
 
 
     @action(detail=True, methods=['get'], url_path='datos_accesibilidad')

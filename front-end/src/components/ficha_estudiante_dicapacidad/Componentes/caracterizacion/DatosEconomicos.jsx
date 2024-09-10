@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { set } from "date-fns";
+import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
+import { useAuthStore } from "../../store/auth.js";
+import { desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const DatosEconomicos = ({ datos_economicos }) => {
   const [recibeBeneficio, setRecibeBeneficio] = useState(false);
@@ -10,8 +13,15 @@ const DatosEconomicos = ({ datos_economicos }) => {
   const [tieneHijos, setTieneHijos] = useState("");
 
   const [stateDisabled, setStateDisabled] = useState(true);
+  const { estudianteSelected } = useAuthStore();
 
   const [stateDatosEconomicos, setStateDatosEconomicos] = useState({
+    tipo: "datos_economicos",
+    id_estudiante: estudianteSelected.id,
+    id_semestre: 40,
+    fecha: datos_economicos.fecha_nac,
+    lugar: datos_economicos.lugar,
+    id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
     estrato_socio: datos_economicos.estrato_socio,
     recibe_prestacion_econo: datos_economicos.recibe_prestacion_econo,
     recibe_beca: datos_economicos.recibe_beca,
@@ -66,6 +76,15 @@ const DatosEconomicos = ({ datos_economicos }) => {
     console.log("Datos Economicos actualizados");
     // console.log(datos_estudiante_entrevistado);
     console.log(stateDatosEconomicos);
+    UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
+      stateDatosEconomicos
+    )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const updateStateDisabled = () => {
@@ -168,13 +187,15 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <div className="checkbox_group">
                 <input
                   type="checkbox"
+                  name="recibe_prestacion_econo"
                   checked={stateDatosEconomicos.recibe_prestacion_econo}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setStateDatosEconomicos({
                       ...stateDatosEconomicos,
-                      recibe_prestacion_econo: e.target.checked,
-                    })
-                  }
+                      recibe_prestacion_econo:
+                        !stateDatosEconomicos.recibe_prestacion_econo,
+                    });
+                  }}
                   disabled={stateDisabled}
                 />
                 <label>Recibe alguna prestación económica</label>
@@ -182,13 +203,15 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <div className="checkbox_group">
                 <input
                   type="checkbox"
-                  checked={setStateDatosEconomicos.recibe_beca}
-                  onChange={(e) =>
+                  name="recibe_beca"
+                  id="recibe_beca"
+                  checked={stateDatosEconomicos.recibe_beca}
+                  onChange={(e) => {
                     setStateDatosEconomicos({
                       ...stateDatosEconomicos,
-                      recibe_beca: e.target.checked,
-                    })
-                  }
+                      recibe_beca: !stateDatosEconomicos.recibe_beca,
+                    });
+                  }}
                   disabled={stateDisabled}
                 />
                 <label>Recibe alguna beca</label>
@@ -196,13 +219,15 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <div className="checkbox_group">
                 <input
                   type="checkbox"
+                  name="recibe_transporte"
                   checked={stateDatosEconomicos.recibe_transporte}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setStateDatosEconomicos({
                       ...stateDatosEconomicos,
-                      recibe_transporte: e.target.checked,
-                    })
-                  }
+                      recibe_transporte:
+                        !stateDatosEconomicos.recibe_transporte,
+                    });
+                  }}
                   disabled={stateDisabled}
                 />
                 <label>Recibe ayuda para el transporte</label>
@@ -211,13 +236,15 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <div className="checkbox_group">
                 <input
                   type="checkbox"
+                  name="recibe_finan_materiales"
                   checked={stateDatosEconomicos.recibe_finan_materiales}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setStateDatosEconomicos({
                       ...stateDatosEconomicos,
-                      recibe_finan_materiales: e.target.checked,
-                    })
-                  }
+                      recibe_finan_materiales:
+                        !stateDatosEconomicos.recibe_finan_materiales,
+                    });
+                  }}
                   disabled={stateDisabled}
                 />
                 <label>Recibe ayuda para financiar materiales</label>
@@ -225,13 +252,15 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <div className="checkbox_group">
                 <input
                   type="checkbox"
+                  name="solvencia_economica"
                   checked={stateDatosEconomicos.solvencia_economica}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setStateDatosEconomicos({
                       ...stateDatosEconomicos,
-                      solvencia_economica: e.target.checked,
-                    })
-                  }
+                      solvencia_economica:
+                        !stateDatosEconomicos.solvencia_economica,
+                    });
+                  }}
                   disabled={stateDisabled}
                 />
                 <label>Solvencia económica</label>
@@ -242,53 +271,49 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <label>¿Requiere materiales durante su carrera?</label>
               <select
                 className="select-type"
-                value={
-                  stateDatosEconomicos.requiere_materiales === true
-                    ? "si"
-                    : stateDatosEconomicos.requiere_materiales === false
-                    ? "no"
-                    : "sin_definir"
-                }
-                onChange={(e) =>
+                value={stateDatosEconomicos.requiere_materiales}
+                onChange={(e) => {
                   setStateDatosEconomicos({
                     ...stateDatosEconomicos,
-                    requiere_materiales: e.target.value,
-                  })
-                }
+                    requiere_materiales:
+                      !stateDatosEconomicos.requiere_materiales,
+                  });
+                }}
                 disabled={stateDisabled}
               >
                 <option value="sin_definir">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-                <option value="no_sabe">No sabe</option>
+                <option value="true">Sí</option>
+                <option value="false">No</option>
+                {/* <option value="no_sabe">No sabe</option> */}
               </select>
-              {stateDatosEconomicos.requiere_materiales && (
-                <div>
-                  <label>
-                    ¿Cuál es el valor aproximado en materiales, durante un
-                    semestre?
-                  </label>
-                  <select
-                    className="select-type"
-                    value={stateDatosEconomicos.valor_materiales}
-                    onChange={(e) =>
-                      setStateDatosEconomicos({
-                        ...stateDatosEconomicos,
-                        valor_materiales: e.target.value,
-                      })
-                    }
-                    disabled={stateDisabled}
-                  >
-                    <option value="sin_definir">Seleccione...</option>
-                    <option value="0">Desde $0 a $50.000</option>
-                    <option value="1">Desde $100.000 a $200.000</option>
-                    <option value="2">Desde $200.000 a $300.000</option>
-                    <option value="3">Desde $300.000 a $500.000</option>
-                    <option value="4">Desde $500.000 a $1.000.000</option>
-                    <option value="5">Superiores a $1.000.000</option>
-                  </select>
-                </div>
-              )}
+              {stateDatosEconomicos.requiere_materiales === "true" ||
+                (stateDatosEconomicos.requiere_materiales === true && (
+                  <div>
+                    <label>
+                      ¿Cuál es el valor aproximado en materiales, durante un
+                      semestre?
+                    </label>
+                    <select
+                      className="select-type"
+                      value={stateDatosEconomicos.valor_materiales}
+                      onChange={(e) =>
+                        setStateDatosEconomicos({
+                          ...stateDatosEconomicos,
+                          valor_materiales: e.target.value,
+                        })
+                      }
+                      disabled={stateDisabled}
+                    >
+                      <option value="sin_definir">Seleccione...</option>
+                      <option value="0">Desde $0 a $50.000</option>
+                      <option value="1">Desde $100.000 a $200.000</option>
+                      <option value="2">Desde $200.000 a $300.000</option>
+                      <option value="3">Desde $300.000 a $500.000</option>
+                      <option value="4">Desde $500.000 a $1.000.000</option>
+                      <option value="5">Superiores a $1.000.000</option>
+                    </select>
+                  </div>
+                ))}
             </div>
             <div className="separator" />
             <div className="checkbox_group">
@@ -453,43 +478,38 @@ const DatosEconomicos = ({ datos_economicos }) => {
               <label>¿Tiene hijos/as?</label>
               <select
                 className="select-type"
-                value={
-                  stateDatosEconomicos.tiene_hijos === true
-                    ? "si"
-                    : stateDatosEconomicos.tiene_hijos === false
-                    ? "no"
-                    : "sin_definir"
-                }
-                onChange={(e) =>
+                value={stateDatosEconomicos.tiene_hijos}
+                onChange={(e) => {
                   setStateDatosEconomicos({
                     ...stateDatosEconomicos,
                     tiene_hijos: e.target.value,
-                  })
-                }
+                  });
+                }}
                 disabled={stateDisabled}
               >
                 <option value="sin_definir">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
+                <option value="true">Sí</option>
+                <option value="false">No</option>
               </select>
-              {stateDatosEconomicos.tiene_hijos === true && (
-                <div>
-                  <label>¿Cuántos?:</label>
-                  <input
-                    className="input-type-number"
-                    type="number"
-                    min="1"
-                    value={stateDatosEconomicos.hijos_numero}
-                    onChange={(e) =>
-                      setStateDatosEconomicos({
-                        ...stateDatosEconomicos,
-                        hijos_numero: e.target.value,
-                      })
-                    }
-                    disabled={stateDisabled}
-                  />
-                </div>
-              )}
+              {stateDatosEconomicos.tiene_hijos === "true" ||
+                (stateDatosEconomicos.tiene_hijos === true && (
+                  <div>
+                    <label>¿Cuántos?:</label>
+                    <input
+                      className="input-type-number"
+                      type="number"
+                      min="1"
+                      value={stateDatosEconomicos.hijos_numero}
+                      onChange={(e) =>
+                        setStateDatosEconomicos({
+                          ...stateDatosEconomicos,
+                          hijos_numero: e.target.value,
+                        })
+                      }
+                      disabled={stateDisabled}
+                    />
+                  </div>
+                ))}
             </div>
             <div className="separator" />
             <p className="titulo">Proyecto de Vida</p>
@@ -565,11 +585,13 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 <label>Nivel educativo (Máximo alcanzado)</label>
                 <select
                   className="select-type"
-                  value={
-                    stateDatosEconomicos.nivel_educativo_padre
-                      ? stateDatosEconomicos.nivel_educativo_padre
-                      : "sin_definir"
-                  }
+                  value={stateDatosEconomicos.nivel_educativo_padre}
+                  onChange={(e) => {
+                    setStateDatosEconomicos({
+                      ...stateDatosEconomicos,
+                      nivel_educativo_padre: e.target.value,
+                    });
+                  }}
                   disabled={stateDisabled}
                 >
                   <option value="sin_definir">Seleccione una opción</option>
@@ -624,11 +646,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 <input
                   type="text"
                   className="input-type-text"
-                  value={
-                    stateDatosEconomicos.ocupacion_padre
-                      ? stateDatosEconomicos.ocupacion_padre
-                      : "Sin definir"
-                  }
+                  value={stateDatosEconomicos.ocupacion_padre}
                   onChange={(e) =>
                     setStateDatosEconomicos({
                       ...stateDatosEconomicos,
@@ -663,11 +681,13 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 <label>Nivel educativo (Máximo alcanzado)</label>
                 <select
                   className="select-type"
-                  value={
-                    stateDatosEconomicos.nivel_educativo_madre
-                      ? stateDatosEconomicos.nivel_educativo_madre
-                      : "sin_definir"
-                  }
+                  value={stateDatosEconomicos.nivel_educativo_madre}
+                  onChange={(e) => {
+                    setStateDatosEconomicos({
+                      ...stateDatosEconomicos,
+                      nivel_educativo_madre: e.target.value,
+                    });
+                  }}
                   disabled={stateDisabled}
                 >
                   <option value="sin_definir">Seleccione una opción</option>
@@ -724,11 +744,13 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 <input
                   type="text"
                   className="input-type-text"
-                  value={
-                    stateDatosEconomicos.ocupacion_madre
-                      ? stateDatosEconomicos.ocupacion_madre
-                      : "Sin definir"
-                  }
+                  value={stateDatosEconomicos.ocupacion_madre}
+                  onChange={(e) => {
+                    setStateDatosEconomicos({
+                      ...stateDatosEconomicos,
+                      ocupacion_madre: e.target.value,
+                    });
+                  }}
                   disabled={stateDisabled}
                 />
               </div>
@@ -760,11 +782,13 @@ const DatosEconomicos = ({ datos_economicos }) => {
                   <label>Nivel educativo (Máximo alcanzado)</label>
                   <select
                     className="select-type"
-                    value={
-                      stateDatosEconomicos.otro_familiar_nivel_educativo
-                        ? stateDatosEconomicos.otro_familiar_nivel_educativo
-                        : "sin_definir"
-                    }
+                    value={stateDatosEconomicos.otro_familiar_nivel_educativo}
+                    onChange={(e) => {
+                      setStateDatosEconomicos({
+                        ...stateDatosEconomicos,
+                        otro_familiar_nivel_educativo: e.target.value,
+                      });
+                    }}
                     disabled={stateDisabled}
                   >
                     <option value="sin_definir">Seleccione una opción</option>

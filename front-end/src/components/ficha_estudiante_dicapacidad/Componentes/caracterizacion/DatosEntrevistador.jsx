@@ -3,7 +3,10 @@ import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { useAuthStore } from "../../store/auth";
 import { useState } from "react";
 import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
-import { desencriptar, desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import {
+  desencriptar,
+  desencriptarInt,
+} from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const DatosEntrevistador = ({ datos_entrevistador }) => {
   // console.log(datos_entrevistador);
@@ -11,24 +14,26 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
   const { estudianteSelected } = useAuthStore();
 
   const [stateEntrevistador, setStateEntrevistador] = useState({
-    entrevistador: datos_entrevistador.entrevistador,
-    celular: datos_entrevistador.celular,
-    cargo: datos_entrevistador.cargo,
-    profesion: datos_entrevistador.profesion,
-    fecha_aplicacion: datos_entrevistador.fecha_aplicacion,
-    lugar: datos_entrevistador.lugar,
     tipo: "datos_entrevistador",
-    // id_semestre: desencriptar(sessionStorage.getItem("id_")),
     id_semestre: 40,
     id_estudiante: estudianteSelected.id,
     fecha: datos_entrevistador.fecha_aplicacion,
+    lugar: datos_entrevistador.lugar,
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
+    celular: datos_entrevistador.celular,
+    profesion: datos_entrevistador.profesion,
+    jornada: "",
 
+    entrevistador: datos_entrevistador.entrevistador,
+    cargo: datos_entrevistador.cargo,
+    // fecha_aplicacion: datos_entrevistador.fecha_aplicacion,
+    // id_semestre: desencriptar(sessionStorage.getItem("id_")),
   });
 
   const handleUpdateEntrevistador = (e) => {
     e.preventDefault();
     setStateDisabled(true);
+    console.log(stateEntrevistador.fecha);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateEntrevistador)
       .then((res) => {
         console.log(res);
@@ -57,16 +62,12 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
               className="input-type-text"
               value={stateEntrevistador.entrevistador}
               onChange={(e) =>
-                stateDisabled ? (
-                  <></>
-                ) : (
-                  setStateEntrevistador({
-                    ...stateEntrevistador,
-                    entrevistador: e.target.value,
-                  })
-                )
+                setStateEntrevistador({
+                  ...stateEntrevistador,
+                  entrevistador: e.target.value,
+                })
               }
-              disabled={stateDisabled}
+              disabled
             />
             <label>Celular</label>
             <input
@@ -74,14 +75,10 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
               className="input-type-text-tel"
               value={stateEntrevistador.celular}
               onChange={(e) =>
-                stateDisabled ? (
-                  <></>
-                ) : (
-                  setStateEntrevistador({
-                    ...stateEntrevistador,
-                    celular: e.target.value,
-                  })
-                )
+                setStateEntrevistador({
+                  ...stateEntrevistador,
+                  celular: e.target.value,
+                })
               }
               disabled={stateDisabled}
             />
@@ -90,26 +87,16 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
             <label>Cargo</label>
             <select
               className="select-type"
+              value={stateEntrevistador.cargo}
               onChange={(e) =>
-                stateDisabled ? (
-                  <></>
-                ) : (
-                  setStateEntrevistador({
-                    ...stateEntrevistador,
-                    cargo: e.target.value,
-                  })
-                )
+                setStateEntrevistador({
+                  ...stateEntrevistador,
+                  cargo: e.target.value,
+                })
               }
-              disabled={stateDisabled}
+              disabled
             >
-              {stateEntrevistador.cargo ? (
-                <option value={stateEntrevistador.cargo} selected>
-                  {" "}
-                  {stateEntrevistador.cargo}
-                </option>
-              ) : (
-                <option value="">Seleccione una opción</option>
-              )}
+              <option value="sin_definir">Seleccione una opción</option>
               <option value="Opcion 1">Opcion 1</option>
               <option value="Opcion 2">Opcion 2</option>
               <option value="Opcion 3">Opcion 3</option>
@@ -119,27 +106,16 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
             {/* Select profesion */}
             <select
               className="select-type"
+              value={stateEntrevistador.profesion}
               onChange={(e) =>
-                stateDisabled ? (
-                  <></>
-                ) : (
-                  setStateEntrevistador({
-                    ...stateEntrevistador,
-                    profesion: e.target.value,
-                  })
-                )
+                setStateEntrevistador({
+                  ...stateEntrevistador,
+                  profesion: e.target.value,
+                })
               }
               disabled={stateDisabled}
             >
-              {stateEntrevistador.profesion ? (
-                <option value={stateEntrevistador.profesion} selected>
-                  {" "}
-                  {stateEntrevistador.profesion}
-                </option>
-              ) : (
-                <option value="">Seleccione una opción</option>
-              )}
-              {/* <option value="">Seleccione una opción</option> */}
+              <option value="sin_definir">Seleccione una opción</option>
               <option value="Opcion 1">Opcion 1</option>
               <option value="Opcion 2">Opcion 2</option>
               <option value="Opcion 3">Opcion 3</option>
@@ -153,16 +129,12 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
               <input
                 type="date"
                 className="input-type-date"
-                value={stateEntrevistador.fecha_aplicacion}
+                value={stateEntrevistador.fecha}
                 onChange={(e) =>
-                  stateDisabled ? (
-                    <></>
-                  ) : (
-                    setStateEntrevistador({
-                      ...stateEntrevistador,
-                      fecha_aplicacion: e.target.value,
-                    })
-                  )
+                  setStateEntrevistador({
+                    ...stateEntrevistador,
+                    fecha: e.target.value,
+                  })
                 }
                 disabled={stateDisabled}
               />
@@ -170,27 +142,16 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
               {/* Campo Lugar o Medio de Aplicación */}
               <select
                 className="select-type"
+                value={stateEntrevistador.lugar}
                 onChange={(e) =>
-                  stateDisabled ? (
-                    <></>
-                  ) : (
-                    setStateEntrevistador({
-                      ...stateEntrevistador,
-                      lugar: e.target.value,
-                    })
-                  )
+                  setStateEntrevistador({
+                    ...stateEntrevistador,
+                    lugar: e.target.value,
+                  })
                 }
                 disabled={stateDisabled}
               >
-                {stateEntrevistador.lugar ? (
-                  <option value={stateEntrevistador.lugar} selected>
-                    {" "}
-                    {stateEntrevistador.lugar}
-                  </option>
-                ) : (
-                  <option value="">Seleccione una opción</option>
-                )}
-                {/* <option value="">Seleccione una opción</option> */}
+                <option value="sin_definir">Seleccione una opción</option>
                 <option value="presencial">Presencial</option>
                 <option value="virtual">Virtual</option>
               </select>

@@ -62,4 +62,10 @@ from modulo_discapacidad.models import *
 
 # Caracterizacion
 admin.site.register(caracterizacion)
+admin.site.register(user_extended_disc)
+admin.site.register(datos_academicos)
+admin.site.register(datos_economicos)
 admin.site.register(datos_entrevistado)
+admin.site.register(percepcion_discapacidad)
+admin.site.register(acceso_servi_salud)
+

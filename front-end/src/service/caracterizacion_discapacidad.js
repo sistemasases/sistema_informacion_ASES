@@ -28,13 +28,18 @@ const caracterizacionDiscapacidad = async (id_estudiante, id_semestre_id) => {
       `${process.env.REACT_APP_API_URL}/discapacidad/estudiante_discapacidad/` +
       id_estudiante.toString() +
       `/datos_caracterizacion/?id_semestre=${id_semestre_id}`;
-    console.log("url_axios", url_axios);
 
-    // Interacción con la API
-    const res = await axios.get(url_axios, config);
-    return res.data;
+    const response = await axios.get(url_axios, config);
+    console.log(response); // Para verificar que se recibe la respuesta
+    return response.data; // Retornas solo los datos que te interesan
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    if (error.response && error.response.status === 400) {
+      alert(error.response.data.error);
+    } else {
+      alert("Error al enviar los datos, vuelva a intentarlo");
+    }
+    return false;
   }
 };
 

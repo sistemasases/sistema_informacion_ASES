@@ -1,9 +1,13 @@
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import React, { useState } from "react";
+import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
+import { useAuthStore } from "../../store/auth.js";
+import { desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const DatosAcademicos = ({ datos_academicos }) => {
   const [stateDisabled, setStateDisabled] = useState(true);
+  const { estudianteSelected } = useAuthStore();
 
   const [programas, setProgramas] = useState([
     {
@@ -15,6 +19,14 @@ const DatosAcademicos = ({ datos_academicos }) => {
   ]);
 
   const [stateDatosAcademicos, setStateDatosAcademicos] = useState({
+    tipo: "datos_academicos",
+    id_estudiante: estudianteSelected.id,
+    id_semestre: 40,
+    fecha: datos_academicos.fecha_nac,
+
+    lugar: datos_academicos.lugar,
+    id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
+
     id: datos_academicos.id,
     numero_resolucion: datos_academicos.numero_resolucion,
     creditos_programa: datos_academicos.creditos_programa,
@@ -89,8 +101,16 @@ const DatosAcademicos = ({ datos_academicos }) => {
     e.preventDefault();
     setStateDisabled(true);
     console.log("Datos Academicos actualizados");
-    // console.log(datos_estudiante_entrevistado);
     console.log(stateDatosAcademicos);
+    UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
+      stateDatosAcademicos
+    )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const updateStateDisabled = () => {
@@ -188,7 +208,6 @@ const DatosAcademicos = ({ datos_academicos }) => {
               Añadir Programa
             </button>
           </div> */}
-
         </div>
       </div>
       <hr className="styled-hr" />
@@ -312,8 +331,8 @@ const DatosAcademicos = ({ datos_academicos }) => {
                       type="text"
                       className="input-type-text"
                       value={
-                        stateDatosAcademicos.edu_media_dificultad_apoyo[0]
-                          .dificulta1.dificultad
+                        stateDatosAcademicos?.edu_media_dificultad_apoyo?.[0]
+                          ?.dificulta1?.dificultad || ""
                       }
                       onChange={(e) =>
                         setStateDatosAcademicos({
@@ -324,12 +343,34 @@ const DatosAcademicos = ({ datos_academicos }) => {
                                 dificultad: e.target.value,
                                 apoyo:
                                   stateDatosAcademicos
-                                    .edu_media_dificultad_apoyo[0].dificulta1
-                                    .apoyo,
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.apoyo || "",
                               },
                             },
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[1],
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[2],
+                            {
+                              dificulta2: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.apoyo,
+                              },
+                            },
+                            {
+                              dificulta3: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.apoyo || "",
+                              },
+                            },
                           ],
                         })
                       }
@@ -341,8 +382,8 @@ const DatosAcademicos = ({ datos_academicos }) => {
                       type="text"
                       className="input-type-text"
                       value={
-                        stateDatosAcademicos.edu_media_dificultad_apoyo[0]
-                          .dificulta1.apoyo
+                        stateDatosAcademicos?.edu_media_dificultad_apoyo?.[0]
+                          ?.dificulta1?.apoyo
                       }
                       onChange={(e) =>
                         setStateDatosAcademicos({
@@ -352,13 +393,35 @@ const DatosAcademicos = ({ datos_academicos }) => {
                               dificulta1: {
                                 dificultad:
                                   stateDatosAcademicos
-                                    .edu_media_dificultad_apoyo[0].dificulta1
-                                    .dificultad,
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.dificultad || "",
                                 apoyo: e.target.value,
                               },
                             },
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[1],
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[2],
+                            {
+                              dificulta2: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.apoyo,
+                              },
+                            },
+                            {
+                              dificulta3: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.apoyo || "",
+                              },
+                            },
                           ],
                         })
                       }
@@ -372,24 +435,46 @@ const DatosAcademicos = ({ datos_academicos }) => {
                       type="text"
                       className="input-type-text"
                       value={
-                        stateDatosAcademicos.edu_media_dificultad_apoyo[1]
-                          .dificulta2.dificultad
+                        stateDatosAcademicos?.edu_media_dificultad_apoyo?.[1]
+                          ?.dificulta2?.dificultad
                       }
                       onChange={(e) =>
                         setStateDatosAcademicos({
                           ...stateDatosAcademicos,
                           edu_media_dificultad_apoyo: [
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[0],
+                            {
+                              dificulta1: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.apoyo || "",
+                              },
+                            },
                             {
                               dificulta2: {
                                 dificultad: e.target.value,
                                 apoyo:
                                   stateDatosAcademicos
-                                    .edu_media_dificultad_apoyo[1].dificulta2
-                                    .apoyo,
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.apoyo,
                               },
                             },
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[2],
+                            {
+                              dificulta3: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.apoyo || "",
+                              },
+                            },
                           ],
                         })
                       }
@@ -401,24 +486,46 @@ const DatosAcademicos = ({ datos_academicos }) => {
                       type="text"
                       className="input-type-text"
                       value={
-                        stateDatosAcademicos.edu_media_dificultad_apoyo[1]
-                          .dificulta2.apoyo
+                        stateDatosAcademicos?.edu_media_dificultad_apoyo?.[1]
+                          ?.dificulta2?.apoyo
                       }
                       onChange={(e) =>
                         setStateDatosAcademicos({
                           ...stateDatosAcademicos,
                           edu_media_dificultad_apoyo: [
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[0],
+                            {
+                              dificulta1: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.apoyo || "",
+                              },
+                            },
                             {
                               dificulta2: {
                                 dificultad:
                                   stateDatosAcademicos
-                                    .edu_media_dificultad_apoyo[1].dificulta2
-                                    .dificultad,
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.dificultad || "",
                                 apoyo: e.target.value,
                               },
                             },
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[2],
+                            {
+                              dificulta3: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.apoyo || "",
+                              },
+                            },
                           ],
                         })
                       }
@@ -432,22 +539,44 @@ const DatosAcademicos = ({ datos_academicos }) => {
                       type="text"
                       className="input-type-text"
                       value={
-                        stateDatosAcademicos.edu_media_dificultad_apoyo[2]
-                          .dificulta3.dificultad
+                        stateDatosAcademicos?.edu_media_dificultad_apoyo?.[2]
+                          ?.dificulta3?.dificultad
                       }
                       onChange={(e) =>
                         setStateDatosAcademicos({
                           ...stateDatosAcademicos,
                           edu_media_dificultad_apoyo: [
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[0],
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[1],
+                            {
+                              dificulta1: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.apoyo || "",
+                              },
+                            },
+                            {
+                              dificulta2: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.apoyo || "",
+                              },
+                            },
                             {
                               dificulta3: {
                                 dificultad: e.target.value,
                                 apoyo:
                                   stateDatosAcademicos
-                                    .edu_media_dificultad_apoyo[2].dificulta3
-                                    .apoyo,
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.apoyo || "",
                               },
                             },
                           ],
@@ -461,21 +590,43 @@ const DatosAcademicos = ({ datos_academicos }) => {
                       type="text"
                       className="input-type-text"
                       value={
-                        stateDatosAcademicos.edu_media_dificultad_apoyo[2]
-                          .dificulta3.apoyo
+                        stateDatosAcademicos?.edu_media_dificultad_apoyo?.[2]
+                          ?.dificulta3?.apoyo
                       }
                       onChange={(e) =>
                         setStateDatosAcademicos({
                           ...stateDatosAcademicos,
                           edu_media_dificultad_apoyo: [
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[0],
-                            stateDatosAcademicos.edu_media_dificultad_apoyo[1],
+                            {
+                              dificulta1: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[0]
+                                    ?.dificulta1?.apoyo || "",
+                              },
+                            },
+                            {
+                              dificulta2: {
+                                dificultad:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.dificultad || "",
+                                apoyo:
+                                  stateDatosAcademicos
+                                    ?.edu_media_dificultad_apoyo?.[1]
+                                    ?.dificulta2?.apoyo || "",
+                              },
+                            },
                             {
                               dificulta3: {
                                 dificultad:
                                   stateDatosAcademicos
-                                    .edu_media_dificultad_apoyo[2].dificulta3
-                                    .dificultad,
+                                    ?.edu_media_dificultad_apoyo?.[2]
+                                    ?.dificulta3?.dificultad || "",
                                 apoyo: e.target.value,
                               },
                             },
@@ -619,8 +770,9 @@ const DatosAcademicos = ({ datos_academicos }) => {
                         type="text"
                         className="input-type-text"
                         value={
-                          stateDatosAcademicos.edu_superior_dificultad_apoyo[0]
-                            .dificulta1.dificultad
+                          stateDatosAcademicos
+                            ?.edu_superior_dificultad_apoyo?.[0]?.dificulta1
+                            ?.dificultad || ""
                         }
                         onChange={(e) =>
                           setStateDatosAcademicos({
@@ -631,14 +783,34 @@ const DatosAcademicos = ({ datos_academicos }) => {
                                   dificultad: e.target.value,
                                   apoyo:
                                     stateDatosAcademicos
-                                      .edu_superior_dificultad_apoyo[0]
-                                      .dificulta1.apoyo,
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.apoyo || "",
                                 },
                               },
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[1],
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[2],
+                              {
+                                dificulta2: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.apoyo,
+                                },
+                              },
+                              {
+                                dificulta3: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.apoyo || "",
+                                },
+                              },
                             ],
                           })
                         }
@@ -650,8 +822,9 @@ const DatosAcademicos = ({ datos_academicos }) => {
                         type="text"
                         className="input-type-text"
                         value={
-                          stateDatosAcademicos.edu_superior_dificultad_apoyo[0]
-                            .dificulta1.apoyo
+                          stateDatosAcademicos
+                            ?.edu_superior_dificultad_apoyo?.[0]?.dificulta1
+                            ?.apoyo
                         }
                         onChange={(e) =>
                           setStateDatosAcademicos({
@@ -661,15 +834,35 @@ const DatosAcademicos = ({ datos_academicos }) => {
                                 dificulta1: {
                                   dificultad:
                                     stateDatosAcademicos
-                                      .edu_superior_dificultad_apoyo[0]
-                                      .dificulta1.dificultad,
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.dificultad || "",
                                   apoyo: e.target.value,
                                 },
                               },
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[1],
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[2],
+                              {
+                                dificulta2: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.apoyo,
+                                },
+                              },
+                              {
+                                dificulta3: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.apoyo || "",
+                                },
+                              },
                             ],
                           })
                         }
@@ -683,26 +876,47 @@ const DatosAcademicos = ({ datos_academicos }) => {
                         type="text"
                         className="input-type-text"
                         value={
-                          stateDatosAcademicos.edu_superior_dificultad_apoyo[1]
-                            .dificulta2.dificultad
+                          stateDatosAcademicos
+                            ?.edu_superior_dificultad_apoyo?.[1]?.dificulta2
+                            ?.dificultad
                         }
                         onChange={(e) =>
                           setStateDatosAcademicos({
                             ...stateDatosAcademicos,
                             edu_superior_dificultad_apoyo: [
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[0],
+                              {
+                                dificulta1: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.apoyo || "",
+                                },
+                              },
                               {
                                 dificulta2: {
                                   dificultad: e.target.value,
                                   apoyo:
                                     stateDatosAcademicos
-                                      .edu_superior_dificultad_apoyo[1]
-                                      .dificulta2.apoyo,
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.apoyo,
                                 },
                               },
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[2],
+                              {
+                                dificulta3: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.apoyo || "",
+                                },
+                              },
                             ],
                           })
                         }
@@ -714,26 +928,47 @@ const DatosAcademicos = ({ datos_academicos }) => {
                         type="text"
                         className="input-type-text"
                         value={
-                          stateDatosAcademicos.edu_superior_dificultad_apoyo[1]
-                            .dificulta2.apoyo
+                          stateDatosAcademicos
+                            ?.edu_superior_dificultad_apoyo?.[1]?.dificulta2
+                            ?.apoyo
                         }
                         onChange={(e) =>
                           setStateDatosAcademicos({
                             ...stateDatosAcademicos,
                             edu_superior_dificultad_apoyo: [
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[0],
+                              {
+                                dificulta1: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.apoyo || "",
+                                },
+                              },
                               {
                                 dificulta2: {
                                   dificultad:
                                     stateDatosAcademicos
-                                      .edu_superior_dificultad_apoyo[1]
-                                      .dificulta2.dificultad,
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.dificultad || "",
                                   apoyo: e.target.value,
                                 },
                               },
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[2],
+                              {
+                                dificulta3: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.apoyo || "",
+                                },
+                              },
                             ],
                           })
                         }
@@ -747,24 +982,45 @@ const DatosAcademicos = ({ datos_academicos }) => {
                         type="text"
                         className="input-type-text"
                         value={
-                          stateDatosAcademicos.edu_superior_dificultad_apoyo[2]
-                            .dificulta3.dificultad
+                          stateDatosAcademicos
+                            ?.edu_superior_dificultad_apoyo?.[2]?.dificulta3
+                            ?.dificultad
                         }
                         onChange={(e) =>
                           setStateDatosAcademicos({
                             ...stateDatosAcademicos,
                             edu_superior_dificultad_apoyo: [
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[0],
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[1],
+                              {
+                                dificulta1: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.apoyo || "",
+                                },
+                              },
+                              {
+                                dificulta2: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.apoyo || "",
+                                },
+                              },
                               {
                                 dificulta3: {
                                   dificultad: e.target.value,
                                   apoyo:
                                     stateDatosAcademicos
-                                      .edu_superior_dificultad_apoyo[2]
-                                      .dificulta3.apoyo,
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.apoyo || "",
                                 },
                               },
                             ],
@@ -778,23 +1034,44 @@ const DatosAcademicos = ({ datos_academicos }) => {
                         type="text"
                         className="input-type-text"
                         value={
-                          stateDatosAcademicos.edu_superior_dificultad_apoyo[2]
-                            .dificulta3.apoyo
+                          stateDatosAcademicos
+                            ?.edu_superior_dificultad_apoyo?.[2]?.dificulta3
+                            ?.apoyo
                         }
                         onChange={(e) =>
                           setStateDatosAcademicos({
                             ...stateDatosAcademicos,
                             edu_superior_dificultad_apoyo: [
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[0],
-                              stateDatosAcademicos
-                                .edu_superior_dificultad_apoyo[1],
+                              {
+                                dificulta1: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[0]
+                                      ?.dificulta1?.apoyo || "",
+                                },
+                              },
+                              {
+                                dificulta2: {
+                                  dificultad:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.dificultad || "",
+                                  apoyo:
+                                    stateDatosAcademicos
+                                      ?.edu_superior_dificultad_apoyo?.[1]
+                                      ?.dificulta2?.apoyo || "",
+                                },
+                              },
                               {
                                 dificulta3: {
                                   dificultad:
                                     stateDatosAcademicos
-                                      .edu_superior_dificultad_apoyo[2]
-                                      .dificulta3.dificultad,
+                                      ?.edu_superior_dificultad_apoyo?.[2]
+                                      ?.dificulta3?.dificultad || "",
                                   apoyo: e.target.value,
                                 },
                               },

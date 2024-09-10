@@ -2,13 +2,22 @@ import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { Row, Col } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import { desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import { useAuthStore } from "../../store/auth";
 
 const ConclusionJornadaCaracterizacion = ({ jornada }) => {
   const [stateDisabled, setStateDisabled] = useState(true);
+  const { estudianteSelected } = useAuthStore();
 
   const [stateJornadaCaracterizacion, setStateJornadaCaracterizacion] =
     useState({
       jornada_caracterizacion: "",
+      tipo: "datos_caracterizacion_jornada",
+      id_estudiante: estudianteSelected.id,
+      id_semestre: 40,
+      fecha: jornada.fecha_nac,
+      lugar: jornada.lugar,
+      id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
     });
 
   useEffect(() => {

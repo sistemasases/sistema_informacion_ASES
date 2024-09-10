@@ -24,8 +24,8 @@ const Update_datos_entrevistador_disc = async (FormData) => {
     axios
       .post(url_axios, FormData, config)
       .then((response) => {
-        if (response.status === 200) {
-          alert("Datos actualizados correctamente");
+        if (response.status === 200 || response.status === 201) {
+          alert(response.data.Respuesta);
           return response;
         } else {
           return false;
@@ -35,6 +35,10 @@ const Update_datos_entrevistador_disc = async (FormData) => {
         console.error(error);
         if (error.response.status === 404) {
           alert(error.response.data.mensaje);
+        } else if (error.response.status === 500) {
+          alert(
+            "En caso de que los campos se encuentren vacios, por favor llenarlos"
+          );
         } else {
           alert("Error al enviar los datos, vuelva a intentarlo");
         }

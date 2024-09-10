@@ -1,10 +1,22 @@
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { useState } from "react";
+import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
+import { useAuthStore } from "../../store/auth.js";
+import { desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const AccesoServiciosSalud = ({ servicio_salud }) => {
   const [selectedOption, setSelectedOption] = useState("");
+  const { estudianteSelected } = useAuthStore();
+
   const [stateServicioSalud, setStateServicioSalud] = useState({
+    tipo: "datos_entrevistado",
+    id_estudiante: estudianteSelected.id,
+    id_semestre: 40,
+    fecha: estudianteSelected.fecha_nac,
+    lugar: servicio_salud.lugar,
+    id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
+
     id: servicio_salud.id,
     regimen_vinculado: servicio_salud.regimen_vinculado,
     servicio_salud: servicio_salud.servicio_salud,
@@ -35,8 +47,14 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
     e.preventDefault();
     setStateDisabled(true);
     console.log("Datos servicio de salud actualizados");
-    // console.log(datos_estudiante_entrevistado);
     console.log(stateServicioSalud);
+    UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateServicioSalud)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const updateStateDisabled = () => {

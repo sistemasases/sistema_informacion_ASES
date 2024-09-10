@@ -5,6 +5,8 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
 
   const [statePercepcionDiscapacidad, setStatePercepcionDiscapacidad] =
     useState({
+      lugar: percepcion_discapacidad.lugar,
+      
       considera_discapacidad: percepcion_discapacidad.considera_discapacidad,
       consideracion: percepcion_discapacidad.consideracion,
       adquisicion: percepcion_discapacidad.adquisicion,
