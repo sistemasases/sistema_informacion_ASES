@@ -87,13 +87,6 @@ const FormularioAsistencia = (props) => {
   });
 
   const send_data = (e) => {
-    // // console.log(e);
-    // console.log(data);
-    // *- Crear tabla de asistencias
-    // *- Datos del formulario
-    // *- Crear tabla monitorias
-    // *? añadir sede
-
     if (data.codigo_estudiante === "" || data.id_monitoria === "") {
       alert("Por favor llene todos los campos obligatorios");
       return;
@@ -118,19 +111,9 @@ const FormularioAsistencia = (props) => {
   };
 
   /**
-   * En el de asistencia:
-   *  Código
-   *  Monitoria a la que asiste
-   *  Fecha (autogenerada)
-   *
+   * Es necesario ?
    *  ****Agregar "Algo" para identificar a los qué asisten por x o y motivo hasta un día de diciembre
    * Te acercas a la monitoria académica de ASES con el objetivo de conseguir el aval de la Estrategia para acogerte al acuerdo 006
-   *
-   *
-   *  Alertas:
-   *  Al no encontrar el código
-   *  Implementar listado de monitorias
-   *  Implementar Selector Lugar  (Sede)
    *
    */
 
