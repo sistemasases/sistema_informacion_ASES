@@ -83,11 +83,6 @@ const FormularioActualizacion = (props) => {
       )
         .then((res) => {
           // console.log(res);
-          if (res) {
-            alert("Datos enviados correctamente");
-          } else {
-            alert("Error al enviar los datos, vuelva a intentarlo");
-          }
         })
         .catch((error) => {
           // console.error(error);
