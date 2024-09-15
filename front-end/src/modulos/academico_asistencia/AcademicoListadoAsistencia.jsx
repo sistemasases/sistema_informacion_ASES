@@ -6,9 +6,9 @@ import {
   } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import { useAuthStore } from "../../components/ficha_estudiante_dicapacidad/store/auth.js";
 import AccesoDenegado from "../../components/ficha_estudiante_dicapacidad/Componentes/AccesoDenegado.jsx";
-import AcademicoCheck from "../../components/academico_asistencia/AcademicoCheck.jsx";
+import AcademicoListado from "../../components/academico_asistencia/AcademicoListado.jsx";
 
-const AcademicoAsistencia = () => {
+const AcademicoListadoAsistencia = () => {
     const { user, setUser } = useAuthStore();
     useEffect(() => {
         setUser({
@@ -25,8 +25,8 @@ const AcademicoAsistencia = () => {
         <>
         {user &&
             user.userRole &&
-            user.userRole.includes("view_academico_asistencia") ? (
-                <AcademicoCheck />
+            user.userRole.includes("view_academico_list_asistencia") ? (
+                <AcademicoListado />
             ) : (
                 <AccesoDenegado />
             )}
@@ -34,4 +34,4 @@ const AcademicoAsistencia = () => {
     );
 }
 
-export default AcademicoAsistencia;
+export default AcademicoListadoAsistencia;
