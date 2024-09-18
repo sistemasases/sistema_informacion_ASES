@@ -40,7 +40,9 @@ const ModalEstudiantes = ({
   Usuariorevisado,
   handleSelectChange3,
   tipoDocumentoOptions,
-  setSeguimientosInfo
+  setSeguimientosInfo,
+  sedeOptions,
+  programaOptions,
 }) => {
 
   const titles = [
@@ -132,19 +134,35 @@ const ModalEstudiantes = ({
                 )}
                 </div>
 
-                <div className='div-modal'>
-                        <b>Nombre:</b> 
-                        {isEditing ? (
-                          <input
-                            type="text"
-                            name="nombre_y_apellido"
-                            value={editableUser.nombre_y_apellido || ''}
-                            onChange={handleInputChange}
-                          />
-                        ) : (
-                          selectedUser.nombre_y_apellido
-                        )}
-                      </div>                  <div className='div-modal'><b>Nombre identitario:</b> {selectedUser.nombre_identitario}</div>
+        <div className='div-modal'>
+        <b>Nombre y apellido: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="nombre_y_apellido"
+              className='input-updated'
+              value={editableUser.nombre_y_apellido !== undefined ? editableUser.nombre_y_apellido : selectedUser.nombre_y_apellido || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.estrato_socioeconomico 
+          )}
+        </div>              
+                    
+        <div className='div-modal'>
+          <b>Nombre identitario: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="nombre_identitario"
+              className='input-updated'
+              value={editableUser.nombre_identitario !== undefined ? editableUser.nombre_identitario : selectedUser.nombre_identitario || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.estrato_socioeconomico 
+          )}
+        </div>
                   <div className='div-modal'><b>Identificación:</b> {selectedUser.numero_documento}</div>
                   <div className='div-modal'>
 
@@ -170,65 +188,217 @@ const ModalEstudiantes = ({
         </div>                  
 
                   
-                  <div className='div-modal'><b>Email:</b> 
-                  {isEditing ? (
-                      <input type="text" name="email" value={editableUser.email || ''} onChange={handleInputChange}
-                      /> ) : ( selectedUser.email )} </div>
-                  <div className='div-modal'><b>Estrato:</b> 
-                  {isEditing ? (
-                      <input type="text" name="estrato_socioeconomico" value={editableUser.estrato_socioeconomico || ''} onChange={handleInputChange}
-                      /> ) : ( selectedUser.estrato_socioeconomico )} </div>
-                     <div className='div-modal'><b>Teléfono:</b>
-            {isEditing ? (
-              <input type="text" name="telefono" value={editableUser.telefono || ''} onChange={handleInputChange}
-              />) : (selectedUser.telefono)} </div>
-          <div className='div-modal'><b>Identidad étnico racial:</b>
-            {isEditing ? (
-              <input type="text" name="identidad_etnico_racial" value={editableUser.identidad_etnico_racial || ''} onChange={handleInputChange}
-              />) : (selectedUser.identidad_etnico_racial)} </div>
-          <div className='div-modal'><b>Nombre persona de confianza:</b>
-            {isEditing ? (
-              <input type="text" name="nombre_persona_de_confianza" value={editableUser.nombre_persona_de_confianza || ''} onChange={handleInputChange}
-              />) : (selectedUser.nombre_persona_de_confianza)} </div>
-          <div className='div-modal'><b>Teléfono persona de confianza:</b>
-            {isEditing ? (
-              <input type="text" name="telefono_persona_de_confianza" value={editableUser.telefono_persona_de_confianza || ''} onChange={handleInputChange}
-              />) : (selectedUser.telefono_persona_de_confianza)} </div>
-          <div className='div-modal'><b>Relación persona de confianza:</b>
-            {isEditing ? (
-              <input type="text" name="relacion_persona_de_confianza" value={editableUser.relacion_persona_de_confianza || ''} onChange={handleInputChange}
-              />) : (selectedUser.relacion_persona_de_confianza)} </div>
-          <div className='div-modal'><b>Estado civil: </b>
-            {isEditing ? (
-              <input type="text" name="estado_civil" value={editableUser.estado_civil || ''} onChange={handleInputChange}
-              />) : (selectedUser.estado_civil)} </div>
+        <div className='div-modal'>
+            <b>Email: </b>
+                {isEditing ? (
+                    <input
+                    type="text"
+                    className='input-updated'
+                    name="email"
+                    value={editableUser.email !== undefined ? editableUser.email : selectedUser.email || ''}
+                    onChange={handleInputChange}
+                        />
+                      ) : (
+                    selectedUser.email
+                      )}
+                    </div>
+                    
+
+        <div className='div-modal'>
+          <b>Estrato: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="estrato_socioeconomico"
+              className='input-updated'
+              value={editableUser.estrato_socioeconomico !== undefined ? editableUser.estrato_socioeconomico : selectedUser.estrato_socioeconomico || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.estrato_socioeconomico 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Teléfono: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="telefono"
+              className='input-updated'
+              value={editableUser.telefono !== undefined ? editableUser.telefono : selectedUser.telefono || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.telefono 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Identidad étnico racial: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="identidad_etnico_racial"
+              className='input-updated'
+              value={editableUser.identidad_etnico_racial !== undefined ? editableUser.identidad_etnico_racial : selectedUser.identidad_etnico_racial || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.identidad_etnico_racial 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Nombre persona de confianza: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="nombre_persona_de_confianza"
+              className='input-updated'
+              value={editableUser.nombre_persona_de_confianza !== undefined ? editableUser.nombre_persona_de_confianza : selectedUser.nombre_persona_de_confianza || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.nombre_persona_de_confianza 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Teléfono persona de confianza: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="telefono_persona_de_confianza"
+              className='input-updated'
+              value={editableUser.telefono_persona_de_confianza !== undefined ? editableUser.telefono_persona_de_confianza : selectedUser.telefono_persona_de_confianza || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.telefono_persona_de_confianza 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Relación persona de confianza: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="relacion_persona_de_confianza"
+              className='input-updated'
+              value={editableUser.relacion_persona_de_confianza !== undefined ? editableUser.relacion_persona_de_confianza : selectedUser.relacion_persona_de_confianza || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.relacion_persona_de_confianza 
+          )}
+        </div>
         </Col>
-        <Col className="form-column" xs={"10"} md={"6"}>
-          <div className='div-modal'><b>Ciudad de nacimiento:</b>
-            {isEditing ? (
-              <input type="text" name="ciudad_nacimiento" value={editableUser.ciudad_nacimiento || ''} onChange={handleInputChange}
-              />) : (selectedUser.ciudad_nacimiento)} </div>
-          <div className='div-modal'><b>Corregimiento de nacimiento:</b>
-            {isEditing ? (
-              <input type="text" name="corregimiento_nacimiento" value={editableUser.corregimiento_nacimiento || ''} onChange={handleInputChange}
-              />) : (selectedUser.corregimiento_nacimiento)} </div>
-          <div className='div-modal'><b>Municipío de nacimiento:</b>
-            {isEditing ? (
-              <input type="text" name="municipio_nacimiento" value={editableUser.municipio_nacimiento || ''} onChange={handleInputChange}
-              />) : (selectedUser.municipio_nacimiento)} </div>
-          <div className='div-modal'><b>País de nacimiento:</b>
-            {isEditing ? (
-              <input type="text" name="pais_nacimiento" value={editableUser.pais_nacimiento || ''} onChange={handleInputChange}
-              />) : (selectedUser.pais_nacimiento)} </div>
-          <div className='div-modal'><b>Departamento de nacimiento:</b>
-            {isEditing ? (
-              <input type="text" name="departamento_nacimiento" value={editableUser.departamento_nacimiento || ''} onChange={handleInputChange}
-              />) : (selectedUser.departamento_nacimiento)} </div>
-          <div className='div-modal'><b>Fecha de nacimiento "Año/Mes/Día":</b>
-            {isEditing ? (
-              <input type="date" name="fecha_nacimiento" value={editableUser.fecha_nacimiento || ''} onChange={handleInputChange}
-              />) : (selectedUser.fecha_nacimiento)} </div>
-         
+        <Col>
+        <div className='div-modal'>
+          <b>Estado civil: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="estado_civil"
+              className='input-updated'
+              value={editableUser.estado_civil !== undefined ? editableUser.estado_civil : selectedUser.estado_civil || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.estado_civil 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Ciudad de nacimiento: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="ciudad_nacimiento"
+              className='input-updated'
+              value={editableUser.ciudad_nacimiento !== undefined ? editableUser.ciudad_nacimiento : selectedUser.ciudad_nacimiento || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.ciudad_nacimiento
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Corregimiento de nacimiento: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="corregimiento_nacimiento"
+              className='input-updated'
+              value={editableUser.corregimiento_nacimiento !== undefined ? editableUser.corregimiento_nacimiento : selectedUser.corregimiento_nacimiento || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.corregimiento_nacimiento 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Municipio de nacimiento: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="municipio_nacimiento"
+              className='input-updated'
+              value={editableUser.municipio_nacimiento !== undefined ? editableUser.municipio_nacimiento : selectedUser.municipio_nacimiento || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.municipio_nacimiento 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>País de nacimiento: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="pais_nacimiento"
+              className='input-updated'
+              value={editableUser.pais_nacimiento !== undefined ? editableUser.pais_nacimiento : selectedUser.pais_nacimiento || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.pais_nacimiento 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Departamento de nacimiento: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="departamento_nacimiento"
+              className='input-updated'
+              value={editableUser.departamento_nacimiento !== undefined ? editableUser.departamento_nacimiento : selectedUser.departamento_nacimiento || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.departamento_nacimiento 
+          )}
+        </div>
+
+        <div className='div-modal'>
+          <b>Fecha de nacimiento "Año/Mes/Día": </b>
+          {isEditing ? (
+            <input
+              type="date"
+              name="fecha_nacimiento"
+              className='input-updated'
+              value={editableUser.fecha_nacimiento !== undefined ? editableUser.fecha_nacimiento : selectedUser.fecha_nacimiento || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.fecha_nacimiento
+          )}
+        </div>
 
 
  <div className='div-modal'>
@@ -259,24 +429,66 @@ const ModalEstudiantes = ({
 
 
 
-          <div className='div-modal'><b>Comuna:</b>
-            {isEditing ? (
-              <input type="text" name="comuna_barrio" value={editableUser.comuna_barrio || ''} onChange={handleInputChange} autoComplete='off'
-              />) : (selectedUser.comuna_barrio)} </div>
+<div className='div-modal'>
+  <b>Comuna: </b>
+  {isEditing ? (
+    <input
+      type="text"
+      name="comuna_barrio"
+      className='input-updated'
+      value={editableUser.comuna_barrio !== undefined ? editableUser.comuna_barrio : selectedUser.comuna_barrio || ''}
+      onChange={handleInputChange}
+      
+    />
+  ) : (
+    selectedUser.comuna_barrio 
+  )}
+</div>
 
-          <div className='div-modal'><b>Barrio:</b>
-            {isEditing ? (
-              <input type="text" name="barrio_residencia" value={editableUser.barrio_residencia || ''} onChange={handleInputChange}
-              />) : (selectedUser.barrio_residencia)} </div>
+<div className='div-modal'>
+  <b>Barrio: </b>
+  {isEditing ? (
+    <input
+      type="text"
+      name="barrio_residencia"
+      className='input-updated'
+      value={editableUser.barrio_residencia !== undefined ? editableUser.barrio_residencia : selectedUser.barrio_residencia || ''}
+      onChange={handleInputChange}
+    />
+  ) : (
+    selectedUser.barrio_residencia 
+  )}
+</div>
 
-          <div className='div-modal'><b>Ciudad de residencia:</b>
-            {isEditing ? (
-              <input type="text" name="ciudad_residencia" value={editableUser.ciudad_residencia || ''} onChange={handleInputChange}
-              />) : (selectedUser.ciudad_residencia)} </div>
-          <div className='div-modal'><b>Dirección de residencia:</b>
-            {isEditing ? (
-              <input type="text" name="direccion_residencia" value={editableUser.direccion_residencia || ''} onChange={handleInputChange}
-              />) : (selectedUser.direccion_residencia)} </div>
+<div className='div-modal'>
+  <b>Ciudad de residencia: </b>
+  {isEditing ? (
+    <input
+      type="text"
+      name="ciudad_residencia"
+      className='input-updated'
+      value={editableUser.ciudad_residencia !== undefined ? editableUser.ciudad_residencia : selectedUser.ciudad_residencia || ''}
+      onChange={handleInputChange}
+    />
+  ) : (
+    selectedUser.ciudad_residencia 
+  )}
+</div>
+
+<div className='div-modal'>
+  <b>Dirección de residencia: </b>
+  {isEditing ? (
+    <input
+      type="text"
+      name="direccion_residencia"
+      className='input-updated'
+      value={editableUser.direccion_residencia !== undefined ? editableUser.direccion_residencia : selectedUser.direccion_residencia || ''}
+      onChange={handleInputChange}
+    />
+  ) : (
+    selectedUser.direccion_residencia
+  )}
+</div>
                   </Col>
                 </Row>
                 </div>
@@ -433,196 +645,227 @@ const ModalEstudiantes = ({
                   <Row>
                   <Col className="form-column" xs={"10"} md={"6"}>
 
-                  <div className='div-modal'><b>Dedicación externa:</b> {generalInfo.dedicacion_externa}</div>                
+                             
 
-                  <div className='div-modal'><b>¿Tiene EPS?: </b>
-            {isEditing ? (
-              <input type="text" name="tiene_eps" value={editableUser.tiene_eps || ''} onChange={handleInputChange}
-              />) : (generalInfo.tiene_eps)} </div>
+    <div className='div-modal'>
+  <b>Dedicación externa:</b> 
+  {isEditing ? (
+    <input 
+      type="text" 
+      name="dedicacion_externa" 
+      className='input-updated'
+      value={editableUser.dedicacion_externa !== undefined ? editableUser.dedicacion_externa : generalInfo.dedicacion_externa || ''}
+      onChange={handleInputChange}
+    />
+  ) : (generalInfo.dedicacion_externa)}
+</div>
 
-        <div className='div-modal'>
-          <b>Nombre de la EPS:</b>
-          {isEditing ? (
-            <input
-              type="text"
-              name="nombre_eps"
-              value={editableUser.nombre_eps || ''}
-              onChange={handleInputChange}
-            />
-          ) : (
-            generalInfo.nombre_eps
-          )}
-        </div>
-        <div className='div-modal'>
-          <b>Régimen de la EPS:</b>
-          {isEditing ? (
-            <input
-              type="text"
-              name="regimen_eps"
-              value={editableUser.regimen_eps || ''}
-              onChange={handleInputChange}
-            />
-          ) : (
-            generalInfo.regimen_eps
-          )}
-        </div>
-        <div className='div-modal'>
-          <b>Tipo de entidad que brinda acompañamiento:</b>
-          {isEditing ? (
-            <input
-              type="text"
-              name="tipo_entidad_acompanamiento_recibido"
-              value={editableUser.tipo_entidad_acompanamiento_recibido || ''}
-              onChange={handleInputChange}
-            />
-          ) : (
-            generalInfo.tipo_entidad_acompanamiento_recibido
-          )}
-        </div>
-        <div className='div-modal'>
-          <b>Calificación de acompañamiento recibido:</b>
-          {isEditing ? (
-            <input
-              type="text"
-              name="calificacion_acompanamiento_recibido"
-              value={editableUser.calificacion_acompanamiento_recibido || ''}
-              onChange={handleInputChange}
-            />
-          ) : (
-            generalInfo.calificacion_acompanamiento_recibido
-          )}
-        </div>
-                  
+<div className='div-modal'>
+  <b>¿Tiene EPS?:</b>
+  {isEditing ? (
+    <input 
+      type="text" 
+      name="tiene_eps" 
+      className='input-updated'
+      value={editableUser.tiene_eps !== undefined ? editableUser.tiene_eps : generalInfo.tiene_eps || ''}
+      onChange={handleInputChange}
+    />
+  ) : (generalInfo.tiene_eps)}
+</div>
 
-                  
-                  <div className='div-modal'><b>Acompañamiento recibido: </b>
-            {isEditing ? (
-              <input type="text" className="input-updated" name="acompanamiento_que_recibio" value={editableUser.acompanamiento_que_recibio || ''} onChange={handleInputChange}
-              />) : (generalInfo.acompanamiento_que_recibio)} </div>
+<div className='div-modal'>
+  <b>Nombre de la EPS:</b>
+  {isEditing ? (
+    <input 
+      type="text" 
+      name="nombre_eps" 
+      className='input-updated'
+      value={editableUser.nombre_eps !== undefined ? editableUser.nombre_eps : generalInfo.nombre_eps || ''}
+      onChange={handleInputChange}
+    />
+  ) : (generalInfo.nombre_eps || 'No registrado')}
+</div>
 
-              <div className='div-modal'><b>Profesional que brindaron atención: </b>
-            {isEditing ? (
-              <input type="text" className="input-updated" name="profesionales_que_brindaron_atencion" value={editableUser.profesionales_que_brindaron_atencion || ''} onChange={handleInputChange}
-              />) : (generalInfo.profesionales_que_brindaron_atencion)} </div>
+<div className='div-modal'>
+  <b>Régimen de la EPS:</b>
+  {isEditing ? (
+    <input 
+      type="text" 
+      name="regimen_eps" 
+      className='input-updated'
+      value={editableUser.regimen_eps !== undefined ? editableUser.regimen_eps : generalInfo.regimen_eps || ''}
+      onChange={handleInputChange}
+    />
+  ) : (generalInfo.regimen_eps )}
+</div>
+
+<div className='div-modal'>
+  <b>Tipo de entidad que brinda acompañamiento:</b>
+  {isEditing ? (
+    <input 
+      type="text" 
+      name="tipo_entidad_acompanamiento_recibido" 
+      className='input-updated'
+      value={editableUser.tipo_entidad_acompanamiento_recibido !== undefined ? editableUser.tipo_entidad_acompanamiento_recibido : generalInfo.tipo_entidad_acompanamiento_recibido || ''}
+      onChange={handleInputChange}
+    />
+  ) : (generalInfo.tipo_entidad_acompanamiento_recibido)}
+</div>
+
+<div className='div-modal'>
+  <b>Calificación de acompañamiento recibido:</b>
+  {isEditing ? (
+    <input 
+      type="text" 
+      name="calificacion_acompanamiento_recibido" 
+      className='input-updated'
+      value={editableUser.calificacion_acompanamiento_recibido !== undefined ? editableUser.calificacion_acompanamiento_recibido : generalInfo.calificacion_acompanamiento_recibido || ''}
+      onChange={handleInputChange}
+    />
+  ) : (generalInfo.calificacion_acompanamiento_recibido )}
+</div>
+
+<div className='div-modal'>
+  <b>Acompañamiento recibido:</b>
+  {isEditing ? (
+    <input 
+      type="text" 
+      name="acompanamiento_que_recibio" 
+      className='input-updated'
+      value={editableUser.acompanamiento_que_recibio !== undefined ? editableUser.acompanamiento_que_recibio : generalInfo.acompanamiento_que_recibio || ''}
+      onChange={handleInputChange}
+    />
+  ) : (generalInfo.acompanamiento_que_recibio )}
+</div>
 
 
-              <div className='div-modal'><b>Ocupaciones actuales: </b>
-            {isEditing ? (
-              <input type="text" className="input-updated" name="Ocupaciones_actules" value={editableUser.Ocupaciones_actules || ''} onChange={handleInputChange}
-              />) : (generalInfo.Ocupaciones_actules)} </div>
+<div className='div-modal'>
+  <b>Profesional que brindaron atención:</b>
+  {isEditing ? (
+    <input 
+      type="text" 
+      className="input-updated" 
+      name="profesionales_que_brindaron_atencion" 
+      value={editableUser.profesionales_que_brindaron_atencion !== undefined ? editableUser.profesionales_que_brindaron_atencion : generalInfo.profesionales_que_brindaron_atencion || ''} 
+      onChange={handleInputChange}
+    />
+  ) : (
+    generalInfo.profesionales_que_brindaron_atencion
+  )}
+</div>
+
+<div className='div-modal'>
+  <b>Ocupaciones actuales:</b>
+  {isEditing ? (
+    <input 
+      type="text" 
+      className="input-updated" 
+      name="Ocupaciones_actules" 
+      value={editableUser.Ocupaciones_actules !== undefined ? editableUser.Ocupaciones_actules : generalInfo.Ocupaciones_actules || ''} 
+      onChange={handleInputChange}
+    />
+  ) : (
+    generalInfo.Ocupaciones_actules
+  )}
+</div>
+
 
 
 
 
                   </Col>
                   <Col className="form-column" xs={"10"} md={"6"}>  
-              <div className='div-modal'>
-                <b>Calificación relación familiar: </b>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="calificacion_relacion_familiar"
-                    value={editableUser.calificacion_relacion_familiar || ''}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  generalInfo.calificacion_relacion_familiar
-                )}
-              </div>
-              <div className='div-modal'>
-                <b>Creencia religiosa:</b>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="creencia_religiosa"
-                    value={editableUser.creencia_religiosa || ''}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  generalInfo.creencia_religiosa
-                )}
-              </div>
-              <div className='div-modal'>
-                <b>Decisión encuentro inicial con profesional: </b>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="decision_encuentro_inicial_con_profesional"
-                    value={editableUser.decision_encuentro_inicial_con_profesional || ''}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  generalInfo.decision_encuentro_inicial_con_profesional
-                )}
-              </div>
-              <div className='div-modal'>
-                <b>Origen de descubrimiento de campus diverso: </b>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="origen_descubrimiento_campus_diverso"
-                    value={editableUser.origen_descubrimiento_campus_diverso || ''}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  generalInfo.origen_descubrimiento_campus_diverso
-                )}
-              </div>
-              <div className='div-modal'>
-                <b>Comentarios o sugerencias: </b>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="comentarios_o_sugerencias_de_usuario"
-                    value={editableUser.comentarios_o_sugerencias_de_usuario || ''}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  generalInfo.comentarios_o_sugerencias_de_usuario
-                )}
-              </div>
-              <div className='div-modal'>
-                <b>Actividades específicas en tiempo libre: </b>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="actividades_especificas_tiempo_libre"
-                    value={editableUser.actividades_especificas_tiempo_libre || ''}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  generalInfo.actividades_especificas_tiempo_libre
-                )}
-              </div>
+        <div className='div-modal'>
+        <b>Calificación relación familiar:</b>
+        {isEditing ? (
+          <input
+            type="text"
+            className="input-updated"
+            name="calificacion_relacion_familiar"
+            value={editableUser.calificacion_relacion_familiar !== undefined ? editableUser.calificacion_relacion_familiar : generalInfo.calificacion_relacion_familiar || ''}
+            onChange={handleInputChange}
+          />
+        ) : (
+          generalInfo.calificacion_relacion_familiar
+        )}
+      </div>
 
-                  
+      <div className='div-modal'>
+        <b>Creencia religiosa:</b>
+        {isEditing ? (
+          <input
+            type="text"
+            className="input-updated"
+            name="creencia_religiosa"
+            value={editableUser.creencia_religiosa !== undefined ? editableUser.creencia_religiosa : generalInfo.creencia_religiosa || ''}
+            onChange={handleInputChange}
+          />
+        ) : (
+          generalInfo.creencia_religiosa
+        )}
+      </div>
 
-                <div className='div-modal'>
-                  <b>factores de riesgo: </b>
-                  {isEditing ? (
-                    <Select
-                      isMulti
-                      placeholder='Seleccione factores de riesgo'
-                      className='create-select'
-                      name="factores_riesgos"
-                      // Opciones disponibles, excluyendo las ya seleccionadas
-                      options={factoresOptions.filter(option => 
-                        !( editableUser.factores_riesgos || generalInfo.factores_riesgos).includes(option.label)
-                      )}
-                      // Opciones seleccionadas
-                      value={(editableUser.factores_riesgos || generalInfo.factores_riesgos|| []).map(value => {
-                        const foundOption = factoresOptions.find(o => o.value === value);
-                        return foundOption || { value, label: value };
-                      })}
-                      onChange={handleSelectChange}
-                    />
-                  ) : (
-                    generalInfo.factores_riesgos.join(', ')
-                  )}
-                </div> 
+      <div className='div-modal'>
+        <b>Decisión encuentro inicial con profesional:</b>
+        {isEditing ? (
+          <input
+            type="text"
+            className="input-updated"
+            name="decision_encuentro_inicial_con_profesional"
+            value={editableUser.decision_encuentro_inicial_con_profesional !== undefined ? editableUser.decision_encuentro_inicial_con_profesional : generalInfo.decision_encuentro_inicial_con_profesional || ''}
+            onChange={handleInputChange}
+          />
+        ) : (
+          generalInfo.decision_encuentro_inicial_con_profesional
+        )}
+      </div>
 
+      <div className='div-modal'>
+        <b>Origen de descubrimiento de campus diverso:</b>
+        {isEditing ? (
+          <input
+            type="text"
+            className="input-updated"
+            name="origen_descubrimiento_campus_diverso"
+            value={editableUser.origen_descubrimiento_campus_diverso !== undefined ? editableUser.origen_descubrimiento_campus_diverso : generalInfo.origen_descubrimiento_campus_diverso || ''}
+            onChange={handleInputChange}
+          />
+        ) : (
+          generalInfo.origen_descubrimiento_campus_diverso
+        )}
+      </div>
 
-                  </Col> 
+      <div className='div-modal'>
+        <b>Comentarios o sugerencias:</b>
+        {isEditing ? (
+          <input
+            type="text"
+            className="input-updated"
+            name="comentarios_o_sugerencias_de_usuario"
+            value={editableUser.comentarios_o_sugerencias_de_usuario !== undefined ? editableUser.comentarios_o_sugerencias_de_usuario : generalInfo.comentarios_o_sugerencias_de_usuario || ''}
+            onChange={handleInputChange}
+          />
+        ) : (
+          generalInfo.comentarios_o_sugerencias_de_usuario
+        )}
+      </div>
+
+      <div className='div-modal'>
+        <b>Actividades específicas en tiempo libre:</b>
+        {isEditing ? (
+          <input
+            type="text"
+            className="input-updated"
+            name="actividades_especificas_tiempo_libre"
+            value={editableUser.actividades_especificas_tiempo_libre !== undefined ? editableUser.actividades_especificas_tiempo_libre : generalInfo.actividades_especificas_tiempo_libre || ''}
+            onChange={handleInputChange}
+          />
+        ) : (
+          generalInfo.actividades_especificas_tiempo_libre
+        )}
+      </div>
+
+         </Col> 
 
                   </Row>
                   </div>
@@ -640,7 +883,7 @@ const ModalEstudiantes = ({
                           type="text"
                           className='input-updated'
                           name="observacion_general_fuente_de_ingresos"
-                          value={editableUser.observacion_general_fuente_de_ingresos || ''}
+                          value={editableUser.observacion_general_fuente_de_ingresos !== undefined ? editableUser.observacion_general_fuente_de_ingresos : generalInfo.observacion_general_fuente_de_ingresos || ''}
                           onChange={handleInputChange}
                         />
                       ) : (
@@ -653,11 +896,11 @@ const ModalEstudiantes = ({
                       <b>Observación general redes de apoyo: </b>
                       <div className='div-modal-justify'> 
                       {isEditing ? (
-                        <input
+                        <textarea
                           type="text"
                           className='input-updated'
                           name="observacion_general_redes_de_apoyo"
-                          value={editableUser.observacion_general_redes_de_apoyo || ''}
+                          value={editableUser.observacion_general_redes_de_apoyo !== undefined ? editableUser.observacion_general_redes_de_apoyo : generalInfo.observacion_general_redes_de_apoyo || ''}
                           onChange={handleInputChange}
                         />
                       ) : (
@@ -669,11 +912,11 @@ const ModalEstudiantes = ({
                     <div className='div-modal'>
                       <b>Observación general factores de riesgo: </b>
                       {isEditing ? (
-                        <input
+                        <textarea
                           type="text"
                           className='input-updated'
                           name="observacion_general_factores_de_riesgo"
-                          value={editableUser.observacion_general_factores_de_riesgo || ''}
+                          value={editableUser.observacion_general_factores_de_riesgo !== undefined ? editableUser.observacion_general_factores_de_riesgo : generalInfo.observacion_general_factores_de_riesgo || ''}
                           onChange={handleInputChange}
                         />
                       ) : (
@@ -830,52 +1073,58 @@ const ModalEstudiantes = ({
                             <input
                               type="text"
                               name="codigo_estudiante"
-                              value={editableUser.codigo_estudiante || ''}
+                              className='input-updated'
+                              value={editableUser.codigo_estudiante !== undefined ? editableUser.codigo_estudiante : academicoInfo.codigo_estudiante || ''}
                               onChange={handleInputChange}
                             />
                           ) : (
                             academicoInfo.codigo_estudiante
                           )}
                         </div>
+                        
                         <div className='div-modal'>
-                          <b>Sede de la universidad:</b>
+                        <b>Sede: </b>
                           {isEditing ? (
-                            <input
-                              type="text"
-                              name="sede_universidad"
-                              value={editableUser.sede_universidad || ''}
-                              onChange={handleInputChange}
+                            <Select
+                              className='create-select'
+                              name="sedes"
+                              placeholder='Seleccione programa'
+                              options={sedeOptions}
+                              value={
+                                editableUser.sedes && editableUser.sedes.length
+                                  ? sedeOptions.find(option => option.value === editableUser.sedes[0])
+                                  : null
+                              }
+                              onChange={handleSelectChange3}
                             />
                           ) : (
-                            academicoInfo.sede_universidad
+                            (academicoInfo.sedes && academicoInfo.sedes.length)
+                              ? academicoInfo.sedes.join(', ')
+                              : 'No especificado'
                           )}
-                        </div>
+                        </div>  
+
                         <div className='div-modal'>
-                          <b>Nombre de programa académico:</b>
+                        <b>Nombre del programa académico: </b>
                           {isEditing ? (
-                            <input
-                              type="text"
-                              name="nombre_programa_academico"
-                              value={editableUser.nombre_programa_academico || ''}
-                              onChange={handleInputChange}
+                            <Select
+                              className='create-select'
+                              name="programas"
+                              placeholder='Seleccione programa'
+                              options={programaOptions}
+                              value={
+                                editableUser.programas && editableUser.programas.length
+                                  ? programaOptions.find(option => option.value === editableUser.programas[0])
+                                  : null
+                              }
+                              onChange={handleSelectChange3}
                             />
                           ) : (
-                            academicoInfo.nombre_programa_academico
+                            (academicoInfo.programas && academicoInfo.programas.length)
+                              ? academicoInfo.programas.join(', ')
+                              : 'No especificado'
                           )}
-                        </div>
-                        <div className='div-modal'>
-                          <b>Semestre académico:</b>
-                          {isEditing ? (
-                            <input
-                              type="text"
-                              name="semestre_academico"
-                              value={editableUser.semestre_academico || ''}
-                              onChange={handleInputChange}
-                            />
-                          ) : (
-                            academicoInfo.semestre_academico
-                          )}
-                        </div>
+                        </div>    
                       </Col>
                       <Col className="form-column" xs={"10"} md={"6"}>
                       
@@ -973,7 +1222,8 @@ const ModalEstudiantes = ({
                     <input
                       type="text"
                       name="apgar_familiar"
-                      value={editableUser.apgar_familiar || ''}
+                      className='input-updated'
+                      value={editableUser.apgar_familiar !== undefined ? editableUser.apgar_familiar : documentosInfo.apgar_familiar || ''}
                       onChange={handleInputChange}
                     />
                   ) : (
@@ -1033,8 +1283,8 @@ const ModalEstudiantes = ({
 <Row>
   <ul className='ul-style'>
     {seguimientosInfo && seguimientosInfo.length > 0 ? (
-      seguimientosInfo.map((seguimiento, index) => (
-        <li className='li-style' key={index}>
+      seguimientosInfo.map((seguimiento, id_persona) => (
+        <li className='li-style' key={id_persona}>
           <div ><b>Fecha:</b> {seguimiento.fecha}</div>
           <div className='div-observacion' ><b>Observación:</b> {seguimiento.observacion}</div>
           <div ><b>Profesionales:</b>

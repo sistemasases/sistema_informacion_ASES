@@ -9,15 +9,15 @@ import { preventNonNumericValues } from './ingresoDatosBasicos';
 const InformacionAcademica = ({
     state,
     handleChange,
-    handleSelectChange,
-    handleArrayChange,
-    handleAddItem,
-    handleDeleteItem,
     handleCheckboxChange,
     estamentoOptions,
     isLoading,
     handleSelectChange2,
-    maxLengthBasicInput
+    maxLengthBasicInput,
+    sedeOptions,
+    programaOptions,
+    handleSelectNoMultiChange,
+    handleChangeNumber
 }) => {
   return (
     <>
@@ -26,7 +26,7 @@ const InformacionAcademica = ({
 
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
-        <Col className="form-column" xs={"10"} md={"6"}>
+        <Col className="form-column" xs={"11"} md={"6"}>
 
 
 
@@ -58,35 +58,42 @@ const InformacionAcademica = ({
       </div>
 
 
-        <div>
-                <label className='custom-div'>Sede de la universidad</label>
-                <input
-                className='input-updated'
-                  type="text"
-                  name="sede_universidad"
-                  placeholder='Ingrese la sede'
-                  value={state.sede_universidad}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                  disabled={state.pertenencia_univalle === false}
-                />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.sede_universidad.length}`}</span>
+          <div>
+          <label className='custom-div'>Sede de universidad del valle</label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="sedes"
+                placeholder='Seleccione sede'
+                options={sedeOptions}
+                value={sedeOptions.find(option => option.value === state.sedes)}
+                onChange={handleSelectNoMultiChange}
+              />
+            )}
+          </div>
         </div>
 
-        <div>
-                <label className='custom-div'>Nombre del programa academico</label>
-                <input
-                className='input-updated'
-                  type="text"
-                  name="nombre_programa_academico"
-                  placeholder='Ingrese el programa academico'
-                  value={state.nombre_programa_academico}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                  disabled={state.pertenencia_univalle === false}
-                />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_programa_academico.length}`}</span>
-        </div>
+
+            <div>
+      <label className='custom-div'>Nombre del programa académico</label>
+      <div>
+        {isLoading ? (
+          <p>Cargando...</p>
+        ) : (
+          <Select
+            className='create-select'
+            name="programas"
+            placeholder='Seleccione programa'
+            options={programaOptions}
+            value={programaOptions.find(option => option.value === state.programas)}
+            onChange={handleSelectNoMultiChange}
+          />
+        )}
+      </div>
+    </div>
 
 
 
@@ -96,7 +103,7 @@ const InformacionAcademica = ({
 
     </Col>
 
-    <Col className="form-column" xs={"10"} md={"6"}>
+    <Col className="form-column" xs={"9"} md={"6"}>
     
         <div>
                 <label className='custom-div'>Codigo del estudiante</label>
@@ -107,9 +114,9 @@ const InformacionAcademica = ({
                   name="codigo_estudiante"
                   placeholder='Ingrese el código'
                   value={state.codigo_estudiante}
-                  onChange={handleChange}
+                  onChange={handleChangeNumber}
                   onKeyDown={preventNonNumericValues}
-                  maxLength="15"
+                  maxLength="9"
                   disabled={state.pertenencia_univalle === false}
                 />
                 </div>
@@ -125,7 +132,7 @@ const InformacionAcademica = ({
                   placeholder='Ingrese el número de su semestre'
                   onKeyDown={preventNonNumericValues}
                   value={state.semestre_academico}
-                  onChange={handleChange}
+                  onChange={handleChangeNumber}
                   maxLength="2"
                   disabled={state.pertenencia_univalle === false}
 

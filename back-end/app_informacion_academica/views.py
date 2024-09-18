@@ -4,8 +4,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from app_registro.models import Persona
-from .models import InformacionAcademica, Estamento
-from .serializers import InformacionAcademicaSerializer, EstamentoSerializer
+from .models import InformacionAcademica, Estamento, SedeUniversidad, NombrePrograma
+from .serializers import InformacionAcademicaSerializer, EstamentoSerializer, SedeUniversidadSerializer, NombreProgramaSerializer
 from rest_framework import viewsets 
 
 # Estamento
@@ -21,7 +21,16 @@ class estamento_viewsets(viewsets.ModelViewSet):
     serializer_class = EstamentoSerializer
     # permission_classes = (IsAuthenticated,)
     queryset = EstamentoSerializer.Meta.model.objects.all()
+
+class sede_viewsets(viewsets.ModelViewSet):
+    serializer_class = SedeUniversidadSerializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = SedeUniversidadSerializer.Meta.model.objects.all()
     
+class programa_viewsets(viewsets.ModelViewSet):
+    serializer_class = NombreProgramaSerializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = NombreProgramaSerializer.Meta.model.objects.all()
 
 # InformacionAcademica
 """ class InformacionAcademicaListCreateView(generics.ListCreateAPIView):

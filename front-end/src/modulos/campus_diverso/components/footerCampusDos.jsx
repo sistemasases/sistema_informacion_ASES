@@ -22,7 +22,7 @@ const FooterCampusDos = () => {
 
           <Col lg={3} md={6} className="mb-4 mb-md-0 text-center d-flex flex-column align-items-center">
             <div className="logo-container">
-              <Image src='/imgs/bienestar_universitario_2024.png' height="47" alt="Logo" loading="lazy" />
+              <Image src='/imgs/UV_LOGO.png' height="90" alt="Logo" loading="lazy" />
             </div>
             <p className="text-center">Vicerrectoria de Bienestar Universitario</p>
             <ul className="list-unstyled d-flex flex-row justify-content-center">
@@ -36,7 +36,7 @@ const FooterCampusDos = () => {
           <Col lg={3} md={6} className="contacto-col">
         <h5>Contacto</h5>
         <ul>
-            <li><p><i className="bi-geo-alt"></i>Vicerrectoría Académica, Edificio E1- segundo piso, Oficina 2018</p></li>
+            <li><p><i className="bi-geo-alt"></i>Vicerrectoría de Bienestar Universitario, Edificio E1- segundo piso, Oficina 2018</p></li>
             <li><p><i className="bi-telephone"></i>3212100 Ext. 3319 - 3309</p></li>
             <li><p><i className="bi-envelope"></i>campusdiverso@correounivalle.edu.co</p></li>
         </ul>

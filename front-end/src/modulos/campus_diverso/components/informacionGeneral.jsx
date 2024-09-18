@@ -1,12 +1,12 @@
 import React from 'react';
 import { Container, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import Select from 'react-select';
-export const preventNonNumericValues = (e) => {
-  const nonNumericKeys = ["e", "E", "+", "-", ".", ",", "ArrowLeft", "ArrowRight", "Backspace", "Delete", "Tab", "Enter", "Shift", "Control", "Alt", "CapsLock"];
-  if (!/^[1-5]$/.test(e.key) && !nonNumericKeys.includes(e.key)) {
-    e.preventDefault();
+const preventNonNumericValues = (e) => {
+  const allowedKeys = ['1', '2', '3', '4', '5', 'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'];
+  if (!allowedKeys.includes(e.key)) {
+    e.preventDefault(); // Evita que se escriban otros valores
   }
-};export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
+};
 
 
 const InformacionGeneral = ({state,
@@ -26,7 +26,8 @@ const InformacionGeneral = ({state,
     isLoading,
     handleSelectChange2,
     maxLengthBasicInput,
-    maxLengthTextAreas
+    maxLengthTextAreas,
+    handleChangeNumber,
 
 }) => {
   return (
@@ -35,7 +36,7 @@ const InformacionGeneral = ({state,
     <div className='div-scroll-registro'>
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
-        <Col className="form-column" xs={"6"} md={"6"}>
+        <Col className="form-column" xs={"7"} md={"6"}>
 
         <div>
                 <label className='custom-div'>Dedicacion externa</label>
@@ -110,11 +111,11 @@ const InformacionGeneral = ({state,
             type="text"
             name="calificacion_acompanamiento_recibido"
             placeholder='Ingrese la calificación'
-            pattern='[0-9]*'
+            pattern='[1-5]'
             onKeyDown={preventNonNumericValues}
             min="0"
             value={state.calificacion_acompanamiento_recibido}
-            onChange={handleChange}
+            onChange={handleChangeNumber}
             maxLength="1"
           />
         </div>
@@ -159,7 +160,7 @@ const InformacionGeneral = ({state,
                   onKeyDown={preventNonNumericValues}
                   min="0"
                   value={state.calificacion_relacion_familiar}
-                  onChange={handleChange}
+                  onChange={handleChangeNumber}
                   maxLength="1"
                 />
         </div>
@@ -230,7 +231,7 @@ const InformacionGeneral = ({state,
     </Col>
 
 
-    <Col className="form-column" xs={"6"} md={"6"}>
+    <Col className="form-column" xs={"7"} md={"6"}>
 
 
 

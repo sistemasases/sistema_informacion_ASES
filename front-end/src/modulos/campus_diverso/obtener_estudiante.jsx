@@ -153,8 +153,10 @@ const updateUser = async (endpointsList, userId, updatedData) => {
   const [pronombresOptions, setPronombresOptions] = useState([]);
   const [expresionesOptions, setExpresionesOptions] = useState([]);
   const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
-  const [estamentoOptions, setEstamentoOptions]= useState([]);
-
+// Información académica
+const [estamentoOptions, setEstamentoOptions]= useState([]);
+const [sedeOptions, setSedeOptions]= useState([]);
+const [programaOptions, setProgramaOptions]= useState([]);
   //Informacion general
   const [factoresOptions, setFactoresOptions] = useState([]);
   const [actividadesOptions, setActividadesOptions] = useState([]);
@@ -176,12 +178,14 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/fuente-ingresos/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/red-apoyo/`),
     axios.get(`${process.env.REACT_APP_API_URL}/persona/tipo-documento/`),
-
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/programa/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/sede/`),
   ])
     .then((responses) => {
       //persona
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
-        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse, factorResponse, actividadResponse, fuenteResponse, redResponse, tipoDocumentoResponse] = responses;
+        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse, factorResponse, actividadResponse, fuenteResponse, redResponse, tipoDocumentoResponse,
+        ProgramaResponse, SedeResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -241,6 +245,14 @@ useEffect(() => {
         value: item.id_tipo_documento,
         label: item.nombre_tipo_documento
       }));
+      const programaOpciones = ProgramaResponse.data.map((item) => ({
+        value: item.id_programa,
+        label: item.nombre_programa
+      }));
+      const sedeOpciones = SedeResponse.data.map((item) => ({
+        value: item.id_sede,
+        label: item.nombre_sede
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -253,6 +265,8 @@ useEffect(() => {
       setFuentesOptions(fuenteOpciones);
       setRedesOptions(redesOpciones);
       setTipoDocumentoOptions(tipoDocumentoOpciones);
+      setProgramaOptions(programaOpciones);
+      setSedeOptions(sedeOpciones);
 
     })
     .catch((error) => {
@@ -310,7 +324,7 @@ const handleUpdateUser = async (endpointsList, userId, updatedData) => {
     if (endpointsList.includes('informacion-academica/informacion-academica')) {
       setAcademcioInfo(fullUser.informacion_academica);
     } 
-    if (endpointsList.includes('seguimiento-campus/seguimiento/')) {
+    if (endpointsList.includes('seguimiento-campus/seguimiento')) {
       setSeguimientosInfo(fullUser.seguimientosInfo);
     }
     else if (endpointsList.includes('informacion-general/informacion-general')) {
@@ -456,7 +470,7 @@ const handleFormSubmit = (e) => {
      profesionales_que_brindaron_atencion: editableUser.profesionales_que_brindaron_atencion,
      acompanamiento_que_recibio: editableUser.acompanamiento_que_recibio,
      fuentes_ingresos: editableUser.fuentes_ingresos,
-     actividadesOptions: editableUser.actividadesOptions,
+     actividades_tiempo_libre: editableUser.actividades_tiempo_libre,
      redes_apoyo: editableUser.redes_apoyo,
      observacion_general_actividades_especificas_tiempo_libre: editableUser.observacion_general_actividades_especificas_tiempo_libre,
      observacion_general_fuente_de_ingresos: editableUser.observacion_general_fuente_de_ingresos,
@@ -465,8 +479,8 @@ const handleFormSubmit = (e) => {
      observacion_general_factores_de_riesgo: editableUser.observacion_general_factores_de_riesgo,
      //Info academica
      codigo_estudiante: editableUser.codigo_estudiante,
-     sede_universidad: editableUser.sede_universidad,
-     nombre_programa_academico: editableUser.nombre_programa_academico,
+     sedes: editableUser.sedes,
+     programas: editableUser.programas,
      semestre_academico: editableUser.semestre_academico,
      pertenencia_univalle: editableUser.pertenencia_univalle,
      estamentos: editableUser.estamentos,
@@ -500,6 +514,9 @@ const handleFormSubmit = (e) => {
         break;
       case 5:
         endpointsList = ['documentos-autorizacion/documentos-autorizacion'];
+        break;
+      case 6:
+        endpointsList = ['seguimiento-campus/seguimiento'];
         break;
       // Añade más casos para otras páginas si es necesario
       default:
@@ -535,8 +552,8 @@ const handleFormSubmit = (e) => {
       pertenencia_grupo_poblacional: [],
 
       //Informacion academica -- por revisar
-      sede_universidad: "",
-      nombre_programa_academico: "",
+      sedes: [],
+      programas: [],
       codigo_estudiante: "",
       semestre_academico: "",
       pertenencia_univalle: false,
@@ -613,7 +630,7 @@ const handleInputChange = (e) => {
 };
   return (
 <>
-  <h1 className='title-search'>Lista de personas</h1>
+  <h1 className="title-search">Lista de personas</h1>
   <Container>
     <input
       type="text"
@@ -623,25 +640,38 @@ const handleInputChange = (e) => {
       className="search-input"
     />
     <p className="result-count">Resultados: {filteredUsers.length}</p>
-    <div className="div-search">
-      <ul className="user-list">
-        {filteredUsers
-          .sort((a, b) => new Date(b.fecha_creacion_usuario) - new Date(a.fecha_creacion_usuario)) // Ordena por fecha de creación
-          .map((user) => (
-            <li
-              key={user.numero_documento}
-              className={`list-item ${user.isNew ? 'new-user' : ''} ${!user.revision_usiario ? 'pending-review' : ''}`}
-              onClick={() => openModal(user)}
-            >
-              <h2 className="user-name">
-                {!user.revision_usiario && <span className="new-indicator">!</span>}
-                {user.nombre_y_apellido}
-              </h2>
-              <p className="user-email"> {user.nombre_identitario}</p>
-              <p className="user-email"> {user.numero_documento}</p>
-            </li>
-          ))}
-      </ul>
+    <div className="table-container">
+      <div className="table-scroll">
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>Nombre Identitario</th>
+              <th>Nombre y Apellido</th>
+              <th>Tipo de Documento</th>
+              <th>Número de Documento</th>
+              <th>Fecha de Creación</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers
+              .sort((a, b) => new Date(b.fecha_creacion_usuario) - new Date(a.fecha_creacion_usuario)) // Ordena por fecha de creación
+              .map((user, index) => (
+                <tr
+                  key={user.numero_documento}
+                  className={`${index % 2 === 0 ? 'even-row' : 'odd-row'} ${!user.revision_usiario ? 'pending-review' : ''}`}
+                  onClick={() => openModal(user)}
+                >
+                  <td>{user.nombre_identitario}</td>
+                  <td>{user.nombre_y_apellido}</td>
+                  <td>{user.tipo_documento ? user.tipo_documento : 'No registrado'}</td>
+                  <td>{user.numero_documento}</td>
+                  <td>{new Date(user.fecha_creacion_usuario).toLocaleDateString()}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
           <ModalEstudiantes
             isModalOpen={isModalOpen}
             closeModal={closeModal}
@@ -684,8 +714,9 @@ const handleInputChange = (e) => {
             handleSelectChange3={handleSelectChange3}
             tipoDocumentoOptions={tipoDocumentoOptions}
             setSeguimientosInfo={setSeguimientosInfo}
+            sedeOptions={sedeOptions}
+            programaOptions={programaOptions}
           />
-        </div>
       </Container>
     </>
   );

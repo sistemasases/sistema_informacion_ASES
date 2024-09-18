@@ -95,6 +95,9 @@
 .footer-container {
     background-color: #007bff; /* bg-primary color */
     color: #fff;
+    text-justify: inter-word; 
+    word-break: keep-all; /* Se lleva la palabra para que no quede partida*/
+    overflow-x: hidden;
   }
   
   .logo-container {
@@ -113,7 +116,7 @@
     background-color: rgba(0, 0, 0, 0.2);
   }
   .footer-container {
-    background-color: #4e1d92; 
+    background-color: #972dc9; 
     color: #fff; /* Color del texto */
     align-items: center;
 

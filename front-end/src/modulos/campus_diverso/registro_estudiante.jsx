@@ -14,7 +14,7 @@ import {
 } from "../utilidades_seguridad/utilidades_seguridad";
 import { FooterCampus } from './components/footerCampus';
 import FooterCampusDos from './components/footerCampusDos';
-
+import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
 
   const Registro_estudiante = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -23,7 +23,7 @@ import FooterCampusDos from './components/footerCampusDos';
   const handleClose2 = () => setShow(false);
   const [show, setShow] = useState(false);
   const [showModalAutorizacion, setShowModalAutorizacion] = useState(true);
-
+  const [isSubmitted, setIsSubmitted] = useState(false); // Estado para mostrar el componente
   const headers = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),  
   };
@@ -87,8 +87,8 @@ import FooterCampusDos from './components/footerCampusDos';
     arbol_familiar: false,
 
     //Informacion académica
-    sede_universidad:"",
-    nombre_programa_academico:"",
+    sedes:[],
+    programas:[],
     codigo_estudiante:"",
     semestre_academico:"",
     pertenencia_univalle:null,
@@ -138,7 +138,10 @@ import FooterCampusDos from './components/footerCampusDos';
   const [pronombresOptions, setPronombresOptions] = useState([]);
   const [expresionesOptions, setExpresionesOptions] = useState([]);
   const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
+// Información académica
   const [estamentoOptions, setEstamentoOptions]= useState([]);
+  const [sedeOptions, setSedeOptions]= useState([]);
+  const [programaOptions, setProgramaOptions]= useState([]);
 
 //Informacion general
 const [factoresOptions, setFactoresOptions] = useState([]);
@@ -167,6 +170,8 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/fuente-ingresos/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/red-apoyo/`),
     axios.get(`${process.env.REACT_APP_API_URL}/persona/tipo-documento/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/programa/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/sede/`),
 
 
 
@@ -177,7 +182,8 @@ useEffect(() => {
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
         respuestaCambioDocumentoResponse, orientacionResponse, 
         identiadesGeneroResponse, estamentoResponse, factorResponse, 
-        actividadResponse, fuenteResponse, redResponse,tipoDocumentoResponse] = responses;
+        actividadResponse, fuenteResponse, redResponse,tipoDocumentoResponse,
+        ProgramaResponse, SedeResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -237,6 +243,14 @@ useEffect(() => {
         value: item.id_tipo_documento,
         label: item.nombre_tipo_documento
       }));
+      const programaOpciones = ProgramaResponse.data.map((item) => ({
+        value: item.id_programa,
+        label: item.nombre_programa
+      }));
+      const sedeOpciones = SedeResponse.data.map((item) => ({
+        value: item.id_sede,
+        label: item.nombre_sede
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -249,8 +263,9 @@ useEffect(() => {
       setFuentesOptions(fuenteOpciones);
       setRedesOptions(redesOpciones);
       setTipoDocumentoOptions(tipoDocumentoOpciones);
+      setProgramaOptions(programaOpciones);
+      setSedeOptions(sedeOpciones);
       setIsLoading(false);
-      
     })
     .catch((error) => {
 
@@ -325,12 +340,25 @@ const handleChangeUniqueDigit = (event) => {
 
 const handleChangeNumber = (event) => {
   const { name, value } = event.target;
+  // Verificar si el campo es calificacion_acompanamiento_recibido o calificacion_relacion_familiar
+  if ((name === 'calificacion_acompanamiento_recibido' || name === 'calificacion_relacion_familiar')) {
+    
+    // Validar que el valor sea entre 1 y 5, o vacío para permitir el borrado
+    if ((value === '' || /^[1-5]$/.test(value)) && value.length <= maxLengthNumber) {
+      set_state((prevState) => ({
+        ...prevState,
+        [name]: value, // Actualiza el estado con el valor permitido
+      }));
+    }
+
+  } else {
   if (/^\d*$/.test(value) && value.length <= maxLengthNumber) {
     set_state((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   }
+}
 };
 
 
@@ -357,7 +385,7 @@ const handleSelectNoMultiChange = (selectedOption, actionMeta) => {
 
   console.log(`eventooo : ${state[name]}`);
   console.log('selectedOption no multi select', selectedOption);
-  console.log('state de tipo de documento', state.tipo_documento)
+  console.log('state de tipo de documento', state.programas)
 };
 
 
@@ -610,8 +638,8 @@ const handleSubmit = async (e) => {
   });
 
   const InformacionAcademicaData = removeEmptyFields ({
-    sede_universidad: state.sede_universidad,
-    nombre_programa_academico: state.nombre_programa_academico,
+    sedes: state.sedes,
+    programas: state.programas,
     codigo_estudiante: state.codigo_estudiante,
     semestre_academico: state.semestre_academico,
     pertenencia_univalle: state.pertenencia_univalle,
@@ -663,14 +691,10 @@ const handleSubmit = async (e) => {
             });
             console.log('Respuesta del servidor (documentos autorizacion):', documentosAutorizacionResponse.data);
 
-            setTimeout(() => {
-              // Mostrar alerta de éxito
-              setShowSuccessAlert(true);
-              // Ocultar después de unos segundos
-              setTimeout(() => setShowSuccessAlert(false), 30000);
-            }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
+            
             setShowModal(true);
             setMensaje("El formulario se envió con éxito.");
+            setIsSubmitted(true); 
             setIsSubmitting(false);
             setRecaptchaToken("");// se reinicia el captcha
             // Restablecer los valores del formulario a vacío
@@ -700,8 +724,8 @@ const handleSubmit = async (e) => {
               
 
               //Informacion academica -- por revisar
-              sede_universidad: "",
-              nombre_programa_academico: "",
+              sedes: [],
+              programas: [],
               codigo_estudiante: "",
               semestre_academico: "",
               pertenencia_univalle: null,
@@ -905,6 +929,7 @@ const steps = [
     handleSelectChange2={handleSelectChange2}
     maxLengthBasicInput={maxLengthBasicInput}
     maxLengthTextAreas={maxLengthTextAreas}
+    handleChangeNumber={handleChangeNumber}
 
     /> },
     { component:   <InformacionAcademica
@@ -916,6 +941,10 @@ const steps = [
       isLoading={isLoading}
       handleSelectChange2={handleSelectChange2}
       maxLengthBasicInput={maxLengthBasicInput}
+      sedeOptions={sedeOptions}
+      programaOptions={programaOptions}
+      handleSelectNoMultiChange={handleSelectNoMultiChange}
+      handleChangeNumber={handleChangeNumber}
       /> },
   { component: <DocumentosAutorizacion
     state={state}
@@ -932,91 +961,143 @@ const prevStep = () => {
 
   return (
     <>
-    <div className='registro-estudiante-container'>
-    <Container >
-    <div className='registro-estudiante-form'>
-      <div>{steps[currentStep].component}</div>
+    <div>
+      {isSubmitted ? (
+        // Muestra el componente de agradecimiento si se ha enviado el formulario
+        <AgradeciemintoEncuesta />
+      ) : (
+        <>
+          <div className="registro-estudiante-container">
+            <Container>
+              <div className="registro-estudiante-form">
+                {/* Renderiza los pasos del formulario */}
+                <div>{steps[currentStep].component}</div>
 
-      <div className='buttons-container-captcha'>
-  {currentStep === steps.length - 1 && (
-    <ReCAPTCHA 
-      className="captcha"
-      size='normal'
-      sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-      onChange={handleRecaptchaChange}
-    />
-  )}
-  </div>
-
- <div className='buttons-container'>
-  <Button className='button-inicial' onClick={() => {
-    setRecaptchaToken(''); // Restablece el token de reCAPTCHA
-    prevStep(); // Llama a la función para ir al paso anterior
-  }} disabled={currentStep === 0}>Atrás</Button>
-
-  <Button className='button-inicial' onClick={nextStep} disabled={currentStep === steps.length - 1}>Siguiente</Button>
-
-  {currentStep === steps.length - 1 && (
-    <Button className="button-inicial" onClick={handleSubmit} disabled={!recaptchaToken || isSubmitting}>Enviar</Button>
-  )}
-</div>
-
- {/* Modal para autorización de manejo de datos */}
- <Modal show={showModal} onHide={() => setShowModal(false)} backdrop="static" keyboard={false}>
-              <Modal.Header>
-                <Modal.Title>Autorización de Manejo de Datos</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <div className="custom-div-check-documentos">
-                  <div className="custom-checkbox-label">
-                    Autorizo de manera voluntaria, previa, explícita, informada e inequívoca a la Universidad del Valle, para actuar responsablemente en el tratamiento de mis datos personales aquí registrados, de acuerdo con los términos establecidos en la Ley Estatutaria 1581 de 2012 y la Ley 1712 de 2014.
-                  </div>
-                  <label className="custom-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={state.autorizacion_manejo_de_datos}
-                      name="autorizacion_manejo_de_datos"
-                      value={state.autorizacion_manejo_de_datos}
-                      onChange={handleCheckboxChange}
+                {/* Captcha en el último paso */}
+                <div className="buttons-container-captcha">
+                  {currentStep === steps.length - 1 && (
+                    <ReCAPTCHA
+                      className="captcha"
+                      size="normal"
+                      sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                      onChange={handleRecaptchaChange}
                     />
-                    <span className="checkmark"></span>
-                  </label>
+                  )}
                 </div>
-              </Modal.Body>
 
-            </Modal>
+                {/* Botones para navegación entre pasos */}
+                <div className="buttons-container">
+                  <Button
+                    className="button-inicial"
+                    onClick={() => {
+                      setRecaptchaToken(""); // Restablece el token de reCAPTCHA
+                      prevStep(); // Función para ir al paso anterior
+                    }}
+                    disabled={currentStep === 0}
+                  >
+                    Atrás
+                  </Button>
 
-      {/* Alerta de éxito como modal */}
-      <Alert
-        show={showSuccessAlert}
-        variant="success"
-        onClose={() => setShowSuccessAlert(false)}
-        dismissible
-        className='alert-style'
-      >
-        <Alert.Heading>¡Éxito!</Alert.Heading>
-        <p>El formulario se envió correctamente.</p>
-      </Alert>
+                  <Button
+                    className="button-inicial"
+                    onClick={nextStep}
+                    disabled={currentStep === steps.length - 1}
+                  >
+                    Siguiente
+                  </Button>
 
-      {/* Alerta de error */}
-      <Alert
-        show={showErrorAlert}
-        variant="danger"
-        onClose={() => setShowErrorAlert(false)}
-        dismissible
-        className='alert-style'
-      >
-        <Alert.Heading>Error</Alert.Heading>
-        <p>{mensaje}</p>
-      </Alert>
+                  {currentStep === steps.length - 1 && (
+                    <Button
+                      className="button-inicial"
+                      onClick={handleSubmit}
+                      disabled={!recaptchaToken || isSubmitting}
+                    >
+                      Enviar
+                    </Button>
+                  )}
+                </div>
+
+                {/* Modal para autorización de manejo de datos */}
+                <Modal
+                  show={showModal}
+                  onHide={() => setShowModal(false)}
+                  backdrop="static"
+                  keyboard={false}
+                >
+                  <Modal.Header>
+                    <Modal.Title>Autorización de Manejo de Datos</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div className="custom-div-check-documentos">
+                      <div className="custom-checkbox-label">
+                        Autorizo de manera voluntaria, previa, explícita,
+                        informada e inequívoca a la Universidad del Valle, para
+                        actuar responsablemente en el tratamiento de mis datos
+                        personales aquí registrados   <a
+                        href="https://drive.google.com/file/d/1EfW4W9r1FoOnBGoscPh80lC04gMaEcTw/view"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: 'blue', textDecoration: 'underline' }}
+                      >
+                        (Autorización de datos)
+                      </a>, de acuerdo con los términos
+                        establecidos en la Ley Estatutaria 1581 de 2012 y la Ley
+                        1712 de 2014.
+                      </div>
+                      <label className="custom-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={state.autorizacion_manejo_de_datos}
+                          name="autorizacion_manejo_de_datos"
+                          value={state.autorizacion_manejo_de_datos}
+                          onChange={handleCheckboxChange}
+                        />
+                        <span className="checkmark"></span>
+                      </label>
+                    </div>
+                  </Modal.Body>
+                </Modal>
+
+                {/* Alerta de éxito como modal */}
+                <Alert
+                  show={showSuccessAlert}
+                  variant="success"
+                  onClose={() => setShowSuccessAlert(false)}
+                  dismissible
+                  className="alert-style"
+                >
+                  <Alert.Heading>¡Éxito!</Alert.Heading>
+                  <p>El formulario se envió correctamente.</p>
+                </Alert>
+
+                {/* Alerta de error */}
+                <Alert
+                  show={showErrorAlert}
+                  variant="danger"
+                  onClose={() => setShowErrorAlert(false)}
+                  dismissible
+                  className="alert-style"
+                >
+                  <Alert.Heading>Error</Alert.Heading>
+                  <p>{mensaje}</p>
+                </Alert>
+              </div>
+            </Container>
+          </div>
+          <FooterCampusDos />
+        </>
+      )}
+
+      {/* Modal para mostrar mensajes */}
+      {showModal && (
+        <div className="modal">
+          <p>{mensaje}</p>
+          {/* Cerrar el modal */}
+        </div>
+      )}
     </div>
-  </Container>
-
-  </div>
-  <FooterCampusDos/>
-
   </>
-  );
+);
 }
 
 export default Registro_estudiante;

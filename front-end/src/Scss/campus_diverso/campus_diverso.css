@@ -3,10 +3,9 @@
 .registro-estudiante-container {
   /*background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg') !important;*/
   background-color: #F5F5DC;
-  background-size: cover !important;
-  background-position: center !important;
-  background-attachment: fixed !important;
-  width: 100% ;
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); /* Asegúrate de poner la ruta correcta de la imagen */
+  background-repeat: no-repeat; /* Repite la imagen por toda la página */
+  background-size: 100% 100%; 
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -62,10 +61,25 @@
 /* Medidas del css para teléfono*/
 @media (max-width: 850px) {
 
+
+  /* registro_estudiante.css */
+.registro-estudiante-container {
+  /*background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg') !important;*/
+  background-color: #050505;
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); /* Asegúrate de poner la ruta correcta de la imagen */
+  background-repeat: no-repeat; /* Repite la imagen por toda la página */
+  background-size: cover; /* Para móviles, ajusta para que la imagen siempre quepa sin deformarse */
+  min-height: 100vh; /* También en móviles se asegura que la altura ocupe el 100% del viewport */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
 .custom-div {
   width: 100%; 
   height: 100%; 
-  font-size: 6em; 
+  font-size: 4em; 
   padding-top: 3px;
   color: #000000;
   text-align:left;
@@ -98,7 +112,7 @@
 .div-scroll-registro {
   height: 30em;
   overflow-y: auto;  
-  padding-right: 0.8em; 
+  padding-right: 1em; 
  /* text-align: justify; */
   text-justify: inter-word; 
   word-wrap: break-word;
@@ -152,6 +166,16 @@
     transform: translateX(30%); /* Ajustar la posición horizontal del tooltip */
   }
 
+/* AgradecimientoEncuesta.css */
+.container-agradecimiento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); /* Asegúrate de poner la ruta correcta de la imagen */
+  background-repeat: repeat; /* Repite la imagen por toda la página */
+  background-size: cover !important;
+}
 
 
 
@@ -534,8 +558,8 @@
     }
     
     .custom-checkbox input:checked + .checkmark {
-      background-color: #4CAF50;
-      border-color: #4CAF50;
+      background-color: #da4d29;
+      border-color: #f9fdf9;
     }
     
     .custom-checkbox .checkmark:after {
@@ -579,12 +603,57 @@
       
     }
 
-
- 
-  /* Estilos del indicador de usuario nuevo*/
+    .table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+    
+    .table-scroll {
+      max-height: 600px; /* Ajusta esta altura según sea necesario */
+      overflow-y: auto;
+    }
+    
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .user-table th, .user-table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    
+    .user-table th {
+      background-color: #f5f5f5;
+    }
+    
+    .even-row {
+      background-color: #f9f9f9;
+    }
+    
+    .odd-row {
+      background-color: #e6f7ff;
+    }
+    
+    .user-table tr:hover {
+      background-color: #d0e7f5;
+      cursor: pointer;
+    }
+    
     .new-user {
       font-weight: bold;
+      color: green;
     }
+    
+    .pending-review {
+      color: red;
+    }
+    
+    
+ 
+  /* Estilos del indicador de usuario nuevo*/
+
     
    
     .new-indicator {
@@ -641,3 +710,47 @@
       border-color: #555 transparent transparent transparent;
     }
     
+/*  Css agradecimiento*/
+
+/* AgradecimientoEncuesta.css */
+.container-agradecimiento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); /* Asegúrate de poner la ruta correcta de la imagen */
+  background-repeat: repeat; /* Repite la imagen por toda la página */
+  background-size: 100% 100%; /* Ajusta el tamaño del patrón de la imagen */
+}
+
+
+.content-agradecimiento {
+  background-color: rgba(238, 238, 238, 0.9);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 350px;
+}
+
+.title-agradecimiento {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color:#000000;
+}
+
+.subtitle-agradecimiento {
+  font-size: 18px;
+  color: #000000;
+}
+
+.icon-container-agradecimiento {
+  margin-top: 20px;
+}
+
+.heart-icon-agradecimiento{
+  width: 38px;
+  height: 38px;
+  fill: rgb(206, 133, 206) !important;
+}

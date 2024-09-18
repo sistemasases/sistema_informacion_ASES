@@ -92,21 +92,36 @@ const ModalSeguimientos = ({
   const requiredFields = [
     'observacion',
     'fecha',
-    // Add other required fields here
+    'profesionales'
   ];
-
-  const invalidFields = requiredFields.filter(field => !state[field]);
-
+  
+  // Verifica campos que deberían estar presentes en el estado
+  const invalidFields = requiredFields.filter(field => {
+    const value = state[field];
+    
+    // Verifica si el valor es un array y está vacío
+    if (Array.isArray(value) && value.length === 0) {
+      return true;
+    }
+    
+    // Verifica si el valor es undefined o null
+    return !value && value !== 0 && value !== false; // Considera 0 y false como válidos
+  });
+  
+  // Si invalidFields contiene elementos, muestra un mensaje de error
   if (invalidFields.length > 0) {
-    // alerta de campos vacíos que están en la lista de requiredFields
     setMensaje(`Los siguientes campos son obligatorios y están vacíos: ${invalidFields.join(', ')}`);
-    console.log('asdasd', setMensaje);
+    console.log('Mensaje de error:', setMensaje);
+  
     setTimeout(() => {
       setShowErrorAlert(true);
-      setTimeout(() => setShowErrorAlert(false), 3000);
-    }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
+      setTimeout(() => setShowErrorAlert(false), 3000); // Ocultar alerta después de 3 segundos
+    }, 1000); // Mostrar alerta después de 1 segundo
+  
     return;
   }
+  
+
 
   // Remueve elementos vacíos del formulario antes de enviarlo a la base de datos
   const removeEmptyFields = (data) => {
@@ -141,7 +156,8 @@ const ModalSeguimientos = ({
       fecha:"",
       // Reset other fields as necessary
     });
-    const updatedSeguimientos = await axios.get(`${process.env.REACT_APP_API_URL}/seguimiento-campus/seguimiento/?numero_documento=${selectedUser.numero_documento}`);
+    console.log(selectedUser.numero_documento, "numero de CC uuario")
+    const updatedSeguimientos = await axios.get(`${process.env.REACT_APP_API_URL}/seguimiento-campus/seguimiento/${selectedUser.numero_documento}/`);
     setSeguimientosInfo(updatedSeguimientos.data);
     closeSeguimientoModal();
 
