@@ -34,7 +34,7 @@ class send_ases(viewsets.GenericViewSet):
         serializer_semestre = semestre_serializer(var_semestre)
         fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
         fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
-        var_estudiante = estudiante.objects.filter(estudiante_elegible = True)
+        var_estudiante = estudiante.objects.filter(estudiante_elegible = True, es_discapacidad = False)
         for estudiante23 in var_estudiante :
             serializer_estudiante = ases_dexia_serializer(estudiante23)
             conteo_seguimientos = seguimiento_individual.objects.filter(

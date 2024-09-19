@@ -7,7 +7,7 @@
  * @date 6 de agosto del 2024
  */
 
-import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import { decryptTokenFromSessionStorage, desencriptarInt, desencriptar } from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import axios from "axios";
 
 const all_estudiantes_discapacidad = async () => {
@@ -20,12 +20,14 @@ const all_estudiantes_discapacidad = async () => {
     };
     // id de la sede
     const paramsget = {
-      id_sede: sessionStorage.getItem("sede_id"),
+      id_semestre: desencriptarInt(sessionStorage.getItem("id_semestre_actual")),
+      id_user: desencriptarInt(sessionStorage.getItem("id_usuario")),
+      rol: desencriptar(sessionStorage.getItem("rol")),
     };
     // url de la API
-    const url_axios = `${process.env.REACT_APP_API_URL}/discapacidad/estudiante_discapacidad/`;
+    const url_axios = `${process.env.REACT_APP_API_URL}/discapacidad/estudiante_discapacidad/list_estudiantes/`;
     // Interacción con la API
-    const res = await axios.get(url_axios, config);
+    const res = await axios.post(url_axios,paramsget, config);
     return res.data;
   } catch (error) {
     console.log(error);

@@ -54,6 +54,22 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             lista_estudiantes_discapacidad, many=True)
         return Response(respuesta.data, status=status.HTTP_200_OK)
 
+
+    @action(detail=False, methods=['post'], url_path='list_estudiantes')
+    def list_estudiantes(self, request, pk=None):
+
+        id_user_request = request.data["id_user"]
+        id_semestre_request = request.data["id_semestre"]
+        usuario_rol_request =request.data["rol"]
+        if usuario_rol_request == "prof_disc" or usuario_rol_request == "monitor_disc":
+            estudiantes_asignados = estudiante.objects.filter(id_estudiante_in_asignacion_discapacidad__id_usuario=id_user_request, id_estudiante_in_asignacion_discapacidad__estado=True, id_estudiante_in_asignacion_discapacidad__id_semestre=id_semestre_request).distinct() 
+            list_estudiantes_selected = estudiante_serializer(estudiantes_asignados, many=True)
+            return Response(list_estudiantes_selected.data, status=status.HTTP_200_OK)
+        else:
+            estudiantes_asignados = estudiante.objects.filter(es_discapacidad = True).distinct() 
+            list_estudiantes_selected = estudiante_serializer(estudiantes_asignados, many=True)
+            return Response(list_estudiantes_selected.data, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['get'], url_path='ficha_estudiante_disc')
     def datos_ficha_estudiante(self, request, pk=None):
 
