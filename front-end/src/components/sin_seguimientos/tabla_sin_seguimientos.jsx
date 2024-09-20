@@ -65,8 +65,8 @@ const Tabla_sin_Seguimientos = (props) =>{
   // Definición de las columnas de la tabla.
   const columnas2 = [
     {
-      name:'ID',
-      selector: 'id',
+      name: 'ID',
+      selector: row => row.id,
       sortable: true,
     },
     {
@@ -75,8 +75,8 @@ const Tabla_sin_Seguimientos = (props) =>{
         <h4 className="texto_mas_pequeño">Cedula</h4>
         <input onChange={handleFilter_cedula}/>
       </Row>,
-      selector:'cedula',
-      sortable:true,
+      selector: row => row.cedula,
+      sortable: true,
     },
     {
       name:
@@ -84,8 +84,8 @@ const Tabla_sin_Seguimientos = (props) =>{
         <h4 className="texto_mas_pequeño">Nombres</h4>
         <input onChange={handleFilter_nombre}/>
       </Row>,
-      selector:'nombres',
-      sortable:true,
+      selector: row => row.nombres,
+      sortable: true,
     },
     {
       name:
@@ -93,68 +93,74 @@ const Tabla_sin_Seguimientos = (props) =>{
         <h4 className="texto_mas_pequeño">Apellidos</h4>
         <input onChange={handleFilter_apellido}/>
       </Row>,
-      selector:'apellidos',
-      sortable:true,
+      selector: row => row.apellidos,
+      sortable: true,
     },
     {
-      name:(<div>
-        <Row className="center_tabla_sin_seguimientos">
-          <h4 className="texto_mas_pequeño">Cantidad de fichas</h4>
-        </Row>
-            </div>),
-      selector:'cantidad_de_fichas',
-      sortable:true
+      name: (
+        <div>
+          <Row className="center_tabla_sin_seguimientos">
+            <h4 className="texto_mas_pequeño">Cantidad de fichas</h4>
+          </Row>
+        </div>
+      ),
+      selector: row => row.cantidad_de_fichas,
+      sortable: true,
     },
     {
-      name:(<div>
-        <Row className="center_tabla_sin_seguimientos">
-          <h4 className="texto_mas_pequeño">Cantidad de inasistencias</h4>
-        </Row>
-</div>),
-      selector:'cantidad_de_inasistencias',
-      sortable:true,
+      name: (
+        <div>
+          <Row className="center_tabla_sin_seguimientos">
+            <h4 className="texto_mas_pequeño">Cantidad de inasistencias</h4>
+          </Row>
+        </div>
+      ),
+      selector: row => row.cantidad_de_inasistencias,
+      sortable: true,
     },
     {
-      name:(<div>
-        <Row className="center_tabla_sin_seguimientos">
-          <h4 className="texto_mas_pequeño">Total de fichas</h4>
-        </Row>
-</div>),
-      selector:'total_fichas',
-      sortable:true,
+      name: (
+        <div>
+          <Row className="center_tabla_sin_seguimientos">
+            <h4 className="texto_mas_pequeño">Total de fichas</h4>
+          </Row>
+        </div>
+      ),
+      selector: row => row.total_fichas,
+      sortable: true,
     },
     {
       name:
-          <Row className="center_tabla_sin_seguimientos">
-            <h4 className="texto_mas_pequeño">Monitor</h4>
-            <input onChange={handleFilter_monitor}/>
-          </Row>,
-      selector:'monitor',
-      sortable: true
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Monitor</h4>
+          <input onChange={handleFilter_monitor}/>
+        </Row>,
+      selector: row => row.monitor,
+      sortable: true,
     },
     {
       name:
-          <Row className="center_tabla_sin_seguimientos">
-            <h4 className="texto_mas_pequeño">Practicante</h4>
-            <input onChange={handleFilter_practicante}/>
-          </Row>,
-      selector:'practicante',
-      sortable:true,
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Practicante</h4>
+          <input onChange={handleFilter_practicante}/>
+        </Row>,
+      selector: row => row.practicante,
+      sortable: true,
     },
     {
       name:
-          <Row className="center_tabla_sin_seguimientos">
-            <h4 className="texto_mas_pequeño">profesional</h4>
-            <input onChange={handleFilter_profesional}/>
-          </Row>,
-      selector:'profesional',
-      sortable:true,
+        <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Profesional</h4>
+          <input onChange={handleFilter_profesional}/>
+        </Row>,
+      selector: row => row.profesional,
+      sortable: true,
     },
-  ];
+];
 
   // Opciones de paginación.
   const paginacionOpciones={
-    rowsPerPageText:'textooooo',
+    rowsPerPageText:'Row per page:',
     rangeSeparratorText:'de',
     selectAllRowsItem:true,
     selectAllRowsItemtEXT:'TODO',

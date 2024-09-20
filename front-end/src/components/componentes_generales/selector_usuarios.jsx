@@ -60,27 +60,27 @@ const Selector_usuarios = () => {
   const columnas = [
     {
       name: "USUARIO",
-      selector: "user_username",
+      selector: row => row.user_username,
       sortable: true,
     },
     {
       name: "NOMBRES",
-      selector: "user_first_name",
+      selector: row => row.user_first_name,
       sortable: true,
     },
     {
       name: "APELLIDOS",
-      selector: "user_last_name",
+      selector: row => row.user_last_name,
       sortable: true,
     },
     {
       name: "EMAIL",
-      selector: "user_email",
+      selector: row => row.user_email,
       sortable: true,
     },
     {
       name: "ROL",
-      selector: "rol_nombre",
+      selector: row => row.rol_nombre,
       sortable: true,
     },
   ];
