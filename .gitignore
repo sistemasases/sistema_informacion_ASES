@@ -18,6 +18,7 @@ dist/
 build/
 .vscode/
 .vscode-server/
+back-end/modulo_correos/*.json
 
 # Environment
 venv/

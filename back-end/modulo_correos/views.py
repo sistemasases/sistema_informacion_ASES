@@ -2,6 +2,18 @@ import datetime
 import os
 import random
 import string
+import environ
+import json
+import base64
+import time
+import os
+import base64
+import os
+import json
+import requests
+import os
+import json
+
 from modulo_usuario_rol.serializers import user_serializer, estudiante_serializer, basic_estudiante_serializer
 from django.shortcuts import get_object_or_404, render
 from rest_framework.views import APIView
@@ -13,7 +25,6 @@ from django.core.mail import send_mail
 from rest_framework.viewsets import ViewSet
 from modulo_usuario_rol.serializers import user_serializer, usuario_rol_serializer, user_selected
 from django.contrib.auth.models import User
-import environ
 from rest_framework.decorators import action
 from django.template.loader import render_to_string
 from modulo_asignacion.models import asignacion
@@ -21,8 +32,6 @@ from modulo_instancia.models import semestre, sede
 from modulo_usuario_rol.models import rol, usuario_rol, estudiante, cond_excepcion, cohorte_estudiante
 from django.contrib.auth.hashers import make_password
 from modulo_programa.models import dir_programa, facultad, programa, programa_estudiante, estado_programa, vcd_academico
-import json
-import base64
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django_otp.oath import TOTP
@@ -37,13 +46,36 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from datetime import datetime, timezone, timedelta
 
-import time
 
 from django.utils.decorators import method_decorator
 
 from django.contrib.auth import authenticate
 
 from django.core.mail import EmailMessage
+
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from google.oauth2 import service_account
+from email.mime.text import MIMEText
+
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from django.shortcuts import redirect
+
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import Flow
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from googleapiclient.discovery import build
+from django.conf import settings
+
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 env = environ.Env()
 environ.Env.read_env()
@@ -246,96 +278,208 @@ class enviar_correos_riesgos_viewset(ViewSet):
 
 class enviar_correo_cambio_contra_viewset(ViewSet):
 
-    """
-    Esta clase gestiona el envío de correos electrónicos relacionados con el cambio de contraseña de los usuarios.
-    """
+    # THE GOOD OLD WAY NEVER DIES
+    # """
+    # Esta clase gestiona el envío de correos electrónicos relacionados con el cambio de contraseña de los usuarios.
+    # """
+
+    # def generar_contrasena_personalizada(self, longitud=12):
+    #     """
+    #     Genera una contraseña aleatoria de longitud 12.
+    #     """
+    #     caracteres = string.ascii_letters + string.digits + string.punctuation
+    #     return ''.join(random.choice(caracteres) for i in range(longitud))
+
+    # def create(self, request, *args, **kwargs):
+    #     """
+    #     Envía un correo electrónico con la nueva contraseña generada para el usuario.
+    #     """
+    #     params = request.data.get('params')
+    #     correo = params.get('mail')
+    #     received_username = params.get('username')
+    #     # print(params)
+    #     # print(correo)
+    #     # print(received_username)
+
+    #     # Verificar si el usuario existe y obtenerlo
+    #     try:
+    #         usuario = User.objects.get(
+    #             email=correo, username=received_username)
+    #     except:
+    #         return Response({'error': 'No se halló un usuario con dicho correo: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     # Generar contraseña aleatoria
+    #     try:
+    #         #
+    #         # User.objects.make_random_password() no funcion en producción, al parecer se debe a uan cuestión de seguridad del
+    #         # servidor, por tanto se usa un método personalizado para generar contraseñas aleatorias
+    #         # temporary_password = User.objects.make_random_password()
+    #         #
+    #         temporary_password = self.generar_contrasena_personalizada()
+    #     except Exception as e:
+    #         return Response({'error': f'Ocurrió un error al generar la contraseña: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    #     # fecha actual y correo del administrador del sistema
+    #     fecha_actual = datetime.now()
+    #     correo_admin_sistema = "sistemas.ases@correounivalle.edu.co"
+
+    #     # Se cambia la contraseña del usuario
+    #     try:
+    #         usuario.set_password(temporary_password)
+    #         usuario.save()
+    #     except:
+    #         return Response({'error': 'No se pudo cambiar la contraseña del usuario: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     # Enviar correo con la nueva contraseña
+    #     try:
+    #         # Se renderiza la plantilla del correo
+    #         cuerpo_correo = render_to_string(
+    #             'correos/cambio_contra.html', {'nombre': usuario.first_name, 'apellido': usuario.last_name,
+    #                                            'usuario': usuario.username, 'password': temporary_password,
+    #                                            'fecha_actual': fecha_actual, 'correo_admin': correo_admin_sistema})
+    #         # Se define el asunto del correo
+    #         asunto = "Cambio de Contraseña"
+    #         # Se define el correo del remitente
+    #         EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
+    #         # Se define el correo del destinatario
+    #         destinatarios = [correo]
+    #         # se envía el correo mediante EmailMessage
+
+    #         email = EmailMessage(
+    #             # asunto del correo
+    #             asunto,
+    #             # cuerpo del correo
+    #             cuerpo_correo,
+    #             # correo del remitente
+    #             EMAIL_HOST_USER,
+    #             # correo del destinatario
+    #             destinatarios
+    #         )
+
+    #         email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
+    #         email.send()
+
+    #     except:
+    #         return Response({'error': 'No se pudo envíar el correo a : ' + correo}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     # print("ah caray, si llega")
+
+    #     return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
 
     def generar_contrasena_personalizada(self, longitud=12):
-        """
-        Genera una contraseña aleatoria de longitud 12.
-        """
         caracteres = string.ascii_letters + string.digits + string.punctuation
         return ''.join(random.choice(caracteres) for i in range(longitud))
 
+    def save_token(self, credentials):
+        token_info = {
+            "token": credentials.token,
+            "refresh_token": credentials.refresh_token,
+            "token_uri": credentials.token_uri,
+            "client_id": credentials.client_id,
+            "client_secret": credentials.client_secret,
+            "scopes": credentials.scopes
+        }
+        with open('modulo_correos/token.json', 'w') as token_file:
+            json.dump(token_info, token_file)
+
+    def load_token(self):
+        if os.path.exists('modulo_correos/token.json'):
+            with open('modulo_correos/token.json', 'r') as token_file:
+                token_info = json.load(token_file)
+            credentials = Credentials(**token_info)
+            # Si el token ha caducado, se refresca
+            if credentials and credentials.expired and credentials.refresh_token:
+                credentials.refresh(Request())
+                self.save_token(credentials)
+            return credentials
+        return None
+
     def create(self, request, *args, **kwargs):
+        # Obtener el token de autorización
+        credentials = self.load_token()
         """
-        Envía un correo electrónico con la nueva contraseña generada para el usuario.
+         Envía un correo electrónico con la nueva contraseña generada para el usuario.
         """
         params = request.data.get('params')
         correo = params.get('mail')
         received_username = params.get('username')
-        # print(params)
-        # print(correo)
-        # print(received_username)
 
-        # Verificar si el usuario existe y obtenerlo
-        try:
-            usuario = User.objects.get(
-                email=correo, username=received_username)
-        except:
-            return Response({'error': 'No se halló un usuario con dicho correo: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Generar contraseña aleatoria
-        try:
-            #
-            # User.objects.make_random_password() no funcion en producción, al parecer se debe a uan cuestión de seguridad del
-            # servidor, por tanto se usa un método personalizado para generar contraseñas aleatorias
-            # temporary_password = User.objects.make_random_password()
-            #
-            temporary_password = self.generar_contrasena_personalizada()
-        except Exception as e:
-            return Response({'error': f'Ocurrió un error al generar la contraseña: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        # fecha actual y correo del administrador del sistema
-        fecha_actual = datetime.now()
-        correo_admin_sistema = "sistemas.ases@correounivalle.edu.co"
-
-        # Se cambia la contraseña del usuario
-        try:
-            usuario.set_password(temporary_password)
-            usuario.save()
-        except:
-            return Response({'error': 'No se pudo cambiar la contraseña del usuario: ' + correo + " y usuario: " + received_username}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Enviar correo con la nueva contraseña
-        try:
-            # Se renderiza la plantilla del correo
-            cuerpo_correo = render_to_string(
-                'correos/cambio_contra.html', {'nombre': usuario.first_name, 'apellido': usuario.last_name,
-                                               'usuario': usuario.username, 'password': temporary_password,
-                                               'fecha_actual': fecha_actual, 'correo_admin': correo_admin_sistema})
-            # Se define el asunto del correo
-            asunto = "Cambio de Contraseña"
-            # Se define el correo del remitente
-            EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
-            # Se define el correo del destinatario
-            destinatarios = [correo]
-            # se envía el correo mediante EmailMessage
-
-            email = EmailMessage(
-                # asunto del correo
-                asunto,
-                # cuerpo del correo
-                cuerpo_correo,
-                # correo del remitente
-                EMAIL_HOST_USER,
-                # correo del destinatario
-                destinatarios
+        if not credentials:
+            # Si no existe el token, iniciar el flujo de autorización
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'modulo_correos/client_secret.json',
+                scopes=['https://www.googleapis.com/auth/gmail.send']
             )
+            credentials = flow.run_local_server(port=0)
+            self.save_token(credentials)
 
-            email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
-            email.send()
+        # Si se ha obtenido el token, proceder con el envío de correos
+        if credentials:
+            try:
+                # Lógica para enviar el correo usando Gmail API
+                try:
+                    usuario = User.objects.get(
+                        email=correo, username=received_username)
+                except User.DoesNotExist:
+                    return Response({'error': f'No se halló un usuario con dicho correo: {correo} y usuario: {received_username}'}, status=status.HTTP_400_BAD_REQUEST)
 
-        except:
-            return Response({'error': 'No se pudo envíar el correo a : ' + correo}, status=status.HTTP_400_BAD_REQUEST)
+                # Generar contraseña aleatoria
+                try:
+                    temporary_password = self.generar_contrasena_personalizada()
+                except Exception as e:
+                    return Response({'error': f'Ocurrió un error al generar la contraseña: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        # print("ah caray, si llega")
+                # Cambiar la contraseña del usuario
+                try:
+                    usuario.set_password(temporary_password)
+                    usuario.save()
+                except:
+                    return Response({'error': f'No se pudo cambiar la contraseña del usuario: {correo} y usuario: {received_username}'}, status=status.HTTP_400_BAD_REQUEST)
+
+                # Enviar correo con la nueva contraseña
+
+                # Se renderiza la plantilla del correo
+                cuerpo_correo = render_to_string(
+                    'correos/cambio_contra.html', {
+                        'nombre': usuario.first_name,
+                        'apellido': usuario.last_name,
+                        'usuario': usuario.username,
+                        'password': temporary_password,
+                        'fecha_actual': datetime.now(),
+                        'correo_admin': 'sistemas.ases@correounivalle.edu.co'
+                    }
+                )
+
+                # Se define el asunto y destinatarios
+                asunto = "Cambio de Contraseña"
+                destinatarios = [correo]
+
+                service = build('gmail', 'v1', credentials=credentials)
+
+                message = MIMEMultipart()
+                message['to'] = correo
+                message['subject'] = "Cambio de Contraseña"
+                message.attach(MIMEText(cuerpo_correo, 'html'))
+
+                raw_message = base64.urlsafe_b64encode(
+                    message.as_bytes()).decode()
+
+                try:
+                    message = {'raw': raw_message}
+                    service.users().messages().send(userId="me", body=message).execute()
+                except Exception as e:
+                    print(f'Error enviando el correo: {e}')
+                # ...
+                pass
+            except Exception as e:
+                return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
 
 
 class enviar_correo_observaciones_viewsets(ViewSet):
 
+    # THE GOOD OLD WAY NEVER DIES
     def get_data_estudiante(self, id_estudiante_selected):
         var_estudiante = estudiante.objects.filter(
             id=id_estudiante_selected).values()
