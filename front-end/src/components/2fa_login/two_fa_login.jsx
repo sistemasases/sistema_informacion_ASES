@@ -41,8 +41,8 @@ const Two_fa_login = () => {
         )
         .then((res) => {
           console.log("Código OTP enviado al correo");
-          // console.log(res.data[0].otp);
-          const encrypted_otp = encriptarInt(res.data[0].otp);
+          // console.log(res.data.otp);
+          const encrypted_otp = encriptarInt(res.data.otp);
           sessionStorage.otp = encrypted_otp;
           sessionStorage.otp_status = true;
           // Configura un temporizador de 3 minutos
@@ -56,6 +56,7 @@ const Two_fa_login = () => {
         .catch((error) => {
           alert("Error al enviar el código OTP al correo");
           console.error("Error al enviar el código OTP al correo:", error);
+          sessionStorage.clear();
           window.location.reload();
         });
     }
@@ -82,7 +83,7 @@ const Two_fa_login = () => {
                   value={otp}
                   onChange={setOtp}
                   numInputs={6}
-                  renderSeparator={<span>  -  </span>}
+                  renderSeparator={<span> - </span>}
                   renderInput={(props) => (
                     <input {...props} className="otp_input" />
                   )}
