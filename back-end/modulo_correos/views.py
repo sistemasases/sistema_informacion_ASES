@@ -402,19 +402,18 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         try:
             if not credentials:
                 # Si no existe el token, iniciar el flujo de autorización
-                print("Entró al if not")
+                #  print("Entró al if not")
                 flow = InstalledAppFlow.from_client_secrets_file(
                     'modulo_correos/client_secret.json',
                     scopes=['https://www.googleapis.com/auth/gmail.send']
                 )
-                print("pasó el installed")
+                #  print("pasó el installed")
                 credentials = flow.run_local_server(port=0)
-                print("el server post =0")
+                #  print("el server post =0")
                 self.save_token(credentials)
         except Exception as e:
             print(f"Ocurrió un error: {e}")
             return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
         # Si se ha obtenido el token, proceder con el envío de correos
         if credentials:
@@ -738,19 +737,18 @@ class enviar_correo_observaciones_viewsets(ViewSet):
         try:
             if not credentials:
                 # Si no existe el token, iniciar el flujo de autorización
-                print("Entró al if not")
+                #  print("Entró al if not")
                 flow = InstalledAppFlow.from_client_secrets_file(
                     'modulo_correos/client_secret.json',
                     scopes=['https://www.googleapis.com/auth/gmail.send']
                 )
-                print("pasó el installed")
+                #  print("pasó el installed")
                 credentials = flow.run_local_server(port=0)
-                print("el server post =0")
+                #  print("el server post =0")
                 self.save_token(credentials)
         except Exception as e:
             print(f"Ocurrió un error: {e}")
             return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
         # Si se ha obtenido el token, proceder con el envío de correos
         if credentials:
@@ -1244,19 +1242,18 @@ class enviar_riesgo_editado_viewset(ViewSet):
         try:
             if not credentials:
                 # Si no existe el token, iniciar el flujo de autorización
-                print("Entró al if not")
+                #  print("Entró al if not")
                 flow = InstalledAppFlow.from_client_secrets_file(
                     'modulo_correos/client_secret.json',
                     scopes=['https://www.googleapis.com/auth/gmail.send']
                 )
-                print("pasó el installed")
+                #  print("pasó el installed")
                 credentials = flow.run_local_server(port=0)
-                print("el server post =0")
+                #  print("el server post =0")
                 self.save_token(credentials)
         except Exception as e:
             print(f"Ocurrió un error: {e}")
             return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
         # Si se ha obtenido el token, proceder con el envío de correos
         if credentials:
@@ -1506,19 +1503,18 @@ class enviar_codigo_otp_correo_viewsets(ViewSet):
         try:
             if not credentials:
                 # Si no existe el token, iniciar el flujo de autorización
-                print("Entró al if not")
+                #  print("Entró al if not")
                 flow = InstalledAppFlow.from_client_secrets_file(
                     'modulo_correos/client_secret.json',
                     scopes=['https://www.googleapis.com/auth/gmail.send']
                 )
-                print("pasó el installed")
+                #  print("pasó el installed")
                 credentials = flow.run_local_server(port=0)
-                print("el server post =0")
+                #  print("el server post =0")
                 self.save_token(credentials)
         except Exception as e:
             print(f"Ocurrió un error: {e}")
             return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
         # Si se ha obtenido el token, proceder con el envío de correos
         if credentials:
