@@ -1,40 +1,29 @@
+import base64
 import datetime
-import os
-import random
-import string
 import environ
 import json
-import base64
-import time
 import os
-import base64
-import os
-import json
+import random
 import requests
-import os
-import json
+import string
+import time
 
 from datetime import datetime, timezone, timedelta
 
-from django.shortcuts import get_object_or_404, render
-from django.core.mail import send_mail
-from django.contrib.auth.models import User
-from django.template.loader import render_to_string
-from django.contrib.auth.hashers import make_password
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django_otp.oath import TOTP
-from django_otp.util import random_hex
 from django.conf import settings
 from django.contrib.auth import authenticate, login
-from django_otp.plugins.otp_totp.models import TOTPDevice
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
+from django.core.mail import EmailMessage, send_mail
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
-from django.contrib.auth import authenticate
-from django.core.mail import EmailMessage
-from django.shortcuts import redirect
-from django.shortcuts import redirect
-from django.http import HttpResponse
-from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django_otp.oath import TOTP
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from django_otp.util import random_hex
+
 
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -42,35 +31,36 @@ from email.mime.text import MIMEText
 
 from modulo_asignacion.models import asignacion
 from modulo_instancia.models import semestre, sede
-from modulo_programa.models import dir_programa, facultad, programa, programa_estudiante, estado_programa, vcd_academico
-from modulo_usuario_rol.serializers import user_serializer, estudiante_serializer, basic_estudiante_serializer
-from modulo_usuario_rol.serializers import user_serializer, usuario_rol_serializer, user_selected
-from modulo_usuario_rol.models import rol, usuario_rol, estudiante, cond_excepcion, cohorte_estudiante
+from modulo_programa.models import (
+    dir_programa, facultad, programa, programa_estudiante,
+    estado_programa, vcd_academico
+)
+from modulo_usuario_rol.models import (
+    rol, usuario_rol, estudiante, cond_excepcion, cohorte_estudiante
+)
+from modulo_usuario_rol.serializers import (
+    user_serializer, estudiante_serializer, basic_estudiante_serializer,
+    usuario_rol_serializer, user_selected
+)
+
 
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 from google.oauth2.credentials import Credentials
-from google.oauth2.credentials import Credentials
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.discovery import build
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google_auth_oauthlib.flow import Flow
 
-from rest_framework.views import APIView
-from rest_framework.views import Response
-from rest_framework import status
-from rest_framework import viewsets
+from rest_framework.views import APIView, Response
+from rest_framework import status, viewsets
 from rest_framework.generics import GenericAPIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.tokens import UntypedToken
+from rest_framework_simplejwt.tokens import UntypedToken, RefreshToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
+
 
 env = environ.Env()
 environ.Env.read_env()
