@@ -4,7 +4,6 @@ import environ
 import json
 import os
 import random
-import requests
 import string
 import time
 
