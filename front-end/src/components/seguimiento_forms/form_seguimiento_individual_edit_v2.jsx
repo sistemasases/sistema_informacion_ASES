@@ -1019,11 +1019,11 @@ const Seguimiento_individual_edit_v2 = (props) => {
               presentación por parte del monitor(a)
             </option>
             <option value="Conocer aspectos básicos de las dimensiones del estudiante.">
-              Conocer aspectos básicos de las dimensiones del estudiante.
+              Primer contacto para conocer aspectos iniciales de las dimensiones
+              del estudiante.
             </option>
             <option value="Actualizar la información personal y conocer los aspectos generales del estudiante">
-              Actualizar la información personal y conocer los aspectos
-              generales del estudiante
+              Actualizar la información personal y de contacto.
             </option>
             <option value="Seguimiento al nivel de riesgo de las dimensiones del estudiante">
               Seguimiento al nivel de riesgo de las dimensiones del estudiante
@@ -1079,11 +1079,11 @@ const Seguimiento_individual_edit_v2 = (props) => {
               presentación por parte del monitor(a)
             </option>
             <option value="Conocer aspectos básicos de las dimensiones del estudiante.">
-              Conocer aspectos básicos de las dimensiones del estudiante.
+              Primer contacto para conocer aspectos iniciales de las dimensiones
+              del estudiante.
             </option>
             <option value="Actualizar la información personal y conocer los aspectos generales del estudiante">
-              Actualizar la información personal y conocer los aspectos
-              generales del estudiante
+              Actualizar la información personal y de contacto.
             </option>
             <option value="Seguimiento al nivel de riesgo de las dimensiones del estudiante">
               Seguimiento al nivel de riesgo de las dimensiones del estudiante
@@ -1139,11 +1139,11 @@ const Seguimiento_individual_edit_v2 = (props) => {
               presentación por parte del monitor(a)
             </option>
             <option value="Conocer aspectos básicos de las dimensiones del estudiante.">
-              Conocer aspectos básicos de las dimensiones del estudiante.
+              Primer contacto para conocer aspectos iniciales de las dimensiones
+              del estudiante.
             </option>
             <option value="Actualizar la información personal y conocer los aspectos generales del estudiante">
-              Actualizar la información personal y conocer los aspectos
-              generales del estudiante
+              Actualizar la información personal y de contacto.
             </option>
             <option value="Seguimiento al nivel de riesgo de las dimensiones del estudiante">
               Seguimiento al nivel de riesgo de las dimensiones del estudiante
@@ -1235,6 +1235,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Tipo de saber que tiene cada sujeto de sí mismo, ya sea de sus representaciones, estados mentales, percepciones, acciones, de su cuerpo, entre otros. En esta temática se incluyen todos los aspectos de conocimiento de sí mismos que los estudiantes expresan sobre cómo se sienten, lo que desean, lo que piensan, lo que los impulsa a actuar, sus valores, todo aquello que constituye su ser desde tres pilares: identidad, autoestima y autoconstrucción."
               type="checkbox"
               label="Autoconocimiento"
               defaultChecked={props.item.autoconocimiento}
@@ -1244,6 +1245,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Esta temática engloba todos los proyectos y metas a mediano y largo plazo que los estudiantes manifiestan en los acompañamientos entre pares. El proyecto de vida articula la identidad personal-social en las perspectivas de su dinámica temporal y posibilidades de desarrollo futuro."
               type="checkbox"
               label="Proyecto de vida"
               defaultChecked={props.item.proyecto_de_vida}
@@ -1253,6 +1255,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Esta temática hace referencia a todas las narraciones de vida en tiempo pasado que realizan los estudiantes desde los diferentes contextos socioculturales que vivieron; da cuenta de las prácticas, creencias y valores familiares y culturales que influyen en sus decisiones y en sus formas de ver el mundo."
               type="checkbox"
               label="Historia de vida"
               defaultChecked={props.item.historia_de_vida}
@@ -1264,6 +1267,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Esta temática está compuesta por las descripciones y apreciaciones que los monitores realizan sobre sus estudiantes asignados en cuanto a características cognitivas, comportamentales, anímicas, y temperamentales."
               type="checkbox"
               label="Rasgos de personalidad"
               defaultChecked={props.item.rasgos_de_personalidad}
@@ -1273,6 +1277,10 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Esta temática hace referencia aquellas acciones que permitan identificar y conocer el estado de salud del estudiante, así como su evolución en caso de enfermar o sufrir algún accidente. También se refiere a los reportes que se tengan acerca de la salud mental del estudiante.
+               * Informe de cómo se encuentra el estudiante de salud.
+               * Informe sobre el seguimiento a sus citas médicas y psicológicas.
+               * Informe sobre trámites de la EPS, del Servicio médico y psicológico."
               type="checkbox"
               label="Salud"
               defaultChecked={props.item.salud}
@@ -1282,6 +1290,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Esta temática contiene todo lo referido por los estudiantes narrativamente en relación con sus parejas afectivas y sentimentales."
               type="checkbox"
               label="Relaciones erótico-afectivas"
               defaultChecked={props.item.relación_eriótico_afectivas}
@@ -1293,6 +1302,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Esta temática comprende todo lo referente a la obtención, cambio o pérdida de documentos esenciales que se encuentran inscritos en registros oficiales y que le permiten al estudiante el acceso a los servicios sociales del Estado."
               type="checkbox"
               label="Identificación"
               defaultChecked={props.item.identificación}
@@ -1302,6 +1312,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="El proceso psicológico básico de la motivación contiene dos componentes principales:“los direccionales (que dan cuenta de la elección) y los energizadores (que dan cuenta de la iniciación, la persistencia y el vigor) de la conducta dirigida a meta”"
               type="checkbox"
               label="Aspectos motivacionales"
               defaultChecked={props.item.aspectos_motivacionales}
@@ -1311,6 +1322,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Todos aquellos reconocimientos, prácticas y relaciones establecidas por el estudiante; frente a su género, identidad sexual, preferencia sexual y, ante la diversidad sexual de las personas en su contexto cotidiano."
               type="checkbox"
               label="Diversidad sexual"
               defaultChecked={props.item.diversidad_sexual}
@@ -1322,6 +1334,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Todos aquellos vínculos que tiene el estudiante con otros individuos y/o grupos que sirven para mejorar la adaptación cuando este se enfrenta a situaciones de estrés, reto o privación y que sirven como instancia mediadora en la que se brinda apoyo social de tipo emocional, afectivo e informacional"
               type="checkbox"
               label="Red de apoyo"
               defaultChecked={props.item.red_de_apoyo}
@@ -1383,6 +1396,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Corresponde a la descripción de la dinámica familiar y como esta dinámica, es una barrera o un facilitador en la elección y la permanencia en el programa académico."
               type="checkbox"
               label="Dinámica Familiar"
               defaultChecked={props.item.dinamica_familiar}
@@ -1444,6 +1458,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Esta temática incluye las narraciones realizadas por los estudiantes en torno a las metodologias utilizadas en las clases, información de las diversas asignaturas y seguimientos académicos; ejemplo: reporte del rendimiento académico (notas), reporte de la carga académica, informe de las necesidades académicas idetificadas con el estudiante (bases conceptules para las diversas asganturas) y refuerzo académico (asesorías académicas). Estos seguimientos tiene como como finalidad identificar y fortalecer las habilidades y destrezas de los estudiantes."
               type="checkbox"
               label="Desempeño académico"
               defaultChecked={props.item.desempeño_académico}
@@ -1453,6 +1468,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Esta temática hace referencia a las preferencias de áreas di linares y carreras de los estudiantes, la búsqueda de información y conocimiento de sus carreras de elección y las estrategias implementadas por los monitores para contribuir en sus procesos de orientación vocacional concebida ésta como un vínculo conversacional en el que el estudiante recibe apoyo en el marco de encontrar alternativas y tomar ndecisiones, de manera consciente voluntaria y comprometida (De Mori 2, Santiviago, sf."
               type="checkbox"
               label="Elección vocacional"
               defaultChecked={props.item.elección_vocacional}
@@ -1462,6 +1478,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Esta temática contiene lo referente a la forma como los estudiantes manejaban el tiempo de acuerdo al establecimiento de sus rutinas diarias, comprendiendo tres aspectos claves: 1) el establecimiento de metas, 2) las herramientas para la gerencia del tiempo y 3) la percepción de control o verificación del uso del tiempo personal (Durán-Aponte £ Pujol, 2012)."
               type="checkbox"
               label="Manejo del tiempo"
               defaultChecked={props.item.manejo_del_tiempo}
@@ -1523,6 +1540,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Apoyos económicos institucionales: incluye todos los procesos que los estudiantes realizan para recibir apoyos económicos. (ICETEX, Jóvenes en Acción, Bienestar Universitario, monitorias, etc.)"
               type="checkbox"
               label="Apoyos económicos institucionales"
               defaultChecked={props.item.apoyos_económicos_institucionales}
@@ -1532,6 +1550,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Principios y herramientas que ayudan a optimizar los recursos financieros con que cuenta una persona. Esta temática contiene todos los aspectos de manejo de dinero, inversión de recursos, ingresos y egresos financieros, mecanismos de ahorro, entre otros."
               type="checkbox"
               label="Manejo de sus finanzas"
               defaultChecked={props.item.manejo_finanzas}
@@ -1541,6 +1560,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Lo socioeconómico, entendido como un “enfoque teórico y metodológico necesariamente transdisciplinar, que pretende entender integralmente la complejidad social a partir de la observación, descripción y análisis orientada a la acción en y desde la realidad” (Coraggio €: Arancibia, 2006). Esta temática involucra aspectos económicos y sociológicos como la preparación laboral, ubicación social y familiar en la sociedad."
               type="checkbox"
               label="Apoyo económico familiar"
               defaultChecked={props.item.apoyo_económico_familiar}
@@ -1552,6 +1572,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Se refiere a las diversas actividades que realiza el estudiante para cubrir sus gastos personales y académicos; y la relación de estas ocupaciones con su actividad académica en la Universidad."
               type="checkbox"
               label="Situación laboral y ocupacional"
               defaultChecked={props.item.situación_laboral_ocupacional}
@@ -1613,6 +1634,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Esta temática aborda los momentos de presentación entre el monitor y el estudiante, incluyendo además la explicación de la estrategia ASES y expectativas de ingreso a la universidad de parte de los estudiantes y del acompañamiento que van a tener."
               type="checkbox"
               label="Motivación para el acompañamiento"
               defaultChecked={props.item.motivación_compañamiento}
@@ -1622,6 +1644,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="En este apartado nos encontramos con el conocimi nto de nuevos lugares en sus territorios cotidianos de parte de los estudiantes (tanto en la universidad como en la ciudad), muchos de ellos guiados por sus monitores. Informe sobre el recorrido por el campus universitario y/o ciudad."
               type="checkbox"
               label="Referencia geográfica"
               defaultChecked={props.item.referencia_geográfica}
@@ -1631,6 +1654,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Esta temática involucra todo lo expresado por los estudiantes en relación a la adaptación que se encuentran realizando al nuevo contexto de ciudad en el que nse encuentra, para el caso de estudiantes que proceden de otros municipios y regiones del país. Además de las diferentes experiencias que expresan los estudiantes con relación a su adaptación a la Universidad."
               type="checkbox"
               label="Adaptación a la ciudad y Universidad"
               defaultChecked={props.item.adaptación_ciudad_Universidad}
@@ -1642,6 +1666,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Este apartado contiene la oferta de servicios institucionales y no formales que los monitores realizaban a sus estudiantes en relación al ámbito universitario, de ciudad y nacional."
               type="checkbox"
               label="Oferta de servicios"
               defaultChecked={props.item.oferta_servicios}
@@ -1651,6 +1676,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Esta temática contiene todas las particularidades de vivienda de los estudiantes, incluyendo organización del espacio, problemas con los inquilinos, entre otros y la utilización del programa Geocalízate."
               type="checkbox"
               label="Vivienda"
               defaultChecked={props.item.vivienda}
@@ -1660,6 +1686,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Este apartado contiene lo relacionado con el interés, exploración y vinculación de los estudiantes a grupos estudiantiles, académicos, investigativos, culturales, y deportivos de la Universidad del Valle o externos"
               type="checkbox"
               label="Vinculación a grupos y realización de actividades extracurriculares"
               defaultChecked={
@@ -1673,15 +1700,13 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <hr></hr>
         <Row>
           <h6>
-            <b>
-              Acciones del Monitor(Ubique el cursor sobre la acción para obtener
-              más información)
-            </b>
+            <b>Acciones del Monitor</b>
           </h6>
         </Row>
         <Row>
           <Col>
             <Form.Check
+              title="Apoyo por parte del monitor socioeducativo en la resolución de talleres o preparación de trabajos en el marco de los mismos acompañamientos entre pares."
               type="checkbox"
               label="Apoyo académico"
               defaultChecked={props.item.apoyo_académico}
@@ -1691,6 +1716,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="El monitor invita al estudiante a participar en uno de los talleres grupales que el practicante o alguno de los profesionales de la estrategia ha creado para suplir algunos temas de interés"
               type="checkbox"
               label="Rem. Actividades grupales"
               defaultChecked={props.item.rem_actividades_grupales}
@@ -1700,6 +1726,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Apoyo al estudiante en la información para procesos de pago de matrícula, recibos y revisión de deudas."
               type="checkbox"
               label="Rem. Matrícula financiera"
               defaultChecked={props.item.rem_matrícula_financiera}
@@ -1711,6 +1738,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Talleres individuales y específicos desarrollados por el monitor en el marco del acompañamiento entre pares que busca profundizar en temas específicos Ejemplo: historia de vida, manejo del tiempo, estrategias de estudio etc."
               type="checkbox"
               label="Taller par-par"
               defaultChecked={props.item.taller_par_par}
@@ -1720,6 +1748,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="El monitor invita al estudiante a participar de las sesiones de trabajo grupales que se ofertan en la estrategia para suplir temas de orden académico (Ej. Monitoria de Calculo)"
               type="checkbox"
               label="Rem. Monitorías académicas"
               defaultChecked={props.item.rem_monitorías_académicas}
@@ -1729,6 +1758,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Apoyo al estudiante en la información para procesos de subsidios económicos, becas de alimentación, apadrinamiento de estudiantes, revisión de matrícula y verificación de estrato."
               type="checkbox"
               label="Rem. Desarrollo humano y promoción SE"
               defaultChecked={props.item.rem_desarrollo_humano_promoción_SE}
@@ -1740,6 +1770,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="Apoyo por parte del monitor en el establecimiento en la ciudad y reconocimiento de espacios en la Universidad"
               type="checkbox"
               label="Reconocimiento ciudad y U."
               defaultChecked={props.item.reconocimiento_ciudad_U}
@@ -1749,6 +1780,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="El monitor invita al estudiante a asistir a alguno de los proyectos pedagógicos de la Universidad (Ej. Graca)"
               type="checkbox"
               label="Rem. Proyectos de la Universidad"
               defaultChecked={props.item.rem_proyectos_Universidad}
@@ -1758,6 +1790,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="El monitor discute con el estudiante la posibilidad de que este asista con el director de programa para resolver inquietudes frente a su malla curricular y/o proceso académico general."
               type="checkbox"
               label="Rem. Directores de programa"
               defaultChecked={props.item.rem_directores_programa}
@@ -1769,6 +1802,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="El monitor discute con el estudiante la posibilidad de que este asista con el profesional encargado a una sesión de acompañamiento o en su defecto habla directamente con el profesional para que este contacte al estudiante debido a dificultades en alguna de las dimensiones"
               type="checkbox"
               label="Rem. Profesional SE"
               defaultChecked={props.item.rem_profesional_SE}
@@ -1778,6 +1812,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title=" El estudiante acompaña o solicita al estudiante pedir cita a servicio médico, psicológico u odontológico."
               type="checkbox"
               label="Rem. Servicio de salud"
               defaultChecked={props.item.rem_servicio_salud}
@@ -1787,6 +1822,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Invitación a la participación en los grupos Culturales, Académicos, Recreativos, Políticos, Espirituales y Deportivos que existen en la Universidad"
               type="checkbox"
               label="Rem. Grupos de la Universidad"
               defaultChecked={props.item.rem_grupos_universidad}
@@ -1798,6 +1834,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
         <Row>
           <Col>
             <Form.Check
+              title="El monitor discute con el estudiante la posibilidad de que este asista con el practicante encargado a una sesión de acompañamiento o en su defecto habla directamente con el practicante para que este contacte al estudiante debido a dificultades en alguna de las dimensiones"
               type="checkbox"
               label="Rem. Practicante SE"
               defaultChecked={props.item.rem_racticante_SE}
@@ -1807,6 +1844,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Apoyo al estudiante en la información para procesos de matrícula, cancelación de semestre o materias, horarios y estímulos académicos entre otros."
               type="checkbox"
               label="Rem. Registro académico"
               defaultChecked={props.item.rem_registro_académico}
@@ -1816,6 +1854,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
           </Col>
           <Col>
             <Form.Check
+              title="Remisión a programas de apoyo económico externos a la Universidad como (icetex, prestamos financieros entre otros)"
               type="checkbox"
               label="Rem. Externa"
               defaultChecked={props.item.rem_externa}
@@ -1837,11 +1876,8 @@ const Seguimiento_individual_edit_v2 = (props) => {
         </Row>
         <hr></hr>
         <Row>
-          <h6>
-            <b>
-              Acciones del Estudiante (Ubique el cursor sobre la acción para
-              obtener más información)
-            </b>
+          <h6 title="Solo marcar en caso de que se verifique que el estudiante asistió o No a la REM en cuestión.">
+            <b>Acciones del Estudiante</b>
           </h6>
         </Row>
         <Row>
