@@ -1378,101 +1378,101 @@ class enviar_riesgo_editado_viewset(ViewSet):
 class enviar_codigo_otp_correo_viewsets(ViewSet):
 
     # THE GOOD OLD WAY NEVER DIES
-    # def create(self, request):
-    #     # # # # # # # print("INICIO DE PROCESO")
-    #     # # # # # # # print(request.data)
-    #     key = random_hex().encode()
-    #     # # # # # # # print(key)
-    #     totp = TOTP(key)
-    #     token = str(totp.token())
-    #     # # # # # # # print(token)
-    #     while len(token) < 6:
-    #         n_key = random_hex().encode()
-    #         totp = TOTP(n_key)
-    #         token = str(totp.token())
-    #         # # # # # # # print(totp)
+    def create(self, request):
+        # # # # # # # print("INICIO DE PROCESO")
+        # # # # # # # print(request.data)
+        key = random_hex().encode()
+        # # # # # # # print(key)
+        totp = TOTP(key)
+        token = str(totp.token())
+        # # # # # # # print(token)
+        while len(token) < 6:
+            n_key = random_hex().encode()
+            totp = TOTP(n_key)
+            token = str(totp.token())
+            # # # # # # # print(totp)
 
-    #     # # # # # # # print(totp)
-    #     totp.time = time.time()
-    #     # # # # # # # print(totp.time)
-    #     totp.interval = 300
+        # # # # # # # print(totp)
+        totp.time = time.time()
+        # # # # # # # print(totp.time)
+        totp.interval = 300
 
-    #     otp = totp.token()
-    #     # # # # # # # print(otp)
-    #     user = User.objects.get(id=request.data.get(
-    #         'id'), is_active=True)
-    #     # try:
-    #     #     user = User.objects.get(email=request.data.get('email')).values().first()
-    #     # except:
-    #     #     return Response({'error': 'No se halló un usuario con dicho correo: ' + request.data.get('email')}, status=status.HTTP_400_BAD_REQUEST)
+        otp = totp.token()
+        # # # # # # # print(otp)
+        user = User.objects.get(id=request.data.get(
+            'id'), is_active=True)
+        # try:
+        #     user = User.objects.get(email=request.data.get('email')).values().first()
+        # except:
+        #     return Response({'error': 'No se halló un usuario con dicho correo: ' + request.data.get('email')}, status=status.HTTP_400_BAD_REQUEST)
 
-    #     otp_device = TOTPDevice.objects.create(
-    #         user=user,
-    #         name="OTP-ASES",
-    #         key=totp.token(),
-    #         digits=6,  # Número de dígitos para el OTP
-    #         tolerance=1,
-    #         step=30
-    #     )
-    #     TOTPDevice.objects.filter(user=user).exclude(id=otp_device.id).delete()
-    #     # # # # print(otp_device.key)
+        otp_device = TOTPDevice.objects.create(
+            user=user,
+            name="OTP-ASES",
+            key=totp.token(),
+            digits=6,  # Número de dígitos para el OTP
+            tolerance=1,
+            step=30
+        )
+        TOTPDevice.objects.filter(user=user).exclude(id=otp_device.id).delete()
+        # # # # print(otp_device.key)
 
-    #     # Generar el OTP actual
-    #     # otp = otp_device.token()
-    #     if request.method == 'POST':
-    #         # email = request.POST.get('email')
-    #         # Generar TOTP con un intervalo de 30 segundos
+        # Generar el OTP actual
+        # otp = otp_device.token()
+        if request.method == 'POST':
+            # email = request.POST.get('email')
+            # Generar TOTP con un intervalo de 30 segundos
 
-    #         EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
-    #         destinatarios = [str(user.email)]
-    #         asunto = "Clave OTP para el Sistema de Información ASES"
-    #         cuerpo_correo = render_to_string(
-    #             'correos/clave_otp.html', {'clave_otp': otp_device.key})
+            EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
+            destinatarios = [str(user.email)]
+            asunto = "Clave OTP para el Sistema de Información ASES"
+            cuerpo_correo = render_to_string(
+                'correos/clave_otp.html', {'clave_otp': otp_device.key})
 
-    #         email = EmailMessage(
-    #             asunto,
-    #             cuerpo_correo,
-    #             EMAIL_HOST_USER,
-    #             # Cambia esto por el correo del destinatario
-    #             destinatarios
-    #         )
-    #         email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
-    #         email.send()
+            email = EmailMessage(
+                asunto,
+                cuerpo_correo,
+                EMAIL_HOST_USER,
+                # Cambia esto por el correo del destinatario
+                destinatarios
+            )
+            email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
+            email.send()
 
-    #         # Store the OTP and email in session or cache (e.g., Redis)
-    #         request.session['otp'] = otp_device.key
+            # Store the OTP and email in session or cache (e.g., Redis)
+            request.session['otp'] = otp_device.key
 
-    #         # # # # # # # print("OTP guardado en la sesión:", request.session['otp'])
-    #         request.session['email'] = user.email
-    #         request.session.modified = True
-    #         return Response(({"message": "Email sent successfully", "otp": otp_device.key}, status.HTTP_200_OK))
-    #     return Response({'error': 'Invalid request'}, status=400)
+            # # # # # # # print("OTP guardado en la sesión:", request.session['otp'])
+            request.session['email'] = user.email
+            request.session.modified = True
+            return Response(({"message": "Email sent successfully", "otp": otp_device.key}, status.HTTP_200_OK))
+        return Response({'error': 'Invalid request'}, status=400)
 
     # THE NEW WAY
     # -*- coding: utf-8 -*-
-    def save_token(self, credentials):
-        token_info = {
-            "token": credentials.token,
-            "refresh_token": credentials.refresh_token,
-            "token_uri": credentials.token_uri,
-            "client_id": credentials.client_id,
-            "client_secret": credentials.client_secret,
-            "scopes": credentials.scopes
-        }
-        with open('modulo_correos/token.json', 'w') as token_file:
-            json.dump(token_info, token_file)
+    # def save_token(self, credentials):
+    #     token_info = {
+    #         "token": credentials.token,
+    #         "refresh_token": credentials.refresh_token,
+    #         "token_uri": credentials.token_uri,
+    #         "client_id": credentials.client_id,
+    #         "client_secret": credentials.client_secret,
+    #         "scopes": credentials.scopes
+    #     }
+    #     with open('modulo_correos/token.json', 'w') as token_file:
+    #         json.dump(token_info, token_file)
 
-    def load_token(self):
-        if os.path.exists('modulo_correos/token.json'):
-            with open('modulo_correos/token.json', 'r') as token_file:
-                token_info = json.load(token_file)
-            credentials = Credentials(**token_info)
-            # Si el token ha caducado, se refresca
-            if credentials and credentials.expired and credentials.refresh_token:
-                credentials.refresh(Request())
-                self.save_token(credentials)
-            return credentials
-        return None
+    # def load_token(self):
+    #     if os.path.exists('modulo_correos/token.json'):
+    #         with open('modulo_correos/token.json', 'r') as token_file:
+    #             token_info = json.load(token_file)
+    #         credentials = Credentials(**token_info)
+    #         # Si el token ha caducado, se refresca
+    #         if credentials and credentials.expired and credentials.refresh_token:
+    #             credentials.refresh(Request())
+    #             self.save_token(credentials)
+    #         return credentials
+    #     return None
 
     """
     Funciones Extra
@@ -1482,108 +1482,108 @@ class enviar_codigo_otp_correo_viewsets(ViewSet):
     Fin Funciones Extra
     """
 
-    def create(self, request, *args, **kwargs):
-        # Obtener el token de autorización
-        credentials = self.load_token()
-        """
-         Envía un correo electrónico con la contraseña OTP generada para el usuario.
-        """
+    # def create(self, request, *args, **kwargs):
+    #     # Obtener el token de autorización
+    #     credentials = self.load_token()
+    #     """
+    #      Envía un correo electrónico con la contraseña OTP generada para el usuario.
+    #     """
 
-        try:
-            if not credentials:
-                # Si no existe el token, iniciar el flujo de autorización
-                #  print("Entró al if not")
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'modulo_correos/client_secret.json',
-                    scopes=['https://www.googleapis.com/auth/gmail.send']
-                )
-                #  print("pasó el installed")
-                credentials = flow.run_local_server(port=0)
-                #  print("el server post =0")
-                self.save_token(credentials)
-        except Exception as e:
-            print(f"Ocurrió un error: {e}")
-            return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    #     try:
+    #         if not credentials:
+    #             # Si no existe el token, iniciar el flujo de autorización
+    #             #  print("Entró al if not")
+    #             flow = InstalledAppFlow.from_client_secrets_file(
+    #                 'modulo_correos/client_secret.json',
+    #                 scopes=['https://www.googleapis.com/auth/gmail.send']
+    #             )
+    #             #  print("pasó el installed")
+    #             credentials = flow.run_local_server(port=0)
+    #             #  print("el server post =0")
+    #             self.save_token(credentials)
+    #     except Exception as e:
+    #         print(f"Ocurrió un error: {e}")
+    #         return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        # Si se ha obtenido el token, proceder con el envío de correos
-        if credentials:
-            try:
-                # # # # # # # print("INICIO DE PROCESO")
-                # # # # # # # print(request.data)
-                key = random_hex().encode()
-                # # # # # # # print(key)
-                totp = TOTP(key)
-                token = str(totp.token())
-                # # # # # # # print(token)
-                while len(token) < 6:
-                    n_key = random_hex().encode()
-                    totp = TOTP(n_key)
-                    token = str(totp.token())
-                    # # # # # # # print(totp)
+    #     # Si se ha obtenido el token, proceder con el envío de correos
+    #     if credentials:
+    #         try:
+    #             # # # # # # # print("INICIO DE PROCESO")
+    #             # # # # # # # print(request.data)
+    #             key = random_hex().encode()
+    #             # # # # # # # print(key)
+    #             totp = TOTP(key)
+    #             token = str(totp.token())
+    #             # # # # # # # print(token)
+    #             while len(token) < 6:
+    #                 n_key = random_hex().encode()
+    #                 totp = TOTP(n_key)
+    #                 token = str(totp.token())
+    #                 # # # # # # # print(totp)
 
-                # # # # # # # print(totp)
-                totp.time = time.time()
-                # # # # # # # print(totp.time)
-                totp.interval = 300
+    #             # # # # # # # print(totp)
+    #             totp.time = time.time()
+    #             # # # # # # # print(totp.time)
+    #             totp.interval = 300
 
-                otp = totp.token()
-                # # # # # # # print(otp)
-                # user = User.objects.get(id=request.data.get(
-                #     'id'), is_active=True)
-                try:
-                    user = User.objects.get(id=request.data.get(
-                        'id'), is_active=True)
-                except:
-                    return Response({'error': 'No se halló un usuario con dicho correo: ' + request.data.get('email')}, status=status.HTTP_400_BAD_REQUEST)
+    #             otp = totp.token()
+    #             # # # # # # # print(otp)
+    #             # user = User.objects.get(id=request.data.get(
+    #             #     'id'), is_active=True)
+    #             try:
+    #                 user = User.objects.get(id=request.data.get(
+    #                     'id'), is_active=True)
+    #             except:
+    #                 return Response({'error': 'No se halló un usuario con dicho correo: ' + request.data.get('email')}, status=status.HTTP_400_BAD_REQUEST)
 
-                otp_device = TOTPDevice.objects.create(
-                    user=user,
-                    name="OTP-ASES",
-                    key=totp.token(),
-                    digits=6,  # Número de dígitos para el OTP
-                    tolerance=1,
-                    step=30
-                )
-                TOTPDevice.objects.filter(user=user).exclude(
-                    id=otp_device.id).delete()
-                # # # # print(otp_device.key)
+    #             otp_device = TOTPDevice.objects.create(
+    #                 user=user,
+    #                 name="OTP-ASES",
+    #                 key=totp.token(),
+    #                 digits=6,  # Número de dígitos para el OTP
+    #                 tolerance=1,
+    #                 step=30
+    #             )
+    #             TOTPDevice.objects.filter(user=user).exclude(
+    #                 id=otp_device.id).delete()
+    #             # # # # print(otp_device.key)
 
-                # Generar el OTP actual
-                # otp = otp_device.token()
-                destinatarios = [str(user.email)]
-                asunto = "Clave OTP para el Sistema de Información ASES"
-                cuerpo_correo = render_to_string(
-                    'correos/clave_otp.html', {'clave_otp': otp_device.key})
+    #             # Generar el OTP actual
+    #             # otp = otp_device.token()
+    #             destinatarios = [str(user.email)]
+    #             asunto = "Clave OTP para el Sistema de Información ASES"
+    #             cuerpo_correo = render_to_string(
+    #                 'correos/clave_otp.html', {'clave_otp': otp_device.key})
 
-                """
-                DONT TOUCH
-                """
-                service = build('gmail', 'v1', credentials=credentials)
+    #             """
+    #             DONT TOUCH
+    #             """
+    #             service = build('gmail', 'v1', credentials=credentials)
 
-                message = MIMEMultipart()
-                message['to'] = ', '.join(destinatarios)
-                message['subject'] = asunto
-                message.attach(MIMEText(cuerpo_correo, 'html'))
+    #             message = MIMEMultipart()
+    #             message['to'] = ', '.join(destinatarios)
+    #             message['subject'] = asunto
+    #             message.attach(MIMEText(cuerpo_correo, 'html'))
 
-                raw_message = base64.urlsafe_b64encode(
-                    message.as_bytes()).decode()
-                """
-                STOP DONT TOUCH
-                """
-                try:
-                    message = {'raw': raw_message}
-                    # # print(f'Enviando correo a {destinatarios}')
-                    service.users().messages().send(userId="me", body=message).execute()
-                    # # print('Correo enviado?')
-                except Exception as e:
-                    print(f'Error enviando el correo: {e}')
+    #             raw_message = base64.urlsafe_b64encode(
+    #                 message.as_bytes()).decode()
+    #             """
+    #             STOP DONT TOUCH
+    #             """
+    #             try:
+    #                 message = {'raw': raw_message}
+    #                 # # print(f'Enviando correo a {destinatarios}')
+    #                 service.users().messages().send(userId="me", body=message).execute()
+    #                 # # print('Correo enviado?')
+    #             except Exception as e:
+    #                 print(f'Error enviando el correo: {e}')
 
-                return Response({'mensaje': 'Cambio de contraseña completado.', "otp": otp_device.key}, status=status.HTTP_200_OK)
+    #             return Response({'mensaje': 'Cambio de contraseña completado.', "otp": otp_device.key}, status=status.HTTP_200_OK)
 
-            except Exception as e:
-                return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    #         except Exception as e:
+    #             return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response({'mensaje': 'Cambio de contraseña completado.', "otp": otp_device.key}, status=status.HTTP_200_OK)
+    #     return Response({'mensaje': 'Cambio de contraseña completado.', "otp": otp_device.key}, status=status.HTTP_200_OK)
 
 
 class verificar_clave_otp_viewsets(ViewSet):
