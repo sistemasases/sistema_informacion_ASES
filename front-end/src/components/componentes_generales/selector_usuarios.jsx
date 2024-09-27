@@ -19,6 +19,8 @@ import user_rol from "../../service/user_rol";
 import Accordion from "react-bootstrap/Accordion";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
+import writeXlsxFile from "write-excel-file";
+import { CSVLink } from "react-csv";
 import {
   decryptTokenFromSessionStorage,
   desencriptarInt,
@@ -60,30 +62,88 @@ const Selector_usuarios = () => {
   const columnas = [
     {
       name: "USUARIO",
-      selector: row => row.user_username,
+      selector: (row) => row.user_username,
       sortable: true,
     },
     {
       name: "NOMBRES",
-      selector: row => row.user_first_name,
+      selector: (row) => row.user_first_name,
       sortable: true,
     },
     {
       name: "APELLIDOS",
-      selector: row => row.user_last_name,
+      selector: (row) => row.user_last_name,
       sortable: true,
     },
     {
       name: "EMAIL",
-      selector: row => row.user_email,
+      selector: (row) => row.user_email,
       sortable: true,
     },
     {
       name: "ROL",
-      selector: row => row.rol_nombre,
+      selector: (row) => row.rol_nombre,
       sortable: true,
     },
   ];
+
+  // Contenido del csv
+  var schema = [
+    {
+      column: "Usuario",
+      type: String,
+      value: (student) => student.user_username,
+    },
+    {
+      column: "Nombres",
+      type: String,
+      value: (student) => student.user_first_name,
+    },
+    {
+      column: "Apellidos",
+      type: String,
+      value: (student) => student.user_last_name,
+    },
+    {
+      column: "Correo",
+      type: String,
+      value: (student) => student.user_email,
+    },
+    {
+      column: "Rol",
+      type: String,
+      value: (student) => student.rol_nombre,
+    },
+  ];
+
+  // CSV Headers
+  var csv_headers = [
+    { label: "USUARIO", key: "user_username" },
+    { label: "NOMBRES", key: "user_first_name" },
+    { label: "APELLIDOS", key: "user_last_name" },
+    { label: "CORREO", key: "user_email" },
+    { label: "ROL", key: "rol_nombre" },
+  ];
+
+  // Schema para el excel
+  const imprimir_excel = (data) => {
+    let new_data_excel = [];
+    for (let i = 0; i < data.length; i++) {
+      let new_data = [];
+      new_data.push({
+        user_first_name: data[i].user_username,
+        user_username: data[i].user_first_name,
+        user_last_name: data[i].user_last_name,
+        user_email: data[i].user_email,
+        rol_nombre: data[i].rol_nombre,
+      });
+      new_data_excel.push(new_data);
+    }
+    writeXlsxFile(data, {
+      schema,
+      fileName: "Lista de Usuarios.xlsx",
+    });
+  };
   /**
    * se ejecuta al iniciar la pestaña. Aqui se aloja la función que permite traer a todos los usuarios necesarios
    * para el selector de usuarios.
@@ -386,25 +446,41 @@ const Selector_usuarios = () => {
             Lista de Usuarios
           </Accordion.Header>
           <Accordion.Body>
-            {/*
-              <DataTable 
-              title="Usuarios"
-              columns={columnas}
-              data={state.data_user_rol}
-              noDataComponent="Cargando Información."
-              pagination
-              striped
-              selectableRows
-              onSelectedRowsChange={handleChange}
-              />
-              */}
+            <CSVLink
+              headers={csv_headers}
+              data={
+                state?.select_rows && state.select_rows.length > 0
+                  ? state.select_rows
+                  : state.data_user_rol
+              }
+              filename="Lista de Usuarios.csv"
+            >
+              <Button style={{ margin: 5 }}> Imprimir CSV</Button>
+            </CSVLink>
+
+            <Button
+              style={{ margin: 5 }}
+              name="imprimir_excel"
+              onClick={() =>
+                imprimir_excel(
+                  state?.select_rows && state.select_rows.length > 0
+                    ? state.select_rows
+                    : state.data_user_rol
+                )
+              }
+            >
+              Imprimir Excel
+            </Button>
+
             <DataTableExtensions
               columns={columnas}
               data={state.data_user_rol}
               filter={true}
               filterPlaceHolder={2}
               filterDigit={1}
-              exportHeaders={true}
+              exportHeaders={false}
+              export={false}
+              print={false}
             >
               <DataTable
                 title="Usuarios"
