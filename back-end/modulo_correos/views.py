@@ -43,13 +43,13 @@ from modulo_usuario_rol.serializers import (
 )
 
 
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google_auth_oauthlib.flow import Flow
+from google.auth.transport.requests import Request  # type: ignore
+from google.oauth2 import service_account  # type: ignore
+from google.oauth2.credentials import Credentials  # type: ignore
+from googleapiclient.discovery import build  # type: ignore
+from googleapiclient.errors import HttpError  # type: ignore
+from google_auth_oauthlib.flow import InstalledAppFlow  # type: ignore
+from google_auth_oauthlib.flow import Flow  # type: ignore
 
 from rest_framework.views import APIView, Response
 from rest_framework import status, viewsets
@@ -1551,122 +1551,129 @@ class enviar_riesgo_editado_viewset(ViewSet):
         # Obtener el token de autorización
         credentials = self.load_token()
         """
-         Envía un correo electrónico con la nueva contraseña generada para el usuario.
+         Envía un correo electrónico con el riesgo qué ha sido editado.
         """
 
         try:
-            if not credentials:
-                # Si no existe el token, iniciar el flujo de autorización
-                #  print("Entró al if not")
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'modulo_correos/client_secret.json',
-                    scopes=['https://www.googleapis.com/auth/gmail.send']
-                )
-                #  print("pasó el installed")
-                credentials = flow.run_local_server(port=0)
-                #  print("el server post =0")
-                self.save_token(credentials)
+            info = request.data
+
+            seguimiento = info.get('seguimiento')
+            antiguo_seguimiento = info.get('antiguo_seguimiento')
+            # print("Seguimiento actual:", seguimiento)
+            # print("Antiguo seguimiento:", antiguo_seguimiento)
+
+            data_riesgos = seguimiento
+            data_riesgos_antiguos = antiguo_seguimiento
+
+            """
+            Escala de Riesgos del Formulario
+            0 = Bajo
+            1 = Medio
+            2 = Alto
+
+            """
+            riesgos = [
+                {
+                    'riesgo_individual': data_riesgos['riesgo_individual'],
+                    'info_individual': data_riesgos['individual']
+                },
+                {
+                    'riesgo_familiar': data_riesgos['riesgo_familiar'],
+                    'info_familiar': data_riesgos['familiar']
+                },
+                {
+                    'riesgo_academico': data_riesgos['riesgo_academico'],
+                    'info_academico': data_riesgos['academico']
+                },
+                {
+                    'riesgo_economico': data_riesgos['riesgo_economico'],
+                    'info_economico': data_riesgos['economico']
+                },
+                {
+                    'riesgo_vida_universitaria_ciudad': data_riesgos['riesgo_vida_universitaria_ciudad'],
+                    'info_vida_universitaria_ciudad': data_riesgos['vida_universitaria_ciudad']
+                }
+            ]
+            riesgos_antiguos = [
+                {
+                    'riesgo_individual': data_riesgos_antiguos['riesgo_individual'],
+                    'info_individual': data_riesgos_antiguos['individual']
+                },
+                {
+                    'riesgo_familiar': data_riesgos_antiguos['riesgo_familiar'],
+                    'info_familiar': data_riesgos_antiguos['familiar']
+                },
+                {
+                    'riesgo_academico': data_riesgos_antiguos['riesgo_academico'],
+                    'info_academico': data_riesgos_antiguos['academico']
+                },
+                {
+                    'riesgo_economico': data_riesgos_antiguos['riesgo_economico'],
+                    'info_economico': data_riesgos_antiguos['economico']
+                },
+                {
+                    'riesgo_vida_universitaria_ciudad': data_riesgos_antiguos['riesgo_vida_universitaria_ciudad'],
+                    'info_vida_universitaria_ciudad': data_riesgos_antiguos['vida_universitaria_ciudad']
+                }
+            ]
+            # self.get_dimensiones(riesgos)
+            id_estudiante_seleccionado = data_riesgos['id_estudiante']
+            destinatarios = self.get_usuarios_asignados(
+                id_estudiante_seleccionado, data_riesgos['id_modificador'])
+            if not destinatarios:
+                return Response({'error': 'No se encontraron destinatarios para enviar el correo'}, status=status.HTTP_404_NOT_FOUND)
+
+            # # print(self.get_usuarios_asignados(id_estudiante_seleccionado))
+            # print(riesgos)
+            estudiante = self.get_data_estudiante(
+                id_estudiante_seleccionado)
+            if not estudiante:
+                return Response({'error': 'No se encontró el estudiante'}, status=status.HTTP_404_NOT_FOUND)
+
+            obj_programa = programa_estudiante.objects.filter(
+                id_estudiante_id=id_estudiante_seleccionado, traker=True).values().first()
+            if not obj_programa:
+                return Response({'error': 'No se encontró el programa del estudiante'}, status=status.HTTP_404_NOT_FOUND)
+            # print(obj_programa)
+            cod_programa = programa.objects.filter(
+                id=obj_programa['id_programa_id']).values()
+            if not cod_programa.exists():
+                return Response({'error': 'No se encontró el código del programa'}, status=status.HTTP_404_NOT_FOUND)
+            # print(cod_programa)
+            obj_usuario_creador = user_serializer(
+                User.objects.get(id=data_riesgos['id_modificador'])).data
+
         except Exception as e:
-            print(f"Ocurrió un error: {e}")
-            return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': f'Ocurrió un error al intentar obtener los datos: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER)
 
-        # Si se ha obtenido el token, proceder con el envío de correos
-        if credentials:
+        try:
+            # Cargar el token desde el archivo
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            token_path = os.path.join(base_dir, 'token.json')
+            credentials = Credentials.from_authorized_user_file(
+                token_path, scopes=['https://www.googleapis.com/auth/gmail.send'])
+
+            # Si el token ha expirado, intentar refrescarlo
+            if not credentials or not credentials.valid:
+                if credentials and credentials.expired and credentials.refresh_token:
+                    credentials.refresh(Request())
+                    self.save_token(credentials)
+
+            # Construir el servicio de Gmail
+            service = build('gmail', 'v1', credentials=credentials)
+
+            # Procede a enviar correos con el servicio de Gmail API.
+
             try:
+                # Lógica para enviar el correo usando Gmail API
 
-                info = request.data
-
-                seguimiento = info.get('seguimiento')
-                antiguo_seguimiento = info.get('antiguo_seguimiento')
-                # print("Seguimiento actual:", seguimiento)
-                # print("Antiguo seguimiento:", antiguo_seguimiento)
-
-                data_riesgos = seguimiento
-                data_riesgos_antiguos = antiguo_seguimiento
-
-                """
-                Escala de Riesgos del Formulario
-                0 = Bajo
-                1 = Medio
-                2 = Alto
-
-                """
-                riesgos = [
-                    {
-                        'riesgo_individual': data_riesgos['riesgo_individual'],
-                        'info_individual': data_riesgos['individual']
-                    },
-                    {
-                        'riesgo_familiar': data_riesgos['riesgo_familiar'],
-                        'info_familiar': data_riesgos['familiar']
-                    },
-                    {
-                        'riesgo_academico': data_riesgos['riesgo_academico'],
-                        'info_academico': data_riesgos['academico']
-                    },
-                    {
-                        'riesgo_economico': data_riesgos['riesgo_economico'],
-                        'info_economico': data_riesgos['economico']
-                    },
-                    {
-                        'riesgo_vida_universitaria_ciudad': data_riesgos['riesgo_vida_universitaria_ciudad'],
-                        'info_vida_universitaria_ciudad': data_riesgos['vida_universitaria_ciudad']
-                    }
-                ]
-                riesgos_antiguos = [
-                    {
-                        'riesgo_individual': data_riesgos_antiguos['riesgo_individual'],
-                        'info_individual': data_riesgos_antiguos['individual']
-                    },
-                    {
-                        'riesgo_familiar': data_riesgos_antiguos['riesgo_familiar'],
-                        'info_familiar': data_riesgos_antiguos['familiar']
-                    },
-                    {
-                        'riesgo_academico': data_riesgos_antiguos['riesgo_academico'],
-                        'info_academico': data_riesgos_antiguos['academico']
-                    },
-                    {
-                        'riesgo_economico': data_riesgos_antiguos['riesgo_economico'],
-                        'info_economico': data_riesgos_antiguos['economico']
-                    },
-                    {
-                        'riesgo_vida_universitaria_ciudad': data_riesgos_antiguos['riesgo_vida_universitaria_ciudad'],
-                        'info_vida_universitaria_ciudad': data_riesgos_antiguos['vida_universitaria_ciudad']
-                    }
-                ]
-                # self.get_dimensiones(riesgos)
-                id_estudiante_seleccionado = data_riesgos['id_estudiante']
-                destinatarios = self.get_usuarios_asignados(
-                    id_estudiante_seleccionado, data_riesgos['id_modificador'])
-                if not destinatarios:
-                    return Response({'error': 'No se encontraron destinatarios para enviar el correo'}, status=status.HTTP_404_NOT_FOUND)
-
-                # # print(self.get_usuarios_asignados(id_estudiante_seleccionado))
-                # print(riesgos)
-                estudiante = self.get_data_estudiante(
-                    id_estudiante_seleccionado)
-                if not estudiante:
-                    return Response({'error': 'No se encontró el estudiante'}, status=status.HTTP_404_NOT_FOUND)
-
-                obj_programa = programa_estudiante.objects.filter(
-                    id_estudiante_id=id_estudiante_seleccionado, traker=True).values().first()
-                if not obj_programa:
-                    return Response({'error': 'No se encontró el programa del estudiante'}, status=status.HTTP_404_NOT_FOUND)
-                # print(obj_programa)
-                cod_programa = programa.objects.filter(
-                    id=obj_programa['id_programa_id']).values()
-                if not cod_programa.exists():
-                    return Response({'error': 'No se encontró el código del programa'}, status=status.HTTP_404_NOT_FOUND)
-                # print(cod_programa)
-                obj_usuario_creador = user_serializer(
-                    User.objects.get(id=data_riesgos['id_modificador'])).data
                 # print(obj_usuario_creador)
                 if riesgos[0]['riesgo_individual'] == 2 and riesgos_antiguos[0]['riesgo_individual'] != 2 or riesgos[1]['riesgo_familiar'] == 2 and riesgos_antiguos[1]['riesgo_familiar'] != 2 or riesgos[2]['riesgo_academico'] == 2 and riesgos_antiguos[2]['riesgo_academico'] != 2 or riesgos[3]['riesgo_economico'] == 2 and riesgos_antiguos[3]['riesgo_economico'] != 2 or riesgos[4]['riesgo_vida_universitaria_ciudad'] == 2 and riesgos_antiguos[4]['riesgo_vida_universitaria_ciudad'] != 2:
                     if riesgos[0]['riesgo_individual'] == 2 or riesgos[1]['riesgo_familiar'] == 2 or riesgos[2]['riesgo_academico'] == 2 or riesgos[3]['riesgo_economico'] == 2 or riesgos[4]['riesgo_vida_universitaria_ciudad'] == 2:
 
                         cuerpo_correo = render_to_string(
                             'correos/riesgos_editados.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'cod_uv_estudiante': estudiante[0]['cod_univalle'], 'cod_carrera': cod_programa[0]['codigo_univalle'], 'correo_estudiante': estudiante[0]['email'], 'dimensiones': self.get_dimensiones(riesgos), 'fecha_seguimiento': data_riesgos['fecha'], 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name']})
+
                         asunto = "Uno o más riesgos han pasado a ser de alto nivel: " + \
                             estudiante[0]['nombre'] + "  " + \
                             estudiante[0]['apellido']
@@ -1674,6 +1681,7 @@ class enviar_riesgo_editado_viewset(ViewSet):
                         """
                         DONT TOUCH
                         """
+
                         service = build('gmail', 'v1', credentials=credentials)
 
                         message = MIMEMultipart()
@@ -1683,9 +1691,12 @@ class enviar_riesgo_editado_viewset(ViewSet):
 
                         raw_message = base64.urlsafe_b64encode(
                             message.as_bytes()).decode()
+
                         """
                         STOP DONT TOUCH
                         """
+
+                        # Enviar el correo
                         try:
                             message = {'raw': raw_message}
                             service.users().messages().send(userId="me", body=message).execute()
@@ -1694,9 +1705,13 @@ class enviar_riesgo_editado_viewset(ViewSet):
                             return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                         # ...
                         pass
+
             except Exception as e:
-                # print(f'Error enviando el correo: {e}')
+                print(f'Error enviando el correo: {e}')
                 return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            return Response({'error': f'Ocurrió un error al intentar autenticarse: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'mensaje': 'Se editaron correctamente los datos.'}, status=status.HTTP_200_OK)
 
