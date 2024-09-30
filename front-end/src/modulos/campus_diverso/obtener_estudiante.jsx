@@ -645,11 +645,11 @@ const handleInputChange = (e) => {
         <table className="user-table">
           <thead>
             <tr>
-              <th>Nombre Identitario</th>
-              <th>Nombre y Apellido</th>
-              <th>Tipo de Documento</th>
-              <th>Número de Documento</th>
-              <th>Fecha de Creación</th>
+              <th className='table-name'>Nombre Identitario</th>
+              <th className='table-name'>Nombre y Apellido</th>
+              <th className='table-name'>Tipo de Documento</th>
+              <th className='table-name'>Número de Documento</th>
+              <th className='table-name'>Fecha de Creación</th>
             </tr>
           </thead>
           <tbody>

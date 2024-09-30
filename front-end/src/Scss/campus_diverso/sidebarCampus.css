@@ -1,0 +1,243 @@
+
+
+
+.sup_izq{
+    background: darkcyan;
+    width: 70px;
+}
+.sup_der{
+    background: cornflowerblue;
+}
+
+.inf_izq{
+    background: darkolivegreen;
+}
+.inf_der{
+    margin-left:12px;
+}
+/* Aquí se edita el color del SideBar, y */
+.sideBar-campus{
+    left:0px;
+    z-index: 2;
+    position: fixed;
+    background: rgb(255, 255, 255);
+    color: rgba(171,171,170,255);
+    height: 100%;
+    padding-top: 20px;
+    top: 4rem;
+}
+
+.top_selection-campus{
+    left:0px;
+    z-index: 3;
+    height: 4.5rem;
+    width: 50px;
+    background: rgb(219, 14, 19);
+    color: #F1F1F1;
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+    padding-left: 10px;
+    position: fixed;
+}
+
+.logo{
+    font-size: 30px;
+}
+
+.bars{
+    display: flex;
+    font-size: 25px;
+    position: fixed;
+}
+
+.link{
+    display: flex;
+    background-color: black;
+    color: aliceblue;
+    padding: 10px 15px;
+    gap: 5px;
+    transition: all 1.5s;
+}
+
+.linkDropdown{
+    display: flex;
+    background-color: black;
+    color: aliceblue;
+    padding: 10px 5px;
+    gap: 5px;
+    transition: all 1.5s;
+}
+
+.subLink{
+    display: flex;
+    color: blue;
+    padding: 10px 15px;
+    transition: all 0.5s;
+}
+
+.link:hover{
+    background: aquamarine;
+    color: #000;
+    transition: all 0.5s;
+}
+
+.active{
+    background: rgb(58, 53, 53);
+    color: #000;
+}
+
+.icon, .link_text{
+    font-size: 20px;
+}
+.row_academico_card{
+    padding: 10px 0px;
+}
+
+.opcion_simple_separador{
+    display: flex;
+    margin-left: 15px;
+    margin-top: 15px;
+}
+.opcion_simple{
+    background: black;
+    color: white;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.scrollbar_sidebar{
+    width: 10px;
+    height: 100%;
+}
+
+
+.tooltip-text {
+    visibility: hidden;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  
+  .tamaño_icon{
+    color: rgba(100, 100, 100);
+    font-size: 20px;
+}
+.tamaño_super_icon{
+    color: rgb(49, 49, 49);
+    font-size: 20px;
+}
+.tamaño_font{
+    margin-left: 5px;
+    font-size: 15px;
+    color: rgba(100, 100, 100,255);
+    text-decoration: none;
+}
+
+.sidebar-title_varios{
+    margin-right: 10px;
+}
+
+.sidebar-title_final{
+    display: flex;
+    margin-right: 10px;
+    margin-left: 20px;
+    padding-top: 10px;
+    color: rgba(171,171,170,255);
+}
+
+
+.sidebar-content{
+    word-break: normal;
+    height: 0;
+    overflow: hidden;
+  }
+
+.sidebar-item{
+    display: flex;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 10px;
+    font: 18px sans-serif;
+    text-decoration:none;
+}
+.sidebar-item.open > .sidebar-title .toggle-btn{
+    background: red;
+    transform: rotate(180deg);
+  }
+  .sidebar-item.open > .sidebar-content{
+    height: auto;
+  }
+  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .sidebar-item-closed{
+    display: flex;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    margin-left: 20px;
+    font: 18px sans-serif;
+    text-decoration:none;
+}
+.sidebar-item-closed-final{
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    font: 15px sans-serif;
+    text-decoration:none;
+}
+.sidebar-item-closed-final-con-margen{
+    display: flex;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    margin-left: 35px;
+    font: 15px sans-serif;
+    text-decoration:none;
+}
+.sidebar-item-closed.open > .sidebar-title .toggle-btn{
+    background: red;
+    transform: rotate(180deg);
+  }
+
+  .sidebar-content-closed{
+    word-break: normal;
+    height: 0;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+
+  .sidebar-item-closed.open > .sidebar-content-closed{
+    height: auto;
+  }

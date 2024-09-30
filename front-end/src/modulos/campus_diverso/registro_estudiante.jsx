@@ -12,7 +12,6 @@ import {
   decryptTokenFromSessionStorage,
   desencriptar,
 } from "../utilidades_seguridad/utilidades_seguridad";
-import { FooterCampus } from './components/footerCampus';
 import FooterCampusDos from './components/footerCampusDos';
 import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
 

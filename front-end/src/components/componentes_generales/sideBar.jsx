@@ -31,6 +31,9 @@ import {
   decryptTokenFromSessionStorage,
   desencriptar,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import FooterCampusDos from "../../modulos/campus_diverso/components/footerCampusDos.jsx";
+import NavbarCampus from "../../modulos/campus_diverso/components/navbarCampus.jsx";
+import SidebarItemCampus from "../../modulos/campus_diverso/components/sidebarItemCampus.jsx";
 
 /**
  * Se encarga de gestionar los menus de la barra lateral para cada rol así como verificar el tiempo de sesión de cada usuario
@@ -51,6 +54,9 @@ const SideBar = (props) => {
       setIsOpen(false);
     }
   };
+
+  const userRole = desencriptar(sessionStorage.getItem('rol'));
+
 
   //   Variables de estado que almacenan los menus que se encuentran segun el rol del usuario
   const [state, set_state] = useState({
@@ -165,6 +171,89 @@ const SideBar = (props) => {
         handleShow();
       });
   }, tiempoEspera);
+
+/* Implementacion de diseño para campus diverso*/
+
+if (userRole === 'CAMPUS DIVERSO') {
+  return (
+    <Container className="containerSidebar">
+    <Row className="top_selection-campus">
+      <FaBars onClick={toggle} />
+    </Row>
+    {isOpen ? (
+      <Row style={{ width: isOpen ? "250px" : "70px" }} className="sideBar-campus">
+        <Scrollbars className="scrollbar_sidebar">
+          <div className="sidebar_item">
+            {state.desplegable.map((item, index) => (
+              <SidebarItemCampus key={index} item={item} />
+            ))}
+          </div>
+        </Scrollbars>
+      </Row>
+    ) : (
+      <div class="d-none d-md-block">
+        <Row style={{ width: isOpen ? "250px" : "70px" }} className="sideBar-campus">
+          <Scrollbars className="scrollbar_sidebar">
+            <div className="sidebar_item">
+              {state.desplegable.map((item, index) => (
+                <Sidebar_item_closed key={index} item={item} />
+              ))}
+            </div>
+          </Scrollbars>
+        </Row>
+      </div>
+    )}
+
+    <Row className="row_navbar">
+      <NavbarCampus
+        tamaño={isOpen}
+        nombre={props.usuario}
+        rol={props.rolUsuario}
+      ></NavbarCampus>
+    </Row>
+    <div class="d-none d-md-block">
+      <Row className="inf_der">
+        <main
+          style={{ marginLeft: isOpen ? "230px" : "50px", marginTop: "5rem" }}
+          onClick={outSideClick}
+        >
+          {props.children}
+        </main>
+      </Row>
+    </div>
+
+    <div class="d-block d-md-none">
+      <Row className="inf_der">
+        <main style={{ marginTop: "4rem" }}>{props.children}</main>
+      </Row>
+    </div>
+
+    <div>
+      <Modal show={show}>
+        <Modal.Header>
+          <Modal.Title>Tiempo de sesión expirada</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Su tiempo en la sesión ya expiró
+          <br />
+          ¿Desea continuar con la sesión?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleContinue}>
+            Sí
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+
+    <FooterCampusDos></FooterCampusDos>
+  </Container>
+
+  )
+}
 
   return (
     <Container className="containerSidebar">
