@@ -65,7 +65,6 @@ const Login_component = () => {
     axios
       .post(url, data)
       .then((res) => {
-        console.log(res.data);
         const encryptedToken = encriptar(res.data.token);
         const encryptedRefreshToken = encriptar(res.data.refresh_token);
         const encryptedIdUsuario = encriptarBigInt(res.data.user.id);
