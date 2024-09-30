@@ -363,7 +363,11 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
             "client_secret": credentials.client_secret,
             "scopes": credentials.scopes
         }
-        with open('modulo_correos/token.json', 'w') as token_file:
+        # Guarda el token en la misma ruta donde lo estás leyendo
+        # token_path = '/var/www/html/modulo_ases/back-end/modulo_correos/token.json'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        token_path = os.path.join(base_dir, 'token.json')
+        with open(token_path, 'w') as token_file:
             json.dump(token_info, token_file)
 
     def load_token(self):
@@ -389,25 +393,24 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         received_username = params.get('username')
 
         try:
-            if not credentials:
-                # Si no existe el token, iniciar el flujo de autorización
-                #  print("Entró al if not")
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'modulo_correos/client_secret.json',
-                    scopes=['https://www.googleapis.com/auth/gmail.send']
-                )
-                #  print("pasó el installed")
-                credentials = flow.run_local_server(port=0)
-                #  print("el server post =0")
-                self.save_token(credentials)
-        except Exception as e:
-            print(f"Ocurrió un error: {e}")
-            return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Cargar el token desde el archivo
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            token_path = os.path.join(base_dir, 'token.json')
+            credentials = Credentials.from_authorized_user_file(
+                token_path, scopes=['https://www.googleapis.com/auth/gmail.send'])
 
-        # Si se ha obtenido el token, proceder con el envío de correos
-        if credentials:
+            # Si el token ha expirado, intentar refrescarlo
+            if not credentials or not credentials.valid:
+                if credentials and credentials.expired and credentials.refresh_token:
+                    credentials.refresh(Request())
+                    self.save_token(credentials)
+
+            # Construir el servicio de Gmail
+            service = build('gmail', 'v1', credentials=credentials)
+
+            # Procede a enviar correos con el servicio de Gmail API.
             try:
-                # Lógica para enviar el correo usando Gmail API
+                # Lógica para obtener el usuario
                 try:
                     usuario = User.objects.get(
                         email=correo, username=received_username)
@@ -443,18 +446,18 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
 
                 # Se define el asunto y destinatarios
                 asunto = "Cambio de Contraseña"
-                destinatarios = [correo]
 
                 service = build('gmail', 'v1', credentials=credentials)
 
                 message = MIMEMultipart()
                 message['to'] = correo
-                message['subject'] = "Cambio de Contraseña"
+                message['subject'] = asunto
                 message.attach(MIMEText(cuerpo_correo, 'html'))
 
                 raw_message = base64.urlsafe_b64encode(
                     message.as_bytes()).decode()
 
+                # Enviar el correo
                 try:
                     message = {'raw': raw_message}
                     service.users().messages().send(userId="me", body=message).execute()
@@ -464,6 +467,10 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
                 pass
             except Exception as e:
                 return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            return Response({'error': f'Ocurrió un error al intentar autenticarse: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
 
