@@ -43,13 +43,13 @@ from modulo_usuario_rol.serializers import (
 )
 
 
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google_auth_oauthlib.flow import Flow
+from google.auth.transport.requests import Request  # type: ignore
+from google.oauth2 import service_account  # type: ignore
+from google.oauth2.credentials import Credentials  # type: ignore
+from googleapiclient.discovery import build  # type: ignore
+from googleapiclient.errors import HttpError  # type: ignore
+from google_auth_oauthlib.flow import InstalledAppFlow  # type: ignore
+from google_auth_oauthlib.flow import Flow  # type: ignore
 
 from rest_framework.views import APIView, Response
 from rest_framework import status, viewsets
@@ -68,10 +68,256 @@ environ.Env.read_env()
 
 
 class enviar_correos_riesgos_viewset(ViewSet):
+    """
+    # THE GOOD OLD WAY NEVER DIES
+    """
+
     # @action(methods=['post'], detail=False, url_name="enviar_correos_riesgos", url_path="enviar_correos_riesgos", )
     """
     Esta clase gestiona el envío de correos electrónicos relacionados con los riesgos asociados a los estudiantes.
     """
+
+    # def save_token(self, credentials):
+    #     token_info = {
+    #         "token": credentials.token,
+    #         "refresh_token": credentials.refresh_token,
+    #         "token_uri": credentials.token_uri,
+    #         "client_id": credentials.client_id,
+    #         "client_secret": credentials.client_secret,
+    #         "scopes": credentials.scopes
+    #     }
+    #     base_dir = os.path.dirname(os.path.abspath(__file__))
+    #     token_path = os.path.join(base_dir, 'token.json')
+    #     with open(token_path, 'w') as token_file:
+    #         json.dump(token_info, token_file)
+
+    # def load_token(self):
+    #     if os.path.exists('modulo_correos/token.json'):
+    #         with open('modulo_correos/token.json', 'r') as token_file:
+    #             token_info = json.load(token_file)
+    #         credentials = Credentials(**token_info)
+    #         # Si el token ha caducado, se refresca
+    #         if credentials and credentials.expired and credentials.refresh_token:
+    #             credentials.refresh(Request())
+    #             self.save_token(credentials)
+    #         return credentials
+    #     return None
+
+    # def get_dimensiones(self, riesgos):
+    #     dic_riesgos = []
+    #     dic_dimensiones = [
+    #         {
+    #             'dimension': 'Individual',
+    #             'riesgo': riesgos[0]['riesgo_individual'],
+    #             'info': riesgos[0]['info_individual']
+    #         },
+    #         {
+    #             'dimension': 'Familiar',
+    #             'riesgo': riesgos[1]['riesgo_familiar'],
+    #             'info': riesgos[1]['info_familiar']
+    #         },
+    #         {
+    #             'dimension': 'Academica',
+    #             'riesgo': riesgos[2]['riesgo_academico'],
+    #             'info': riesgos[2]['info_academico']
+    #         },
+    #         {
+    #             'dimension': 'Economica',
+    #             'riesgo': riesgos[3]['riesgo_economico'],
+    #             'info': riesgos[3]['info_economico']
+    #         },
+    #         {
+    #             'dimension': 'Vida Universitaria',
+    #             'riesgo': riesgos[4]['riesgo_vida_universitaria_ciudad'],
+    #             'info': riesgos[4]['info_vida_universitaria_ciudad']
+    #         }
+    #     ]
+
+    #     plantilla_riesgos = " "
+    #     for dimension in dic_dimensiones:
+    #         # print(dimension)
+    #         if dimension['riesgo'] == 2:
+    #             plantilla_riesgos += (
+    #                 f"\n• <label style='color: #000000; font-weight: 700'>{dimension['dimension']}</label>\n"
+    #                 f"{dimension['info']}\n"
+    #             )
+
+    #     return plantilla_riesgos
+
+    # def get_data_estudiante(self, id_estudiante_selected):
+    #     var_estudiante = estudiante.objects.filter(
+    #         id=id_estudiante_selected).values()
+    #     return var_estudiante
+
+    # def get_usuarios_asignados(self, id_estudiante_selected, id_creador):
+    #     # print("ID ESTUDIANTE")
+    #     # print(id_estudiante_selected)
+    #     # data_sede = request.GET.get('sede')
+    #     var_estudiante = estudiante.objects.filter(
+    #         id=id_estudiante_selected).values()
+    #     # # print(var_estudiante[0])
+    #     obj_rol_creador = usuario_rol.objects.filter(
+    #         id_usuario=id_creador, estado="ACTIVO").values()
+
+    #     asignacion_estudiante = asignacion.objects.filter(
+    #         estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
+    #     # print(asignacion_estudiante)
+    #     var_monitor = usuario_rol.objects.filter(
+    #         estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
+    #     # print(var_monitor)
+    #     var_practicante = usuario_rol.objects.filter(
+    #         estado='ACTIVO', id_usuario=var_monitor[0]['id_jefe_id']).values()
+    #     # print(var_practicante[0])
+    #     var_profesional = usuario_rol.objects.filter(
+    #         estado='ACTIVO', id_usuario=var_practicante[0]['id_jefe_id']).values()
+    #     # print(var_profesional[0])
+
+    #     mail_practicante = User.objects.filter(
+    #         is_active=True, id=var_practicante[0]['id_usuario_id']).values('email')
+    #     mail_profesional = User.objects.filter(
+    #         is_active=True, id=var_profesional[0]['id_usuario_id']).values('email')
+    #     # print(mail_practicante[0]['email'])
+    #     # print(mail_profesional[0]['email'])
+    #     # list_correos =  "['" + mail_practicante[0]['email'] + "'], "['" + mail_profesional[0]['email'] + ']"'
+    #     list_correos = list()
+    #     # list_correos.append("sistemas.ases@correounivalle.edu.co")
+    #     list_correos.append(mail_practicante[0]['email'])
+    #     list_correos.append(mail_profesional[0]['email'])
+    #     # print("LISTA DE CORREOS:")
+    #     # print(list_correos)
+
+    #     # list_correos_test = list()
+    #     # list_correos_test.append("steven.bernal@correounivalle.edu.co")
+    #     # list_correos_test.append("sistemas.ases@correounivalle.edu.co")
+
+    #     return list_correos
+
+    # def create(self, request, *args, **kwargs):
+    #     # print("DATOS RECIBIDOS")
+    #     # print(request.data.get('params'))
+    #     data_estudiante = request.data.get('params')
+    #     data_riesgos = data_estudiante.get('estudiante_seleccionado')
+    #     # print(data_riesgos)
+    #     """
+    #     Escala de Riesgos del Formulario
+    #     0 = Bajo
+    #     1 = Medio
+    #     2 = Alto
+
+    #     """
+    #     riesgos = [
+    #         {
+    #             'riesgo_individual': data_riesgos['riesgo_individual'],
+    #             'info_individual': data_riesgos['individual']
+    #         },
+    #         {
+    #             'riesgo_familiar': data_riesgos['riesgo_familiar'],
+    #             'info_familiar': data_riesgos['familiar']
+    #         },
+    #         {
+    #             'riesgo_academico': data_riesgos['riesgo_academico'],
+    #             'info_academico': data_riesgos['academico']
+    #         },
+    #         {
+    #             'riesgo_economico': data_riesgos['riesgo_economico'],
+    #             'info_economico': data_riesgos['economico']
+    #         },
+    #         {
+    #             'riesgo_vida_universitaria_ciudad': data_riesgos['riesgo_vida_universitaria_ciudad'],
+    #             'info_vida_universitaria_ciudad': data_riesgos['vida_universitaria_ciudad']
+    #         }
+    #     ]
+    #     # self.get_dimensiones(riesgos)
+    #     id_estudiante_seleccionado = data_riesgos['id_estudiante']
+    #     destinatarios = self.get_usuarios_asignados(
+    #         id_estudiante_seleccionado, data_riesgos['id_creador'])
+    #     # print(self.get_usuarios_asignados(id_estudiante_seleccionado))
+    #     # print(riesgos)
+    #     estudiante = self.get_data_estudiante(id_estudiante_seleccionado)
+    #     obj_programa = programa_estudiante.objects.get(
+    #         id_estudiante_id=id_estudiante_seleccionado)
+    #     cod_programa = programa.objects.filter(
+    #         id=obj_programa.id_programa_id).values()
+    #     # # print(cod_programa)
+    #     obj_usuario_creador = user_serializer(
+    #         User.objects.get(id=data_riesgos['id_creador'])).data
+    #     rol_user = usuario_rol.objects.filter(
+    #         id_usuario=data_riesgos['id_creador'], estado="ACTIVO").values()
+
+    #     # print(obj_usuario_creador)
+    #     print(rol_user)
+
+    #     asunto = "Riesgo de alto nivel: " + \
+    #         estudiante[0]['nombre'] + "  " + estudiante[0]['apellido']
+
+    #     if rol_user[0]["id_rol_id"] == 1:
+    #         destinatarios.clear()
+    #         destinatarios = [obj_usuario_creador['email'],
+    #                          "sistemas.ases@correounivalle.edu.co"]
+    #         asunto = ""
+    #         asunto = "Riesgo de alto nivel: (Prueba) " + \
+    #             estudiante[0]['nombre'] + "  " + estudiante[0]['apellido']
+    #     #     print("Enviando a Sistemas")
+    #     # print(destinatarios)
+    #     # destinatarios.clear()
+    #     # destinatarios = ["sistemas.ases@correounivalle.edu.co"]
+
+    #     if riesgos[0]['riesgo_individual'] == 2 or riesgos[1]['riesgo_familiar'] == 2 or riesgos[2]['riesgo_academico'] == 2 or riesgos[3]['riesgo_economico'] == 2 or riesgos[4]['riesgo_vida_universitaria_ciudad'] == 2:
+    #         # # print(id_estudiante)
+    #         cuerpo_correo = render_to_string(
+    #             'correos/riesgo_alto.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'cod_uv_estudiante': estudiante[0]['cod_univalle'], 'cod_carrera': cod_programa[0]['codigo_univalle'], 'correo_estudiante': estudiante[0]['email'], 'dimensiones': self.get_dimensiones(riesgos), 'fecha_seguimiento': data_riesgos['fecha'], 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name']})
+    #         asunto
+    #         EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
+    #         # print("Enviando correo...")
+    #         # print("ENVIANDO A:")
+    #         # print(destinatarios)
+
+    #         # envío con EmailMessage
+    #         email = EmailMessage(
+    #             asunto,
+    #             cuerpo_correo,
+    #             EMAIL_HOST_USER,
+    #             # Cambia esto por el correo del destinatario
+    #             destinatarios
+    #         )
+    #         email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
+    #         email.send()
+    #     else:
+    #         return Response(({"message": "No hay Altos"}))
+
+    #     # print("Correo enviado")
+    #     prueba = "Se ejecutó correctamente"
+    #     return Response(({"message": "Email sent successfully", }, prueba, status.HTTP_200_OK))
+
+    """
+    # THE NEW WAY
+    """
+
+    def save_token(self, credentials):
+        token_info = {
+            "token": credentials.token,
+            "refresh_token": credentials.refresh_token,
+            "token_uri": credentials.token_uri,
+            "client_id": credentials.client_id,
+            "client_secret": credentials.client_secret,
+            "scopes": credentials.scopes
+        }
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        token_path = os.path.join(base_dir, 'token.json')
+        with open(token_path, 'w') as token_file:
+            json.dump(token_info, token_file)
+
+    def load_token(self):
+        if os.path.exists('modulo_correos/token.json'):
+            with open('modulo_correos/token.json', 'r') as token_file:
+                token_info = json.load(token_file)
+            credentials = Credentials(**token_info)
+            # Si el token ha caducado, se refresca
+            if credentials and credentials.expired and credentials.refresh_token:
+                credentials.refresh(Request())
+                self.save_token(credentials)
+            return credentials
+        return None
 
     def get_dimensiones(self, riesgos):
         dic_riesgos = []
@@ -163,6 +409,12 @@ class enviar_correos_riesgos_viewset(ViewSet):
         return list_correos
 
     def create(self, request, *args, **kwargs):
+        # Obtener el token de autorización
+        credentials = self.load_token()
+        """
+        # Esta clase gestiona el envío de correos electrónicos relacionados con los riesgos asociados a los estudiantes.
+        """
+
         # print("DATOS RECIBIDOS")
         # print(request.data.get('params'))
         data_estudiante = request.data.get('params')
@@ -215,10 +467,7 @@ class enviar_correos_riesgos_viewset(ViewSet):
             id_usuario=data_riesgos['id_creador'], estado="ACTIVO").values()
 
         # print(obj_usuario_creador)
-        print(rol_user)
-
-        asunto = "Riesgo de alto nivel: " + \
-            estudiante[0]['nombre'] + "  " + estudiante[0]['apellido']
+        # print(rol_user)
 
         if rol_user[0]["id_rol_id"] == 1:
             destinatarios.clear()
@@ -232,37 +481,70 @@ class enviar_correos_riesgos_viewset(ViewSet):
         # destinatarios.clear()
         # destinatarios = ["sistemas.ases@correounivalle.edu.co"]
 
-        if riesgos[0]['riesgo_individual'] == 2 or riesgos[1]['riesgo_familiar'] == 2 or riesgos[2]['riesgo_academico'] == 2 or riesgos[3]['riesgo_economico'] == 2 or riesgos[4]['riesgo_vida_universitaria_ciudad'] == 2:
-            # # print(id_estudiante)
-            cuerpo_correo = render_to_string(
-                'correos/riesgo_alto.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'cod_uv_estudiante': estudiante[0]['cod_univalle'], 'cod_carrera': cod_programa[0]['codigo_univalle'], 'correo_estudiante': estudiante[0]['email'], 'dimensiones': self.get_dimensiones(riesgos), 'fecha_seguimiento': data_riesgos['fecha'], 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name']})
-            asunto
-            EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_HOST_USER')
-            # print("Enviando correo...")
-            # print("ENVIANDO A:")
-            # print(destinatarios)
+        try:
+            # Cargar el token desde el archivo
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            token_path = os.path.join(base_dir, 'token.json')
+            credentials = Credentials.from_authorized_user_file(
+                token_path, scopes=['https://www.googleapis.com/auth/gmail.send'])
 
-            # envío con EmailMessage
-            email = EmailMessage(
-                asunto,
-                cuerpo_correo,
-                EMAIL_HOST_USER,
-                # Cambia esto por el correo del destinatario
-                destinatarios
-            )
-            email.content_subtype = "html"  # Importante para indicar que el contenido es HTML
-            email.send()
-        else:
-            return Response(({"message": "No hay Altos"}))
+            # Si el token ha expirado, intentar refrescarlo
+            if not credentials or not credentials.valid:
+                if credentials and credentials.expired and credentials.refresh_token:
+                    credentials.refresh(Request())
+                    self.save_token(credentials)
 
-        # print("Correo enviado")
+            # Construir el servicio de Gmail
+            service = build('gmail', 'v1', credentials=credentials)
+
+            # Procede a enviar correos con el servicio de Gmail API.
+
+            try:
+                # Lógica para enviar el correo usando Gmail API
+                if riesgos[0]['riesgo_individual'] == 2 or riesgos[1]['riesgo_familiar'] == 2 or riesgos[2]['riesgo_academico'] == 2 or riesgos[3]['riesgo_economico'] == 2 or riesgos[4]['riesgo_vida_universitaria_ciudad'] == 2:
+                    asunto = "Riesgo de alto nivel: " + \
+                        estudiante[0]['nombre'] + "  " + \
+                        estudiante[0]['apellido']
+
+                    cuerpo_correo = render_to_string(
+                        'correos/riesgo_alto.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'cod_uv_estudiante': estudiante[0]['cod_univalle'], 'cod_carrera': cod_programa[0]['codigo_univalle'], 'correo_estudiante': estudiante[0]['email'], 'dimensiones': self.get_dimensiones(riesgos), 'fecha_seguimiento': data_riesgos['fecha'], 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name']})
+
+                    service = build('gmail', 'v1', credentials=credentials)
+
+                    message = MIMEMultipart()
+                    message['to'] = ', '.join(destinatarios)
+                    message['subject'] = asunto
+                    message.attach(MIMEText(cuerpo_correo, 'html'))
+
+                    raw_message = base64.urlsafe_b64encode(
+                        message.as_bytes()).decode()
+
+                    # Enviar el correo
+                    try:
+                        message = {'raw': raw_message}
+                        service.users().messages().send(userId="me", body=message).execute()
+                    except Exception as e:
+                        print(f'Error enviando el correo: {e}')
+                        return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+                else:
+                    return Response(({"message": "No hay Altos"}))
+            except Exception as e:
+                print(f'Error enviando el correo: {e}')
+                return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            return Response({'error': f'Ocurrió un error al intentar autenticarse: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         prueba = "Se ejecutó correctamente"
+
         return Response(({"message": "Email sent successfully", }, prueba, status.HTTP_200_OK))
 
 
 class enviar_correo_cambio_contra_viewset(ViewSet):
 
+    """
     # THE GOOD OLD WAY NEVER DIES
+    """
     # """
     # Esta clase gestiona el envío de correos electrónicos relacionados con el cambio de contraseña de los usuarios.
     # """
@@ -350,6 +632,10 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
 
     #     return Response({'mensaje': 'Cambio de contraseña completado.'}, status=status.HTTP_200_OK)
 
+    """
+    THE NEW WAY
+    """
+
     def generar_contrasena_personalizada(self, longitud=12):
         caracteres = string.ascii_letters + string.digits + string.punctuation
         return ''.join(random.choice(caracteres) for i in range(longitud))
@@ -390,6 +676,26 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
         correo = params.get('mail')
         received_username = params.get('username')
 
+        # Lógica para obtener el usuario
+        try:
+            usuario = User.objects.get(
+                email=correo, username=received_username)
+        except User.DoesNotExist:
+            return Response({'error': f'No se halló un usuario con dicho correo: {correo} y usuario: {received_username}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Generar contraseña aleatoria
+        try:
+            temporary_password = self.generar_contrasena_personalizada()
+        except Exception as e:
+            return Response({'error': f'Ocurrió un error al generar la contraseña: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Cambiar la contraseña del usuario
+        try:
+            usuario.set_password(temporary_password)
+            usuario.save()
+        except:
+            return Response({'error': f'No se pudo cambiar la contraseña del usuario: {correo} y usuario: {received_username}'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             # Cargar el token desde el archivo
             base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -408,25 +714,6 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
 
             # Procede a enviar correos con el servicio de Gmail API.
             try:
-                # Lógica para obtener el usuario
-                try:
-                    usuario = User.objects.get(
-                        email=correo, username=received_username)
-                except User.DoesNotExist:
-                    return Response({'error': f'No se halló un usuario con dicho correo: {correo} y usuario: {received_username}'}, status=status.HTTP_400_BAD_REQUEST)
-
-                # Generar contraseña aleatoria
-                try:
-                    temporary_password = self.generar_contrasena_personalizada()
-                except Exception as e:
-                    return Response({'error': f'Ocurrió un error al generar la contraseña: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-                # Cambiar la contraseña del usuario
-                try:
-                    usuario.set_password(temporary_password)
-                    usuario.save()
-                except:
-                    return Response({'error': f'No se pudo cambiar la contraseña del usuario: {correo} y usuario: {received_username}'}, status=status.HTTP_400_BAD_REQUEST)
 
                 # Enviar correo con la nueva contraseña
 
@@ -461,6 +748,8 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
                     service.users().messages().send(userId="me", body=message).execute()
                 except Exception as e:
                     print(f'Error enviando el correo: {e}')
+                    return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
                     # ...
                 pass
             except Exception as e:
@@ -475,7 +764,9 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
 
 class enviar_correo_observaciones_viewsets(ViewSet):
 
+    """
     # THE GOOD OLD WAY NEVER DIES
+    """
     # def get_data_estudiante(self, id_estudiante_selected):
     #     var_estudiante = estudiante.objects.filter(
     #         id=id_estudiante_selected).values()
@@ -619,8 +910,9 @@ class enviar_correo_observaciones_viewsets(ViewSet):
     #     email.send()
     #     print("Correo enviado")
     #     return Response({'mensaje': message_text}, status=status.HTTP_200_OK)
+
     """
-    The New Way
+    THE NEW WAY
     """
 
     def save_token(self, credentials):
@@ -667,7 +959,7 @@ class enviar_correo_observaciones_viewsets(ViewSet):
 
         obj_rol_creador = usuario_rol.objects.filter(
             id_usuario=id_creador, estado="ACTIVO").values()
-        print(obj_rol_creador)
+        # print(obj_rol_creador)
 
         asignacion_estudiante = asignacion.objects.filter(
             estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
@@ -690,7 +982,7 @@ class enviar_correo_observaciones_viewsets(ViewSet):
 
         mail_practicante = User.objects.filter(
             is_active=True, id=var_practicante[0]['id_usuario_id']).values('email')
-        print(mail_practicante[0]['email'])
+        # print(mail_practicante[0]['email'])
         mail_profesional = User.objects.filter(
             is_active=True, id=var_profesional[0]['id_usuario_id']).values('email')
 
@@ -704,23 +996,23 @@ class enviar_correo_observaciones_viewsets(ViewSet):
             # list_correos_test.append("steven.bernal@correounivalle.edu.co")
             list_correos_test.append(user_email[0]['email'])
             list_correos_test.append("sistemas.ases@correounivalle.edu.co")
-            print("CORREOS")
-            print(list_correos_test)
+            # print("CORREOS")
+            # print(list_correos_test)
             return list_correos_test
 
         elif obj_rol_creador[0]['id_rol_id'] == 3:         # "profesional"
             "Enviar Correo a Practicante y Monitor"
             list_correos.append(mail_practicante[0]['email'])
             list_correos.append(mail_monitor[0]['email'])
-            print("CORREOS")
-            print(list_correos)
+            # print("CORREOS")
+            # print(list_correos)
             return list_correos
         elif obj_rol_creador[0]['id_rol_id'] == 4:         # "practicante"
             "Enviar Correo a Profesional y Monitor"
             list_correos.append(mail_profesional[0]['email'])
             list_correos.append(mail_monitor[0]['email'])
-            print("CORREOS")
-            print(list_correos)
+            # print("CORREOS")
+            # print(list_correos)
             return list_correos
 
     def create(self, request, *args, **kwargs):
@@ -730,69 +1022,87 @@ class enviar_correo_observaciones_viewsets(ViewSet):
          Envía un correo electrónico a los usuarios asignados al estudiante con las observaciones del seguimiento.
         """
 
-        try:
-            if not credentials:
-                # Si no existe el token, iniciar el flujo de autorización
-                #  print("Entró al if not")
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'modulo_correos/client_secret.json',
-                    scopes=['https://www.googleapis.com/auth/gmail.send']
-                )
-                #  print("pasó el installed")
-                credentials = flow.run_local_server(port=0)
-                #  print("el server post =0")
-                self.save_token(credentials)
-        except Exception as e:
-            print(f"Ocurrió un error: {e}")
-            return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        estudiante = self.get_data_estudiante(
+            request.data.get("id_estudiante"))
 
-        # Si se ha obtenido el token, proceder con el envío de correos
-        if credentials:
+        # obj_usuario_creador = user_serializer(
+        #     User.objects.get(id=request.data.get("id_modificador"))).data
+
+        user_creador = User.objects.filter(
+            id=request.data.get("id_modificador")).first()
+        if not user_creador:
+            return Response({'error': 'Usuario con el id_modificador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        obj_usuario_creador = user_serializer(user_creador).data
+
+        message_text = ""
+        destinatarios = self.get_usuarios_asignados(
+            request.data.get("id_estudiante"), request.data.get("id_modificador"))
+
+        # Obtener datos del estudiante
+        var_estudiante = self.get_data_estudiante(
+            request.data.get("id_estudiante"))
+        if not var_estudiante:
+            return Response({'error': 'Estudiante no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Obtener el rol del usuario creador
+        obj_rol_creador = usuario_rol.objects.filter(
+            id_usuario=request.data.get("id_modificador"), estado="ACTIVO").values()
+
+        if not obj_rol_creador:
+            return Response({'error': 'Rol del creador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Obtener asignación del estudiante
+        asignacion_estudiante = asignacion.objects.filter(
+            estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
+        if not asignacion_estudiante:
+            return Response({'error': 'Asignación de estudiante no encontrada.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Obtener el monitor asignado
+        var_monitor = usuario_rol.objects.filter(
+            estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
+        if not var_monitor:
+            return Response({'error': 'Monitor no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Obtener datos del monitor
+        user_monitor = User.objects.filter(
+            is_active=True, id=var_monitor[0]['id_usuario_id']).values()
+        if not user_monitor:
+            return Response({'error': 'Usuario monitor no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if obj_rol_creador[0]['id_rol_id'] == 1:           # super_ases
+            # print("Enviar Correo a Sistemas (Para Pruebas)")
+            message_text = "Enviar Correo a Sistemas (Para Pruebas)"
+        elif obj_rol_creador[0]['id_rol_id'] == 3:         # "profesional"
+            # print("Enviar Correo a Practicante y Monitor")
+            message_text = "Enviar Correo a Practicante y Monitor"
+        elif obj_rol_creador[0]['id_rol_id'] == 4:     # "practicante"
+            # print("Enviar Correo a Profesional y Monitor")
+            message_text = "Enviar Correo a Profesional y Monitor"
+        else:
+            # print("NO SE A QUIEN SE ENVIO")
+            message_text = "NO SE A QUIEN SE ENVIO"
+
+        try:
+            # Cargar el token desde el archivo
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            token_path = os.path.join(base_dir, 'token.json')
+            credentials = Credentials.from_authorized_user_file(
+                token_path, scopes=['https://www.googleapis.com/auth/gmail.send'])
+
+            # Si el token ha expirado, intentar refrescarlo
+            if not credentials or not credentials.valid:
+                if credentials and credentials.expired and credentials.refresh_token:
+                    credentials.refresh(Request())
+                    self.save_token(credentials)
+
+            # Construir el servicio de Gmail
+            service = build('gmail', 'v1', credentials=credentials)
+
+            # Procede a enviar correos con el servicio de Gmail API.
+
             try:
                 # Lógica para enviar el correo usando Gmail API
-                estudiante = self.get_data_estudiante(
-                    request.data.get("id_estudiante"))
-
-                obj_usuario_creador = user_serializer(
-                    User.objects.get(id=request.data.get("id_modificador"))).data
-                # print("AQUI VA EL USUARIO")
-                # print(obj_usuario_creador)
-                obj_rol_creador = usuario_rol.objects.filter(
-                    id_usuario=request.data.get("id_modificador"), estado="ACTIVO").values()
-                # print("AQUI VA EL USUARIO ROL")
-                # print(obj_rol_creador)
-                message_text = ""
-                destinatarios = self.get_usuarios_asignados(
-                    request.data.get("id_estudiante"), request.data.get("id_modificador"))
-                # print("DESTINATARIOS")
-                # print(destinatarios)
-
-                var_estudiante = self.get_data_estudiante(
-                    request.data.get("id_estudiante"))
-
-                asignacion_estudiante = asignacion.objects.filter(
-                    estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
-                # print(asignacion_estudiante)
-
-                var_monitor = usuario_rol.objects.filter(
-                    estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
-                # print(var_monitor)
-
-                user_monitor = User.objects.filter(
-                    is_active=True, id=var_monitor[0]['id_usuario_id']).values()
-
-                if obj_rol_creador[0]['id_rol_id'] == 1:           # super_ases
-                    # print("Enviar Correo a Sistemas (Para Pruebas)")
-                    message_text = "Enviar Correo a Sistemas (Para Pruebas)"
-                elif obj_rol_creador[0]['id_rol_id'] == 3:         # "profesional"
-                    # print("Enviar Correo a Practicante y Monitor")
-                    message_text = "Enviar Correo a Practicante y Monitor"
-                elif obj_rol_creador[0]['id_rol_id'] == 4:     # "practicante"
-                    # print("Enviar Correo a Profesional y Monitor")
-                    message_text = "Enviar Correo a Profesional y Monitor"
-                else:
-                    # print("NO SE A QUIEN SE ENVIO")
-                    message_text = "NO SE A QUIEN SE ENVIO"
 
                 # Se define el asunto y destinatarios
                 asunto = "Observaciones seguimiento del dia " + \
@@ -818,12 +1128,17 @@ class enviar_correo_observaciones_viewsets(ViewSet):
                     service.users().messages().send(userId="me", body=message).execute()
                 except Exception as e:
                     print(f'Error enviando el correo: {e}')
+                    return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                     # ...
                 pass
             except Exception as e:
                 # print(f'Error enviando el correo: {e}')
 
                 return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            return Response({'error': f'Ocurrió un error al intentar autenticarse: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'mensaje': 'Observaciones enviadas.'}, status=status.HTTP_200_OK)
 
@@ -841,7 +1156,9 @@ class enviar_correo_observaciones_viewsets(ViewSet):
 
 class enviar_riesgo_editado_viewset(ViewSet):
 
+    """
     # THE GOOD OLD WAY NEVER DIES
+    """
     # def get_dimensiones(self, riesgos):
     #     dic_riesgos = []
     #     dic_dimensiones = [
@@ -1234,122 +1551,129 @@ class enviar_riesgo_editado_viewset(ViewSet):
         # Obtener el token de autorización
         credentials = self.load_token()
         """
-         Envía un correo electrónico con la nueva contraseña generada para el usuario.
+         Envía un correo electrónico con el riesgo qué ha sido editado.
         """
 
         try:
-            if not credentials:
-                # Si no existe el token, iniciar el flujo de autorización
-                #  print("Entró al if not")
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'modulo_correos/client_secret.json',
-                    scopes=['https://www.googleapis.com/auth/gmail.send']
-                )
-                #  print("pasó el installed")
-                credentials = flow.run_local_server(port=0)
-                #  print("el server post =0")
-                self.save_token(credentials)
+            info = request.data
+
+            seguimiento = info.get('seguimiento')
+            antiguo_seguimiento = info.get('antiguo_seguimiento')
+            # print("Seguimiento actual:", seguimiento)
+            # print("Antiguo seguimiento:", antiguo_seguimiento)
+
+            data_riesgos = seguimiento
+            data_riesgos_antiguos = antiguo_seguimiento
+
+            """
+            Escala de Riesgos del Formulario
+            0 = Bajo
+            1 = Medio
+            2 = Alto
+
+            """
+            riesgos = [
+                {
+                    'riesgo_individual': data_riesgos['riesgo_individual'],
+                    'info_individual': data_riesgos['individual']
+                },
+                {
+                    'riesgo_familiar': data_riesgos['riesgo_familiar'],
+                    'info_familiar': data_riesgos['familiar']
+                },
+                {
+                    'riesgo_academico': data_riesgos['riesgo_academico'],
+                    'info_academico': data_riesgos['academico']
+                },
+                {
+                    'riesgo_economico': data_riesgos['riesgo_economico'],
+                    'info_economico': data_riesgos['economico']
+                },
+                {
+                    'riesgo_vida_universitaria_ciudad': data_riesgos['riesgo_vida_universitaria_ciudad'],
+                    'info_vida_universitaria_ciudad': data_riesgos['vida_universitaria_ciudad']
+                }
+            ]
+            riesgos_antiguos = [
+                {
+                    'riesgo_individual': data_riesgos_antiguos['riesgo_individual'],
+                    'info_individual': data_riesgos_antiguos['individual']
+                },
+                {
+                    'riesgo_familiar': data_riesgos_antiguos['riesgo_familiar'],
+                    'info_familiar': data_riesgos_antiguos['familiar']
+                },
+                {
+                    'riesgo_academico': data_riesgos_antiguos['riesgo_academico'],
+                    'info_academico': data_riesgos_antiguos['academico']
+                },
+                {
+                    'riesgo_economico': data_riesgos_antiguos['riesgo_economico'],
+                    'info_economico': data_riesgos_antiguos['economico']
+                },
+                {
+                    'riesgo_vida_universitaria_ciudad': data_riesgos_antiguos['riesgo_vida_universitaria_ciudad'],
+                    'info_vida_universitaria_ciudad': data_riesgos_antiguos['vida_universitaria_ciudad']
+                }
+            ]
+            # self.get_dimensiones(riesgos)
+            id_estudiante_seleccionado = data_riesgos['id_estudiante']
+            destinatarios = self.get_usuarios_asignados(
+                id_estudiante_seleccionado, data_riesgos['id_modificador'])
+            if not destinatarios:
+                return Response({'error': 'No se encontraron destinatarios para enviar el correo'}, status=status.HTTP_404_NOT_FOUND)
+
+            # # print(self.get_usuarios_asignados(id_estudiante_seleccionado))
+            # print(riesgos)
+            estudiante = self.get_data_estudiante(
+                id_estudiante_seleccionado)
+            if not estudiante:
+                return Response({'error': 'No se encontró el estudiante'}, status=status.HTTP_404_NOT_FOUND)
+
+            obj_programa = programa_estudiante.objects.filter(
+                id_estudiante_id=id_estudiante_seleccionado, traker=True).values().first()
+            if not obj_programa:
+                return Response({'error': 'No se encontró el programa del estudiante'}, status=status.HTTP_404_NOT_FOUND)
+            # print(obj_programa)
+            cod_programa = programa.objects.filter(
+                id=obj_programa['id_programa_id']).values()
+            if not cod_programa.exists():
+                return Response({'error': 'No se encontró el código del programa'}, status=status.HTTP_404_NOT_FOUND)
+            # print(cod_programa)
+            obj_usuario_creador = user_serializer(
+                User.objects.get(id=data_riesgos['id_modificador'])).data
+
         except Exception as e:
-            print(f"Ocurrió un error: {e}")
-            return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': f'Ocurrió un error al intentar obtener los datos: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER)
 
-        # Si se ha obtenido el token, proceder con el envío de correos
-        if credentials:
+        try:
+            # Cargar el token desde el archivo
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            token_path = os.path.join(base_dir, 'token.json')
+            credentials = Credentials.from_authorized_user_file(
+                token_path, scopes=['https://www.googleapis.com/auth/gmail.send'])
+
+            # Si el token ha expirado, intentar refrescarlo
+            if not credentials or not credentials.valid:
+                if credentials and credentials.expired and credentials.refresh_token:
+                    credentials.refresh(Request())
+                    self.save_token(credentials)
+
+            # Construir el servicio de Gmail
+            service = build('gmail', 'v1', credentials=credentials)
+
+            # Procede a enviar correos con el servicio de Gmail API.
+
             try:
+                # Lógica para enviar el correo usando Gmail API
 
-                info = request.data
-
-                seguimiento = info.get('seguimiento')
-                antiguo_seguimiento = info.get('antiguo_seguimiento')
-                # print("Seguimiento actual:", seguimiento)
-                # print("Antiguo seguimiento:", antiguo_seguimiento)
-
-                data_riesgos = seguimiento
-                data_riesgos_antiguos = antiguo_seguimiento
-
-                """
-                Escala de Riesgos del Formulario
-                0 = Bajo
-                1 = Medio
-                2 = Alto
-
-                """
-                riesgos = [
-                    {
-                        'riesgo_individual': data_riesgos['riesgo_individual'],
-                        'info_individual': data_riesgos['individual']
-                    },
-                    {
-                        'riesgo_familiar': data_riesgos['riesgo_familiar'],
-                        'info_familiar': data_riesgos['familiar']
-                    },
-                    {
-                        'riesgo_academico': data_riesgos['riesgo_academico'],
-                        'info_academico': data_riesgos['academico']
-                    },
-                    {
-                        'riesgo_economico': data_riesgos['riesgo_economico'],
-                        'info_economico': data_riesgos['economico']
-                    },
-                    {
-                        'riesgo_vida_universitaria_ciudad': data_riesgos['riesgo_vida_universitaria_ciudad'],
-                        'info_vida_universitaria_ciudad': data_riesgos['vida_universitaria_ciudad']
-                    }
-                ]
-                riesgos_antiguos = [
-                    {
-                        'riesgo_individual': data_riesgos_antiguos['riesgo_individual'],
-                        'info_individual': data_riesgos_antiguos['individual']
-                    },
-                    {
-                        'riesgo_familiar': data_riesgos_antiguos['riesgo_familiar'],
-                        'info_familiar': data_riesgos_antiguos['familiar']
-                    },
-                    {
-                        'riesgo_academico': data_riesgos_antiguos['riesgo_academico'],
-                        'info_academico': data_riesgos_antiguos['academico']
-                    },
-                    {
-                        'riesgo_economico': data_riesgos_antiguos['riesgo_economico'],
-                        'info_economico': data_riesgos_antiguos['economico']
-                    },
-                    {
-                        'riesgo_vida_universitaria_ciudad': data_riesgos_antiguos['riesgo_vida_universitaria_ciudad'],
-                        'info_vida_universitaria_ciudad': data_riesgos_antiguos['vida_universitaria_ciudad']
-                    }
-                ]
-                # self.get_dimensiones(riesgos)
-                id_estudiante_seleccionado = data_riesgos['id_estudiante']
-                destinatarios = self.get_usuarios_asignados(
-                    id_estudiante_seleccionado, data_riesgos['id_modificador'])
-                if not destinatarios:
-                    return Response({'error': 'No se encontraron destinatarios para enviar el correo'}, status=status.HTTP_404_NOT_FOUND)
-
-                # # print(self.get_usuarios_asignados(id_estudiante_seleccionado))
-                # print(riesgos)
-                estudiante = self.get_data_estudiante(
-                    id_estudiante_seleccionado)
-                if not estudiante:
-                    return Response({'error': 'No se encontró el estudiante'}, status=status.HTTP_404_NOT_FOUND)
-
-                obj_programa = programa_estudiante.objects.filter(
-                    id_estudiante_id=id_estudiante_seleccionado, traker=True).values().first()
-                if not obj_programa:
-                    return Response({'error': 'No se encontró el programa del estudiante'}, status=status.HTTP_404_NOT_FOUND)
-                # print(obj_programa)
-                cod_programa = programa.objects.filter(
-                    id=obj_programa['id_programa_id']).values()
-                if not cod_programa.exists():
-                    return Response({'error': 'No se encontró el código del programa'}, status=status.HTTP_404_NOT_FOUND)
-                # print(cod_programa)
-                obj_usuario_creador = user_serializer(
-                    User.objects.get(id=data_riesgos['id_modificador'])).data
                 # print(obj_usuario_creador)
                 if riesgos[0]['riesgo_individual'] == 2 and riesgos_antiguos[0]['riesgo_individual'] != 2 or riesgos[1]['riesgo_familiar'] == 2 and riesgos_antiguos[1]['riesgo_familiar'] != 2 or riesgos[2]['riesgo_academico'] == 2 and riesgos_antiguos[2]['riesgo_academico'] != 2 or riesgos[3]['riesgo_economico'] == 2 and riesgos_antiguos[3]['riesgo_economico'] != 2 or riesgos[4]['riesgo_vida_universitaria_ciudad'] == 2 and riesgos_antiguos[4]['riesgo_vida_universitaria_ciudad'] != 2:
                     if riesgos[0]['riesgo_individual'] == 2 or riesgos[1]['riesgo_familiar'] == 2 or riesgos[2]['riesgo_academico'] == 2 or riesgos[3]['riesgo_economico'] == 2 or riesgos[4]['riesgo_vida_universitaria_ciudad'] == 2:
 
                         cuerpo_correo = render_to_string(
                             'correos/riesgos_editados.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'cod_uv_estudiante': estudiante[0]['cod_univalle'], 'cod_carrera': cod_programa[0]['codigo_univalle'], 'correo_estudiante': estudiante[0]['email'], 'dimensiones': self.get_dimensiones(riesgos), 'fecha_seguimiento': data_riesgos['fecha'], 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name']})
+
                         asunto = "Uno o más riesgos han pasado a ser de alto nivel: " + \
                             estudiante[0]['nombre'] + "  " + \
                             estudiante[0]['apellido']
@@ -1357,6 +1681,7 @@ class enviar_riesgo_editado_viewset(ViewSet):
                         """
                         DONT TOUCH
                         """
+
                         service = build('gmail', 'v1', credentials=credentials)
 
                         message = MIMEMultipart()
@@ -1366,27 +1691,36 @@ class enviar_riesgo_editado_viewset(ViewSet):
 
                         raw_message = base64.urlsafe_b64encode(
                             message.as_bytes()).decode()
+
                         """
                         STOP DONT TOUCH
                         """
+
+                        # Enviar el correo
                         try:
                             message = {'raw': raw_message}
                             service.users().messages().send(userId="me", body=message).execute()
                         except Exception as e:
-                            # print(f'Error enviando el correo: {e}')
+                            print(f'Error enviando el correo: {e}')
                             return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                         # ...
                         pass
+
             except Exception as e:
-                # print(f'Error enviando el correo: {e}')
+                print(f'Error enviando el correo: {e}')
                 return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            return Response({'error': f'Ocurrió un error al intentar autenticarse: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'mensaje': 'Se editaron correctamente los datos.'}, status=status.HTTP_200_OK)
 
 
 class enviar_codigo_otp_correo_viewsets(ViewSet):
 
+    """
     # THE GOOD OLD WAY NEVER DIES
+    """
     # def create(self, request):
     #     # print("INICIO DE PROCESO")
     #     # print(request.data)
@@ -1457,7 +1791,9 @@ class enviar_codigo_otp_correo_viewsets(ViewSet):
     #         return Response(({"message": "Email sent successfully", "otp": otp_device.key}, status.HTTP_200_OK))
     #     return Response({'error': 'Invalid request'}, status=400)
 
+    """
     # THE NEW WAY
+    """
     # -*- coding: utf-8 -*-
 
     def save_token(self, credentials):
