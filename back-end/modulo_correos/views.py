@@ -461,6 +461,8 @@ class enviar_correo_cambio_contra_viewset(ViewSet):
                     service.users().messages().send(userId="me", body=message).execute()
                 except Exception as e:
                     print(f'Error enviando el correo: {e}')
+                    return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                    
                     # ...
                 pass
             except Exception as e:
@@ -731,55 +733,73 @@ class enviar_correo_observaciones_viewsets(ViewSet):
         """
 
         try:
-            if not credentials:
-                # Si no existe el token, iniciar el flujo de autorización
-                #  print("Entró al if not")
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'modulo_correos/client_secret.json',
-                    scopes=['https://www.googleapis.com/auth/gmail.send']
-                )
-                #  print("pasó el installed")
-                credentials = flow.run_local_server(port=0)
-                #  print("el server post =0")
-                self.save_token(credentials)
-        except Exception as e:
-            print(f"Ocurrió un error: {e}")
-            return Response({'error': f'Ocurrió un error al intentar leer el archivo, no existe ningún navegador para realizar la indentificación.: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Cargar el token desde el archivo
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            token_path = os.path.join(base_dir, 'token.json')
+            credentials = Credentials.from_authorized_user_file(
+                token_path, scopes=['https://www.googleapis.com/auth/gmail.send'])
 
-        # Si se ha obtenido el token, proceder con el envío de correos
-        if credentials:
+            # Si el token ha expirado, intentar refrescarlo
+            if not credentials or not credentials.valid:
+                if credentials and credentials.expired and credentials.refresh_token:
+                    credentials.refresh(Request())
+                    self.save_token(credentials)
+
+            # Construir el servicio de Gmail
+            service = build('gmail', 'v1', credentials=credentials)
+
+            # Procede a enviar correos con el servicio de Gmail API.
+
             try:
                 # Lógica para enviar el correo usando Gmail API
+
                 estudiante = self.get_data_estudiante(
                     request.data.get("id_estudiante"))
 
-                obj_usuario_creador = user_serializer(
-                    User.objects.get(id=request.data.get("id_modificador"))).data
-                # print("AQUI VA EL USUARIO")
-                # print(obj_usuario_creador)
-                obj_rol_creador = usuario_rol.objects.filter(
-                    id_usuario=request.data.get("id_modificador"), estado="ACTIVO").values()
-                # print("AQUI VA EL USUARIO ROL")
-                # print(obj_rol_creador)
+                # obj_usuario_creador = user_serializer(
+                #     User.objects.get(id=request.data.get("id_modificador"))).data
+
+                user_creador = User.objects.filter(
+                    id=request.data.get("id_modificador")).first()
+                if not user_creador:
+                    return Response({'error': 'Usuario con el id_modificador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+                obj_usuario_creador = user_serializer(user_creador).data
+
                 message_text = ""
                 destinatarios = self.get_usuarios_asignados(
                     request.data.get("id_estudiante"), request.data.get("id_modificador"))
-                # print("DESTINATARIOS")
-                # print(destinatarios)
 
+                # Obtener datos del estudiante
                 var_estudiante = self.get_data_estudiante(
                     request.data.get("id_estudiante"))
+                if not var_estudiante:
+                    return Response({'error': 'Estudiante no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
 
+                # Obtener el rol del usuario creador
+                obj_rol_creador = usuario_rol.objects.filter(
+                    id_usuario=request.data.get("id_modificador"), estado="ACTIVO").values()
+
+                if not obj_rol_creador:
+                    return Response({'error': 'Rol del creador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+                # Obtener asignación del estudiante
                 asignacion_estudiante = asignacion.objects.filter(
                     estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
-                # print(asignacion_estudiante)
+                if not asignacion_estudiante:
+                    return Response({'error': 'Asignación de estudiante no encontrada.'}, status=status.HTTP_404_NOT_FOUND)
 
+                # Obtener el monitor asignado
                 var_monitor = usuario_rol.objects.filter(
                     estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
-                # print(var_monitor)
+                if not var_monitor:
+                    return Response({'error': 'Monitor no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
 
+                # Obtener datos del monitor
                 user_monitor = User.objects.filter(
                     is_active=True, id=var_monitor[0]['id_usuario_id']).values()
+                if not user_monitor:
+                    return Response({'error': 'Usuario monitor no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
 
                 if obj_rol_creador[0]['id_rol_id'] == 1:           # super_ases
                     # print("Enviar Correo a Sistemas (Para Pruebas)")
@@ -818,12 +838,17 @@ class enviar_correo_observaciones_viewsets(ViewSet):
                     service.users().messages().send(userId="me", body=message).execute()
                 except Exception as e:
                     print(f'Error enviando el correo: {e}')
+                    return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                     # ...
                 pass
             except Exception as e:
                 # print(f'Error enviando el correo: {e}')
 
                 return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            return Response({'error': f'Ocurrió un error al intentar autenticarse: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'mensaje': 'Observaciones enviadas.'}, status=status.HTTP_200_OK)
 
@@ -1373,7 +1398,7 @@ class enviar_riesgo_editado_viewset(ViewSet):
                             message = {'raw': raw_message}
                             service.users().messages().send(userId="me", body=message).execute()
                         except Exception as e:
-                            # print(f'Error enviando el correo: {e}')
+                            print(f'Error enviando el correo: {e}')
                             return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                         # ...
                         pass

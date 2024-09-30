@@ -122,9 +122,7 @@ const Seguimiento_individual = (props) => {
     primer_acercamiento: props.item.primer_acercamiento,
     cierre: props.item.cierre,
     id_creador: props.item.id_creador,
-    id_modificador: desencriptarInt(
-      parseInt(sessionStorage.getItem("id_usuario"))
-    ),
+    id_modificador: desencriptarInt(sessionStorage.getItem("id_usuario")),
     id_estudiante: props.item.id_estudiante,
     observaciones_correo: "",
   });
@@ -856,7 +854,7 @@ const Seguimiento_individual = (props) => {
       props.item.riesgo_vida_universitaria_ciudad === 2
     );
   }, []);
-  
+
   const enviar_observaciones = () => {
     console.log("Boton enviar observaciones");
     console.log(form);
