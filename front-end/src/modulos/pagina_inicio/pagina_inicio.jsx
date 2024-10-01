@@ -196,7 +196,7 @@ const Pagina_inicio = () => {
               <img src={boton6} className="boton" alt='/' onClick={() => cambiar_ruta(`/gestion_usuario_rol`)}></img>)}
             {(userRole === 'dir_academico' || userRole === 'dir_programa' || userRole === 'vcd_academico' || userRole === 'practicante' || userRole === 'monitor' || userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' || userRole === "super_ases" || userRole === "sistemas")&& (
               <img src={boton9} className="boton" alt='/' onClick={() => cambiar_ruta(`/ficha_estudiante/sin_seleccion`)}></img>)}
-            {(userRole === 'discapacidad' || userRole === 'prof_disc' || userRole === 'monitor_disc')&& (
+            {(userRole === 'discapacidad' || userRole === 'prof_disc' || userRole === 'monitor_disc'|| userRole === 'acompa_disc')&& (
               <img src={boton9} className="boton" alt='/' onClick={() => cambiar_ruta(`/ficha_estudiante_discapacidad/sin_seleccion`)}></img>)}
             {(userRole === 'dir_academico' ||userRole === 'dir_programa' || userRole === 'vcd_academico' || userRole === 'practicante' || userRole === 'monitor' || userRole === 'profesional' || userRole === 'socioeducativo' || userRole === 'socioeducativo_reg' || userRole === "super_ases" || userRole === "sistemas")&& (
               <img src={boton15} className="boton" alt='/' onClick={() => cambiar_ruta(`/reporte`)}></img>)}
