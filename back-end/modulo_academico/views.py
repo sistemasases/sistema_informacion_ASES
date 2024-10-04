@@ -352,7 +352,11 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
         for i in estudiantes_ids:
             serializer = matricula_serializer(i)
             estudiante_info = estudiante.objects.filter(id=serializer.data['id_estudiante']).values('id', 'nombre', 'apellido', 'cod_univalle', 'num_doc')
-
+            programa_est = programa_estudiante.objects.filter(id_estudiante=serializer.data['id_estudiante']).values('id_programa')
+            programa_data = programa.objects.filter(id=programa_est[0]['id_programa']).values('codigo_univalle')
+            
+            dicc_programa = {"programa" : programa_data[0]["codigo_univalle"]}
+            
             parcelacion = items_semestre.objects.filter(id_curso=curso_param, id_profesor=proferos_param)
             list_notas = []
 
@@ -373,7 +377,7 @@ class alumnos_del_profesor_viewsets(viewsets.ModelViewSet):
                 diccionario_estudiante = {"tipo_dato": "estudiante"}  # Inicializar diccionario_estudiante con el campo "tipo_dato"
 
             diccionario_estudiante.update(estudiante_info[0])  # Agregar los datos de estudiante_info al diccionario
-            data_estudiante = dict(serializer.data, **diccionario_estudiante)
+            data_estudiante = dict(serializer.data, **dicc_programa, **diccionario_estudiante)
             list_estudiantes.append(data_estudiante)
 
         estudiante_por_apellido = {}  # Creamos un diccionario vacío para organizar los estudiantes.
@@ -508,7 +512,7 @@ class reporte_calificador_estudiante_viewsets(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return estudiante.objects.filter(
-            Q(notas_semestre__calificacion__gte=0)  
+            matricula__isnull=False  # Filtrar todos los estudiantes con matrícula, sin importar las notas
         ).distinct()
     def create(self, request):
         return Response(request.data, status=status.HTTP_200_OK)
