@@ -65,15 +65,21 @@ class materia_serializer_full(serializers.ModelSerializer):
 class items_estudiante_serializer(estudiante_serializer):
     items_ganados = serializers.SerializerMethodField()
     items_perdidos = serializers.SerializerMethodField()
+    items_matriculados = serializers.SerializerMethodField()  # Usamos SerializerMethodField para obtener los items matriculados de cada estudiante
+
     class Meta:
         model = estudiante
-        fields = 'cod_univalle', 'nombre', 'apellido', 'email', 'items_ganados', 'items_perdidos'
+        fields = ('cod_univalle', 'nombre', 'apellido', 'email', 'items_ganados', 'items_perdidos', 'items_matriculados')
         
     def get_items_ganados(self, obj):
         return notas_semestre.objects.filter(id_estudiante=obj.id, calificacion__gte=3).values('id_item').distinct().count()
     
     def get_items_perdidos(self, obj):
         return notas_semestre.objects.filter(id_estudiante=obj.id, calificacion__lt=3).values('id_item').distinct().count()
+    
+    def get_items_matriculados(self, obj):
+        # Contar las matrículas del estudiante específico (obj)
+        return matricula.objects.count()
     
     
 
