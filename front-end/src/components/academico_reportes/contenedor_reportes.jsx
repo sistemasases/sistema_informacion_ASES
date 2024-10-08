@@ -1,11 +1,98 @@
 import React, { useState, useEffect } from "react";
-import { Container, Accordion } from "react-bootstrap";
+import { Container, Accordion, Row, Button, Col } from "react-bootstrap";
 import Pestañas from "./pestañas";
 import Tabla_resumen from "./tabla_resumen";
 import TablaReportes from "./tabla_reportes";
 import Bar_chart from "./barchart";
 import axios from "axios";
-import { decryptTokenFromSessionStorage } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import {
+  decryptTokenFromSessionStorage,
+  desencriptarInt,
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import { CSVLink } from "react-csv";
+import writeXlsxFile from "write-excel-file";
+
+// Cabeceras para el archivo CSV de Profesores
+var csv_headers = [
+  { label: "Curso", key: "curso" },
+  { label: "Profesor", key: "profesor" },
+  { label: "Correo", key: "correo" },
+  { label: "Items", key: "items" },
+  { label: "Calificados", key: "calificados" },
+  { label: "Sin Calificar", key: "sin" },
+];
+
+// Cabeceras para el archivo CSV de Estudiantes
+var csv_headers_estudiantes = [
+  { label: "Codigo", key: "codigo" },
+  { label: "Nombre", key: "nombre" },
+  { label: "Correo", key: "correo" },
+  { label: "Items Ganados", key: "items_ganados" },
+  { label: "Items Perdidos", key: "items_perdidos" },
+];
+
+// Contenido del xlsx Profesores
+var schema = [
+  {
+    column: "Curso",
+    type: String,
+    value: (student) => student.curso,
+  },
+  {
+    column: "Profesor",
+    type: String,
+    value: (student) => student.profesor,
+  },
+  {
+    column: "Correo",
+    type: String,
+    value: (student) => student.correo,
+  },
+  {
+    column: "Items",
+    type: Number,
+    value: (student) => student.items,
+  },
+  {
+    column: "Calificados",
+    type: Number,
+    value: (student) => student.calificados,
+  },
+  {
+    column: "Sin Calificar",
+    type: Number,
+    value: (student) => student.sin,
+  },
+];
+
+// Contenido del xlsx Estudiantes
+var schema_estudiantes = [
+  {
+    column: "Código univalle",
+    type: String,
+    value: (student) => student.codigo,
+  },
+  {
+    column: "Nombre",
+    type: String,
+    value: (student) => student.nombre,
+  },
+  {
+    column: "Correo",
+    type: String,
+    value: (student) => student.correo,
+  },
+  {
+    column: "Items Ganados",
+    type: Number, // Cambiar a Number
+    value: (student) => student.items_ganados,
+  },
+  {
+    column: "Items Perdidos",
+    type: Number, // Cambiar a Number
+    value: (student) => student.items_perdidos,
+  },
+];
 
 const Contenedor_reportes = () => {
   const config = {
@@ -26,7 +113,9 @@ const Contenedor_reportes = () => {
       const profesores_data = async () => {
         try {
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/academico/reporte_calificador/`,
+            `${process.env.REACT_APP_API_URL}/academico/reporte_calificador/` +
+              desencriptarInt(sessionStorage.getItem("sede_id")) +
+              "/",
             config
           );
           const reporte = response.data;
@@ -52,11 +141,13 @@ const Contenedor_reportes = () => {
       const estudiantes_data = async () => {
         try {
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/academico/reporte_calificador_estudiante/`,
+            `${process.env.REACT_APP_API_URL}/academico/reporte_calificador_estudiante/` +
+              desencriptarInt(sessionStorage.getItem("sede_id")) +
+              "/",
             config
           );
           const reporte_estudiantes = response.data;
-        //   console.log(reporte_estudiantes);
+          //   console.log(reporte_estudiantes);
           if (reporte_estudiantes.length > 0) {
             set_state((prevState) => ({
               ...prevState,
@@ -73,7 +164,7 @@ const Contenedor_reportes = () => {
         }
       };
       estudiantes_data();
-    //   console.log(state.reporte_estudiantes);
+      //   console.log(state.reporte_estudiantes);
     }
   }, [activeTab]);
 
@@ -180,6 +271,29 @@ const Contenedor_reportes = () => {
     items_perdidos: item.items_perdidos,
   }));
 
+  /**
+   * Función para Imprimir el excel.
+   */
+  const imprimir_excel = (data, type) => {
+    if (type["type"] == "estudiantes") {
+      try {
+        writeXlsxFile(data, {
+          schema: schema_estudiantes,
+          fileName: "Reporte calificador - Estudiantes.xlsx",
+        });
+      } catch (error) {
+        console.error("Error al generar el archivo Excel:", error);
+      }
+    }
+
+    if (type["type"] == "docentes") {
+      writeXlsxFile(data, {
+        schema,
+        fileName: "Reporte calificador - Docentes.xlsx",
+      });
+    }
+  };
+
   const listaPestañas = [
     {
       title: "Reporte de Cursos por Docente",
@@ -203,6 +317,32 @@ const Contenedor_reportes = () => {
                   columns={columns_profesores}
                   data={data_profesores}
                 />
+                <Row>
+                  <Col xs={2} style={{ paddingRight: 2, marginRight: 2 }}>
+                    <CSVLink
+                      style={{ margin: 5 }}
+                      headers={csv_headers}
+                      data={data_profesores}
+                      filename="Reporte calificador - Profesores.csv"
+                    >
+                      {/* headers={columns} */}
+                      <Button style={{ margin: 1 }}> Imprimir CSV</Button>
+                    </CSVLink>
+                  </Col>
+                  <Col xs={2}>
+                    <Button
+                      style={{ margin: 1 }}
+                      name="imprimir_excel"
+                      onClick={() => {
+                        imprimir_excel(data_profesores, {
+                          type: "docentes",
+                        });
+                      }}
+                    >
+                      Imprimir Excel
+                    </Button>
+                  </Col>
+                </Row>
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
@@ -232,6 +372,32 @@ const Contenedor_reportes = () => {
                   columns={columns_estudiantes}
                   data={data_estudiantes}
                 />
+                <Row>
+                  <Col xs={2} style={{ paddingRight: 2, marginRight: 2 }}>
+                    <CSVLink
+                      style={{ margin: 5 }}
+                      headers={csv_headers_estudiantes}
+                      data={data_estudiantes}
+                      filename="Reporte calificador - Estudiantes.csv"
+                    >
+                      {/* headers={columns} */}
+                      <Button style={{ margin: 1 }}> Imprimir CSV</Button>
+                    </CSVLink>
+                  </Col>
+                  <Col xs={2}>
+                    <Button
+                      style={{ margin: 1 }}
+                      name="imprimir_excel"
+                      onClick={() => {
+                        imprimir_excel(data_estudiantes, {
+                          type: "estudiantes",
+                        });
+                      }}
+                    >
+                      Imprimir Excel
+                    </Button>
+                  </Col>
+                </Row>
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>

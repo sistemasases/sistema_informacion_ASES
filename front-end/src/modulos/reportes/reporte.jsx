@@ -60,7 +60,7 @@ var csv_headers = [
   { label: "Apellido", key: "apellido" },
   { label: "Documento", key: "num_doc" },
 ];
-// Contenido del csv
+// Contenido del xlsx
 var schema = [
   {
     column: "Código univalle",
@@ -1402,17 +1402,6 @@ const Reporte = () => {
    * Función para pasar el csv a excel.
    */
   const imprimir_excel = () => {
-    let new_data_excel = [];
-    for (let i = 0; i < filtered.length; i++) {
-      let new_data = [];
-      new_data.push({
-        cod_univalle: state.estudiante[i].cod_univalle,
-        nombre: state.estudiante[i].nombre,
-        apellido: state.estudiante[i].apellido,
-        num_doc: state.estudiante[i].num_doc,
-      });
-      new_data_excel.push(new_data);
-    }
     writeXlsxFile(filtered, {
       schema,
       fileName:
