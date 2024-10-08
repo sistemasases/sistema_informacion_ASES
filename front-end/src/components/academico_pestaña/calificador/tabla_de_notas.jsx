@@ -33,12 +33,12 @@ const Desplegable_item_listas_materias = ({ item, lista_parciales }) => {
   const [open, setOpen] = useState(false);
 
   // Estado para manejar los datos del componente
-  //   const [state, set_state] = useState({
-  //       cursos_de_la_facultad: [],
-  //       franjas_de_curso: [],
-  //       profesores_de_la_franja: [],
-  //       alumnos_del_profesor: [],
-  //     });
+  const [state, set_state] = useState({
+    cursos_de_la_facultad: [],
+    franjas_de_curso: [],
+    profesores_de_la_franja: [],
+    alumnos_del_profesor: [],
+  });
   //     console.log(state);
 
   // Función para calcular el promedio de las notas
@@ -86,7 +86,7 @@ const Desplegable_item_listas_materias = ({ item, lista_parciales }) => {
     const notasActualizadas = [...item.notas]; // Crear una copia del array de notas
     notasActualizadas[notaIndex].calificacion = nuevoValor; // Actualizar el campo de calificación de la nota correspondiente
     item.notas = notasActualizadas; // Actualizar el objeto 'item' con el nuevo array de notas
-    // set_state({ ...state }); // Disparar una re-renderización para reflejar los cambios en la interfaz
+    set_state({ ...state }); // Disparar una re-renderización para reflejar los cambios en la interfaz
 
     // Realizar la solicitud HTTP al backend para actualizar la nota en la base de datos
     try {
