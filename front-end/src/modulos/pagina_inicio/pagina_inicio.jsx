@@ -179,7 +179,8 @@ const Pagina_inicio = () => {
         )}
         {(userRole === "super_ases" ||
           userRole === "socioeducativo" ||
-          userRole === "socioeducativo_reg") && (
+          userRole === "socioeducativo_reg" ||
+          userRole === "dir_academico") && (
           <Row className="selector_reg">
             {(userRole === "super_ases" ||
               userRole === "socioeducativo" ||
