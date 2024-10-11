@@ -18,6 +18,7 @@ import "../../Scss/formularios_externos/formulario_autorizacion_style.css";
 const FormularioActualizacion = (props) => {
   const [documentType, setDocumentType] = useState("");
   const [otherDocumentType, setOtherDocumentType] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const handleDocumentTypeChange = (e) => {
     setDocumentType(e.target.value);
@@ -65,6 +66,7 @@ const FormularioActualizacion = (props) => {
     // console.log(e);
     // console.log(data);
     // usuario_rol
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     // virificar que los campos obligatorios no esten vacios
     if (
@@ -77,6 +79,9 @@ const FormularioActualizacion = (props) => {
     ) {
       alert("Por favor llene todos los campos obligatorios");
       return;
+    } else if (emailRegex.test(data.correo_firma) == false) {
+      alert("Ocurrió un error");
+      setEmailError("El correo no tiene un formato válido");
     } else {
       Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
         data
@@ -221,7 +226,9 @@ const FormularioActualizacion = (props) => {
                           correo_firma: e.target.value,
                         })
                       }
+                      title="Debe ingresar un correo electrónico válido: nombre@dominio.com"
                     />
+                    {emailError && <p style={{ color: "red" }}>{emailError}</p>}
                   </Form.Group>
                   <hr></hr>
 

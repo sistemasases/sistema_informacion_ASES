@@ -1996,3 +1996,249 @@ class VerifyTokenView(ViewSet):
             return Response({'detail': 'Token válido'}, status=status.HTTP_200_OK)
         except (InvalidToken, TokenError) as e:
             return Response({'detail': 'Token inválido o expirado'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class enviar_observaciones_inasistencia_viewsets(ViewSet):
+
+    """
+    THE NEW WAY
+    """
+
+    def save_token(self, credentials):
+        token_info = {
+            "token": credentials.token,
+            "refresh_token": credentials.refresh_token,
+            "token_uri": credentials.token_uri,
+            "client_id": credentials.client_id,
+            "client_secret": credentials.client_secret,
+            "scopes": credentials.scopes
+        }
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        token_path = os.path.join(base_dir, 'token.json')
+        with open(token_path, 'w') as token_file:
+            json.dump(token_info, token_file)
+
+    def load_token(self):
+        if os.path.exists('modulo_correos/token.json'):
+            with open('modulo_correos/token.json', 'r') as token_file:
+                token_info = json.load(token_file)
+            credentials = Credentials(**token_info)
+            # Si el token ha caducado, se refresca
+            if credentials and credentials.expired and credentials.refresh_token:
+                credentials.refresh(Request())
+                self.save_token(credentials)
+            return credentials
+        return None
+
+    def get_data_estudiante(self, id_estudiante_selected):
+        var_estudiante = estudiante.objects.filter(
+            id=id_estudiante_selected).values()
+        return var_estudiante
+
+    def get_usuarios_asignados(self, id_estudiante_selected, id_creador):
+        # print("ID ESTUDIANTE")
+        # print(id_estudiante_selected)
+        # data_sede = request.GET.get('sede')
+        var_estudiante = estudiante.objects.filter(
+            id=id_estudiante_selected).values()
+        # # print(var_estudiante[0])
+
+        user_email = User.objects.filter(
+            is_active=True, id=id_creador).values('email')
+
+        obj_rol_creador = usuario_rol.objects.filter(
+            id_usuario=id_creador, estado="ACTIVO").values()
+        # print(obj_rol_creador)
+
+        asignacion_estudiante = asignacion.objects.filter(
+            estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
+        # print(asignacion_estudiante)
+
+        var_monitor = usuario_rol.objects.filter(
+            estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
+        # print(var_monitor)
+
+        var_practicante = usuario_rol.objects.filter(
+            estado='ACTIVO', id_usuario=var_monitor[0]['id_jefe_id']).values()
+        # print(var_practicante[0])
+
+        var_profesional = usuario_rol.objects.filter(
+            estado='ACTIVO', id_usuario=var_practicante[0]['id_jefe_id']).values()
+        # print(var_profesional[0])
+
+        mail_monitor = User.objects.filter(
+            is_active=True, id=var_monitor[0]['id_usuario_id']).values('email')
+
+        mail_practicante = User.objects.filter(
+            is_active=True, id=var_practicante[0]['id_usuario_id']).values('email')
+        # print(mail_practicante[0]['email'])
+        mail_profesional = User.objects.filter(
+            is_active=True, id=var_profesional[0]['id_usuario_id']).values('email')
+
+        list_correos_test = list()
+        list_correos = list()
+
+        # list_correos_test.append("steven.bernal@correounivalle.edu.co")
+        # list_correos_test.append("sistemas.ases@correounivalle.edu.co")
+        if obj_rol_creador[0]['id_rol_id'] == 1:        # super_ases
+            # print("Enviar Correo a Sistemas (Para Pruebas)")
+            # list_correos_test.append("steven.bernal@correounivalle.edu.co")
+            list_correos_test.append(user_email[0]['email'])
+            list_correos_test.append("sistemas.ases@correounivalle.edu.co")
+            # print("CORREOS")
+            # print(list_correos_test)
+            return list_correos_test
+
+        elif obj_rol_creador[0]['id_rol_id'] == 3:         # "profesional"
+            "Enviar Correo a Practicante y Monitor"
+            list_correos.append(mail_practicante[0]['email'])
+            list_correos.append(mail_monitor[0]['email'])
+            # print("CORREOS")
+            # print(list_correos)
+            return list_correos
+        elif obj_rol_creador[0]['id_rol_id'] == 4:         # "practicante"
+            "Enviar Correo a Profesional y Monitor"
+            list_correos.append(mail_profesional[0]['email'])
+            list_correos.append(mail_monitor[0]['email'])
+            # print("CORREOS")
+            # print(list_correos)
+            return list_correos
+
+    def create(self, request, *args, **kwargs):
+        print(request.data)
+        # Obtener el token de autorización
+        credentials = self.load_token()
+        """
+         Envía un correo electrónico a los usuarios asignados al estudiante con las observaciones del seguimiento.
+        """
+
+        estudiante = self.get_data_estudiante(
+            request.data.get("id_estudiante"))
+
+        # obj_usuario_creador = user_serializer(
+        #     User.objects.get(id=request.data.get("id_modificador"))).data
+
+        user_creador = User.objects.filter(
+            id=request.data.get("id_modificador")).first()
+        if not user_creador:
+            return Response({'error': 'Usuario con el id_modificador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        obj_usuario_creador = user_serializer(user_creador).data
+        
+        message_text = ""
+        destinatarios = self.get_usuarios_asignados(
+            request.data.get("id_estudiante"), request.data.get("id_modificador"))
+
+        # Obtener datos del estudiante
+        var_estudiante = self.get_data_estudiante(
+            request.data.get("id_estudiante"))
+        if not var_estudiante:
+            return Response({'error': 'Estudiante no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Obtener el rol del usuario creador
+        obj_rol_creador = usuario_rol.objects.filter(
+            id_usuario=request.data.get("id_modificador"), estado="ACTIVO").values()
+
+        if not obj_rol_creador:
+            return Response({'error': 'Rol del creador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Obtener asignación del estudiante
+        asignacion_estudiante = asignacion.objects.filter(
+            estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
+        if not asignacion_estudiante:
+            return Response({'error': 'Asignación de estudiante no encontrada.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Obtener el monitor asignado
+        var_monitor = usuario_rol.objects.filter(
+            estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
+        if not var_monitor:
+            return Response({'error': 'Monitor no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Obtener datos del monitor
+        user_monitor = User.objects.filter(
+            is_active=True, id=var_monitor[0]['id_usuario_id']).values()
+        if not user_monitor:
+            return Response({'error': 'Usuario monitor no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if obj_rol_creador[0]['id_rol_id'] == 1:           # super_ases
+            # print("Enviar Correo a Sistemas (Para Pruebas)")
+            message_text = "Enviar Correo a Sistemas (Para Pruebas)"
+        elif obj_rol_creador[0]['id_rol_id'] == 3:         # "profesional"
+            # print("Enviar Correo a Practicante y Monitor")
+            message_text = "Enviar Correo a Practicante y Monitor"
+        elif obj_rol_creador[0]['id_rol_id'] == 4:     # "practicante"
+            # print("Enviar Correo a Profesional y Monitor")
+            message_text = "Enviar Correo a Profesional y Monitor"
+        else:
+            # print("NO SE A QUIEN SE ENVIO")
+            message_text = "NO SE A QUIEN SE ENVIO"
+
+        try:
+            # Cargar el token desde el archivo
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            token_path = os.path.join(base_dir, 'token.json')
+            credentials = Credentials.from_authorized_user_file(
+                token_path, scopes=['https://www.googleapis.com/auth/gmail.send'])
+
+            # Si el token ha expirado, intentar refrescarlo
+            if not credentials or not credentials.valid:
+                if credentials and credentials.expired and credentials.refresh_token:
+                    credentials.refresh(Request())
+                    self.save_token(credentials)
+
+            # Construir el servicio de Gmail
+            service = build('gmail', 'v1', credentials=credentials)
+
+            # Procede a enviar correos con el servicio de Gmail API.
+
+            try:
+                # Lógica para enviar el correo usando Gmail API
+
+                # Se define el asunto y destinatarios
+                asunto = "Observaciones seguimiento del dia " + \
+                    request.data.get("fecha") + " del estudiante " + \
+                    estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'] + ", Lugar: " + \
+                    request.data.get("lugar") + "."
+                # Cuerpo del Correo
+                cuerpo_correo = render_to_string(
+                    'correos/envio_observaciones.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'fecha_seguimiento': request.data.get('fecha'), 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name'], 'observaciones': request.data.get('observaciones_correos'), 'lugar_encuentro': request.data.get('lugar'), 'nombre_monitor': user_monitor[0]['first_name'] + " " + user_monitor[0]['last_name']})
+
+                service = build('gmail', 'v1', credentials=credentials)
+
+                message = MIMEMultipart()
+                message['to'] = ', '.join(destinatarios)
+                message['subject'] = asunto
+                message.attach(MIMEText(cuerpo_correo, 'html'))
+
+                raw_message = base64.urlsafe_b64encode(
+                    message.as_bytes()).decode()
+
+                try:
+                    message = {'raw': raw_message}
+                    service.users().messages().send(userId="me", body=message).execute()
+                except Exception as e:
+                    print(f'Error enviando el correo: {e}')
+                    return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                    # ...
+                pass
+            except Exception as e:
+                # print(f'Error enviando el correo: {e}')
+
+                return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            return Response({'error': f'Ocurrió un error al intentar autenticarse: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({'mensaje': 'Observaciones enviadas.'}, status=status.HTTP_200_OK)
+
+    """
+        destinatarios = {
+            if obj_rol_creador[0]['id_rol'] == 1:           # super_ases
+                "Enviar Correo a Sistemas (Para Pruebas)"
+            elif obj_rol_creador[0]['id_rol'] == 3:         # "profesional"
+                "Enviar Correo a Practicante y Monitor"
+            elif obj_rol_creador[0]['id_rol'] == 4:     # "practicante"
+                "Enviar Correo a Profesional y Monitor"
+        }
+    """

@@ -21,6 +21,8 @@ import {
 import Form from "react-bootstrap/Form";
 import Update_Inasistencia from "../../service/update_inasistencia";
 import Delete_inasistencia from "../../service/delete_inasistencia";
+import Seguimientos_enviar_observaciones from "../../service/seguimientos_enviar_observaciones";
+import Seguimientos_enviar_observaciones_inasistencia from "../../service/seguimientos_enviar_observaciones_inasistencia.js";
 import { CSVLink } from "react-csv";
 import {
   desencriptarInt,
@@ -34,6 +36,11 @@ import {
  * @returns {JSX.Element} Formulario de inasistencia.
  */
 const Inasistencia = (props) => {
+  // Constantes modal de observaciones
+  const [showModalMail, setShowModalMail] = useState(false);
+  const handleShowMail = () => setShowModalMail(true);
+  const handleCloseMail = () => setShowModalMail(false);
+
   /**
    * Función para recargar la página.
    */
@@ -62,6 +69,7 @@ const Inasistencia = (props) => {
       desencriptarInt(sessionStorage.getItem("id_usuario"))
     ),
     id_estudiante: props.item.id_estudiante,
+    observaciones_correo: "",
   });
 
   // Hora de creación y edición del formulario.
@@ -133,7 +141,28 @@ const Inasistencia = (props) => {
     props.handleModal();
   };
 
-  
+  /**
+   * Función para enviar las observaciones del seguimiento.
+   */
+  const enviar_observaciones = () => {
+    // console.log("Boton enviar observaciones");
+    // console.log(form);
+    Seguimientos_enviar_observaciones_inasistencia.seguimiento_enviar_observaciones_inasistencia(
+      form
+    ).then((res) => {
+      if (res) {
+        //   recargarPagina();
+        //   props.handleClose();
+        console.log("Observaciones enviadas");
+        alert("Observaciones enviadas");
+        // setShowModalMail(false);
+      } else {
+        window.confirm(
+          "Hubo un error con el servidor al momento de enviar las observaciones, por favor envianos el documento CSV o vuelve a intentar el registro."
+        );
+      }
+    });
+  };
 
   // Renderiza el formulario de inasistencia.
   return (
@@ -232,6 +261,50 @@ const Inasistencia = (props) => {
           !(userRole === "profesional" || userRole === "super_ases")
         ) ? (
           <>
+            <Button variant="secondary" onClick={handleShowMail}>
+              Enviar observaciones
+            </Button>
+            <>
+              <Modal
+                show={showModalMail}
+                onHide={handleCloseMail}
+                size="md"
+                backdrop="static"
+                className="observation-modal"
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>Envío de observaciones</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Row className="g-2">
+                    <h6>Observaciones:</h6>
+                  </Row>
+                  <Row className="g-2">
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      defaultValue={""}
+                      name="observaciones_correo"
+                      onChange={(e) =>
+                        set_form({
+                          ...form,
+                          observaciones_correo: e.target.value,
+                        })
+                      }
+                      title="Máximo 5000 caracteres."
+                    />
+                  </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleCloseMail}>
+                    Cerrar
+                  </Button>
+                  {/* <Button variant="primary" onClick={enviar_observaciones}>
+                    Enviar
+                  </Button> */}
+                </Modal.Footer>
+              </Modal>
+            </>
             <Button
               variant="danger"
               onClick={() => {
