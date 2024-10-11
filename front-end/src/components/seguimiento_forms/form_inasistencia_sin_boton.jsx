@@ -261,6 +261,7 @@ const Inasistencia = (props) => {
           !(userRole === "profesional" || userRole === "super_ases")
         ) ? (
           <>
+{/*           
             <Button variant="secondary" onClick={handleShowMail}>
               Enviar observaciones
             </Button>
@@ -302,9 +303,11 @@ const Inasistencia = (props) => {
                   {/* <Button variant="primary" onClick={enviar_observaciones}>
                     Enviar
                   </Button> */}
+{/*                   
                 </Modal.Footer>
               </Modal>
-            </>
+            </> 
+             */}
             <Button
               variant="danger"
               onClick={() => {
