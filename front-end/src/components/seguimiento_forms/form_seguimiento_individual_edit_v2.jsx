@@ -891,8 +891,8 @@ const Seguimiento_individual_edit_v2 = (props) => {
    * Función para enviar las observaciones del seguimiento.
    */
   const enviar_observaciones = () => {
-    console.log("Boton enviar observaciones");
-    console.log(form);
+    // console.log("Boton enviar observaciones");
+    // console.log(form);
     Seguimientos_enviar_observaciones.seguimiento_enviar_observaciones(
       form
     ).then((res) => {
