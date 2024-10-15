@@ -145,7 +145,7 @@ const Seguimiento_individual_edit_v2 = (props) => {
     nombre_creador: props.item.nombre_creador,
     id_semestre: desencriptarInt(sessionStorage.getItem("id_semestre_actual")),
   });
-  console.log(props.item.id_editors);
+  // console.log(props.item.id_editors);
   const hora_creacion = new Date(props.item.creacion); // Variable para almacenar la hora de creación del formulario.
   const hora_edicion = new Date(props.item.modificacion); // Variable para almacenar la hora de edición del formulario.
 

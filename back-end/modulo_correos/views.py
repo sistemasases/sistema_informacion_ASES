@@ -2052,8 +2052,11 @@ class enviar_observaciones_inasistencia_viewsets(ViewSet):
 
         asignacion_estudiante = asignacion.objects.filter(
             estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
-        # print(asignacion_estudiante)
+        # print(asignacion_estudiante)0
 
+        if not asignacion_estudiante:
+            return 404
+        
         var_monitor = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
         # print(var_monitor)
@@ -2083,6 +2086,13 @@ class enviar_observaciones_inasistencia_viewsets(ViewSet):
         if obj_rol_creador[0]['id_rol_id'] == 1:        # super_ases
             # print("Enviar Correo a Sistemas (Para Pruebas)")
             # list_correos_test.append("steven.bernal@correounivalle.edu.co")
+
+            # print(mail_profesional[0]['email'])
+
+            # print(mail_practicante[0]['email'])
+
+            # print(mail_monitor[0]['email'])
+
             list_correos_test.append(user_email[0]['email'])
             list_correos_test.append("sistemas.ases@correounivalle.edu.co")
             # print("CORREOS")
@@ -2105,7 +2115,7 @@ class enviar_observaciones_inasistencia_viewsets(ViewSet):
             return list_correos
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
+        # print(request.data)
         # Obtener el token de autorización
         credentials = self.load_token()
         """
@@ -2124,41 +2134,49 @@ class enviar_observaciones_inasistencia_viewsets(ViewSet):
             return Response({'error': 'Usuario con el id_modificador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
 
         obj_usuario_creador = user_serializer(user_creador).data
-        
+
         message_text = ""
         destinatarios = self.get_usuarios_asignados(
             request.data.get("id_estudiante"), request.data.get("id_modificador"))
+        # print(destinatarios)
+
+        if destinatarios == 404:
+            return Response({'error': 'La asignación de éste estudiante es de un semestre diferente al actual '}, status=status.HTTP_404_NOT_FOUND)
 
         # Obtener datos del estudiante
         var_estudiante = self.get_data_estudiante(
             request.data.get("id_estudiante"))
         if not var_estudiante:
             return Response({'error': 'Estudiante no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        # print(var_estudiante)
 
         # Obtener el rol del usuario creador
         obj_rol_creador = usuario_rol.objects.filter(
             id_usuario=request.data.get("id_modificador"), estado="ACTIVO").values()
-
         if not obj_rol_creador:
             return Response({'error': 'Rol del creador no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        # print(obj_rol_creador)
 
         # Obtener asignación del estudiante
         asignacion_estudiante = asignacion.objects.filter(
             estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
         if not asignacion_estudiante:
             return Response({'error': 'Asignación de estudiante no encontrada.'}, status=status.HTTP_404_NOT_FOUND)
+        # print(asignacion_estudiante)
 
         # Obtener el monitor asignado
         var_monitor = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
         if not var_monitor:
             return Response({'error': 'Monitor no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        # print(var_monitor)
 
         # Obtener datos del monitor
         user_monitor = User.objects.filter(
             is_active=True, id=var_monitor[0]['id_usuario_id']).values()
         if not user_monitor:
             return Response({'error': 'Usuario monitor no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        # print(user_monitor)
 
         if obj_rol_creador[0]['id_rol_id'] == 1:           # super_ases
             # print("Enviar Correo a Sistemas (Para Pruebas)")
@@ -2195,13 +2213,13 @@ class enviar_observaciones_inasistencia_viewsets(ViewSet):
                 # Lógica para enviar el correo usando Gmail API
 
                 # Se define el asunto y destinatarios
-                asunto = "Observaciones seguimiento del dia " + \
+                asunto = "Observaciones en inasistencia del dia " + \
                     request.data.get("fecha") + " del estudiante " + \
-                    estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'] + ", Lugar: " + \
-                    request.data.get("lugar") + "."
+                    estudiante[0]['nombre'] + "  " + \
+                    estudiante[0]['apellido'] + "."
                 # Cuerpo del Correo
                 cuerpo_correo = render_to_string(
-                    'correos/envio_observaciones.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'fecha_seguimiento': request.data.get('fecha'), 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name'], 'observaciones': request.data.get('observaciones_correos'), 'lugar_encuentro': request.data.get('lugar'), 'nombre_monitor': user_monitor[0]['first_name'] + " " + user_monitor[0]['last_name']})
+                    'correos/envio_observaciones_inasistencia.html', {'nombre_estudiante': estudiante[0]['nombre'] + "  " + estudiante[0]['apellido'], 'fecha_seguimiento': request.data.get('fecha'), 'usuario_envia_correo': obj_usuario_creador['first_name'] + " " + obj_usuario_creador['last_name'], 'observaciones': request.data.get('observaciones_correos'), 'lugar_encuentro': request.data.get('lugar'), 'nombre_monitor': user_monitor[0]['first_name'] + " " + user_monitor[0]['last_name']})
 
                 service = build('gmail', 'v1', credentials=credentials)
 
@@ -2217,13 +2235,13 @@ class enviar_observaciones_inasistencia_viewsets(ViewSet):
                     message = {'raw': raw_message}
                     service.users().messages().send(userId="me", body=message).execute()
                 except Exception as e:
-                    print(f'Error enviando el correo: {e}')
-                    return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                    # print(f'Error enviando el correo: {e}')
+                    return Response({'error': f'No se pudo ejectutar el servicio de google. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                     # ...
                 pass
             except Exception as e:
                 # print(f'Error enviando el correo: {e}')
-
+                # print(f'Error enviando el correo: {e}')
                 return Response({'error': f'No se pudo enviar el correo. Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         except Exception as e:
