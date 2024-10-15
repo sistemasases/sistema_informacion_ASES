@@ -10,6 +10,7 @@ from modulo_instancia.models import semestre
 from modulo_asignacion.models import asignacion
 from modulo_seguimiento.models import inasistencia, seguimiento_individual
 from modulo_academico.models import matricula, historial_academico, materia, items_semestre, notas_semestre
+from modulo_formularios_externos.models import asistencia
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -25,13 +26,76 @@ from modulo_instancia.serializers import semestre_serializer
 from modulo_asignacion.serializers import asignacion_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer, inasistencia_serializer
 from modulo_usuario_rol.serializers import estudiante_serializer, user_serializer, usuario_rol_serializer
+from modulo_academico.serializers import monitoria_academica_serializer, asistencia_serializer
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q
 from rest_framework.decorators import action
 
+class monitorias_viewset(viewsets.ModelViewSet):
+    serializer_class = monitoria_academica_serializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = monitoria_academica_serializer.Meta.model.objects.all()
 
+    @action(detail=False, methods=['post'], url_path='lista_asistencia')
+    def lista_asistencia(self, request, pk=None):
+        if (request.data["rol"] == "monitor_academico"):
+            monitoria_monitor = monitoria_academica.objects.filter(id_monitor=1037125).first()
+            lista_asistencia = asistencia.objects.filter(fecha=request.data["fecha"], id_monitoria=monitoria_monitor)
+            serializer_asistencia = asistencia_serializer(lista_asistencia,many=True)
+            return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+
+        else:
+            lista_asistencia = asistencia.objects.filter(fecha=request.data["fecha"])
+            serializer_asistencia = asistencia_serializer(lista_asistencia,many=True)
+            return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+        
+    @action(detail=False, methods=['post'], url_path='fecha_asistencia')
+    def fecha_asistencia(self, request, pk=None):
+
+        fecha_ini = request.data["fecha_ini"]
+        fecha_final = request.data["fecha_final"]
+        lista_asistencia = asistencia.objects.filter(fecha__range=[fecha_ini, fecha_final],)
+        serializer_asistencia = asistencia_serializer(lista_asistencia,many=True)
+        return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'], url_path='check_asistencia')
+    def check_asistencia(self, request, pk=None):
+
+        asistencias_data = request.data
+        # Para mantener un registro de los resultados de cada actualización
+        updated_asistencias = []
+        errores = []
+
+        # Iteramos sobre cada item de la lista
+        for asistencia_data in asistencias_data:
+            try:
+                # Obtener la asistencia por su ID
+                asistencia_instance = asistencia.objects.get(id=asistencia_data['id'])
+
+                # Actualizar los campos de la asistencia
+                asistencia_instance.check_asistencia = asistencia_data.get("check_asistencia", asistencia_instance.check_asistencia)
+                # Guardar cambios
+                asistencia_instance.save()
+
+                # Serializamos la asistencia actualizada y la agregamos a la lista de resultados
+                serializer_asistencia = asistencia_serializer(asistencia_instance)
+                updated_asistencias.append(serializer_asistencia.data)
+
+            except asistencia.DoesNotExist:
+                # Si la asistencia no existe, agregamos el error con el ID correspondiente
+                errores.append({"error": f"Asistencia con id {asistencia_data['id']} no encontrada"})
+
+        # Si hubo errores, los incluimos en la respuesta junto con las asistencias actualizadas
+        if errores:
+            return Response({
+                "actualizadas": updated_asistencias,
+                "errores": errores
+            }, status=status.HTTP_207_MULTI_STATUS)
+
+        # Si no hubo errores, devolvemos solo las asistencias actualizadas
+        return Response(updated_asistencias, status=status.HTTP_200_OK)
 class lista_de_facultades_viewsets(viewsets.ModelViewSet):
     serializer_class = facultad_serializer
     # permission_classes = (IsAuthenticated,)

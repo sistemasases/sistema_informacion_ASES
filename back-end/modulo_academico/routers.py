@@ -3,6 +3,7 @@ from modulo_academico.views import *
 
 router = DefaultRouter()
 
+router.register(r'monitorias_academicas',monitorias_viewset,basename = 'monitorias_academicas')
 router.register(r'lista_de_facultades',lista_de_facultades_viewsets,basename = 'lista_de_facultades')
 router.register(r'lista_de_profesores',lista_de_profesores_viewsets,basename = 'lista_de_profesores')
 router.register(r'traer_cursos_del_profesor',traer_cursos_del_profesor_viewsets,basename = 'traer_cursos_del_profesor')

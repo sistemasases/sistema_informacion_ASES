@@ -2,6 +2,7 @@ from rest_framework import serializers
 from modulo_instancia.models import semestre, sede
 from modulo_programa.models import programa_estudiante
 from modulo_usuario_rol.models import estudiante
+from modulo_formularios_externos.models import asistencia
 # from modulo_programa.serializer import programa_estudiante_serializer
 # from modulo_instancia.serializer import semestre_serializer, sede_serializer
 from modulo_usuario_rol.serializers import estudiante_serializer
@@ -18,6 +19,14 @@ from .models import (
 )
 from modulo_usuario_rol.serializers import user_basic_info_serializer
 
+
+class asistencia_serializer(serializers.ModelSerializer):
+    # id_programa_estudiante = programa_estudiante_serializer()
+    # id_semestre = semestre_serializer()
+
+    class Meta:
+        model = asistencia
+        fields = '__all__'
 
 class monitoria_academica_serializer(serializers.ModelSerializer):
     # id_programa_estudiante = programa_estudiante_serializer()
