@@ -23,6 +23,18 @@ from django.db import IntegrityError, transaction
 def carga_test(request):
     return render(request, "prueba_carga.html")
 
+def convertir_hora(hora):
+    try:
+        # Intentar convertir en formato HH:MM:SS
+        return datetime.strptime(hora, '%H:%M:%S')
+    except ValueError:
+        try:
+            # Si falla, intentar convertir en formato HH:MM
+            return datetime.strptime(hora, '%H:%M')
+        except ValueError:
+            # Si ambos fallan, devolver un mensaje de error o manejarlo como prefieras
+            return f"Formato de hora inválido: {hora}"
+
 class Validador_carga(APIView):
     # permission_classes = (IsAuthenticated,)
     def post(self,request):
@@ -818,8 +830,8 @@ def carga_fichas(file):
                 if (estudiante.objects.filter(id = datos.iat[i,60]).values()):
                     consulta_estudiante= estudiante.objects.get(id =datos.iat[i,60])
                     if (seguimiento_individual.objects.filter(fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
-                                                            hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M'),
-                                                            hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M'),
+                                                            hora_inicio = convertir_hora(str(datos.iat[i,2])),
+                                                            hora_finalización= convertir_hora(str(datos.iat[i,3])),
                                                             id_creador = consulta_creador,
                                                             id_estudiante =  consulta_estudiante,).first()):
                         dict_result = {
@@ -885,8 +897,8 @@ def carga_fichas(file):
                                 Seguimiento_individual =seguimiento_individual(
                                     fecha = datetime.strptime(str(datos.iat[i,0]),'%Y-%m-%d'),
                                     lugar = str(datos.iat[i,1]),
-                                    hora_inicio = datetime.strptime(str(datos.iat[i,2]),'%H:%M'),
-                                    hora_finalización= datetime.strptime(str(datos.iat[i,3]),'%H:%M'),
+                                    hora_inicio = convertir_hora(str(datos.iat[i,2])),
+                                    hora_finalización= convertir_hora(str(datos.iat[i,3])),
                                     objetivos= objetivo_dato,
                                     individual= individual_dato,
                                     riesgo_individual= riesgo_individual_dato,
