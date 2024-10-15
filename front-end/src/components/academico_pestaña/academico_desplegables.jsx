@@ -99,7 +99,9 @@ const Academico_desplegable = () => {
   const traer_cursos_de_facultad = async (index) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/academico/cursos_facultad/`,
+        `${process.env.REACT_APP_API_URL}/academico/cursos_facultad/` +
+          desencriptarInt(sessionStorage.getItem("sede_id")) +
+          "/",
         config
       );
       set_state({
@@ -131,7 +133,9 @@ const Academico_desplegable = () => {
   const traer_profesores = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/academico/lista_de_profesores/`,
+        `${process.env.REACT_APP_API_URL}/academico/lista_de_profesores/` +
+          desencriptarInt(sessionStorage.getItem("sede_id")) +
+          "/",
         config
       );
       set_state({
@@ -150,7 +154,9 @@ const Academico_desplegable = () => {
         id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
       };
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`,
+        `${process.env.REACT_APP_API_URL}/academico/traer_estudiantes/` +
+          desencriptarInt(sessionStorage.getItem("sede_id")) +
+          "/",
         config,
         { paramsget }
       );

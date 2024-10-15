@@ -91,9 +91,9 @@ const Carga_masiva = () => {
 
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_sede/` +
+        `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
           desencriptarInt(sessionStorage.getItem("sede_id")) +
-          "/",
+          "/estudiantes_por_sede/",
         config
       )
       .then((response) => {

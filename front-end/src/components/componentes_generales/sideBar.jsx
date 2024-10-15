@@ -24,7 +24,7 @@ import Menu10 from "./menus/discapacidad.json";
 import SidebarItem from "./sidebarItem";
 import Footer from "./footer";
 import Sidebar_item_closed from "./sidebar_item_closed";
-import { Scrollbars } from "react-custom-scrollbars";
+import { Scrollbars } from "react-custom-scrollbars-2";
 import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
@@ -74,7 +74,10 @@ const SideBar = (props) => {
         ? Menu6
         : desencriptar(sessionStorage.rol) === "profesor"
         ? Menu9
-        : desencriptar(sessionStorage.rol) === "discapacidad"
+        : desencriptar(sessionStorage.rol) === "discapacidad"||
+          desencriptar(sessionStorage.rol) === "monitor_disc"||
+          desencriptar(sessionStorage.rol) === "acompa_disc"||
+          desencriptar(sessionStorage.rol) === "prof_disc"
         ? Menu10
         : Menu7,
   });

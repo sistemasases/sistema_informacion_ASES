@@ -12,9 +12,91 @@
 }
 
 .academico_fondo{
-    padding-top: 30px;
-    padding-bottom: 30px;
-    justify-content: center;
+  background: #f5f5f5;
+  border-radius: 15px;
+  margin-top: 15px;
+  padding: 10px;
+  justify-content: center;
+}
+
+.pestañas{
+  background: #fff;
+  margin-bottom: 0;
+  border: 0;
+  height: 30px;
+}
+
+
+
+.nav-item button{
+  font-weight: 600;
+  color:rgb(164, 164, 164);
+}
+
+.nav-item button:hover{
+  font-weight: 1000;
+  color: rgb(179, 179, 179);
+}
+
+.nav-link{
+  text-decoration: true;
+}
+
+
+
+.contenido-pestaña{
+  position: relative;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background: #fff;
+  border: 1px solid #D8D8D8;
+}
+
+
+th.titulo_tabla_resumen{
+  background-color: #ffa4a4;
+  border-width: 2px;
+  border-color: black;
+}
+
+td.contenido_tabla_resumen{
+  background-color: #D8D8D8;
+  border-width: 2px;
+  border-color: black;
+  border-color: black;
+}
+
+.search-bar-academico{
+  position: relative;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.search-bar-academico:focus{
+  background: #f6f6f6;
+  box-shadow: none;
+  font-weight: bold;
+  border: 3px solid #D8D8D8;
+}
+
+
+.search-bar svg{
+  margin: 15px;
+  background: #D8D8D8;
+  outline: 15.5px solid #D8D8D8;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.contenedor-reportes{
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.acordion-academico{
+  position: relative;
+  margin: 0;
+  padding: 0;
 }
 
 
@@ -75,6 +157,7 @@
     overflow: hidden;
     justify-content: center;
   }
+
 
 
 

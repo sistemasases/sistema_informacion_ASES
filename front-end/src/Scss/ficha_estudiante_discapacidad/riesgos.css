@@ -7,6 +7,22 @@
     row-gap: 10px;
     text-align: center;
     color: white;
+    /* opacity: 0.2; */
+    position: relative;
+}
+
+.container-riesgos::before {
+    content: "Funcionalidad no disponible actualmente";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.7);
+    color: rgb(0, 0, 0);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    z-index: 0;
 }
 
 .buttonR{
@@ -16,8 +32,8 @@
     margin-left: auto;
     margin-right: auto;
     color: inherit;
-    background-color: #eb1e00;
-    border:  #eb1e00;
+    background-color: #7b7b7b;
+    border:  #5e5e5e;
     border-radius: 20px;
 }
 
@@ -28,7 +44,7 @@
 .titleR{
     height: 40px;
     line-height: 40px;
-    background-color: #eb1e00;
+    background-color: #636363;
     margin-bottom: -3px;
 }
 

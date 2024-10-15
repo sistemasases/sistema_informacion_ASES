@@ -1,7 +1,65 @@
 import AcordionesHijos from "../AcordionesHijos";
 import Columns from "../Columns";
+import React, { useState } from 'react';
 
 const Comunicacional = () => {
+  
+  const [selection, setSelection] = useState(() => {
+    const initialSelection = {};
+    for (let i = 1; i <= 16; i++) {
+      initialSelection[i] = { binaryChoice: '', tripleChoiceDisabled: false, tripleChoice: '' };
+    }
+    return initialSelection;
+  });
+
+
+  const handleRadioChange = (event) => {
+    const { id, value, name } = event.target;
+    setSelection(prevState => ({
+      ...prevState,
+      [id]: {
+        ...prevState[id],
+        [name.includes('binaryChoice') ? 'binaryChoice' : 'tripleChoice']: value,
+        tripleChoiceDisabled: name.includes('binaryChoice') && value === "No"
+      }
+    }));
+  };
+
+  const createColumns = (id, name) => (
+    [
+      { type: "text", name },
+      { type: "radio", name: `binaryChoice-${id}`, value: "Si", onChange: handleRadioChange, id: id.toString(), checked: selection[id].binaryChoice === "Si" },
+      { type: "radio", name: `binaryChoice-${id}`, value: "No", onChange: handleRadioChange, id: id.toString(), checked: selection[id].binaryChoice === "No" },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Independiente",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Independiente"
+      },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Dependiente",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Dependiente"
+      },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Requiere apoyo",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Requiere apoyo"
+      },
+    ]
+  )
+
   return (
     <AcordionesHijos
       claseCon={"accordion-content"}
@@ -11,93 +69,13 @@ const Comunicacional = () => {
           content: (
             <Columns
               columns={[
-                [
-                  { type: "text", name: "Hablar" },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Producción de mensajes no verbales",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Producción de mensajes en lenguaje de signos convencional",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  { type: "text", name: "Mensajes escritos" },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  { type: "text", name: "Otras formas de producciones" },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
+                createColumns(1, "Hablar"),
+                createColumns(2, "Producción de mensajes no verbales"),
+                createColumns(3, "Producción de mensajes en lenguaje de signos convencional"),
+                createColumns(4, "Mensajes escritos"),
+                createColumns(5, "Otras formas de producciones"),
               ]}
+
             />
           ),
         },
@@ -106,99 +84,13 @@ const Comunicacional = () => {
           content: (
             <Columns
               columns={[
-                [
-                  { type: "text", name: "Recepción de mensajes hablados" },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Recepción de mensajes no verbales",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Recepción de mensajes en lenguaje de signos convencional",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Ayudas técnicas que favorecen la cotidianidad escolar",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Apoyo natural: guía interprete, interprete, tutor y también profesionales como tiflólogo o monitor",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
+                createColumns(6, "Discusión"),
+                createColumns(7, "Recepción de mensajes no verbales"),
+                createColumns(8, "Recepción de mensajes en lenguaje de signos convencional"),
+                createColumns(9, "Ayudas técnicas que favorecen la cotidianidad escolar"),
+                createColumns(10, "Apoyo natural: guía interprete, interprete, tutor y también profesionales como tiflólogo o monitor"),
               ]}
+
             />
           ),
         },
@@ -207,111 +99,12 @@ const Comunicacional = () => {
           content: (
             <Columns
               columns={[
-                [
-                  { type: "text", name: "Discusión" },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Utilización de dispositivos y técnicas de comunicación",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Recepción de mensajes en lenguaje de signos convencional",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  {
-                    type: "text",
-                    name: "Conversación y utilización de dispositivos y técnicas de comunicación, otros especificados y no especificados",
-                  },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  { type: "text", name: "Comunicación, otra especificada" },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
-                [
-                  { type: "text", name: "Comunicación, no especificada" },
-                  { type: "radio", name: "binaryChoice", value: "Si" },
-                  { type: "radio", name: "binaryChoice", value: "No" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Independiente",
-                  },
-                  { type: "radio", name: "tripleChoice", value: "Dependiente" },
-                  {
-                    type: "radio",
-                    name: "tripleChoice",
-                    value: "Requiere apoyo",
-                  },
-                ],
+                createColumns(11, "Recepción de mensajes hablados"),
+                createColumns(12, "Utilización de dispositivos y técnicas de comunicación"),
+                createColumns(13, "Recepción de mensajes en lenguaje de signos convencional"),
+                createColumns(14, "Conversación y utilización de dispositivos y técnicas de comunicación, otros especificados y no especificados"),
+                createColumns(15, "Comunicación, otra especificada"),
+                createColumns(16, "Comunicación, no especificada"),
               ]}
             />
           ),

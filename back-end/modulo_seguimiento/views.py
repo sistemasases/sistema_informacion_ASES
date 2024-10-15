@@ -30,6 +30,50 @@ class seguimiento_individual_viewsets (viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = seguimiento_individual_serializer.Meta.model.objects.all()
 
+    @action(detail=True, methods=['get'], url_path='trayectoria')
+    def trayectoria(self, request, pk):
+        request_sede = int(request.GET.get('id_sede'))
+        list_semestre = semestre.objects.all().get(semestre_actual=True,id_sede = request_sede)
+        fecha_inicio_semestre = list_semestre.fecha_inicio
+
+        listas = []
+        fechas = []
+        riesgo_individual = []
+        riesgo_familiar = []
+        riesgo_academico = []
+        riesgo_economico = []
+        riesgo_vida_universitaria_ciudad = []
+
+        try:
+            seguimiento_reciente = seguimiento_individual.objects.filter(
+                id_estudiante=pk, fecha__gt=fecha_inicio_semestre
+            ).order_by('fecha')
+            for i in seguimiento_reciente:
+                seguimiento = seguimiento_individual_serializer(i)
+                fechas.append(seguimiento.data['fecha'])
+                riesgo_individual.append(seguimiento.data['riesgo_individual'])
+                riesgo_familiar.append(seguimiento.data['riesgo_familiar'])
+                riesgo_academico.append(seguimiento.data['riesgo_academico'])
+                riesgo_economico.append(seguimiento.data['riesgo_economico'])
+                riesgo_vida_universitaria_ciudad.append(seguimiento.data['riesgo_vida_universitaria_ciudad'])
+
+            fechas_lista = {'fechas': fechas}
+            riesgo_individual_lista = {'riesgo_individual': riesgo_individual}
+            riesgo_familiar_lista = {'riesgo_familiar': riesgo_familiar}
+            riesgo_academico_lista = {'riesgo_academico': riesgo_academico}
+            riesgo_economico_lista = {'riesgo_economico': riesgo_economico}
+            riesgo_vida_universitaria_ciudad_lista = {'riesgo_vida_universitaria_ciudad': riesgo_vida_universitaria_ciudad}
+
+            listas.append(fechas_lista)
+            listas.append(riesgo_individual_lista)
+            listas.append(riesgo_familiar_lista)
+            listas.append(riesgo_academico_lista)
+            listas.append(riesgo_economico_lista)
+            listas.append(riesgo_vida_universitaria_ciudad_lista)
+            return Response(listas)
+        except seguimiento_individual.DoesNotExist:
+            return Response({})
+
 
 class inasistencia_viewsets (viewsets.ModelViewSet):
     serializer_class = inasistencia_serializer
@@ -178,7 +222,7 @@ class conteo_seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
 
         return Response(counts,status=status.HTTP_200_OK)
 #
-#   * Descripción de la función.
+#   * Descarga de los seguimientos según varios filtros.
 #   * @author Deiby A. Rodriguez R.
 #   * @param {ModelViewSet} viewsets.ModelViewSet, View set usada por django.
 #   * @return {Json} seguimientos, inasistencias, Json con todos los seguimientos e inasistencias filtradas.
@@ -239,16 +283,25 @@ class descarga_seguimientos_inasistencias_viewsets (viewsets.ModelViewSet):
         filters = []
         filters.append(reduce_and)
 
-        seguimientos =  seguimiento_individual_serializer(
-                            seguimiento_individual.objects.filter(*filters).order_by("fecha"),
-                            many=True
-                        ).data
-        inasistencias = inasistencia_serializer(
-                            inasistencia.objects.filter(*filters).order_by("fecha"),
-                            many=True
-                        ).data
+        seguimientos_data = seguimiento_individual_serializer(
+            seguimiento_individual.objects.filter(*filters).select_related('id_estudiante').order_by("fecha"),
+            many=True).data
 
-        return Response({"seguimientos": seguimientos, "inasistencias": inasistencias},status=status.HTTP_200_OK)
+        inasistencias_data = inasistencia_serializer(
+            inasistencia.objects.filter(*filters).select_related('id_estudiante').order_by("fecha"),
+            many=True).data
+
+        # Diccionario de id_estudiante a cod_univalle para evitar múltiples consultas
+        estudiante_cod_map = {e.id: e.cod_univalle for e in estudiante.objects.all()}
+
+        # Agregar el código del estudiante a los resultados
+        for seguimiento in seguimientos_data:
+            seguimiento['codigo_estudiante'] = estudiante_cod_map.get(seguimiento['id_estudiante'])
+
+        for inasistencia_obj in inasistencias_data:
+            inasistencia_obj['codigo_estudiante'] = estudiante_cod_map.get(inasistencia_obj['id_estudiante'])
+
+        return Response({"seguimientos": seguimientos_data, "inasistencias": inasistencias_data},status=status.HTTP_200_OK)
 
 class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
     serializer_class = basic_estudiante_serializer
@@ -302,10 +355,19 @@ class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
                             'riesgo_economico': self.get_nivel_riesgo(seguimiento_reciente['riesgo_economico']),
                             'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad'])
                         }
-                        conteo = {
-                            'conteo_seguimientos': conteo_seguimiento_individual,
-                            'conto_inasistencias': conteo_inasistencia,
-                        }
+                        if conteo_seguimiento_individual > 6 :
+                            conteo = {
+                                'conteo_seguimientos': conteo_seguimiento_individual,
+                                'conto_inasistencias': conteo_inasistencia,
+                                'culmino_acompañamiento' : True,
+                            }
+                        else :
+                            conteo = {
+                                'conteo_seguimientos': conteo_seguimiento_individual,
+                                'conto_inasistencias': conteo_inasistencia,
+                                'culmino_acompañamiento' : False,
+                            }
+
                     else:
                         riesgo = {
                         'riesgo_individual': 'SIN RIESGO',
@@ -315,8 +377,8 @@ class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
                         'riesgo_vida_universitaria_ciudad': 'SIN RIESGO'
                         }
                         conteo = {
-                            'conteo_seguimientos': conteo_seguimiento_individual,
-                            'conto_inasistencias': conteo_inasistencia,
+                            'conteo_seguimientos': '0',
+                            'conto_inasistencias': '0',
                         }
                 except seguimiento_individual.DoesNotExist:
                     # Si no se encuentra ningún seguimiento para el estudiante especificado, devolver una respuesta vacía
