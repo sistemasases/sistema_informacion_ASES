@@ -144,24 +144,27 @@ const Inasistencia = (props) => {
   /**
    * Función para enviar las observaciones del seguimiento.
    */
-  const enviar_observaciones = () => {
+  const enviar_observaciones = (e) => {
     // console.log("Boton enviar observaciones");
     // console.log(form);
+    e.target.disabled = true;
     Seguimientos_enviar_observaciones_inasistencia.seguimiento_enviar_observaciones_inasistencia(
       form
-    ).then((res) => {
-      if (res) {
-        //   recargarPagina();
-        //   props.handleClose();
-        console.log("Observaciones enviadas");
-        alert("Observaciones enviadas");
-        // setShowModalMail(false);
-      } else {
-        window.confirm(
-          "Hubo un error con el servidor al momento de enviar las observaciones, por favor envianos el documento CSV o vuelve a intentar el registro."
-        );
-      }
-    });
+    )
+      .then((res) => {
+        if (res) {
+          //   recargarPagina();
+          //   props.handleClose();
+          // console.log("Observaciones enviadas");
+          alert("Observaciones enviadas");
+          handleCloseMail();
+          // setShowModalMail(false);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Error al enviar observaciones");
+      });
   };
 
   // Renderiza el formulario de inasistencia.
@@ -261,7 +264,6 @@ const Inasistencia = (props) => {
           !(userRole === "profesional" || userRole === "super_ases")
         ) ? (
           <>
-{/*           
             <Button variant="secondary" onClick={handleShowMail}>
               Enviar observaciones
             </Button>
@@ -300,14 +302,13 @@ const Inasistencia = (props) => {
                   <Button variant="secondary" onClick={handleCloseMail}>
                     Cerrar
                   </Button>
-                  {/* <Button variant="primary" onClick={enviar_observaciones}>
+                  <Button variant="primary" onClick={enviar_observaciones}>
                     Enviar
-                  </Button> */}
-{/*                   
+                  </Button>
                 </Modal.Footer>
               </Modal>
-            </> 
-             */}
+            </>
+
             <Button
               variant="danger"
               onClick={() => {

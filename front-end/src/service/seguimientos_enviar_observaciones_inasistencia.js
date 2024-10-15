@@ -44,6 +44,9 @@ const seguimiento_enviar_observaciones_inasistencia = async (formData) => {
         })
         .catch((err) => {
           console.log(err);
+          if (err.status === 404) {
+            alert(err.response.data.error);
+          }
         });
     } else {
       console.log("No se envió el correo porque no hay observaciones");
