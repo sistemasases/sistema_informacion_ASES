@@ -6,7 +6,7 @@ from modulo_usuario_rol.models import estudiante, cohorte_estudiante, cond_excep
 from django.contrib.auth.models import User
 from modulo_programa.models import programa, programa_estudiante, estado_programa,vcd_academico,dir_programa
 from modulo_discapacidad.models import asignacion_discapacidad
-from modulo_academico.models import historial_academico, materia, facultad, matricula
+from modulo_academico.models import monitoria_academica, materia, facultad, matricula
 from modulo_instancia.models import semestre, sede, cohorte
 from modulo_seguimiento.models import seguimiento_individual, inasistencia
 from django.contrib.auth.hashers import make_password
@@ -84,6 +84,12 @@ class Validador_carga(APIView):
                 return quitar_discapacidad(file)
             elif(tipo == "asignacion_disc"):
                 return discapacidad_asignacion(file)
+            elif(tipo == "monitoria_academica"):
+                return carga_monitoria_academica(file)
+            elif(tipo == "desactivar_monitoria_academica"):
+                return carga_desactivar_monitoria_academica(file)
+            elif(tipo == "activar_monitoria_academica"):
+                return carga_activar_monitoria_academica(file)
             else:
                 return Response({'ERROR': 'No se selecciono un tipo de carga valido.'})
             
@@ -1814,7 +1820,7 @@ def quitar_discapacidad(file):
                 except:
                     dict_result = {
                         'dato' : datos.iat[i,0],
-                        'mensaje' : 'Error al activar el estudiante.'
+                        'mensaje' : 'Error al desactivar el estudiante.'
                     }
                     list_dict_result.append(dict_result)   
             
@@ -1905,4 +1911,209 @@ def discapacidad_asignacion(file):
         )
 
 
+def carga_monitoria_academica(file):
+    list_dict_result = []
+    lista_monitorias =[]
+    datos = pd.read_csv(file,header=0)
+    try:
+        for i in range(datos.shape[0]):
+            
+            if (User.objects.filter(username =datos.iat[i,0]).first()):
+                consulta_monitor = User.objects.filter(username =datos.iat[i,0]).first()
+                if (semestre.objects.filter(id =datos.iat[i,1]).first()):
+                    consulta_semestre = semestre.objects.filter(id =datos.iat[i,1]).first()
+                    if(sede.objects.filter(id =datos.iat[i,2]).first()):
+                        consulta_sede = sede.objects.filter(id =datos.iat[i,2]).first()
+                        if(monitoria_academica.objects.filter(id_monitor =consulta_monitor,id_semestre = consulta_semestre,materia=datos.iat[i,3]).first()):
+                            dict_result = {
+                                    'dato' : datos.iat[i,0],
+                                    'mensaje' : 'Ya existe esta la monitoría de ' + str(datos.iat[i,3]) 
+                                }
+                            list_dict_result.append(dict_result)
+                            
+                        else: 
+                            try:
+                                Monitoria= monitoria_academica(
+                                    id_monitor = consulta_monitor,
+                                    id_semestre = consulta_semestre,
+                                    id_sede = consulta_sede,
+                                    materia = str(datos.iat[i,3])
+                                )
+                                lista_monitorias.append(Monitoria)
 
+                                dict_result = {
+                                            'dato' : datos.iat[i,0],
+                                            'mensaje' : 'Se creó correctamente la Monitoría de ' + str(datos.iat[i,3])
+                                        }
+                                list_dict_result.append(dict_result)
+                            except:
+                                dict_result = {
+                                    'dato' : datos.iat[i,0],
+                                    'mensaje' : 'Error al crear la monitoría de ' + str(datos.iat[i,3])
+                                }
+                                list_dict_result.append(dict_result)        
+                            
+                    else:        
+                        dict_result = {
+                                'dato' : datos.iat[i,2],
+                                'mensaje' : 'No existe una sede con este ID.'
+                            }
+                        list_dict_result.append(dict_result) 
+                else:        
+                    dict_result = {
+                            'dato' : datos.iat[i,1],
+                            'mensaje' : 'No existe un semestre con este ID.'
+                        }
+                    list_dict_result.append(dict_result) 
+            
+            else:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'No existe un Usuario con este Username.'
+                }
+                list_dict_result.append(dict_result)
+
+    except Exception as e:
+                error_detail = str(e)
+                return Response(
+                    {"error": "Ocurrió un error al procesar los datos.", "detail": error_detail},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+    try:
+        with transaction.atomic():
+            monitoria_academica.objects.bulk_create(lista_monitorias)
+        return Response(list_dict_result, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        error_detail = str(e)
+        return Response(
+            {"error": "Ocurrió un error al intentar crear las inasistencias.", "detail": error_detail},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+def carga_desactivar_monitoria_academica(file):
+    
+    
+    list_dict_result = []
+    datos = pd.read_csv(file,header=0)
+    try:
+        for i in range(datos.shape[0]):
+            if (User.objects.filter(username =datos.iat[i,0]).first()):
+                consulta_monitor = User.objects.filter(username =datos.iat[i,0]).first()
+                if (semestre.objects.filter(id =datos.iat[i,1]).first()):
+                    consulta_semestre = semestre.objects.filter(id =datos.iat[i,1]).first()
+                    if(sede.objects.filter(id =datos.iat[i,2]).first()):
+                        consulta_sede = sede.objects.filter(id =datos.iat[i,2]).first()
+                        consulta_monitoria = monitoria_academica.objects.filter(id_monitor =consulta_monitor,id_semestre = consulta_semestre,materia=datos.iat[i,3]).first()
+                        if (consulta_monitoria):
+                            try:
+                                consulta_monitoria.estado = False
+                                consulta_monitoria.save()
+                                dict_result = {
+                                            'dato' : datos.iat[i,0],
+                                            'mensaje' : 'Se desactivo correctamente la monitoría.' 
+                                        }
+                                list_dict_result.append(dict_result)
+                            except:
+                                dict_result = {
+                                    'dato' : datos.iat[i,0],
+                                    'mensaje' : 'Error al desactivar la monitoría.'
+                                }
+                                list_dict_result.append(dict_result)   
+                        
+                        else:
+                            dict_result = {
+                                'dato' : datos.iat[i,0],
+                                'mensaje' : 'No existe esa monitoría: ' + str(datos.iat[i,1])
+                            }
+                            list_dict_result.append(dict_result)
+                    else:        
+                        dict_result = {
+                                'dato' : datos.iat[i,2],
+                                'mensaje' : 'No existe una sede con este ID.'
+                            }
+                        list_dict_result.append(dict_result) 
+                else:        
+                    dict_result = {
+                            'dato' : datos.iat[i,1],
+                            'mensaje' : 'No existe un semestre con este ID.'
+                        }
+                    list_dict_result.append(dict_result) 
+        
+            else:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'No existe un Usuario con este Username.'
+                }
+                list_dict_result.append(dict_result)
+    except Exception as e:
+                error_detail = str(e)
+                return Response(
+                    {"error": "Ocurrió un error al procesar los datos.", "detail": error_detail},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+    return Response(list_dict_result)
+
+def carga_activar_monitoria_academica(file):
+    
+    
+    list_dict_result = []
+    datos = pd.read_csv(file,header=0)
+    try:
+        for i in range(datos.shape[0]):
+            if (User.objects.filter(username =datos.iat[i,0]).first()):
+                consulta_monitor = User.objects.filter(username =datos.iat[i,0]).first()
+                if (semestre.objects.filter(id =datos.iat[i,1]).first()):
+                    consulta_semestre = semestre.objects.filter(id =datos.iat[i,1]).first()
+                    if(sede.objects.filter(id =datos.iat[i,2]).first()):
+                        consulta_sede = sede.objects.filter(id =datos.iat[i,2]).first()
+                        consulta_monitoria = monitoria_academica.objects.filter(id_monitor =consulta_monitor,id_semestre = consulta_semestre,materia=datos.iat[i,3]).first()
+                        if (consulta_monitoria):
+                            try:
+                                consulta_monitoria.estado = True
+                                consulta_monitoria.save()
+                                dict_result = {
+                                            'dato' : datos.iat[i,0],
+                                            'mensaje' : 'Se activo correctamente la monitoría.' 
+                                        }
+                                list_dict_result.append(dict_result)
+                            except:
+                                dict_result = {
+                                    'dato' : datos.iat[i,0],
+                                    'mensaje' : 'Error al activar la monitoría.'
+                                }
+                                list_dict_result.append(dict_result)   
+                        
+                        else:
+                            dict_result = {
+                                'dato' : datos.iat[i,0],
+                                'mensaje' : 'No existe esa monitoría: ' + str(datos.iat[i,1])
+                            }
+                            list_dict_result.append(dict_result)
+                    else:        
+                        dict_result = {
+                                'dato' : datos.iat[i,2],
+                                'mensaje' : 'No existe una sede con este ID.'
+                            }
+                        list_dict_result.append(dict_result) 
+                else:        
+                    dict_result = {
+                            'dato' : datos.iat[i,1],
+                            'mensaje' : 'No existe un semestre con este ID.'
+                        }
+                    list_dict_result.append(dict_result) 
+        
+            else:
+                dict_result = {
+                    'dato' : datos.iat[i,0],
+                    'mensaje' : 'No existe un Usuario con este Username.'
+                }
+                list_dict_result.append(dict_result)
+    except Exception as e:
+                error_detail = str(e)
+                return Response(
+                    {"error": "Ocurrió un error al procesar los datos.", "detail": error_detail},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+    return Response(list_dict_result)

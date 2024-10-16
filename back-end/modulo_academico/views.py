@@ -26,7 +26,7 @@ from modulo_instancia.serializers import semestre_serializer
 from modulo_asignacion.serializers import asignacion_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer, inasistencia_serializer
 from modulo_usuario_rol.serializers import estudiante_serializer, user_serializer, usuario_rol_serializer
-from modulo_academico.serializers import monitoria_academica_serializer, asistencia_serializer
+from modulo_academico.serializers import monitoria_academica_serializer, asistencia_serializer_lista, asistencia_serializer_fecha
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
@@ -41,14 +41,14 @@ class monitorias_viewset(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='lista_asistencia')
     def lista_asistencia(self, request, pk=None):
         if (request.data["rol"] == "monitor_academico"):
-            monitoria_monitor = monitoria_academica.objects.filter(id_monitor=1037125).first()
+            monitoria_monitor = monitoria_academica.objects.filter(id_monitor=request.data["id_user"]).first()
             lista_asistencia = asistencia.objects.filter(fecha=request.data["fecha"], id_monitoria=monitoria_monitor)
-            serializer_asistencia = asistencia_serializer(lista_asistencia,many=True)
+            serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
             return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
 
         else:
             lista_asistencia = asistencia.objects.filter(fecha=request.data["fecha"])
-            serializer_asistencia = asistencia_serializer(lista_asistencia,many=True)
+            serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
             return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
         
     @action(detail=False, methods=['post'], url_path='fecha_asistencia')
@@ -57,7 +57,7 @@ class monitorias_viewset(viewsets.ModelViewSet):
         fecha_ini = request.data["fecha_ini"]
         fecha_final = request.data["fecha_final"]
         lista_asistencia = asistencia.objects.filter(fecha__range=[fecha_ini, fecha_final],)
-        serializer_asistencia = asistencia_serializer(lista_asistencia,many=True)
+        serializer_asistencia = asistencia_serializer_fecha(lista_asistencia,many=True)
         return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['post'], url_path='check_asistencia')

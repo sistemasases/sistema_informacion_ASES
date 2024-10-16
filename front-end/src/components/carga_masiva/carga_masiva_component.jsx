@@ -146,6 +146,10 @@ const Carga_masiva_component = () =>{
                   <option value="volver_estudiante_disc">Activar estudiante Discapacidad</option>
                   <option value="quitar_estudiante_disc">Eliminar estudiante Discapacidad</option>
                   <option value="asignacion_disc">Asignación Discapacidad</option>
+                  <option value="monitoria_academica">Monitoria Academica</option>
+                  <option value="desactivar_monitoria_academica">Desactivar Monitoria Academica</option>
+                  <option value="activar_monitoria_academica">Activar Monitoria Academica</option>
+                  
                 </Form.Select>
               </Col>
             </Row>

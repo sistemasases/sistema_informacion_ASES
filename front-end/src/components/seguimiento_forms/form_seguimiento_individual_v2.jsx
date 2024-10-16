@@ -925,6 +925,9 @@ const Seguimiento_individual_v2 = (props) => {
             <option value="Actualizar la información personal y conocer los aspectos generales del estudiante">
               Actualizar la información personal y de contacto.
             </option>
+            <option value="Seguimiento al nivel de riesgo de las dimensiones del estudiante">
+              Seguimiento al nivel de riesgo de las dimensiones del estudiante
+            </option>
             <option value="Realización de Actividad Individual Socioeducativa (taller par - par)">
               Realización de Actividad Individual Socioeducativa (taller par -
               par)
@@ -982,6 +985,9 @@ const Seguimiento_individual_v2 = (props) => {
             <option value="Actualizar la información personal y conocer los aspectos generales del estudiante">
               Actualizar la información personal y de contacto.
             </option>
+            <option value="Seguimiento al nivel de riesgo de las dimensiones del estudiante">
+              Seguimiento al nivel de riesgo de las dimensiones del estudiante
+            </option>
             <option value="Realización de Actividad Individual Socioeducativa (taller par - par)">
               Realización de Actividad Individual Socioeducativa (taller par -
               par)
@@ -1038,6 +1044,9 @@ const Seguimiento_individual_v2 = (props) => {
             </option>
             <option value="Actualizar la información personal y conocer los aspectos generales del estudiante">
               Actualizar la información personal y de contacto.
+            </option>
+            <option value="Seguimiento al nivel de riesgo de las dimensiones del estudiante">
+              Seguimiento al nivel de riesgo de las dimensiones del estudiante
             </option>
             <option value="Realización de Actividad Individual Socioeducativa (taller par - par)">
               Realización de Actividad Individual Socioeducativa (taller par -

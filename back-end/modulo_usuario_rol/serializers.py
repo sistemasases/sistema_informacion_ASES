@@ -300,3 +300,11 @@ class ficha_estudiante_serializer(serializers.ModelSerializer):
 		if obj.id_etnia:
 			return obj.id_etnia.etnia
 		return None 
+	
+class datos_basicos_estudiante_serializer(serializers.ModelSerializer):
+	
+	programas= programa_estudiante_ficha_serializer(source='id_estudiante_in_programa_estudiante',many=True)
+
+	class Meta:
+		model = estudiante
+		fields = ['nombre', 'apellido', 'cod_univalle', 'programas']
