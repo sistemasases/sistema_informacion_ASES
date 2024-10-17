@@ -19,30 +19,49 @@ from .models import (
 )
 from modulo_usuario_rol.serializers import user_basic_info_serializer
 
-
-class asistencia_serializer_lista(serializers.ModelSerializer):
-    # id_programa_estudiante = programa_estudiante_serializer()
-    estudiantes = datos_basicos_estudiante_serializer(source='id_estudiante_in_asistencia',many=True)
-
-    class Meta:
-        model = asistencia
-        fields = '__all__'
-
-class asistencia_serializer_fecha(serializers.ModelSerializer):
-    # id_programa_estudiante = programa_estudiante_serializer()
-    # id_semestre = semestre_serializer()
-
-    class Meta:
-        model = asistencia
-        fields = '__all__'
-
 class monitoria_academica_serializer(serializers.ModelSerializer):
-    # id_programa_estudiante = programa_estudiante_serializer()
-    # id_semestre = semestre_serializer()
+    nombre_monitor = serializers.SerializerMethodField(allow_null=True)
+    apellido_monitor = serializers.SerializerMethodField(allow_null=True)
+    nombre_sede = serializers.SerializerMethodField(allow_null=True)
 
     class Meta:
         model = monitoria_academica
         fields = '__all__'
+
+    def get_nombre_monitor(self, obj):
+        if obj.id_monitor:
+            return obj.id_monitor.first_name
+        return None
+    def get_apellido_monitor(self, obj):
+        if obj.id_monitor:
+            return obj.id_monitor.last_name
+        return None
+    def get_nombre_sede(self, obj):
+        if obj.id_sede:
+            return obj.id_sede.nombre
+        return None
+class asistencia_serializer(serializers.ModelSerializer):
+    # id_programa_estudiante = programa_estudiante_serializer()
+    # id_semestre = semestre_serializer()
+
+    class Meta:
+        model = asistencia
+        fields = '__all__'
+class asistencia_serializer_lista(serializers.ModelSerializer):
+    monitoria_data = monitoria_academica_serializer(source='id_monitoria')
+    estudiante_data = datos_basicos_estudiante_serializer(source='id_estudiante')
+
+    class Meta:
+        model = asistencia
+        fields = ['id','fecha','check_asistencia','monitoria_data', 'estudiante_data']
+
+class asistencia_serializer_fecha(serializers.ModelSerializer):
+    monitoria_data = monitoria_academica_serializer(source='id_monitoria')
+    estudiante_data = datos_basicos_estudiante_serializer(source='id_estudiante')
+
+    class Meta:
+        model = asistencia
+        fields = ['id','fecha','monitoria_data', 'estudiante_data']
 class historial_academico_serializer(serializers.ModelSerializer):
     # id_programa_estudiante = programa_estudiante_serializer()
     # id_semestre = semestre_serializer()

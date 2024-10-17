@@ -26,7 +26,7 @@ from modulo_instancia.serializers import semestre_serializer
 from modulo_asignacion.serializers import asignacion_serializer
 from modulo_seguimiento.serializers import seguimiento_individual_serializer, inasistencia_serializer
 from modulo_usuario_rol.serializers import estudiante_serializer, user_serializer, usuario_rol_serializer
-from modulo_academico.serializers import monitoria_academica_serializer, asistencia_serializer_lista, asistencia_serializer_fecha
+from modulo_academico.serializers import monitoria_academica_serializer, asistencia_serializer_lista, asistencia_serializer_fecha, asistencia_serializer
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.hashers import check_password
@@ -56,7 +56,7 @@ class monitorias_viewset(viewsets.ModelViewSet):
 
         fecha_ini = request.data["fecha_ini"]
         fecha_final = request.data["fecha_final"]
-        lista_asistencia = asistencia.objects.filter(fecha__range=[fecha_ini, fecha_final],)
+        lista_asistencia = asistencia.objects.filter(fecha__range=[fecha_ini, fecha_final],check_asistencia=True)
         serializer_asistencia = asistencia_serializer_fecha(lista_asistencia,many=True)
         return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
     

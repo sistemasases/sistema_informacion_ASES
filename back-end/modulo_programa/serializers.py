@@ -56,7 +56,13 @@ class historial_estado_programa_estudiante_serializer(serializers.ModelSerialize
         model = historial_estado_programa_estudiante
         fields = '__all__'
 
+class codigos_programas_serializer(serializers.ModelSerializer):
+    cod_univalle = serializers.IntegerField(
+        source='id_programa.codigo_univalle')
 
+    class Meta:
+        model = programa_estudiante
+        fields = ['cod_univalle']
 class programa_estudiante_ficha_serializer(serializers.ModelSerializer):
     nombre_programa = serializers.CharField(source='id_programa.nombre')
     cod_univalle = serializers.IntegerField(
