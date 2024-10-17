@@ -20,13 +20,20 @@ from .models import (
 from modulo_usuario_rol.serializers import user_basic_info_serializer
 
 class monitoria_academica_serializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = monitoria_academica
+        fields = '__all__'
+
+    
+class info_basica_monitoria_academica_serializer(serializers.ModelSerializer):
     nombre_monitor = serializers.SerializerMethodField(allow_null=True)
     apellido_monitor = serializers.SerializerMethodField(allow_null=True)
     nombre_sede = serializers.SerializerMethodField(allow_null=True)
 
     class Meta:
         model = monitoria_academica
-        fields = '__all__'
+        fields = ['id','nombre_monitor','apellido_monitor','materia','nombre_sede']
 
     def get_nombre_monitor(self, obj):
         if obj.id_monitor:
@@ -48,7 +55,7 @@ class asistencia_serializer(serializers.ModelSerializer):
         model = asistencia
         fields = '__all__'
 class asistencia_serializer_lista(serializers.ModelSerializer):
-    monitoria_data = monitoria_academica_serializer(source='id_monitoria')
+    monitoria_data = info_basica_monitoria_academica_serializer(source='id_monitoria')
     estudiante_data = datos_basicos_estudiante_serializer(source='id_estudiante')
 
     class Meta:
@@ -56,7 +63,7 @@ class asistencia_serializer_lista(serializers.ModelSerializer):
         fields = ['id','fecha','check_asistencia','monitoria_data', 'estudiante_data']
 
 class asistencia_serializer_fecha(serializers.ModelSerializer):
-    monitoria_data = monitoria_academica_serializer(source='id_monitoria')
+    monitoria_data = info_basica_monitoria_academica_serializer(source='id_monitoria')
     estudiante_data = datos_basicos_estudiante_serializer(source='id_estudiante')
 
     class Meta:

@@ -136,7 +136,9 @@ class form_primer_ingreso(viewsets.GenericViewSet):
                 ciudad_res_id='1',
                 nombre=str(request.data["nombre"]),
                 apellido=str(request.data["apellido"]),
-                cod_univalle=int(request.data["codigo_estudiante"])
+                cod_univalle=int(request.data["codigo_estudiante"]),
+                estudiante_elegible = False,
+                es_academico = True
             )
             estudiante_prog = programa_estudiante.objects.create(
                 id_programa=programa.objects.get(

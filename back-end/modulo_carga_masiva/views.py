@@ -1594,7 +1594,8 @@ def carga_estudiantes_aca(file):
                         apellido = str(datos.iat[i,21]),
                         cod_univalle = str(datos.iat[i,22]),
                         id_cond_excepcion=consulta_cond_excep,
-                        es_academico=True
+                        es_academico=True,
+                        estudiante_elegible = False
                         )
                     else:
                         Estudiante = estudiante(
@@ -1621,7 +1622,8 @@ def carga_estudiantes_aca(file):
                         nombre = str(datos.iat[i,20]),
                         apellido = str(datos.iat[i,21]),
                         cod_univalle = str(datos.iat[i,22]),
-                        es_academico=True
+                        es_academico=True,
+                        estudiante_elegible = False
                         )
                     lista_estudiantes.append(Estudiante)
                     dict_result = {
@@ -1705,7 +1707,8 @@ def carga_estudiantes_disc(file):
                         apellido = str(datos.iat[i,21]),
                         cod_univalle = str(datos.iat[i,22]),
                         id_cond_excepcion=consulta_cond_excep,
-                        es_discapacidad=True
+                        es_discapacidad=True,
+                        estudiante_elegible = False
                         )
                     else:
                         Estudiante = estudiante(
@@ -1732,7 +1735,8 @@ def carga_estudiantes_disc(file):
                         nombre = str(datos.iat[i,20]),
                         apellido = str(datos.iat[i,21]),
                         cod_univalle = str(datos.iat[i,22]),
-                        es_discapacidad=True
+                        es_discapacidad=True,
+                        estudiante_elegible = False
                         )
                     lista_estudiantes.append(Estudiante)
                     dict_result = {
