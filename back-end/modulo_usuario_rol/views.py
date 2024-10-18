@@ -606,8 +606,8 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
                 data_practicante = User.objects.filter(id=consulta_jefe_monitor[0]['id_jefe']).values('id','first_name','last_name')
                 consulta_jefe_practicante = usuario_rol.objects.filter(id_usuario=data_practicante[0]['id'],id_semestre=var_semestre.id, estado="ACTIVO").values('id_jefe')
                 data_profesional = User.objects.filter(id=consulta_jefe_practicante[0]['id_jefe']).values('first_name','last_name')
-                count_seguimientos = seguimiento_individual.objects.filter(id_estudiante = data_del_estudiante['id'],creacion__range= (var_semestre.fecha_inicio, var_semestre.fecha_fin) ).count()
-                count_inasistencias = inasistencia.objects.filter(id_estudiante = data_del_estudiante['id'],creacion__range= (var_semestre.fecha_inicio, var_semestre.fecha_fin) ).count()
+                count_seguimientos = seguimiento_individual.objects.filter(id_estudiante = data_del_estudiante['id'],fecha__range= (var_semestre.fecha_inicio, var_semestre.fecha_fin) ).count()
+                count_inasistencias = inasistencia.objects.filter(id_estudiante = data_del_estudiante['id'],fecha__range= (var_semestre.fecha_inicio, var_semestre.fecha_fin) ).count()
                 datos = {
                     'id': data_del_estudiante['id'],
                     'cedula': data_del_estudiante['num_doc'],
