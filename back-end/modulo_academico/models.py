@@ -58,6 +58,7 @@ class monitoria_academica(models.Model):
     id_sede = models.ForeignKey(sede, on_delete=models.CASCADE, default=None, null=True,related_name='id_sede_in_monitoria_academica')
     id_semestre =models.ForeignKey(semestre, on_delete=models.CASCADE, default=None, null=True,related_name='id_semestre_in_monitoria_academica')
     materia = models.CharField(max_length=200, default=None, null=True)
+    estado = models.BooleanField(default=True)
 
     class Meta:
         db_table = "monitoria_academica"

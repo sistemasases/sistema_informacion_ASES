@@ -1,9 +1,12 @@
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
+import { desencriptar } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad";
 
 const DatosAcademicosAdicionales = ({ datos_academicos }) => {
-  const current_semestre = "2019-B";
-  const nombre_colegio = "COLEGIO DEPARTAMENTAL DE LLORENTE (OFICIAL)";
+  const current_semestre = desencriptar(
+    sessionStorage.getItem("semestre_actual")
+  );
+  const nombre_colegio = "CAMBIAR";
   return (
     <form className="space_content">
       <p className="descripcion">
@@ -14,13 +17,13 @@ const DatosAcademicosAdicionales = ({ datos_academicos }) => {
       <div className="container_carac">
         <div>
           <p className="titulo">Facultad por programa registrado.</p>
-          <p>3651-SALUD</p>
+          <p>CAMBIAR</p>
           <p className="titulo">Jornada por programa registrado.</p>
-          <p>3651-DIURNA</p>
+          <p>CAMBIAR</p>
         </div>
         <div>
           <p className="titulo">
-            Datos del programa actual <b>(TERAPIA OCUPACIONAL - 3651)</b>
+            Datos del programa actual <b>(CAMBIAR)</b>
           </p>
           <div className="select_space">
             <label>Número de resolución</label>

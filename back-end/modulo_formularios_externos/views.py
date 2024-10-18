@@ -41,21 +41,23 @@ class enviar_monitorias_viewsets(viewsets.GenericViewSet):
     serializer_class = monitoria_academica_serializer
 
     def list(self, request):
-        queryset = monitoria_academica.objects.all()
+        queryset = monitoria_academica.objects.filter(estado=True)
         serializer = monitoria_academica_serializer(queryset, many=True)
-        dicc_monitorias = []
+        print(serializer.data)
+        list_monitorias = []
         for monitoria in serializer.data:
 
             nombre_monitor = User.objects.get(
                 id=monitoria["id_monitor"])
-            dicc_monitorias = [{
+            dicc_monitorias = {
                 "id": monitoria["id"],
                 "id_monitor": monitoria["id_monitor"],
                 "nombre_monitor": nombre_monitor.first_name + " " + nombre_monitor.last_name,
                 "materia": monitoria["materia"],
                 "id_sede": monitoria["id_sede"],
-            }]
-        return Response(dicc_monitorias, status=status.HTTP_200_OK)
+            }
+            list_monitorias.append(dicc_monitorias)
+        return Response(list_monitorias, status=status.HTTP_200_OK)
 
 
 class form_asistencia_academica(viewsets.GenericViewSet):
@@ -134,7 +136,9 @@ class form_primer_ingreso(viewsets.GenericViewSet):
                 ciudad_res_id='1',
                 nombre=str(request.data["nombre"]),
                 apellido=str(request.data["apellido"]),
-                cod_univalle=int(request.data["codigo_estudiante"])
+                cod_univalle=int(request.data["codigo_estudiante"]),
+                estudiante_elegible = False,
+                es_academico = True
             )
             estudiante_prog = programa_estudiante.objects.create(
                 id_programa=programa.objects.get(

@@ -13,6 +13,22 @@ class info_extra_disc (models.Model):
     id_tipo_discapacidad = models.ForeignKey(tipo_discapacidad, on_delete=models.CASCADE, default=0, related_name='id_tipo_discapacidad_in_info_extra_disc')
     categoria = models.CharField(max_length=100, default=None)
     
+class datos_entrevistado (models.Model):
+    desarrollaActividad = models.BooleanField(default=False, null=True)
+    desarrollaActividadData = models.CharField(max_length=100, default=None, null=True)
+    orientacionSexual = models.CharField(max_length=50, default=None, null=True)
+    orientacionSexualOtro = models.CharField(max_length=100, default=None, null=True)
+    autoreconocimientoEtnico = models.CharField(max_length=100, default=None, null=True)
+    autoreconocimientoEtnicoOtro = models.CharField(max_length=100, default=None, null=True)
+    estadoCivil = models.CharField(max_length=50, default=None, null=True)
+    actividadesOcio = models.BooleanField(default=False, null=True)
+    actividadesOcioData = models.CharField(max_length=100, default=None, null=True)
+    actividadDeportiva = models.BooleanField(default=False, null=True)
+    actividadDeportivaData = models.CharField(max_length=100, default=None, null=True)
+    programaAcompanamiento = models.BooleanField(default=False, null=True)
+    programaAcompanamientoOtro = models.CharField(max_length=100, default=None, null=True)
+    programaAcompanamientoOtroData = models.CharField(max_length=100, default=None, null=True)
+    
 class asignacion_discapacidad (models.Model):
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=0, related_name='id_usuario_in_asignacion_discapacidad')
     id_estudiante = models.ForeignKey(estudiante, on_delete=models.CASCADE, default=0, related_name='id_estudiante_in_asignacion_discapacidad')
@@ -38,6 +54,33 @@ class datos_economicos (models.Model):
     nivel_educativo_madre = models.CharField(max_length=50, default=None,null=True)
     ocupacion_madre = models.CharField(max_length=200, default=None,null=True)
     situacion_madre = models.CharField(max_length=50, default=None,null=True)
+    permanencia_ingresos_propios = models.BooleanField(default=False)
+    permanencia_ingresos_familiares = models.BooleanField(default=False)
+    permanencia_ingresos_otros = models.BooleanField(default=False)
+    permanencia_ingresos_otros_texto = models.CharField(max_length=100, default=None,null=True)
+    requiere_materiales = models.BooleanField(default=False)
+    valor_materiales = models.IntegerField(default=None,null=True)
+    transporte_privado = models.BooleanField(default=False)
+    transporte_publico = models.BooleanField(default=False)
+    transporte_propio = models.BooleanField(default=False)
+    transporte_otro = models.BooleanField(default=False)
+    transporte_otro_data = models.CharField(max_length=100, default=None,null=True)
+    valor_transporte = models.IntegerField(default=None,null=True)
+    valor_sostenimiento = models.IntegerField(default=None,null=True)
+    actualmente_vive_estado = models.CharField(max_length=50, default=None,null=True)
+    actualmente_vive_parentezco = models.CharField(max_length=100, default=None,null=True)
+    tiene_hijos = models.BooleanField(default=False)
+    hijos_numero = models.IntegerField(default=None,null=True)
+    motivo_ingreso = models.CharField(max_length=500, default=None,null=True)
+    expectativas_carrera = models.CharField(max_length=500, default=None,null=True)
+    expectativas_grado = models.CharField(max_length=500, default=None,null=True)
+    labor_padre = models.CharField(max_length=100, default=None,null=True)
+    labor_madre = models.CharField(max_length=100, default=None,null=True)
+    otro_familiar_nivel_educativo = models.CharField(max_length=100, default=None,null=True)
+    otro_familiar_situacion_economica = models.CharField(max_length=100, default=None,null=True)
+    otro_familiar_actividad_economica = models.CharField(max_length=100, default=None,null=True)
+    otro_familiar_labor_desempena = models.CharField(max_length=100, default=None,null=True)
+    
     
 class datos_academicos (models.Model):
     numero_resolucion = models.BigIntegerField(default=None,null=True)
@@ -48,6 +91,16 @@ class datos_academicos (models.Model):
     apoyos_recibidos = models.CharField(max_length=100, default=None,null=True)
     observaciones = models.CharField(max_length=500, default=None,null=True)
     dificultades = models.CharField(max_length=500, default=None,null=True)
+    otros_programas_academicos = models.JSONField(default=None,null=True)
+    edu_media_nombre_institucion = models.CharField(max_length=100, default=None,null=True)
+    edu_media_titulo_obtenido = models.CharField(max_length=100, default=None,null=True)
+    edu_media_tipo_institucion = models.CharField(max_length=100, default=None,null=True)
+    edu_media_dificultad_apoyo = models.JSONField(default=None,null=True)
+    edu_superior_tipo_institucion = models.CharField(max_length=100, default=None,null=True)
+    edu_superior_dificultad_apoyo = models.JSONField(default=None,null=True)
+    periodo_ingreso = models.DateField(auto_now_add=True,null=True)
+    observaciones_adicionales = models.CharField(max_length=500, default=None,null=True)
+    
     
 class percepcion_discapacidad (models.Model):
     considera_discapacidad = models.BooleanField(default=False)
@@ -74,8 +127,8 @@ class percepcion_discapacidad (models.Model):
     relaciones_sexuales_texto = models.CharField(max_length=50, default=None,null=True)
     deglucion = models.BooleanField(default=False)
     deglucion_texto = models.CharField(max_length=50, default=None,null=True)
-    otra = models.BooleanField(default=False)
-    otra_texto = models.CharField(max_length=50, default=None,null=True)
+    otra_dif_permanente = models.BooleanField(default=False)
+    otra_dif_permanente_texto = models.CharField(max_length=50, default=None,null=True)
     
     ojos = models.BooleanField(default=False)
     ojos_texto = models.CharField(max_length=50, default=None,null=True)
@@ -99,8 +152,8 @@ class percepcion_discapacidad (models.Model):
     sistema_genital_texto = models.CharField(max_length=50, default=None,null=True)
     sistema_digestivo = models.BooleanField(default=False)
     sistema_digestivo_texto = models.CharField(max_length=50, default=None,null=True)
-    otra = models.BooleanField(default=False)
-    otra_texto = models.CharField(max_length=50, default=None,null=True)
+    otra_organos = models.BooleanField(default=False)
+    otra_organos_texto = models.CharField(max_length=50, default=None,null=True)
     
     cursos = models.BooleanField(default=False)
     cursos_texto = models.CharField(max_length=50, default=None,null=True)
@@ -130,8 +183,8 @@ class percepcion_discapacidad (models.Model):
     alimentos_cafeteria_texto = models.CharField(max_length=50, default=None,null=True)
     tramites = models.BooleanField(default=False)
     tramites_texto = models.CharField(max_length=50, default=None,null=True)
-    otra = models.BooleanField(default=False)
-    otra_texto = models.CharField(max_length=50, default=None,null=True)
+    otra_nec_diferente = models.BooleanField(default=False)
+    otra_nec_diferente_texto = models.CharField(max_length=50, default=None,null=True)
 
     condicion_discapacidad = models.BooleanField(default=False)
     contexto_universitario = models.BooleanField(default=False)
@@ -207,7 +260,7 @@ class percepcion_discapacidad (models.Model):
     
 class acceso_servi_salud (models.Model):
     regimen_vinculado = models.BooleanField(default=False)
-    servicio_salud = models.BooleanField(default=False)
+    servicio_salud = models.CharField(max_length=50, default=None,null=True)
     salud_otra_texto = models.CharField(max_length=50, default=None,null=True)
     servicio_general = models.BooleanField(default=False)
     servicio_optometra = models.BooleanField(default=False)
@@ -220,6 +273,12 @@ class acceso_servi_salud (models.Model):
     servicio_fonoaudiologia = models.BooleanField(default=False)
     servicio_psicologia = models.BooleanField(default=False)
     servicio_social = models.BooleanField(default=False)
+    salud_prepagada = models.BooleanField(default=False)
+    salud_pre_nombre_institucion = models.CharField(max_length=50, default=None,null=True)
+    servicio_complementario = models.BooleanField(default=False)
+    servicio_complementario_nombre = models.CharField(max_length=50, default=None,null=True)
+    servicio_estudiantil = models.BooleanField(default=False)
+    servicio_estudiantil_nombre = models.CharField(max_length=50, default=None,null=True)
 
 class caracterizacion (models.Model):
     id_datos_economicos = models.ForeignKey(datos_economicos, on_delete=models.CASCADE, default=0, related_name='id_datos_economicos_in_caracterizacion')
@@ -231,7 +290,8 @@ class caracterizacion (models.Model):
     fecha= models.DateField(auto_now_add=False,default=None,null=True)
     lugar = models.CharField(max_length=500,default=None,null=True)
     id_creador = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name='id_user_in_caracterizacion')
-    
+    id_datos_entrevistado = models.ForeignKey(datos_entrevistado, on_delete=models.CASCADE, default=None, null=True, related_name='id_datos_entrevistado_in_caracterizacion')
+    jornada_caracterizacion = models.CharField(max_length=5000, default=None,null=True)
     
 class produccion_ac (models.Model):
     hablar = models.BooleanField(default=False)

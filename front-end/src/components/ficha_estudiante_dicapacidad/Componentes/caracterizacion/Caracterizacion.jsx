@@ -12,11 +12,14 @@ import DatosAcademicos from "./DatosAcademicos";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
+  encriptarInt,
 } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad";
 import { useEffect, useState } from "react";
 import CaracterizacionDiscapacidad from "../../../../service/caracterizacion_discapacidad";
 import { useAuthStore } from "../../store/auth";
 import { set } from "date-fns";
+import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
+import { desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad";
 
 const Caracterizacion = () => {
   const config = {
@@ -24,13 +27,22 @@ const Caracterizacion = () => {
   };
   const [semestres, setSemestres] = useState([]);
   const [semestreActual, setSemestreActual] = useState("");
+  const [semestreSelect, setSemestreSelect] = useState("");
   const { estudianteSelected } = useAuthStore();
-  const id_semestre = 40;
+  const id_semestre = desencriptarInt(
+    sessionStorage.getItem("id_semestre_actual")
+  );
 
+  useEffect(() => {
+    sessionStorage.setItem(
+      "id_semestre_discapacidad",
+      encriptarInt(semestreSelect)
+    );
+  }, [semestreSelect]);
   useEffect(() => {
     semestres_discapacidad.semestres_discapacidad().then((res) => {
       setSemestres(res);
-      console.log(res);
+      //console.log(res);
     });
 
     const semestre = desencriptar(sessionStorage.semestre_actual);
@@ -38,253 +50,337 @@ const Caracterizacion = () => {
   }, []);
 
   const [datos_entrevistador, setDatosEntrevistador] = useState({
+    id_semestre: "",
+
     entrevistador: "",
     cargo: "",
     celular: "",
     profesion: "",
   });
 
-  const [datos_entrevistado, setDatosEntrevistado] = useState({
-    entrevistado: "",
-    cargo: "",
-    celular: "",
-    profesion: "",
-  });
+  const [datos_estudiante_entrevistado, setDatosEstuidanteEntrevistado] =
+    useState({
+      fecha_nac: "",
+      ciudad: "lentuang",
+      pais: "paris",
+      // profesion: "",
+    });
 
   const [datos_economicos, setDatosEconomicos] = useState({
+    id_semestre: "",
     estrato_socio: 3,
-    expectativas_laborales: "Trabajar en el área de tecnología",
+    expectativas_laborales: "",
     id: 1,
-    nivel_educativo_madre: "Secundario",
-    nivel_educativo_padre: "Universitario",
-    ocupacion_madre: "Profesora",
-    ocupacion_padre: "Ingeniero",
+    nivel_educativo_madre: "",
+    nivel_educativo_padre: "",
+    ocupacion_madre: "",
+    ocupacion_padre: "",
     recibe_beca: false,
     recibe_finan_materiales: false,
-    recibe_prestacion_econo: true,
-    recibe_transporte: true,
-    situacion_madre: "Empleo estable",
-    situacion_padre: "Empleo estable",
-    solvencia_economica: true,
+    recibe_prestacion_econo: false,
+    recibe_transporte: false,
+    situacion_madre: "",
+    situacion_padre: "",
+    solvencia_economica: false,
+
+    permanencia_ingresos_propios: "",
+    permanencia_ingresos_familiares: "",
+    permanencia_ingresos_otros: "",
+    permanencia_ingresos_otros_texto: "",
+    requiere_materiales: "",
+    valor_materiales: "",
+    transporte_privado: "",
+    transporte_publico: "",
+    transporte_propio: "",
+    transporte_otro: "",
+    valor_transporte: "",
+    valor_sostenimiento: "",
+    actualmente_vive_estado: "",
+    actualmente_vive_parentezco: "",
+    tiene_hijos: "",
+    hijos_numero: "",
+    motivo_ingreso: "",
+    expectativas_carrera: "",
+    expectativas_grado: "",
+    labor_padre: "",
+    labor_madre: "",
+    otro_familiar_nivel_educativo: "",
+    otro_familiar_situacion_economica: "",
+    otro_familiar_actividad_economica: "",
+    otro_familiar_labor_desempena: "",
   });
 
   const [datos_academicos, setDatosAcademicos] = useState({
     id: 1,
     numero_resolucion: 123456789,
     creditos_programa: 120,
-    titulo_obtenido: "Ingeniería en Sistemas",
-    institucion: "Universidad Nacional",
-    nivel_formacion: "Pregrado",
-    apoyos_recibidos: "Beca parcial",
-    observaciones: "Excelente desempeño académico.",
-    dificultades: "Ninguna significativa",
+    titulo_obtenido: "",
+    institucion: "",
+    nivel_formacion: "",
+    apoyos_recibidos: "",
+    observaciones: "",
+    dificultades: "",
   });
 
-  const [datos_academicos_adicionales, setDatosAcademicosAdicionales] =
-    useState({});
+  const [datos_jornada, setDatosJornada] = useState({
+    jornada_caracterizacion: "",
+  });
 
   const [percepcion_discapacidad, setPercepcionDiscapacidad] = useState({
     id: 1,
-    considera_discapacidad: true,
-    consideracion: "Considera que la discapacidad impacta significativamente.",
-    adquisicion: "Discapacidad adquirida.",
-    cuenta_con_diagnostico: true,
-    tipo_diagnostico: "Diagnóstico clínico",
-    certificado_invalidez: true,
-    documento_soporte: true,
-    vision: true,
-    vision_texto: "Visión reducida",
+    considera_discapacidad: false,
+    consideracion: null,
+    adquisicion: null,
+    cuenta_con_diagnostico: false,
+    tipo_diagnostico: null,
+    certificado_invalidez: false,
+    documento_soporte: false,
+    vision: false,
+    vision_texto: "",
     audicion: false,
-    audicion_texto: null,
-    voz_y_habla: true,
-    voz_y_habla_texto: "Dificultades en la articulación",
+    audicion_texto: "",
+    voz_y_habla: false,
+    voz_y_habla_texto: "",
     movimiento_cuerpo: false,
-    movimiento_cuerpo_texto: null,
-    cognicion: true,
-    cognicion_texto: "Disminución leve",
-    estado_socio_emocional: true,
-    estado_socio_emocional_texto: "Estrés moderado",
+    movimiento_cuerpo_texto: "",
+    cognicion: false,
+    cognicion_texto: "",
+    estado_socio_emocional: false,
+    estado_socio_emocional_texto: "",
     relaciones_sexuales: false,
-    relaciones_sexuales_texto: null,
-    deglucion: true,
-    deglucion_texto: "Dificultades ocasionales",
-    ojos: true,
-    ojos_texto: "Visión reducida",
+    relaciones_sexuales_texto: "",
+    deglucion: false,
+    deglucion_texto: "",
+    otra_dif_permanente: false,
+    otra_dif_permanente_texto: null,
+    ojos: false,
+    ojos_texto: "",
     oidos: false,
-    oidos_texto: null,
-    vocales: true,
-    vocales_texto: "Problemas con la articulación",
+    oidos_texto: "",
+    vocales: false,
+    vocales_texto: "",
     manos: false,
-    manos_texto: null,
-    piernas: true,
-    piernas_texto: "Dificultades ocasionales",
+    manos_texto: "",
+    piernas: false,
+    piernas_texto: "",
     piel: false,
-    piel_texto: null,
-    cerebro: true,
-    cerebro_texto: "Impacto leve en funciones cognitivas",
+    piel_texto: "",
+    cerebro: false,
+    cerebro_texto: "",
     sistema_nervioso: false,
-    sistema_nervioso_texto: null,
-    sistema_cardio: true,
-    sistema_cardio_texto: "Condición leve",
+    sistema_nervioso_texto: "",
+    sistema_cardio: false,
+    sistema_cardio_texto: "",
     sistema_genital: false,
-    sistema_genital_texto: null,
-    sistema_digestivo: true,
-    sistema_digestivo_texto: null,
-    cursos: true,
-    cursos_texto: "Curso de adaptación",
+    sistema_genital_texto: "",
+    sistema_digestivo: false,
+    sistema_digestivo_texto: "",
+    otra_organos: false,
+    otra_organos_texto: null,
+    cursos: false,
+    cursos_texto: "",
     clases_magistrales: false,
-    clases_magistrales_texto: null,
-    laboratorios: true,
-    laboratorios_texto: "Adaptación a laboratorios",
+    clases_magistrales_texto: "",
+    laboratorios: false,
+    laboratorios_texto: "",
     secuencias_numericas: false,
-    secuencias_numericas_texto: null,
-    talleres: true,
-    talleres_texto: "Participación en talleres",
+    secuencias_numericas_texto: "",
+    talleres: false,
+    talleres_texto: "",
     conferencias: false,
-    conferencias_texto: null,
-    practica_deportiva: true,
-    practica_deportiva_texto: "Adaptación en deportes",
+    conferencias_texto: "",
+    practica_deportiva: false,
+    practica_deportiva_texto: "",
     ocio: false,
-    ocio_texto: null,
-    movilizacion: true,
-    movilizacion_texto: "Asistencia en movilidad",
+    ocio_texto: "",
+    movilizacion: false,
+    movilizacion_texto: "",
     conciertos: false,
-    conciertos_texto: null,
-    servicios_salud: true,
-    servicios_salud_texto: "Atención médica regular",
+    conciertos_texto: "",
+    servicios_salud: false,
+    servicios_salud_texto: "",
     asambleas: false,
-    asambleas_texto: null,
-    alimentos_cafeteria: true,
-    alimentos_cafeteria_texto: "Acceso a alimentos adaptados",
+    asambleas_texto: "",
+    alimentos_cafeteria: false,
+    alimentos_cafeteria_texto: "",
     tramites: false,
-    tramites_texto: null,
-    otra: false,
-    otra_texto: null,
-    condicion_discapacidad: true,
+    tramites_texto: "",
+    otra_nec_diferente: false,
+    otra_nec_diferente_texto: "",
+    condicion_discapacidad: false,
     contexto_universitario: false,
-    ausencia_ayuda_tec: true,
+    ausencia_ayuda_tec: false,
     ausencia_espacios_fisicos: false,
     ausencia_materiales_impresos: false,
     ausencia_personas_apoyo: false,
-    actitudes_negativas_personas: true,
+    actitudes_negativas_personas: false,
     ausencia_servicios_discapacidad: false,
-    otros_factores: true,
-    otros_factores_texto: "Factores adicionales",
-    condicion_psicoemocional: true,
+    otros_factores: false,
+    otros_factores_texto: "",
+    condicion_psicoemocional: false,
     otra_psicoemocional: false,
-    otra_psicoemocional_texto: null,
-    escritos_impresos: true,
-    escritos_impresos_numero: 10,
+    otra_psicoemocional_texto: "",
+    escritos_impresos: false,
+    escritos_impresos_numero: 0,
     imagenes_pantalla: false,
-    imagenes_pantalla_numero: null,
-    copia_dictado: true,
-    copia_dictado_numero: 5,
-    transcripcion_textos: true,
-    transcripcion_textos_numero: 3,
+    imagenes_pantalla_numero: 0,
+    copia_dictado: false,
+    copia_dictado_numero: 0,
+    transcripcion_textos: false,
+    transcripcion_textos_numero: 0,
     manuales_escritos: false,
-    manuales_escritos_numero: null,
-    textos_pantalla: true,
-    textos_pantalla_numero: 7,
+    manuales_escritos_numero: 0,
+    textos_pantalla: false,
+    textos_pantalla_numero: 0,
     redactar: false,
-    redactar_numero: null,
-    elaborar_ideas: true,
-    elaborar_ideas_numero: 4,
-    escuchar: true,
-    escuchar_numero: 6,
+    redactar_numero: 0,
+    elaborar_ideas: false,
+    elaborar_ideas_numero: 0,
+    escuchar: false,
+    escuchar_numero: 0,
     expre_oral: false,
-    expre_oral_numero: null,
-    compren_oral: true,
-    compren_oral_numero: 8,
+    expre_oral_numero: 0,
+    compren_oral: false,
+    compren_oral_numero: 0,
     interactuar: false,
-    interactuar_numero: null,
-    rel_interpersonales: true,
-    rel_interpersonales_numero: 2,
-    desplazarse: true,
-    desplazarse_numero: 9,
+    interactuar_numero: 0,
+    rel_interpersonales: false,
+    rel_interpersonales_numero: 0,
+    desplazarse: false,
+    desplazarse_numero: 0,
     manipular_obj: false,
-    manipular_obj_numero: null,
-    mant_sentado: true,
-    mant_sentado_numero: 12,
-    asearse: true,
-    asearse_numero: 15,
+    manipular_obj_numero: 0,
+    mant_sentado: false,
+    mant_sentado_numero: 0,
+    asearse: false,
+    asearse_numero: 0,
     vestirse_desves: false,
-    vestirse_desves_numero: null,
-    consumier_alimen: true,
-    consumier_alimen_numero: 11,
+    vestirse_desves_numero: 0,
+    consumier_alimen: false,
+    consumier_alimen_numero: 0,
     evacuar: false,
-    evacuar_numero: null,
+    evacuar_numero: 0,
     otro: false,
-    otro_texto: null,
-    amigo_apoyo: true,
+    otro_texto: "",
+    amigo_apoyo: false,
     pareja_apoyo: false,
-    familia_apoyo: true,
+    familia_apoyo: false,
     salud_apoyo: false,
-    otro_apoyo: true,
+    otro_apoyo: false,
     privado_desplazar: false,
-    publico_desplazar: true,
-    propio_desplazar: true,
+    publico_desplazar: false,
+    propio_desplazar: false,
     otro_desplazar: false,
-    participa_org: true,
+    participa_org: false,
     act_otras_per: false,
-    apoyo_inst: true,
-    nombre_institucion: "Instituto Ejemplo",
-    tipo_apoyo: "Apoyo educativo",
+    apoyo_inst: false,
+    nombre_institucion: "",
+    tipo_apoyo: "",
   });
-
-  const [
-    conclusion_jornada_caracterizacion,
-    setConclusionJornadaCaracterizacion,
-  ] = useState({});
 
   const [acceso_servicios_salud, setAccesoServiciosSalud] = useState({
     id: 1,
-    regimen_vinculado: true,
-    servicio_salud: true,
+    regimen_vinculado: false,
+    servicio_salud: false,
     salud_otra_texto: "Servicio de salud especializado",
-    servicio_general: true,
+    servicio_general: false,
     servicio_optometra: false,
-    servicio_psiquiatria: true,
+    servicio_psiquiatria: false,
     servicio_alternativas: false,
-    servicio_especializado: true,
+    servicio_especializado: false,
     servicio_fisioterapia: false,
-    servicio_otro: true,
+    servicio_otro: false,
     servicio_ocupacional: false,
-    servicio_fonoaudiologia: true,
+    servicio_fonoaudiologia: false,
     servicio_psicologia: false,
-    servicio_social: true,
+    servicio_social: false,
   });
 
-  useEffect(() => {
+  const getCaracterizacion = (semestre_data) => {
+    const semestre_consulta = semestre_data ? semestre_data : id_semestre;
+    //console.log(semestre_consulta);
     CaracterizacionDiscapacidad.caracterizacionDiscapacidad(
       estudianteSelected.id,
-      40
+      semestre_consulta
     )
       .then((res) => {
-        console.log(res);
-        // setDatosEntrevistador
+        //console.log(res);
+        //console.log(semestre_consulta);
+        // Reorganizar y formar la nueva fecha en formato día-mes-anio
         const fechaOriginal = res.datos_caracterizacion.fecha;
+        //console.log(fechaOriginal);
+        // Dividir la fecha en partes [anio, mes, día]
+        const fechaOriginalMod = fechaOriginal.split("T")[0]; // "1900-01-01"
+        const [anio, mes, día] = fechaOriginalMod.split("-");
+        // Reorganizar y formar la nueva fecha en formato día-mes-anio
+        const fechaConvertida = `${anio}-${mes}-${día}`;
+        //console.log(fechaConvertida);
 
-        // Dividir la fecha en partes [año, mes, día]
-        const [año, mes, día] = fechaOriginal.split("-");
+        // Fecha nacimiento
+        const fechaNacimiento = estudianteSelected.fecha_nac;
+        //console.log(fechaNacimiento);
+        // Dividir la fecha en partes [anio, mes, día]
+        const fechaNacimientoMod = fechaNacimiento.split("T")[0]; // "1900-01-01"
+        const [anioF, mesF, diaF] = fechaNacimientoMod.split("-");
+        // Reorganizar y formar la nueva fecha en formato anio-mes-día
+        const fechaConvertidaNacimiento = `${anioF}-${mesF}-${diaF}`;
+        //console.log(fechaConvertidaNacimiento);
 
-        // Reorganizar y formar la nueva fecha en formato día-mes-año
-        const fechaConvertida = `${día}-${mes}-${año}`;
-        console.log(fechaConvertida);
-
+        const fechaIngreso = estudianteSelected.anio_ingreso;
+        const fechaConvertidaTIngreso = fechaIngreso.split("T")[0];
+        const [anioIngreso, mesIngreso, diaIngreso] =
+          fechaConvertidaTIngreso.split("-");
+        const fechaConvertidaIngreso = `${anioIngreso}-${mesIngreso}-${diaIngreso}`;
+        //console.log(fechaConvertidaIngreso);
+        // setDatosEntrevistador
         setDatosEntrevistador({
+          id_semestre: semestre_consulta,
           entrevistador:
             res.datos_user.first_name + " " + res.datos_user.last_name,
           cargo: res.datos_entrevistador.cargo,
           celular: res.datos_entrevistador.celular,
           profesion: res.datos_entrevistador.profesion,
-          fecha_aplicacion: res.datos_caracterizacion.fecha,
+          fecha_aplicacion: fechaConvertida,
           lugar: res.datos_caracterizacion.lugar,
         });
 
-        // setDatosEntrevistado
+        //console.log("Datos entrevistador");
+        //console.log(datos_entrevistador);
+
+        setDatosEstuidanteEntrevistado({
+          lugar: res.datos_caracterizacion.lugar,
+          id_semestre: semestre_consulta,
+          fecha_nac: fechaConvertidaNacimiento,
+          ciudad: estudianteSelected.ciudad_nac,
+          pais: "Colombia",
+
+          desarrollaActividad: res.datos_entrevistado.desarrollaActividad,
+          desarrollaActividadData:
+            res.datos_entrevistado.desarrollaActividadData,
+          orientacionSexual: res.datos_entrevistado.orientacionSexual,
+          orientacionSexualOtro: res.datos_entrevistado.orientacionSexualOtro,
+          autoreconocimientoEtnico:
+            res.datos_entrevistado.autoreconocimientoEtnico,
+          autoreconocimientoEtnicoOtro:
+            res.datos_entrevistado.autoreconocimientoEtnicoOtro,
+          estadoCivil: res.datos_entrevistado.estadoCivil,
+          actividadesOcio: res.datos_entrevistado.actividadesOcio,
+          actividadesOcioData: res.datos_entrevistado.actividadesOcioData,
+          actividadDeportiva: res.datos_entrevistado.actividadDeportiva,
+          actividadDeportivaData: res.datos_entrevistado.actividadDeportivaData,
+          programaAcompanamiento: res.datos_entrevistado.programaAcompanamiento,
+          programaAcompanamientoOtro:
+            res.datos_entrevistado.programaAcompanamientoOtro,
+          programaAcompanamientoOtroData:
+            res.datos_entrevistado.programaAcompanamientoOtroData,
+        });
 
         // setDatosEconomicos
         setDatosEconomicos({
+          id_semestre: semestre_consulta,
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: fechaConvertida,
+
           estrato_socio: res.datos_economicos.estrato_socio,
           expectativas_laborales: res.datos_economicos.expectativas_laborales,
           id: res.datos_economicos.id,
@@ -299,58 +395,50 @@ const Caracterizacion = () => {
           situacion_madre: res.datos_economicos.situacion_madre,
           situacion_padre: res.datos_economicos.situacion_padre,
           solvencia_economica: res.datos_economicos.solvencia_economica,
-          // Falta
-          // *
-          //           ¿Cómo sostiene su permanencia en la universidad?
-          // Ingresos propios
-          // permanencia_ingreso_propio: ,
-          // Ingresos Familiares
-          // permanencia_ingreso_familiar: ,
-          // Otros ¿cuáles?:
-          // permanencia_otro: true || false
-          // permanencia_otro_texto: ,
 
-          // ¿Requiere materiales durante su carrera?
-          // req_materiales: ,
-          // *
-          //           Para desplazarse a la universidad usted:
-          // Paga transporte privado
-          // transporte_privado: ,
-          // Paga el transporte público
-          // transporte_prublico: ,
-          // Tiene transporte propio
-          // transporte_propio: ,
-          // Otro ¿Cuál?:
-          // transporte_otro_texto: ,
-          // ¿Cuál es el valor aproximado para el transporte, durante un semestre?
-          // transporte_valor: ,
-          // ¿Cuál es el valor aproximado en sostenimiento (alimentación, arriendo, servicios públicos incluido internet, entre otros), durante un semestre?
-          // valor_sostenimiento: res.datos_economicos.valor_sostenimiento,
-          // Actualmente vive:
-          // actualmente_vive_con: ,
-          // ¿Tiene hijos/as?
-          // *
-          // tiene_hijos: ,
-          // *
-          //           ¿Qué le motivó el ingreso a su carrera?
-          // motivacion_ingreso: ,
-          // ¿Cuáles son sus expectativas en esta carrera?
-          // expectativas_carrera: ,
-          // ¿Cuáles son sus expectativas al graduarse?
-          // expectativas_graduarse: ,
-          //
-          // Info padre/madre
-          // labor_padre: ,
-          // labor_madre: ,
-          // * Información de otros familiares que se hayan hecho a cargo en caso diferente a los anteriores
-          // acargo_nivel_educativo: ,
-          // acargo_situacion_económica: ,
-          // acargo_actividad_economica: ,
-          // acargo_labor_desempeña: ,
+          permanencia_ingresos_propios:
+            res.datos_economicos.permanencia_ingresos_propios,
+          permanencia_ingresos_familiares:
+            res.datos_economicos.permanencia_ingresos_familiares,
+          permanencia_ingresos_otros:
+            res.datos_economicos.permanencia_ingresos_otros,
+          permanencia_ingresos_otros_texto:
+            res.datos_economicos.permanencia_ingresos_otros_texto,
+          requiere_materiales: res.datos_economicos.requiere_materiales,
+          valor_materiales: res.datos_economicos.valor_materiales,
+          transporte_privado: res.datos_economicos.transporte_privado,
+          transporte_publico: res.datos_economicos.transporte_publico,
+          transporte_propio: res.datos_economicos.transporte_propio,
+          transporte_otro: res.datos_economicos.transporte_otro,
+          transporte_otro_data: res.datos_economicos.transporte_otro_data,
+          valor_transporte: res.datos_economicos.valor_transporte,
+          valor_sostenimiento: res.datos_economicos.valor_sostenimiento,
+          actualmente_vive_estado: res.datos_economicos.actualmente_vive_estado,
+          actualmente_vive_parentezco:
+            res.datos_economicos.actualmente_vive_parentezco,
+          tiene_hijos: res.datos_economicos.tiene_hijos,
+          hijos_numero: res.datos_economicos.hijos_numero,
+          motivo_ingreso: res.datos_economicos.motivo_ingreso,
+          expectativas_carrera: res.datos_economicos.expectativas_carrera,
+          expectativas_grado: res.datos_economicos.expectativas_grado,
+          labor_padre: res.datos_economicos.labor_padre,
+          labor_madre: res.datos_economicos.labor_madre,
+          otro_familiar_nivel_educativo:
+            res.datos_economicos.otro_familiar_nivel_educativo,
+          otro_familiar_situacion_economica:
+            res.datos_economicos.otro_familiar_situacion_economica,
+          otro_familiar_actividad_economica:
+            res.datos_economicos.otro_familiar_actividad_economica,
+          otro_familiar_labor_desempena:
+            res.datos_economicos.otro_familiar_labor_desempena,
         });
 
         // setDatosAcademicos
         setDatosAcademicos({
+          id_semestre: semestre_consulta,
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: fechaConvertidaIngreso,
+
           id: res.datos_academicos.id,
           numero_resolucion: res.datos_academicos.numero_resolucion,
           creditos_programa: res.datos_academicos.creditos_programa,
@@ -360,13 +448,37 @@ const Caracterizacion = () => {
           apoyos_recibidos: res.datos_academicos.apoyos_recibidos,
           observaciones: res.datos_academicos.observaciones,
           dificultades: res.datos_academicos.dificultades,
+
+          anio_ingreso: fechaConvertidaIngreso,
+          otros_programas_academicos:
+            res.datos_academicos.otros_programas_academicos,
+          edu_media_nombre_institucion:
+            res.datos_academicos.edu_media_nombre_institucion,
+          edu_media_titulo_obtenido:
+            res.datos_academicos.edu_media_titulo_obtenido,
+          edu_media_tipo_institucion:
+            res.datos_academicos.edu_media_tipo_institucion,
+          edu_media_dificultad_apoyo:
+            res.datos_academicos.edu_media_dificultad_apoyo,
+          edu_superior_tipo_institucion:
+            res.datos_academicos.edu_superior_tipo_institucion,
+          edu_superior_dificultad_apoyo:
+            res.datos_academicos.edu_superior_dificultad_apoyo,
+          periodo_ingreso: res.datos_academicos.periodo_ingreso,
+          observaciones_adicionales:
+            res.datos_academicos.observaciones_adicionales,
         });
 
         // setDatosAcademicosAdicionales
 
         // setPercepcionCaracteristicasDiscapacidad
         setPercepcionDiscapacidad({
+          id_semestre: semestre_consulta,
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: fechaConvertida,
+
           id: res.percepcion_discapacidad.id,
+
           considera_discapacidad:
             res.percepcion_discapacidad.considera_discapacidad,
           consideracion: res.percepcion_discapacidad.consideracion,
@@ -397,6 +509,9 @@ const Caracterizacion = () => {
             res.percepcion_discapacidad.relaciones_sexuales_texto,
           deglucion: res.percepcion_discapacidad.deglucion,
           deglucion_texto: res.percepcion_discapacidad.deglucion_texto,
+          otra_dif_permanente: res.percepcion_discapacidad.otra_dif_permanente,
+          otra_dif_permanente_texto:
+            res.percepcion_discapacidad.otra_dif_permanente_texto,
           ojos: res.percepcion_discapacidad.ojos,
           ojos_texto: res.percepcion_discapacidad.ojos_texto,
           oidos: res.percepcion_discapacidad.oidos,
@@ -423,6 +538,8 @@ const Caracterizacion = () => {
           sistema_digestivo: res.percepcion_discapacidad.sistema_digestivo,
           sistema_digestivo_texto:
             res.percepcion_discapacidad.sistema_digestivo_texto,
+          otra_organos: res.percepcion_discapacidad.otra_organos,
+          otra_organos_texto: res.percepcion_discapacidad.otra_organos_texto,
           cursos: res.percepcion_discapacidad.cursos,
           cursos_texto: res.percepcion_discapacidad.cursos_texto,
           clases_magistrales: res.percepcion_discapacidad.clases_magistrales,
@@ -457,8 +574,9 @@ const Caracterizacion = () => {
             res.percepcion_discapacidad.alimentos_cafeteria_texto,
           tramites: res.percepcion_discapacidad.tramites,
           tramites_texto: res.percepcion_discapacidad.tramites_texto,
-          otra: res.percepcion_discapacidad.otra,
-          otra_texto: res.percepcion_discapacidad.otra_texto,
+          otra_nec_diferente: res.percepcion_discapacidad.otra_nec_diferente,
+          otra_nec_diferente_texto:
+            res.percepcion_discapacidad.otra_nec_diferente_texto,
           condicion_discapacidad:
             res.percepcion_discapacidad.condicion_discapacidad,
           contexto_universitario:
@@ -552,36 +670,69 @@ const Caracterizacion = () => {
           tipo_apoyo: res.percepcion_discapacidad.tipo_apoyo,
         });
 
-        // setConclusionJornadaCaracterizacion
-
         // setAccesoServiciosSalud
         setAccesoServiciosSalud({
-          id: res.acceso_servicios_salud.id,
-          regimen_vinculado: res.acceso_servicios_salud.regimen_vinculado,
-          servicio_salud: res.acceso_servicios_salud.servicio_salud,
-          salud_otra_texto: res.acceso_servicios_salud.salud_otra_texto,
-          servicio_general: res.acceso_servicios_salud.servicio_general,
-          servicio_optometra: res.acceso_servicios_salud.servicio_optometra,
-          servicio_psiquiatria: res.acceso_servicios_salud.servicio_psiquiatria,
-          servicio_alternativas:
-            res.acceso_servicios_salud.servicio_alternativas,
-          servicio_especializado:
-            res.acceso_servicios_salud.servicio_especializado,
-          servicio_fisioterapia:
-            res.acceso_servicios_salud.servicio_fisioterapia,
-          servicio_otro: res.acceso_servicios_salud.servicio_otro,
-          servicio_ocupacional: res.acceso_servicios_salud.servicio_ocupacional,
+          id_semestre: semestre_consulta,
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: fechaConvertida,
+
+          jornada_caracterizacion:
+            res.datos_caracterizacion.jornada_caracterizacion,
+
+          id: res.acceso_servi_salud.id,
+          regimen_vinculado: res.acceso_servi_salud.regimen_vinculado,
+          servicio_salud: res.acceso_servi_salud.servicio_salud,
+          salud_otra_texto: res.acceso_servi_salud.salud_otra_texto,
+          servicio_general: res.acceso_servi_salud.servicio_general,
+          servicio_optometra: res.acceso_servi_salud.servicio_optometra,
+          servicio_psiquiatria: res.acceso_servi_salud.servicio_psiquiatria,
+          servicio_alternativas: res.acceso_servi_salud.servicio_alternativas,
+          servicio_especializado: res.acceso_servi_salud.servicio_especializado,
+          servicio_fisioterapia: res.acceso_servi_salud.servicio_fisioterapia,
+          servicio_otro: res.acceso_servi_salud.servicio_otro,
+          servicio_ocupacional: res.acceso_servi_salud.servicio_ocupacional,
           servicio_fonoaudiologia:
-            res.acceso_servicios_salud.servicio_fonoaudiologia,
-          servicio_psicologia: res.acceso_servicios_salud.servicio_psicologia,
-          servicio_social: res.acceso_servicios_salud.servicio_social,
+            res.acceso_servi_salud.servicio_fonoaudiologia,
+          servicio_psicologia: res.acceso_servi_salud.servicio_psicologia,
+          servicio_social: res.acceso_servi_salud.servicio_social,
+          salud_prepagada: res.acceso_servi_salud.salud_prepagada,
+          salud_pre_nombre_institucion:
+            res.acceso_servi_salud.salud_pre_nombre_institucion,
+          servicio_complementario:
+            res.acceso_servi_salud.servicio_complementario,
+          servicio_complementario_nombre:
+            res.acceso_servi_salud.servicio_complementario_nombre,
+          servicio_estudiantil: res.acceso_servi_salud.servicio_estudiantil,
+          servicio_estudiantil_nombre:
+            res.acceso_servi_salud.servicio_estudiantil_nombre,
+        });
+
+        // setDatosJornada
+        setDatosJornada({
+          id_semestre: semestre_consulta,
+          lugar: res.datos_caracterizacion.lugar,
+          fecha_nac: fechaConvertida,
+          tipo: "jornada_caracterizacion",
+          id_estudiante: estudianteSelected.id,
+
+          id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
+
+          jornada_caracterizacion:
+            res.datos_caracterizacion.jornada_caracterizacion,
         });
       })
-      .catch((error) => {});
-  }, [estudianteSelected.id]);
-  console.log(estudianteSelected.id);
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-  console.log(semestreActual);
+  const hanldeSelectSemestreD = (semestre_data) => {
+    getCaracterizacion(semestre_data);
+  };
+
+  useEffect(() => {
+    getCaracterizacion(id_semestre);
+  }, [estudianteSelected.id]);
 
   return (
     <div className="container-acordion container-subacordion">
@@ -591,8 +742,14 @@ const Caracterizacion = () => {
         name="periodo"
         id="periodo"
         value={semestreActual}
-        onChange={(e) => setSemestreActual(e.target.value)}
+        onChange={(e) => {
+          setSemestreActual(e.target.value);
+          hanldeSelectSemestreD(e.target.value);
+          setSemestreSelect(e.target.value);
+          //console.log("Semestre seleccionado: " + e.target.value);
+        }}
       >
+        <option value={id_semestre}>Seleccione un semestre</option>
         {semestres.map((semestre) => (
           <option key={semestre.id} value={semestre.id}>
             {semestre.nombre}
@@ -640,7 +797,11 @@ const Caracterizacion = () => {
           />
         }
       >
-        <DatosEntrevistado />
+        <DatosEntrevistado
+          datos_estudiante_entrevistado={datos_estudiante_entrevistado}
+        />
+
+        {/* <DatosEntrevistado /> */}
       </Acordion>
       <Acordion
         title="Datos económicos"
@@ -683,7 +844,7 @@ const Caracterizacion = () => {
         <DatosAcademicos datos_academicos={datos_academicos} />
       </Acordion>
 
-      <Acordion
+      {/* <Acordion
         claseContenido={"accordion-content"}
         title="Datos académicos adicionales"
         claseAcordion={"acordion subacordion"}
@@ -703,7 +864,7 @@ const Caracterizacion = () => {
         }
       >
         <DatosAcademicosAdicionales datos_academicos={datos_academicos} />
-      </Acordion>
+      </Acordion> */}
       <Acordion
         claseContenido={"accordion-content"}
         title="Percepción y características de la discapacidad"
@@ -744,8 +905,9 @@ const Caracterizacion = () => {
       >
         <AccesoServiciosSalud servicio_salud={acceso_servicios_salud} />
       </Acordion>
+      <hr></hr>
 
-      <ConclusionJornadaCaracterizacion />
+      <ConclusionJornadaCaracterizacion jornada={datos_jornada} />
     </div>
   );
 };

@@ -543,7 +543,7 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
-                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeivzta6cusgbLjIKOkNqyB_Bi4bW8oMMhUbMdhAc1gfu0eCA/viewform?usp=sf_link" target="_blank">
+                            <a href="https://sistemaases.univalle.edu.co/U2FsdGVkX18hjszpddLoSgU/HywzCP8D13edFaHOV+PmxYYqsxUx7dICZxdkz/bz" target="_blank">
                               <i
                                 class="bi bi-check2-square"
                                 style={

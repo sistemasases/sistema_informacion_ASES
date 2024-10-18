@@ -24,6 +24,7 @@ const FormularioAsistencia = (props) => {
     data_monitorias: [],
   });
   const opciones = [];
+  const [error, setError] = useState("");
 
   useEffect(() => {
     // Establecer la fecha actual cuando el componente se monta
@@ -87,16 +88,19 @@ const FormularioAsistencia = (props) => {
   });
 
   const send_data = (e) => {
-    // // console.log(e);
-    // console.log(data);
-    // *- Crear tabla de asistencias
-    // *- Datos del formulario
-    // *- Crear tabla monitorias
-    // *? añadir sede
+    const regex = /^[0-9]*$/;
 
     if (data.codigo_estudiante === "" || data.id_monitoria === "") {
       alert("Por favor llene todos los campos obligatorios");
       return;
+    } else if (data.codigo_estudiante.length !== 7) {
+      alert("Ocurrió un error");
+      setError("El código no debe ser mayor ni menor a 7 dígitos");
+    } else if (regex.test(data.codigo_estudiante) == false) {
+      alert("Ocurrió un error");
+      setError(
+        "El código de estudiante no puede contener caracteres especiales"
+      );
     } else {
       Formularios_externos_asistencia_envio.formularios_externos_asistencia_envio(
         data
@@ -118,19 +122,9 @@ const FormularioAsistencia = (props) => {
   };
 
   /**
-   * En el de asistencia:
-   *  Código
-   *  Monitoria a la que asiste
-   *  Fecha (autogenerada)
-   *
+   * Es necesario ?
    *  ****Agregar "Algo" para identificar a los qué asisten por x o y motivo hasta un día de diciembre
    * Te acercas a la monitoria académica de ASES con el objetivo de conseguir el aval de la Estrategia para acogerte al acuerdo 006
-   *
-   *
-   *  Alertas:
-   *  Al no encontrar el código
-   *  Implementar listado de monitorias
-   *  Implementar Selector Lugar  (Sede)
    *
    */
 
@@ -217,7 +211,9 @@ const FormularioAsistencia = (props) => {
                           codigo_estudiante: e.target.value,
                         })
                       }
+                      title="Debe ingresar el código sin la centuria, por ejemplo: 203550050, 3550050"
                     />
+                    {error && <p style={{ color: "red" }}>{error}</p>}
                   </Form.Group>
                   <hr></hr>
 

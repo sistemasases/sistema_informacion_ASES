@@ -4,7 +4,7 @@ from modulo_usuario_rol.models import rol, usuario_rol, estudiante, monitor, etn
 from django.contrib.auth.models import User
 from modulo_carga_masiva.models import retiro, motivo
 
-from modulo_programa.serializers import programa_estudiante_ficha_serializer
+from modulo_programa.serializers import programa_estudiante_ficha_serializer, codigos_programas_serializer
 
 # create a serializer class
 
@@ -300,3 +300,11 @@ class ficha_estudiante_serializer(serializers.ModelSerializer):
 		if obj.id_etnia:
 			return obj.id_etnia.etnia
 		return None 
+	
+class datos_basicos_estudiante_serializer(serializers.ModelSerializer):
+	
+	programas= codigos_programas_serializer(source='id_estudiante_in_programa_estudiante',many=True)
+
+	class Meta:
+		model = estudiante
+		fields = ['nombre', 'apellido', 'estudiante_elegible','cod_univalle', 'programas']

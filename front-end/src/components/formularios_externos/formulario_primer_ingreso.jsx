@@ -28,6 +28,9 @@ import Formulario_primer_ingreso from "../../service/formularios_externos_primer
 const FormularioPrimerIngreso = (props) => {
   const [documentType, setDocumentType] = useState("");
   const [otherDocumentType, setOtherDocumentType] = useState("");
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   const [program, setProgram] = useState({
     data_program: [],
@@ -135,6 +138,9 @@ const FormularioPrimerIngreso = (props) => {
   });
 
   const send_data = (e) => {
+    // const regex = /^[a-zA-Z-]*$/;
+    const regex = /^[0-9]*$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (
       data.codigo_estudiante === "" ||
       data.nombre === "" ||
@@ -150,6 +156,22 @@ const FormularioPrimerIngreso = (props) => {
       return;
     } else if (data.celular <= 0 || data.num_doc <= 0) {
       alert("El número de celular o documento no puede ser negativo");
+    } else if (data.celular.length > 15) {
+      alert("El número celular debe ser inferior a 20 dígitos");
+    } else if (regex.test(data.celular) == false) {
+      alert("Ocurrió un error");
+      setPhoneError("El número de celular no puede contener letras");
+    } else if (data.codigo_estudiante.length !== 7) {
+      alert("Ocurrió un error");
+      setError("El código no debe ser mayor ni menor a 7 dígitos");
+    } else if (emailRegex.test(data.correo) == false) {
+      alert("Ocurrió un error");
+      setEmailError("El correo no tiene un formato válido");
+    } else if (regex.test(data.codigo_estudiante) == false) {
+      alert("Ocurrió un error");
+      setError(
+        "El código de estudiante no puede contener caracteres especiales"
+      );
     } else {
       Formulario_primer_ingreso.formularios_externos_primer_ingreso_envio(data)
         .then((res) => {
@@ -243,7 +265,9 @@ const FormularioPrimerIngreso = (props) => {
                             codigo_estudiante: e.target.value,
                           })
                         }
+                        title="Debe ingresar el código sin la centuria, por ejemplo: 203550050, 3550050"
                       />
+                      {error && <p style={{ color: "red" }}>{error}</p>}
                     </Form.Group>
                   </Col>
 
@@ -318,7 +342,7 @@ const FormularioPrimerIngreso = (props) => {
                         Correo <label style={{ color: "red" }}> *</label>
                       </Form.Label>
                       <Form.Control
-                        type="text"
+                        type="email"
                         placeholder="Tu respuesta"
                         onChange={(e) =>
                           setData({
@@ -326,7 +350,11 @@ const FormularioPrimerIngreso = (props) => {
                             correo: e.target.value,
                           })
                         }
+                        title="Debe ingresar un correo electrónico válido: nombre@dominio.com"
                       />
+                      {emailError && (
+                        <p style={{ color: "red" }}>{emailError}</p>
+                      )}
                     </Form.Group>
                   </Col>
 
@@ -353,6 +381,9 @@ const FormularioPrimerIngreso = (props) => {
                           }
                         }}
                       />
+                      {phoneError && (
+                        <p style={{ color: "red" }}>{phoneError}</p>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>
@@ -458,7 +489,7 @@ const FormularioPrimerIngreso = (props) => {
                     // type="submit"
                     onClick={(e) => send_data(e)}
                   >
-                    Autorizar
+                    Crear estudiante
                   </Button>
                 </div>
               </Form>

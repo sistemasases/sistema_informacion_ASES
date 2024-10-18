@@ -3,6 +3,7 @@ from modulo_academico.views import *
 
 router = DefaultRouter()
 
+router.register(r'monitorias_academicas',monitorias_viewset,basename = 'monitorias_academicas')
 router.register(r'lista_de_facultades',lista_de_facultades_viewsets,basename = 'lista_de_facultades')
 router.register(r'lista_de_profesores',lista_de_profesores_viewsets,basename = 'lista_de_profesores')
 router.register(r'traer_cursos_del_profesor',traer_cursos_del_profesor_viewsets,basename = 'traer_cursos_del_profesor')
@@ -17,6 +18,7 @@ router.register(r'profesores_del_curso',profesores_del_curso_viewsets,basename =
 router.register(r'datos_del_curso',datos_del_curso_viewsets,basename = 'datos_del_curso')
 router.register(r'alumnos_del_profesor',alumnos_del_profesor_viewsets,basename = 'alumnos_del_profesor')
 router.register(r'traer_materias_del_profesor',traer_materias_del_profesor_viewsets,basename = 'traer_materias_del_profesor')
+router.register(r'traer_estudiantes', estudiantes_academicos_viewsets, basename = 'traer_estudiantes')
 
 router.register(r'crear_nota',todo_nota_viewsets,basename = 'crear_nota')
 router.register(r'borrar_nota',todo_nota_viewsets,basename = 'borrar_nota')

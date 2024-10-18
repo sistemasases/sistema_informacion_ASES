@@ -10,5 +10,6 @@ router.register(r'enviar_riesgo_editado', enviar_riesgo_editado_viewset, basenam
 router.register(r'enviar_codigo_otp_correo', enviar_codigo_otp_correo_viewsets, basename = 'enviar_codigo_otp_correo')
 router.register(r'verificar_clave_otp', verificar_clave_otp_viewsets, basename = 'verificar_clave_otp')
 router.register(r'verify_token_otp', VerifyTokenView, basename = 'verify_token_otp')
+router.register(r'enviar_observaciones_inasistencia', enviar_observaciones_inasistencia_viewsets, basename='enviar_observaciones_inasistencia')
 
 urlpatterns = router.urls
