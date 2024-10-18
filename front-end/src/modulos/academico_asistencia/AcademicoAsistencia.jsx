@@ -12,13 +12,13 @@ const AcademicoAsistencia = () => {
     const { user, setUser } = useAuthStore();
     useEffect(() => {
         setUser({
-        rol: desencriptar(sessionStorage.getItem("rol")).toString(),
-        sede_id: desencriptarInt(sessionStorage.getItem("sede_id")).toString(),
-        id_usuario: desencriptarBigInt(
-            sessionStorage.getItem("id_usuario")
-        ).toString(),
-        userRole: desencriptar(sessionStorage.getItem("permisos")).toString(),
-        });
+            rol: desencriptar(sessionStorage.getItem("rol")).toString(),
+            sede_id: desencriptarInt(sessionStorage.getItem("sede_id")).toString(),
+            id_usuario: desencriptarBigInt(
+                sessionStorage.getItem("id_usuario")
+            ).toString(),
+            userRole: desencriptar(sessionStorage.getItem("permisos")).toString(),
+            });
     }, []);
 
     return (
