@@ -21,45 +21,30 @@ const AcademicoCheck = () => {
 
     // Variables de estado
     const { user } = useAuthStore();
-    const [today, setToday] = useState('');
+    const [selectedDate, setSelectedDate] = useState(currentDate());
     const [records, setRecords] = useState([]);	
     const [data, setData] = useState([]);	
     const [localChanges, setLocalChanges] = useState({});
 
-    // Se ejecuta al cargar el componente para obtener la fecha actual
-    useEffect(() => {
-        setToday(currentDate());
-    }, []);
-
     // Se ejecuta al cambiar la fecha actual, para obtener los estudiantes 
     // inscritos en la monitoría en un día específico
     useEffect(() => {
-        // Si no hay fecha, no se hace nada
-        if  (today === '') {
-            return;
-        }
         // Función para obtener los estudiantes inscritos en la monitoría
         const getStudent = async () => {
             const data = {
                 rol: user.rol,
-                fecha: today,
+                fecha: selectedDate,
                 id_user: user.id_usuario
             };
             const res = await postData("lista_asistencia/", data);
-            if (res) {
-                // Guardar los registros originales en data
+            if (res) { 
                 setData(res);
+                setRecords(res);
             }
-            console.log(records);
         };
         // Llamar a la función para obtener los estudiantes
         getStudent();
-    }, [today]); 
-    
-    // Se ejecuta al cambiar la lista de estudiantes a revisar, para actualizar la tabla.
-    useEffect(() => {
-        setRecords(data);
-    }, [data]);
+    }, [selectedDate]); 
      
     // Columnas de la tabla
     const columns = [
@@ -116,9 +101,10 @@ const AcademicoCheck = () => {
             setRecords(data); 
             return;
         }
-        const filteredRecords = records.filter((record) => {
-            const fullname = `${record.estudiante_data.nombre} ${record.estudiante_data.apellido}`.toLowerCase();
-            const codigo = record.estudiante_data.cod_univalle.toLowerCase(); 
+        // Filtrar los registros por nombre o código
+        const filteredRecords = data.filter((one_data) => {
+            const fullname = `${one_data.estudiante_data.nombre} ${one_data.estudiante_data.apellido}`.toLowerCase();
+            const codigo = one_data.estudiante_data.cod_univalle.toLowerCase(); 
             return  fullname.includes(searchTerm) || codigo.includes(searchTerm);
         });
         setRecords(filteredRecords);
@@ -131,20 +117,23 @@ const AcademicoCheck = () => {
             localChanges[record.id] ? { ...record, ...localChanges[record.id] } : record
         );
 
-        // Envío de los registros actualizados
-        const res = await postData("check_asistencia/", updatedRecords); 
-        // Si la respuesta es exitosa, se muestra un mensaje de éxito
-        if (res) {
-            swal({
-                title: "Éxito",
-                text: "Los datos fueron guardados correctamente.",
-                icon: "success",
-                buttons: false, 
-                timer: 3000, 
-            });
-        }
-        // Si la respuesta no es exitosa, se muestra un mensaje de error 
-        else {
+        try {
+            // Envío de los registros actualizados
+            const res = await postData("check_asistencia/", updatedRecords);
+        
+            // Si la respuesta es exitosa, se muestra un mensaje de éxito
+            if (res) {
+                swal({
+                    title: "Éxito",
+                    text: "Los datos fueron guardados correctamente.",
+                    icon: "success",
+                    buttons: false, 
+                    timer: 3000, 
+                });
+            }
+        } catch (error) {
+            // Manejo de errores de red o respuesta no esperada
+            console.error('Error al guardar los datos:', error);
             swal({
                 title: "Error",
                 text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
@@ -164,8 +153,8 @@ const AcademicoCheck = () => {
             />
             <input 
                 type="date" 
-                value={today} 
-                onChange={(e) => setToday(e.target.value)} 
+                value={selectedDate} 
+                onChange={(e) => setSelectedDate(e.target.value)} 
             />
             <DataTable
                 columns={columns}

@@ -19,7 +19,8 @@ const AcademicoAsistencia = () => {
             ).toString(),
             userRole: desencriptar(sessionStorage.getItem("permisos")).toString(),
             });
-    }, []);
+        }, []);
+    console.log(user);
 
     return (
         <>

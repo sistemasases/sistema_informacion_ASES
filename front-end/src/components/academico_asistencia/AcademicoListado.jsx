@@ -16,65 +16,51 @@ import { postData } from "../../service/academico_attendance_requests";
 import { currentDate } from "../../utils/basic_functions";
 
 const AcademicoListado = () => {
-  const [dates, setDates] = useState({ initialDate: null, finalDate: null });
-  const [today, setToday] = useState('');
+  // Variables de estado
+  const [dates, setDates] = useState({ initialDate: "2024-09-01", finalDate: currentDate() });
   const [records, setRecords] = useState([]);
   const [data, setData] = useState([]);
 
-  // Se ejecuta al cargar el componente para obtener la fecha actual
+  // Se ejecuta al cargar el componente para mostrar a los estudiantes 
+  // que asistieron desde 2024-09-01 hasta la fecha actual
   useEffect(() => {
-    setToday(currentDate());
-  }, []);
-
-    // Se ejecuta al cargar el componente para obtener la fecha actual 
-    // y mostrar los estudiantes que asistieron desde 2024-09-01 hasta la fecha actual
-    useEffect(() => {
-      // Si no hay fecha, no se hace nada
-      if  (today === '') {
-          return;
+    // Función para obtener los estudiantes inscritos en la monitoría
+    const getAttendance = async () => {
+      // Obtener los registros de asistencia en el rango de fechas seleccionado
+      const res = await postData("fecha_asistencia/", {fecha_ini:dates.initialDate, fecha_final:dates.finalDate});
+      if (res) {
+          // Guardar los registros originales en data
+          setData(res);
+          setRecords(res);
       }
-      setDates({ initialDate: "2024-09-01", finalDate: today });
-      // Función para obtener los estudiantes inscritos en la monitoría
-      const getAttendance = async () => {
-          // Obtener los registros de asistencia en el rango de fechas seleccionado
-          const res = await postData("fecha_asistencia/", {fecha_ini:"2024-09-01", fecha_final:today});
-          if (res) {
-              // Guardar los registros originales en data
-              setData(res);
-          }
-      };
-      // Llamar a la función para obtener los estudiantes
-      getAttendance();
-  }, [today]); 
-  
-  // Se ejecuta al cambiar la lista de estudiantes a revisar, para actualizar la tabla.
-  useEffect(() => {
-      setRecords(data);
-  }, [data]);
+    };
+    // Llamar a la función para obtener los estudiantes
+    getAttendance();
+  }, []); 
 
-    // Columnas de la tabla
-    const columns = [
-      {
-          name: "Codigo del estudiante",
-          selector: (row) => row.estudiante_data.cod_univalle,
-          sortable: true,
-      },
-      {
-          name: "Nombre del estudiante",
-          selector: (row) => `${row.estudiante_data.nombre} ${row.estudiante_data.apellido}`,
-          sortable: true,
-      },
-      {
-          name: "Monitoría",
-          selector: (row) => row.monitoria_data.materia,
-          sortable: true,
-      },
-      {
-          name: "Nombre del monitor",
-          selector: (row) => `${row.monitoria_data.nombre_monitor} ${row.monitoria_data.apellido_monitor}`,
-          sortable: true,
-      },
-    ];
+  // Columnas de la tabla
+  const columns = [
+    {
+        name: "Codigo del estudiante",
+        selector: (row) => row.estudiante_data.cod_univalle,
+        sortable: true,
+    },
+    {
+        name: "Nombre del estudiante",
+        selector: (row) => `${row.estudiante_data.nombre} ${row.estudiante_data.apellido}`,
+        sortable: true,
+    },
+    {
+        name: "Monitoría",
+        selector: (row) => row.monitoria_data.materia,
+        sortable: true,
+    },
+    {
+        name: "Nombre del monitor",
+        selector: (row) => `${row.monitoria_data.nombre_monitor} ${row.monitoria_data.apellido_monitor}`,
+        sortable: true,
+    },
+  ];
 
     const headers = [ {label: "Nombre del estudiante", key:"estudiante_data.nombre"}, 
                       {label: "Apellido del estudiante", key:"estudiante_data.apellido"}, 
@@ -108,7 +94,7 @@ const AcademicoListado = () => {
 
     const resturarTable = () => {
         setRecords(data);
-        setDates({ initialDate: "2024-09-01", finalDate: today });
+        setDates({ initialDate: "2024-09-01", finalDate: currentDate() });
     }
     return(<>
         <div className="container_tabla">
