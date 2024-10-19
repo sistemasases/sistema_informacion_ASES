@@ -870,33 +870,33 @@ def carga_fichas(file):
                             if str(datos.iat[i,4]) == "nan":
                                 objetivo_dato = str("")
                             else:
-                                objetivo_dato =  str(datos.iat[i,4])
+                                objetivo_dato = str(datos.iat[i, 4])[:10000]
 
                             if str(datos.iat[i,5]) == "nan":
                                 individual_dato = str("")
                             else:
-                                individual_dato =  str(datos.iat[i,5]) 
+                                individual_dato =  str(datos.iat[i,5])[:10000]
 
                             if str(datos.iat[i,17])== "nan":
                                 familiar_dato = str("")
                             else:
-                                familiar_dato =  str(datos.iat[i,17]) 
+                                familiar_dato =  str(datos.iat[i,17])[:10000] 
                             if str(datos.iat[i,20])=="nan":
                                 academico_dato = str("")
                             else:
-                                academico_dato =  str(datos.iat[i,20]) 
+                                academico_dato =  str(datos.iat[i,20])[:10000] 
                             if str(datos.iat[i,25])=="nan":
                                 economico_dato = str("")
                             else:
-                                economico_dato =  str(datos.iat[i,25]) 
+                                economico_dato =  str(datos.iat[i,25])[:10000] 
                             if str(datos.iat[i,31]) == "nan":
                                 vida_universitaria_ciudad_dato = str("")
                             else:
-                                vida_universitaria_ciudad_dato =  str(datos.iat[i,31]) 
+                                vida_universitaria_ciudad_dato =  str(datos.iat[i,31])[:10000] 
                             if str(datos.iat[i,55]) == "nan":
                                 observaciones_dato = str("")
                             else:
-                                observaciones_dato =  str(datos.iat[i,55]) 
+                                observaciones_dato =  str(datos.iat[i,55])[:10000] 
 
 
                             try:
