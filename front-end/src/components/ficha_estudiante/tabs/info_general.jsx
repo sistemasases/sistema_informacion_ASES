@@ -594,6 +594,7 @@ const agregarPariente = () => {
           editar: false,
         });
         alert("estudiante fue editado correctamente a :" + props.datos.id);
+        window.location.reload();
       })
       .catch((err) => {
         set_state({
