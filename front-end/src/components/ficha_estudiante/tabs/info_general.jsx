@@ -10,6 +10,7 @@ import {
 } from "../../../modulos/utilidades_seguridad/utilidades_seguridad";
 
 const Info_general = (props) => {
+  console.log(props.datos);
   const config = {
     headers: {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
@@ -21,13 +22,11 @@ const Info_general = (props) => {
   };
 
   // Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------ Set valores ------------------
-  const options = { day: "2-digit", month: "2-digit", year: "numeric" };
   const date = new Date(props.datos["fecha_nac"]);
-  const nac_date_to_edit = date.toLocaleDateString("es-ES", options);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses van de 0 a 11
-  const day = String(date.getDate()).padStart(2, "0");
-  const nac_date = `${year}-${month}-${day}`;
+  const isoDate = date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+  const [year, month, day] = isoDate.split("-");
+  const nac_date_to_edit = `${day}/${month}/${year}`; // Formato DD/MM/AAAA
+  const nac_date = date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
 
   const userRole = desencriptar(sessionStorage.getItem("rol"));
   const [state, set_state] = useState({
