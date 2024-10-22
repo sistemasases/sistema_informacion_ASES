@@ -51,6 +51,9 @@ const Columns = ({ columns, twobold }) => {
                         checked={element.checked}
                         name={element.name}
                         value={element.value}
+                        onChange={element.onChange}
+                        disabled={element.disabled}
+                        id={element.id}
                       />
                       {element.value}
                     </label>
@@ -104,6 +107,7 @@ const Columns = ({ columns, twobold }) => {
                             [inputName]: e.target.value,
                           })
                         }
+                        disabled={element.disabled}
                       />
                     </label>
                   </div>

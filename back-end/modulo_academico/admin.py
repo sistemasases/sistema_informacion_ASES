@@ -23,6 +23,9 @@ class notas_historico_admin(admin.ModelAdmin):
 class notas_semestre_admin(admin.ModelAdmin):
     list_display = ('id','id_item', 'calificacion','id_estudiante') 
 
+class monitoria_academica_admin(admin.ModelAdmin):
+    list_display = ('id','id_monitor', 'id_semestre','id_sede','materia') 
+
 
 admin.site.register(historial_academico, historial_academico_admin)
 admin.site.register(materia,materia_admin)
@@ -31,5 +34,6 @@ admin.site.register(items_historico,items_historico_admin)
 admin.site.register(items_semestre,items_semestre_admin)
 admin.site.register(notas_historico,notas_historico_admin)
 admin.site.register(notas_semestre,notas_semestre_admin)
+admin.site.register(monitoria_academica,monitoria_academica_admin)
 
 

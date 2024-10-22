@@ -125,6 +125,16 @@
                 "path":"/academico",
                 "name":"Calificador",
                 "icon":"bi bi-calculator-fill"
+            },
+            {
+                "path":"/academico_asistencia",
+                "name":"Control de asistencia",
+                "icon":"bi bi-card-checklist"
+            },
+            {
+                "path":"/academico_listado_asistencia",
+                "name":"Listado de asistencia",
+                "icon":"bi bi-card-list"
             }
         ]
     },
