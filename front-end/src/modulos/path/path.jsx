@@ -32,6 +32,7 @@ import Registro from "../discapacidad/registro/Registro.jsx";
 import FichaEstudianteV2 from "../ficha_estudiante_V2/FichaEstudianteV2.jsx";
 import Registro_estudiante from '../campus_diverso/registro_estudiante.jsx';
 import ObtenerEstudiante from '../campus_diverso/obtener_estudiante.jsx';
+import Descarga_campus from '../campus_diverso/descarga_campus.jsx';
 
 /**
  * Controla las rutas del path
@@ -64,7 +65,7 @@ const Path = (props) => {
           {path.startsWith("/reporte_discapacidad") ? (<ReporteDiscapacidad path_actual={"/reporte_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/registro_discapacidad") ? (<Registro path_actual={"/registro_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/ficha_est_v2") ? (<FichaEstudianteV2 path_actual={"/ficha_est_v2"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
-          {path.startsWith("/campus_diverso/registro_estudiante") ? (<Registro_estudiante path_actual={"/campus_diverso/registro_estudiante"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/campus_diverso/descarga_campus") ? (<Descarga_campus path_actual={"/campus_diverso/descarga_campus"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/campus_diverso/obtener_estudiante") ? (<ObtenerEstudiante path_actual={"/campus_diverso/obtener_estudiante"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
 
         </>

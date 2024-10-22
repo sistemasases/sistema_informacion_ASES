@@ -145,7 +145,7 @@ const ModalEstudiantes = ({
               onChange={handleInputChange}
             />
           ) : (
-            selectedUser.estrato_socioeconomico 
+            selectedUser.nombre_y_apellido 
           )}
         </div>              
                     
@@ -160,7 +160,7 @@ const ModalEstudiantes = ({
               onChange={handleInputChange}
             />
           ) : (
-            selectedUser.estrato_socioeconomico 
+            selectedUser.nombre_identitario 
           )}
         </div>
                   <div className='div-modal'><b>Identificación:</b> {selectedUser.numero_documento}</div>

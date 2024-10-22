@@ -16,7 +16,7 @@ const FooterCampusDos = () => {
             <ul className="list-unstyled d-flex flex-row justify-content-center">
               <li><a className="text-white px-2" href="https://www.facebook.com/campusdiversouv" target="_blank" rel="noopener noreferrer"><i className="bi-facebook"></i></a></li>
               <li><a className="text-white px-2" href="https://www.instagram.com/campusdiversouv" target="_blank" rel="noopener noreferrer"><i className="bi-instagram"></i></a></li>
-              <li><a className="text-white ps-2" href="#!"><i className="bi-tiktok"></i></a></li>
+              <li><a className="text-white ps-2" href="https://www.tiktok.com/@campusdiversouv" target='_blank'><i className="bi-tiktok"></i></a></li>
             </ul>
           </Col>
 
