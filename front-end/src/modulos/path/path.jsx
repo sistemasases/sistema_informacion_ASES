@@ -33,6 +33,7 @@ import FichaEstudianteV2 from "../ficha_estudiante_V2/FichaEstudianteV2.jsx";
 
 import Academico_reportes from "../../modulos/academico_reportes/academico_reportes.jsx";
 import AcademicoAsistencia from '../academico_asistencia/AcademicoAsistencia.jsx';
+import AcademicoListadoAsistencia from '../academico_asistencia/AcademicoListadoAsistencia.jsx';
 
 /**
  * Controla las rutas del path
@@ -56,6 +57,7 @@ const Path = (props) => {
           {path == '/academico' ? (<Academico_pestaña path_actual={"desercion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path === '/academico_reportes' ? (<Academico_reportes path_actual={"desercion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/academico_asistencia') ? ( <AcademicoAsistencia path_actual={"academico_asistencia"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/academico_listado_asistencia') ? ( <AcademicoListadoAsistencia path_actual={"academico_listado_asistencia"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/calificador:profesor/:curso/:cod/:franja') ? (<Calificador path_actual={"desercion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
                         
           {/* {path.startsWith('/academico') ? (<Academico_pestaña path_actual={"/academico"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)} */}

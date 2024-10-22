@@ -36,9 +36,9 @@
                 "icon":"bi bi-body-text"
             },
             {
-                "path":"/academico_asistencia",
-                "name":"Control de asistencia",
-                "icon":"bi bi-pencil-square"
+                "path":"/academico_listado_asistencia",
+                "name":"Listado de asistencia",
+                "icon":"bi bi-card-list"
             }
         ]
     }
