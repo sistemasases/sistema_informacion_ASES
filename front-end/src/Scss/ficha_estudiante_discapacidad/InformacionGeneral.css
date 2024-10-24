@@ -1,0 +1,68 @@
+.informacion-general-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2 partes para la izquierda y 1 parte para la derecha */
+    grid-gap: 20px; /* Espacio entre las columnas */
+    padding: 20px;
+    margin: 20px;
+  }
+  
+  .left-section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .right-section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  /* Estilos generales para los títulos y subtítulos */
+  h1, h2 {
+    color: #990000; /* El color rojo que se usa en tu imagen */
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  h1 i {
+    margin-right: 10px;
+  }
+  
+  h2 {
+    font-size: 18px;
+    margin-top: 20px;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas para las etiquetas y entradas */
+    grid-gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilos de los inputs */
+  input {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Sección derecha (estado, programas académicos, etc.) */
+  .status-box {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .academic-program {
+    background-color: #e0f7e0; /* Color de fondo para el programa académico */
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
+  
