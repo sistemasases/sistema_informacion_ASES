@@ -1,23 +1,29 @@
 [
     {
-        "id":"4",
-        "path":"/",
-        "name":"discapacidad",
-        "icon":"bi bi-person-wheelchair",
-        "childrens":[
+        "id": "4",
+        "path": "/",
+        "name": "discapacidad",
+        "icon": "bi bi-person-wheelchair",
+        "childrens": [
             {
-                "id":4,
-                "path":"/ficha_estudiante_discapacidad/sin_seleccion",
-                "name":"Ficha de estudiantes",
-                "icon":"bi bi-file-earmark-person-fill"
+                "id": 4,
+                "path": "/ficha_estudiante_discapacidad/sin_seleccion",
+                "name": "Ficha de estudiantes",
+                "icon": "bi bi-file-earmark-person-fill"
             },
             {
-                "id":3,
-                "path":"/reporte_discapacidad",
-                "name":"Reporte general",
-                "icon":"bi bi-file-ruled-fill"
+                "id": 3,
+                "path": "/reporte_discapacidad",
+                "name": "Reporte general",
+                "icon": "bi bi-file-ruled-fill"
+            },
+            
+            {
+                "id": 5,
+                "path": "/informacion_general",
+                "name": "Información General",
+                "icon": "bi bi-file-ruled-fill" 
             }
         ]
     }
-
 ]

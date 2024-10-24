@@ -29,6 +29,8 @@ import Calificador from "../academico_pestaña/calificador.jsx";
 import FichaEstudianteDiscapacidad from "../discapacidad/ficha_estudiante/FichaEstudianteDiscapacidad.jsx";
 import ReporteDiscapacidad from "../discapacidad/reporte/ReporteDiscapacidad.jsx";
 import Registro from "../discapacidad/registro/Registro.jsx";
+import Caracterizacion from "../discapacidad/caracterizacion/Caracterizacion.jsx";
+import InformacionGeneral from "../discapacidad/informacion_general/InformacionGeneral.jsx";
 import FichaEstudianteV2 from "../ficha_estudiante_V2/FichaEstudianteV2.jsx";
 
 import Academico_reportes from "../../modulos/academico_reportes/academico_reportes.jsx";
@@ -70,6 +72,8 @@ const Path = (props) => {
           {path.startsWith("/calificador") ? (<Calificador path_actual={"/calificador"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/reporte_discapacidad") ? (<ReporteDiscapacidad path_actual={"/reporte_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/registro_discapacidad") ? (<Registro path_actual={"/registro_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/caracterizacion_discapacidad") ? (<Caracterizacion path_actual={"/caracterizacion_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/informacion_general_discapacidad") ? (<InformacionGeneral path_actual={"/informacion_general_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/ficha_est_v2") ? (<FichaEstudianteV2 path_actual={"/ficha_est_v2"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
         </>
       ) : (
