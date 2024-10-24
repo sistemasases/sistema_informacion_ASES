@@ -41,8 +41,8 @@ class monitorias_viewset(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='lista_asistencia')
     def lista_asistencia(self, request, pk=None):
         if (request.data["rol"] == "monitor_academico"):
-            monitoria_monitor = monitoria_academica.objects.filter(id_monitor=request.data["id_user"],estado=True).first()
-            lista_asistencia = asistencia.objects.filter(fecha=request.data["fecha"], id_monitoria=monitoria_monitor)
+            monitoria_monitor = monitoria_academica.objects.filter(id_monitor=request.data["id_user"],estado=True)
+            lista_asistencia = asistencia.objects.filter(fecha=request.data["fecha"], id_monitoria__in=monitoria_monitor)
             serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
             return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
 

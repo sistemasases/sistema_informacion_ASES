@@ -43,7 +43,6 @@ class enviar_monitorias_viewsets(viewsets.GenericViewSet):
     def list(self, request):
         queryset = monitoria_academica.objects.filter(estado=True)
         serializer = monitoria_academica_serializer(queryset, many=True)
-        print(serializer.data)
         list_monitorias = []
         for monitoria in serializer.data:
 

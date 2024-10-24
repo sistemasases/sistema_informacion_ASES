@@ -39,6 +39,11 @@
                 "path":"/academico_listado_asistencia",
                 "name":"Listado de asistencia",
                 "icon":"bi bi-card-list"
+            },
+            {
+                "path":"/academico_asistencia",
+                "name":"Control de asistencia",
+                "icon":"bi bi-card-checklist"
             }
         ]
     }
