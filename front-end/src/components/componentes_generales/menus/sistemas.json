@@ -161,6 +161,18 @@
                 "path":"/reporte_discapacidad",
                 "name":"Reporte general",
                 "icon":"bi bi-file-ruled-fill"
+            },
+            {
+                "id":5,
+                "path":"/informacion_general_discapacidad",
+                "name":"Información general",
+                "icon":"bi bi-person-fill"
+            },
+            {
+                "id":6,
+                "path":"/caracterizacion_discapacidad",
+                "name":"Caracterización",
+                "icon":"bi bi-person-vcard"
             }
         ]
     }
