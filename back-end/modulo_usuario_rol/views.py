@@ -516,6 +516,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             var_estudiante.telefono_acudiente = serializer.data['telefono_acudiente']
             var_estudiante.vive_con = serializer.data['vive_con']
             var_estudiante.ult_modificacion = serializer.data['ult_modificacion']
+            var_estudiante.fecha_nac = serializer.data['fecha_nac']
             try:
                 etnia_obj = etnia.objects.get(id=serializer.data['id_etnia'])
                 var_estudiante.id_etnia = etnia_obj
