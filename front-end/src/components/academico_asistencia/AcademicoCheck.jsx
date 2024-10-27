@@ -14,7 +14,7 @@ import DataTable from "react-data-table-component";
 import "../../Scss/academico/tablas.css";
 import { postData } from "../../service/academico_attendance_requests";
 import { useAuthStore } from "../ficha_estudiante_dicapacidad/store/auth";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { currentDate } from "../../utils/basic_functions";
 
 const AcademicoCheck = () => {
@@ -116,34 +116,47 @@ const AcademicoCheck = () => {
         const updatedRecords = records.map(record => 
             localChanges[record.id] ? { ...record, ...localChanges[record.id] } : record
         );
-
+    
+        // Mostrar un mensaje de confirmación antes de guardar los datos
+        const isConfirm = await Swal.fire({
+            title: "Mensaje de confirmación",
+            text: "¿Seguro(a) desea guardar los datos de asistencia?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Sí',
+            cancelButtonText: "No"
+        });
+    
+        if (!isConfirm.isConfirmed) {
+            return; // Si el usuario cancela, se sale de la función
+        }
+    
         try {
             // Envío de los registros actualizados
             const res = await postData("check_asistencia/", updatedRecords);
-        
-            // Si la respuesta es exitosa, se muestra un mensaje de éxito
             if (res) {
-                swal({
+                Swal.fire({
                     title: "Éxito",
                     text: "Los datos fueron guardados correctamente.",
                     icon: "success",
-                    buttons: false, 
-                    timer: 3000, 
+                    timer: 3000,
+                    showConfirmButton: false
                 });
             }
         } catch (error) {
             // Manejo de errores de red o respuesta no esperada
             console.error('Error al guardar los datos:', error);
-            swal({
+            Swal.fire({
                 title: "Error",
                 text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
                 icon: "error",
-                buttons: false, 
-                timer: 3000, 
+                timer: 3000,
+                showConfirmButton: false
             });
         }
     };
-
+    
     return(<>
         <div className="container_tabla mx-auto w-80 text-center">
             <input

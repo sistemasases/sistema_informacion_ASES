@@ -33,6 +33,7 @@ const AcademicoListado = () => {
           setData(res);
           setRecords(res);
       }
+      console.log(res);
     };
     // Llamar a la función para obtener los estudiantes
     getAttendance();
@@ -49,6 +50,7 @@ const AcademicoListado = () => {
         name: "Nombre del estudiante",
         selector: (row) => `${row.estudiante_data.nombre} ${row.estudiante_data.apellido}`,
         sortable: true,
+        minWidth: '150px',
     },
     {
         name: "Monitoría",
@@ -59,17 +61,29 @@ const AcademicoListado = () => {
         name: "Nombre del monitor",
         selector: (row) => `${row.monitoria_data.nombre_monitor} ${row.monitoria_data.apellido_monitor}`,
         sortable: true,
+        minWidth: '150px',
     },
+    {
+      name: "Pertenece a ASES",
+      selector: (row) => row.estudiante_data.estudiante_elegible ? "Si" : "No",
+      sortable: true,
+    }
   ];
 
-    const headers = [ {label: "Nombre del estudiante", key:"estudiante_data.nombre"}, 
-                      {label: "Apellido del estudiante", key:"estudiante_data.apellido"}, 
-                      {label: "Monitoría", key:"monitoria_data.materia"}, 
-                      {label: "Nombres del monitor", key:"monitoria_data.nombre_monitor"}, 
-                      {label: "Apellidos del monitor", key:"monitoria_data.apellido_monitor"}, 
-                      {label: "Fecha", key:"fecha"}];
+  const download_data = records.map((record) => ({
+    ...record,
+    es_ases: record.estudiante_data.estudiante_elegible ? "Si" : "No",
+  }));
 
-    const handleDateChange = (e) => setDates({ ...dates, [e.target.name]: e.target.value });
+  const headers = [ {label: "Nombre del estudiante", key:"estudiante_data.nombre"}, 
+                    {label: "Apellido del estudiante", key:"estudiante_data.apellido"}, 
+                    {label: "Monitoría", key:"monitoria_data.materia"}, 
+                    {label: "Nombres del monitor", key:"monitoria_data.nombre_monitor"}, 
+                    {label: "Apellidos del monitor", key:"monitoria_data.apellido_monitor"}, 
+                    {label: "Pertenece a ASES", key:"es_ases"}, 
+                    {label: "Fecha", key:"fecha"}];
+
+  const handleDateChange = (e) => setDates({ ...dates, [e.target.name]: e.target.value });
     
     // Función para buscar los registros de asistencia en un rango de fechas
     const searchRange = async () => {
@@ -124,7 +138,7 @@ const AcademicoListado = () => {
               fixedHeader
           />
           <div>
-            <DownloadCSV data={records} headers={headers} filename={"asistencia.csv"} />
+            <DownloadCSV data={download_data} headers={headers} filename={"asistencia.csv"} />
           </div>
         </div>
     </>)
