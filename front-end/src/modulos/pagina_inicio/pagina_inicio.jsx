@@ -168,7 +168,7 @@ const Pagina_inicio = () => {
               Close
             </Button>
           </Modal.Footer>
-        </Modal>
+        </Modal> 
         {(userRole === "super_ases" ||
           userRole === "socioeducativo" ||
           userRole === "socioeducativo_reg" ||
@@ -299,6 +299,11 @@ const Pagina_inicio = () => {
             )}
             {userRole === "profesor" ? (
               <>{cambiar_ruta(`/academico`)}</>
+            ) : (
+              <>{}</>
+            )}
+            {userRole === "monitor_academico" ? (
+              <>{cambiar_ruta(`/academico_asistencia`)}</>
             ) : (
               <>{}</>
             )}
