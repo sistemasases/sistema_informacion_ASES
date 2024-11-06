@@ -16,10 +16,10 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
     id_semestre: desencriptarInt(
       sessionStorage.getItem("id_semestre_discapacidad")
     ),
-    fecha: servicio_salud.fecha_nac,
+    fecha: servicio_salud.fecha,
     lugar: servicio_salud.lugar,
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
-
+    jornada_caracterizacion: servicio_salud.jornada_caracterizacion,
     id: servicio_salud.id,
     regimen_vinculado: servicio_salud.regimen_vinculado,
     servicio_salud: servicio_salud.servicio_salud,

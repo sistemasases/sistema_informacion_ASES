@@ -175,7 +175,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
-            request_jornada = request.data["jornada"]
+            request_jornada = request.data["jornada_caracterizacion"]
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
 
             if(var_caracterizacion):
@@ -219,12 +219,13 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                 return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
             
         elif request.data["tipo"] == 'datos_entrevistado':
-            print(request.data)
+            # print(request.data)
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
+            request_jornada = request.data["jornada_caracterizacion"]
             
             
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
@@ -278,7 +279,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                 
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
             else:
-                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, request_jornada )
                 var_caracterizacion_new.fecha = request_fecha
                 var_caracterizacion_new.lugar = request_lugar
                 
@@ -306,12 +307,14 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
                 return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
         elif request.data["tipo"] == 'datos_economicos':
+            # print(request.data)
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
+            request_jornada = request.data["jornada_caracterizacion"]
 
             if(var_caracterizacion):
 
@@ -368,7 +371,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
             else:
-                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, request_jornada)
                 var_caracterizacion_new.fecha = request_fecha
                 var_caracterizacion_new.lugar = request_lugar
 
@@ -428,6 +431,8 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
+            request_jornada = request.data["jornada_caracterizacion"]
+
 
             if(var_caracterizacion):
 
@@ -464,7 +469,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
             else:
-                var_accesbilidad_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_accesbilidad_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, request_jornada)
                 var_accesbilidad_new.fecha = request_fecha
                 var_accesbilidad_new.lugar = request_lugar
 
@@ -498,12 +503,15 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             
         
         elif request.data["tipo"] == 'datos_percepcion_caracteristicas':
+            # print(request.data)
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
+            request_jornada = request.data["jornada_caracterizacion"]
+
 
             if(var_caracterizacion):
 
@@ -514,6 +522,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 var_percepcion_discapacidad = percepcion_discapacidad.objects.filter(id= var_caracterizacion.id_percepcion_discapacidad.id).first()
                 if(var_percepcion_discapacidad):
+                    # print(var_percepcion_discapacidad.data)
                     var_percepcion_discapacidad.considera_discapacidad = request.data.get("considera_discapacidad", False)
                     var_percepcion_discapacidad.consideracion = request.data.get("consideracion", None)
                     var_percepcion_discapacidad.adquisicion = request.data.get("adquisicion", None)
@@ -674,7 +683,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
             else:
-                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, request_jornada)
                 var_caracterizacion_new.fecha = request_fecha
                 var_caracterizacion_new.lugar = request_lugar
 
@@ -842,12 +851,15 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                 return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
             
         elif request.data["tipo"] == 'datos_servicios_salud':
+            # print(request.data)
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
             request_lugar = request.data["lugar"]
             request_creador = User.objects.get(id = int(request.data["id_creador"]))
             var_caracterizacion = caracterizacion.objects.filter(id_estudiante=request_estudiante,id_semestre=request_semestre).first()
+            request_jornada = request.data["jornada_caracterizacion"]
+
 
             if(var_caracterizacion):
 
@@ -886,7 +898,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
 
                 return Response({'Respuesta': 'Registro editado'},status=status.HTTP_200_OK)
             else:
-                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador)
+                var_caracterizacion_new = self.create_models_caracterizacion(request_estudiante,request_semestre,request_fecha,request_lugar,request_creador, request_jornada)
                 var_caracterizacion_new.fecha = request_fecha
                 var_caracterizacion_new.lugar = request_lugar
 
@@ -921,6 +933,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
                     return Response({'Respuesta': 'ERROR'},status=status.HTTP_404_NOT_FOUND)
                 return Response({'Respuesta': 'Creado registro nuevo'}, status=status.HTTP_200_OK)
         elif request.data["tipo"] == 'datos_jornada_caracterizacion': 
+            # print(request.data)
             request_semestre = semestre.objects.get(id=int(request.data["id_semestre"]))
             request_estudiante = estudiante.objects.get(id=int(request.data["id_estudiante"]))
             request_fecha =datetime.strptime(request.data["fecha"],'%Y-%m-%d')
@@ -964,7 +977,7 @@ class estudiante_discapacidad_viewsets (viewsets.ModelViewSet):
             
     @action(detail=True, methods=['get'], url_path='datos_caracterizacion')
     def datos_caracterizacion(self, request, pk=None):
-
+        # print(request.data)
         request_semestre = int(request.GET.get('id_semestre'))
         var_caracterizacion = caracterizacion.objects.filter(
                 id_estudiante=pk, id_semestre=request_semestre).first()
