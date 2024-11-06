@@ -26,6 +26,7 @@ const Update_datos_entrevistador_disc = async (FormData) => {
       .then((response) => {
         if (response.status === 200 || response.status === 201) {
           alert(response.data.Respuesta);
+          window.location.reload();
           return response;
         } else {
           return false;

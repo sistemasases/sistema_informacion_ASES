@@ -22,7 +22,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
     id_semestre: desencriptarInt(
       sessionStorage.getItem("id_semestre_discapacidad")
     ),
-    fecha: datos_economicos.fecha_nac,
+    fecha: datos_economicos.fecha,
     lugar: datos_economicos.lugar,
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
     estrato_socio: datos_economicos.estrato_socio,
@@ -71,6 +71,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
       datos_economicos.otro_familiar_actividad_economica,
     otro_familiar_labor_desempena:
       datos_economicos.otro_familiar_labor_desempena,
+    jornada_caracterizacion: datos_economicos.jornada_caracterizacion,
   });
 
   const handleUpdateDatosEconomicos = (e) => {
@@ -494,25 +495,27 @@ const DatosEconomicos = ({ datos_economicos }) => {
                 <option value="true">Sí</option>
                 <option value="false">No</option>
               </select>
-              {stateDatosEconomicos.tiene_hijos === "true" ||
-                (stateDatosEconomicos.tiene_hijos === true && (
-                  <div>
-                    <label>¿Cuántos?:</label>
-                    <input
-                      className="input-type-number"
-                      type="number"
-                      min="1"
-                      value={stateDatosEconomicos.hijos_numero}
-                      onChange={(e) =>
-                        setStateDatosEconomicos({
-                          ...stateDatosEconomicos,
-                          hijos_numero: e.target.value,
-                        })
-                      }
-                      disabled={stateDisabled}
-                    />
-                  </div>
-                ))}
+              {stateDatosEconomicos.tiene_hijos === true ||
+              stateDatosEconomicos.tiene_hijos === "true" ? (
+                <div>
+                  <label>¿Cuántos?:</label>
+                  <input
+                    className="input-type-number"
+                    type="number"
+                    min="1"
+                    value={stateDatosEconomicos.hijos_numero}
+                    onChange={(e) =>
+                      setStateDatosEconomicos({
+                        ...stateDatosEconomicos,
+                        hijos_numero: e.target.value,
+                      })
+                    }
+                    disabled={stateDisabled}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="separator" />
             <p className="titulo">Proyecto de Vida</p>

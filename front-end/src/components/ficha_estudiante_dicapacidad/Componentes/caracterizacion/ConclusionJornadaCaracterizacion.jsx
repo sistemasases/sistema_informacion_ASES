@@ -12,7 +12,7 @@ const ConclusionJornadaCaracterizacion = ({ jornada }) => {
 
   const [stateJornadaCaracterizacion, setStateJornadaCaracterizacion] =
     useState({
-      fecha: "",
+      fecha: jornada.fecha,
       lugar: "",
       jornada_caracterizacion: "",
       tipo: "datos_jornada_caracterizacion",
@@ -30,7 +30,7 @@ const ConclusionJornadaCaracterizacion = ({ jornada }) => {
       setStateJornadaCaracterizacion((prevState) => ({
         ...prevState,
         jornada_caracterizacion: jornada.jornada_caracterizacion,
-        fecha: jornada.fecha_nac,
+        fecha: jornada.fecha,
         lugar: jornada.lugar,
       }));
     }

@@ -24,7 +24,7 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
     celular: datos_entrevistador.celular,
     profesion: datos_entrevistador.profesion,
-    jornada: "",
+    jornada_caracterizacion: datos_entrevistador.jornada_caracterizacion,
 
     entrevistador: datos_entrevistador.entrevistador,
     cargo: datos_entrevistador.cargo,

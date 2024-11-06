@@ -51,6 +51,8 @@ const Caracterizacion = () => {
 
   const [datos_entrevistador, setDatosEntrevistador] = useState({
     id_semestre: "",
+    fecha: "",
+    jornada_caracterizacion: "",
 
     entrevistador: "",
     cargo: "",
@@ -61,12 +63,14 @@ const Caracterizacion = () => {
   const [datos_estudiante_entrevistado, setDatosEstuidanteEntrevistado] =
     useState({
       fecha_nac: "",
-      ciudad: "lentuang",
-      pais: "paris",
-      // profesion: "",
+      ciudad: "",
+      pais: "",
+      fecha: "",
+      jornada_caracterizacion: "",
     });
 
   const [datos_economicos, setDatosEconomicos] = useState({
+    fecha: "",
     id_semestre: "",
     estrato_socio: 3,
     expectativas_laborales: "",
@@ -108,10 +112,13 @@ const Caracterizacion = () => {
     otro_familiar_situacion_economica: "",
     otro_familiar_actividad_economica: "",
     otro_familiar_labor_desempena: "",
+
+    jornada_caracterizacion: "",
   });
 
   const [datos_academicos, setDatosAcademicos] = useState({
     id: 1,
+    fecha: "",
     numero_resolucion: 123456789,
     creditos_programa: 120,
     titulo_obtenido: "",
@@ -120,14 +127,19 @@ const Caracterizacion = () => {
     apoyos_recibidos: "",
     observaciones: "",
     dificultades: "",
+
+    jornada_caracterizacion: "",
   });
 
   const [datos_jornada, setDatosJornada] = useState({
     jornada_caracterizacion: "",
+    fecha: "",
+    id_semestre: "",
   });
 
   const [percepcion_discapacidad, setPercepcionDiscapacidad] = useState({
     id: 1,
+    fecha: "",
     considera_discapacidad: false,
     consideracion: null,
     adquisicion: null,
@@ -276,10 +288,13 @@ const Caracterizacion = () => {
     apoyo_inst: false,
     nombre_institucion: "",
     tipo_apoyo: "",
+
+    jornada_caracterizacion: "",
   });
 
   const [acceso_servicios_salud, setAccesoServiciosSalud] = useState({
     id: 1,
+    fecha: "",
     regimen_vinculado: false,
     servicio_salud: false,
     salud_otra_texto: "Servicio de salud especializado",
@@ -294,6 +309,8 @@ const Caracterizacion = () => {
     servicio_fonoaudiologia: false,
     servicio_psicologia: false,
     servicio_social: false,
+
+    jornada_caracterizacion: "",
   });
 
   const getCaracterizacion = (semestre_data) => {
@@ -331,8 +348,7 @@ const Caracterizacion = () => {
         const [anioIngreso, mesIngreso, diaIngreso] =
           fechaConvertidaTIngreso.split("-");
         const fechaConvertidaIngreso = `${anioIngreso}-${mesIngreso}-${diaIngreso}`;
-        //console.log(fechaConvertidaIngreso);
-        // setDatosEntrevistador
+
         setDatosEntrevistador({
           id_semestre: semestre_consulta,
           entrevistador:
@@ -340,8 +356,10 @@ const Caracterizacion = () => {
           cargo: res.datos_entrevistador.cargo,
           celular: res.datos_entrevistador.celular,
           profesion: res.datos_entrevistador.profesion,
-          fecha_aplicacion: fechaConvertida,
+          fecha: fechaConvertida,
           lugar: res.datos_caracterizacion.lugar,
+          jornada_caracterizacion:
+            res.datos_caracterizacion.jornada_caracterizacion,
         });
 
         //console.log("Datos entrevistador");
@@ -373,13 +391,15 @@ const Caracterizacion = () => {
             res.datos_entrevistado.programaAcompanamientoOtro,
           programaAcompanamientoOtroData:
             res.datos_entrevistado.programaAcompanamientoOtroData,
+          jornada_caracterizacion:
+            res.datos_caracterizacion.jornada_caracterizacion,
         });
 
         // setDatosEconomicos
         setDatosEconomicos({
           id_semestre: semestre_consulta,
           lugar: res.datos_caracterizacion.lugar,
-          fecha_nac: fechaConvertida,
+          fecha: fechaConvertida,
 
           estrato_socio: res.datos_economicos.estrato_socio,
           expectativas_laborales: res.datos_economicos.expectativas_laborales,
@@ -431,13 +451,15 @@ const Caracterizacion = () => {
             res.datos_economicos.otro_familiar_actividad_economica,
           otro_familiar_labor_desempena:
             res.datos_economicos.otro_familiar_labor_desempena,
+          jornada_caracterizacion:
+            res.datos_caracterizacion.jornada_caracterizacion,
         });
 
         // setDatosAcademicos
         setDatosAcademicos({
           id_semestre: semestre_consulta,
           lugar: res.datos_caracterizacion.lugar,
-          fecha_nac: fechaConvertidaIngreso,
+          fecha: fechaConvertida,
 
           id: res.datos_academicos.id,
           numero_resolucion: res.datos_academicos.numero_resolucion,
@@ -467,6 +489,8 @@ const Caracterizacion = () => {
           periodo_ingreso: res.datos_academicos.periodo_ingreso,
           observaciones_adicionales:
             res.datos_academicos.observaciones_adicionales,
+          jornada_caracterizacion:
+            res.datos_caracterizacion.jornada_caracterizacion,
         });
 
         // setDatosAcademicosAdicionales
@@ -475,8 +499,8 @@ const Caracterizacion = () => {
         setPercepcionDiscapacidad({
           id_semestre: semestre_consulta,
           lugar: res.datos_caracterizacion.lugar,
-          fecha_nac: fechaConvertida,
 
+          fecha: fechaConvertida,
           id: res.percepcion_discapacidad.id,
 
           considera_discapacidad:
@@ -668,13 +692,15 @@ const Caracterizacion = () => {
           apoyo_inst: res.percepcion_discapacidad.apoyo_inst,
           nombre_institucion: res.percepcion_discapacidad.nombre_institucion,
           tipo_apoyo: res.percepcion_discapacidad.tipo_apoyo,
+          jornada_caracterizacion:
+            res.datos_caracterizacion.jornada_caracterizacion,
         });
 
         // setAccesoServiciosSalud
         setAccesoServiciosSalud({
           id_semestre: semestre_consulta,
           lugar: res.datos_caracterizacion.lugar,
-          fecha_nac: fechaConvertida,
+          fecha: fechaConvertida,
 
           jornada_caracterizacion:
             res.datos_caracterizacion.jornada_caracterizacion,
@@ -711,7 +737,7 @@ const Caracterizacion = () => {
         setDatosJornada({
           id_semestre: semestre_consulta,
           lugar: res.datos_caracterizacion.lugar,
-          fecha_nac: fechaConvertida,
+          fecha: fechaConvertida,
           tipo: "jornada_caracterizacion",
           id_estudiante: estudianteSelected.id,
 
@@ -746,7 +772,7 @@ const Caracterizacion = () => {
           setSemestreActual(e.target.value);
           hanldeSelectSemestreD(e.target.value);
           setSemestreSelect(e.target.value);
-          //console.log("Semestre seleccionado: " + e.target.value);
+          // console.log("Semestre seleccionado: " + e.target.value);
         }}
       >
         <option value={id_semestre}>Seleccione un semestre</option>
