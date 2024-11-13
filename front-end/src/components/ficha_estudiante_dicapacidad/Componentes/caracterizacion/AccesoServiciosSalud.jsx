@@ -49,8 +49,6 @@ const AccesoServiciosSalud = ({ servicio_salud }) => {
   const handleUpdateDatosServicioSalud = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    //console.log("Datos servicio de salud actualizados");
-    //console.log(stateServicioSalud);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateServicioSalud)
       .then((res) => {
         //console.log(res);

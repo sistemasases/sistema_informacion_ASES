@@ -14,7 +14,9 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
 
       tipo: "datos_percepcion_caracteristicas",
       id_estudiante: estudianteSelected.id,
-      id_semestre: 40,
+      id_semestre: desencriptarInt(
+        sessionStorage.getItem("id_semestre_discapacidad")
+      ),
       id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
       jornada_caracterizacion: percepcion_discapacidad.jornada_caracterizacion,
 
@@ -190,10 +192,6 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
   const handleUpdateDatosPercepcionDiscapacidad = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    //console.log("Datos Percepción actualizados");
-    // //console.log(datos_estudiante_entrevistado);
-    //console.log(statePercepcionDiscapacidad);
-    console.log(percepcion_discapacidad);
 
     setStatePercepcionDiscapacidad({
       ...statePercepcionDiscapacidad,

@@ -104,8 +104,6 @@ const DatosAcademicos = ({ datos_academicos }) => {
   const handleUpdateDatosAcademicos = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    //console.log("Datos Academicos actualizados");
-    //console.log(stateDatosAcademicos);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
       stateDatosAcademicos
     )

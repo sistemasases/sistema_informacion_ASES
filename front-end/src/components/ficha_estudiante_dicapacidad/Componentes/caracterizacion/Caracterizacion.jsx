@@ -42,7 +42,6 @@ const Caracterizacion = () => {
   useEffect(() => {
     semestres_discapacidad.semestres_discapacidad().then((res) => {
       setSemestres(res);
-      //console.log(res);
     });
 
     const semestre = desencriptar(sessionStorage.semestre_actual);
@@ -53,6 +52,7 @@ const Caracterizacion = () => {
     id_semestre: "",
     fecha: "",
     jornada_caracterizacion: "",
+    lugar: "",
 
     entrevistador: "",
     cargo: "",
@@ -67,10 +67,13 @@ const Caracterizacion = () => {
       pais: "",
       fecha: "",
       jornada_caracterizacion: "",
+      lugar: "",
     });
 
   const [datos_economicos, setDatosEconomicos] = useState({
     fecha: "",
+    lugar: "",
+
     id_semestre: "",
     estrato_socio: 3,
     expectativas_laborales: "",
@@ -119,6 +122,8 @@ const Caracterizacion = () => {
   const [datos_academicos, setDatosAcademicos] = useState({
     id: 1,
     fecha: "",
+    lugar: "",
+
     numero_resolucion: 123456789,
     creditos_programa: 120,
     titulo_obtenido: "",
@@ -134,12 +139,16 @@ const Caracterizacion = () => {
   const [datos_jornada, setDatosJornada] = useState({
     jornada_caracterizacion: "",
     fecha: "",
+    lugar: "",
+
     id_semestre: "",
   });
 
   const [percepcion_discapacidad, setPercepcionDiscapacidad] = useState({
     id: 1,
     fecha: "",
+    lugar: "",
+
     considera_discapacidad: false,
     consideracion: null,
     adquisicion: null,
@@ -295,6 +304,8 @@ const Caracterizacion = () => {
   const [acceso_servicios_salud, setAccesoServiciosSalud] = useState({
     id: 1,
     fecha: "",
+    lugar: "",
+
     regimen_vinculado: false,
     servicio_salud: false,
     salud_otra_texto: "Servicio de salud especializado",
@@ -315,35 +326,41 @@ const Caracterizacion = () => {
 
   const getCaracterizacion = (semestre_data) => {
     const semestre_consulta = semestre_data ? semestre_data : id_semestre;
-    //console.log(semestre_consulta);
     CaracterizacionDiscapacidad.caracterizacionDiscapacidad(
       estudianteSelected.id,
       semestre_consulta
     )
       .then((res) => {
-        //console.log(res);
-        //console.log(semestre_consulta);
         // Reorganizar y formar la nueva fecha en formato día-mes-anio
-        const fechaOriginal = res.datos_caracterizacion.fecha;
-        //console.log(fechaOriginal);
+        const fechaOriginal =
+          res.datos_caracterizacion.fecha === null
+            ? "2024-01-01"
+            : res.datos_caracterizacion.fecha;
+
         // Dividir la fecha en partes [anio, mes, día]
         const fechaOriginalMod = fechaOriginal.split("T")[0]; // "1900-01-01"
         const [anio, mes, día] = fechaOriginalMod.split("-");
+
         // Reorganizar y formar la nueva fecha en formato día-mes-anio
         const fechaConvertida = `${anio}-${mes}-${día}`;
-        //console.log(fechaConvertida);
 
         // Fecha nacimiento
-        const fechaNacimiento = estudianteSelected.fecha_nac;
-        //console.log(fechaNacimiento);
+        const fechaNacimiento =
+          estudianteSelected.fecha_nac === null
+            ? "2000-01-01"
+            : estudianteSelected.fecha_nac;
+
         // Dividir la fecha en partes [anio, mes, día]
         const fechaNacimientoMod = fechaNacimiento.split("T")[0]; // "1900-01-01"
         const [anioF, mesF, diaF] = fechaNacimientoMod.split("-");
+
         // Reorganizar y formar la nueva fecha en formato anio-mes-día
         const fechaConvertidaNacimiento = `${anioF}-${mesF}-${diaF}`;
-        //console.log(fechaConvertidaNacimiento);
 
-        const fechaIngreso = estudianteSelected.anio_ingreso;
+        const fechaIngreso =
+          estudianteSelected.anio_ingreso === null
+            ? "2024-01-01"
+            : estudianteSelected.anio_ingreso;
         const fechaConvertidaTIngreso = fechaIngreso.split("T")[0];
         const [anioIngreso, mesIngreso, diaIngreso] =
           fechaConvertidaTIngreso.split("-");
@@ -362,9 +379,7 @@ const Caracterizacion = () => {
             res.datos_caracterizacion.jornada_caracterizacion,
         });
 
-        //console.log("Datos entrevistador");
-        //console.log(datos_entrevistador);
-
+        // Datos del estudiante entrevistado
         setDatosEstuidanteEntrevistado({
           lugar: res.datos_caracterizacion.lugar,
           id_semestre: semestre_consulta,
@@ -772,7 +787,6 @@ const Caracterizacion = () => {
           setSemestreActual(e.target.value);
           hanldeSelectSemestreD(e.target.value);
           setSemestreSelect(e.target.value);
-          // console.log("Semestre seleccionado: " + e.target.value);
         }}
       >
         <option value={id_semestre}>Seleccione un semestre</option>

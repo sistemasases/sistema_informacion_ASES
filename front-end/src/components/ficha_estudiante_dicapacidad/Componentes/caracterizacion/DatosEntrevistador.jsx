@@ -9,7 +9,6 @@ import {
 } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const DatosEntrevistador = ({ datos_entrevistador }) => {
-  // //console.log(datos_entrevistador);
   const [stateDisabled, setStateDisabled] = useState(true);
   const { estudianteSelected } = useAuthStore();
 
@@ -35,13 +34,6 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
   const handleUpdateEntrevistador = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    //console.log(stateEntrevistador.fecha);
-    // setStateEntrevistador({
-    //   ...stateEntrevistador,
-    //   id_semestre: desencriptarInt(
-    //     sessionStorage.getItem("id_semestre_discapacidad")
-    //   ),
-    // });
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateEntrevistador)
       .then((res) => {
         //console.log(res);
@@ -49,9 +41,6 @@ const DatosEntrevistador = ({ datos_entrevistador }) => {
       .catch((error) => {
         console.error(error);
       });
-    //console.log("Entrevistador actualizado");
-    //console.log(stateEntrevistador);
-    //console.log(datos_entrevistador);
   };
 
   const updateStateDisabled = () => {
