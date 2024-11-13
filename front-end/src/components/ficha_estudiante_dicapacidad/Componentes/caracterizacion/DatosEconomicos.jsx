@@ -77,9 +77,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
   const handleUpdateDatosEconomicos = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    //console.log("Datos Economicos actualizados");
-    // //console.log(datos_estudiante_entrevistado);
-    //console.log(stateDatosEconomicos);
+    
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
       stateDatosEconomicos
     )
@@ -400,6 +398,7 @@ const DatosEconomicos = ({ datos_economicos }) => {
                   type="number"
                   min="0"
                   step="1000"
+                  defaultValue={0}
                   value={stateDatosEconomicos.valor_transporte}
                   onChange={(e) =>
                     setStateDatosEconomicos({
@@ -502,8 +501,14 @@ const DatosEconomicos = ({ datos_economicos }) => {
                   <input
                     className="input-type-number"
                     type="number"
-                    min="1"
-                    value={stateDatosEconomicos.hijos_numero}
+                    min={0}
+                    max={21}
+                    value={
+                      stateDatosEconomicos.tiene_hijos === false ||
+                      stateDatosEconomicos.tiene_hijos === "false"
+                        ? 0
+                        : stateDatosEconomicos.hijos_numero
+                    }
                     onChange={(e) =>
                       setStateDatosEconomicos({
                         ...stateDatosEconomicos,

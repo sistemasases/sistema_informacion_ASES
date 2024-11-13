@@ -39,10 +39,6 @@ const ConclusionJornadaCaracterizacion = ({ jornada }) => {
   const handleUpdateJornada = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-
-    //console.log("Jornada actualizado:");
-    //console.log("Original:", jornada);
-    //console.log("Actualizado:", stateJornadaCaracterizacion);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
       stateJornadaCaracterizacion
     )
