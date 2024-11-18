@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import {Container} from 'react-bootstrap';
+import {Container, Button} from 'react-bootstrap';
 import '../../Scss/campus_diverso/campus_diverso.css';
 import ModalEstudiantes from './components/modalEstudiantes';
 import axios from 'axios';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TextField } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
@@ -22,6 +27,9 @@ const ObtenerEstudiante = () => {
   const [editableUser, setEditableUser] = useState({ ...selectedUser, });
   const [isEditing, setIsEditing] = useState(false);
   const [isRevisado, setRevisado] = useState(false);
+  const [searchDate, setSearchDate] = useState(null);
+  const [startDate, setStartDate] = useState(null); // Fecha de inicio
+  const [endDate, setEndDate] = useState(null); // Fecha de fi
 
   //Desencripta el token para la API
   const config = {
@@ -38,7 +46,11 @@ const ObtenerEstudiante = () => {
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/persona/persona/`, {headers})
       .then((response) => response.json())
-      .then((data) => setUsers(data))
+      .then((data) =>{
+        console.log(data); // Verifica cómo llega la respuesta
+       setUsers(data)
+      })
+      
       .catch((error) => console.error('Error al obtener usuarios:', error));
   }, []);
 
@@ -110,10 +122,27 @@ const ObtenerEstudiante = () => {
     
   };
 
-  const filteredUsers = users.filter((user) =>
-    (user.numero_documento && user.numero_documento.includes(searchText)) ||
-    (user.nombre_y_apellido && user.nombre_y_apellido.toLowerCase().includes(searchText.toLowerCase()))
-  );
+  const filteredUsers = users.filter(user => {
+    // Filtro por nombre, número de documento y carrera
+    const matchesSearchText = user.nombre_y_apellido.toLowerCase().includes(searchText.toLowerCase()) || 
+                              user.nombre_identitario.toLowerCase().includes(searchText.toLowerCase()) ||
+                              user.numero_documento.toLowerCase().includes(searchText.toLowerCase()) ||
+                              (
+                                Array.isArray(user.informacion_academica?.programas) 
+                                  ? user.informacion_academica.programas.join(' ').toLowerCase().includes(searchText.toLowerCase()) 
+                                  : (user.informacion_academica?.programas || '').toLowerCase().includes(searchText.toLowerCase())
+                              );
+
+    // Filtro por rango de fechas (si se seleccionó)
+    const userDate = dayjs(user.fecha_creacion_usuario);
+    const matchesDateRange = (!startDate && !endDate) ||
+      (startDate && !endDate && userDate.isSame(startDate, 'day')) || 
+      (startDate && endDate && userDate.isBetween(startDate, endDate, null, '[]')); // Incluye ambas fechas
+
+    // Se devuelve el usuario si coincide con el texto de búsqueda y el rango de fechas
+    return matchesSearchText && matchesDateRange;
+});
+
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
@@ -630,48 +659,113 @@ const handleInputChange = (e) => {
 };
   return (
 <>
-  <h1 className="title-search">Lista de personas</h1>
-  <Container>
-    <input
-      type="text"
-      placeholder="Buscar por nombre"
-      value={searchText}
-      onChange={(e) => setSearchText(e.target.value)}
-      className="search-input"
+<h1 className="title-search">Lista de personas</h1>
+      <Container>
+      <div className="search-container" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>          <input
+            type="text"
+            placeholder="Buscar por nombre"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            className="search-input"
+          />
+          
+
+
+           <LocalizationProvider dateAdapter={AdapterDayjs}>
+  <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}> {/* Flex para separar los elementos */}
+    <DatePicker
+      label="Fecha de Inicio"
+      value={startDate}
+      onChange={(newDate) => setStartDate(newDate ? dayjs(newDate) : null)}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          sx={{
+            height: '50px',
+            '& .MuiInputBase-root': {
+              height: '50px !important',
+              padding: '14px',
+            },
+            '& .MuiInputBase-input': {
+              height: '50px !important',
+            },
+          }}
+        />
+      )}
     />
-    <p className="result-count">Resultados: {filteredUsers.length}</p>
-    <div className="table-container">
-      <div className="table-scroll">
-        <table className="user-table">
-          <thead>
-            <tr>
-              <th className='table-name'>Nombre Identitario</th>
-              <th className='table-name'>Nombre y Apellido</th>
-              <th className='table-name'>Tipo de Documento</th>
-              <th className='table-name'>Número de Documento</th>
-              <th className='table-name'>Fecha de Creación</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers
-              .sort((a, b) => new Date(b.fecha_creacion_usuario) - new Date(a.fecha_creacion_usuario)) // Ordena por fecha de creación
-              .map((user, index) => (
-                <tr
-                  key={user.numero_documento}
-                  className={`${index % 2 === 0 ? 'even-row' : 'odd-row'} ${!user.revision_usiario ? 'pending-review' : ''}`}
-                  onClick={() => openModal(user)}
-                >
-                  <td>{user.nombre_identitario}</td>
-                  <td>{user.nombre_y_apellido}</td>
-                  <td>{user.tipo_documento ? user.tipo_documento : 'No registrado'}</td>
-                  <td>{user.numero_documento}</td>
-                  <td>{new Date(user.fecha_creacion_usuario).toLocaleDateString()}</td>
+
+    <DatePicker
+      label="Fecha de Fin"
+      value={endDate}
+      onChange={(newDate) => setEndDate(newDate ? dayjs(newDate) : null)}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          sx={{
+            height: '50px',
+            '& .MuiInputBase-root': {
+              height: '50px !important',
+              padding: '14px',
+            },
+            '& .MuiInputBase-input': {
+              height: '50px !important',
+            },
+          }}
+        />
+      )}
+    />
+  </div>
+</LocalizationProvider>
+
+          {/* Botón con icono de basura para limpiar el rango de fechas */}
+          {(startDate || endDate) && (
+            <Button
+              className="button-inicial"
+              onClick={() => {
+                setStartDate(null);
+                setEndDate(null);
+              }} // Limpiar el rango de fechas
+              style={{ marginLeft: '10px',
+                height: '55px',
+               }} // Espaciado entre los DatePicker y el botón
+            >
+              <i className="bi-trash"></i> {/* Icono de basura */}
+            </Button>
+          )}
+        </div>
+        <p className="result-count">Resultados: {filteredUsers.length}</p>
+        <div className="table-container">
+          <div className="table-scroll">
+            <table className="user-table">
+              <thead>
+                <tr>
+                  <th className='table-name'>Nombre Identitario</th>
+                  <th className='table-name'>Nombre y Apellido</th>
+                  <th className='table-name'>Tipo de Documento</th>
+                  <th className='table-name'>Número de Documento</th>
+                  <th className='table-name'>Fecha de Registro</th>
                 </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+              </thead>
+              <tbody>
+                {filteredUsers
+                  .sort((a, b) => new Date(b.fecha_creacion_usuario) - new Date(a.fecha_creacion_usuario)) // Ordenar por fecha
+                  .map((user, index) => (
+                    <tr
+                      key={user.numero_documento}
+                      className={`${index % 2 === 0 ? 'even-row' : 'odd-row'} ${!user.revision_usuario ? 'pending-review' : ''}`}
+                      onClick={() => openModal(user)}
+                    >
+                      <td>{user.nombre_identitario}</td>
+                      <td>{user.nombre_y_apellido}</td>
+                      <td>{user.tipo_documento ? user.tipo_documento : 'No registrado'}</td>
+                      <td>{user.numero_documento}</td>
+                      <td>{new Date(user.fecha_creacion_usuario).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
           <ModalEstudiantes
             isModalOpen={isModalOpen}
             closeModal={closeModal}

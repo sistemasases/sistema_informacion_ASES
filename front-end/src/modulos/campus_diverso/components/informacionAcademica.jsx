@@ -26,7 +26,7 @@ const InformacionAcademica = ({
 
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
         
-        <Col className="form-column" xs={"11"} md={"6"}>
+        <Col className="form-column" xs={"6"} md={"6"}>
 
 
 
@@ -71,6 +71,8 @@ const InformacionAcademica = ({
                 options={sedeOptions}
                 value={sedeOptions.find(option => option.value === state.sedes)}
                 onChange={handleSelectNoMultiChange}
+                isDisabled={state.pertenencia_univalle === false}
+
               />
             )}
           </div>
@@ -90,6 +92,8 @@ const InformacionAcademica = ({
             options={programaOptions}
             value={programaOptions.find(option => option.value === state.programas)}
             onChange={handleSelectNoMultiChange}
+            isDisabled={state.pertenencia_univalle === false}
+
           />
         )}
       </div>
@@ -103,7 +107,7 @@ const InformacionAcademica = ({
 
     </Col>
 
-    <Col className="form-column" xs={"9"} md={"6"}>
+    <Col className="form-column" xs={"6"} md={"6"}>
     
         <div>
                 <label className='custom-div'>Codigo del estudiante</label>

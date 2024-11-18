@@ -217,8 +217,8 @@ const NavbarCampus = (props) => {
         <Col className="boton_perfil" xs={"7"} md={"3"}>
           <Row>
             <Col xs={"7"} md={"7"} className="info_perfil">
-              <Row className="bold-text-nav">{decryptNombreCompleto} </Row>
-              <Row className="bold-text-nav">{decryptRol + " - " + decryptSede}</Row>
+              <Row>{decryptNombreCompleto} </Row>
+              <Row>{decryptRol + " - " + decryptSede}</Row>
               {/* <Row>{}</Row> */}
             </Col>
 

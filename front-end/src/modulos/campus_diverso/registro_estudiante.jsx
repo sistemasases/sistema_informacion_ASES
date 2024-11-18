@@ -500,14 +500,6 @@ const handleSubmit = async (e) => {
 
 
 
-  const requiredFields = [
-    'numero_documento',
-  
-    // Add other required fields here
-  ];
-
-
-
   if (!recaptchaToken) {
     setShowErrorAlert(true);
     setMensaje('Por favor completa el reCAPTCHA.');
@@ -517,6 +509,17 @@ const handleSubmit = async (e) => {
 
 
 
+  const requiredFields = [
+    'numero_documento',
+  
+ 
+  ];
+
+  const fieldNames = {
+    numero_documento: "número de documento",
+    pertenencia_univalle: "pertenencia a Univalle",
+
+  };
 
   // Remueve elementos vacios del formulario a la base de datos
   const removeEmptyFields = (data) => {
@@ -525,20 +528,22 @@ const handleSubmit = async (e) => {
 
   const invalidFields = requiredFields.filter(field => !state[field]);
   if (state.pertenencia_univalle === null) {
-    // Añadir el campo 'pertenencia_univalle' a la lista de campos inválidos si es null
     invalidFields.push('pertenencia_univalle');
   }
 
-  if (invalidFields.length > 0) {
-    // alerta de campos vacíos que están en la lista de requiredFields
-    setMensaje(`Los siguientes campos son obligatorios y están vacíos: ${invalidFields.join(', ')}`);
-    console.log('asdasd', setMensaje);
-    setTimeout(() => {
-      setShowErrorAlert(true);
-      setTimeout(() => setShowErrorAlert(false), 3000);
-    }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
-    return;
-  }
+ 
+if (invalidFields.length > 0) {
+  // Convertir los nombres técnicos a descripciones personalizadas
+  const formattedInvalidFields = invalidFields.map(field => fieldNames[field] || field);
+
+  // Alerta de campos vacíos que están en la lista de requiredFields
+  setMensaje(`Los siguientes campos son obligatorios y están vacíos: ${formattedInvalidFields.join(', ')}`);
+  setTimeout(() => {
+    setShowErrorAlert(true);
+    setTimeout(() => setShowErrorAlert(false), 3000);
+  }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
+  return;
+}
 
 
  
@@ -836,8 +841,6 @@ const handleSubmit = async (e) => {
     } catch (diversidadError) {
       console.error('Error al enviar la solicitud de diversidad sexual:', diversidadError);
       // Manejo de error de diversidad sexual
-      await axios.delete(`${process.env.REACT_APP_API_URL}/persona/persona/${personaId}`);
-      console.log(`Persona con ID: ${personaId} eliminada exitosamente.`);
       if (diversidadError.response) {
         let errorMessage = "Hubo un error al enviar el formulario en los campos de diversidad sexual. Por favor, inténtalo de nuevo.";
         if (diversidadError.response.data) {

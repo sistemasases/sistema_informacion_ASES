@@ -1,6 +1,14 @@
 import React from 'react';
 import { Container, Col  } from 'react-bootstrap';
 import Select from 'react-select';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TextField } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es'; 
+
+dayjs.locale('es'); 
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 export const preventNonNumericValues = (e) => {
@@ -282,18 +290,31 @@ const IngresoDatosBasicos = ({state,
       <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - (state.municipio_nacimiento?.length || 0)}`}</span>
     </div>
 
-        <div>
-          <label className='custom-div'>Fecha de nacimiento</label>
-          <div>
-            <input
-              className='input-updated'
-              type="date"
-              name="fecha_nacimiento"
-              value={state.fecha_nacimiento}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+      <div  style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+        <DatePicker
+          label="Fecha de nacimiento"
+            value={state.fecha_nacimiento ? dayjs(state.fecha_nacimiento) : null}          onChange={(newDate) => handleChange({ target: { name: 'fecha_nacimiento', value: newDate } })}
+          renderInput={(params) => (
+             <TextField
+          {...params}
+          InputProps={{
+            style: {
+              height: '40px',   // Ajusta la altura total del TextField
+              padding: '8px',   // Ajusta el padding interno
+              fontSize: '0.875rem',  // Ajusta el tamaño de texto
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              fontSize: '0.875rem',  // Ajusta el tamaño del texto de la etiqueta
+            },
+          }}
+        />
+      )}
+    />
+      </div>
+    </LocalizationProvider>
 
 
 
