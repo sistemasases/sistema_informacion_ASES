@@ -14,6 +14,7 @@ import { decryptTokenFromSessionStorage } from "../../modulos/utilidades_segurid
 import Formularios_externos_firma_tratamiento_datos_envio from "../../service/formularios_externos_firma_tratamiento_datos_envio.js";
 import { Container, Col, Row, Button, Modal } from "react-bootstrap";
 import "../../Scss/formularios_externos/formulario_autorizacion_style.css";
+import Swal from "sweetalert2";
 
 const FormularioActualizacion = (props) => {
   const [documentType, setDocumentType] = useState("");
@@ -39,10 +40,6 @@ const FormularioActualizacion = (props) => {
         tipo_id_estudiante: "",
       });
     }
-    // setData({
-    //   ...data,
-    //   nombre_firma: e.target.value,
-    // });
   };
 
   const handle_otherDocumentType = (e) => {
@@ -58,41 +55,112 @@ const FormularioActualizacion = (props) => {
     tipo_id_estudiante: "",
     documento: "",
     correo_firma: "",
-    autoriza_tratamiento_datos: "",
-    autoriza_tratamiento_imagen: "",
+    autoriza_tratamiento_datos: null,
+    autoriza_tratamiento_imagen: null,
     fecha_firma: new Date().toISOString().split("T")[0],
   });
-  const send_data = (e) => {
-    // console.log(e);
-    // console.log(data);
-    // usuario_rol
+
+  const send_data = async (e) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // virificar que los campos obligatorios no esten vacios
+    // Verificar que los campos obligatorios no estén vacíos
     if (
       data.nombre_firma === "" ||
       data.tipo_id_estudiante === "" ||
       data.documento === "" ||
       data.correo_firma === "" ||
-      data.autoriza_tratamiento_datos === "" ||
-      data.autoriza_tratamiento_imagen === ""
+      data.autoriza_tratamiento_datos === null ||
+      data.autoriza_tratamiento_imagen === null
     ) {
-      alert("Por favor llene todos los campos obligatorios");
+      Swal.fire({
+        title: "Mensaje de alerta",
+        text: "Por favor, verifica que todos los campos obligatorios estén llenos antes de enviar",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Aceptar",
+        // cancelButtonText: "No",
+      });
       return;
-    } else if (emailRegex.test(data.correo_firma) == false) {
-      alert("Ocurrió un error");
+    } else if (!emailRegex.test(data.correo_firma)) {
+      // alert(
+      //   "El correo ingresado no tiene un formato válido. Por favor, corrígelo para continuar."
+      // );
+      Swal.fire({
+        title: "Mensaje de alerta",
+        text: "El correo ingresado no tiene un formato válido. Por favor, corrígelo para continuar.",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Aceptar",
+        // cancelButtonText: "No",
+      });
       setEmailError("El correo no tiene un formato válido");
-    } else {
-      Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
-        data
-      )
-        .then((res) => {
-          // console.log(res);
-        })
-        .catch((error) => {
-          // console.error(error);
-          alert("Error al enviar los datos, vuelva a intentarlo");
+      return;
+    } else if (data.autoriza_tratamiento_datos === false) {
+      try {
+        const isConfirm = await Swal.fire({
+          title: "Mensaje de confirmación",
+          text: "Recuerde que si no autoriza el tratamiento de datos, no podrá continuar con el proceso de acompañamiento.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Sí",
+          cancelButtonText: "No",
         });
+
+        if (!isConfirm.isConfirmed) {
+          return; // Si el usuario cancela, se sale de la función
+        }
+
+        // Llamar al servicio para guardar los datos
+        const res =
+          await Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
+            data
+          );
+
+        if (res) {
+          Swal.fire({
+            title: "Éxito",
+            text: "Los datos fueron guardados correctamente.",
+            icon: "success",
+            timer: 3000,
+            showConfirmButton: false,
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
+          icon: "error",
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      }
+    } else {
+      const res =
+        await Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
+          data
+        );
+      try {
+        if (res) {
+          Swal.fire({
+            title: "Éxito",
+            text: "Los datos fueron guardados correctamente.",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
     }
   };
 
@@ -323,13 +391,12 @@ const FormularioActualizacion = (props) => {
                       type="radio"
                       id="si"
                       label="Sí"
-                      value="true"
+                      value={true} // Asegúrate de pasar el valor booleano
                       name="dataAuth"
-                      // checked={documentType === "C.C."}
                       onChange={(e) =>
                         setData({
                           ...data,
-                          autoriza_tratamiento_datos: e.target.value,
+                          autoriza_tratamiento_datos: true, // Establece el valor booleano explícito
                         })
                       }
                     />
@@ -337,13 +404,12 @@ const FormularioActualizacion = (props) => {
                       type="radio"
                       id="no"
                       label="No"
-                      value="false"
+                      value={false} // Asegúrate de pasar el valor booleano
                       name="dataAuth"
-                      // checked={documentType === "Otros"}
                       onChange={(e) =>
                         setData({
                           ...data,
-                          autoriza_tratamiento_datos: e.target.value,
+                          autoriza_tratamiento_datos: false, // Establece el valor booleano explícito
                         })
                       }
                     />

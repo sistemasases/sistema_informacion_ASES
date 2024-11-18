@@ -10,7 +10,7 @@ import {
 } from "../../../modulos/utilidades_seguridad/utilidades_seguridad";
 
 const Info_general = (props) => {
-  console.log(props.datos);
+  // console.log(props.datos);
   const config = {
     headers: {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
@@ -59,7 +59,7 @@ const Info_general = (props) => {
     puntaje_icfes: props.datos["puntaje_icfes"], // Integer
     telefono_res: props.datos["telefono_res"], // BigIntegerField
     celular: props.datos["celular"], // BigIntegerField
-    email_alternativo: props.datos["email"], // CharField
+    email: props.datos["email"], // CharField
     sexo: props.datos["sexo"], // CharField
     cantidad_hijo: props.datos["hijos"], // IntegerField
     actividades_tiempo_libre: props.datos["actividades_tiempo_libre"], // jajaj no se, la quire por ahora
@@ -81,7 +81,7 @@ const Info_general = (props) => {
     nuevo_año_ingreso_univalle: props.datos["anio_ingreso"],
     nuevo_telefono_res: props.datos["telefono_res"],
     nuevo_celular: props.datos["celular"],
-    nuevo_email_alternativo: props.datos["email"],
+    nuevo_email: props.datos["email"],
     nuevo_sexo: props.datos["sexo"],
     nuevo_cantidad_hijo: props.datos["hijos"],
     nuevo_deportes_que_practica: props.datos["actividades_ocio_deporte"],
@@ -237,7 +237,7 @@ const Info_general = (props) => {
       nuevo_año_ingreso_univalle: props.datos["año_ingreso"],
       nuevo_telefono_res: props.datos["telefono_res"],
       nuevo_celular: props.datos["celular"],
-      nuevo_email_alternativo: props.datos["email"],
+      nuevo_email: props.datos["email"],
       nuevo_grupo_etnico_id: props.datos["id_etnia"],
       nuevo_actividad_simultanea_id: props.datos["id_act_simultanea"],
       nuevo_identidad_de_genero_id: props.datos["id_identidad_gen"],
@@ -462,10 +462,10 @@ const agregarPariente = () => {
     );
     formData.append(
       "email",
-      state.nuevo_email_alternativo !== null &&
-        state.nuevo_email_alternativo !== undefined &&
-        state.nuevo_email_alternativo.length > 0
-        ? state.nuevo_email_alternativo
+      state.nuevo_email !== null &&
+        state.nuevo_email !== undefined &&
+        state.nuevo_email.length > 0
+        ? state.nuevo_email
         : "sin especificar"
     );
     formData.append(
@@ -523,7 +523,7 @@ const agregarPariente = () => {
       "id_etnia",
       state.nuevo_grupo_etnico !== null ? state.nuevo_grupo_etnico : [null]
     );
-    console.log(state.nuevo_grupo_etnico);
+    // console.log(state.nuevo_grupo_etnico);
     formData.append(
       "id_act_simultanea",
       state.nuevo_actividad_simultanea !== null
@@ -576,7 +576,7 @@ const agregarPariente = () => {
           año_ingreso_univalle: state.nuevo_año_ingreso_univalle,
           telefono_res: state.nuevo_telefono_res,
           celular: state.nuevo_celular,
-          email_alternativo: state.nuevo_email_alternativo,
+          email: state.nuevo_email,
           sexo: state.nuevo_sexo,
           cantidad_hijo: state.nuevo_cantidad_hijo,
           actividades_tiempo_libre: state.nuevo_actividades_tiempo_libre,
@@ -603,7 +603,7 @@ const agregarPariente = () => {
           año_ingreso_univalle: state.año_ingreso_univalle,
           telefono_res: state.telefono_res,
           celular: state.celular,
-          email_alternativo: state.email_alternativo,
+          email: state.email,
           sexo: state.sexo,
           cantidad_hijo: state.cantidad_hijo,
           actividades_tiempo_libre: state.actividades_tiempo_libre,
@@ -839,20 +839,20 @@ const agregarPariente = () => {
               )}
 
               <Col xs={"12"} md={"6"} className="row_flex_general">
-                <h4 className="texto_pequeño_gris">Email alternativo</h4>
+                <h4 className="texto_pequeño_gris">Email</h4>
               </Col>
               {state.editar ? (
                 <Col xs={"12"} md={"6"} className="row_flex_general">
                   <input
-                    name="nuevo_email_alternativo"
+                    name="nuevo_email"
                     onChange={cambiar_datos}
-                    defaultValue={state.email_alternativo}
+                    defaultValue={state.email}
                   ></input>
                 </Col>
               ) : (
                 <Col xs={"12"} md={"6"} className="row_flex_general">
                   <h4 className="texto_pequeño_12pt">
-                    {state.email_alternativo}
+                    {state.email}
                   </h4>
                 </Col>
               )}

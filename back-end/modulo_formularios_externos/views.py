@@ -86,7 +86,7 @@ class form_primer_ingreso(viewsets.GenericViewSet):
     serializer_class = estudiante_serializer
 
     def create(self, request):
-        print(request.data)
+        # print(request.data)
         if (programa.objects.filter(id=int(
                 request.data["programa"]))):
             programa_data = programa.objects.get(id=int(
@@ -155,6 +155,7 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
     serializer_class = firma_tratamiento_datos_serializer
 
     def create(self, request):
+        # print(request.data)
         serializer = firma_tratamiento_datos_serializer(data=request.data)
         if serializer.is_valid():
             documento = serializer.data["documento"]

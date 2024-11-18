@@ -9,6 +9,7 @@
 
 import axios from "axios";
 import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import Swal from "sweetalert2";
 
 const formularios_externos_firma = async (formData) => {
   try {
@@ -28,13 +29,41 @@ const formularios_externos_firma = async (formData) => {
       .catch((error) => {
         // console.error(error);
         if (error.response.status === 400) {
-          alert(error.response.data.Respuesta);
+          // alert(error.response.data.Respuesta);
+          Swal.fire({
+            title: "Error",
+            text: error.response.data.Respuesta,
+            icon: "error",
+            timer: 2500,
+            showConfirmButton: false,
+          });
         } else if (error.response.status === 404) {
-          alert(error.response.data.Respuesta);
+          // alert(error.response.data.Respuesta);
+          Swal.fire({
+            title: "Error",
+            text: error.response.data.Respuesta,
+            icon: "error",
+            timer: 2500,
+            showConfirmButton: false,
+          });
         } else if (error.response.status === 500) {
-          alert(error.response.data.Respuesta);
+          // alert(error.response.data.Respuesta);
+          Swal.fire({
+            title: "Error",
+            text: error.response.data.Respuesta,
+            icon: "error",
+            timer: 2500,
+            showConfirmButton: false,
+          });
         } else {
-          alert("Error al enviar los datos, vuelva a intentarlo");
+          // alert("Error al enviar los datos, vuelva a intentarlo");
+          Swal.fire({
+            title: "Error",
+            text: "Error al enviar los datos, vuelva a intentarlo",
+            icon: "error",
+            timer: 2500,
+            showConfirmButton: false,
+          });
         }
         return false;
       });
