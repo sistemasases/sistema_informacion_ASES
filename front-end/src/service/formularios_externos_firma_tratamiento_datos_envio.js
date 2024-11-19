@@ -20,7 +20,14 @@ const formularios_externos_firma = async (formData) => {
       .then((response) => {
         // console.log(response);
         if (response.status === 200) {
-          alert(response.data.Respuesta);
+          // alert(response.data.Respuesta);
+          Swal.fire({
+            title: "Exito",
+            text: response.data.Respuesta,
+            icon: "success",
+            timer: 2500,
+            showConfirmButton: false,
+          });
           return true;
         } else {
           return false;
