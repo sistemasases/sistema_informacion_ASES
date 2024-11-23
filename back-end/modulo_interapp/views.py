@@ -5,11 +5,13 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime, timedelta
 from django.db import transaction
+from django.contrib.auth.models import User
 from modulo_usuario_rol.serializers import estudiante_serializer
-from modulo_usuario_rol.models import estudiante
+from modulo_usuario_rol.models import estudiante, usuario_rol
 from modulo_instancia.models import semestre, sede
 from modulo_instancia.serializers import semestre_serializer
 from modulo_seguimiento.models import seguimiento_individual, inasistencia, riesgo_individual
+from modulo_asignacion.models import asignacion
 from .serializers import ases_dexia_serializer
 
 class send_ases(viewsets.GenericViewSet):
@@ -59,18 +61,36 @@ class send_ases(viewsets.GenericViewSet):
                             'riesgo_economico': "SIN RIESGO",
                             'riesgo_vida_universitaria_ciudad': "SIN RIESGO",
                         }
+             # Obtener el correo del profesional responsable
+            try:
+                monitor_asignado = asignacion.objects.get(
+                    id_estudiante=estudiante23,
+                    id_semestre=var_semestre,
+                    estado=True
+                )
+                practicante = usuario_rol.objects.get(
+                    id_usuario=monitor_asignado.id_usuario,
+                    id_semestre=var_semestre
+                )
+                profesional = usuario_rol.objects.get(
+                    id_usuario=practicante.id_jefe,
+                    id_semestre=var_semestre
+                )
+                responsable = profesional.id_jefe.email
+            except Exception:
+                responsable = "Correo no disponible"
             porcentaje_avance = (conteo_seguimientos / 6) * 100
             if porcentaje_avance >= 100 :
                 conteo = {
                         'criterio': [{'id':6,'porcentaje_avance': 100,}],
                         'culmino_acompañamiento' : True,
-                        'responsable': 'fabio.barbosa@univalle.edu.co'
+                        'responsable': responsable,
                 }
             else :
                 conteo = {
                         'criterio': [{'id':6,'porcentaje_avance': porcentaje_avance,}],
                         'culmino_acompañamiento' : False,
-                        'responsable': 'fabio.barbosa@univalle.edu.co'
+                        'responsable': responsable,
                     }
 
             data = dict(serializer_estudiante.data,**conteo,**riesgo)
