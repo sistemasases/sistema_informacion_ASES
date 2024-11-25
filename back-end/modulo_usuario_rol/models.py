@@ -100,6 +100,7 @@ class estudiante (models.Model):
     es_discapacidad = models.BooleanField(default=False, null=True)
     es_academico = models.BooleanField(default=False, null=True)
     encuesta_admitido = models.BooleanField(default=False, null=True)
+    firma_existe = models.BooleanField(default=False, null=True)
 
     class Meta:
         db_table = "estudiante"
