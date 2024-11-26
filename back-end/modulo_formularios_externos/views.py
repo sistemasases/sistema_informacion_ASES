@@ -162,7 +162,7 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
             if estudiante.objects.filter(num_doc=documento).exists():
                 consulta_estudiante = estudiante.objects.filter(
                     num_doc=documento)
-                print(consulta_estudiante)
+                # print(consulta_estudiante)
                 firma_creada = False  # Bandera para verificar si se creó una firma
 
                 for estudiante_firma in consulta_estudiante:

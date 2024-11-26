@@ -1,24 +1,24 @@
 /**
-  * @file alertas.jsx
-  * @version 1.0.0
-  * @description modulo para visualizar las alertas.
-  * @author Steven Bernal
-  * @contact steven.bernal@correounivalle.edu.co
-  * @date 28 de marzo de 2023
-*/
+ * @file alertas.jsx
+ * @version 1.0.0
+ * @description modulo para visualizar las alertas.
+ * @author Steven Bernal
+ * @contact steven.bernal@correounivalle.edu.co
+ * @date 28 de marzo de 2023
+ */
 
 import {
-        desencriptar,
-        desencriptarInt,
-        decryptTokenFromSessionStorage,
-        encriptar
-       } from "../utilidades_seguridad/utilidades_seguridad.jsx";
-import {Container, Col, Row, Button} from "react-bootstrap";
+  desencriptar,
+  desencriptarInt,
+  decryptTokenFromSessionStorage,
+  encriptar,
+} from "../utilidades_seguridad/utilidades_seguridad.jsx";
+import { Container, Col, Row, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import myGif from "../reportes/loading_data.gif";
 import writeXlsxFile from "write-excel-file";
-import {CSVLink} from "react-csv";
+import { CSVLink } from "react-csv";
 import axios from "axios";
 
 // variable con las columnas a usar dentro de las notificaciones
@@ -82,6 +82,16 @@ var columns = [
         style: {
           backgroundColor: "yellow",
           color: "#552CC4",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.firma_tratamiento_datos == "SIN AUTORIZAR",
+        style: {
+          backgroundColor: "red",
+          color: "white",
           "&:hover": {
             cursor: "pointer",
           },
@@ -332,9 +342,9 @@ var columns = [
 ];
 
 /**
-    * Función principal.
-    * @return {HTML} Visualización de las alertas.
-*/
+ * Función principal.
+ * @return {HTML} Visualización de las alertas.
+ */
 const Alertas = () => {
   // variable para setear las columnas
   var new_columns = [];
@@ -469,9 +479,7 @@ const Alertas = () => {
   };
 
   // Variable que sirve como guia para la información del estudiante
-  var empty_stuff = [
-    { cod_univalle: " ", nombre: " ", apellido: " " },
-  ];
+  var empty_stuff = [{ cod_univalle: " ", nombre: " ", apellido: " " }];
 
   prueba = state.estudiante;
 
@@ -482,9 +490,9 @@ const Alertas = () => {
   // Constante para actualizar la busqueda
   const [search_bar_data, set_search_bar_data] = useState([]);
   /**
-    * Busqueda y filtro para los estudiantes.
-    * @param {Event} e Evento de la busqueda.
-  */
+   * Busqueda y filtro para los estudiantes.
+   * @param {Event} e Evento de la busqueda.
+   */
   const handle_column_search = (e) => {
     restore = prueba;
     if (e.target.name === "Código") {
@@ -553,9 +561,7 @@ const Alertas = () => {
     }
     if (e.target.name === "Riesgo familiar") {
       const hola = prueba.filter((row) =>
-        row.riesgo_familiar
-          .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+        row.riesgo_familiar.toLowerCase().includes(e.target.value.toLowerCase())
       );
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
@@ -587,13 +593,12 @@ const Alertas = () => {
       const filtered_data = hola.length > 0 ? hola : empty_stuff;
       setFiltered(filtered_data);
     }
-    
   };
   // variable para actualizar la data de la busqueda
   var new_search_bar_data = [];
   /**
-    * Añade una busqueda extra.
-  */
+   * Añade una busqueda extra.
+   */
   const add_search_bar = () => {
     // for (let i = 0; i < columns.length; i++) {
     //   const element = columns[i];
@@ -634,8 +639,6 @@ const Alertas = () => {
       const element = updatedColumns[i];
       new_columns.push(element);
     }
-  
-
   };
 
   //   Estilo visual de la tabla
@@ -743,8 +746,8 @@ const Alertas = () => {
   ];
 
   /**
-    * Pasa el csv a formato excel.
-  */
+   * Pasa el csv a formato excel.
+   */
   const imprimir_excel = () => {
     let new_data_excel = [];
 

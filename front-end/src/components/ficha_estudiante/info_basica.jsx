@@ -548,7 +548,7 @@ const Info_basica = (props) => {
                                 class="bi bi-check2-square"
                                 style={
                                   state.total_datos_estudiante_seleccionado
-                                    .firma_tratamiento_datos == "SIN FIRMAR"
+                                    .firma_tratamiento_datos == "SIN AUTORIZAR"
                                     ? { color: "red" }
                                     : state.total_datos_estudiante_seleccionado
                                       .firma_tratamiento_datos == "NO AUTORIZA"
