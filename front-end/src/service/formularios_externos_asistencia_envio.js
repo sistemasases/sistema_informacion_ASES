@@ -44,6 +44,22 @@ const formularios_externos_asistencia_envio = async (formData) => {
             timer: 2500,
             showConfirmButton: false,
           });
+        } else if (error.response.status === 409) {
+          Swal.fire({
+            title: "Error",
+            text: error.response.data.mensaje,
+            icon: "error",
+            timer: 2500,
+            showConfirmButton: false,
+          });
+        } else if (error.response.status === 500) {
+          Swal.fire({
+            title: "Error",
+            text: error.response.data.mensaje,
+            icon: "error",
+            timer: 2500,
+            showConfirmButton: false,
+          });
         } else {
           // alert("Error al enviar los datos, vuelva a intentarlo");
           Swal.fire({
