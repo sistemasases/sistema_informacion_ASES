@@ -72,38 +72,42 @@ class form_asistencia_academica(viewsets.GenericViewSet):
         except:
             return Response({'mensaje': 'No se encuentra el código suministrado en la Base de datos'}, status=status.HTTP_404_NOT_FOUND)
 
-        monitoria_resquest = monitoria_academica.objects.get(
+        monitoria_request = monitoria_academica.objects.get(
             id=int(request.data["id_monitoria"]))
 
         # verificacion 2 en 1 día
-        list = asistencia.objects.filter(
+        asistencias = asistencia.objects.filter(
             id_estudiante=estudiante_request.id)
-
         try:
-            if not list:
+            if not asistencias:
                 asistencia_creada = asistencia.objects.create(
-                    id_monitoria=monitoria_resquest,
+                    id_monitoria=monitoria_request,
                     id_estudiante=estudiante_request,
                 )
                 return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
             else:
-                for i in list:
-                    fecha_request = str(request.data["fecha"])
-                    # __fecha_request = datetime.strptime(
-                    #     fecha_request, "%Y-%m-%d")
+                fecha_request = str(request.data["fecha"])
+                monitoria_id = int(request.data["id_monitoria"])
+
+                for i in asistencias:
                     fecha_asistencia = str(i.fecha)
-                    # __fecha = datetime.strptime(
-                    #     fecha_asistencia, "%Y-%m-%d")
-                    if fecha_request == fecha_asistencia:
-                        return Response({'mensaje': 'El estudiante ya asistió a una monitoria en la fecha suministrada'}, status=status.HTTP_409_CONFLICT)
-                    else:
-                        asistencia_creada = asistencia.objects.create(
-                            id_monitoria=monitoria_resquest,
-                            id_estudiante=estudiante_request,
+                    if fecha_request == fecha_asistencia and monitoria_id == i.id_monitoria.id:
+                        return Response(
+                            {'mensaje': 'El estudiante ya asistió a esta monitoria en la fecha suministrada'},
+                            status=status.HTTP_409_CONFLICT
                         )
-                    return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
-        except:
-            return Response({'mensaje': 'Ocurrión un error durante la transación, intente nuevamente.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+                # Si no se encontró conflicto, crea el registro
+                asistencia_creada = asistencia.objects.create(
+                    id_monitoria=monitoria_request,
+                    id_estudiante=estudiante_request,
+                )
+                return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            # print(f"Error durante la transacción: {e}")
+            return Response({'mensaje': 'Ocurrió un error durante la transacción, intente nuevamente.'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class form_primer_ingreso(viewsets.GenericViewSet):
