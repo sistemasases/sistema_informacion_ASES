@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from modulo_usuario_rol.models import User, firma_tratamiento_datos
 from modulo_usuario_rol.serializers import firma_tratamiento_datos_serializer
+from datetime import datetime, timedelta
 
 
 class sede_viewsets (viewsets.ModelViewSet):
@@ -74,11 +75,35 @@ class form_asistencia_academica(viewsets.GenericViewSet):
         monitoria_resquest = monitoria_academica.objects.get(
             id=int(request.data["id_monitoria"]))
 
-        asistencia_creada = asistencia.objects.create(
-            id_monitoria=monitoria_resquest,
-            id_estudiante=estudiante_request,
-        )
-        return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
+        # verificacion 2 en 1 día
+        list = asistencia.objects.filter(
+            id_estudiante=estudiante_request.id)
+
+        try:
+            if not list:
+                asistencia_creada = asistencia.objects.create(
+                    id_monitoria=monitoria_resquest,
+                    id_estudiante=estudiante_request,
+                )
+                return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
+            else:
+                for i in list:
+                    fecha_request = str(request.data["fecha"])
+                    # __fecha_request = datetime.strptime(
+                    #     fecha_request, "%Y-%m-%d")
+                    fecha_asistencia = str(i.fecha)
+                    # __fecha = datetime.strptime(
+                    #     fecha_asistencia, "%Y-%m-%d")
+                    if fecha_request == fecha_asistencia:
+                        return Response({'mensaje': 'El estudiante ya asistió a una monitoria en la fecha suministrada'}, status=status.HTTP_409_CONFLICT)
+                    else:
+                        asistencia_creada = asistencia.objects.create(
+                            id_monitoria=monitoria_resquest,
+                            id_estudiante=estudiante_request,
+                        )
+                    return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
+        except:
+            return Response({'mensaje': 'Ocurrión un error durante la transación, intente nuevamente.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class form_primer_ingreso(viewsets.GenericViewSet):
