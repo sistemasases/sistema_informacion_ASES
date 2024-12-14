@@ -104,14 +104,8 @@
         border-radius: 5px;
         border: 2px solid #ccc;
     }
-    .searchDates > .searchDateRange:first-child {
-        margin-right: 4%;
-    }
     .container_search .actions {
         width: 100%; 
-    }
-    .actions > .btn-action:first-child {
-        margin-right: 4%;
     }
     .btn-action{
         width: 48%;
