@@ -1,19 +1,120 @@
 .container_tabla {
-    margin: 0 auto;
+    margin: 30px auto;
     width: 80%;
+    max-width: 1500px;
 }
 
-.container_tabla input[type="text"],
-.container_tabla [type="date"] {
-    width: 70%;
+.container_tabla .searchStudent,
+.container_tabla .searchDate {
+    width: 72%;
     height: 40px;
-    margin: 30px 0px;
-    margin-right: 15px;
+    margin-bottom: 30px;
     border-radius: 5px;
     padding-left: 10px;
     border: 2px solid #ccc;
 }
+.container_tabla .searchStudent{
+    margin-right: 2%;
+}
+.container_tabla .searchDate {
+    width: 24%;
+}
+.container_search {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 15px;
+}
 
-.container_tabla [type="date"] {
-    width: 20%;
+.container_search .searchDates{
+    width: 60%; 
+}
+.container_search .actions {
+    width: 38%; 
+}
+.searchDateRange{
+    width: 48%;
+    height: 40px;
+    border-radius: 5px;
+    padding-left: 10px;
+    border: 2px solid #ccc;
+}
+.searchDates > .searchDateRange:first-child {
+    margin-right: 4%;
+}
+.btn-action{
+    width: 48%;
+}
+.actions > .btn-action:first-child {
+    margin-right: 4%;
+}
+
+@media (max-width: 600px) {
+    .container_tabla {
+        margin: 70px auto;
+        width: 90%;
+    }
+    .container_tabla .searchStudent,
+    .container_tabla .searchDate {
+        width: 100%;
+        height: 40px;
+        border-radius: 5px;
+        padding-left: 10px;
+        border: 2px solid #ccc;
+    }
+    .container_search {
+        display: block; 
+    }
+    .container_search .searchDates{
+        width: 100%; 
+    }
+    .container_search .actions {
+        width: 100%; 
+    }
+    .searchDateRange{
+        width: 100%;
+        height: 40px;
+        margin-bottom: 15px;
+        margin-right: 15px;
+        border-radius: 5px;
+        padding-left: 10px;
+        border: 2px solid #ccc;
+    }
+    .btn-action{
+        width: 100%;
+        margin-bottom: 15px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 800px) {
+    .container_tabla {
+        margin: 70px auto;
+        width: 90%;
+    }
+    .container_search {
+        display: block; 
+    }
+    .container_search .searchDates{
+        width: 100%; 
+    }
+    .searchDateRange{
+        width: 48%;
+        height: 40px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 2px solid #ccc;
+    }
+    .searchDates > .searchDateRange:first-child {
+        margin-right: 4%;
+    }
+    .container_search .actions {
+        width: 100%; 
+    }
+    .actions > .btn-action:first-child {
+        margin-right: 4%;
+    }
+    .btn-action{
+        width: 48%;
+        margin-bottom: 15px;
+    }
 }

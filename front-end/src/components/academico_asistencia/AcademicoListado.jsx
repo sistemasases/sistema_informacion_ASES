@@ -14,6 +14,7 @@ import DataTable from "react-data-table-component";
 import DownloadCSV from "./DownloadCSV";
 import { postData } from "../../service/academico_attendance_requests";
 import { currentDate } from "../../utils/basic_functions";
+import "../../Scss/academico/tablas.css";
 
 const AcademicoListado = () => {
   // Variables de estado
@@ -147,28 +148,35 @@ const AcademicoListado = () => {
   return (
     <>
       <div className="container_tabla">
-        <input
-          name="initialDate"
-          className="input_lenght"
-          type="date"
-          placeholder="Fecha inicio"
-          value={dates.initialDate}
-          onChange={handleDateChange}
-        />
-        <input
-          name="finalDate"
-          className="input_lenght"
-          type="date"
-          placeholder="Fecha fin"
-          value={dates.finalDate}
-          onChange={handleDateChange}
-        />
-        <button onClick={searchRange} className="btn btn-primary mx-3">
-          Buscar
-        </button>
-        <button onClick={resturarTable} className="btn btn-secondary">
-          Restaurar
-        </button>
+        <div className="container_search">
+          <div className="searchDates">
+            <input
+              name="initialDate"
+              className="searchDateRange input_lenght"
+              type="date"
+              placeholder="Fecha inicio"
+              value={dates.initialDate}
+              onChange={handleDateChange}
+            />
+            <input
+              name="finalDate"
+              className="searchDateRange input_lenght"
+              type="date"
+              placeholder="Fecha fin"
+              value={dates.finalDate}
+              onChange={handleDateChange}
+            />
+          </div>
+          <div className="actions">
+            <button onClick={searchRange} className="btn-action btn btn-primary">
+              Buscar
+            </button>
+            <button onClick={resturarTable} className="btn-action btn btn-secondary">
+              Restaurar
+            </button>
+          </div>
+        </div>
+        
         <DataTable
           columns={columns}
           data={records}

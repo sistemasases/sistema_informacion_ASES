@@ -160,11 +160,13 @@ const AcademicoCheck = () => {
     return(<>
         <div className="container_tabla mx-auto w-80 text-center">
             <input
+                className="searchStudent"
                 type="text"
                 placeholder="Buscar estudiante por codigo o por nombre completo"
                 onChange={handleSearch}
             />
             <input 
+                className="searchDate"
                 type="date" 
                 value={selectedDate} 
                 onChange={(e) => setSelectedDate(e.target.value)} 
