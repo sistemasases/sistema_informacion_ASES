@@ -655,6 +655,13 @@
       width: 100%;
       border-collapse: collapse;
     }
+    .user-table thead th {
+      position: sticky; 
+      top: 0; 
+      z-index: 1;
+      
+      
+    }
     
     .user-table th, .user-table td {
       padding: 10px;

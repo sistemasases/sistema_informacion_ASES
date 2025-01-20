@@ -79,6 +79,9 @@ const ModalEstudiantes = ({
 
   const handleCancel = () => {
     setEditableUser({selectedUser});
+    console.log(selectedUser,"selected despues de cancelar")
+
+    console.log(editableUser,"editable despues de cancelar")
     setIsEditing(false);
   };
 

@@ -57,6 +57,7 @@ const ObtenerEstudiante = () => {
   const openModal = (user) => {
     setModalOpen(true);
     setSelectedUser(user);
+    setEditableUser(user);
     setCurrentPage(0); // Vuelve a la página inicial
 
     fetch(`${process.env.REACT_APP_API_URL}/diversidad-sexual/diversidad-sexual/${user.numero_documento}/`)
@@ -752,7 +753,7 @@ const handleInputChange = (e) => {
                   .map((user, index) => (
                     <tr
                       key={user.numero_documento}
-                      className={`${index % 2 === 0 ? 'even-row' : 'odd-row'} ${!user.revision_usuario ? 'pending-review' : ''}`}
+                      className={`${index % 2 === 0 ? 'even-row' : 'odd-row'} ${!user.revision_usiario ? 'pending-review' : ''}`}
                       onClick={() => openModal(user)}
                     >
                       <td>{user.nombre_identitario}</td>
