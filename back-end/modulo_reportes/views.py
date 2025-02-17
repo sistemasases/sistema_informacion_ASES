@@ -58,17 +58,21 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
-        elif data_usuario_rol == "super_ases":
-
-            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
-
-            return Response(serializer_estudiante.data)
-
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+        elif data_usuario_rol == "traer_todos_estudiantes":
 
             list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+
+            # serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
+            # return Response(serializer_estudiante.data)
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "super_ases":
+            list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes,estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
@@ -142,16 +146,18 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
-        elif data_usuario_rol == "super_ases":
-            final_list_estudiantes = list()
-            list_estudiantes = estudiante.objects.all()
-            serializer_estudiantes = estudiante_serializer(estudiante.objects.all(), many=True)
-
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+        elif data_usuario_rol == "traer_todos_estudiantes":
             final_list_estudiantes = list()
             list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "super_ases":
+            final_list_estudiantes = list()
+            list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes,estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
         elif data_usuario_rol == "dir_programa":
@@ -225,7 +231,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 cohorte_estudiante_data = cohorte_estudiante.objects.filter(id_estudiante=data_del_estudiante['id']).values('id_cohorte')
                 # print(cohorte_estudiante_data)
                 cohorte_data = cohorte.objects.filter(id__in=cohorte_estudiante_data).values('id_number')
-                # print(cohorte_data)
+                print(cohorte_data)
 
                 dic_programa = {
                     'id_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
