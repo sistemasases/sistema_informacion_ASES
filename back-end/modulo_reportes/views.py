@@ -244,7 +244,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 }
                 
                 dic_cohorte = {
-                    'cohorte': cohorte_data[0]['id_number']
+                    'cohorte': list(cohorte_data.values_list('id_number', flat=True))
                 }
                 
 
