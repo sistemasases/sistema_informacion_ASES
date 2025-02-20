@@ -160,6 +160,7 @@ const Reporte = () => {
         });
         setFiltered(response.data);
         // Oculta el gif de carga
+
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
         // Obtiene una lista con la clase de los checks hijos
@@ -444,7 +445,10 @@ const Reporte = () => {
     {
       name: "Cohorte",
       value: "cohorte",
-      selector: (row) => row.cohorte,
+      selector: (row) => {
+        // Si row.cohorte es un array, une sus elementos con comas. Si no, devuelve una cadena vacía.
+        return Array.isArray(row.cohorte) ? row.cohorte.join(", ") : "";
+      },
       sortable: true,
       isCheck: false,
       with: "180px",
@@ -671,8 +675,14 @@ const Reporte = () => {
     }
     // BÚSQUEDA INDIVIDUAL DE FILTRO: COHORTE
     if (e.target.name === "Cohorte") {
-      const data_filtered = filtered.filter((row) =>
-        row.cohorte.toLowerCase().includes(e.target.value.toLowerCase())
+      const data_filtered = filtered.filter(
+        (row) =>
+          // Verifica si row.cohorte está definido y es un array
+          Array.isArray(row.cohorte) &&
+          row.cohorte
+            .join(", ")
+            .toLowerCase()
+            .includes(e.target.value.toLowerCase())
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -1527,6 +1537,8 @@ const Reporte = () => {
     };
     traer_todos_estudiantes_boton();
   };
+
+  // console.log(state.estudiante);
 
   return (
     <>
