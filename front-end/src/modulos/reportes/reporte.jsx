@@ -13,6 +13,7 @@ import {
   desencriptarInt,
   decryptTokenFromSessionStorage,
   encriptar,
+  encriptarInt,
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import DataTable from "react-data-table-component";
 import React, { useState, useEffect } from "react";
@@ -20,6 +21,8 @@ import myGif from "../reportes/loading_data.gif";
 import writeXlsxFile from "write-excel-file";
 import { CSVLink } from "react-csv";
 import axios from "axios";
+import All_sede_service from "../../service/all_sede";
+import Select from "react-select";
 
 // Columnas del reporte
 var columns = [
@@ -98,7 +101,18 @@ const Reporte = () => {
     busqueda: "",
   });
   // Constante que guarda la información de los cohorte
+
+  const opciones = [];
   const [cohorte_list, set_cohorte_list] = useState({ cohorte: [] });
+
+  // Sedes
+  const [stateSedes, setSedes] = useState({ sedes: [] });
+  useEffect(() => {
+    sessionStorage.getItem("selectedSede")
+      ? sessionStorage.removeItem("selectedSede")
+      : sessionStorage.setItem("selectedSede", "");
+  }, []);
+
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
     let rol = desencriptar(sessionStorage.getItem("rol"));
@@ -163,6 +177,36 @@ const Reporte = () => {
     };
     riesgos_estudiante();
   }, []);
+
+  // Sedes
+  useEffect(() => {
+    All_sede_service.all_sede()
+      .then((res) => {
+        if (res && Array.isArray(res)) {
+          setSedes({
+            ...stateSedes,
+            sedes: res,
+          });
+          // console.log("Respuesta de la API:", res);
+          // console.log(stateSedes);
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener datos de la API:", error);
+      });
+  }, []);
+
+  const handle_sedes = () => {
+    for (var i = 0; i < stateSedes.sedes["length"]; i++) {
+      const dato = {
+        value: stateSedes.sedes[i]["nombre"],
+        label: stateSedes.sedes[i]["nombre"],
+        id: stateSedes.sedes[i]["id"],
+      };
+      opciones.push(dato);
+    }
+  };
+
   // Llenar el csv con la info obtenida
   const csv_conversion = (item) => {
     var label = item.name;
@@ -1419,6 +1463,70 @@ const Reporte = () => {
     window.location.reload();
   };
 
+  const handleShow = (e) => {
+    let rol = desencriptar(sessionStorage.getItem("rol"));
+    sessionStorage.setItem("selectedSede", encriptarInt(e.id));
+    let sede = desencriptar(sessionStorage.getItem("selectedSede"))
+      ? desencriptarInt(sessionStorage.getItem("selectedSede"))
+      : desencriptarInt(sessionStorage.getItem("sede_id"));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+    const traer_estudiantes_selector = async () => {
+      document.getElementsByName("loading_data")[0].style.visibility =
+        "visible";
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
+            id_usuario.toString() +
+            "/",
+          { params: { usuario_rol: rol, sede: sede } }
+        );
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        setFiltered(response.data);
+        // Oculta el gif de carga
+        document.getElementsByName("loading_data")[0].style.visibility =
+          "hidden";
+      } catch (error) {}
+    };
+    traer_estudiantes_selector();
+  };
+
+  // Botón Traer todos
+  const traer_todos = () => {
+    document.getElementsByName("loading_data")[0].style.visibility = "visible";
+    // console.log("click");
+    // let rol = desencriptar(sessionStorage.getItem("rol"));
+    let rolTodo = encriptar("traer_todos_estudiantes");
+    let sede = sessionStorage.getItem("selectedSede")
+      ? desencriptarInt(sessionStorage.getItem("selectedSede"))
+      : desencriptarInt(sessionStorage.getItem("sede_id"));
+    // console.log(desencriptarInt(sessionStorage.getItem("selectedSede")));
+    // console.log(desencriptarInt(sessionStorage.getItem("sede_id")));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+    const traer_todos_estudiantes_boton = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
+            id_usuario.toString() +
+            "/",
+          { params: { usuario_rol: desencriptar(rolTodo), sede: sede } }
+        );
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        setFiltered(response.data);
+        document.getElementsByName("loading_data")[0].style.visibility =
+          "hidden";
+      } catch (error) {}
+    };
+    traer_todos_estudiantes_boton();
+  };
+
   return (
     <>
       <>
@@ -1427,8 +1535,29 @@ const Reporte = () => {
             <div>
               <h1>Reporte General</h1>
             </div>
-            <br />
+
             {/* Cabeceras de Filtros */}
+            <hr></hr>
+
+            <Row>
+              <Col sm={2}>
+                <Button onClick={() => traer_todos()}>Traer todos</Button>
+              </Col>
+
+              <Col>
+                <Select
+                  name="def"
+                  class="option"
+                  options={opciones}
+                  onMenuOpen={handle_sedes}
+                  onChange={(e) => handleShow(e)}
+                  className="option"
+                  placeholder="Selecione una sede"
+                />
+              </Col>
+            </Row>
+
+            <hr></hr>
             <Row>
               {/* <Col> */}
               {cabecerasFiltros.map((Item, index) => (

@@ -231,7 +231,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
                 cohorte_estudiante_data = cohorte_estudiante.objects.filter(id_estudiante=data_del_estudiante['id']).values('id_cohorte')
                 # print(cohorte_estudiante_data)
                 cohorte_data = cohorte.objects.filter(id__in=cohorte_estudiante_data).values('id_number')
-                print(cohorte_data)
+                # print(cohorte_data)
 
                 dic_programa = {
                     'id_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
