@@ -1536,31 +1536,38 @@ const Reporte = () => {
             <div>
               <h1>Reporte General</h1>
             </div>
-            <hr></hr>
             {/* Cabeceras de Filtros */}
             {(userRole === "super_ases" ||
-          userRole === "socioeducativo" ||
-          userRole === "socioeducativo_reg" ||
-          userRole === "dir_academico") &&
-          (
-            <Row>
-              <Col sm={2}>
-                <Button onClick={() => traer_todos()}>Traer todos</Button>
-              </Col>
+              userRole === "socioeducativo" ||
+              userRole === "socioeducativo_reg" ||
+              userRole === "dir_academico") && (
+              <div>
+                <hr></hr>
 
-              <Col>
-                <Select
-                  name="def"
-                  class="option"
-                  options={opciones}
-                  onMenuOpen={handle_sedes}
-                  onChange={(e) => handleShow(e)}
-                  className="option"
-                  placeholder="Selecione una sede"
-                />
-              </Col>
-            </Row>
-          )}
+                <Row>
+                  <Col sm={2}>
+                    <Button
+                      title="Traer todos los estudiantes puede tomar más tiempo del esperado. Por favor, sea paciente."
+                      onClick={() => traer_todos()}
+                    >
+                      Traer todos
+                    </Button>
+                  </Col>
+
+                  <Col title="Traer todos los estudiantes puede tomar más tiempo del esperado. Por favor, sea paciente.">
+                    <Select
+                      name="def"
+                      class="option"
+                      options={opciones}
+                      onMenuOpen={handle_sedes}
+                      onChange={(e) => handleShow(e)}
+                      className="option"
+                      placeholder="Selecione una sede"
+                    />
+                  </Col>
+                </Row>
+              </div>
+            )}
             <hr></hr>
             <Row>
               {/* <Col> */}
@@ -1718,7 +1725,7 @@ const Reporte = () => {
               // value={}
               onChange={(e) => on_search_base(e)}
             />
-            <br />
+            <hr></hr>
 
             {/* <DataTableExtensions
                 columns={columnas}
