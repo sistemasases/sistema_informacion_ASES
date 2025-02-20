@@ -94,6 +94,7 @@ var restore = [];
 var inner_column_data;
 
 const Reporte = () => {
+  const userRole = desencriptar(sessionStorage.getItem("rol"));
   // Constante que guarda la información del estudiante
   const [state, set_state] = useState({ estudiante: [] });
   // Constante que guarda la información de la busqueda
@@ -1535,10 +1536,13 @@ const Reporte = () => {
             <div>
               <h1>Reporte General</h1>
             </div>
-
-            {/* Cabeceras de Filtros */}
             <hr></hr>
-
+            {/* Cabeceras de Filtros */}
+            {(userRole === "super_ases" ||
+          userRole === "socioeducativo" ||
+          userRole === "socioeducativo_reg" ||
+          userRole === "dir_academico") &&
+          (
             <Row>
               <Col sm={2}>
                 <Button onClick={() => traer_todos()}>Traer todos</Button>
@@ -1556,7 +1560,7 @@ const Reporte = () => {
                 />
               </Col>
             </Row>
-
+          )}
             <hr></hr>
             <Row>
               {/* <Col> */}
