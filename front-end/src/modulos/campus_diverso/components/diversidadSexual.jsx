@@ -15,7 +15,8 @@ const DiversidadSexual = ({
     orientacionOptions,
     identidadesGeneroOptions,
     handleCheckboxChange,
-    maxLengthBasicInput
+    maxLengthBasicInput,
+    handleSelectNoMultiChange,
 
   }) => {
 
@@ -55,28 +56,25 @@ const DiversidadSexual = ({
               </div>
             </div>
     
+
+
             <div>
-              <label className='custom-div'>Respuesta cambio documento</label>
-              <div>
-                {isLoading ? (
-                  <p>Cargando...</p>
-                ):(
-                <Select
-                  isMulti
-                  className='create-select'
-                  name="respuestas_cambio_documento"
-                  placeholder='Seleccione respuestas a cambio de documento'
-                  options={documentoOptions}
-                  value={state.respuestas_cambio_documento.map(option => ({
-                  value: option,
-                  label: documentoOptions.find(o => o.value === option).label
-                  }))}
-                  onChange={handleSelectChange}
-    
-                  />
-                  )}
-              </div>
-            </div>
+          <label className='custom-div'>Respuesta del cambio de documento </label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="respuestas_cambio_documento"
+                placeholder='Seleccione su respuesta de cambio de documento'
+                options={documentoOptions}
+                value={documentoOptions.find(option => option.value === state.respuestas_cambio_documento)}
+                onChange={handleSelectNoMultiChange}
+              />
+            )}
+          </div>
+        </div>
 
             <div >
               <label className='custom-div'>Pertenencia grupo poblacional</label>
@@ -149,54 +147,42 @@ const DiversidadSexual = ({
 
         
       <div>
-              <label className='custom-div'>Orientacion sexual</label>
-              <div>
-                {isLoading ? (
-                  <p>Cargando...</p>
-                ):(
-                <Select
-                  isMulti
-                  className='create-select'
-                  name="orientaciones_sexuales"
-                  placeholder='Seleccione orientaciones sexuales'
-                  options={orientacionOptions}
-                  value={state.orientaciones_sexuales.map(option => ({
-                  value: option,
-                  label: orientacionOptions.find(o => o.value === option).label
-                  }))}
-                  onChange={handleSelectChange}
-    
-                  />
-                  )}
-              </div>
-            </div>
+  <label className='custom-div'>Orientación sexual</label>
+  <div>
+    {isLoading ? (
+      <p>Cargando...</p>
+    ) : (
+      <Select
+        className='create-select'
+        name="orientaciones_sexuales"
+        placeholder='Seleccione su orientación sexual'
+        options={orientacionOptions}
+        value={orientacionOptions.find(option => option.value === state.orientaciones_sexuales)}
+        onChange={handleSelectNoMultiChange}
+      />
+    )}
+  </div>
+</div>
             
+          <div>
+            <label className='custom-div'>Identidad de género</label>
             <div>
-              <label className='custom-div'>Identidades de género</label>
-              <div>
-                {isLoading ? (
-                  <p>Cargando...</p>
-                ):(
+              {isLoading ? (
+                <p>Cargando...</p>
+              ) : (
                 <Select
-                  isMulti
-                  placeholder='Seleccione identidades de género'
                   className='create-select'
                   name="identidades_de_genero"
+                  placeholder='Seleccione su orientación sexual'
                   options={identidadesGeneroOptions}
-                  value={state.identidades_de_genero.map(option => ({
-                  value: option,
-                  label: identidadesGeneroOptions.find(o => o.value === option).label
-                  }))}
-                  
-    
-                  onChange={handleSelectChange}
-    
-                  
-                  />
-                  )}
-              </div>
-            </div> 
+                  value={identidadesGeneroOptions.find(option => option.value === state.identidades_de_genero)}
+                  onChange={handleSelectNoMultiChange}
+                />
+              )}
+            </div>
+          </div>
             
+
             <div className="custom-div-check">
           <div className="custom-checkbox-label">
             ¿Recibir orientación de cambio en documento?

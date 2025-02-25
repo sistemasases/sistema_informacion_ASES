@@ -511,13 +511,17 @@ const handleSubmit = async (e) => {
 
   const requiredFields = [
     'numero_documento',
+    'tiene_eps',
+    'email',
   
  
   ];
 
   const fieldNames = {
     numero_documento: "número de documento",
+    tiene_eps: "nombre EPS",
     pertenencia_univalle: "pertenencia a Univalle",
+    email: "email",
 
   };
 
@@ -911,6 +915,8 @@ const steps = [
     identidadesGeneroOptions={identidadesGeneroOptions}
     handleCheckboxChange={handleCheckboxChange}
     maxLengthBasicInput={maxLengthBasicInput}
+    handleSelectNoMultiChange = {handleSelectNoMultiChange}
+
   /> },
   { component:   <InformacionGeneral
     state={state}
