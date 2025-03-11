@@ -7,6 +7,7 @@ import InformacionGeneral from './components/informacionGeneral';
 import IngresoDatosBasicos from './components/ingresoDatosBasicos';
 import InformacionAcademica from './components/informacionAcademica';
 import DocumentosAutorizacion from './components/documentosAutorizacion';
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import ReCAPTCHA from 'react-google-recaptcha';
 import {
   decryptTokenFromSessionStorage,
@@ -984,11 +985,11 @@ const prevStep = () => {
                 {/* Captcha en el último paso */}
                 <div className="buttons-container-captcha">
                   {currentStep === steps.length - 1 && (
-                    <ReCAPTCHA
+                    <HCaptcha
                       className="captcha"
                       size="normal"
                       sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                      onChange={handleRecaptchaChange}
+                      onVerify={handleRecaptchaChange}
                     />
                   )}
                 </div>

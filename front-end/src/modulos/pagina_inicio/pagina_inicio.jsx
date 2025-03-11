@@ -190,8 +190,8 @@ const Pagina_inicio = () => {
           />)}
         </Row>)}
         <p className="estilo_bienvenido_campus"> ¡Bienvenido!</p>  
-        <p className="estilo_sesion_campus">INICIASTE SESIÓN </p>
-        <p className="estilo_como_campus">COMO {desplegable}</p>
+        <p className="estilo_sesion_campus">iniciaste sesion </p>
+        <p className="estilo_como_campus">como {desplegable}</p>
       </Col>
        
           <Col xs={"12"} md={"3"} className="botones-container-campus">

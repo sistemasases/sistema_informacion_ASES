@@ -95,7 +95,7 @@ class PersonaSerializer(serializers.ModelSerializer):
             # Verifica el token de reCAPTCHA con el endpoint de Google
             secret_key = os.environ.get('RECAPTCHA_SECRET_KEY')
             response = requests.post(
-                'https://www.google.com/recaptcha/api/siteverify',
+                'https://api.hcaptcha.com/siteverify',
                 data={
                     'secret': secret_key,
                     'response': value
