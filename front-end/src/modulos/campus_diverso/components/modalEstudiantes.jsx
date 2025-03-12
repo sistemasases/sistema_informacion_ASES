@@ -1283,30 +1283,32 @@ const ModalEstudiantes = ({
                 
                 <div className='div-scroll'>
 
-<Row>
-  <ul className='ul-style'>
-    {seguimientosInfo && seguimientosInfo.length > 0 ? (
-      seguimientosInfo.map((seguimiento, id_persona) => (
-        <li className='li-style' key={id_persona}>
-          <div ><b>Fecha:</b> {seguimiento.fecha}</div>
-          <div className='div-observacion' ><b>Observación:</b> {seguimiento.observacion}</div>
-          <div ><b>Profesionales:</b>
+          <Row>
             <ul className='ul-style'>
-              {seguimiento.profesional.map((prof, profIndex) => (
-                <li key={profIndex}>{prof.nombre_profesional} - {prof.cargo_profesional}</li>
-              ))}
+              {seguimientosInfo && seguimientosInfo.length > 0 ? (
+                 [...seguimientosInfo]
+                 .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                 .map((seguimiento, id_persona) =>  (
+                  <li className='li-style' key={id_persona}>
+                    <div ><b>Fecha:</b> {seguimiento.fecha}</div>
+                    <div className='div-observacion' ><b>Observación:</b> {seguimiento.observacion}</div>
+                    <div ><b>Profesionales:</b>
+                      <ul className='ul-style'>
+                        {seguimiento.profesional.map((prof, profIndex) => (
+                          <li key={profIndex}>{prof.nombre_profesional} - {prof.cargo_profesional}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  {/* <div><b>ID Creador Campus:</b> {seguimiento.id_creador_campus || 'N/A'}</div> */}
+                  </li>
+                ))
+              ) : (
+                <li className='li-style'>
+                  <div>No hay seguimientos disponibles para este usuario.</div>
+                </li>
+              )}
             </ul>
-          </div>
-         {/* <div><b>ID Creador Campus:</b> {seguimiento.id_creador_campus || 'N/A'}</div> */}
-        </li>
-      ))
-    ) : (
-      <li className='li-style'>
-        <div>No hay seguimientos disponibles para este usuario.</div>
-      </li>
-    )}
-  </ul>
-</Row>
+          </Row>
 
                   </div>
              )}

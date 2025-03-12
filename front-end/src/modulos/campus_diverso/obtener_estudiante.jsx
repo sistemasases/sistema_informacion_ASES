@@ -8,6 +8,7 @@ import { TextField } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import Select from 'react-select';
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
@@ -30,6 +31,7 @@ const ObtenerEstudiante = () => {
   const [searchDate, setSearchDate] = useState(null);
   const [startDate, setStartDate] = useState(null); // Fecha de inicio
   const [endDate, setEndDate] = useState(null); // Fecha de fi
+  const [selectedPrograma, setSelectedPrograma] = useState("");
 
   //Desencripta el token para la API
   const config = {
@@ -125,14 +127,21 @@ const ObtenerEstudiante = () => {
 
   const filteredUsers = users.filter(user => {
     // Filtro por nombre, número de documento y carrera
-    const matchesSearchText = user.nombre_y_apellido.toLowerCase().includes(searchText.toLowerCase()) || 
-                              user.nombre_identitario.toLowerCase().includes(searchText.toLowerCase()) ||
-                              user.numero_documento.toLowerCase().includes(searchText.toLowerCase()) ||
-                              (
-                                Array.isArray(user.informacion_academica?.programas) 
-                                  ? user.informacion_academica.programas.join(' ').toLowerCase().includes(searchText.toLowerCase()) 
-                                  : (user.informacion_academica?.programas || '').toLowerCase().includes(searchText.toLowerCase())
-                              );
+    const matchesSearchText = user.nombre_y_apellido.toLowerCase().includes(searchText.toLowerCase()) || user.nombre_identitario.toLowerCase().includes(searchText.toLowerCase()) ||
+    user.numero_documento.toLowerCase().includes(searchText.toLowerCase()) ||
+    (Array.isArray(user.informacion_academica?.programas) ? user.informacion_academica.programas.join(' ').toLowerCase().includes(searchText.toLowerCase()) : (user.informacion_academica?.programas || '').toLowerCase().includes(searchText.toLowerCase()));
+
+    const matchesPrograma = selectedPrograma
+  ? Array.isArray(user.informacion_academica?.programas)
+    ? user.informacion_academica.programas
+        .join(' ')
+        .toLowerCase()
+        .includes(selectedPrograma.label.toLowerCase())
+    : (user.informacion_academica?.programas || '')
+        .toLowerCase()
+        .includes(selectedPrograma.label.toLowerCase())
+  : true;
+
 
     // Filtro por rango de fechas (si se seleccionó)
     const userDate = dayjs(user.fecha_creacion_usuario);
@@ -141,7 +150,7 @@ const ObtenerEstudiante = () => {
       (startDate && endDate && userDate.isBetween(startDate, endDate, null, '[]')); // Incluye ambas fechas
 
     // Se devuelve el usuario si coincide con el texto de búsqueda y el rango de fechas
-    return matchesSearchText && matchesDateRange;
+    return matchesSearchText &&  matchesPrograma && matchesDateRange;
 });
 
   const nextPage = () => {
@@ -669,7 +678,24 @@ const handleInputChange = (e) => {
             onChange={(e) => setSearchText(e.target.value)}
             className="search-input"
           />
-          
+
+      <Select
+        classNamePrefix="Select"
+        value={selectedPrograma}
+        onChange={(selectedOption) => setSelectedPrograma(selectedOption)}
+        options={programaOptions}
+        placeholder="Selecciona un programa"
+        isClearable
+        styles={{
+          menu: (provided) => ({
+            ...provided,
+            zIndex: 1000,
+          }),
+        }}
+      />
+
+
+
 
 
            <LocalizationProvider dateAdapter={AdapterDayjs}>
