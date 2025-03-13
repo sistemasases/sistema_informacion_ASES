@@ -962,6 +962,21 @@ const Seguimiento_individual_edit_v2 = (props) => {
                 <option value="Presencial Sede Pacifico">
                   Presencial Sede Pacifico
                 </option>
+                <option value="Presencial Sede Caicedonia">
+                  Presencial Sede Caicedonia
+                </option>
+                <option value="Presencial Sede Cartago">
+                  Presencial Sede Cartago
+                </option>
+                <option value="Presencial Sede Palmira">
+                  Presencial Sede Palmira
+                </option>
+                <option value="Presencial Sede Zarzal">
+                  Presencial Sede Zarzal
+                </option>
+                <option value="Presencial Sede Yumbo">
+                  Presencial Sede Yumbo
+                </option>
                 <option value="Contacto Telefónico o por Chat">
                   Contacto Telefónico o por Chat
                 </option>
