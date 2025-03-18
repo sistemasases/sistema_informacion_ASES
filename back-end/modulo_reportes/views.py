@@ -187,6 +187,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
         programas_estudiantes = programa_estudiante.objects.filter(id_estudiante__in=list_estudiantes)
         programa_data = programa.objects.in_bulk(programas_estudiantes.values_list('id_programa_id', flat=True))
         estado_data = estado_programa.objects.in_bulk(programas_estudiantes.values_list('id_estado_id', flat=True))
+        
         sedes = sede.objects.in_bulk([programa_data[programa_id].id_sede_id for programa_id in programa_data])
 
         # Obtener los datos relacionados con el último seguimiento de una vez
@@ -228,27 +229,58 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
             try:
                 programa_del_estudiante = programas_estudiantes.filter(id_estudiante=data_del_estudiante['id']).first()
+                # print(programa_del_estudiante)
+                programa_estudiante_data = programa_estudiante.objects.filter(id_estudiante=data_del_estudiante['id']).values('id_programa', 'id_estado')
+                # print(programa_estudiante_data)
+                
                 cohorte_estudiante_data = cohorte_estudiante.objects.filter(id_estudiante=data_del_estudiante['id']).values('id_cohorte')
                 # print(cohorte_estudiante_data)
                 cohorte_data = cohorte.objects.filter(id__in=cohorte_estudiante_data).values('id_number')
                 # print(cohorte_data)
 
+                # dic_programa = {
+                #     'id_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
+                #     'programa_academico': programa_data[programa_del_estudiante.id_programa_id].nombre,
+                #     'sede': sedes[programa_data[programa_del_estudiante.id_programa_id].id_sede_id].nombre
+                # }
                 dic_programa = {
-                    'id_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
-                    'programa_academico': programa_data[programa_del_estudiante.id_programa_id].nombre,
-                    'sede': sedes[programa_data[programa_del_estudiante.id_programa_id].id_sede_id].nombre
+                    'programas': []
                 }
-
+                
                 dic_reg_academico = {
-                    'registro_academico': estado_data[programa_del_estudiante.id_estado_id].nombre
+                    'registro_academico': []
                 }
+                
+                for programa_ in programa_estudiante_data:
+                    # Obtiene la información del programa académico
+                    id_programa = programa_['id_programa']
+                    programa_info = programa_data.get(id_programa)  # Obtener información del programa
+                    
+                    # Obtiene el estado del registro académico de cada programa
+                    id_estado = programa_['id_estado']
+                    estado_info = estado_data.get(id_estado)  # Obtener información del estado
+                    
+                    if programa_info:
+                        dic_programa['programas'].append({
+                            'id_programa': programa_data[id_programa].codigo_univalle,
+                            'programa_academico': programa_data[id_programa].nombre,
+                            'sede': sedes[programa_data[id_programa].id_sede_id].nombre,
+                        })
+                        
+                    if estado_info:
+                        dic_reg_academico['registro_academico'].append({
+                            'estado': estado_info.nombre
+                        })          
+                   
                 
                 dic_cohorte = {
                     'cohorte': list(cohorte_data.values_list('id_number', flat=True))
                 }
                 
 
-            except:
+            except Exception as e:
+                print("Error en la consulta de programas")
+                print(e)
                 dic_programa = {
                     'id_programa': '',
                     'programa_academico': 'N/A',
