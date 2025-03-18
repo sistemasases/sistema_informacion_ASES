@@ -168,7 +168,7 @@ const Pagina_inicio = () => {
               Close
             </Button>
           </Modal.Footer>
-        </Modal> 
+        </Modal>
         {(userRole === "super_ases" ||
           userRole === "socioeducativo" ||
           userRole === "socioeducativo_reg" ||
@@ -318,8 +318,9 @@ const Pagina_inicio = () => {
             >
               <img src={boton1} className="boton" alt="/"></img>
             </Link>
+            {/* TO CHANGE */}
             <Link
-              to={`https://asesinteractiva.univalle.edu.co/semaforoalertas/`}
+              to={`https://semaforo-alertas-ases.vercel.app/`}
               target="_blank"
             >
               <img src={boton2} className="boton" alt="/"></img>
@@ -328,6 +329,7 @@ const Pagina_inicio = () => {
               to={`https://sistemaases.univalle.edu.co/caja-herramientas/`}
               target="_blank"
             >
+              {/* STOP CHANGE */}
               <img src={boton3} className="boton" alt="/"></img>
             </Link>
             <Link to={`https://ases.univalle.edu.co/`} target="_blank">

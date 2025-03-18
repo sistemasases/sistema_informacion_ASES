@@ -1258,6 +1258,8 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
 
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
+            # print('request.data')
+            # print(request.data)
             seguimiento_reciente = riesgo_individual.objects.get(id_estudiante=request.data["id_estudiante"],id_semestre=request.data["id_semestre"])
 
             # Crear un diccionario con los datos de riesgo del seguimiento
