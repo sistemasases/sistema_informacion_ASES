@@ -17,6 +17,7 @@ import FooterCampusDos from './components/footerCampusDos';
 import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
 
   const Registro_estudiante = () => {
+  const [showEstamentoModal, setShowEstamentoModal] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [mensaje, setMensaje] = useState(null);
@@ -57,13 +58,13 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
     corregimiento_residencia:"",
     pais_nacimiento:"",
     ciudad_residencia:"",
-    zona_residencial:"",
+    zona_residencia:[],
     direccion_residencia:"",
     barrio_residencia:"",
     comuna_barrio:"",
     telefono:"",
-    estado_civil:"",
-    identidad_etnico_racial:"",
+    estado_civil:[],
+    identidad_etnico_racial:[],
     nombre_persona_de_confianza:"",
     telefono_persona_de_confianza:"",
 
@@ -96,9 +97,9 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
     
     //Informacion general
     dedicacion_externa:"",
-    tiene_eps:"",
+    tiene_eps:null,
     nombre_eps:"",
-    regimen_eps:"",
+    regimen_eps:[],
     tipo_entidad_acompanamiento_recibido:"",
     calificacion_acompanamiento_recibido:"",
     motivo_calificacion_acompanamiento:"",
@@ -108,7 +109,7 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
     observacion_general_redes_de_apoyo:"",
     observacion_general_factores_de_riesgo:"",
     creencia_religiosa:"",
-    decision_encuentro_inicial_con_profesional:"",
+    decision_encuentro_inicial:[],
     observacion_horario:"",
     origen_descubrimiento_campus_diverso:"",
     comentarios_o_sugerencias_de_usuario:"",
@@ -119,7 +120,6 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
     Ocupaciones_actules:"",
     factores_riesgos: [],
     encuentro_dias_horas:[],
-    actividades_tiempo_libre:[],
     acompanamiento_que_recibio:"",
     fuentes_ingresos:[],
 
@@ -131,6 +131,9 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
   //Persona
   const [razasOptions, setRazasOptions] = useState([]);
   const [tipoDocumentoOptions, setTipoDocumentoOptions] = useState([]);
+  const [estadocivilOptions, setEstadoCivilOptions] = useState([]);
+  const [zonaResidencialOptions, setZonaResidencialOptions] = useState([]);
+  const [identidadEtnicoRacialOptions, setIdentidadEtnicoRacialOptions] = useState([]);
 
 // Diversidad sexual
   const [orientacionOptions, setOrientacionOptions] = useState([]);
@@ -145,9 +148,11 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
 
 //Informacion general
 const [factoresOptions, setFactoresOptions] = useState([]);
-const [actividadesOptions, setActividadesOptions] = useState([]);
 const [fuentesOptions, setFuentesOptions] = useState([]);
 const [redesOptions, setRedesOptions] = useState([]);
+const [regimenEpsOptions, setRegimenEpsOptions] = useState([]);
+const [decisionEncuentroInicialOptions, setDecisionENcuentroInicialOptions] = useState([]);
+
 
 
 
@@ -166,12 +171,16 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/estamento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/factor-riesgo/`),
-    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/actividad-tiempo-libre/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/fuente-ingresos/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/red-apoyo/`),
     axios.get(`${process.env.REACT_APP_API_URL}/persona/tipo-documento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/programa/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/sede/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/estado-civil/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/zona-residencia/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/identidad-etnico-racial/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/regimen-eps/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/decision-encuentro-inicial/`),
 
 
 
@@ -182,8 +191,8 @@ useEffect(() => {
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
         respuestaCambioDocumentoResponse, orientacionResponse, 
         identiadesGeneroResponse, estamentoResponse, factorResponse, 
-        actividadResponse, fuenteResponse, redResponse,tipoDocumentoResponse,
-        ProgramaResponse, SedeResponse] = responses;
+       fuenteResponse, redResponse,tipoDocumentoResponse,
+        ProgramaResponse, SedeResponse, EstadoCivilResponse, ZonaResidencialResponse, IdentidadEtnicoRacialResponse, RegimenEpsResponse, DecisionEncuentroInicialResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -225,11 +234,6 @@ useEffect(() => {
         label: item.nombre_factor_de_riesgo
       }));
 
-      const actividadOpciones = actividadResponse.data.map((item) => ({
-        value: item.id_actividad_de_tiempo_libre,
-        label: item.nombre_actividad_de_tiempo_libre
-      }));
-
       const fuenteOpciones = fuenteResponse.data.map((item) => ({
         value: item.id_fuente_de_ingreso,
         label: item.nombre_fuente_de_ingreso
@@ -251,6 +255,26 @@ useEffect(() => {
         value: item.id_sede,
         label: item.nombre_sede
       }));
+      const estadoCivilOpciones = EstadoCivilResponse.data.map((item) => ({
+        value: item.id_estado_civil,
+        label: item.nombre_estado_civil
+      }));
+      const zonaResidenciaOpciones = ZonaResidencialResponse.data.map((item) => ({
+        value: item.id_zona_residencia,
+        label: item.nombre_zona_residencia
+      }));
+      const identidadEtnicoRacialOpciones = IdentidadEtnicoRacialResponse.data.map((item) => ({
+        value: item.id_identidad_etnico_racial,
+        label: item.nombre_identidad_etnico_racial
+      }));
+      const regimenEpsOpciones = RegimenEpsResponse.data.map((item) => ({
+        value: item.id_regimen_eps,
+        label: item.nombre_regimen_eps
+      }));
+      const decisionEncuentroInicialOpciones = DecisionEncuentroInicialResponse.data.map((item) => ({
+        value: item.id_decision_encuentro_inicial,
+        label: item.nombre_decision_encuentro_inicial
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -259,12 +283,16 @@ useEffect(() => {
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
       setEstamentoOptions(estamentoOpciones);
       setFactoresOptions(factorOpciones);
-      setActividadesOptions(actividadOpciones);
       setFuentesOptions(fuenteOpciones);
       setRedesOptions(redesOpciones);
       setTipoDocumentoOptions(tipoDocumentoOpciones);
       setProgramaOptions(programaOpciones);
       setSedeOptions(sedeOpciones);
+      setEstadoCivilOptions(estadoCivilOpciones);
+      setZonaResidencialOptions(zonaResidenciaOpciones);
+      setIdentidadEtnicoRacialOptions(identidadEtnicoRacialOpciones);
+      setRegimenEpsOptions(regimenEpsOpciones);
+      setDecisionENcuentroInicialOptions(decisionEncuentroInicialOpciones);
       setIsLoading(false);
     })
     .catch((error) => {
@@ -276,11 +304,22 @@ useEffect(() => {
     });
 }, []);
 
+  // Efecto para detectar cuando "Estudiante de pregrado" es seleccionado y salga una alerta
+useEffect(() => {
+  if (state.estamentos.includes("Estudiante")) {
+      setShowEstamentoModal(true);
+      } else {
+      setShowEstamentoModal(false);
+      }
+    }, [state.estamentos]);
+
+
+    
 const handleCheckboxChange = (event) => {
   const { name, value, checked } = event.target;
 
   // Verifica si el cambio es para "pertenencia_univalle"
-  if (name === 'pertenencia_univalle') {
+  if (name === 'pertenencia_univalle' || name === 'tiene_eps') {
     const booleanValue = JSON.parse(value); // Convierte el string "true" o "false" en booleano
 
     set_state((prevState) => ({
@@ -385,7 +424,7 @@ const handleSelectNoMultiChange = (selectedOption, actionMeta) => {
 
   console.log(`eventooo : ${state[name]}`);
   console.log('selectedOption no multi select', selectedOption);
-  console.log('state de tipo de documento', state.programas)
+  console.log('state de tipo de programas', state.programas)
 };
 
 
@@ -508,38 +547,79 @@ const handleSubmit = async (e) => {
   }
   console.log('Enviando formulario con token reCAPTCHA:', recaptchaToken);
 
+  
+
 
 
   const requiredFields = [
     'numero_documento',
     'tiene_eps',
     'email',
-  
- 
-  ];
+    'pertenencia_univalle',
+    'regimen_eps',
+    'identidades_de_genero',
+    'orientaciones_sexuales',
+    'expresiones_de_genero',
+    'identidad_etnico_racial',
+    'estado_civil',
+    'Ocupaciones_actules',
+    'actividades_especificas_tiempo_libre',
+    'calificacion_relacion_familiar',
+    'creencia_religiosa',
+    'origen_descubrimiento_campus_diverso',
+    'acompanamiento_que_recibio',
 
-  const fieldNames = {
+];
+
+const fieldNames = {
     numero_documento: "número de documento",
     tiene_eps: "nombre EPS",
     pertenencia_univalle: "pertenencia a Univalle",
+    regimen_eps: "régimen EPS",
+    identidades_de_genero: "identidades de género",
+    orientaciones_sexuales: "orientaciones sexuales",
+    expresiones_de_genero: "expresiones de género",
+    identidad_etnico_racial: "identidad étnico-racial",
+    estado_civil: "estado civil",
     email: "email",
+    Ocupaciones_actules: "Ocupacion actual",
+    actividades_especificas_tiempo_libre: "Actividades especificas en tiempo libre",
+    redes_apoyo: "Redes de apoyo",
+    calificacion_relacion_familiar: "Calificacion de relacion familiar",
+    decision_encuentro_inicial: "Que profesional  prefieres para agendar tu cita?",
+    origen_descubrimiento_campus_diverso: "¿Cómo descubriste a Campus Diverso?",
+    acompanamiento_que_recibio: "Tipo de acompañamiento recibido",
+    factores_riesgos: "Factores de riesgo",
+    fuentes_ingresos: "Fuentes de ingreso",
+};
 
-  };
+const listFields = [
+  'regimen_eps',
+  'identidades_de_genero',
+  'orientaciones_sexuales',
+  'expresiones_de_genero',
+  'identidad_etnico_racial',
+  'estado_civil',
+  'redes_apoyo',
+  'decision_encuentro_inicial',
+  'factores_riesgos',
+  'fuentes_ingresos'
+];
 
   // Remueve elementos vacios del formulario a la base de datos
   const removeEmptyFields = (data) => {
     return Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== ""));
   };
 
-  const invalidFields = requiredFields.filter(field => !state[field]);
-  if (state.pertenencia_univalle === null) {
-    invalidFields.push('pertenencia_univalle');
-  }
+  const invalidFields = [
+    ...requiredFields.filter(field => !state[field] || state[field] === null), // Verifica si el campo está vacío o es null
+    ...listFields.filter(field => state[field] === null || (Array.isArray(state[field]) && state[field].length === 0)) // Verifica si una lista es null o vacía
+];
 
- 
 if (invalidFields.length > 0) {
   // Convertir los nombres técnicos a descripciones personalizadas
   const formattedInvalidFields = invalidFields.map(field => fieldNames[field] || field);
+
 
   // Alerta de campos vacíos que están en la lista de requiredFields
   setMensaje(`Los siguientes campos son obligatorios y están vacíos: ${formattedInvalidFields.join(', ')}`);
@@ -575,7 +655,7 @@ if (invalidFields.length > 0) {
     departamento_nacimiento: state.departamento_nacimiento,
     pais_nacimiento: state.pais_nacimiento,
     ciudad_residencia: state.ciudad_residencia,
-    zona_residencial: state.zona_residencial,
+    zona_residencia: state.zona_residencia,
     direccion_residencia: state.direccion_residencia,
     barrio_residencia: state.barrio_residencia,
     comuna_barrio: state.comuna_barrio,
@@ -633,13 +713,12 @@ if (invalidFields.length > 0) {
     calificacion_relacion_familiar: state.calificacion_relacion_familiar,
     observacion_general_redes_de_apoyo: state.observacion_general_redes_de_apoyo,
     creencia_religiosa: state.creencia_religiosa,
-    decision_encuentro_inicial_con_profesional: state.decision_encuentro_inicial_con_profesional,
+    decision_encuentro_inicial: state.decision_encuentro_inicial,
     observacion_horario: state.observacion_horario,
     origen_descubrimiento_campus_diverso: state.origen_descubrimiento_campus_diverso,
     comentarios_o_sugerencias_de_usuario: state.comentarios_o_sugerencias_de_usuario,
     redes_apoyo: state.redes_apoyo,
     encuentro_dias_horas: state.encuentro_dias_horas,
-    actividades_tiempo_libre: state.actividades_tiempo_libre,
     fuentes_ingresos: state.fuentes_ingresos,
     acompanamiento_que_recibio: state.acompanamiento_que_recibio,
     Ocupaciones_actules: state.Ocupaciones_actules,
@@ -721,12 +800,12 @@ if (invalidFields.length > 0) {
               departamento_nacimiento: "",
               pais_nacimiento: "",
               ciudad_residencia: "",
-              zona_residencial: "",
+              zona_residencia: [],
               direccion_residencia: "",
               barrio_residencia: "",
               comuna_barrio: "",
-              estado_civil: "",
-              identidad_etnico_racial: "",
+              estado_civil: [],
+              identidad_etnico_racial: [],
               nombre_persona_de_confianza: "",
               telefono_persona_de_confianza: "",
               pertenencia_grupo_poblacional: [],
@@ -760,9 +839,9 @@ if (invalidFields.length > 0) {
 
               //Informacion general
               dedicacion_externa: "",
-              tiene_eps: "",
+              tiene_eps: null,
               nombre_eps: "",
-              regimen_eps: "",
+              regimen_eps: [],
               tipo_entidad_acompanamiento_recibido: "",
               calificacion_acompanamiento_recibido: "",
               motivo_calificacion_acompanamiento: "",
@@ -772,7 +851,7 @@ if (invalidFields.length > 0) {
               observacion_general_redes_de_apoyo: "",
               observacion_general_factores_de_riesgo: "",
               creencia_religiosa: "",
-              decision_encuentro_inicial_con_profesional: "",
+              decision_encuentro_inicial: [],
               observacion_horario: "",
               origen_descubrimiento_campus_diverso: "",
               comentarios_o_sugerencias_de_usuario: "",
@@ -783,7 +862,6 @@ if (invalidFields.length > 0) {
               Ocupaciones_actules: "",
               factores_riesgos: [],
               encuentro_dias_horas: [],
-              actividades_tiempo_libre: [],
               acompanamiento_que_recibio: "",
               fuentes_ingresos: [],
               
@@ -900,8 +978,9 @@ const steps = [
     pronombresOptions={pronombresOptions}
     tipoDocumentoOptions={tipoDocumentoOptions}
     handleSelectNoMultiChange = {handleSelectNoMultiChange}
-    handleSelectChange2={handleSelectChange2}
-    handleSelectChange3={handleSelectChange3}
+    estadocivilOptions={estadocivilOptions}
+    zonaResidencialOptions={zonaResidencialOptions}
+    identidadEtnicoRacialOptions={identidadEtnicoRacialOptions}
     /> },
   { component:     <DiversidadSexual
     state={state}
@@ -931,7 +1010,6 @@ const steps = [
     handleAddItem={handleAddItem}
     handleDeleteItem={handleDeleteItem}
     factoresOptions={factoresOptions}
-    actividadesOptions={actividadesOptions}
     fuentesOptions={fuentesOptions}
     redesOptions={redesOptions}
     isLoading={isLoading}
@@ -939,6 +1017,10 @@ const steps = [
     maxLengthBasicInput={maxLengthBasicInput}
     maxLengthTextAreas={maxLengthTextAreas}
     handleChangeNumber={handleChangeNumber}
+    handleCheckboxChange={handleCheckboxChange}
+    regimenEpsOptions={regimenEpsOptions}
+    decisionEncuentroInicialOptions={decisionEncuentroInicialOptions}
+    handleSelectNoMultiChange={handleSelectNoMultiChange}
 
     /> },
     { component:   <InformacionAcademica
@@ -970,7 +1052,7 @@ const prevStep = () => {
 
   return (
     <>
-    <div>
+    
       {isSubmitted ? (
         // Muestra el componente de agradecimiento si se ha enviado el formulario
         <AgradeciemintoEncuesta />
@@ -990,6 +1072,7 @@ const prevStep = () => {
                       size="normal"
                       sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                       onVerify={handleRecaptchaChange}
+                      languageOverride='es'
                     />
                   )}
                 </div>
@@ -1067,6 +1150,33 @@ const prevStep = () => {
                   </Modal.Body>
                 </Modal>
 
+
+
+              <Modal show={showEstamentoModal} onHide={() => setShowEstamentoModal(false)} backdrop="static" keyboard={false}>
+              <Modal.Header closeButton>
+                <Modal.Title>Advertencia</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p>
+                  Al continuar, aceptas nuestra{" "}
+                  <a
+                    href="ejemplo1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "blue", textDecoration: "underline" }}
+                  >
+                    Autorización de datos
+                  </a>
+                  , de acuerdo con los términos establecidos en la Ley Estatutaria 1581 de 2012 y la Ley 1712 de 2014.
+                </p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowEstamentoModal(false)}>
+                  Cerrar
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
                 {/* Alerta de éxito como modal */}
                 <Alert
                   show={showSuccessAlert}
@@ -1104,7 +1214,7 @@ const prevStep = () => {
           {/* Cerrar el modal */}
         </div>
       )}
-    </div>
+    
   </>
 );
 }

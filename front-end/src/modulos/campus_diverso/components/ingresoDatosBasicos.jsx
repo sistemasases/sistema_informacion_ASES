@@ -34,8 +34,9 @@ const IngresoDatosBasicos = ({state,
     pronombresOptions,
     tipoDocumentoOptions,
     handleSelectNoMultiChange,
-    handleSelectChange2,
-    handleSelectChange3
+    estadocivilOptions,
+    zonaResidencialOptions,
+    identidadEtnicoRacialOptions,
 
 }) => {
   return (
@@ -46,8 +47,29 @@ const IngresoDatosBasicos = ({state,
     
       <Col className="form-column" xs={"6"} md={"6"}>
       
-       
-      
+<div>
+              <label className='custom-div'>Pronombres</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="pronombres"
+                  placeholder='Seleccione pronombres'
+                  options={pronombresOptions}
+                  value={state.pronombres.map(option => ({
+                  value: option,
+                  label: pronombresOptions.find(o => o.value === option).label
+                  }))}
+                  onChange={handleSelectChange}
+    
+                  />
+                  )}
+              </div>
+            </div>
+
     <div className="input-container">
   <label className='custom-div'>Nombre Identitario</label>
   <input
@@ -165,32 +187,40 @@ const IngresoDatosBasicos = ({state,
 <span className="char-count">{`Caracteres restantes: ${maxLengthNumber - (state.telefono?.length || 0)}`}</span>
 </div>
 
-<div className="input-container">
+<div>
   <label className='custom-div'>Estado civil</label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Ingrese estado civil"
-    name="estado_civil"
-    value={state.estado_civil}
-    onChange={handleChange}
-    maxLength={maxLengthBasicInput}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.estado_civil.length}`}</span>
+  <div>
+    {isLoading ? (
+      <p>Cargando...</p>
+    ) : (
+      <Select
+        className='create-select'
+        name="estado_civil"
+        placeholder='Seleccione tu estado civil'
+        options={estadocivilOptions}
+        value={estadocivilOptions.find(option => option.value === state.estado_civil)}
+        onChange={handleSelectNoMultiChange}
+      />
+    )}
+  </div>
 </div>
 
-<div className="input-container">
+<div>
   <label className='custom-div'>Identidad étnico racial</label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Ingrese la identidad"
-    name="identidad_etnico_racial"
-    value={state.identidad_etnico_racial}
-    onChange={handleChange}
-    maxLength={maxLengthBasicInput}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.identidad_etnico_racial.length}`}</span>
+  <div>
+    {isLoading ? (
+      <p>Cargando...</p>
+    ) : (
+      <Select
+        className='create-select'
+        name="identidad_etnico_racial"
+        placeholder='Seleccione tu identidad'
+        options={identidadEtnicoRacialOptions}
+        value={identidadEtnicoRacialOptions.find(option => option.value === state.identidad_etnico_racial)}
+        onChange={handleSelectNoMultiChange}
+      />
+    )}
+  </div>
 </div>
 
 <div className="input-container">
@@ -241,11 +271,57 @@ const IngresoDatosBasicos = ({state,
 
       </Col>
 
-      
+ 
+
       
       <Col className="form-column" xs={"6"} md={"6"}>
     
-          <div className="input-container">
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+  <div className="custom-datepicker-container">
+    <DatePicker
+      label="Fecha de nacimiento"
+      value={state.fecha_nacimiento ? dayjs(state.fecha_nacimiento) : null}
+      onChange={(newDate) => handleChange({ target: { name: 'fecha_nacimiento', value: newDate } })}
+      slotProps={{
+        textField: {
+          className: "custom-datepicker-textfield",
+
+        }
+      }}
+    />
+  </div>
+</LocalizationProvider>
+
+<div className="input-container">
+      <label className='custom-div'>País de nacimiento</label>
+      <input
+        className='input-updated'
+        type="text"
+        placeholder="Ingrese el país"
+        name="pais_nacimiento"
+        value={state.pais_nacimiento}
+        onChange={handleChange}
+        maxLength={maxLengthBasicInput}
+      />
+      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.pais_nacimiento.length}`}</span>
+    </div>
+      
+    <div className="input-container">
+      <label className='custom-div'>Departamento de nacimiento</label>
+      <input
+        className='input-updated'
+        type="text"
+        placeholder="Ingrese el departamento"
+        name="departamento_nacimiento"
+        value={state.departamento_nacimiento}
+        onChange={handleChange}
+        maxLength={maxLengthBasicInput}
+      />
+      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.departamento_nacimiento.length}`}</span>
+    </div>
+
+
+    <div className="input-container">
       <label className='custom-div'>Ciudad de nacimiento</label>
       <input
         className='input-updated'
@@ -259,6 +335,7 @@ const IngresoDatosBasicos = ({state,
       />
       <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.ciudad_nacimiento.length}`}</span>
     </div>
+
 
     <div className="input-container">
       <label className='custom-div'>Corregimiento de nacimiento</label>
@@ -275,79 +352,6 @@ const IngresoDatosBasicos = ({state,
      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - (state.corregimiento_nacimiento?.length || 0)}`}</span>
     </div>
 
-    <div className="input-container">
-      <label className='custom-div'>Municipio de nacimiento</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese municipio de nacimiento"
-        name="municipio_nacimiento"
-        value={state.municipio_nacimiento}
-        onChange={handleChange}
-        pattern='[0-9]*'
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - (state.municipio_nacimiento?.length || 0)}`}</span>
-    </div>
-
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-      <div  style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
-        <DatePicker
-          label="Fecha de nacimiento"
-            value={state.fecha_nacimiento ? dayjs(state.fecha_nacimiento) : null}          onChange={(newDate) => handleChange({ target: { name: 'fecha_nacimiento', value: newDate } })}
-          renderInput={(params) => (
-             <TextField
-          {...params}
-          InputProps={{
-            style: {
-              height: '40px',   // Ajusta la altura total del TextField
-              padding: '8px',   // Ajusta el padding interno
-              fontSize: '0.875rem',  // Ajusta el tamaño de texto
-            },
-          }}
-          InputLabelProps={{
-            style: {
-              fontSize: '0.875rem',  // Ajusta el tamaño del texto de la etiqueta
-            },
-          }}
-        />
-      )}
-    />
-      </div>
-    </LocalizationProvider>
-
-
-
-    <div className="input-container">
-      <label className='custom-div'>Departamento de nacimiento</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese el departamento"
-        name="departamento_nacimiento"
-        value={state.departamento_nacimiento}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.departamento_nacimiento.length}`}</span>
-    </div>
-
-
- 
-
-    <div className="input-container">
-      <label className='custom-div'>País de nacimiento</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese el país"
-        name="pais_nacimiento"
-        value={state.pais_nacimiento}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.pais_nacimiento.length}`}</span>
-    </div>
 
     <div className="input-container">
       <label className='custom-div'>Ciudad de residencia</label>
@@ -363,19 +367,23 @@ const IngresoDatosBasicos = ({state,
       <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.ciudad_residencia.length}`}</span>
     </div>
 
-    <div className="input-container">
-      <label className='custom-div'>Zona de residencia</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese zona de residencia"
-        name="zona_residencial"
-        value={state.zona_residencial}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.zona_residencial.length}`}</span>
+    <div>
+    <label className='custom-div'>Zona de residencia</label>
+    <div>
+      {isLoading ? (
+        <p>Cargando...</p>
+      ) : (
+        <Select
+          className='create-select'
+          name="zona_residencia"
+          placeholder='Seleccione su zona de residencia'
+          options={zonaResidencialOptions}
+          value={zonaResidencialOptions.find(option => option.value === state.zona_residencia)}
+          onChange={handleSelectNoMultiChange}
+        />
+      )}
     </div>
+  </div>
 
     <div className="input-container">
       <label className='custom-div'>Dirección de residencia</label>
@@ -405,22 +413,7 @@ const IngresoDatosBasicos = ({state,
       <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.barrio_residencia.length}`}</span>
     </div>
 
-    <div className="input-container">
-      <label className='custom-div'>Número de la comuna</label>
-      <input
-        className='input-updated'
-        type="number"
-        placeholder="Ingrese la comuna"
-        name="comuna_barrio"
-        pattern='[0-9]*'
-        onKeyDown={preventNegativeValues}
-        min="0"
-        value={state.comuna_barrio}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.comuna_barrio.length}`}</span>
-    </div>
+  
         
       </Col>
       

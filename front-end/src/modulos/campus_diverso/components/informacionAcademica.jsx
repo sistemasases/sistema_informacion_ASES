@@ -30,7 +30,7 @@ const InformacionAcademica = ({
 
 
 
-              <div className="custom-div-check-documentos">
+    <div className="custom-div-check-documentos">
         <div className="custom-checkbox-label">
           ¿Pertenece a univalle?
         </div>
@@ -144,19 +144,15 @@ const InformacionAcademica = ({
              
         </div>
 
-              <div>
+     <div>
         <label className='custom-div'>Estamentos</label>
         <Select
-          isMulti
           className='create-select'
           name="estamentos"
           placeholder='Seleccione estamentos'
           options={estamentoOptions}
-          value={state.estamentos.map(option => ({
-            label: option,
-            value: estamentoOptions.find(o => o.label === option).value
-          }))}
-          onChange={handleSelectChange2}
+          value={estamentoOptions.find(option => option.value === state.estamentos)}
+          onChange={handleSelectNoMultiChange}
           isDisabled={state.pertenencia_univalle === false}
         />
       </div>

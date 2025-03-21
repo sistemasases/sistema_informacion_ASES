@@ -90,6 +90,20 @@
 
   }
 
+  .custom-label {
+    width: 100%; 
+    height: 100%;  
+    font-size: 0.9em; 
+    padding-top: 3px;
+    color: #000000;
+    text-align:left;
+    overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+    word-wrap: break-word; /*ajusta palabras largas */
+    hyphens: auto; /* Habilita la separación de palabras si es necesario */
+  
+  
+    }
+
   .input-updated {
     border: 0.1px solid #d9d9d9 !important;
     border-radius: 0.3em;
@@ -195,6 +209,44 @@
 }
 
 
+/* estilos en telefono del datepicker*/
+
+.custom-datepicker-container {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  margin-top: 8px;
+}
+
+
+.custom-datepicker-textfield .MuiInputBase-root {
+  height: 36px !important; 
+  font-size: 0.4rem !important; 
+}
+
+
+.custom-datepicker-textfield .MuiFormLabel-root {
+  font-size: 0.7rem !important;
+  transform: translateY(0);
+  margin-top: -10px; 
+  top: 50% !important; 
+  margin-left: 10px;
+}
+
+.custom-datepicker-textfield .MuiInputLabel-root.Mui-focused {
+  transform: translateY(-0.1em) !important; 
+  top: 0 !important;
+  font-size: 0.7rem !important; 
+  margin-right: 3px;
+}
+
+
+.custom-datepicker-textfield .MuiInputLabel-root.MuiInputLabel-shrink {
+  transform: translateY(-0.1em) !important; /* Mueve el label hacia arriba cuando hay un valor */
+  top: 0 !important;
+  font-size: 0.8rem !important; /* Puedes ajustar el tamaño si lo deseas */
+  margin-right: 3px;
+}
 
 }
 
@@ -255,6 +307,20 @@
     padding-top: 3px;
     color: #000000;
     }
+
+    .custom-label {
+      width: 100%; 
+      height: 100%;  
+      font-size: 0.9em !important; 
+      padding-top: 3px;
+      color: #000000;
+      text-align:left;
+      overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+      word-wrap: break-word; /*ajusta palabras largas */
+      hyphens: auto; /* Habilita la separación de palabras si es necesario */
+    
+    
+      }
 
     .boton-container {
       display:block ; /* Habilita el diseño flexible */
@@ -537,8 +603,8 @@
       align-items: center;
       padding: 4px ;
 
-      margin-top: 60px;
-      margin-right: 30px;
+      margin-top: 4px;
+      margin-right: 4px;
       justify-content: space-between; 
     }
 
@@ -556,7 +622,7 @@
     .custom-checkbox-label {
       font-size: 1em;
       color: #333;
-      padding: 5px;
+      padding: 3px;
       white-space: normal;
       word-wrap: break-word;
       text-align: justify;
@@ -574,8 +640,8 @@
     
     .custom-checkbox input {
       opacity: 0;
-      width: 60%;
-      height: 60%;
+      width: 80%;
+      height: 80%;
     }
     
     .custom-checkbox .checkmark {
@@ -800,4 +866,43 @@
   width: 38px;
   height: 38px;
   fill: rgb(206, 133, 206) !important;
+}
+
+/* Estilos del datepicker */
+
+.custom-datepicker-container {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  margin-top: 25px;
+}
+
+
+.custom-datepicker-textfield .MuiInputBase-root {
+  height: 36px !important; /* Ajusta la altura total */
+  font-size: 1rem !important; 
+}
+
+
+.custom-datepicker-textfield .MuiFormLabel-root {
+  font-size: 1rem !important; /* Tamaño del texto del label */
+  transform: translateY(0) !important; /* Centra el label */
+  margin-top: -10px; /* Ajusta el desplazamiento del label */
+  top: 50% !important; /* Centra el label en la parte superior */
+  margin-left: 10px;
+}
+
+.custom-datepicker-textfield .MuiInputLabel-root.Mui-focused {
+  transform: translateY(-0.1em) !important; /* Mueve el label hacia arriba cuando está enfocado */
+  top: 0 !important;
+  font-size: 0.8rem !important; /* Puedes ajustar el tamaño si lo deseas */
+  margin-right: 3px;
+}
+
+/* El siguiente estilo asegura que el label solo se mueva hacia arriba si el campo tiene un valor */
+.custom-datepicker-textfield .MuiInputLabel-root.MuiInputLabel-shrink {
+  transform: translateY(-0.1em) !important; /* Mueve el label hacia arriba cuando hay un valor */
+  top: 0 !important;
+  font-size: 0.8rem !important; /* Puedes ajustar el tamaño si lo deseas */
+  margin-right: 3px;
 }

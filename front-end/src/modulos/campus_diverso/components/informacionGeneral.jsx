@@ -28,6 +28,10 @@ const InformacionGeneral = ({state,
     maxLengthBasicInput,
     maxLengthTextAreas,
     handleChangeNumber,
+    handleCheckboxChange,
+    regimenEpsOptions,
+    decisionEncuentroInicialOptions,
+    handleSelectNoMultiChange
 
 }) => {
   return (
@@ -38,65 +42,85 @@ const InformacionGeneral = ({state,
         
         <Col className="form-column" xs={"7"} md={"6"}>
 
-        <div>
-                <label className='custom-div'>Dedicacion externa</label>
-                
+
+        <div className="custom-div-check-documentos">
+        <div className="custom-checkbox-label">
+          ¿Tiene eps?
+        </div>
+        <label className="custom-radio">
+          <input
+            type="radio"
+            name="tiene_eps"
+            value={true}
+            checked={state.tiene_eps === true}
+            onChange={handleCheckboxChange}
+          />
+          Sí
+        </label>
+        <label className="custom-radio">
+          <input
+            type="radio"
+            name="tiene_eps"
+            value={false}
+            checked={state.tiene_eps === false}
+            onChange={handleCheckboxChange}
+
+          />
+          No
+        </label>
+      </div>
+
+      <div>
+                <label className='custom-div'>Nombre de la EPS</label>
+                <div>
                 <input
-                  className='input-updated'
+                className='input-updated'
                   type="text"
-                  name="dedicacion_externa"
-                  placeholder='Ingrese la dedicacion externa'
-                  value={state.dedicacion_externa}
+                  name="nombre_eps"
+                  placeholder='Ingrese su ocupación'
+                  value={state.nombre_eps}
+                  onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
+                  disabled={!state.tiene_eps} // Deshabilita si tiene_eps es false
+
+                />
+                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_eps.length}`}</span>
+
+        </div>  
+
+        <div>
+        <label className='custom-div'>Régimen de su EPS</label>
+        <Select
+          className='create-select'
+          name="regimen_eps"
+          placeholder='Seleccione estamentos'
+          options={regimenEpsOptions}
+          value={regimenEpsOptions.find(option => option.value === state.regimen_eps)}
+          onChange={handleSelectNoMultiChange}
+          isDisabled={!state.tiene_eps} // Deshabilita si tiene_eps es false
+        />
+      </div>
+
+
+        <div>
+                <label className='custom-div'>¿Ocupación actual?</label>
+                <div>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="Ocupaciones_actules"
+                  placeholder='Ingrese su ocupación'
+                  value={state.Ocupaciones_actules}
                   onChange={handleChange}
                   maxLength={maxLengthBasicInput}
                 />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.dedicacion_externa.length}`}</span>
-        </div>
+                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.Ocupaciones_actules.length}`}</span>
 
-        <div>
-                <label className='custom-div'>¿Tiene eps?</label>
-                <input
-                  className='input-updated'
-                  type="text"
-                  name="tiene_eps"
-                  placeholder='Ingrese la EPS'
-                  value={state.tiene_eps}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.tiene_eps.length}`}</span>
-        </div>
+        </div>  
 
-        <div>
-                <label className='custom-div'>regimen de la EPS</label>
-                <input
-                  className='input-updated'
-                  type="text"
-                  name="regimen_eps"
-                  placeholder='Ingrese el regimen'
-                  value={state.regimen_eps}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.regimen_eps.length}`}</span>
-        </div>
-
-
-
-        <div>
-                <label className='custom-div'>tipo de entidad que brinda acompañamiento recibido</label>
-                <input
-                  className='input-updated'
-                  type="text"
-                  name="tipo_entidad_acompanamiento_recibido"
-                  placeholder='Ingrese la entidad'
-                  value={state.tipo_entidad_acompanamiento_recibido}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.tipo_entidad_acompanamiento_recibido.length}`}</span>
-        </div>
-
+{/*
         <div>
           <label className='custom-div'>
             Calificación de acompañamiento recibido
@@ -119,21 +143,9 @@ const InformacionGeneral = ({state,
             maxLength="1"
           />
         </div>
-
+*/}
         
-        <div>
-                <label className='custom-div'>Motivo de calificacion de acompañamiento recibido</label>
-                <textarea
-                className='input-updated'
-                  type="text"
-                  name="motivo_calificacion_acompanamiento"
-                  placeholder='Ingrese el motivo'
-                  value={state.motivo_calificacion_acompanamiento}
-                  onChange={handleChangeTextField}
-                  maxLength={maxLengthTextAreas}
-                />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthTextAreas - state.motivo_calificacion_acompanamiento.length}`}</span>
-        </div>
+
 
         <div>
                 <label className='custom-div'>Actividad específica en tiempo libre</label>
@@ -148,6 +160,30 @@ const InformacionGeneral = ({state,
                 />
                 <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.actividades_especificas_tiempo_libre.length}`}</span>
         </div>
+
+
+        <div>
+              <label className='custom-div'>Redes de apoyo</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="redes_apoyo"
+                  placeholder='Seleccione sus redes de apoyo'
+                  options={redesOptions}
+                  value={state.redes_apoyo.map(option => ({
+                  label: option,
+                  value: redesOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
 
         <div>
                 <label className='custom-div'>Calificacion de relación familiar</label>
@@ -199,33 +235,6 @@ const InformacionGeneral = ({state,
           </div>
       */}
 
-          <div>
-              <label className='custom-div'>Redes de apoyo</label>
-              <div>
-                {isLoading ? (
-                  <p>Cargando...</p>
-                ):(
-                <Select
-                  isMulti
-                  className='create-select'
-                  name="redes_apoyo"
-                  placeholder='Seleccione sus redes de apoyo'
-                  options={redesOptions}
-                  value={state.redes_apoyo.map(option => ({
-                  label: option,
-                  value: redesOptions.find(o => o.label === option).value
-                  }))}
-                  onChange={handleSelectChange2}
-    
-                  />
-                  )}
-              </div>
-            </div>
-
-
-  
-
- 
 
 
     </Col>
@@ -251,30 +260,27 @@ const InformacionGeneral = ({state,
         </div> 
 
         <div>
-                <label className='custom-div'>Decisión encuentro inicial con profesional</label>
-                
-                <input
-                className='input-updated'
-                  type="text"
-                  name="decision_encuentro_inicial_con_profesional"
-                  placeholder='Ingrese la decisión'
-                  value={state.decision_encuentro_inicial_con_profesional}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.decision_encuentro_inicial_con_profesional.length}`}</span>
-        </div> 
+        <label className='custom-div'>¿Qué profesional prefieres para agendar la reunión inicial?</label>
+        <Select
+          className='create-select'
+          name="decision_encuentro_inicial"
+          placeholder='Seleccione la profesión'
+          options={decisionEncuentroInicialOptions}
+          value={decisionEncuentroInicialOptions.find(option => option.value === state.decision_encuentro_inicial)}
+          onChange={handleSelectNoMultiChange}
+        />
+      </div>
 
 
 
 
         <div>
-                <label className='custom-div'>Origen de descubrimiento de campus diverso</label>
+                <label className='custom-div'>¿Cómo conociste a campus diverso?</label>
                 <input
                 className='input-updated'
                   type="text"
                   name="origen_descubrimiento_campus_diverso"
-                  placeholder='Ingrese el origen'
+                  placeholder='Redes sociales, amigos, etc...'
                   value={state.origen_descubrimiento_campus_diverso}
                   onChange={handleChange}
                   maxLength={maxLengthBasicInput}
@@ -282,55 +288,11 @@ const InformacionGeneral = ({state,
                 <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.origen_descubrimiento_campus_diverso.length}`}</span>
         </div> 
 
-        <div>
-                <label className='custom-div'>Comentarios o sugerencias de usuario</label>
-                <input
-                className='input-updated'
-                  type="text"
-                  name="comentarios_o_sugerencias_de_usuario"
-                  placeholder='Ingrese el comentario o sugerencia'
-                  value={state.comentarios_o_sugerencias_de_usuario}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                />
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.comentarios_o_sugerencias_de_usuario.length}`}</span>
-        </div> 
+ 
 
 
+        
 
-        <div>
-                <label className='custom-div'>¿Ocupación actual?</label>
-                <div>
-                <input
-                className='input-updated'
-                  type="text"
-                  name="Ocupaciones_actules"
-                  placeholder='Ingrese su ocupación'
-                  value={state.Ocupaciones_actules}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                />
-                </div>
-                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.Ocupaciones_actules.length}`}</span>
-
-        </div>  
-
-        <div>
-                <label className='custom-div'>¿Qué profesionales le han brindado atención?</label>
-                <div>
-                <input
-                className='input-updated'
-                  type="text"
-                  name="profesionales_que_brindaron_atencion"
-                  placeholder='Ingrese los profesionales'
-                  value={state.profesionales_que_brindaron_atencion}
-                  onChange={handleChange}
-                  maxLength={maxLengthBasicInput}
-                />
-                </div>
-              <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.profesionales_que_brindaron_atencion.length}`}</span>
-
-        </div>  
 
         <div>
                 <label className='custom-div'>¿tipo(s) de acompañamiento(s) recibido(s)?</label>
@@ -339,7 +301,7 @@ const InformacionGeneral = ({state,
                 className='input-updated'
                   type="textarea"
                   name="acompanamiento_que_recibio"
-                  placeholder='Ingrese el acompañamiento que ha recibido'
+                  placeholder='Ingrese acompañamiento(s) que ha recibido'
                   value={state.acompanamiento_que_recibio}
                   onChange={handleChangeTextField}
                   maxLength={maxLengthTextAreas}
@@ -401,28 +363,6 @@ const InformacionGeneral = ({state,
               </div>
             </div>
 
-            <div>
-              <label className='custom-div'>Actividades en tiempo libre</label>
-              <div>
-                {isLoading ? (
-                  <p>Cargando...</p>
-                ):(
-                <Select
-                  isMulti
-                  className='create-select'
-                  name="actividades_tiempo_libre"
-                  placeholder='Seleccione sus Actividades en tiempo libre'
-                  options={actividadesOptions}
-                  value={state.actividades_tiempo_libre.map(option => ({
-                  label: option,
-                  value: actividadesOptions.find(o => o.label === option).value
-                  }))}
-                  onChange={handleSelectChange2}
-    
-                  />
-                  )}
-              </div>
-            </div>
 
 
 

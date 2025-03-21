@@ -18,6 +18,18 @@ class RedesApoyo(models.Model):
     nombre_red_de_apoyo = models.CharField(max_length=200)
 
 
+class RegimenEps(models.Model):
+    id_regimen_eps = models.AutoField(primary_key=True)
+    nombre_regimen_eps = models.CharField(max_length=200)
+    
+
+
+class DecisionEncuentroInicial(models.Model):
+    id_decision_encuentro_inicial = models.AutoField(primary_key=True)
+    nombre_decision_encuentro_inicial = models.CharField(max_length=200)
+    
+
+
 class FactoresRiesgo(models.Model):
     id_factor_de_riesgo = models.AutoField(primary_key=True)
     nombre_factor_de_riesgo = models.CharField(max_length=200)
@@ -39,17 +51,11 @@ class InformacionGeneral(models.Model):
     id_persona = models.OneToOneField(Persona, on_delete=models.CASCADE, null=False, blank=False, related_name="informacion_general")
     #Cambios nuevos
     Ocupaciones_actules=models.CharField(max_length=100, blank=True, default="N/A")
-    profesionales_que_brindaron_atencion= models.TextField(blank=True,default="N/A")
     acompanamiento_que_recibio = models.TextField(blank=True,default="N/A")
 
     #FIn cambios nuevos
-    dedicacion_externa = models.CharField(max_length=100, blank=True, default="N/A")
-    tiene_eps = models.CharField(max_length=50, blank=True, default="N/A")
+    tiene_eps = models.BooleanField()
     nombre_eps = models.CharField(max_length=200, blank=True, default="N/A")
-    regimen_eps = models.CharField(max_length=50, blank=True, default="N/A")
-    tipo_entidad_acompanamiento_recibido = models.TextField(blank=True, default="N/A")
-    calificacion_acompanamiento_recibido = models.IntegerField(null=True)
-    motivo_calificacion_acompanamiento = models.TextField(null=True)
     actividades_especificas_tiempo_libre = models.TextField(blank=True,default="N/A")
     observacion_general_actividades_especificas_tiempo_libre = models.TextField(blank=True,default="SIn observación")
     observacion_general_fuente_de_ingresos = models.TextField(blank=True,default="Sin observación")
@@ -58,7 +64,7 @@ class InformacionGeneral(models.Model):
     observacion_general_redes_de_apoyo = models.TextField(blank=True,default="Sin observación")
     observacion_general_factores_de_riesgo = models.TextField(blank=True,default="Sin observación")
     creencia_religiosa = models.TextField(blank=True,default="N/A")
-    decision_encuentro_inicial_con_profesional = models.CharField(max_length=100,blank=True,default="N/A")
+    
     observacion_horario = models.TextField(blank=True,default="Sin observación")
     origen_descubrimiento_campus_diverso = models.CharField(blank=True,default="N/A")
     comentarios_o_sugerencias_de_usuario = models.TextField(blank=True,default="N/A")
@@ -69,6 +75,8 @@ class InformacionGeneral(models.Model):
     actividades_tiempo_libre = models.ManyToManyField(ActividadesTiempoLibre,max_length=500, blank=True,)
     fuentes_ingresos = models.ManyToManyField(FuentesIngreso,max_length=500, blank=True,)
     redes_apoyo = models.ManyToManyField(RedesApoyo,max_length=500, blank=True,)
+    regimen_eps = models.ManyToManyField(RegimenEps, max_length=500, blank=True)
+    decision_encuentro_inicial = models.ManyToManyField(DecisionEncuentroInicial, max_length=500, blank=True)
 
 
     # encuentros_dias_horas = models.ManyToManyField(EncuentroDiaHora, related_name="informacion_general_id")

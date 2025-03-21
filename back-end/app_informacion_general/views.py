@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from django.shortcuts import get_object_or_404
 from app_registro.models import Persona
 from .models import InformacionGeneral, EncuentroDiaHora
-from .serializers import InformacionGeneralSerializer,EncuentroDiaHoraSerializer, FactoresRiesgoSerializer, RedesApoyoSerializer, FuentesIngresoSerializer, ActividadesTiempoLibreSerializer
+from .serializers import InformacionGeneralSerializer,EncuentroDiaHoraSerializer, FactoresRiesgoSerializer, RedesApoyoSerializer, FuentesIngresoSerializer, ActividadesTiempoLibreSerializer, RegimenEpsSerializer, DecisionEncuentroInicialSerializer
 from rest_framework import viewsets
 
 
@@ -53,6 +53,18 @@ class redes_apoyo_viewsets (viewsets.ModelViewSet):
     serializer_class = RedesApoyoSerializer
     # permission_classes = (IsAuthenticated,)
     queryset = RedesApoyoSerializer.Meta.model.objects.all()
+
+ # Regimen de EPS
+class regimen_eps_viewsets (viewsets.ModelViewSet):
+    serializer_class = RegimenEpsSerializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = RegimenEpsSerializer.Meta.model.objects.all()
+
+# Decision encuentro inicial
+class decision_encuentro_inicial_viewsets (viewsets.ModelViewSet):
+    serializer_class = DecisionEncuentroInicialSerializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = DecisionEncuentroInicialSerializer.Meta.model.objects.all()
 
 # Fuentes de ingresos
 

@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 
 from .models import Persona, PertenenciaGrupoPoblacional
-from .serializers import PersonaSerializer, PertenenciaGrupoPoblacionalSerializer, TipoDocumentoSerializer
+from .serializers import PersonaSerializer, PertenenciaGrupoPoblacionalSerializer, TipoDocumentoSerializer, EstadoCivilSerializer, ZonaResidenciaSerializer, IdentidadEtnicoRacialSerializer
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -69,3 +69,18 @@ class tipo_documento_viewsets (viewsets.ModelViewSet):
     serializer_class = TipoDocumentoSerializer
     # permission_classes = (IsAuthenticated,)
     queryset = TipoDocumentoSerializer.Meta.model.objects.all()
+
+class estado_civil_viewsets (viewsets.ModelViewSet):
+    serializer_class = EstadoCivilSerializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = EstadoCivilSerializer.Meta.model.objects.all()
+
+class zona_residencia_viewsets (viewsets.ModelViewSet):
+    serializer_class = ZonaResidenciaSerializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = ZonaResidenciaSerializer.Meta.model.objects.all()
+
+class identidad_etnico_racial_viewsets (viewsets.ModelViewSet):
+    serializer_class = IdentidadEtnicoRacialSerializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = IdentidadEtnicoRacialSerializer.Meta.model.objects.all()
