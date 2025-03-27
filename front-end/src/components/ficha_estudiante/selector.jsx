@@ -13,6 +13,7 @@ import myGif from "../../modulos/reportes/loading_data.gif";
 import axios from 'axios';
 
 const Selector = (props) =>{
+    // console.log(props);
 
     const config = {
         Authorization: 'Bearer ' + decryptTokenFromSessionStorage()
@@ -95,7 +96,7 @@ const Selector = (props) =>{
         const paramsget = {
             id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         };
-        console.log("Selector", props);
+        // console.log("Selector", props);
 
         document.getElementsByName("loading_data")[0].style.visibility = "visible";
         const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";

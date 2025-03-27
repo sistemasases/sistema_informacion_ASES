@@ -1889,7 +1889,7 @@ const Reporte = () => {
               onRowClicked={(row) => {
                 cambiar_ruta(`/ficha_estudiante/${row.id}`);
                 // console.log(row);
-                // console.log(row.id);
+                console.log(row.id);
               }}
               responsive
               striped
