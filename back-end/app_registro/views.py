@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 
 from .models import Persona, PertenenciaGrupoPoblacional
-from .serializers import PersonaSerializer, PertenenciaGrupoPoblacionalSerializer, TipoDocumentoSerializer, EstadoCivilSerializer, ZonaResidenciaSerializer, IdentidadEtnicoRacialSerializer
+from .serializers import PersonaSerializer, PertenenciaGrupoPoblacionalSerializer, TipoDocumentoSerializer, EstadoCivilSerializer, ZonaResidenciaSerializer, IdentidadEtnicoRacialSerializer, SexoAsignadoSerializer
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -84,3 +84,7 @@ class identidad_etnico_racial_viewsets (viewsets.ModelViewSet):
     serializer_class = IdentidadEtnicoRacialSerializer
     # permission_classes = (IsAuthenticated,)
     queryset = IdentidadEtnicoRacialSerializer.Meta.model.objects.all()
+class sexo_asignado_viewsets (viewsets.ModelViewSet):
+    serializer_class = SexoAsignadoSerializer
+    # permission_classes = (IsAuthenticated,)
+    queryset = SexoAsignadoSerializer.Meta.model.objects.all()

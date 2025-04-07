@@ -260,7 +260,18 @@ const InformacionGeneral = ({state,
         </div> 
 
         <div>
-        <label className='custom-div'>¿Qué profesional prefieres para agendar la reunión inicial?</label>
+        <label className='custom-div'>¿Qué profesional prefieres para agendar la reunión inicial?
+          <OverlayTrigger
+            placement="bottom"
+            overlay={
+              <Tooltip id="tooltip-prfesional" className='tooltip-custom'>
+                La asignación con el profesional está sujeta a su disponibilidad.
+              </Tooltip>
+            }
+          >
+            <span className="tooltip-icon">?</span>
+          </OverlayTrigger>
+        </label>
         <Select
           className='create-select'
           name="decision_encuentro_inicial"

@@ -53,6 +53,16 @@ class IdentidadEtnicoRacial(models.Model):
     def __str__(self):
         return self.nombre_identidad_etnico_racial
 
+class SexoAsignado(models.Model):
+    id_sexo_asignado = models.AutoField(primary_key=True)
+    nombre_sexo_asignado = models.CharField(max_length=300) 
+
+    class Meta:
+        db_table = "Sexo_asignado"
+    
+    def __str__(self):
+        return self.nombre_sexo_asignado
+
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
     email = models.CharField(max_length=100, blank=True, default="Email no registrado")
@@ -85,6 +95,7 @@ class Persona(models.Model):
     zona_residencia = models.ManyToManyField(ZonaResidencia, max_length=300,blank=True)
     estado_civil = models.ManyToManyField(EstadoCivil, max_length=300,blank=True)
     identidad_etnico_racial = models.ManyToManyField(IdentidadEtnicoRacial, max_length=300,blank=True)
+    sexo_asignado = models.ManyToManyField(SexoAsignado, max_length=300, blank=True)
 
     def __str__(self):
         return f"Persona ID: {self.id_persona}, número documento: {self.numero_documento}, nombre: {self.nombre_y_apellido}" #! TODO: Cambiarlo con la info de todos los campos después

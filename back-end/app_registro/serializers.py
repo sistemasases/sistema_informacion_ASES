@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
-from .models import Persona, PertenenciaGrupoPoblacional, TipoDocumento, EstadoCivil, ZonaResidencia, IdentidadEtnicoRacial
+from .models import Persona, PertenenciaGrupoPoblacional, TipoDocumento, EstadoCivil, ZonaResidencia, IdentidadEtnicoRacial, SexoAsignado
 from app_diversidad_sexual.serializers import DiversidadSexualSerializer
 from app_diversidad_sexual.models import DiversidadSexual
 from app_diversidad_sexual.serializers import DiversidadSexualSerializer
@@ -41,6 +41,12 @@ class IdentidadEtnicoRacialSerializer(serializers.ModelSerializer):
     nombre_identidad_etnico_racial = serializers.CharField(max_length=300, required=True)
     class Meta:
         model = IdentidadEtnicoRacial
+        fields = '__all__'
+
+class SexoAsignadoSerializer(serializers.ModelSerializer):
+    nombre_sexo_asignado = serializers.CharField(max_length=300, required=True)
+    class Meta:
+        model = SexoAsignado
         fields = '__all__'
 
 class PertenenciaGrupoPoblacionalListingField(serializers.RelatedField):
@@ -99,6 +105,17 @@ class IdentidadEtnicoRacialListingField(serializers.RelatedField):
             return data['nombre_identidad_etnico_racial'].strip()
         raise serializers.ValidationError('Invalid input format.')
     
+class SexoAsignadoListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.nombre_sexo_asignado
+    
+    def to_internal_value(self, data):
+        if isinstance(data, str):
+            return data.strip()
+        elif isinstance(data, dict) and 'nombre_sexo_asignado' in data:
+            return data['nombre_sexo_asignado'].strip()
+        raise serializers.ValidationError('Invalid input format.')
+    
 
         
 
@@ -150,7 +167,11 @@ class PersonaSerializer(serializers.ModelSerializer):
         queryset=IdentidadEtnicoRacial.objects.all(),
         required=False, 
         )
-    
+    sexo_asignado = SexoAsignadoListingField(
+        many=True, 
+        queryset=SexoAsignado.objects.all(),
+        required=False, 
+        )
     # pertenencia_grupo_poblacional = PertenenciaGrupoPoblacionalSerializer(many=True, required=False)
     # pertenencia_grupo_poblacional = serializers.ListField(
     #     child=serializers.CharField(max_length=300),
@@ -184,7 +205,8 @@ class PersonaSerializer(serializers.ModelSerializer):
         zona_residencia_names = validated_data.pop('zona_residencia',[])
         estado_civil_names = validated_data.pop('estado_civil',[])
         identidad_etnico_racial_names = validated_data.pop('identidad_etnico_racial',[]) 
-        
+        sexo_asignado_names = validated_data.pop('sexo_asignado',[]) 
+                
         
         recaptcha_token = validated_data.pop('recaptchaToken')  # Obtén el token de reCAPTCHA
 
@@ -225,6 +247,13 @@ class PersonaSerializer(serializers.ModelSerializer):
             except IdentidadEtnicoRacial.DoesNotExist: 
                 identidad_etnico_racial = IdentidadEtnicoRacial.objects.create(nombre_identidad_etnico_racial=identidad_etnico_racial_name.strip())    
             persona.identidad_etnico_racial.add(identidad_etnico_racial)
+        
+        for sexo_asignado_name in sexo_asignado_names:  
+            try: 
+                sexo_asignado = SexoAsignado.objects.get (nombre_sexo_asignado=sexo_asignado_name.strip()) 
+            except SexoAsignado.DoesNotExist: 
+                sexo_asignado = SexoAsignado.objects.create(nombre_sexo_asignado=sexo_asignado_name.strip())    
+            persona.sexo_asignado.add(sexo_asignado)
          
         return persona
         
@@ -234,6 +263,8 @@ class PersonaSerializer(serializers.ModelSerializer):
         zona_residencia = validated_data.pop('zona_residencia',[])
         estado_civil = validated_data.pop('estado_civil',[])
         identidad_etnico_racial = validated_data.pop('identidad_etnico_racial',[])
+        sexo_asignado = validated_data.pop('sexo_asignado',[]) 
+        
         
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -280,6 +311,14 @@ class PersonaSerializer(serializers.ModelSerializer):
                 if not estamento:
                     raise NotFound(detail=f'The identidad etnico racial "{nombre_identidad_etnico_racial}" don\'t exist', code=404)  
                 instance.identidad_etnico_racial.add(estamento)
+
+        if sexo_asignado:
+            instance.sexo_asignado.clear()
+            for nombre_sexo_asignado in sexo_asignado:
+                estamento = SexoAsignado.objects.filter(nombre_sexo_asignado=nombre_sexo_asignado).first()
+                if not estamento:
+                    raise NotFound(detail=f'The sexo asignado "{nombre_sexo_asignado}" don\'t exist', code=404)  
+                instance.sexo_asignado.add(estamento)
                 
         return super().update(instance, validated_data) 
     

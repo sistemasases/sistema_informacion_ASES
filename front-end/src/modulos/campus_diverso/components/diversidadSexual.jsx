@@ -16,6 +16,7 @@ const DiversidadSexual = ({
     identidadesGeneroOptions,
     handleCheckboxChange,
     maxLengthBasicInput,
+    sexoAsignadoOptions,
     handleSelectNoMultiChange,
 
   }) => {
@@ -80,6 +81,26 @@ const DiversidadSexual = ({
                   placeholder='Seleccione expresiones de género'
                   options={expresionesOptions}
                   value={expresionesOptions.find(option => option.value === state.expresiones_de_genero)}
+                  onChange={handleSelectNoMultiChange}
+    
+                  />
+                  )}
+              </div>
+          </div>
+
+          <div>
+              <label className='custom-div'>Sexo asignado al nacer</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                
+                  className='create-select'
+                  name="sexo_asignado"
+                  placeholder='Selecciona el sexo asignado al nacer'
+                  options={sexoAsignadoOptions}
+                  value={sexoAsignadoOptions.find(option => option.value === state.sexo_asignado)}
                   onChange={handleSelectNoMultiChange}
     
                   />

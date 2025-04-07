@@ -186,6 +186,9 @@ const updateUser = async (endpointsList, userId, updatedData) => {
   //Persona
   const [razasOptions, setRazasOptions] = useState([]);
   const [tipoDocumentoOptions, setTipoDocumentoOptions] = useState([]);
+    const [estadocivilOptions, setEstadoCivilOptions] = useState([]);
+    const [zonaResidencialOptions, setZonaResidencialOptions] = useState([]);
+    const [identidadEtnicoRacialOptions, setIdentidadEtnicoRacialOptions] = useState([]);
 // Diversidad sexual
   const [orientacionOptions, setOrientacionOptions] = useState([]);
   const [documentoOptions, setDocumentoOptions] = useState([]);
@@ -198,10 +201,12 @@ const [sedeOptions, setSedeOptions]= useState([]);
 const [programaOptions, setProgramaOptions]= useState([]);
   //Informacion general
   const [factoresOptions, setFactoresOptions] = useState([]);
-  const [actividadesOptions, setActividadesOptions] = useState([]);
   const [fuentesOptions, setFuentesOptions] = useState([]);
   const [redesOptions, setRedesOptions] = useState([]);
-
+  const [regimenEpsOptions, setRegimenEpsOptions] = useState([]);
+  const [decisionEncuentroInicialOptions, setDecisionENcuentroInicialOptions] = useState([]);
+  
+  
 // Getters de las listas
 useEffect(() => {
   Promise.all([
@@ -213,18 +218,24 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/diversidad-sexual/identidad-genero/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/estamento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/factor-riesgo/`),
-    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/actividad-tiempo-libre/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/fuente-ingresos/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/red-apoyo/`),
     axios.get(`${process.env.REACT_APP_API_URL}/persona/tipo-documento/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/programa/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-academica/sede/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/estado-civil/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/zona-residencia/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/identidad-etnico-racial/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/regimen-eps/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/decision-encuentro-inicial/`),
+
+
   ])
     .then((responses) => {
       //persona
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
-        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse, factorResponse, actividadResponse, fuenteResponse, redResponse, tipoDocumentoResponse,
-        ProgramaResponse, SedeResponse] = responses;
+        respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse, factorResponse, fuenteResponse, redResponse, tipoDocumentoResponse,
+        ProgramaResponse, SedeResponse, EstadoCivilResponse, ZonaResidencialResponse, IdentidadEtnicoRacialResponse, RegimenEpsResponse, DecisionEncuentroInicialResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -266,11 +277,6 @@ useEffect(() => {
         label: item.nombre_factor_de_riesgo
       }));
 
-      const actividadOpciones = actividadResponse.data.map((item) => ({
-        value: item.id_actividad_de_tiempo_libre,
-        label: item.nombre_actividad_de_tiempo_libre
-      }));
-
       const fuenteOpciones = fuenteResponse.data.map((item) => ({
         value: item.id_fuente_de_ingreso,
         label: item.nombre_fuente_de_ingreso
@@ -292,6 +298,26 @@ useEffect(() => {
         value: item.id_sede,
         label: item.nombre_sede
       }));
+      const estadoCivilOpciones = EstadoCivilResponse.data.map((item) => ({
+        value: item.id_estado_civil,
+        label: item.nombre_estado_civil
+      }));
+      const zonaResidenciaOpciones = ZonaResidencialResponse.data.map((item) => ({
+        value: item.id_zona_residencia,
+        label: item.nombre_zona_residencia
+      }));
+      const identidadEtnicoRacialOpciones = IdentidadEtnicoRacialResponse.data.map((item) => ({
+        value: item.id_identidad_etnico_racial,
+        label: item.nombre_identidad_etnico_racial
+      }));
+      const regimenEpsOpciones = RegimenEpsResponse.data.map((item) => ({
+        value: item.id_regimen_eps,
+        label: item.nombre_regimen_eps
+      }));
+      const decisionEncuentroInicialOpciones = DecisionEncuentroInicialResponse.data.map((item) => ({
+        value: item.id_decision_encuentro_inicial,
+        label: item.nombre_decision_encuentro_inicial
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -300,12 +326,16 @@ useEffect(() => {
       setIdentidadesGeneroOptions(identidadesGeneroOpciones);
       setEstamentoOptions(estamentoOpciones);
       setFactoresOptions(factorOpciones);
-      setActividadesOptions(actividadOpciones);
       setFuentesOptions(fuenteOpciones);
       setRedesOptions(redesOpciones);
       setTipoDocumentoOptions(tipoDocumentoOpciones);
       setProgramaOptions(programaOpciones);
       setSedeOptions(sedeOpciones);
+      setEstadoCivilOptions(estadoCivilOpciones);
+      setZonaResidencialOptions(zonaResidenciaOpciones);
+      setIdentidadEtnicoRacialOptions(identidadEtnicoRacialOpciones);
+      setRegimenEpsOptions(regimenEpsOpciones);
+      setDecisionENcuentroInicialOptions(decisionEncuentroInicialOpciones);
 
     })
     .catch((error) => {
@@ -499,7 +529,7 @@ const handleFormSubmit = (e) => {
      tiene_eps: editableUser.tiene_eps,
      calificacion_relacion_familiar: editableUser.calificacion_relacion_familiar,
      creencia_religiosa: editableUser.creencia_religiosa,
-     decision_encuentro_inicial_con_profesional: editableUser.decision_encuentro_inicial_con_profesional,
+     decision_encuentro_inicial: editableUser.decision_encuentro_inicial,
      origen_descubrimiento_campus_diverso: editableUser.origen_descubrimiento_campus_diverso,
      comentarios_o_sugerencias_de_usuario: editableUser.comentarios_o_sugerencias_de_usuario,
      actividades_especificas_tiempo_libre: editableUser.actividades_especificas_tiempo_libre,
@@ -509,7 +539,6 @@ const handleFormSubmit = (e) => {
      profesionales_que_brindaron_atencion: editableUser.profesionales_que_brindaron_atencion,
      acompanamiento_que_recibio: editableUser.acompanamiento_que_recibio,
      fuentes_ingresos: editableUser.fuentes_ingresos,
-     actividades_tiempo_libre: editableUser.actividades_tiempo_libre,
      redes_apoyo: editableUser.redes_apoyo,
      observacion_general_actividades_especificas_tiempo_libre: editableUser.observacion_general_actividades_especificas_tiempo_libre,
      observacion_general_fuente_de_ingresos: editableUser.observacion_general_fuente_de_ingresos,
@@ -580,12 +609,12 @@ const handleFormSubmit = (e) => {
       departamento_nacimiento: "",
       pais_nacimiento: "",
       ciudad_residencia: "",
-      zona_residencial: "",
+      zona_residencia: [],
       direccion_residencia: "",
       barrio_residencia: "",
       comuna_barrio: "",
-      estado_civil: "",
-      identidad_etnico_racial: "",
+      estado_civil: [],
+      identidad_etnico_racial: [],
       nombre_persona_de_confianza: "",
       telefono_persona_de_confianza: "",
       pertenencia_grupo_poblacional: [],
@@ -620,7 +649,7 @@ const handleFormSubmit = (e) => {
       dedicacion_externa: "",
       tiene_eps: "",
       nombre_eps: "",
-      regimen_eps: "",
+      regimen_eps: [],
       tipo_entidad_acompanamiento_recibido: "",
       calificacion_acompanamiento_recibido: "",
       motivo_calificacion_acompanamiento: "",
@@ -630,7 +659,7 @@ const handleFormSubmit = (e) => {
       observacion_general_redes_de_apoyo: "",
       observacion_general_factores_de_riesgo: "",
       creencia_religiosa: "",
-      decision_encuentro_inicial_con_profesional: "",
+      decision_encuentro_inicial: [],
       observacion_horario: "",
       origen_descubrimiento_campus_diverso: "",
       comentarios_o_sugerencias_de_usuario: "",
@@ -642,7 +671,6 @@ const handleFormSubmit = (e) => {
       redes_apoyo: [],
       factores_riesgos: [],
       encuentro_dias_horas: [],
-      actividades_tiempo_libre: [],
       acompanamientos_recibido: [],
       fuentes_ingresos: [],
       
@@ -828,7 +856,6 @@ const handleInputChange = (e) => {
             factoresOptions={factoresOptions}
             fuentesOptions={fuentesOptions}
             redesOptions={redesOptions}
-            actividadesOptions={actividadesOptions}
             Usuariorevisado={Usuariorevisado}
             isRevisado={isRevisado}
             setRevisado={setRevisado}
@@ -837,6 +864,12 @@ const handleInputChange = (e) => {
             setSeguimientosInfo={setSeguimientosInfo}
             sedeOptions={sedeOptions}
             programaOptions={programaOptions}
+            regimenEpsOptions={regimenEpsOptions}
+            decisionEncuentroInicialOptions={decisionEncuentroInicialOptions}
+            estadocivilOptions={estadocivilOptions}
+            zonaResidencialOptions={zonaResidencialOptions}
+            identidadEtnicoRacialOptions={identidadEtnicoRacialOptions}
+
           />
       </Container>
     </>

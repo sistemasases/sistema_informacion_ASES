@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Col  } from 'react-bootstrap';
+import { Container, Col, Tooltip, OverlayTrigger  } from 'react-bootstrap';
 import Select from 'react-select';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from '@mui/material';
@@ -47,8 +47,19 @@ const IngresoDatosBasicos = ({state,
     
       <Col className="form-column" xs={"6"} md={"6"}>
       
-<div>
-              <label className='custom-div'>Pronombres</label>
+          <div>
+            <label className='custom-div'>Pronombres
+              <OverlayTrigger
+                placement="bottom"
+                overlay={
+                  <Tooltip id="tooltip-custom" className='tooltip-custom'>
+                    Entendemos que una persona puede identificarse con varios pronombres. Sin embargo, por motivos estadísticos, solo es posible seleccionar uno. Agradecemos su comprensión y lamentamos cualquier inconveniente.
+                  </Tooltip>
+                }
+              >
+                <span className="tooltip-icon">?</span>
+              </OverlayTrigger>
+          </label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>
@@ -68,7 +79,7 @@ const IngresoDatosBasicos = ({state,
                   />
                   )}
               </div>
-            </div>
+        </div>
 
     <div className="input-container">
   <label className='custom-div'>Nombre Identitario</label>

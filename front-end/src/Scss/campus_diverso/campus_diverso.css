@@ -159,6 +159,7 @@
   font-weight: bold;
 }
 
+
 .tooltip-text {
   visibility: hidden;
   width: auto;
@@ -791,38 +792,14 @@
       font-weight: bold;
     }
     
-    .tooltip-icon:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
+    .tooltip-custom .tooltip-inner {
+      text-align: justify !important;
+      background-color: #ec4c4c !important;
+      color: white !important;
+      word-break: break-word;
+      hyphens: auto; 
     
-    .tooltip-text {
-      visibility: hidden;
-      width: auto;
-      background-color: #555;
-      color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 5px;
-      position: absolute;
-      z-index: 1;
-      bottom: auto; /* Ajusta esta propiedad según tu necesidad */
-      left: 50%;
-      opacity: 0;
-      transition: opacity 0.3s;
     }
-    
-    .tooltip-text::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: #555 transparent transparent transparent;
-    }
-    
 /*  Css agradecimiento*/
 
 /* AgradecimientoEncuesta.css */

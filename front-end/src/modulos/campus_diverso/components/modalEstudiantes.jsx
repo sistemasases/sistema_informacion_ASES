@@ -36,13 +36,17 @@ const ModalEstudiantes = ({
   factoresOptions,
   fuentesOptions,
   redesOptions,
-  actividadesOptions,
   Usuariorevisado,
   handleSelectChange3,
   tipoDocumentoOptions,
   setSeguimientosInfo,
   sedeOptions,
   programaOptions,
+  regimenEpsOptions,
+  decisionEncuentroInicialOptions,
+  estadocivilOptions,
+  zonaResidencialOptions,
+  identidadEtnicoRacialOptions,
 }) => {
 
   const titles = [
@@ -166,9 +170,7 @@ const ModalEstudiantes = ({
             selectedUser.nombre_identitario 
           )}
         </div>
-                  <div className='div-modal'><b>Identificación:</b> {selectedUser.numero_documento}</div>
-                  <div className='div-modal'>
-
+        <div className='div-modal'>
         <b>Tipo de documento: </b>
               {isEditing ? (
         <Select
@@ -176,19 +178,20 @@ const ModalEstudiantes = ({
           name="tipo_documento"
           placeholder='Seleccione su documento'
           options={tipoDocumentoOptions}
-          value={
-            editableUser.tipo_documento && editableUser.tipo_documento.length
-              ? tipoDocumentoOptions.find(option => option.value === editableUser.tipo_documento[0])
-              : null
-          }
+          value={tipoDocumentoOptions.find(option => option.value === editableUser.tipo_documento)}
           onChange={handleSelectChange3}
+          isOptionDisabled={(option) => option.value === editableUser.tipo_documento} // Deshabilita la opción ya seleccionada
         />
       ) : (
         (selectedUser.tipo_documento && selectedUser.tipo_documento.length)
           ? selectedUser.tipo_documento.join(', ')
           : 'No especificado'
       )}
-        </div>                  
+        </div>     
+
+       <div className='div-modal'><b>Identificación:</b> {selectedUser.numero_documento}</div>
+
+             
 
                   
         <div className='div-modal'>
@@ -207,20 +210,6 @@ const ModalEstudiantes = ({
                     </div>
                     
 
-        <div className='div-modal'>
-          <b>Estrato: </b>
-          {isEditing ? (
-            <input
-              type="text"
-              name="estrato_socioeconomico"
-              className='input-updated'
-              value={editableUser.estrato_socioeconomico !== undefined ? editableUser.estrato_socioeconomico : selectedUser.estrato_socioeconomico || ''}
-              onChange={handleInputChange}
-            />
-          ) : (
-            selectedUser.estrato_socioeconomico 
-          )}
-        </div>
 
         <div className='div-modal'>
           <b>Teléfono: </b>
@@ -237,20 +226,29 @@ const ModalEstudiantes = ({
           )}
         </div>
 
-        <div className='div-modal'>
-          <b>Identidad étnico racial: </b>
-          {isEditing ? (
-            <input
-              type="text"
-              name="identidad_etnico_racial"
-              className='input-updated'
-              value={editableUser.identidad_etnico_racial !== undefined ? editableUser.identidad_etnico_racial : selectedUser.identidad_etnico_racial || ''}
-              onChange={handleInputChange}
-            />
-          ) : (
-            selectedUser.identidad_etnico_racial 
-          )}
-        </div>
+  <div className='div-modal'>
+  <b>Pertenencia grupo poblacional:</b>
+  {isEditing ? (
+    <Select
+      isMulti
+      className='create-select'
+      placeholder='Seleccione identidad étnico racial'
+      name="identidad_etnico_racial"
+      // Opciones disponibles, excluyendo las ya seleccionadas
+      options={identidadesGeneroOptions.filter(option => 
+        !( editableUser.identidad_etnico_racial || selectedUser.identidad_etnico_racial|| []).includes(option.value && option.label) 
+      )}
+      // Opciones seleccionadas
+      value={(editableUser.identidad_etnico_racial || selectedUser.identidad_etnico_racial|| []).map(value => {
+        const foundOption = identidadesGeneroOptions.find(o => o.value === value);
+        return foundOption || { value, label: value };
+      })}
+      onChange={handleSelectChange}
+    />
+  ) : (
+    selectedUser.identidad_etnico_racial.join(', ')
+  )}
+</div>
 
         <div className='div-modal'>
           <b>Nombre persona de confianza: </b>
@@ -297,21 +295,32 @@ const ModalEstudiantes = ({
           )}
         </div>
         </Col>
-        <Col>
-        <div className='div-modal'>
-          <b>Estado civil: </b>
-          {isEditing ? (
-            <input
-              type="text"
-              name="estado_civil"
-              className='input-updated'
-              value={editableUser.estado_civil !== undefined ? editableUser.estado_civil : selectedUser.estado_civil || ''}
-              onChange={handleInputChange}
-            />
-          ) : (
-            selectedUser.estado_civil 
-          )}
-        </div>
+        <Col className="form-column" xs={"10"} md={"6"}>
+
+
+  <div className='div-modal'>
+  <b>Estado Civil</b>
+  {isEditing ? (
+    <Select
+      
+      className='create-select'
+      placeholder='Seleccione identidad étnico racial'
+      name="estado_civil"
+      // Opciones disponibles, excluyendo las ya seleccionadas
+      options={estadocivilOptions.filter(option => 
+        !( editableUser.estado_civil || selectedUser.estado_civil|| []).includes(option.value && option.label) 
+      )}
+      // Opciones seleccionadas
+      value={(editableUser.estado_civil || selectedUser.estado_civil|| []).map(value => {
+        const foundOption = estadocivilOptions.find(o => o.value === value);
+        return foundOption || { value, label: value };
+      })}
+      onChange={handleSelectChange3}
+    />
+  ) : (
+    selectedUser.estado_civil.join(', ')
+  )}
+</div>
 
         <div className='div-modal'>
           <b>Ciudad de nacimiento: </b>
@@ -343,20 +352,6 @@ const ModalEstudiantes = ({
           )}
         </div>
 
-        <div className='div-modal'>
-          <b>Municipio de nacimiento: </b>
-          {isEditing ? (
-            <input
-              type="text"
-              name="municipio_nacimiento"
-              className='input-updated'
-              value={editableUser.municipio_nacimiento !== undefined ? editableUser.municipio_nacimiento : selectedUser.municipio_nacimiento || ''}
-              onChange={handleInputChange}
-            />
-          ) : (
-            selectedUser.municipio_nacimiento 
-          )}
-        </div>
 
         <div className='div-modal'>
           <b>País de nacimiento: </b>
@@ -430,24 +425,6 @@ const ModalEstudiantes = ({
 
 
 
-
-
-<div className='div-modal'>
-  <b>Comuna: </b>
-  {isEditing ? (
-    <input
-      type="text"
-      name="comuna_barrio"
-      className='input-updated'
-      value={editableUser.comuna_barrio !== undefined ? editableUser.comuna_barrio : selectedUser.comuna_barrio || ''}
-      onChange={handleInputChange}
-      
-    />
-  ) : (
-    selectedUser.comuna_barrio 
-  )}
-</div>
-
 <div className='div-modal'>
   <b>Barrio: </b>
   {isEditing ? (
@@ -475,6 +452,32 @@ const ModalEstudiantes = ({
     />
   ) : (
     selectedUser.ciudad_residencia 
+  )}
+</div>
+
+
+
+<div className='div-modal'>
+  <b>Zona de residencia</b>
+  {isEditing ? (
+    <Select
+      isMulti
+      className='create-select'
+      placeholder='Seleccione la residencia'
+      name="zona_residencia"
+      // Opciones disponibles, excluyendo las ya seleccionadas
+      options={zonaResidencialOptions.filter(option => 
+        !( editableUser.zona_residencia || selectedUser.zona_residencia|| []).includes(option.value && option.label) 
+      )}
+      // Opciones seleccionadas
+      value={(editableUser.zona_residencia || selectedUser.zona_residencia|| []).map(value => {
+        const foundOption = zonaResidencialOptions.find(o => o.value === value);
+        return foundOption || { value, label: value };
+      })}
+      onChange={handleSelectChange}
+    />
+  ) : (
+    selectedUser.zona_residencia.join(', ')
   )}
 </div>
 
@@ -583,8 +586,8 @@ const ModalEstudiantes = ({
               </Col>
                   <Col className="form-column" xs={"10"} md={"6"}>  
 
-                  <div className='div-modal'>
-                    
+
+        <div className='div-modal'>    
         <b>Repuestas cambio de documento: </b>
         {isEditing ? (
           <Select
@@ -650,31 +653,19 @@ const ModalEstudiantes = ({
 
                              
 
-    <div className='div-modal'>
-  <b>Dedicación externa:</b> 
-  {isEditing ? (
-    <input 
-      type="text" 
-      name="dedicacion_externa" 
-      className='input-updated'
-      value={editableUser.dedicacion_externa !== undefined ? editableUser.dedicacion_externa : generalInfo.dedicacion_externa || ''}
-      onChange={handleInputChange}
-    />
-  ) : (generalInfo.dedicacion_externa)}
-</div>
-
 <div className='div-modal'>
   <b>¿Tiene EPS?:</b>
   {isEditing ? (
     <input 
-      type="text" 
-      name="tiene_eps" 
+      type="checkbox" 
+      name="tiene_eps"
       className='input-updated'
-      value={editableUser.tiene_eps !== undefined ? editableUser.tiene_eps : generalInfo.tiene_eps || ''}
-      onChange={handleInputChange}
+      checked={editableUser.tiene_eps ?? generalInfo.tiene_eps}
+      onChange={handleCheckboxChange}      
     />
-  ) : (generalInfo.tiene_eps)}
+  ) : (generalInfo.tiene_eps ? 'Sí' : 'No')}
 </div>
+
 
 <div className='div-modal'>
   <b>Nombre de la EPS:</b>
@@ -702,31 +693,6 @@ const ModalEstudiantes = ({
   ) : (generalInfo.regimen_eps )}
 </div>
 
-<div className='div-modal'>
-  <b>Tipo de entidad que brinda acompañamiento:</b>
-  {isEditing ? (
-    <input 
-      type="text" 
-      name="tipo_entidad_acompanamiento_recibido" 
-      className='input-updated'
-      value={editableUser.tipo_entidad_acompanamiento_recibido !== undefined ? editableUser.tipo_entidad_acompanamiento_recibido : generalInfo.tipo_entidad_acompanamiento_recibido || ''}
-      onChange={handleInputChange}
-    />
-  ) : (generalInfo.tipo_entidad_acompanamiento_recibido)}
-</div>
-
-<div className='div-modal'>
-  <b>Calificación de acompañamiento recibido:</b>
-  {isEditing ? (
-    <input 
-      type="text" 
-      name="calificacion_acompanamiento_recibido" 
-      className='input-updated'
-      value={editableUser.calificacion_acompanamiento_recibido !== undefined ? editableUser.calificacion_acompanamiento_recibido : generalInfo.calificacion_acompanamiento_recibido || ''}
-      onChange={handleInputChange}
-    />
-  ) : (generalInfo.calificacion_acompanamiento_recibido )}
-</div>
 
 <div className='div-modal'>
   <b>Acompañamiento recibido:</b>
@@ -741,21 +707,6 @@ const ModalEstudiantes = ({
   ) : (generalInfo.acompanamiento_que_recibio )}
 </div>
 
-
-<div className='div-modal'>
-  <b>Profesional que brindaron atención:</b>
-  {isEditing ? (
-    <input 
-      type="text" 
-      className="input-updated" 
-      name="profesionales_que_brindaron_atencion" 
-      value={editableUser.profesionales_que_brindaron_atencion !== undefined ? editableUser.profesionales_que_brindaron_atencion : generalInfo.profesionales_que_brindaron_atencion || ''} 
-      onChange={handleInputChange}
-    />
-  ) : (
-    generalInfo.profesionales_que_brindaron_atencion
-  )}
-</div>
 
 <div className='div-modal'>
   <b>Ocupaciones actuales:</b>
@@ -776,8 +727,10 @@ const ModalEstudiantes = ({
 
 
 
-                  </Col>
-                  <Col className="form-column" xs={"10"} md={"6"}>  
+</Col>
+<Col className="form-column" xs={"10"} md={"6"}>  
+
+
         <div className='div-modal'>
         <b>Calificación relación familiar:</b>
         {isEditing ? (
@@ -808,23 +761,32 @@ const ModalEstudiantes = ({
         )}
       </div>
 
-      <div className='div-modal'>
-        <b>Decisión encuentro inicial con profesional:</b>
+      <div className='div-modal'>    
+        <b>¿Qué profesional prefieres para agendar la reunión inicial? </b>
         {isEditing ? (
-          <input
-            type="text"
-            className="input-updated"
-            name="decision_encuentro_inicial_con_profesional"
-            value={editableUser.decision_encuentro_inicial_con_profesional !== undefined ? editableUser.decision_encuentro_inicial_con_profesional : generalInfo.decision_encuentro_inicial_con_profesional || ''}
-            onChange={handleInputChange}
+          <Select
+            isMulti
+            placeholder='Seleccione expresiones'
+            className='create-select'
+            name="decision_encuentro_inicial"
+            // Opciones disponibles, excluyendo las ya seleccionadas
+            options={decisionEncuentroInicialOptions.filter(option => 
+              !( editableUser.decision_encuentro_inicial || generalInfo.decision_encuentro_inicial).includes(option.value && option.label) 
+            )}
+            // Opciones seleccionadas
+            value={(editableUser.decision_encuentro_inicial || generalInfo.decision_encuentro_inicial|| []).map(value => {
+              const foundOption = decisionEncuentroInicialOptions.find(o => o.value === value);
+              return foundOption || { value, label: value };
+            })}
+            onChange={handleSelectChange}
           />
         ) : (
-          generalInfo.decision_encuentro_inicial_con_profesional
+          generalInfo.decision_encuentro_inicial.join(', ')
         )}
-      </div>
+        </div>      
 
       <div className='div-modal'>
-        <b>Origen de descubrimiento de campus diverso:</b>
+        <b>¿Cómo conociste a campus diverso?</b>
         {isEditing ? (
           <input
             type="text"
@@ -838,20 +800,6 @@ const ModalEstudiantes = ({
         )}
       </div>
 
-      <div className='div-modal'>
-        <b>Comentarios o sugerencias:</b>
-        {isEditing ? (
-          <input
-            type="text"
-            className="input-updated"
-            name="comentarios_o_sugerencias_de_usuario"
-            value={editableUser.comentarios_o_sugerencias_de_usuario !== undefined ? editableUser.comentarios_o_sugerencias_de_usuario : generalInfo.comentarios_o_sugerencias_de_usuario || ''}
-            onChange={handleInputChange}
-          />
-        ) : (
-          generalInfo.comentarios_o_sugerencias_de_usuario
-        )}
-      </div>
 
       <div className='div-modal'>
         <b>Actividades específicas en tiempo libre:</b>
@@ -1038,29 +986,6 @@ const ModalEstudiantes = ({
                   )}
                 </div> 
 
-                <div className='div-modal'>
-                  <b>Actividades en tiempo libre: </b>
-                  {isEditing ? (
-                    <Select
-                      isMulti
-                      className='create-select'
-                      placeholder='Seleccione las actividades de tiempo libre'
-                      name="actividades_tiempo_libre"
-                      // Opciones disponibles, excluyendo las ya seleccionadas
-                      options={actividadesOptions.filter(option => 
-                        !( editableUser.actividades_tiempo_libre || generalInfo.actividades_tiempo_libre).includes(option.label)
-                      )}
-                      // Opciones seleccionadas
-                      value={(editableUser.actividades_tiempo_libre || generalInfo.actividades_tiempo_libre|| []).map(value => {
-                        const foundOption = actividadesOptions.find(o => o.value === value);
-                        return foundOption || { value, label: value };
-                      })}
-                      onChange={handleSelectChange}
-                    />
-                  ) : (
-                    generalInfo.actividades_tiempo_libre.join(', ')
-                  )}
-                </div> 
 
                   </Col>
                     </Row>
@@ -1070,7 +995,73 @@ const ModalEstudiantes = ({
                   <div className='div-scroll'>
                     <Row>
                       <Col className="form-column" xs={"10"} md={"6"}>
+
+                      <div className='div-modal'>
+                          <b>Pertenencia a univalle:</b>
+                          {isEditing ? (
+                            <input
+                              type="checkbox"
+                              name="pertenencia_univalle"
+                              checked={editableUser.pertenencia_univalle ?? academicoInfo.pertenencia_univalle}
+                              onChange={handleCheckboxChange}
+                            />
+                          ) : (
+                            academicoInfo.pertenencia_univalle ? 'Sí' : 'No'
+                          )}
+                        </div>
+
+
                         <div className='div-modal'>
+                          <b>Estamentos: </b>
+                          {isEditing ? (
+                            <Select
+                              isMulti
+                              placeholder='Seleccione expresiones'
+                              className='create-select'
+                              name="estamentos"
+                              // Opciones disponibles, excluyendo las ya seleccionadas
+                              options={estamentoOptions.filter(option => 
+                                !( editableUser.estamentos || academicoInfo.estamentos).includes(option.label)
+                              )}
+                              // Opciones seleccionadas
+                              value={(editableUser.estamentos || academicoInfo.estamentos|| []).map(value => {
+                                const foundOption = estamentoOptions.find(o => o.value === value);
+                                return foundOption || { value, label: value };
+                              })}
+                              onChange={handleSelectChange}
+                            />
+                          ) : (
+                            academicoInfo.estamentos.join(', ')
+                          )}
+                          </div> 
+
+                        <div className='div-modal'>
+                        <b>Nombre del programa académico: </b>
+                          {isEditing ? (
+                            <Select
+                              className='create-select'
+                              name="programas"
+                              placeholder='Seleccione programa'
+                              options={programaOptions}
+                              value={
+                                editableUser.programas && editableUser.programas.length
+                                  ? programaOptions.find(option => option.value === editableUser.programas[0])
+                                  : null
+                              }
+                              onChange={handleSelectChange3}
+                            />
+                          ) : (
+                            (academicoInfo.programas && academicoInfo.programas.length)
+                              ? academicoInfo.programas.join(', ')
+                              : 'No especificado'
+                          )}
+                        </div>   
+        
+                      </Col>
+                      <Col className="form-column" xs={"10"} md={"6"}>
+                      
+
+                      <div className='div-modal'>
                           <b>Código de estudiante:</b>
                           {isEditing ? (
                             <input
@@ -1105,70 +1096,8 @@ const ModalEstudiantes = ({
                               ? academicoInfo.sedes.join(', ')
                               : 'No especificado'
                           )}
-                        </div>  
+                        </div>   
 
-                        <div className='div-modal'>
-                        <b>Nombre del programa académico: </b>
-                          {isEditing ? (
-                            <Select
-                              className='create-select'
-                              name="programas"
-                              placeholder='Seleccione programa'
-                              options={programaOptions}
-                              value={
-                                editableUser.programas && editableUser.programas.length
-                                  ? programaOptions.find(option => option.value === editableUser.programas[0])
-                                  : null
-                              }
-                              onChange={handleSelectChange3}
-                            />
-                          ) : (
-                            (academicoInfo.programas && academicoInfo.programas.length)
-                              ? academicoInfo.programas.join(', ')
-                              : 'No especificado'
-                          )}
-                        </div>    
-                      </Col>
-                      <Col className="form-column" xs={"10"} md={"6"}>
-                      
-                        <div className='div-modal'>
-                          <b>Pertenencia a univalle:</b>
-                          {isEditing ? (
-                            <input
-                              type="checkbox"
-                              name="pertenencia_univalle"
-                              checked={editableUser.pertenencia_univalle ?? academicoInfo.pertenencia_univalle}
-                              onChange={handleCheckboxChange}
-                            />
-                          ) : (
-                            academicoInfo.pertenencia_univalle ? 'Sí' : 'No'
-                          )}
-                        </div>
-
-
-                        <div className='div-modal'>
-        <b>Estamentos: </b>
-        {isEditing ? (
-          <Select
-            isMulti
-            placeholder='Seleccione expresiones'
-            className='create-select'
-            name="estamentos"
-            // Opciones disponibles, excluyendo las ya seleccionadas
-            options={estamentoOptions.filter(option => 
-              !( editableUser.estamentos || academicoInfo.estamentos).includes(option.label)
-            )}
-            // Opciones seleccionadas
-            value={(editableUser.estamentos || academicoInfo.estamentos|| []).map(value => {
-              const foundOption = estamentoOptions.find(o => o.value === value);
-              return foundOption || { value, label: value };
-            })}
-            onChange={handleSelectChange}
-          />
-        ) : (
-          academicoInfo.estamentos.join(', ')
-        )}
-        </div> 
                       </Col>
                     </Row>
                   </div>

@@ -57,6 +57,18 @@ const InformacionAcademica = ({
         </label>
       </div>
 
+      <div>
+        <label className='custom-div'>Estamentos</label>
+        <Select
+          className='create-select'
+          name="estamentos"
+          placeholder='Seleccione estamentos'
+          options={estamentoOptions}
+          value={estamentoOptions.find(option => option.value === state.estamentos)}
+          onChange={handleSelectNoMultiChange}
+          isDisabled={state.pertenencia_univalle === false}
+        />
+      </div>
 
           <div>
           <label className='custom-div'>Sede de universidad del valle</label>
@@ -79,7 +91,11 @@ const InformacionAcademica = ({
         </div>
 
 
-            <div>
+    </Col>
+
+    <Col className="form-column" xs={"6"} md={"6"}>
+
+    <div>
       <label className='custom-div'>Nombre del programa académico</label>
       <div>
         {isLoading ? (
@@ -98,19 +114,9 @@ const InformacionAcademica = ({
         )}
       </div>
     </div>
-
-
-
-
- 
-
-
-    </Col>
-
-    <Col className="form-column" xs={"6"} md={"6"}>
     
         <div>
-                <label className='custom-div'>Codigo del estudiante</label>
+                <label className='custom-div'>Codigo de estudiante (escribir sin los dos primeros dígitos EJ: 1424550)</label>
                 <div>
                 <input
                 className='input-updated'
@@ -144,18 +150,6 @@ const InformacionAcademica = ({
              
         </div>
 
-     <div>
-        <label className='custom-div'>Estamentos</label>
-        <Select
-          className='create-select'
-          name="estamentos"
-          placeholder='Seleccione estamentos'
-          options={estamentoOptions}
-          value={estamentoOptions.find(option => option.value === state.estamentos)}
-          onChange={handleSelectNoMultiChange}
-          isDisabled={state.pertenencia_univalle === false}
-        />
-      </div>
     </Col>
     </Container>
     </div>

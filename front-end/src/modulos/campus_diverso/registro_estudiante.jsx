@@ -47,6 +47,7 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
     pertenencia_grupo_poblacional:[],
     relacion_persona_de_confianza:"",
     tipo_documento:[],
+    sexo_asignado:[],
     numero_documento:"",
     estrato_socioeconomico:"",
     ciudad_nacimiento:"",
@@ -134,6 +135,7 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
   const [estadocivilOptions, setEstadoCivilOptions] = useState([]);
   const [zonaResidencialOptions, setZonaResidencialOptions] = useState([]);
   const [identidadEtnicoRacialOptions, setIdentidadEtnicoRacialOptions] = useState([]);
+  const [sexoAsignadoOptions, setSexoAsignadoOptions] = useState([]);
 
 // Diversidad sexual
   const [orientacionOptions, setOrientacionOptions] = useState([]);
@@ -181,6 +183,7 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/persona/identidad-etnico-racial/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/regimen-eps/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/decision-encuentro-inicial/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/sexo-asignado/`),
 
 
 
@@ -192,7 +195,7 @@ useEffect(() => {
         respuestaCambioDocumentoResponse, orientacionResponse, 
         identiadesGeneroResponse, estamentoResponse, factorResponse, 
        fuenteResponse, redResponse,tipoDocumentoResponse,
-        ProgramaResponse, SedeResponse, EstadoCivilResponse, ZonaResidencialResponse, IdentidadEtnicoRacialResponse, RegimenEpsResponse, DecisionEncuentroInicialResponse] = responses;
+        ProgramaResponse, SedeResponse, EstadoCivilResponse, ZonaResidencialResponse, IdentidadEtnicoRacialResponse, RegimenEpsResponse, DecisionEncuentroInicialResponse, SexoAsignadoResponse] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -275,6 +278,10 @@ useEffect(() => {
         value: item.id_decision_encuentro_inicial,
         label: item.nombre_decision_encuentro_inicial
       }));
+      const sexoAsignadoOpciones = SexoAsignadoResponse.data.map((item) => ({
+        value: item.id_sexo_asignado,
+        label: item.nombre_sexo_asignado
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -293,6 +300,7 @@ useEffect(() => {
       setIdentidadEtnicoRacialOptions(identidadEtnicoRacialOpciones);
       setRegimenEpsOptions(regimenEpsOpciones);
       setDecisionENcuentroInicialOptions(decisionEncuentroInicialOpciones);
+      setSexoAsignadoOptions(sexoAsignadoOpciones);
       setIsLoading(false);
     })
     .catch((error) => {
@@ -306,7 +314,7 @@ useEffect(() => {
 
   // Efecto para detectar cuando "Estudiante de pregrado" es seleccionado y salga una alerta
 useEffect(() => {
-  if (state.estamentos.includes("Estudiante")) {
+  if (state.estamentos.includes("Estudiante de pregrado")) {
       setShowEstamentoModal(true);
       } else {
       setShowEstamentoModal(false);
@@ -591,6 +599,7 @@ const fieldNames = {
     acompanamiento_que_recibio: "Tipo de acompañamiento recibido",
     factores_riesgos: "Factores de riesgo",
     fuentes_ingresos: "Fuentes de ingreso",
+    sexo_asignado: "Sexo asignado al nacer"
 };
 
 const listFields = [
@@ -603,7 +612,8 @@ const listFields = [
   'redes_apoyo',
   'decision_encuentro_inicial',
   'factores_riesgos',
-  'fuentes_ingresos'
+  'fuentes_ingresos',
+  'sexo_asignado'
 ];
 
   // Remueve elementos vacios del formulario a la base de datos
@@ -625,8 +635,8 @@ if (invalidFields.length > 0) {
   setMensaje(`Los siguientes campos son obligatorios y están vacíos: ${formattedInvalidFields.join(', ')}`);
   setTimeout(() => {
     setShowErrorAlert(true);
-    setTimeout(() => setShowErrorAlert(false), 3000);
-  }, 1000); // Simulación de una solicitud exitosa después de 1 segundo
+    setTimeout(() => setShowErrorAlert(false), 25000);
+  }, 3000); // Simulación de una solicitud exitosa después de 1 segundo
   return;
 }
 
@@ -792,6 +802,7 @@ if (invalidFields.length > 0) {
               email: "",
               nombre_persona_confianza: "",
               tipo_documento:[],
+              sexo_asignado:[],
               numero_documento: "",
               relacion_persona_de_confianza: "",
               estrato_socioeconomico: "",
@@ -965,6 +976,26 @@ if (invalidFields.length > 0) {
 };
 
 const steps = [
+
+  /*{ component: <DocumentosAutorizacion
+    state={state}
+    handleCheckboxChange={handleCheckboxChange}
+    handleChange={handleChange}
+    /> }, */
+    { component:   <InformacionAcademica
+      state={state}
+      handleChange={handleChange}
+      handleSelectChange={handleSelectChange}
+      handleCheckboxChange={handleCheckboxChange}
+      estamentoOptions={estamentoOptions}
+      isLoading={isLoading}
+      handleSelectChange2={handleSelectChange2}
+      maxLengthBasicInput={maxLengthBasicInput}
+      sedeOptions={sedeOptions}
+      programaOptions={programaOptions}
+      handleSelectNoMultiChange={handleSelectNoMultiChange}
+      handleChangeNumber={handleChangeNumber}
+      /> },
   { component:   <IngresoDatosBasicos
     state={state}
     handleChange={handleChange}
@@ -995,6 +1026,7 @@ const steps = [
     identidadesGeneroOptions={identidadesGeneroOptions}
     handleCheckboxChange={handleCheckboxChange}
     maxLengthBasicInput={maxLengthBasicInput}
+    sexoAsignadoOptions={sexoAsignadoOptions}
     handleSelectNoMultiChange = {handleSelectNoMultiChange}
 
   /> },
@@ -1023,25 +1055,8 @@ const steps = [
     handleSelectNoMultiChange={handleSelectNoMultiChange}
 
     /> },
-    { component:   <InformacionAcademica
-      state={state}
-      handleChange={handleChange}
-      handleSelectChange={handleSelectChange}
-      handleCheckboxChange={handleCheckboxChange}
-      estamentoOptions={estamentoOptions}
-      isLoading={isLoading}
-      handleSelectChange2={handleSelectChange2}
-      maxLengthBasicInput={maxLengthBasicInput}
-      sedeOptions={sedeOptions}
-      programaOptions={programaOptions}
-      handleSelectNoMultiChange={handleSelectNoMultiChange}
-      handleChangeNumber={handleChangeNumber}
-      /> },
-  { component: <DocumentosAutorizacion
-    state={state}
-    handleCheckboxChange={handleCheckboxChange}
-    handleChange={handleChange}
-    /> },
+    
+ 
 ];  const nextStep = () => {
   setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
 };
@@ -1154,20 +1169,18 @@ const prevStep = () => {
 
               <Modal show={showEstamentoModal} onHide={() => setShowEstamentoModal(false)} backdrop="static" keyboard={false}>
               <Modal.Header closeButton>
-                <Modal.Title>Advertencia</Modal.Title>
+                <Modal.Title>Atención</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <p>
-                  Al continuar, aceptas nuestra{" "}
-                  <a
-                    href="ejemplo1"
+                Si usted es un estudiante de pregrado <span style={{ fontWeight: "bold", color: "red" }}>ACTIVO</span>, le pedimos que acceda a este <a
+                    href="https://l.instagram.com/?u=https%3A%2F%2Fforms.gle%2Fg8sX98ZoGKkLUTFf7&e=AT167gaFHQDwH-DM-ODAiu2copsIa6wr3qoSetkwsxiWWlgfnVsih6Z4z1PzkjB-68tnDGvkLN-I4QN-Nx5kPyUwiiey05Oz"
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ color: "blue", textDecoration: "underline" }}
                   >
-                    Autorización de datos
-                  </a>
-                  , de acuerdo con los términos establecidos en la Ley Estatutaria 1581 de 2012 y la Ley 1712 de 2014.
+                   enlace
+                  </a> y complete el formulario para ser atendido. De lo contrario, continúe llenando este formulario. ¡Gracias!        
                 </p>
               </Modal.Body>
               <Modal.Footer>
