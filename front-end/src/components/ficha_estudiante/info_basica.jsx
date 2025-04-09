@@ -616,15 +616,36 @@ const Info_basica = (props) => {
                                 class="bi bi-check2-square"
                                 style={
                                   state.total_datos_estudiante_seleccionado
-                                    .firma_tratamiento_datos == "SIN AUTORIZAR"
+                                    .firma_tratamiento_datos == "SIN FIRMAR" ||
+                                  state.total_datos_estudiante_seleccionado
+                                    .firma_tratamiento_datos ===
+                                    "FIRMA INEXISTENTE"
                                     ? { color: "red" }
                                     : state.total_datos_estudiante_seleccionado
                                         .firma_tratamiento_datos ==
                                       "NO AUTORIZA"
-                                    ? { color: "red" }
+                                    ? { color: "orange" }
+                                    : state.total_datos_estudiante_seleccionado
+                                        .firma_tratamiento_datos == "AUTORIZA"
+                                    ? { color: " #41ae1b" }
                                     : { color: " #AAB5A6" }
                                 }
-                                title="Tratamiento de datos Sin Firmar"
+                                title={
+                                  state.total_datos_estudiante_seleccionado
+                                    .firma_tratamiento_datos === "SIN FIRMAR" ||
+                                  state.total_datos_estudiante_seleccionado
+                                    .firma_tratamiento_datos ===
+                                    "FIRMA INEXISTENTE"
+                                    ? "Tratamiento de datos sin firmar"
+                                    : state.total_datos_estudiante_seleccionado
+                                        .firma_tratamiento_datos ===
+                                      "NO AUTORIZA"
+                                    ? "Tratamiento de datos firmado, sin autorizar"
+                                    : state.total_datos_estudiante_seleccionado
+                                        .firma_tratamiento_datos === "AUTORIZA"
+                                    ? "Tratamiento de datos autorizado"
+                                    : "Estado del tratamiento de datos"
+                                }
                               ></i>
                             </a>
                           </Col>
