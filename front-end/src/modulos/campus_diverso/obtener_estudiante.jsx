@@ -62,28 +62,28 @@ const ObtenerEstudiante = () => {
     setEditableUser(user);
     setCurrentPage(0); // Vuelve a la página inicial
 
-    fetch(`${process.env.REACT_APP_API_URL}/diversidad-sexual/diversidad-sexual/${user.numero_documento}/`)
+    fetch(`${process.env.REACT_APP_API_URL}/diversidad-sexual/diversidad-sexual/${user.numero_documento}/`, {headers})
       .then((response) => response.json())
       .then((data) => setDiversidadInfo(data))
       .catch((error) => console.error('Error al obtener información de diversidad sexual:', error));
   
 
-    fetch(`${process.env.REACT_APP_API_URL}/informacion-general/informacion-general/${user.numero_documento}/`)
+    fetch(`${process.env.REACT_APP_API_URL}/informacion-general/informacion-general/${user.numero_documento}/`, {headers})
       .then((response) => response.json())
       .then((data) => setGeneralInfo(data))
       .catch((error) => console.error('Error al obtener información general:', error));
 
-    fetch(`${process.env.REACT_APP_API_URL}/informacion-academica/informacion-academica/${user.numero_documento}/`)
+    fetch(`${process.env.REACT_APP_API_URL}/informacion-academica/informacion-academica/${user.numero_documento}/`, {headers})
       .then((response) => response.json())
       .then((data) => setAcademcioInfo(data))
       .catch((error) => console.error('Error al obtener información académica:', error));
 
-    fetch(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/documentos-autorizacion/${user.numero_documento}/`)
+    fetch(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/documentos-autorizacion/${user.numero_documento}/`, {headers})
       .then((response) => response.json())
       .then((data) => setDocumentosInfo(data))
       .catch((error) => console.error('Error al obtener la información académica:', error));
 
-      fetch(`${process.env.REACT_APP_API_URL}/seguimiento-campus/seguimiento/${user.numero_documento}/`)
+      fetch(`${process.env.REACT_APP_API_URL}/seguimiento-campus/seguimiento/${user.numero_documento}/`, {headers})
       .then(async (response) => {
         if (response.ok) {
           const data = await response.json();
@@ -132,14 +132,16 @@ const ObtenerEstudiante = () => {
     (Array.isArray(user.informacion_academica?.programas) ? user.informacion_academica.programas.join(' ').toLowerCase().includes(searchText.toLowerCase()) : (user.informacion_academica?.programas || '').toLowerCase().includes(searchText.toLowerCase()));
 
     const matchesPrograma = selectedPrograma
-  ? Array.isArray(user.informacion_academica?.programas)
-    ? user.informacion_academica.programas
-        .join(' ')
-        .toLowerCase()
-        .includes(selectedPrograma.label.toLowerCase())
-    : (user.informacion_academica?.programas || '')
-        .toLowerCase()
-        .includes(selectedPrograma.label.toLowerCase())
+  ? selectedPrograma.value === "otro"
+    ? !user.informacion_academica?.programas || user.informacion_academica.programas.length === 0 || (Array.isArray(user.informacion_academica.programas) && user.informacion_academica.programas.every(p => !p))
+    : Array.isArray(user.informacion_academica?.programas)
+      ? user.informacion_academica.programas
+          .join(' ')
+          .toLowerCase()
+          .includes(selectedPrograma.label.toLowerCase())
+      : (user.informacion_academica?.programas || '')
+          .toLowerCase()
+          .includes(selectedPrograma.label.toLowerCase())
   : true;
 
 
@@ -184,28 +186,37 @@ const updateUser = async (endpointsList, userId, updatedData) => {
 
 //Getters de la API y guardado de datos
   //Persona
-  const [razasOptions, setRazasOptions] = useState([]);
-  const [tipoDocumentoOptions, setTipoDocumentoOptions] = useState([]);
-    const [estadocivilOptions, setEstadoCivilOptions] = useState([]);
-    const [zonaResidencialOptions, setZonaResidencialOptions] = useState([]);
-    const [identidadEtnicoRacialOptions, setIdentidadEtnicoRacialOptions] = useState([]);
+const [razasOptions, setRazasOptions] = useState([]);
+const [tipoDocumentoOptions, setTipoDocumentoOptions] = useState([]);
+const [estadocivilOptions, setEstadoCivilOptions] = useState([]);
+const [zonaResidencialOptions, setZonaResidencialOptions] = useState([]);
+const [identidadEtnicoRacialOptions, setIdentidadEtnicoRacialOptions] = useState([]);
+const [sexoAsignadoOptions, setSexoAsignadoOptions] = useState([]);
 // Diversidad sexual
-  const [orientacionOptions, setOrientacionOptions] = useState([]);
-  const [documentoOptions, setDocumentoOptions] = useState([]);
-  const [pronombresOptions, setPronombresOptions] = useState([]);
-  const [expresionesOptions, setExpresionesOptions] = useState([]);
-  const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
+const [orientacionOptions, setOrientacionOptions] = useState([]);
+const [documentoOptions, setDocumentoOptions] = useState([]);
+const [pronombresOptions, setPronombresOptions] = useState([]);
+const [expresionesOptions, setExpresionesOptions] = useState([]);
+const [identidadesGeneroOptions, setIdentidadesGeneroOptions] = useState([]);
 // Información académica
 const [estamentoOptions, setEstamentoOptions]= useState([]);
 const [sedeOptions, setSedeOptions]= useState([]);
 const [programaOptions, setProgramaOptions]= useState([]);
   //Informacion general
-  const [factoresOptions, setFactoresOptions] = useState([]);
-  const [fuentesOptions, setFuentesOptions] = useState([]);
-  const [redesOptions, setRedesOptions] = useState([]);
-  const [regimenEpsOptions, setRegimenEpsOptions] = useState([]);
-  const [decisionEncuentroInicialOptions, setDecisionENcuentroInicialOptions] = useState([]);
-  
+const [factoresOptions, setFactoresOptions] = useState([]);
+const [fuentesOptions, setFuentesOptions] = useState([]);
+const [redesOptions, setRedesOptions] = useState([]);
+const [regimenEpsOptions, setRegimenEpsOptions] = useState([]);
+const [decisionEncuentroInicialOptions, setDecisionENcuentroInicialOptions] = useState([]);
+
+//documentos autorizacion
+const [apgarpregunta1Options, setApgarPregunta1Options] = useState([]);
+const [apgarpregunta2Options, setApgarPregunta2Options] = useState([]);
+const [apgarpregunta3Options, setApgarPregunta3Options] = useState([]);
+const [apgarpregunta4Options, setApgarPregunta4Options] = useState([]);
+const [apgarpregunta5Options, setApgarPregunta5Options] = useState([]);
+const [apgarpregunta6Options, setApgarPregunta6Options] = useState([]);
+const [apgarpregunta7Options, setApgarPregunta7Options] = useState([]);  
   
 // Getters de las listas
 useEffect(() => {
@@ -228,6 +239,14 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/persona/identidad-etnico-racial/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/regimen-eps/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/decision-encuentro-inicial/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/sexo-asignado/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta1/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta2/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta3/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta4/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta5/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta6/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta7/`),
 
 
   ])
@@ -235,7 +254,7 @@ useEffect(() => {
       //persona
       const [grupoPoblacionResponse, expresionesResponse, pronomeopcionesResponse,
         respuestaCambioDocumentoResponse, orientacionResponse, identiadesGeneroResponse,estamentoResponse, factorResponse, fuenteResponse, redResponse, tipoDocumentoResponse,
-        ProgramaResponse, SedeResponse, EstadoCivilResponse, ZonaResidencialResponse, IdentidadEtnicoRacialResponse, RegimenEpsResponse, DecisionEncuentroInicialResponse] = responses;
+        ProgramaResponse, SedeResponse, EstadoCivilResponse, ZonaResidencialResponse, IdentidadEtnicoRacialResponse, RegimenEpsResponse, DecisionEncuentroInicialResponse, SexoAsignadoResponse, ApgarPregunta1Response, ApgarPregunta2Response,ApgarPregunta3Response, ApgarPregunta4Response, ApgarPregunta5Response, ApgarPregunta6Response, ApgarPregunta7Response] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -318,6 +337,38 @@ useEffect(() => {
         value: item.id_decision_encuentro_inicial,
         label: item.nombre_decision_encuentro_inicial
       }));
+      const sexoAsignadoOpciones = SexoAsignadoResponse.data.map((item) => ({
+        value: item.id_sexo_asignado,
+        label: item.nombre_sexo_asignado
+      }));
+      const apgarPregunta1Opciones = ApgarPregunta1Response.data.map((item) => ({
+        value: item.id_apgar_pregunta1,
+        label: item.nombre_apgar_pregunta1
+      }));
+      const apgarPregunta2Opciones = ApgarPregunta2Response.data.map((item) => ({
+        value: item.id_apgar_pregunta2,
+        label: item.nombre_apgar_pregunta2
+      }));
+      const apgarPregunta3Opciones = ApgarPregunta3Response.data.map((item) => ({
+        value: item.id_apgar_pregunta3,
+        label: item.nombre_apgar_pregunta3
+      }));
+      const apgarPregunta4Opciones = ApgarPregunta4Response.data.map((item) => ({
+        value: item.id_apgar_pregunta4,
+        label: item.nombre_apgar_pregunta4
+      }));
+      const apgarPregunta5Opciones = ApgarPregunta5Response.data.map((item) => ({
+        value: item.id_apgar_pregunta5,
+        label: item.nombre_apgar_pregunta5
+      }));
+      const apgarPregunta6Opciones = ApgarPregunta6Response.data.map((item) => ({
+        value: item.id_apgar_pregunta6,
+        label: item.nombre_apgar_pregunta6
+      }));
+      const apgarPregunta7Opciones = ApgarPregunta7Response.data.map((item) => ({
+        value: item.id_apgar_pregunta7,
+        label: item.nombre_apgar_pregunta7
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -336,7 +387,14 @@ useEffect(() => {
       setIdentidadEtnicoRacialOptions(identidadEtnicoRacialOpciones);
       setRegimenEpsOptions(regimenEpsOpciones);
       setDecisionENcuentroInicialOptions(decisionEncuentroInicialOpciones);
-
+      setSexoAsignadoOptions(sexoAsignadoOpciones);
+      setApgarPregunta1Options(apgarPregunta1Opciones)
+      setApgarPregunta2Options(apgarPregunta2Opciones)
+      setApgarPregunta3Options(apgarPregunta3Opciones)
+      setApgarPregunta4Options(apgarPregunta4Opciones)
+      setApgarPregunta5Options(apgarPregunta5Opciones)
+      setApgarPregunta6Options(apgarPregunta6Opciones)
+      setApgarPregunta7Options(apgarPregunta7Opciones)
     })
     .catch((error) => {
 
@@ -515,7 +573,7 @@ const handleFormSubmit = (e) => {
      barrio_residencia: editableUser.barrio_residencia,
      ciudad_residencia: editableUser.ciudad_residencia,
      direccion_residencia: editableUser.direccion_residencia,
-
+     zona_residencia: editableUser.zona_residencia,
      //Diversidad sexual
      cambio_nombre_sexo_documento: editableUser.cambio_nombre_sexo_documento,
      recibir_orientacion_cambio_en_documento: editableUser.recibir_orientacion_cambio_en_documento,
@@ -524,7 +582,7 @@ const handleFormSubmit = (e) => {
      expresiones_de_genero: editableUser.expresiones_de_genero,
      respuestas_cambio_documento: editableUser.respuestas_cambio_documento,
      identidades_de_genero: editableUser.identidades_de_genero,
-     
+     sexo_asignado: editableUser.sexo_asignado,
      //Info general
      tiene_eps: editableUser.tiene_eps,
      calificacion_relacion_familiar: editableUser.calificacion_relacion_familiar,
@@ -545,6 +603,7 @@ const handleFormSubmit = (e) => {
      observacion_horario: editableUser.observacion_horario,
      observacion_general_redes_de_apoyo: editableUser.observacion_general_redes_de_apoyo,
      observacion_general_factores_de_riesgo: editableUser.observacion_general_factores_de_riesgo,
+     regimen_eps: editableUser.regimen_eps,
      //Info academica
      codigo_estudiante: editableUser.codigo_estudiante,
      sedes: editableUser.sedes,
@@ -569,7 +628,7 @@ const handleFormSubmit = (e) => {
         endpointsList = ['persona/persona','diversidad-sexual/diversidad-sexual'];
         break;
       case 1:
-        endpointsList = ['diversidad-sexual/diversidad-sexual'];
+        endpointsList = ['persona/persona','diversidad-sexual/diversidad-sexual'];
         break;
       case 2:
         endpointsList = ['informacion-general/informacion-general'];
@@ -599,6 +658,7 @@ const handleFormSubmit = (e) => {
       nombre_identitario: "",
       nombre_y_apellido: "",
       email: "",
+      sexo_asignado:[],
       nombre_persona_confianza: "",
       tipo_documento: [],
       numero_documento: "",
@@ -673,6 +733,14 @@ const handleFormSubmit = (e) => {
       encuentro_dias_horas: [],
       acompanamientos_recibido: [],
       fuentes_ingresos: [],
+      //APGAR familiar
+      apgar_pregunta1: [],
+      apgar_pregunta2: [],
+      apgar_pregunta3: [],
+      apgar_pregunta4: [],
+      apgar_pregunta5: [],
+      apgar_pregunta6: [],
+      apgar_pregunta7: [],
       
     });
   }
@@ -711,7 +779,7 @@ const handleInputChange = (e) => {
         classNamePrefix="Select"
         value={selectedPrograma}
         onChange={(selectedOption) => setSelectedPrograma(selectedOption)}
-        options={programaOptions}
+        options={[...programaOptions, { label: "Otro", value: "otro" }]}
         placeholder="Selecciona un programa"
         isClearable
         styles={{
@@ -869,6 +937,14 @@ const handleInputChange = (e) => {
             estadocivilOptions={estadocivilOptions}
             zonaResidencialOptions={zonaResidencialOptions}
             identidadEtnicoRacialOptions={identidadEtnicoRacialOptions}
+            apgarpregunta1Options = {apgarpregunta1Options}
+            apgarpregunta2Options = {apgarpregunta2Options}
+            apgarpregunta3Options = {apgarpregunta3Options}
+            apgarpregunta4Options = {apgarpregunta4Options}
+            apgarpregunta5Options = {apgarpregunta5Options}
+            apgarpregunta6Options = {apgarpregunta6Options}
+            apgarpregunta7Options = {apgarpregunta7Options}
+            sexoAsignadoOptions={sexoAsignadoOptions}
 
           />
       </Container>

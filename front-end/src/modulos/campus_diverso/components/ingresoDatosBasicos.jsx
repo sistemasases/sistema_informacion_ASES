@@ -53,7 +53,7 @@ const IngresoDatosBasicos = ({state,
                 placement="bottom"
                 overlay={
                   <Tooltip id="tooltip-custom" className='tooltip-custom'>
-                    Entendemos que una persona puede identificarse con varios pronombres. Sin embargo, por motivos estadísticos, solo es posible seleccionar uno. Agradecemos su comprensión y lamentamos cualquier inconveniente.
+                    Entendemos que una persona pueda identificarse con varios pronombres. Sin embargo, por motivos estadísticos, solo es posible seleccionar uno. Agradecemos su comprensión.
                   </Tooltip>
                 }
               >

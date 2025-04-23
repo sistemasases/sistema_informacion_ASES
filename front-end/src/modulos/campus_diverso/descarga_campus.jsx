@@ -14,6 +14,13 @@ const Descarga_campus = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true); 
   const [paginaActual, setPaginaActual] = useState(0);
+  /* Informacion persona */
+  const [sexoAsignadoData, setSexoAsignadoData] = useState([]);
+  const [razasData, setRazasOptionsData] = useState([]);
+  const [tipoDocumentoData, setTipoDocumentoData] = useState([]);
+  const [estadocivilData, setEstadoCivilData] = useState([]);
+  const [zonaResidencialData, setZonaResidencialData] = useState([]);
+  const [identidadEtnicoRacialData, setIdentidadEtnicoRacialData] = useState([]);
   /*Diversidad sexual */
   const [genderData, setGenderData] = useState([['Identidad de Género', 'Cantidad']]);
   const [pronombreData, setPronombreData] = useState([['Pronombres','Cantidad']]);
@@ -24,6 +31,8 @@ const Descarga_campus = () => {
   const [factoresRiesgoData, setFactoresRiesgoData] = useState((['Factores', 'Cantidad']))
   const [actividadesData, setActividadesData] = useState((['Actividades', 'Cantidad']))
   const [fuentesData, setFuentesData] = useState((['Fuentes', 'Cantidad']))
+  const [regimenEpsData, setRegimenEpsData] = useState([]);
+  const [decisionEncuentroInicialOptionsData, setDecisionENcuentroInicialData] = useState([]);
   /*Información académico */
   const [programaData, setProgramaData] = useState((['Programa', 'Cantidad']))
   const [sedeData, setSedeData] = useState((['Sede', 'Cantidad']))
@@ -67,6 +76,13 @@ const Descarga_campus = () => {
         const programasCount = {"No registrado": 0}; // Inicializa el contador de fuentes vacíos
         const sedesCount = {"No registrado": 0}; // Inicializa el contador de sedes vacíos
         const estamentosCount = {"No registrado": 0};
+        const sexoAsignadoCount = {"No registrado": 0};
+        const razaCount = {"No registrado": 0};
+        const estadoCivilCount = {"No registrado": 0};
+        const TipoDocumentoCount = {"No registrado": 0};
+        const regimenEpsCount = {"No registrado": 0};
+        const zonaResidenciaCount = {"No registrado": 0};
+        const identidadEtnicaRacialCount = {"No registrado": 0};
 
         sortedUsers.forEach(user => {
           // Procesar identidades de género
@@ -243,8 +259,106 @@ const Descarga_campus = () => {
         } else {
           estamentosCount["No registrado"]++;
         }
-      });
+
+        if (user && user.sexo_asignado) {
+          const estates = user.sexo_asignado;
+
+          if (estates.length === 0) {
+            sexoAsignadoCount["No registrado"]++;
+          } else {
+            estates.forEach(index => {
+              sexoAsignadoCount[index] = (sexoAsignadoCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          sexoAsignadoCount["No registrado"]++;
+        }
+
+        if (user && user.pertenencia_grupo_poblacional) {
+          const estates = user.pertenencia_grupo_poblacional;
+
+          if (estates.length === 0) {
+            razaCount["No registrado"]++;
+          } else {
+            estates.forEach(index => {
+              razaCount[index] = (razaCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          razaCount["No registrado"]++;
+        }
+   
      
+      if (user && user.estado_civil) {
+        const estates = user.estado_civil;
+
+        if (estates.length === 0) {
+          estadoCivilCount["No registrado"]++;
+        } else {
+          estates.forEach(index => {
+            estadoCivilCount[index] = (estadoCivilCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        estadoCivilCount["No registrado"]++;
+      }
+
+      if (user && user.tipo_documento) {
+        const estates = user.tipo_documento;
+
+        if (estates.length === 0) {
+          TipoDocumentoCount["No registrado"]++;
+        } else {
+          estates.forEach(index => {
+            TipoDocumentoCount[index] = (TipoDocumentoCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        TipoDocumentoCount["No registrado"]++;
+      }
+
+      if (user.informacion_general && user.informacion_general.regimen_eps) {
+        const fuentes = user.informacion_general.regimen_eps;
+
+        if (fuentes.length === 0) {
+          regimenEpsCount["No registrado"]++;
+        } else {
+          fuentes.forEach(index => {
+            regimenEpsCount[index] = (regimenEpsCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        regimenEpsCount["No registrado"]++;
+      } 
+
+      if (user && user.zona_residencia) {
+        const estates = user.zona_residencia;
+
+        if (estates.length === 0) {
+          zonaResidenciaCount["No registrado"]++;
+        } else {
+          estates.forEach(index => {
+            zonaResidenciaCount[index] = (zonaResidenciaCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        zonaResidenciaCount["No registrado"]++;
+      }
+      
+      if (user && user.identidad_etnico_racial) {
+        const estates = user.identidad_etnico_racial;
+
+        if (estates.length === 0) {
+          identidadEtnicaRacialCount["No registrado"]++;
+        } else {
+          estates.forEach(index => {
+            identidadEtnicaRacialCount[index] = (identidadEtnicaRacialCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        identidadEtnicaRacialCount["No registrado"]++;
+      }
+    });
              // Formatear datos para el gráfico de pastel
              const genderChartData = Object.entries(genderCount).map(([gender, count]) => {
               return genderCount === 'Genero'
@@ -274,51 +388,90 @@ const Descarga_campus = () => {
                   ? [index, count]
                   : [`${index} (${count})`, count];
                   });
-                const actividadesChartData = Object.entries(actividadesCount).map(([index, count])   => {
-                  return actividadesCount === 'Actividades'
-                  ? [index, count]
-                  : [`${index} (${count})`, count];
-                  });
-                const fuentesChartData = Object.entries(fuentesCount).map(([index, count])   => {
-                  return fuentesCount === 'Fuentes'
-                  ? [index, count]
-                  : [`${index} (${count})`, count];
-                  }); 
-
-                const programaChartData = Object.entries(programasCount).map(([index, count])   => {
-                return programasCount === 'Programas'
+              const actividadesChartData = Object.entries(actividadesCount).map(([index, count])   => {
+                return actividadesCount === 'Actividades'
                 ? [index, count]
                 : [`${index} (${count})`, count];
                 });
-                const sedesChartData = Object.entries(sedesCount).map(([index, count])   => {
-                return sedesCount === 'Sedes'
+              const fuentesChartData = Object.entries(fuentesCount).map(([index, count])   => {
+                return fuentesCount === 'Fuentes'
                 ? [index, count]
                 : [`${index} (${count})`, count];
-                });  
+                }); 
 
-                const estamentosChartData = Object.entries(estamentosCount).map(([index, count]) => {
-                return estamentosCount === 'Estamentos'
-                ? [index, count]
-                : [`${index} (${count})`, count];
-                });
+              const programaChartData = Object.entries(programasCount).map(([index, count])   => {
+              return programasCount === 'Programas'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const sedesChartData = Object.entries(sedesCount).map(([index, count])   => {
+              return sedesCount === 'Sedes'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });  
 
-              setGenderData([['Identidad de Género', 'Cantidad'], ...genderChartData]);
-              setPronombreData([['Pronombres', 'Cantidad'], ...pronounChartData]);
-              setOrientacionesData([['Orientaciones', 'Cantidad'], ...orientationChartData]);    
-              setExpresionesData([['Expresion', 'Cantidad'], ...Object.entries(expresionesCount)]);
-              seteRedesData([['Redes','Cantidad'], ...redesChartData]);
-              setFactoresRiesgoData([['Factores','Cantidad'], ...factoreschartData]);
-              setActividadesData([['Actividades','Cantidad'], ...actividadesChartData]);
-              setFuentesData([['Fuentes','Cantidad'], ...fuentesChartData]);
-              setProgramaData([['Programas','Cantidad'], ...programaChartData]);
-              setSedeData([['Sedes','Cantidad'], ...sedesChartData]);
-              setEstamentosData([['Estamentos','Cantidad'], ...estamentosChartData]);
+              const estamentosChartData = Object.entries(estamentosCount).map(([index, count]) => {
+              return estamentosCount === 'Estamentos'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
 
-              
+              const sexoAsignadoChartData = Object.entries(sexoAsignadoCount).map(([index, count]) => {
+              return sexoAsignadoCount === 'Sexo Asignado'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const razaChartData = Object.entries(razaCount).map(([index, count]) => {
+              return razaCount === 'Pertenencia grupo poblacional'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const estadoCivilChartData = Object.entries(estadoCivilCount).map(([index, count]) => {
+              return estadoCivilCount === 'Estado Civil'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const tipoDocumentoChartData = Object.entries(TipoDocumentoCount).map(([index, count]) => {
+              return TipoDocumentoCount === 'Tipo documento'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const regimenEpsChartData = Object.entries(regimenEpsCount).map(([index, count]) => {
+              return regimenEpsCount === 'Regimen EPS'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const zonaResidenciaChartData = Object.entries(zonaResidenciaCount).map(([index, count]) => {
+              return zonaResidenciaCount === 'Zona residencia'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const identidadEtnicoRacialChartData = Object.entries(identidadEtnicaRacialCount).map(([index, count]) => {
+              return identidadEtnicaRacialCount === 'Identidad etnico racial'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+            setGenderData([['Identidad de Género', 'Cantidad'], ...genderChartData]);
+            setPronombreData([['Pronombres', 'Cantidad'], ...pronounChartData]);
+            setOrientacionesData([['Orientaciones', 'Cantidad'], ...orientationChartData]);    
+            setExpresionesData([['Expresion', 'Cantidad'], ...Object.entries(expresionesCount)]);
+            seteRedesData([['Redes','Cantidad'], ...redesChartData]);
+            setFactoresRiesgoData([['Factores','Cantidad'], ...factoreschartData]);
+            setActividadesData([['Actividades','Cantidad'], ...actividadesChartData]);
+            setFuentesData([['Fuentes','Cantidad'], ...fuentesChartData]);
+            setProgramaData([['Programas','Cantidad'], ...programaChartData]);
+            setSedeData([['Sedes','Cantidad'], ...sedesChartData]);
+            setEstamentosData([['Estamentos','Cantidad'], ...estamentosChartData]);
+            setSexoAsignadoData([['Sexo Asignado','Cantidad'], ...sexoAsignadoChartData]);
+            setRazasOptionsData([['Pertenencia grupo poblacional','Cantidad'], ...razaChartData]);
+            setEstadoCivilData([['Estado Civil','Cantidad'], ...estadoCivilChartData]);
+            setTipoDocumentoData([['Tipo documento','Cantidad'], ...tipoDocumentoChartData]);
+            setRegimenEpsData([['Regimen EPS','Cantidad'], ...regimenEpsChartData]);
+            setZonaResidencialData([['Zona residencia','Cantidad'], ...zonaResidenciaChartData]);
+            setIdentidadEtnicoRacialData([['Identidad etnico racial','Cantidad'], ...identidadEtnicoRacialChartData]);
 
-     
-             setLoading(false);
-           })
+            setLoading(false);
+          })
            
       .catch(error => {
         console.error('Error al obtener usuarios:', error);
@@ -372,7 +525,7 @@ const Descarga_campus = () => {
       {
         column: 'Identidad Étnico-Racial',
         type: String,
-        value: users => users.identidad_etnico_racial
+        value: users => users.identidad_etnico_racial.join(', ')
       }, 
       
       {
@@ -394,7 +547,7 @@ const Descarga_campus = () => {
       {
         column: 'Estado Civil',
         type: String,
-        value: user => user.estado_civil
+        value: user => user.estado_civil.join(', ')
       },
       {
         column: 'Ciudad de Nacimiento',
@@ -493,112 +646,113 @@ const Descarga_campus = () => {
   {
     column: 'Ocupaciones Actuales',
     type: String,
-    value: user => user.informacion_general.Ocupaciones_actules
+    value: user => user.informacion_general?.Ocupaciones_actules || ''
 },
 {
     column: 'Profesionales que Brindaron Atención',
     type: String,
-    value: user => user.informacion_general.profesionales_que_brindaron_atencion
+    value: user => user.informacion_general?.profesionales_que_brindaron_atencion
 },
 {
     column: 'Acompañamiento que Recibió',
     type: String,
-    value: user => user.informacion_general.acompanamiento_que_recibio
+    value: user => user.informacion_general?.acompanamiento_que_recibio
 },
 {
     column: 'Dedicación Externa',
     type: String,
-    value: user => user.informacion_general.dedicacion_externa
+    value: user => user.informacion_general?.dedicacion_externa
 },
 {
     column: 'Tiene EPS',
     type: String,
-    value: user => user.informacion_general.tiene_eps
+    value: user => user.informacion_general?.tiene_eps ? 'Sí' : 'No'
+
 },
 {
     column: 'Nombre EPS',
     type: String,
-    value: user => user.informacion_general.nombre_eps
+    value: user => user.informacion_general?.nombre_eps
 },
 {
     column: 'Régimen EPS',
     type: String,
-    value: user => user.informacion_general.regimen_eps
+    value: user => user.informacion_general?.regimen_eps.join(', ')
 },
 {
     column: 'Tipo de Entidad de Acompañamiento Recibido',
     type: String,
-    value: user => user.informacion_general.tipo_entidad_acompanamiento_recibido
+    value: user => user.informacion_general?.tipo_entidad_acompanamiento_recibido
 },
 {
     column: 'Calificación del Acompañamiento Recibido',
     type: Number,
-    value: user => user.informacion_general.calificacion_acompanamiento_recibido
+    value: user => user.informacion_general?.calificacion_acompanamiento_recibido
 },
 {
     column: 'Motivo de la Calificación del Acompañamiento',
     type: String,
-    value: user => user.informacion_general.motivo_calificacion_acompanamiento
+    value: user => user.informacion_general?.motivo_calificacion_acompanamiento
 },
 {
     column: 'Actividades Específicas en Tiempo Libre',
     type: String,
-    value: user => user.informacion_general.actividades_especificas_tiempo_libre
+    value: user => user.informacion_general?.actividades_especificas_tiempo_libre
 },
 {
     column: 'Observación Actividades Específicas Tiempo Libre',
     type: String,
-    value: user => user.informacion_general.observacion_general_actividades_especificas_tiempo_libre
+    value: user => user.informacion_general?.observacion_general_actividades_especificas_tiempo_libre
 },
 {
     column: 'Observación Fuentes de Ingresos',
     type: String,
-    value: user => user.informacion_general.observacion_general_fuente_de_ingresos
+    value: user => user.informacion_general?.observacion_general_fuente_de_ingresos
 },
 {
     column: 'Observación Relación Convivencia/Vivienda',
     type: String,
-    value: user => user.informacion_general.observacion_general_relacion_convivencia_vivienda
+    value: user => user.informacion_general?.observacion_general_relacion_convivencia_vivienda
 },
 {
     column: 'Calificación Relación Familiar',
     type: Number,
-    value: user => user.informacion_general.calificacion_relacion_familiar
+    value: user => user.informacion_general?.calificacion_relacion_familiar
 },
 {
     column: 'Observación Redes de Apoyo',
     type: String,
-    value: user => user.informacion_general.observacion_general_redes_de_apoyo
+    value: user => user.informacion_general?.observacion_general_redes_de_apoyo
 },
 {
     column: 'Observación Factores de Riesgo',
     type: String,
-    value: user => user.informacion_general.observacion_general_factores_de_riesgo
+    value: user => user.informacion_general?.observacion_general_factores_de_riesgo
 },
 {
     column: 'Creencia Religiosa',
     type: String,
-    value: user => user.informacion_general.creencia_religiosa
+    value: user => user.informacion_general?.creencia_religiosa
 },
 {
     column: 'Decisión en Encuentro Inicial con Profesional',
     type: String,
-    value: user => user.informacion_general.decision_encuentro_inicial_con_profesional
+    value: user => user.informacion_general?.decision_encuentro_inicial_con_profesional
 },
 {
     column: 'Observación del Horario',
     type: String,
-    value: user => user.informacion_general.observacion_horario
+    value: user => user.informacion_general?.observacion_horario
 },
 {
     column: 'Origen del Descubrimiento de Campus Diverso',
     type: String,
-    value: user => user.informacion_general.origen_descubrimiento_campus_diverso
+    value: user => user.informacion_general?.origen_descubrimiento_campus_diverso
 },
 {
     column: 'Comentarios o Sugerencias del Usuario',
     type: String,
-    value: user => user.informacion_general.comentarios_o_sugerencias_de_usuario
+    value: user => user.informacion_general?.comentarios_o_sugerencias_de_usuario
 }, {
   column: 'Seguimientos',
   type: String,
@@ -645,6 +799,103 @@ const Descarga_campus = () => {
         <Container>
         <Row>
         {paginaActual === 0 && (
+          <>
+        <h2>Gráfico de datos básicos</h2>
+
+        <Col className="form-column" xs={"6"} md={"6"}>
+        
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={sexoAsignadoData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Sexo asignado al nacer',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={tipoDocumentoData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de tipo de documento',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={identidadEtnicoRacialData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de identidad étnico racial',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+        </Col>
+
+        <Col className="form-column" xs={"6"} md={"6"}>
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={estadocivilData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de estado civil',
+              is3D: true,
+  
+              
+            }}
+          />
+        )}
+        </div>
+      
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={zonaResidencialData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de zona de residencia',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+      
+
+        
+        </Col>
+        </>
+        )}
+      
+
+        </Row>
+
+        <Row>
+      
+
+        {paginaActual === 1 && (
           <>
         <h2>Gráfico enfocado a Diversidad Sexual</h2>
 
@@ -708,6 +959,22 @@ const Descarga_campus = () => {
         )}
         </div>
         
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={razasData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de pertenencia grupo poblacional',
+              is3D: true,
+  
+              
+            }}
+          />
+        )}
+        </div>
         </Col>
         
       
@@ -754,11 +1021,26 @@ const Descarga_campus = () => {
 
         
         <Row>
-        {paginaActual === 1 && (
+        {paginaActual === 2 && (
           <>
           <h2>Gráfico enfocado a Información General</h2>
         <Col className="form-column" xs={"6"} md={"6"}>
         
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={regimenEpsData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de régimen de EPS',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+
         <div>
         {loading ? <p>Cargando datos...</p> : (
           <Chart
@@ -769,53 +1051,12 @@ const Descarga_campus = () => {
             options={{
               title: 'Distribución de Factores de Riesgo',
               is3D: true,
-              colors: [
-                '#5E2B91', // Morado fuerte
-                '#7A4BCA', // Morado oscuro
-                '#9A6DC4', // Morado medio oscuro
-                '#B689D2', // Morado medio
-                '#D1A6E0', // Morado claro
-                '#E8C6E9', // Morado suave
-                '#F1D6F0', // Morado muy suave
-                '#F6E0F2', // Lavanda
-                '#FAE6F5', // Lavanda suave
-                '#FDF3F8', // Lavanda muy suave
-                '#FFFFFF'  // Blanco (opcional, para un contraste final)
-              ],
-              
             }}
           />
         )}
         </div>
-        {/* Grafia de pronombres*/}
-        <div>
-        {loading ? <p>Cargando datos...</p> : (
-          <Chart
-            chartType="PieChart"
-            data={actividadesData}
-            width="100%"
-            height="300px"
-            options={{
-              title: 'Distribución de Actividades en Tiempo Libre',
-              is3D: true,
-              colors: [
-                '#FF8387', // Morado fuerte
-                '#FFBA86', // Morado oscuro
-                '#F7EA82', // Morado medio oscuro
-                '#65E682', // Morado medio
-                '#69B0E8', // Morado claro
-                '#B381E4', // Morado suave
-                '#FF9AEA', // Morado muy suave
-                '#3A3A3A', // Lavanda
-                '#C87F56', // Lavanda suave
-                '#FDF3F8', // Lavanda muy suave
-                '#FFFFFF'  // Blanco (opcional, para un contraste final)
-              ],
-              
-            }}
-          />
-        )}
-        </div>
+       
+
         
         </Col>
         
@@ -859,7 +1100,7 @@ const Descarga_campus = () => {
         </Row>
 
 <Row>
-        {paginaActual === 2 && (
+        {paginaActual === 3 && (
           <>
           <h2>Gráfico enfocado a Información Académica</h2>
         <Col className="form-column" xs={"6"} md={"6"}>
@@ -976,7 +1217,7 @@ const Descarga_campus = () => {
       <Button className='button-inicial' onClick={irAtras} disabled={paginaActual === 0}>
           Anterior
         </Button>
-        <Button className='button-inicial' onClick={irAdelante} disabled={paginaActual === 2}>
+        <Button className='button-inicial' onClick={irAdelante} disabled={paginaActual === 3}>
           Siguiente
         </Button>
         <Button className='button-inicial' 

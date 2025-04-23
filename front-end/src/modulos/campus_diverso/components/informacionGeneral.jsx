@@ -45,7 +45,7 @@ const InformacionGeneral = ({state,
 
         <div className="custom-div-check-documentos">
         <div className="custom-checkbox-label">
-          ¿Tiene eps?
+          ¿Tiene EPS?
         </div>
         <label className="custom-radio">
           <input

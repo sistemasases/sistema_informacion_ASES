@@ -93,7 +93,7 @@
   .custom-label {
     width: 100%; 
     height: 100%;  
-    font-size: 0.9em; 
+    font-size: 0.780em; 
     padding-top: 3px;
     color: #000000;
     text-align:left;
@@ -249,6 +249,20 @@
   margin-right: 3px;
 }
 
+
+.subtitle-forms{
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 0.75em !important; 
+  color: #000000;
+  text-align:center;
+  overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+  word-wrap: break-word; /*ajusta palabras largas */
+  hyphens: auto; /* Habilita la separación de palabras si es necesario */
+}
+
+
+
 }
 
 .label {
@@ -312,7 +326,7 @@
     .custom-label {
       width: 100%; 
       height: 100%;  
-      font-size: 0.9em !important; 
+      font-size: 0.850em !important;
       padding-top: 3px;
       color: #000000;
       text-align:left;
@@ -793,7 +807,7 @@
     }
     
     .tooltip-custom .tooltip-inner {
-      text-align: justify !important;
+      text-align: center !important;
       background-color: #ec4c4c !important;
       color: white !important;
       word-break: break-word;
@@ -882,4 +896,16 @@
   top: 0 !important;
   font-size: 0.8rem !important; /* Puedes ajustar el tamaño si lo deseas */
   margin-right: 3px;
+}
+
+
+.subtitle-forms{
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 0.95em; 
+  color: #000000;
+  text-align:center;
+  overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+  word-wrap: break-word; /*ajusta palabras largas */
+  hyphens: auto; /* Habilita la separación de palabras si es necesario */
 }

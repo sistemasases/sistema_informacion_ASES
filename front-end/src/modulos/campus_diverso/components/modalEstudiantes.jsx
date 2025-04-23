@@ -47,6 +47,14 @@ const ModalEstudiantes = ({
   estadocivilOptions,
   zonaResidencialOptions,
   identidadEtnicoRacialOptions,
+  apgarpregunta1Options,
+  apgarpregunta2Options,
+  apgarpregunta3Options,
+  apgarpregunta4Options,
+  apgarpregunta5Options,
+  apgarpregunta6Options,
+  apgarpregunta7Options,
+  sexoAsignadoOptions
 }) => {
 
   const titles = [
@@ -56,6 +64,7 @@ const ModalEstudiantes = ({
     'Observaciones',
     'Información Académica',
     'Documentos Autorización',
+    'Dinámica Familiar - APGAR',
     'Seguimientos'
   ];
   const [isSeguimientoModalOpen, setSeguimientoModalOpen] = useState(false);
@@ -121,7 +130,7 @@ const ModalEstudiantes = ({
                 <b>Pronombres: </b>
                 {isEditing ? (
                   <Select
-                    isMulti
+                    
                     placeholder='Seleccione pronombres'
                     className='create-select'
                     name="pronombres"
@@ -134,7 +143,7 @@ const ModalEstudiantes = ({
                       const foundOption = pronombresOptions.find(o => o.value === value);
                       return foundOption || { value, label: value };
                     })}
-                    onChange={handleSelectChange}
+                    onChange={handleSelectChange3}
                   />
                 ) : (
                   diversidadInfo.pronombres.join(', ')
@@ -230,20 +239,15 @@ const ModalEstudiantes = ({
   <b>Pertenencia grupo poblacional:</b>
   {isEditing ? (
     <Select
-      isMulti
+      
       className='create-select'
       placeholder='Seleccione identidad étnico racial'
       name="identidad_etnico_racial"
       // Opciones disponibles, excluyendo las ya seleccionadas
-      options={identidadesGeneroOptions.filter(option => 
-        !( editableUser.identidad_etnico_racial || selectedUser.identidad_etnico_racial|| []).includes(option.value && option.label) 
-      )}
-      // Opciones seleccionadas
-      value={(editableUser.identidad_etnico_racial || selectedUser.identidad_etnico_racial|| []).map(value => {
-        const foundOption = identidadesGeneroOptions.find(o => o.value === value);
-        return foundOption || { value, label: value };
-      })}
-      onChange={handleSelectChange}
+      options={identidadEtnicoRacialOptions}
+      value={identidadEtnicoRacialOptions.find(option => option.value === editableUser.identidad_etnico_racial)}
+      onChange={handleSelectChange3}
+      isOptionDisabled={(option) => option.value === editableUser.identidad_etnico_racial}
     />
   ) : (
     selectedUser.identidad_etnico_racial.join(', ')
@@ -299,7 +303,7 @@ const ModalEstudiantes = ({
 
 
   <div className='div-modal'>
-  <b>Estado Civil</b>
+  <b>Estado Civil: </b>
   {isEditing ? (
     <Select
       
@@ -461,7 +465,7 @@ const ModalEstudiantes = ({
   <b>Zona de residencia</b>
   {isEditing ? (
     <Select
-      isMulti
+      
       className='create-select'
       placeholder='Seleccione la residencia'
       name="zona_residencia"
@@ -474,7 +478,7 @@ const ModalEstudiantes = ({
         const foundOption = zonaResidencialOptions.find(o => o.value === value);
         return foundOption || { value, label: value };
       })}
-      onChange={handleSelectChange}
+      onChange={handleSelectChange3}
     />
   ) : (
     selectedUser.zona_residencia.join(', ')
@@ -500,42 +504,39 @@ const ModalEstudiantes = ({
                 </div>
               )}
               
-              {currentPage === 1 && diversidadInfo && (
+              {currentPage === 1 && selectedUser && diversidadInfo && (
                 <div className='div-scroll'>
 
                   <Row>
                   <Col className="form-column" xs={"10"} md={"6"}>
 
-              <div className='div-modal'>
-
-              <b>Pronombres: </b>
-              {isEditing ? (
-                <Select
-                  isMulti
-                  placeholder='Seleccione pronombres'
-                  className='create-select'
-                  name="pronombres"
-                  // Opciones disponibles, excluyendo las ya seleccionadas
-                  options={pronombresOptions.filter(option => 
-                    !( editableUser.pronombres || diversidadInfo.pronombres).includes(option.value && option.label) 
-                  )}
-                  // Opciones seleccionadas
-                  value={(editableUser.pronombres || diversidadInfo.pronombres|| []).map(value => {
-                    const foundOption = pronombresOptions.find(o => o.value === value);
-                    return foundOption || { value, label: value };
-                  })}
-                  onChange={handleSelectChange}
-                />
-              ) : (
-                diversidadInfo.pronombres.join(', ')
-              )}
-            </div>
+             
                       
+            <div className='div-modal'>
+              <b>Sexo asignado al nacer </b>
+                    {isEditing ? (
+              <Select
+                className='create-select'
+                name="sexo_asignado"
+                placeholder='Seleccione el sexo asignado al nacer'
+                options={sexoAsignadoOptions}
+                value={sexoAsignadoOptions.find(option => option.value === editableUser.sexo_asignado)}
+                onChange={handleSelectChange3}
+                isOptionDisabled={(option) => option.value === editableUser.sexo_asignado} 
+              />
+            ) : (
+              (selectedUser.sexo_asignado && selectedUser.sexo_asignado.length)
+                ? selectedUser.sexo_asignado.join(', ')
+                : 'No especificado'
+            )}
+              </div> 
+
+
           <div className='div-modal'>
         <b>Expresiones de genero: </b>
         {isEditing ? (
           <Select
-            isMulti
+            
             placeholder='Seleccione expresiones'
             className='create-select'
             name="expresiones_de_genero"
@@ -548,7 +549,7 @@ const ModalEstudiantes = ({
               const foundOption = expresionesOptions.find(o => o.value === value);
               return foundOption || { value, label: value };
             })}
-            onChange={handleSelectChange}
+            onChange={handleSelectChange3}
           />
         ) : (
           diversidadInfo.expresiones_de_genero.join(', ')
@@ -559,7 +560,7 @@ const ModalEstudiantes = ({
         <b>Orientaciones sexuales: </b>
         {isEditing ? (
           <Select
-            isMulti
+            
             placeholder='Seleccione expresiones'
             className='create-select'
             name="orientaciones_sexuales"
@@ -572,17 +573,14 @@ const ModalEstudiantes = ({
               const foundOption = orientacionOptions.find(o => o.value === value);
               return foundOption || { value, label: value };
             })}
-            onChange={handleSelectChange}
+            onChange={handleSelectChange3}
           />
         ) : (
           diversidadInfo.orientaciones_sexuales.join(', ')
         )}
         </div>              
                   
-          <div className='div-modal'><b>Cambio nombre/sexo en el documento:</b>
-            {isEditing ? (
-              <input type="text" name="cambio_nombre_sexo_documento" value={editableUser.cambio_nombre_sexo_documento || '' } onChange={handleInputChange}
-              />) : (diversidadInfo.cambio_nombre_sexo_documento)} </div>
+         
               </Col>
                   <Col className="form-column" xs={"10"} md={"6"}>  
 
@@ -615,7 +613,6 @@ const ModalEstudiantes = ({
         <b>Identidades de genero: </b>
         {isEditing ? (
           <Select
-            isMulti
             placeholder='Seleccione expresiones'
             className='create-select'
             name="identidades_de_genero"
@@ -628,7 +625,7 @@ const ModalEstudiantes = ({
               const foundOption = identidadesGeneroOptions.find(o => o.value === value);
               return foundOption || { value, label: value };
             })}
-            onChange={handleSelectChange}
+            onChange={handleSelectChange3}
           />
         ) : (
           diversidadInfo.identidades_de_genero.join(', ')
@@ -681,34 +678,29 @@ const ModalEstudiantes = ({
 </div>
 
 <div className='div-modal'>
-  <b>Régimen de la EPS:</b>
+  <b>Régimen EPS </b>
   {isEditing ? (
-    <input 
-      type="text" 
-      name="regimen_eps" 
-      className='input-updated'
-      value={editableUser.regimen_eps !== undefined ? editableUser.regimen_eps : generalInfo.regimen_eps || ''}
-      onChange={handleInputChange}
+    <Select
+      placeholder='Seleccione regimen'
+      className='create-select'
+      name="regimen_eps"
+      // Opciones disponibles, excluyendo las ya seleccionadas
+      options={regimenEpsOptions.filter(option => 
+        !( editableUser.regimen_eps || generalInfo.regimen_eps).includes(option.value && option.label) 
+      )}
+      // Opciones seleccionadas
+      value={(editableUser.regimen_eps || generalInfo.regimen_eps|| []).map(value => {
+        const foundOption = regimenEpsOptions.find(o => o.value === value);
+        return foundOption || { value, label: value };
+      })}
+      onChange={handleSelectChange3}
     />
-  ) : (generalInfo.regimen_eps )}
-</div>
+  ) : (
+    generalInfo.regimen_eps.join(', ')
+  )}
+  </div>   
 
-
-<div className='div-modal'>
-  <b>Acompañamiento recibido:</b>
-  {isEditing ? (
-    <input 
-      type="text" 
-      name="acompanamiento_que_recibio" 
-      className='input-updated'
-      value={editableUser.acompanamiento_que_recibio !== undefined ? editableUser.acompanamiento_que_recibio : generalInfo.acompanamiento_que_recibio || ''}
-      onChange={handleInputChange}
-    />
-  ) : (generalInfo.acompanamiento_que_recibio )}
-</div>
-
-
-<div className='div-modal'>
+  <div className='div-modal'>
   <b>Ocupaciones actuales:</b>
   {isEditing ? (
     <input 
@@ -723,6 +715,25 @@ const ModalEstudiantes = ({
   )}
 </div>
 
+<div className='div-modal'>
+        <b>Actividades específicas en tiempo libre:</b>
+        {isEditing ? (
+          <input
+            type="text"
+            className="input-updated"
+            name="actividades_especificas_tiempo_libre"
+            value={editableUser.actividades_especificas_tiempo_libre !== undefined ? editableUser.actividades_especificas_tiempo_libre : generalInfo.actividades_especificas_tiempo_libre || ''}
+            onChange={handleInputChange}
+          />
+        ) : (
+          generalInfo.actividades_especificas_tiempo_libre
+        )}
+      </div>
+
+
+
+
+
 
 
 
@@ -732,7 +743,7 @@ const ModalEstudiantes = ({
 
 
         <div className='div-modal'>
-        <b>Calificación relación familiar:</b>
+        <b>Calificación relación familiar: </b>
         {isEditing ? (
           <input
             type="text"
@@ -762,10 +773,9 @@ const ModalEstudiantes = ({
       </div>
 
       <div className='div-modal'>    
-        <b>¿Qué profesional prefieres para agendar la reunión inicial? </b>
+        <b>¿Qué profesional prefieres para agendar la reunión inicial?: </b>
         {isEditing ? (
           <Select
-            isMulti
             placeholder='Seleccione expresiones'
             className='create-select'
             name="decision_encuentro_inicial"
@@ -778,7 +788,7 @@ const ModalEstudiantes = ({
               const foundOption = decisionEncuentroInicialOptions.find(o => o.value === value);
               return foundOption || { value, label: value };
             })}
-            onChange={handleSelectChange}
+            onChange={handleSelectChange3}
           />
         ) : (
           generalInfo.decision_encuentro_inicial.join(', ')
@@ -802,19 +812,20 @@ const ModalEstudiantes = ({
 
 
       <div className='div-modal'>
-        <b>Actividades específicas en tiempo libre:</b>
-        {isEditing ? (
-          <input
-            type="text"
-            className="input-updated"
-            name="actividades_especificas_tiempo_libre"
-            value={editableUser.actividades_especificas_tiempo_libre !== undefined ? editableUser.actividades_especificas_tiempo_libre : generalInfo.actividades_especificas_tiempo_libre || ''}
-            onChange={handleInputChange}
-          />
-        ) : (
-          generalInfo.actividades_especificas_tiempo_libre
-        )}
-      </div>
+  <b>¿tipo(s) de acompañamiento(s) recibido(s)?: </b>
+  {isEditing ? (
+    <textarea
+      type="text" 
+      name="acompanamiento_que_recibio" 
+      className='input-updated'
+      value={editableUser.acompanamiento_que_recibio !== undefined ? editableUser.acompanamiento_que_recibio : generalInfo.acompanamiento_que_recibio || ''}
+      onChange={handleInputChange}
+    />
+  ) : (generalInfo.acompanamiento_que_recibio )}
+</div>
+
+
+
 
          </Col> 
 
@@ -874,22 +885,7 @@ const ModalEstudiantes = ({
                         generalInfo.observacion_general_factores_de_riesgo
                       )}
                     </div>
-                    <div className='div-modal'>
-                      <b>Observación horario:</b>
-                      <div className='div-modal-justify'> 
-                      {isEditing ? (
-                        <textarea
-                          type="text"
-                          className='input-updated'
-                          name="observacion_horario"
-                          value={editableUser.observacion_horario !== undefined ? editableUser.observacion_horario : generalInfo.observacion_horario || ''}
-                          onChange={handleInputChange}
-                        />
-                      ) : (
-                        generalInfo.observacion_horario
-                      )}
-                    </div>
-                    </div>
+                   
 
                     <div className='div-modal'>
                       <b>Observación general actividades específicas en tiempo libre: </b>
@@ -913,29 +909,7 @@ const ModalEstudiantes = ({
                     </Col>
                   <Col className="form-column" xs={"10"} md={"6"}>
                   
-                  <div className='div-modal'>
-                  <b>factores de riesgo: </b>
-                  {isEditing ? (
-                    <Select
-                      isMulti
-                      placeholder='Seleccione factores de riesgo'
-                      className='create-select'
-                      name="factores_riesgos"
-                      // Opciones disponibles, excluyendo las ya seleccionadas
-                      options={factoresOptions.filter(option => 
-                        !( editableUser.factores_riesgos || generalInfo.factores_riesgos).includes(option.label)
-                      )}
-                      // Opciones seleccionadas
-                      value={(editableUser.factores_riesgos || generalInfo.factores_riesgos|| []).map(value => {
-                        const foundOption = factoresOptions.find(o => o.value === value);
-                        return foundOption || { value, label: value };
-                      })}
-                      onChange={handleSelectChange}
-                    />
-                  ) : (
-                    generalInfo.factores_riesgos.join(', ')
-                  )}
-                </div> 
+                  
 
 
                 <div className='div-modal'>
@@ -985,7 +959,29 @@ const ModalEstudiantes = ({
                     generalInfo.redes_apoyo.join(', ')
                   )}
                 </div> 
-
+                <div className='div-modal'>
+                  <b>factores de riesgo: </b>
+                  {isEditing ? (
+                    <Select
+                      isMulti
+                      placeholder='Seleccione factores de riesgo'
+                      className='create-select'
+                      name="factores_riesgos"
+                      // Opciones disponibles, excluyendo las ya seleccionadas
+                      options={factoresOptions.filter(option => 
+                        !( editableUser.factores_riesgos || generalInfo.factores_riesgos).includes(option.label)
+                      )}
+                      // Opciones seleccionadas
+                      value={(editableUser.factores_riesgos || generalInfo.factores_riesgos|| []).map(value => {
+                        const foundOption = factoresOptions.find(o => o.value === value);
+                        return foundOption || { value, label: value };
+                      })}
+                      onChange={handleSelectChange}
+                    />
+                  ) : (
+                    generalInfo.factores_riesgos.join(', ')
+                  )}
+                </div> 
 
                   </Col>
                     </Row>
@@ -1015,7 +1011,7 @@ const ModalEstudiantes = ({
                           <b>Estamentos: </b>
                           {isEditing ? (
                             <Select
-                              isMulti
+                        
                               placeholder='Seleccione expresiones'
                               className='create-select'
                               name="estamentos"
@@ -1028,7 +1024,7 @@ const ModalEstudiantes = ({
                                 const foundOption = estamentoOptions.find(o => o.value === value);
                                 return foundOption || { value, label: value };
                               })}
-                              onChange={handleSelectChange}
+                              onChange={handleSelectChange3}
                             />
                           ) : (
                             academicoInfo.estamentos.join(', ')
@@ -1162,34 +1158,10 @@ const ModalEstudiantes = ({
                     documentosInfo.apgar_familiar
                   )}
                 </div>
-                <div className='div-modal'>
-                  <b>Documento digital y archivo:</b>
-                  {isEditing ? (
-                    <input
-                      type="checkbox"
-                      name="documento_digital_y_archivo"
-                      checked={editableUser.documento_digital_y_archivo ?? documentosInfo.documento_digital_y_archivo}
-                      onChange={handleCheckboxChange}
-                    />
-                  ) : (
-                    documentosInfo.documento_digital_y_archivo ? 'Sí' : 'No'
-                  )}
-                </div>
+               
               </Col>
               <Col className="form-column" xs={"10"} md={"6"}>
-                <div className='div-modal'>
-                  <b>Ecomapa:</b>
-                  {isEditing ? (
-                    <input
-                      type="checkbox"
-                      name="ecomapa"
-                      checked={editableUser.ecomapa ?? documentosInfo.ecomapa}
-                      onChange={handleCheckboxChange}
-                    />
-                  ) : (
-                    documentosInfo.ecomapa ? 'Sí' : 'No'
-                  )}
-                </div>
+  
                 <div className='div-modal'>
                   <b>Árbol familiar:</b>
                   {isEditing ? (
@@ -1208,7 +1180,157 @@ const ModalEstudiantes = ({
           </div>
         )}
 
-              {currentPage === 6   && seguimientosInfo &&  (
+{currentPage === 6 && documentosInfo && (
+          <div className='div-scroll'>
+            <Row>
+              <Col className="form-column" xs={"10"} md={"6"}>
+               
+              <div className='div-modal'>
+                <b>
+                Me satisface la ayuda que recibo de mi familia cuando tengo algún problema y/o necesidad
+                </b>
+                <div className='apgar-respuesta'>
+                  {
+                    (documentosInfo.apgar_pregunta1 && documentosInfo.apgar_pregunta1.length)
+                      ? documentosInfo.apgar_pregunta1.join(', ')
+                      : 'No especificado'
+                  }
+                </div>
+              </div>
+
+
+              <div className='div-modal'>
+                <b>
+                Me satisface como en mi familia hablamos y compartimos nuestros problemas
+                </b>
+                <div className='apgar-respuesta'>
+                  {
+                    (documentosInfo.apgar_pregunta2 && documentosInfo.apgar_pregunta2.length)
+                      ? documentosInfo.apgar_pregunta2.join(', ')
+                      : 'No especificado'
+                  }
+                </div>
+              </div>
+
+              <div className='div-modal'>
+                <b>
+                Me satisface como mi familia acepta y apoya mi deseo de emprender nuevas actividades
+                </b>
+                <div className='apgar-respuesta'>
+                  {
+                    (documentosInfo.apgar_pregunta3 && documentosInfo.apgar_pregunta3.length)
+                      ? documentosInfo.apgar_pregunta3.join(', ')
+                      : 'No especificado'
+                  }
+                </div>
+              </div>
+
+              <div className='div-modal'>
+                <b>
+                Me satisface como mi familia expresa afecto y responde a mis emociones tales como rabia, tristeza, amor
+                </b>
+                <div className='apgar-respuesta'>
+                  {
+                    (documentosInfo.apgar_pregunta4 && documentosInfo.apgar_pregunta4.length)
+                      ? documentosInfo.apgar_pregunta4.join(', ')
+                      : 'No especificado'
+                  }
+                </div>
+              </div>
+              </Col>
+              <Col className="form-column" xs={"10"} md={"6"}>
+
+              <div className='div-modal'>
+                <b>
+                Me satisface como compartimos en mi familia: tiempo/espacio/dinero
+                </b>
+                <div className='apgar-respuesta'>
+                  {
+                    (documentosInfo.apgar_pregunta5 && documentosInfo.apgar_pregunta5.length)
+                      ? documentosInfo.apgar_pregunta5.join(', ')
+                      : 'No especificado'
+                  }
+                </div>
+              </div>
+
+              <div className='div-modal'>
+                <b>
+                Tengo un(a) amigo(a) cercano quien pueda buscar cuando necesito ayuda
+                </b>
+                <div className='apgar-respuesta'>
+                  {
+                    (documentosInfo.apgar_pregunta6 && documentosInfo.apgar_pregunta6.length)
+                      ? documentosInfo.apgar_pregunta6.join(', ')
+                      : 'No especificado'
+                  }
+                </div>
+              </div>
+
+              <div className='div-modal'>
+                <b>
+                Estoy satisfecho(a) con el soporte que recibo de mis amigos(as)
+                </b>
+                <div className='apgar-respuesta'>
+                  {
+                    (documentosInfo.apgar_pregunta7 && documentosInfo.apgar_pregunta7.length)
+                      ? documentosInfo.apgar_pregunta7.join(', ')
+                      : 'No especificado'
+                  }
+                </div>
+              </div>
+
+
+
+
+              </Col>
+              <Row className="mt-6">
+            <Col xs="12">
+              <div className='div-modal'>
+                <b>Puntaje APGAR:</b>
+                <div className='apgar-respuesta'>
+                  {
+                    (() => {
+                      const valoraciones = {
+                        'nunca': 0,
+                        'casi nunca': 1,
+                        'algunas veces': 2,
+                        'casi siempre': 3,
+                        'siempre': 4
+                      };
+
+                      const preguntas = [
+                        documentosInfo.apgar_pregunta1,
+                        documentosInfo.apgar_pregunta2,
+                        documentosInfo.apgar_pregunta3,
+                        documentosInfo.apgar_pregunta4,
+                        documentosInfo.apgar_pregunta5
+                      ];
+
+                      let puntaje = 0;
+
+                      preguntas.forEach(pregunta => {
+                        if (Array.isArray(pregunta)) {
+                          pregunta.forEach(respuesta => {
+                            const valor = valoraciones[respuesta.toLowerCase()];
+                            if (valor !== undefined) puntaje += valor;
+                          });
+                        }
+                      });
+
+                      return `${puntaje} puntos`;
+                    })()
+                  }
+                </div>
+              </div>
+            </Col>
+          </Row>
+            </Row>
+          </div>
+        )}
+
+
+
+              {currentPage === 7   && seguimientosInfo &&  (
                 
                 <div className='div-scroll'>
 
@@ -1268,9 +1390,13 @@ const ModalEstudiantes = ({
                 Revisado
               </Button>
 
-              <Button variant="primary" onClick={() => setIsEditing(true)}>
+            <Button
+                variant="primary"
+                onClick={() => setIsEditing(true)}
+                disabled={currentPage === 6 || currentPage === 7}
+              >
                 Editar
-              </Button>
+            </Button>
 
        
 
@@ -1289,7 +1415,7 @@ const ModalEstudiantes = ({
                 <Button 
                 variant="primary" 
                 onClick={nextPage}
-                disabled={currentPage === 6}>
+                disabled={currentPage === 7}>
                   Adelante
                 </Button>
               

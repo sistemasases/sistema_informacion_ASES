@@ -225,7 +225,7 @@ class InformacionGeneralSerializer(serializers.ModelSerializer):
         fuentes_ingresos = validated_data.pop('fuentes_ingresos', [])
         redes_apoyo = validated_data.pop('redes_apoyo', [])
         regimen_eps = validated_data.pop('regimen_eps', [])
-        decision_encuentro_inicial = validated_data.pop('regimen_eps', [])
+        decision_encuentro_inicial = validated_data.pop('decision_encuentro_inicial', [])
 
         
         # Actualizar los atributos de InformacionGeneral
@@ -261,8 +261,8 @@ class InformacionGeneralSerializer(serializers.ModelSerializer):
                 instance.regimen_eps.add(regimen_eps)
 
         if decision_encuentro_inicial:
-            instance.nombre_decision_encuentro_inicial.clear()
-            for nombre_decision_encuentro_inicial in nombre_decision_encuentro_inicial:
+            instance.decision_encuentro_inicial.clear()
+            for nombre_decision_encuentro_inicial in decision_encuentro_inicial:
                 decision_encuentro_inicial, _ = DecisionEncuentroInicial.objects.get_or_create(nombre_decision_encuentro_inicial=nombre_decision_encuentro_inicial)
                 instance.decision_encuentro_inicial.add(decision_encuentro_inicial)
        

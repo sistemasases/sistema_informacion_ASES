@@ -12,7 +12,7 @@ const FooterCampusDos = () => {
             <div className="logo-container">
               <Image src='/imgs/campus_diverso_2024.png' height="90" alt="Logo" loading="lazy" />
             </div>
-            <p className="text-center">Proyecto Campus Diverso</p>
+            <p className="text-center">Programa Campus Diverso</p>
             <ul className="list-unstyled d-flex flex-row justify-content-center">
               <li><a className="text-white px-2" href="https://www.facebook.com/campusdiversouv" target="_blank" rel="noopener noreferrer"><i className="bi-facebook"></i></a></li>
               <li><a className="text-white px-2" href="https://www.instagram.com/campusdiversouv" target="_blank" rel="noopener noreferrer"><i className="bi-instagram"></i></a></li>

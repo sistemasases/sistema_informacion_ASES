@@ -1,127 +1,170 @@
 import React from 'react';
-import { Container, Col, } from 'react-bootstrap';
+import { Container, Col,  } from 'react-bootstrap';
+import Select from 'react-select';
 export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
 
 const DocumentosAutorizacion = ({
     state,
-    handleCheckboxChange,
-    handleChange
+    isLoading,
+    handleSelectNoMultiChange,
+    apgarpregunta1Options,
+    apgarpregunta2Options,
+    apgarpregunta3Options,
+    apgarpregunta4Options,
+    apgarpregunta5Options,
+    apgarpregunta6Options,
+    apgarpregunta7Options,
+    handleSelectChange2,
+    handleSelectChange,
+    handleSelectChange3,
 
 }) => {
   return (
     <>
-    <h1 className='title-banner'> Documentos de autorización</h1>
+    <h1 className='title-banner'> Apgar familiar</h1>
+    <div className="subtitle-forms">
+    Las siguientes preguntas corresponden al instrumento APGAR Familiar y tienen como finalidad evaluar su percepción sobre el apoyo recibido dentro de su entorno familiar, social y personal.
+    </div>
     <div className='div-scroll-registro'>
 
     <Container className="container_informacion_general" xs={"10"} sm={"6"}>
-        
+    
+
+
         <Col className="form-column" xs={"10"} md={"6"}>
             
+        <div>
+          <label className='custom-label'>Me satisface la ayuda que recibo de mi familia cuando tengo algún problema y/o necesidad</label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="apgar_pregunta1"
+                placeholder='Seleccione su respuesta de cambio de documento'
+                options={apgarpregunta1Options}
+                value={apgarpregunta1Options.find(option => option.value === state.apgar_pregunta1)}
+                onChange={handleSelectNoMultiChange}              />
+            )}
+          </div>
+        </div>
 
-
-    <div className="custom-div-check-documentos ">
-      <div className="custom-checkbox-label">
-        ¿Firma de consentimiento informado?
-      </div>
-      <label className="custom-checkbox">
-        <input
-          type="checkbox"
-          checked={state.firma_consentimiento_informado}
-          name="firma_consentimiento_informado"
-          value={state.firma_consentimiento_informado}
-          onChange={handleCheckboxChange}
-        />
-        <span className="checkmark"></span>
-      </label>
-    </div>
-
-    <div className="custom-div-check-documentos ">
-      <div className="custom-checkbox-label">
-        ¿Firma terapia hormonal?
-      </div>
-      <label className="custom-checkbox">
-        <input
-          type="checkbox"
-          checked={state.firma_terapia_hormonal}
-          name="firma_terapia_hormonal"
-          value={state.firma_terapia_hormonal}
-          onChange={handleCheckboxChange}
-        />
-        <span className="checkmark"></span>
-      </label>
-    </div>
-
+        <div>
+          <label className='custom-label'>Me satisface como en mi familia hablamos y compartimos nuestros problemas</label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="apgar_pregunta2"
+                placeholder='Seleccione su respuesta de cambio de documento'
+                options={apgarpregunta2Options}
+                value={apgarpregunta2Options.find(option => option.value === state.apgar_pregunta2)}
+                onChange={handleSelectNoMultiChange}
+              />
+            )}
+          </div>
+        </div>
         
+
+        <div>
+          <label className='custom-label'>Me satisface como mi familia acepta y apoya mi deseo de emprender nuevas actividades</label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="apgar_pregunta3"
+                placeholder='Seleccione su respuesta de cambio de documento'
+                options={apgarpregunta3Options}
+                value={apgarpregunta3Options.find(option => option.value === state.apgar_pregunta3)}
+                onChange={handleSelectNoMultiChange}
+              />
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label className='custom-label'>Me satisface como mi familia expresa afecto y responde a mis emociones tales como rabia, tristeza, amor</label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="apgar_pregunta4"
+                placeholder='Seleccione su respuesta de cambio de documento'
+                options={apgarpregunta4Options}
+                value={apgarpregunta4Options.find(option => option.value === state.apgar_pregunta4)}
+                onChange={handleSelectNoMultiChange}
+              />
+            )}
+          </div>
+        </div>
+
         </Col>
 
         <Col className="form-column" xs={"10"} md={"6"}>
         
-        <div className="custom-div-check-documentos ">
-      <div className="custom-checkbox-label">
-        Documentos digital y archivo
-      </div>
-      <label className="custom-checkbox">
-        <input
-          type="checkbox"
-          checked={state.documento_digital_y_archivo}
-          name="documento_digital_y_archivo"
-          value={state.documento_digital_y_archivo}
-          onChange={handleCheckboxChange}
-        />
-        <span className="checkmark"></span>
-      </label>
-    </div>
-
-    <div className="custom-div-check-documentos ">
-      <div className="custom-checkbox-label">
-        Árbol familiar
-      </div>
-      <label className="custom-checkbox">
-        <input
-          type="checkbox"
-          checked={state.arbol_familiar}
-          name="arbol_familiar"
-          value={state.arbol_familiar}
-          onChange={handleCheckboxChange}
-        />
-        <span className="checkmark"></span>
-      </label>
-    </div>
-
-    <div className="custom-div-check-documentos ">
-      <div className="custom-checkbox-label">
-        Ecomapa
-      </div>
-      <label className="custom-checkbox">
-        <input
-          type="checkbox"
-          checked={state.ecomapa}
-          name="ecomapa"
-          value={state.ecomapa}
-          onChange={handleCheckboxChange}
-        />
-        <span className="checkmark"></span>
-      </label>
-    </div>
-
+       
         <div>
-                <div className='custom-div'>Apgar familiar</div>
-                <input
-                  className='input-updated'
-                  type="number"
-                  name="apgar_familiar"
-                  placeholder='Ingrese apgar'
-                  pattern='[0-9]*'
-                  onKeyDown={preventNegativeValues}
-                  min="0"
-                  value={state.apgar_familiar}
-                  onChange={handleChange}
-                />
+          <label className='custom-label'>Me satisface como compartimos en mi familia: tiempo/espacio/dinero</label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="apgar_pregunta5"
+                placeholder='Seleccione su respuesta de cambio de documento'
+                options={apgarpregunta5Options}
+                value={apgarpregunta5Options.find(option => option.value === state.apgar_pregunta5)}
+                onChange={handleSelectNoMultiChange}
+              />
+            )}
+          </div>
         </div>
 
+        <div>
+          <label className='custom-label'>Tengo un(a) amigo(a) cercano quien pueda buscar cuando necesito ayuda</label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="apgar_pregunta6"
+                placeholder='Seleccione su respuesta de cambio de documento'
+                options={apgarpregunta6Options}
+                value={apgarpregunta6Options.find(option => option.value === state.apgar_pregunta6)}
+                onChange={handleSelectNoMultiChange}
+              />
+            )}
+          </div>
+        </div>
 
-
+        <div>
+          <label className='custom-label'>Estoy satisfecho(a) con el soporte que recibo de mis amigos(as)</label>
+          <div>
+            {isLoading ? (
+              <p>Cargando...</p>
+            ) : (
+              <Select
+                className='create-select'
+                name="apgar_pregunta7"
+                placeholder='Seleccione su respuesta de cambio de documento'
+                options={apgarpregunta7Options}
+                value={apgarpregunta7Options.find(option => option.value === state.apgar_pregunta7)}
+                onChange={handleSelectNoMultiChange}
+              />
+            )}
+          </div>
+        </div>
     </Col>
+  
     </Container>
     </div>
     </>

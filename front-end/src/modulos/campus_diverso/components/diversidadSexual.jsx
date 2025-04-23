@@ -32,6 +32,27 @@ const DiversidadSexual = ({
         <Col className="form-column" xs={"7"} md={"6"}>
 
         <div>
+              <label className='custom-div'>Sexo asignado al nacer</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                
+                  className='create-select'
+                  name="sexo_asignado"
+                  placeholder='Selecciona el sexo asignado al nacer'
+                  options={sexoAsignadoOptions}
+                  value={sexoAsignadoOptions.find(option => option.value === state.sexo_asignado)}
+                  onChange={handleSelectNoMultiChange}
+    
+                  />
+                  )}
+              </div>
+          </div>
+      
+
+        <div>
             <label className='custom-div'>Identidad de género</label>
             <div>
               {isLoading ? (
@@ -48,25 +69,6 @@ const DiversidadSexual = ({
               )}
             </div>
           </div>
-
-          <div>
-            <label className='custom-div'>Orientación sexual</label>
-            <div>
-              {isLoading ? (
-                <p>Cargando...</p>
-              ) : (
-                <Select
-                  className='create-select'
-                  name="orientaciones_sexuales"
-                  placeholder='Seleccione su orientación sexual'
-                  options={orientacionOptions}
-                  value={orientacionOptions.find(option => option.value === state.orientaciones_sexuales)}
-                  onChange={handleSelectNoMultiChange}
-                />
-              )}
-            </div>
-          </div>
-
 
          <div>
               <label className='custom-div'>Expresión de género</label>
@@ -89,32 +91,29 @@ const DiversidadSexual = ({
           </div>
 
           <div>
-              <label className='custom-div'>Sexo asignado al nacer</label>
-              <div>
-                {isLoading ? (
-                  <p>Cargando...</p>
-                ):(
+            <label className='custom-div'>Orientación sexual</label>
+            <div>
+              {isLoading ? (
+                <p>Cargando...</p>
+              ) : (
                 <Select
-                
                   className='create-select'
-                  name="sexo_asignado"
-                  placeholder='Selecciona el sexo asignado al nacer'
-                  options={sexoAsignadoOptions}
-                  value={sexoAsignadoOptions.find(option => option.value === state.sexo_asignado)}
+                  name="orientaciones_sexuales"
+                  placeholder='Seleccione su orientación sexual'
+                  options={orientacionOptions}
+                  value={orientacionOptions.find(option => option.value === state.orientaciones_sexuales)}
                   onChange={handleSelectNoMultiChange}
-    
-                  />
-                  )}
-              </div>
+                />
+              )}
+            </div>
           </div>
-      
 
       </Col>
     
       <Col className="form-column" xs={"7"} md={"6"}>
     
       <div>
-          <label className='custom-label'>¿Has realizado algún cambio en el componente nombre y/o sexo en el documento de identidad  </label>
+          <label className='custom-div'>¿Has realizado algún cambio en el componente nombre y/o sexo en el documento de identidad  </label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>

@@ -87,6 +87,13 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
     apgar_familiar:0,
     ecomapa:false,
     arbol_familiar: false,
+    apgar_pregunta1: [],
+    apgar_pregunta2: [],
+    apgar_pregunta3: [],
+    apgar_pregunta4: [],
+    apgar_pregunta5: [],
+    apgar_pregunta6: [],
+    apgar_pregunta7: [],
 
     //Informacion académica
     sedes:[],
@@ -155,6 +162,15 @@ const [redesOptions, setRedesOptions] = useState([]);
 const [regimenEpsOptions, setRegimenEpsOptions] = useState([]);
 const [decisionEncuentroInicialOptions, setDecisionENcuentroInicialOptions] = useState([]);
 
+//documentos autorizacion
+const [apgarpregunta1Options, setApgarPregunta1Options] = useState([]);
+const [apgarpregunta2Options, setApgarPregunta2Options] = useState([]);
+const [apgarpregunta3Options, setApgarPregunta3Options] = useState([]);
+const [apgarpregunta4Options, setApgarPregunta4Options] = useState([]);
+const [apgarpregunta5Options, setApgarPregunta5Options] = useState([]);
+const [apgarpregunta6Options, setApgarPregunta6Options] = useState([]);
+const [apgarpregunta7Options, setApgarPregunta7Options] = useState([]);
+
 
 
 
@@ -184,6 +200,15 @@ useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/regimen-eps/`),
     axios.get(`${process.env.REACT_APP_API_URL}/informacion-general/decision-encuentro-inicial/`),
     axios.get(`${process.env.REACT_APP_API_URL}/persona/sexo-asignado/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta1/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta2/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta3/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta4/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta5/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta6/`),
+    axios.get(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/apgar-pregunta7/`),
+
+
 
 
 
@@ -195,7 +220,7 @@ useEffect(() => {
         respuestaCambioDocumentoResponse, orientacionResponse, 
         identiadesGeneroResponse, estamentoResponse, factorResponse, 
        fuenteResponse, redResponse,tipoDocumentoResponse,
-        ProgramaResponse, SedeResponse, EstadoCivilResponse, ZonaResidencialResponse, IdentidadEtnicoRacialResponse, RegimenEpsResponse, DecisionEncuentroInicialResponse, SexoAsignadoResponse] = responses;
+        ProgramaResponse, SedeResponse, EstadoCivilResponse, ZonaResidencialResponse, IdentidadEtnicoRacialResponse, RegimenEpsResponse, DecisionEncuentroInicialResponse, SexoAsignadoResponse, ApgarPregunta1Response, ApgarPregunta2Response,ApgarPregunta3Response, ApgarPregunta4Response, ApgarPregunta5Response, ApgarPregunta6Response, ApgarPregunta7Response] = responses;
       
       const grupoPoblacionOpciones = grupoPoblacionResponse.data.map((item) => ({
         value: item.id_grupo_poblacional,
@@ -282,6 +307,34 @@ useEffect(() => {
         value: item.id_sexo_asignado,
         label: item.nombre_sexo_asignado
       }));
+      const apgarPregunta1Opciones = ApgarPregunta1Response.data.map((item) => ({
+        value: item.id_apgar_pregunta1,
+        label: item.nombre_apgar_pregunta1
+      }));
+      const apgarPregunta2Opciones = ApgarPregunta2Response.data.map((item) => ({
+        value: item.id_apgar_pregunta2,
+        label: item.nombre_apgar_pregunta2
+      }));
+      const apgarPregunta3Opciones = ApgarPregunta3Response.data.map((item) => ({
+        value: item.id_apgar_pregunta3,
+        label: item.nombre_apgar_pregunta3
+      }));
+      const apgarPregunta4Opciones = ApgarPregunta4Response.data.map((item) => ({
+        value: item.id_apgar_pregunta4,
+        label: item.nombre_apgar_pregunta4
+      }));
+      const apgarPregunta5Opciones = ApgarPregunta5Response.data.map((item) => ({
+        value: item.id_apgar_pregunta5,
+        label: item.nombre_apgar_pregunta5
+      }));
+      const apgarPregunta6Opciones = ApgarPregunta6Response.data.map((item) => ({
+        value: item.id_apgar_pregunta6,
+        label: item.nombre_apgar_pregunta6
+      }));
+      const apgarPregunta7Opciones = ApgarPregunta7Response.data.map((item) => ({
+        value: item.id_apgar_pregunta7,
+        label: item.nombre_apgar_pregunta7
+      }));
       setRazasOptions(grupoPoblacionOpciones);
       setExpresionesOptions(expresionesOpciones);
       setPronombresOptions(pronombreOpciones);
@@ -301,6 +354,13 @@ useEffect(() => {
       setRegimenEpsOptions(regimenEpsOpciones);
       setDecisionENcuentroInicialOptions(decisionEncuentroInicialOpciones);
       setSexoAsignadoOptions(sexoAsignadoOpciones);
+      setApgarPregunta1Options(apgarPregunta1Opciones)
+      setApgarPregunta2Options(apgarPregunta2Opciones)
+      setApgarPregunta3Options(apgarPregunta3Opciones)
+      setApgarPregunta4Options(apgarPregunta4Opciones)
+      setApgarPregunta5Options(apgarPregunta5Opciones)
+      setApgarPregunta6Options(apgarPregunta6Opciones)
+      setApgarPregunta7Options(apgarPregunta7Opciones)
       setIsLoading(false);
     })
     .catch((error) => {
@@ -452,23 +512,22 @@ const handleSelectChange2 = (selectedOptions, actionMeta) => {
  
 
 const handleSelectChange3 = (selectedOption, fieldName) => {
-  // Conviértelo a un array con el valor seleccionado o un array vacío si no se selecciona nada
-  console.log("selectedOption", selectedOption); // Verifica qué datos están llegando
-  const labels = selectedOption ? [selectedOption.label] : [];
+  console.log("selectedOption", selectedOption);
+  console.log("fieldName", fieldName); // Esto debería mostrar: apgar_pregunta1
 
-  // Actualiza el estado dinámicamente en función del campo proporcionado
   set_state(prevState => ({
     ...prevState,
-    [fieldName]: labels
+    [fieldName]: selectedOption ? [selectedOption.value] : null
   }));
-  console.log("documentoo", state.tipo_documento);
 };
 
 
 
+
+
 useEffect(() => {
-  console.log("dooocumentoo", state.tipo_documento);
-}, [state.tipo_documento]);
+  console.log("apgaaar1", state.apgar_pregunta1);
+}, [state.apgar_pregunta1]);
 
 
 const handleArrayFieldChange = (fieldName, index, field, value) => {
@@ -560,11 +619,11 @@ const handleSubmit = async (e) => {
 
 
   const requiredFields = [
+    /*
     'numero_documento',
     'tiene_eps',
     'email',
     'pertenencia_univalle',
-    'regimen_eps',
     'identidades_de_genero',
     'orientaciones_sexuales',
     'expresiones_de_genero',
@@ -576,14 +635,14 @@ const handleSubmit = async (e) => {
     'creencia_religiosa',
     'origen_descubrimiento_campus_diverso',
     'acompanamiento_que_recibio',
-
+ */
 ];
 
 const fieldNames = {
     numero_documento: "número de documento",
-    tiene_eps: "nombre EPS",
+    tiene_eps: "¿Tiene EPS?",
     pertenencia_univalle: "pertenencia a Univalle",
-    regimen_eps: "régimen EPS",
+   
     identidades_de_genero: "identidades de género",
     orientaciones_sexuales: "orientaciones sexuales",
     expresiones_de_genero: "expresiones de género",
@@ -603,7 +662,7 @@ const fieldNames = {
 };
 
 const listFields = [
-  'regimen_eps',
+  /*
   'identidades_de_genero',
   'orientaciones_sexuales',
   'expresiones_de_genero',
@@ -614,6 +673,7 @@ const listFields = [
   'factores_riesgos',
   'fuentes_ingresos',
   'sexo_asignado'
+  */
 ];
 
   // Remueve elementos vacios del formulario a la base de datos
@@ -622,9 +682,13 @@ const listFields = [
   };
 
   const invalidFields = [
-    ...requiredFields.filter(field => !state[field] || state[field] === null), // Verifica si el campo está vacío o es null
-    ...listFields.filter(field => state[field] === null || (Array.isArray(state[field]) && state[field].length === 0)) // Verifica si una lista es null o vacía
-];
+    ...requiredFields.filter(field => state[field] === null || state[field] === undefined || state[field] === ''),
+    ...listFields.filter(field =>
+      state[field] === null ||
+      state[field] === undefined ||
+      (Array.isArray(state[field]) && state[field].length === 0)
+    )
+  ];
 
 if (invalidFields.length > 0) {
   // Convertir los nombres técnicos a descripciones personalizadas
@@ -639,7 +703,7 @@ if (invalidFields.length > 0) {
   }, 3000); // Simulación de una solicitud exitosa después de 1 segundo
   return;
 }
-
+ 
 
  
 
@@ -674,6 +738,7 @@ if (invalidFields.length > 0) {
     identidad_etnico_racial: state.identidad_etnico_racial,
     nombre_persona_de_confianza: state.nombre_persona_de_confianza,
     telefono_persona_de_confianza: state.telefono_persona_de_confianza,
+    sexo_asignado: state.sexo_asignado,
     recaptchaToken: recaptchaToken // token captcha REVISAR--
   });
 
@@ -752,6 +817,13 @@ if (invalidFields.length > 0) {
     apgar_familiar: state.apgar_familiar,
     ecomapa: state.ecomapa,
     arbol_familiar: state.arbol_familiar,
+    apgar_pregunta1: state.apgar_pregunta1,
+    apgar_pregunta2: state.apgar_pregunta2,
+    apgar_pregunta3: state.apgar_pregunta3,
+    apgar_pregunta4: state.apgar_pregunta4,
+    apgar_pregunta5: state.apgar_pregunta5,
+    apgar_pregunta6: state.apgar_pregunta6,
+    apgar_pregunta7: state.apgar_pregunta7,
   });
   
 
@@ -838,6 +910,13 @@ if (invalidFields.length > 0) {
               apgar_familiar: 0,
               ecomapa: false,
               arbol_familiar: false,
+              apgar_pregunta1: [],
+              apgar_pregunta2: [],
+              apgar_pregunta3: [],
+              apgar_pregunta4: [],
+              apgar_pregunta5: [],
+              apgar_pregunta6: [],
+              apgar_pregunta7: [],
 
               //Diversidad sexual
               expresiones_de_genero: [],
@@ -1054,6 +1133,22 @@ const steps = [
     decisionEncuentroInicialOptions={decisionEncuentroInicialOptions}
     handleSelectNoMultiChange={handleSelectNoMultiChange}
 
+    /> },
+    { component:     <DocumentosAutorizacion
+      state={state}
+      handleSelectNoMultiChange = {handleSelectNoMultiChange}
+      isLoading={isLoading}
+      apgarpregunta1Options = {apgarpregunta1Options}
+      apgarpregunta2Options = {apgarpregunta2Options}
+      apgarpregunta3Options = {apgarpregunta3Options}
+      apgarpregunta4Options = {apgarpregunta4Options}
+      apgarpregunta5Options = {apgarpregunta5Options}
+      apgarpregunta6Options = {apgarpregunta6Options}
+      apgarpregunta7Options = {apgarpregunta7Options}
+      handleSelectChange2 = {handleSelectChange2}
+      handleSelectChange = {handleSelectChange}
+      handleSelectChange3 = {handleSelectChange3}
+  
     /> },
     
  
