@@ -230,7 +230,7 @@ class Estudiante_actualizacion(serializers.ModelSerializer):
 		model = estudiante
 		fields = ['puntaje_icfes', 'telefono_res', 'celular', 'email', 'sexo', 'hijos', 'actividades_ocio_deporte',
                   'acudiente', 'telefono_acudiente', 'id_etnia', 'id_act_simultanea', 'id_identidad_gen', 'id_estado_civil',
-                  'id_cond_excepcion','vive_con', 'ult_modificacion']
+                  'id_cond_excepcion','vive_con', 'ult_modificacion', 'fecha_nac']
 class ficha_estudiante_serializer(serializers.ModelSerializer):
 	barrio_ini = serializers.SerializerMethodField(allow_null=True)
 	ciudad_ini = serializers.SerializerMethodField(allow_null=True)

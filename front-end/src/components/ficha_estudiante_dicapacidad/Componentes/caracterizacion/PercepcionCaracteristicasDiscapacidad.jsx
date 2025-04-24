@@ -7,15 +7,16 @@ import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevist
 const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
   const [stateDisabled, setStateDisabled] = useState(true);
   const { estudianteSelected } = useAuthStore();
-
   const [statePercepcionDiscapacidad, setStatePercepcionDiscapacidad] =
     useState({
       lugar: percepcion_discapacidad.lugar,
-      fecha: percepcion_discapacidad.fecha_nac,
+      fecha: percepcion_discapacidad.fecha,
 
       tipo: "datos_percepcion_caracteristicas",
       id_estudiante: estudianteSelected.id,
-      id_semestre: 40,
+      id_semestre: desencriptarInt(
+        sessionStorage.getItem("id_semestre_discapacidad")
+      ),
       id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
       jornada_caracterizacion: percepcion_discapacidad.jornada_caracterizacion,
 
@@ -191,9 +192,6 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
   const handleUpdateDatosPercepcionDiscapacidad = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    //console.log("Datos Percepción actualizados");
-    // //console.log(datos_estudiante_entrevistado);
-    //console.log(statePercepcionDiscapacidad);
 
     setStatePercepcionDiscapacidad({
       ...statePercepcionDiscapacidad,
@@ -269,11 +267,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
               name="adquisicion_discapacidad"
               id="adquisicion_discapacidad"
               placeholder="Describa la consideración"
-              value={
-                statePercepcionDiscapacidad.consideracion
-                  ? statePercepcionDiscapacidad.consideracion
-                  : ""
-              }
+              value={statePercepcionDiscapacidad.consideracion}
               onChange={(e) =>
                 setStatePercepcionDiscapacidad({
                   ...statePercepcionDiscapacidad,
@@ -403,6 +397,7 @@ const PercepcionCaracteristicasDiscapacidad = ({ percepcion_discapacidad }) => {
                     type="checkbox"
                     id="vision"
                     name="vision"
+                    value={statePercepcionDiscapacidad.vision}
                     checked={statePercepcionDiscapacidad.vision}
                     onChange={(e) =>
                       setStatePercepcionDiscapacidad({

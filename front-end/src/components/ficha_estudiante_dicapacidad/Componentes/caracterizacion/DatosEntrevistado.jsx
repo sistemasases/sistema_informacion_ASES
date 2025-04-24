@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../../../Scss/ficha_estudiante_discapacidad/formulario.css";
 import "../../../../Scss/ficha_estudiante_discapacidad/caracterizacion.css";
 import { useAuthStore } from "../../store/auth";
 import { desencriptarInt } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad";
 import UpdateDatosEntrevistador from "../../../../service/update_datos_entrevistador_disc.js";
+import Select from "react-select";
+import All_municipios from "../../../../service/all_municipios.js";
+import { set } from "date-fns";
+import { Col } from "react-bootstrap";
 
 const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
   const [stateDisabled, setStateDisabled] = useState(true);
@@ -16,7 +20,7 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
     id_semestre: desencriptarInt(
       sessionStorage.getItem("id_semestre_discapacidad")
     ),
-    fecha: datos_estudiante_entrevistado.fecha_nac,
+    fecha: datos_estudiante_entrevistado.fecha,
     lugar: datos_estudiante_entrevistado.lugar,
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
 
@@ -45,17 +49,18 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
       datos_estudiante_entrevistado.programaAcompanamientoOtro,
     programaAcompanamientoOtroData:
       datos_estudiante_entrevistado.programaAcompanamientoOtroData,
+    jornada_caracterizacion:
+      datos_estudiante_entrevistado.jornada_caracterizacion,
   });
+
+  const [stateMunicipios, setStateMunicipios] = useState([]);
 
   const handleUpdateEntrevistado = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    //console.log("Entrevistador actualizado");
-    // //console.log(datos_estudiante_entrevistado);
-    //console.log(stateEntrevistado);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(stateEntrevistado)
       .then((res) => {
-        //console.log(res);
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -64,6 +69,33 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
 
   const updateStateDisabled = () => {
     setStateDisabled(!stateDisabled);
+  };
+
+  useEffect(() => {
+    All_municipios.all_municipios().then((res) => {
+      setStateMunicipios({
+        ...stateMunicipios,
+        ciudad: res,
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    if (stateMunicipios.ciudad) {
+      const opciones = stateMunicipios.ciudad.map((municipio) => ({
+        value: municipio.nombre,
+        label: municipio.nombre,
+        id: municipio.id,
+      }));
+      setStateMunicipios({ ...stateMunicipios, opciones_municipios: opciones });
+    }
+  }, [stateMunicipios.ciudad]);
+
+  const handleSelectMunicipios = (e) => {
+    setStateEntrevistado({
+      ...stateEntrevistado,
+      ciudad: { id: e.id, nombre: e.value },
+    });
   };
 
   return (
@@ -88,30 +120,47 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
                   ) : (
                     setStateEntrevistado({
                       ...stateEntrevistado,
-                      fecha_nac: e.value,
+                      fecha_nac: e.target.value,
                     })
                   )
                 }
                 disabled={stateDisabled}
               />
               <label>Procedencia</label>
-              <input
-                type="text"
-                className="input-type-text"
-                placeholder="Ciudad"
-                value={stateEntrevistado.ciudad}
-                onChange={(e) =>
-                  setStateEntrevistado({
-                    ...stateEntrevistado,
-                    ciudad: e.target.value,
-                  })
-                }
-                disabled={stateDisabled}
-              />
+              <Col xs={"2"} md={"3"} style={{ paddingRight: 12 }}>
+                <Select
+                  className="form-control"
+                  options={stateMunicipios.opciones_municipios || []} // Se asegura que sea un array
+                  value={
+                    stateMunicipios.opciones_municipios
+                      ? (() => {
+                          const selectedOption =
+                            stateMunicipios.opciones_municipios.find(
+                              (item) =>
+                                item.value ===
+                                (!stateEntrevistado.ciudad
+                                  ? estudianteSelected.ciudad_ini
+                                  : stateEntrevistado.ciudad.nombre)
+                            );
+                          return selectedOption
+                            ? {
+                                value: selectedOption.value,
+                                label: selectedOption.label,
+                                id: selectedOption.id,
+                              }
+                            : null;
+                        })()
+                      : null
+                  }
+                  onChange={handleSelectMunicipios}
+                  disabled={stateDisabled}
+                />
+              </Col>
               <input
                 type="text"
                 className="input-type-text"
                 placeholder="País"
+                defaultValue={"Colombia"}
                 value={stateEntrevistado.pais}
                 onChange={(e) =>
                   setStateEntrevistado({
@@ -119,7 +168,8 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
                     pais: e.target.value,
                   })
                 }
-                disabled={stateDisabled}
+                // disabled={stateDisabled}
+                disabled
               />
             </div>
             <div className="separator" />
@@ -137,44 +187,43 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
                   });
                 }}
                 disabled={stateDisabled}
+                // onClick={console.log(stateEntrevistado.desarrollaActividad)}
               >
                 <option value="sin_definir">Seleccionar</option>
                 <option value="true">Si</option>
                 <option value="false">No</option>
               </select>
-              {stateEntrevistado.desarrollaActividad === "true" ||
-                (stateEntrevistado.desarrollaActividad === true && (
-                  <div className="conditional-activities">
-                    <label>¿Cuál?</label>
-                    <select
-                      className="select-type"
-                      value={
-                        stateEntrevistado.desarrollaActividadData
-                          ? stateEntrevistado.desarrollaActividadData
-                          : "Sin Definir"
-                      }
-                      onChange={(e) =>
-                        setStateEntrevistado({
-                          ...stateEntrevistado,
-                          desarrollaActividadData: e.target.value,
-                        })
-                      }
-                      disabled={stateDisabled}
-                    >
-                      <option value={"sin_definir"}>Selecionar</option>
-                      <option value={"monitor"}>Monitor(a)</option>
-                      <option value={"docente"}>Docente</option>
-                      <option value={"empelado"}>Empleado(a)</option>
-                      <option value={"representante_estudiantil"}>
-                        Representante estudiantil
-                      </option>
-                      <option value={"colectivo"}>
-                        Integrante de algún colectivo/grupo estudiantil
-                      </option>
-                      {/* <option>Otra ¿Cuál?</option> */}
-                    </select>
-                  </div>
-                ))}
+              {stateEntrevistado.desarrollaActividad === true ||
+              stateEntrevistado.desarrollaActividad === "true" ? (
+                <div className="conditional-activities">
+                  <label>¿Cuál?</label>
+                  <select
+                    className="select-type"
+                    value={stateEntrevistado.desarrollaActividadData}
+                    onChange={(e) =>
+                      setStateEntrevistado({
+                        ...stateEntrevistado,
+                        desarrollaActividadData: e.target.value,
+                      })
+                    }
+                    disabled={stateDisabled}
+                  >
+                    <option value={"sin_definir"}>Selecionar</option>
+                    <option value={"monitor"}>Monitor(a)</option>
+                    <option value={"docente"}>Docente</option>
+                    <option value={"empelado"}>Empleado(a)</option>
+                    <option value={"representante_estudiantil"}>
+                      Representante estudiantil
+                    </option>
+                    <option value={"colectivo"}>
+                      Integrante de algún colectivo/grupo estudiantil
+                    </option>
+                    {/* <option>Otra ¿Cuál?</option> */}
+                  </select>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="separator" />
             <div className="inline-input-group">
@@ -306,24 +355,26 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
                 <option value="true">Si</option>
                 <option value="false">No</option>
               </select>
-              {stateEntrevistado.actividadesOcio === "true" ||
-                (stateEntrevistado.actividadesOcio === true && (
-                  <div className="conditional-activities">
-                    <label>¿Qué actividades práctica?</label>
-                    <input
-                      type="text"
-                      className="input-type-text"
-                      value={stateEntrevistado.actividadesOcioData}
-                      onChange={(e) =>
-                        setStateEntrevistado({
-                          ...stateEntrevistado,
-                          actividadesOcioData: e.target.value,
-                        })
-                      }
-                      disabled={stateDisabled}
-                    />
-                  </div>
-                ))}
+              {stateEntrevistado.actividadesOcio === true ||
+              stateEntrevistado.actividadesOcio === "true" ? (
+                <div className="conditional-activities">
+                  <label>¿Qué actividades práctica?</label>
+                  <input
+                    type="text"
+                    className="input-type-text"
+                    value={stateEntrevistado.actividadesOcioData}
+                    onChange={(e) =>
+                      setStateEntrevistado({
+                        ...stateEntrevistado,
+                        actividadesOcioData: e.target.value,
+                      })
+                    }
+                    disabled={stateDisabled}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="separator" />
             <div className="inline-input-group">
@@ -343,24 +394,26 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
                 <option value="true">Si</option>
                 <option value="false">No</option>
               </select>
-              {stateEntrevistado.actividadDeportiva === "true" ||
-                (stateEntrevistado.actividadDeportiva === true && (
-                  <div className="conditional-activities">
-                    <label>¿Qué actividades práctica?</label>
-                    <input
-                      type="text"
-                      className="input-type-text"
-                      value={stateEntrevistado.actividadDeportivaData}
-                      onChange={(e) =>
-                        setStateEntrevistado({
-                          ...stateEntrevistado,
-                          actividadDeportivaData: e.target.value,
-                        })
-                      }
-                      disabled={stateDisabled}
-                    />
-                  </div>
-                ))}
+              {stateEntrevistado.actividadDeportiva === true ||
+              stateEntrevistado.actividadDeportiva === "true" ? (
+                <div className="conditional-activities">
+                  <label>¿Qué actividades práctica?</label>
+                  <input
+                    type="text"
+                    className="input-type-text"
+                    value={stateEntrevistado.actividadDeportivaData}
+                    onChange={(e) =>
+                      setStateEntrevistado({
+                        ...stateEntrevistado,
+                        actividadDeportivaData: e.target.value,
+                      })
+                    }
+                    disabled={stateDisabled}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="separator" />
             <div className="inline-input-group">
@@ -383,61 +436,60 @@ const DatosEntrevistado = ({ datos_estudiante_entrevistado }) => {
                 <option value="true">Si</option>
                 <option value="false">No</option>
               </select>
-              {stateEntrevistado.programaAcompanamiento === "true" ||
-                (stateEntrevistado.programaAcompanamiento === true && (
-                  <div>
-                    <label>¿Cuál?</label>
-                    <select
-                      className="programa-acompañamiento-selected"
-                      value={stateEntrevistado.programaAcompanamientoOtro}
-                      onChange={(e) =>
-                        setStateEntrevistado({
-                          ...stateEntrevistado,
-                          programaAcompanamientoOtro: e.target.value,
-                        })
-                      }
-                      disabled={stateDisabled}
-                    >
-                      <option value="sin_definir">Seleccionar</option>
-                      <option value="ASES">
-                        Estrategia de acompañamiento Ases
-                      </option>
-                      <option value="graca">Acompañamiento Graca</option>
-                      <option value="etnicidad">Proyecto de Etnicidad</option>
-                      <option value="genero">Proyecto de Género</option>
-                      <option value="campus_diverso">
-                        Proyecto Campus Diverso
-                      </option>
-                      <option value="u_saludable">Universidad Saludable</option>
-                      <option value="pro_rediversa">
-                        Práctica profesional Rediversia
-                      </option>
-                      <option value="pro_cultura">Proyecto Cultura</option>
-                      <option value="otro">Otro ¿Cuál?</option>
-                    </select>
-                    {stateEntrevistado.programaAcompanamientoOtro ===
-                      "otro" && (
-                      <div>
-                        <label>Especifica:</label>
-                        <input
-                          type="text"
-                          className="input-type-text"
-                          placeholder="Especifica aquí"
-                          value={
-                            stateEntrevistado.programaAcompanamientoOtroData
-                          }
-                          onChange={(e) =>
-                            setStateEntrevistado({
-                              ...stateEntrevistado,
-                              programaAcompanamientoOtroData: e.target.value,
-                            })
-                          }
-                          disabled={stateDisabled}
-                        />
-                      </div>
-                    )}
-                  </div>
-                ))}
+              {stateEntrevistado.programaAcompanamiento === true ||
+              stateEntrevistado.programaAcompanamiento === "true" ? (
+                <div>
+                  <label>¿Cuál?</label>
+                  <select
+                    className="programa-acompañamiento-selected"
+                    value={stateEntrevistado.programaAcompanamientoOtro}
+                    onChange={(e) =>
+                      setStateEntrevistado({
+                        ...stateEntrevistado,
+                        programaAcompanamientoOtro: e.target.value,
+                      })
+                    }
+                    disabled={stateDisabled}
+                  >
+                    <option value="sin_definir">Seleccionar</option>
+                    <option value="ASES">
+                      Estrategia de acompañamiento Ases
+                    </option>
+                    <option value="graca">Acompañamiento Graca</option>
+                    <option value="etnicidad">Proyecto de Etnicidad</option>
+                    <option value="genero">Proyecto de Género</option>
+                    <option value="campus_diverso">
+                      Proyecto Campus Diverso
+                    </option>
+                    <option value="u_saludable">Universidad Saludable</option>
+                    <option value="pro_rediversa">
+                      Práctica profesional Rediversia
+                    </option>
+                    <option value="pro_cultura">Proyecto Cultura</option>
+                    <option value="otro">Otro ¿Cuál?</option>
+                  </select>
+                  {stateEntrevistado.programaAcompanamientoOtro === "otro" && (
+                    <div>
+                      <label>Especifica:</label>
+                      <input
+                        type="text"
+                        className="input-type-text"
+                        placeholder="Especifica aquí"
+                        value={stateEntrevistado.programaAcompanamientoOtroData}
+                        onChange={(e) =>
+                          setStateEntrevistado({
+                            ...stateEntrevistado,
+                            programaAcompanamientoOtroData: e.target.value,
+                          })
+                        }
+                        disabled={stateDisabled}
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>

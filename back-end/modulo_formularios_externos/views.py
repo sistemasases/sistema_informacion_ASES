@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from modulo_usuario_rol.models import User, firma_tratamiento_datos
 from modulo_usuario_rol.serializers import firma_tratamiento_datos_serializer
+from datetime import datetime, timedelta
 
 
 class sede_viewsets (viewsets.ModelViewSet):
@@ -43,7 +44,6 @@ class enviar_monitorias_viewsets(viewsets.GenericViewSet):
     def list(self, request):
         queryset = monitoria_academica.objects.filter(estado=True)
         serializer = monitoria_academica_serializer(queryset, many=True)
-        print(serializer.data)
         list_monitorias = []
         for monitoria in serializer.data:
 
@@ -72,14 +72,42 @@ class form_asistencia_academica(viewsets.GenericViewSet):
         except:
             return Response({'mensaje': 'No se encuentra el código suministrado en la Base de datos'}, status=status.HTTP_404_NOT_FOUND)
 
-        monitoria_resquest = monitoria_academica.objects.get(
+        monitoria_request = monitoria_academica.objects.get(
             id=int(request.data["id_monitoria"]))
 
-        asistencia_creada = asistencia.objects.create(
-            id_monitoria=monitoria_resquest,
-            id_estudiante=estudiante_request,
-        )
-        return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
+        # verificacion 2 en 1 día
+        asistencias = asistencia.objects.filter(
+            id_estudiante=estudiante_request.id)
+        try:
+            if not asistencias:
+                asistencia_creada = asistencia.objects.create(
+                    id_monitoria=monitoria_request,
+                    id_estudiante=estudiante_request,
+                )
+                return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
+            else:
+                fecha_request = str(request.data["fecha"])
+                monitoria_id = int(request.data["id_monitoria"])
+
+                for i in asistencias:
+                    fecha_asistencia = str(i.fecha)
+                    if fecha_request == fecha_asistencia and monitoria_id == i.id_monitoria.id:
+                        return Response(
+                            {'mensaje': 'El estudiante ya asistió a esta monitoria en la fecha suministrada'},
+                            status=status.HTTP_409_CONFLICT
+                        )
+
+                # Si no se encontró conflicto, crea el registro
+                asistencia_creada = asistencia.objects.create(
+                    id_monitoria=monitoria_request,
+                    id_estudiante=estudiante_request,
+                )
+                return Response({'mensaje': 'Registro creado.'}, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            # print(f"Error durante la transacción: {e}")
+            return Response({'mensaje': 'Ocurrió un error durante la transacción, intente nuevamente.'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class form_primer_ingreso(viewsets.GenericViewSet):
@@ -87,7 +115,7 @@ class form_primer_ingreso(viewsets.GenericViewSet):
     serializer_class = estudiante_serializer
 
     def create(self, request):
-        print(request.data)
+        # print(request.data)
         if (programa.objects.filter(id=int(
                 request.data["programa"]))):
             programa_data = programa.objects.get(id=int(
@@ -137,8 +165,8 @@ class form_primer_ingreso(viewsets.GenericViewSet):
                 nombre=str(request.data["nombre"]),
                 apellido=str(request.data["apellido"]),
                 cod_univalle=int(request.data["codigo_estudiante"]),
-                estudiante_elegible = False,
-                es_academico = True
+                estudiante_elegible=False,
+                es_academico=True
             )
             estudiante_prog = programa_estudiante.objects.create(
                 id_programa=programa.objects.get(
@@ -156,30 +184,63 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
     serializer_class = firma_tratamiento_datos_serializer
 
     def create(self, request):
+        # print(request.data)
         serializer = firma_tratamiento_datos_serializer(data=request.data)
         if serializer.is_valid():
             documento = serializer.data["documento"]
             if estudiante.objects.filter(num_doc=documento).exists():
                 consulta_estudiante = estudiante.objects.filter(
-                    num_doc=documento).first()
-                if firma_tratamiento_datos.objects.filter(id_estudiante=consulta_estudiante).exists():
+                    num_doc=documento)
+                # print(consulta_estudiante)
+                firma_creada = False  # Bandera para verificar si se creó una firma
+
+                for estudiante_firma in consulta_estudiante:
+                    print(estudiante_firma)
+                    if estudiante_firma.firma_existe == False:
+                        try:
+                            estudiante_firma.firma_existe = True
+                            estudiante_firma.save()
+                            if firma_tratamiento_datos.objects.filter(id_estudiante=estudiante_firma).exists():
+                                return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
+                            Firma = firma_tratamiento_datos.objects.create(
+                                id_estudiante=estudiante_firma,
+                                fecha_firma=serializer.data["fecha_firma"],
+                                tipo_id_estudiante=serializer.data["tipo_id_estudiante"],
+                                nombre_firma=serializer.data["nombre_firma"],
+                                correo_firma=serializer.data["correo_firma"],
+                                autoriza_tratamiento_datos=bool(
+                                    serializer.data["autoriza_tratamiento_datos"]
+                                ),
+                                autoriza_tratamiento_imagen=bool(
+                                    serializer.data["autoriza_tratamiento_imagen"]
+                                )
+                            )
+                            firma_creada = True  # Actualizamos la bandera
+                        except Exception as e:
+                            print(f"Error al crear la firma: {str(e)}")
+                            return Response({'Respuesta': 'Error al crear la firma'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                    else:
+                        if firma_tratamiento_datos.objects.filter(id_estudiante=estudiante_firma).exists():
+                            return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
+                        Firma = firma_tratamiento_datos.objects.create(
+                            id_estudiante=estudiante_firma,
+                            fecha_firma=serializer.data["fecha_firma"],
+                            tipo_id_estudiante=serializer.data["tipo_id_estudiante"],
+                            nombre_firma=serializer.data["nombre_firma"],
+                            correo_firma=serializer.data["correo_firma"],
+                            autoriza_tratamiento_datos=bool(
+                                serializer.data["autoriza_tratamiento_datos"]
+                            ),
+                            autoriza_tratamiento_imagen=bool(
+                                serializer.data["autoriza_tratamiento_imagen"]
+                            )
+                        )
+                        firma_creada = True  # Actualizamos la bandera
+                # Si al final del for no se creó ninguna firma, mostramos la alerta
+                if firma_creada == False:
                     return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
-                try:
-                    Firma = firma_tratamiento_datos.objects.create(
-                        id_estudiante=consulta_estudiante,
-                        fecha_firma=serializer.data["fecha_firma"],
-                        tipo_id_estudiante=serializer.data["tipo_id_estudiante"],
-                        nombre_firma=serializer.data["nombre_firma"],
-                        correo_firma=serializer.data["correo_firma"],
-                        autoriza_tratamiento_datos=bool(
-                            serializer.data["autoriza_tratamiento_datos"]),
-                        autoriza_tratamiento_imagen=bool(
-                            serializer.data["autoriza_tratamiento_imagen"])
-                    )
+                else:
                     return Response({'Respuesta': 'Se creó la firma'}, status=status.HTTP_200_OK)
-                except Exception as e:
-                    print(f"Error al crear la firma: {str(e)}")
-                    return Response({'Respuesta': 'Error al crear la firma'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 return Response({'Respuesta': 'No existe un estudiante con ese documento'}, status=status.HTTP_404_NOT_FOUND)
         else:

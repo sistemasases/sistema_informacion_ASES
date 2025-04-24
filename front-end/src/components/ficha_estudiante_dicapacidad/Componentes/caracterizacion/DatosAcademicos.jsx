@@ -25,7 +25,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
     id_semestre: desencriptarInt(
       sessionStorage.getItem("id_semestre_discapacidad")
     ),
-    fecha: datos_academicos.fecha_nac,
+    fecha: datos_academicos.fecha,
 
     lugar: datos_academicos.lugar,
     id_creador: desencriptarInt(sessionStorage.getItem("id_usuario")),
@@ -51,6 +51,7 @@ const DatosAcademicos = ({ datos_academicos }) => {
       datos_academicos.edu_superior_dificultad_apoyo,
     periodo_ingreso: datos_academicos.periodo_ingreso,
     observaciones_adicionales: datos_academicos.observaciones_adicionales,
+    jornada_caracterizacion: "",
   });
 
   const motivosRetiro = [
@@ -103,8 +104,6 @@ const DatosAcademicos = ({ datos_academicos }) => {
   const handleUpdateDatosAcademicos = (e) => {
     e.preventDefault();
     setStateDisabled(true);
-    //console.log("Datos Academicos actualizados");
-    //console.log(stateDatosAcademicos);
     UpdateDatosEntrevistador.Update_datos_entrevistador_disc(
       stateDatosAcademicos
     )
@@ -132,8 +131,8 @@ const DatosAcademicos = ({ datos_academicos }) => {
               type="date"
               id="year"
               name="year"
-              min="1990"
-              max="2099"
+              min="1980-01-01"
+              max="2099-12-31"
               step="1"
               placeholder="Ingresa el año"
               value={stateDatosAcademicos.anio_ingreso}
@@ -1105,6 +1104,8 @@ const DatosAcademicos = ({ datos_academicos }) => {
                 type="date"
                 className="input-type-date"
                 name="anio_ingreso"
+                min="1990-01-01"
+                max="2099-12-31"
                 id="anio_ingreso"
                 value={
                   stateDatosAcademicos.periodo_ingreso

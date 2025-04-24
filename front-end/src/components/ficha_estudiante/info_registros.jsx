@@ -18,6 +18,7 @@ import {
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const Info_registros = (props) => {
+  // console.log(props);
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
@@ -42,6 +43,7 @@ const Info_registros = (props) => {
   useEffect(() => {
     let formData = new FormData();
     formData.append("id_estudiante", props.id_estudiante);
+    // console.log(props.id_estudiante);
     formData.append(
       "id_semestre",
       desencriptarInt(sessionStorage.getItem("id_semestre_actual"))
@@ -61,12 +63,14 @@ const Info_registros = (props) => {
         });
       })
       .catch((err) => {
-        console.log("estos son los primeros datos :" + state.data_user);
+        // console.log("estos son los primeros datos :" + state.data_user);
       });
   }, [props.id_estudiante]);
 
   useEffect(() => {
-    Semestre_por_sede.semestre_por_sede(desencriptarInt(sessionStorage.getItem("sede_id"))).then((res) => {
+    Semestre_por_sede.semestre_por_sede(
+      desencriptarInt(sessionStorage.getItem("sede_id"))
+    ).then((res) => {
       // console.log(res);
       set_semestres({
         ...semestres,
@@ -153,7 +157,7 @@ const Info_registros = (props) => {
         // console.log(state);
       })
       .catch((err) => {
-        console.log("estos son los primeros datos :" + err);
+        // console.log("estos son los primeros datos :" + err);
       });
   };
 

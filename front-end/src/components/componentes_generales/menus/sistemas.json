@@ -36,6 +36,14 @@
                 "path":"/admin_usuarios",
                 "name":"Admin usuarios",
                 "icon":"bi bi-file-earmark-arrow-down"
+            },{
+                "path":"/horas_monitores",
+                "name":"Horas de monitores",
+                "icon":"bi bi-clock-fill"
+            },{
+                "path": "/hoja_monitor",
+                "name": "Hoja de monitores",
+                "icon": "bi bi-file-earmark-person"
             }
         ]
     },
@@ -132,14 +140,14 @@
                 "icon":"bi bi-calculator-fill"
             },
             {
-                "path":"/academico_reportes",
-                "name":"Reportes Calificador",
-                "icon":"bi bi-body-text"
-            },
-            {
                 "path":"/academico_asistencia",
                 "name":"Control de asistencia",
-                "icon":"bi bi-pencil-square"
+                "icon":"bi bi-card-checklist"
+            },
+            {
+                "path":"/academico_listado_asistencia",
+                "name":"Listado de asistencia",
+                "icon":"bi bi-card-list"
             }
         ]
     },

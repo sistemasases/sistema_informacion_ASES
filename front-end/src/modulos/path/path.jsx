@@ -33,9 +33,11 @@ import FichaEstudianteV2 from "../ficha_estudiante_V2/FichaEstudianteV2.jsx";
 
 import Academico_reportes from "../../modulos/academico_reportes/academico_reportes.jsx";
 import AcademicoAsistencia from '../academico_asistencia/AcademicoAsistencia.jsx';
+import AcademicoListadoAsistencia from '../academico_asistencia/AcademicoListadoAsistencia.jsx';
 
 import Gestion_usuario_roles from '../admin/admin.jsx';
-
+import HorasMonitores from '../../components/horas_monitores/horas_monitores.jsx';
+import HojaMonitor from '../../components/horas_monitores/hoja_monitor.jsx';
 /**
  * Controla las rutas del path
 */
@@ -58,6 +60,7 @@ const Path = (props) => {
           {path == '/academico' ? (<Academico_pestaña path_actual={"desercion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path === '/academico_reportes' ? (<Academico_reportes path_actual={"desercion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/academico_asistencia') ? ( <AcademicoAsistencia path_actual={"academico_asistencia"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith('/academico_listado_asistencia') ? ( <AcademicoListadoAsistencia path_actual={"academico_listado_asistencia"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/calificador:profesor/:curso/:cod/:franja') ? (<Calificador path_actual={"desercion"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith('/admin_usuario') ? (<Gestion_usuario_roles path_actual={"/admin_usuario"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
 
@@ -75,6 +78,9 @@ const Path = (props) => {
           {path.startsWith("/reporte_discapacidad") ? (<ReporteDiscapacidad path_actual={"/reporte_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/registro_discapacidad") ? (<Registro path_actual={"/registro_discapacidad"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/ficha_est_v2") ? (<FichaEstudianteV2 path_actual={"/ficha_est_v2"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+
+          {path.startsWith("/horas_monitores") ? (<HorasMonitores path_actual={"/horas_monitores"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/hoja_monitor") ? (<HojaMonitor path_actual={"/hoja_monitor"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
         </>
       ) : (
         <Pagina_no_encontrada/>

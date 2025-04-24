@@ -20,6 +20,7 @@ import { Row, Col } from "styled-bootstrap-grid";
 import axios from "axios";
 
 const Ficha_estudiante = (props) => {
+  // console.log(props);
   // Constante para guardar el token
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),

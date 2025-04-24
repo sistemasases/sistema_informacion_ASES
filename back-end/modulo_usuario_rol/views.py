@@ -332,14 +332,22 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             
             
     # Función para verificar si el tratamiento de datos está autorizado o no
-    def get_firma(self, firma):
-        if firma:
-            if firma[0]['autoriza_tratamiento_datos']  == True:
-                return 'AUTORIZA'
-            elif firma[0]['autoriza_tratamiento_datos'] == False:
-                return 'NO AUTORIZA'
+    # def get_firma(self, firma):
+    #     if firma:
+    #         if firma[0]['autoriza_tratamiento_datos']  == True:
+    #             return 'AUTORIZA'
+    #         elif firma[0]['autoriza_tratamiento_datos'] == False:
+    #             return 'NO AUTORIZA'
+    #     else:
+    #         return "SIN FIRMAR"
+
+    def get_firma(self, firma_existe):
+        if firma_existe:
+            return 'AUTORIZA'
         else:
-            return "SIN FIRMAR"
+            return 'SIN AUTORIZAR'
+
+
     # Se redefine la función retrieve para poder traer todos los campos que se relacionan con el estudiante, independeinte de si estan en el modelo estudiante o no.
     # Esta función es utlizada en la vista Ficha del Estudiante.
 
@@ -406,15 +414,51 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             }
 
                   
+        # try:
+        #     firma_tratamiento = firma_tratamiento_datos.objects.filter(
+        #             id_estudiante=pk).values()
+        #     firma = {
+        #         'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+        #     }
+        # except firma_tratamiento_datos.DoesNotExist:
+        #     firma = {
+        #         'firma_tratamiento_datos': 'SIN FIRMAR'
+        #     }
+            
+        # try:
+        #     def get_firma_tratamiento(self, firma):
+        #         if firma:
+        #             if firma == True:
+        #                 return 'AUTORIZA'
+        #             elif firma == False:
+        #                 return 'NO AUTORIZA'
+        #         else:
+        #             return "SIN FIRMAR"
+                
+        #     i
+        # except:
+
+        #     pass
+        
+
+            # try:
+            # firma_existe = estudiante.objects.filter(pk=pk).values_list('firma_existe', flat=True).first()
+            # firma = {
+            #     'firma_tratamiento_datos': get_firma(firma_existe),
+            # }
+            # except estudiante.DoesNotExist:
+            # firma = {
+            #     'firma_tratamiento_datos': 'SIN AUTORIZAR'
+            # }
+
         try:
-            firma_tratamiento = firma_tratamiento_datos.objects.filter(
-                    id_estudiante=pk).values()
+            firma_existe = estudiante.objects.filter(pk=pk).values_list('firma_existe', flat=True).first()
             firma = {
-                'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                'firma_tratamiento_datos': self.get_firma(firma_existe),
             }
-        except firma_tratamiento_datos.DoesNotExist:
+        except estudiante.DoesNotExist:
             firma = {
-                'firma_tratamiento_datos': 'SIN FIRMAR'
+                'firma_tratamiento_datos': 'SIN AUTORIZAR'
             }
 
         
@@ -516,6 +560,7 @@ class estudiante_viewsets(viewsets.ModelViewSet):
             var_estudiante.telefono_acudiente = serializer.data['telefono_acudiente']
             var_estudiante.vive_con = serializer.data['vive_con']
             var_estudiante.ult_modificacion = serializer.data['ult_modificacion']
+            var_estudiante.fecha_nac = serializer.data['fecha_nac']
             try:
                 etnia_obj = etnia.objects.get(id=serializer.data['id_etnia'])
                 var_estudiante.id_etnia = etnia_obj
@@ -1213,6 +1258,8 @@ class ultimo_seguimiento_individual_ViewSet(viewsets.ModelViewSet):
 
         try:
             # Obtener el seguimiento más reciente del estudiante especificado
+            # print('request.data')
+            # print(request.data)
             seguimiento_reciente = riesgo_individual.objects.get(id_estudiante=request.data["id_estudiante"],id_semestre=request.data["id_semestre"])
 
             # Crear un diccionario con los datos de riesgo del seguimiento

@@ -58,17 +58,21 @@ class estudiante_por_rol_viewsets(viewsets.ModelViewSet):
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
-        elif data_usuario_rol == "super_ases":
-
-            serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
-
-            return Response(serializer_estudiante.data)
-
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+        elif data_usuario_rol == "traer_todos_estudiantes":
 
             list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+            return Response(serializer_estudiantes.data)
+
+            # serializer_estudiante = estudiante_serializer(estudiante.objects.all(), many=True)
+            # return Response(serializer_estudiante.data)
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "super_ases":
+            list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes,estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
@@ -142,16 +146,18 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
-        elif data_usuario_rol == "super_ases":
-            final_list_estudiantes = list()
-            list_estudiantes = estudiante.objects.all()
-            serializer_estudiantes = estudiante_serializer(estudiante.objects.all(), many=True)
-
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+        elif data_usuario_rol == "traer_todos_estudiantes":
             final_list_estudiantes = list()
             list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "super_ases":
+            final_list_estudiantes = list()
+            list_id_programas = programa.objects.filter(id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes,estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
         elif data_usuario_rol == "dir_programa":
@@ -181,6 +187,7 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
         programas_estudiantes = programa_estudiante.objects.filter(id_estudiante__in=list_estudiantes)
         programa_data = programa.objects.in_bulk(programas_estudiantes.values_list('id_programa_id', flat=True))
         estado_data = estado_programa.objects.in_bulk(programas_estudiantes.values_list('id_estado_id', flat=True))
+        
         sedes = sede.objects.in_bulk([programa_data[programa_id].id_sede_id for programa_id in programa_data])
 
         # Obtener los datos relacionados con el último seguimiento de una vez
@@ -222,27 +229,58 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
 
             try:
                 programa_del_estudiante = programas_estudiantes.filter(id_estudiante=data_del_estudiante['id']).first()
+                # print(programa_del_estudiante)
+                programa_estudiante_data = programa_estudiante.objects.filter(id_estudiante=data_del_estudiante['id']).values('id_programa', 'id_estado')
+                # print(programa_estudiante_data)
+                
                 cohorte_estudiante_data = cohorte_estudiante.objects.filter(id_estudiante=data_del_estudiante['id']).values('id_cohorte')
                 # print(cohorte_estudiante_data)
                 cohorte_data = cohorte.objects.filter(id__in=cohorte_estudiante_data).values('id_number')
                 # print(cohorte_data)
 
+                # dic_programa = {
+                #     'id_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
+                #     'programa_academico': programa_data[programa_del_estudiante.id_programa_id].nombre,
+                #     'sede': sedes[programa_data[programa_del_estudiante.id_programa_id].id_sede_id].nombre
+                # }
                 dic_programa = {
-                    'id_programa': programa_data[programa_del_estudiante.id_programa_id].codigo_univalle,
-                    'programa_academico': programa_data[programa_del_estudiante.id_programa_id].nombre,
-                    'sede': sedes[programa_data[programa_del_estudiante.id_programa_id].id_sede_id].nombre
+                    'programas': []
                 }
-
+                
                 dic_reg_academico = {
-                    'registro_academico': estado_data[programa_del_estudiante.id_estado_id].nombre
+                    'registro_academico': []
                 }
+                
+                for programa_ in programa_estudiante_data:
+                    # Obtiene la información del programa académico
+                    id_programa = programa_['id_programa']
+                    programa_info = programa_data.get(id_programa)  # Obtener información del programa
+                    
+                    # Obtiene el estado del registro académico de cada programa
+                    id_estado = programa_['id_estado']
+                    estado_info = estado_data.get(id_estado)  # Obtener información del estado
+                    
+                    if programa_info:
+                        dic_programa['programas'].append({
+                            'id_programa': programa_data[id_programa].codigo_univalle,
+                            'programa_academico': programa_data[id_programa].nombre,
+                            'sede': sedes[programa_data[id_programa].id_sede_id].nombre,
+                        })
+                        
+                    if estado_info:
+                        dic_reg_academico['registro_academico'].append({
+                            'estado': estado_info.nombre
+                        })          
+                   
                 
                 dic_cohorte = {
-                    'cohorte': cohorte_data[0]['id_number']
+                    'cohorte': list(cohorte_data.values_list('id_number', flat=True))
                 }
                 
 
-            except:
+            except Exception as e:
+                print("Error en la consulta de programas")
+                print(e)
                 dic_programa = {
                     'id_programa': '',
                     'programa_academico': 'N/A',

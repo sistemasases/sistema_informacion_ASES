@@ -24,6 +24,7 @@ import "../../Scss/formularios_externos/formulario_primer_ingreso_style.css";
 import All_sedes_formularios_externos from "../../service/all_sedes_formularios_externos";
 import All_program_formularios_externos from "../../service/all_programas_formularios_externos";
 import Formulario_primer_ingreso from "../../service/formularios_externos_primer_ingreso_envio";
+import Swal from "sweetalert2";
 
 const FormularioPrimerIngreso = (props) => {
   const [documentType, setDocumentType] = useState("");
@@ -43,15 +44,6 @@ const FormularioPrimerIngreso = (props) => {
     { id: 2, value: "NB", label: "No Binario" },
     { id: 3, value: "O", label: "Otro" },
   ];
-
-  // const url = encriptar("formulario_autorizacion");
-  // // console.log(url);
-  // const decrypt_url = desencriptar("url");
-  // // console.log(decrypt_url);
-
-  // URL: Asistencias : U2FsdGVkX19rLu/6uWbJJimIQLdYOg9C1x5ik8/+NlWI7bOkLOSOd1Q5Pi0NE/a/
-  // URL: Autorización: U2FsdGVkX18hjszpddLoSgU/HywzCP8D13edFaHOV+PmxYYqsxUx7dICZxdkz/bz
-  // URL: Primer Ingreso: U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7
 
   useEffect(() => {
     All_program_formularios_externos.all_program_formularios_externos()
@@ -141,6 +133,10 @@ const FormularioPrimerIngreso = (props) => {
     // const regex = /^[a-zA-Z-]*$/;
     const regex = /^[0-9]*$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const documento = /^\d*$/;
+    const regexCodigo = /^-?\d*$/;
+
+    console.log(data);
     if (
       data.codigo_estudiante === "" ||
       data.nombre === "" ||
@@ -152,23 +148,90 @@ const FormularioPrimerIngreso = (props) => {
       data.celular === "" ||
       data.programa === ""
     ) {
-      alert("Por favor llene todos los campos obligatorios");
+      // alert("Por favor llene todos los campos obligatorios");
+      console.log(data);
+      Swal.fire({
+        title: "Mensaje de alerta",
+        text: "Por favor, verifica que todos los campos obligatorios estén llenos antes de enviar",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Aceptar",
+        // cancelButtonText: "No",
+      });
       return;
     } else if (data.celular <= 0 || data.num_doc <= 0) {
       alert("El número de celular o documento no puede ser negativo");
-    } else if (data.celular.length > 15) {
-      alert("El número celular debe ser inferior a 20 dígitos");
+      Swal.fire({
+        title: "Error",
+        text: "El número de celular o documento no puede ser negativo",
+        icon: "error",
+        timer: 1300,
+        showConfirmButton: false,
+      });
+    } else if (data.celular.length > 10) {
+      let text = "El número celular debe ser inferior a 10 dígitos";
+      Swal.fire({
+        title: "Error",
+        text: text,
+        icon: "error",
+        timer: 1300,
+        showConfirmButton: false,
+      });
     } else if (regex.test(data.celular) == false) {
-      alert("Ocurrió un error");
+      // alert("Ocurrió un error");
+      let text = "El número de celular no puede contener letras";
+      Swal.fire({
+        title: "Error",
+        text: text,
+        icon: "error",
+        timer: 1300,
+        showConfirmButton: false,
+      });
       setPhoneError("El número de celular no puede contener letras");
     } else if (data.codigo_estudiante.length !== 7) {
-      alert("Ocurrió un error");
+      // alert("Ocurrió un error");
+      let text = "El código no debe ser mayor ni menor a 7 dígitos";
+      Swal.fire({
+        title: "Error",
+        text: text,
+        icon: "error",
+        timer: 1300,
+        showConfirmButton: false,
+      });
       setError("El código no debe ser mayor ni menor a 7 dígitos");
     } else if (emailRegex.test(data.correo) == false) {
-      alert("Ocurrió un error");
+      // alert("Ocurrió un error");
+      let text =
+        "El correo ingresado no tiene un formato válido. Por favor, corrígelo para continuar.";
+      Swal.fire({
+        title: "Error",
+        text: text,
+        icon: "error",
+        timer: 1300,
+        showConfirmButton: false,
+      });
       setEmailError("El correo no tiene un formato válido");
+    } else if (documento.test(data.num_doc) == false) {
+      let text = "El número de documento no puede contener letras";
+      Swal.fire({
+        title: "Error",
+        text: text,
+        icon: "error",
+        timer: 1300,
+        showConfirmButton: false,
+      });
     } else if (regex.test(data.codigo_estudiante) == false) {
-      alert("Ocurrió un error");
+      // alert("Ocurrió un error");
+      let text =
+        "El código de estudiante no puede contener caracteres especiales";
+      Swal.fire({
+        title: "Error",
+        text: text,
+        icon: "error",
+        timer: 1300,
+        showConfirmButton: false,
+      });
       setError(
         "El código de estudiante no puede contener caracteres especiales"
       );
@@ -377,7 +440,14 @@ const FormularioPrimerIngreso = (props) => {
                               celular: value,
                             });
                           } else {
-                            alert("El número de celular no puede ser negativo");
+                            // alert("El número de celular no puede ser negativo");
+                            Swal.fire({
+                              title: "Error",
+                              text: "El número de celular no puede ser negativo",
+                              icon: "error",
+                              timer: 1300,
+                              showConfirmButton: false,
+                            });
                           }
                         }}
                       />
@@ -469,7 +539,7 @@ const FormularioPrimerIngreso = (props) => {
                         Documento <label style={{ color: "red" }}> *</label>
                       </Form.Label>
                       <Form.Control
-                        type="text"
+                        type="number"
                         placeholder="Tu respuesta"
                         onChange={(e) =>
                           setData({

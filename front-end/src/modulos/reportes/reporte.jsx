@@ -13,6 +13,7 @@ import {
   desencriptarInt,
   decryptTokenFromSessionStorage,
   encriptar,
+  encriptarInt,
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import DataTable from "react-data-table-component";
 import React, { useState, useEffect } from "react";
@@ -20,6 +21,8 @@ import myGif from "../reportes/loading_data.gif";
 import writeXlsxFile from "write-excel-file";
 import { CSVLink } from "react-csv";
 import axios from "axios";
+import All_sede_service from "../../service/all_sede";
+import Select from "react-select";
 
 // Columnas del reporte
 var columns = [
@@ -91,6 +94,7 @@ var restore = [];
 var inner_column_data;
 
 const Reporte = () => {
+  const userRole = desencriptar(sessionStorage.getItem("rol"));
   // Constante que guarda la información del estudiante
   const [state, set_state] = useState({ estudiante: [] });
   // Constante que guarda la información de la busqueda
@@ -98,7 +102,20 @@ const Reporte = () => {
     busqueda: "",
   });
   // Constante que guarda la información de los cohorte
+
+  const opciones = [];
   const [cohorte_list, set_cohorte_list] = useState({ cohorte: [] });
+
+  // Sedes
+  const [stateSedes, setSedes] = useState({ sedes: [] });
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  useEffect(() => {
+    sessionStorage.getItem("selectedSede")
+      ? sessionStorage.removeItem("selectedSede")
+      : sessionStorage.setItem("selectedSede", "");
+  }, []);
+
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
     let rol = desencriptar(sessionStorage.getItem("rol"));
@@ -124,6 +141,7 @@ const Reporte = () => {
     };
     estudiantes_por_rol();
   }, []);
+
   // Conexión con el back para traer los estudiantes por filtro
   useEffect(() => {
     let rol = desencriptar(sessionStorage.getItem("rol"));
@@ -132,6 +150,12 @@ const Reporte = () => {
 
     // Funcion que busca el reporte del estudiante logueado.
     const riesgos_estudiante = async () => {
+      // Deshabilitar el botón de traer todos los estudiantes, mientras se hace la consulta
+      document
+        .getElementsByName("bring_them_on")[0]
+        .setAttribute("disabled", "true");
+      // Deshabilitar el selector de sedes mientras se hace la consulta
+      setIsDisabled(true);
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
@@ -145,8 +169,16 @@ const Reporte = () => {
         });
         setFiltered(response.data);
         // Oculta el gif de carga
+
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
+        // Habilita el botón de traer todos los estudiantes una vez termina la consulta
+        document
+          .getElementsByName("bring_them_on")[0]
+          .removeAttribute("disabled");
+        // Habilita el selector de sedes
+        setIsDisabled(false);
+
         // Obtiene una lista con la clase de los checks hijos
         var child_checks = document.getElementsByClassName("mb-2");
         // Recorre la lista para habilitarlos una vez termina la consula
@@ -163,12 +195,51 @@ const Reporte = () => {
     };
     riesgos_estudiante();
   }, []);
+
+  // Sedes
+  useEffect(() => {
+    All_sede_service.all_sede()
+      .then((res) => {
+        if (res && Array.isArray(res)) {
+          setSedes({
+            ...stateSedes,
+            sedes: res,
+          });
+          // console.log("Respuesta de la API:", res);
+          // console.log(stateSedes);
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener datos de la API:", error);
+      });
+  }, []);
+
+  const handle_sedes = () => {
+    for (let i = 0; i < opciones.length; i++) {
+      opciones.splice(i);
+    }
+
+    for (var i = 0; i < stateSedes.sedes["length"]; i++) {
+      const dato = {
+        value: stateSedes.sedes[i]["nombre"],
+        label: stateSedes.sedes[i]["nombre"],
+        id: stateSedes.sedes[i]["id"],
+      };
+      opciones.push(dato);
+    }
+  };
+
   // Llenar el csv con la info obtenida
   const csv_conversion = (item) => {
     var label = item.name;
-    var key = item.value;
+    var key =
+      item.value === "programa_academico"
+        ? "csv_programa_academico"
+        : item.value;
+
     csv_headers.push({ label: label, key: key });
   };
+
   // Saca cada item del csv
   const csv_pop = (item) => {
     csv_headers.map((item_csv, index) => {
@@ -179,6 +250,7 @@ const Reporte = () => {
   };
   // Actualiza las columnas
   const schema_push = (item) => {
+    // console.log(item);
     let tipo;
     if (
       item.name === "Código univalle" ||
@@ -188,12 +260,31 @@ const Reporte = () => {
     } else {
       tipo = String;
     }
-    schema.push({
-      column: item.name,
-      type: tipo,
-      value: (student) => student[item.value],
-    });
+
+    if (item.name === "Programa académico") {
+      schema.push({
+        column: item.name,
+        type: tipo,
+        value: (student) => {
+          if (!Array.isArray(student.programas)) return "Sin datos";
+          return student.programas
+            .map(
+              (programa) =>
+                `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`
+            )
+            .join(" | ");
+        },
+      });
+    } else {
+      // console.log(schema);
+      schema.push({
+        column: item.name,
+        type: tipo,
+        value: (student) => String(student[item.value]),
+      });
+    }
   };
+
   // Saca cada item del schema
   const schema_pop = (item) => {
     schema.map((item_schema, index) => {
@@ -292,34 +383,52 @@ const Reporte = () => {
     {
       name: "Registro Académico",
       value: "registro_academico",
-      selector: (row) => row.registro_academico,
+      selector: (row) => {
+        // Verifica si row.registro_academico existe y es un array antes de usar .map()
+        if (!Array.isArray(row.registro_academico)) return "Sin datos";
+
+        return row.registro_academico
+          .map((registro_acad) => registro_acad.estado)
+          .join(" | ");
+      },
       sortable: true,
       isCheck: false,
+      wrap: true,
     },
   ];
   // Filtro por programa y sede
   const filtros_Academico = [
-    {
-      name: "Código programa académico",
-      value: "id_programa",
-      selector: (row) => row.id_programa,
-      sortable: true,
-      isCheck: false,
-    },
+    // {
+    //   name: "Código programa académico",
+    //   value: "id_programa",
+    //   selector: (row) => row.id_programa,
+    //   sortable: true,
+    //   isCheck: false,
+    // },
     {
       name: "Programa académico",
       value: "programa_academico",
-      selector: (row) => row.programa_academico,
+      selector: (row) => {
+        // Verifica si row.programas existe y es un array antes de usar .map()
+        if (!Array.isArray(row.programas)) return "Sin datos";
+        return row.programas
+          .map(
+            (programa) =>
+              `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`
+          )
+          .join(", ");
+      },
       sortable: true,
       isCheck: false,
+      wrap: true,
     },
-    {
-      name: "Sede",
-      value: "sede",
-      selector: (row) => row.sede,
-      sortable: true,
-      isCheck: false,
-    },
+    // {
+    //   name: "Sede",
+    //   value: "sede",
+    //   selector: (row) => row.sede,
+    //   sortable: true,
+    //   isCheck: false,
+    // },
   ];
   // Filtro por asignación
   const filtros_Asignaciones = [
@@ -399,7 +508,10 @@ const Reporte = () => {
     {
       name: "Cohorte",
       value: "cohorte",
-      selector: (row) => row.cohorte,
+      selector: (row) => {
+        // Si row.cohorte es un array, une sus elementos con comas. Si no, devuelve una cadena vacía.
+        return Array.isArray(row.cohorte) ? row.cohorte.join(", ") : "";
+      },
       sortable: true,
       isCheck: false,
       with: "180px",
@@ -480,7 +592,7 @@ const Reporte = () => {
         );
       });
       const empty_estado = state.estudiante;
-      console.log(estado_select);
+      // console.log(estado_select);
       const filtered_data =
         data_filtered.length > 0
           ? data_filtered
@@ -491,31 +603,45 @@ const Reporte = () => {
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: REGISTRO
     if (e.target.name === "Registro Académico") {
-      const data_filtered = filtered.filter((row) =>
-        row.registro_academico
-          .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+      const data_filtered = filtered.filter(
+        (row) =>
+          Array.isArray(row.registro_academico) &&
+          row.registro_academico.some((registro_acad) =>
+            registro_acad.estado
+              .toLowerCase()
+              .includes(e.target.value.toLowerCase())
+          )
       );
+
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: ACADÉMICO
-    if (e.target.name === "Código programa académico") {
-      const data_filtered = filtered.filter((row) =>
-        row.id_programa.toString().includes(e.target.value.toLowerCase())
-      );
-      const filtered_data =
-        data_filtered.length > 0 ? data_filtered : empty_stuff;
-      setFiltered(filtered_data);
-    }
+    // if (e.target.name === "Código programa académico") {
+    // //   const data_filtered = filtered.filter((row) =>
+    // //     row.id_programa.toString().includes(e.target.value.toLowerCase())
+    // //   );
+    // //   const filtered_data =
+    // //     data_filtered.length > 0 ? data_filtered : empty_stuff;
+    // //   setFiltered(filtered_data);
+    // }
+
     // BÚSQUEDA INDIVIDUAL POR FILTRO: NOMBRE ACADEMICO
     if (e.target.name === "Programa académico") {
-      const data_filtered = filtered.filter((row) =>
-        row.programa_academico
-          .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+      const filtro = e.target.value.toLowerCase(); // Convertimos a minúsculas para hacer la búsqueda insensible a mayúsculas.
+
+      const data_filtered = filtered.filter(
+        (row) =>
+          Array.isArray(row.programas) &&
+          row.programas.some(
+            (programa) =>
+              programa.id_programa.toString().includes(filtro) ||
+              programa.programa_academico.toLowerCase().includes(filtro) ||
+              programa.sede.toLowerCase().includes(filtro)
+          )
       );
+
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
@@ -523,14 +649,14 @@ const Reporte = () => {
       //console.log(inner_column_data);
     }
     // BUSQUEDA INDIVIDUAL POR FILTRO: SEDE
-    if (e.target.name === "Sede") {
-      const data_filtered = filtered.filter((row) =>
-        row.sede.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      const filtered_data =
-        data_filtered.length > 0 ? data_filtered : empty_stuff;
-      setFiltered(filtered_data);
-    }
+    // if (e.target.name === "Sede") {
+    //   // const data_filtered = filtered.filter((row) =>
+    //   //   row.sede.toLowerCase().includes(e.target.value.toLowerCase())
+    //   // );
+    //   // const filtered_data =
+    //   //   data_filtered.length > 0 ? data_filtered : empty_stuff;
+    //   // setFiltered(filtered_data);
+    // }
     // BÚSQUEDA INDIVIDUAL DE FILTRO: ASIGNACIONES
     if (e.target.name === "Profesional") {
       const data_filtered = filtered.filter((row) =>
@@ -626,8 +752,14 @@ const Reporte = () => {
     }
     // BÚSQUEDA INDIVIDUAL DE FILTRO: COHORTE
     if (e.target.name === "Cohorte") {
-      const data_filtered = filtered.filter((row) =>
-        row.cohorte.toLowerCase().includes(e.target.value.toLowerCase())
+      const data_filtered = filtered.filter(
+        (row) =>
+          // Verifica si row.cohorte está definido y es un array
+          Array.isArray(row.cohorte) &&
+          row.cohorte
+            .join(", ")
+            .toLowerCase()
+            .includes(e.target.value.toLowerCase())
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -779,11 +911,11 @@ const Reporte = () => {
     // condiciones para Filtros de Academico
     if (seleccionado_academico === undefined) {
     } else if (
-      (seleccionado_academico.name === "Código programa académico" &&
-        e.target.checked === true) ||
+      // (seleccionado_academico.name === "Código programa académico" &&
+      //   e.target.checked === true) ||
       (seleccionado_academico.name === "Programa académico" &&
         e.target.checked === true) ||
-      (seleccionado_academico.name === "Sede" && e.target.checked === true) ||
+      // (seleccionado_academico.name === "Sede" && e.target.checked === true) ||
       (seleccionado_academico.name === "Promedio acumulado" &&
         e.target.checked === true) ||
       (seleccionado_academico.name === "Estimulos" &&
@@ -797,11 +929,11 @@ const Reporte = () => {
       csv_conversion(seleccionado_academico);
       schema_push(seleccionado_academico);
     } else if (
-      (seleccionado_academico.name === "Código programa académico" &&
-        e.target.checked === false) ||
+      // (seleccionado_academico.name === "Código programa académico" &&
+      //   e.target.checked === false) ||
       (seleccionado_academico.name === "Programa académico" &&
         e.target.checked === false) ||
-      (seleccionado_academico.name === "Sede" && e.target.checked === false) ||
+      // (seleccionado_academico.name === "Sede" && e.target.checked === false) ||
       (seleccionado_academico.name === "Promedio acumulado" &&
         e.target.checked === false) ||
       (seleccionado_academico.name === "Estimulos" &&
@@ -816,6 +948,7 @@ const Reporte = () => {
           columns.splice(index, 1);
         }
       });
+      // console.log(seleccionado_academico);
       csv_pop(seleccionado_academico);
       schema_pop(seleccionado_academico);
     }
@@ -1020,30 +1153,31 @@ const Reporte = () => {
         e.target.checked === true
       ) {
         seleccionado_cabeceras_filtros.isCheck = true;
-        document.getElementsByName(
-          "Código programa académico"
-        )[0].checked = false;
+        // document.getElementsByName(
+        //   "Código programa académico"
+        // )[0].checked = false;
         document.getElementsByName("Programa académico")[0].checked = false;
-        document.getElementsByName("Sede")[0].checked = false;
-        document.getElementsByName(
-          "Código programa académico"
-        )[0].checked = true;
+        // document.getElementsByName("Sede")[0].checked = false;
+        // document.getElementsByName(
+        //   "Código programa académico"
+        // )[0].checked = true;
         document.getElementsByName("Programa académico")[0].checked = true;
-        document.getElementsByName("Sede")[0].checked = true;
+        // document.getElementsByName("Sede")[0].checked = true;
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].value === "id_programa" ||
-            columns[i].value === "programa_academico" ||
-            columns[i].value === "sede"
+            // columns[i].value === "id_programa" ||
+            columns[i].value === "programa_academico"
+            // columns[i].value === "sede"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.value === "id_programa" && item.isCheck === false) ||
-            (item.value === "programa_academico" && item.isCheck === false) ||
-            (item.value === "sede" && item.isCheck === false)
+            // (item.value === "id_programa" && item.isCheck === false) ||
+            item.value === "programa_academico" &&
+            item.isCheck === false
+            // (item.value === "sede" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1056,6 +1190,7 @@ const Reporte = () => {
         }
         for (let i = 0; i < filtros_Academico.length; i++) {
           const element = filtros_Academico[i];
+          // console.log(element);
           csv_conversion(element);
           schema_push(element);
         }
@@ -1250,25 +1385,26 @@ const Reporte = () => {
         e.target.checked === false
       ) {
         seleccionado_cabeceras_filtros.isCheck = false;
-        document.getElementsByName(
-          "Código programa académico"
-        )[0].checked = false;
+        // document.getElementsByName(
+        //   "Código programa académico"
+        // )[0].checked = false;
         document.getElementsByName("Programa académico")[0].checked = false;
-        document.getElementsByName("Sede")[0].checked = false;
+        // document.getElementsByName("Sede")[0].checked = false;
         for (let i = 0; i < columns.length; i++) {
           if (
-            columns[i].value === "id_programa" ||
-            columns[i].value === "programa_academico" ||
-            columns[i].value === "sede"
+            // columns[i].value === "id_programa" ||
+            columns[i].value === "programa_academico"
+            // columns[i].value === "sede"
           ) {
             columns[i].isCheck = false;
           }
         }
         columns.map((item, index) => {
           if (
-            (item.value === "id_programa" && item.isCheck === false) ||
-            (item.value === "programa_academico" && item.isCheck === false) ||
-            (item.value === "sede" && item.isCheck === false)
+            // (item.value === "id_programa" && item.isCheck === false) ||
+            item.value === "programa_academico" &&
+            item.isCheck === false
+            // (item.value === "sede" && item.isCheck === false)
           ) {
             columns.splice(index, 1);
           }
@@ -1419,6 +1555,113 @@ const Reporte = () => {
     window.location.reload();
   };
 
+  const handleShow = (e) => {
+    let rol = desencriptar(sessionStorage.getItem("rol"));
+    sessionStorage.setItem("selectedSede", encriptarInt(e.id));
+    let sede = desencriptar(sessionStorage.getItem("selectedSede"))
+      ? desencriptarInt(sessionStorage.getItem("selectedSede"))
+      : desencriptarInt(sessionStorage.getItem("sede_id"));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+    const traer_estudiantes_selector = async () => {
+      // Habilita el gif de carga
+      document.getElementsByName("loading_data")[0].style.visibility =
+        "visible";
+      // Deshabilita el selector de sedes
+      setIsDisabled(true);
+      // Deshabilita el botón de traer todos
+      document
+        .getElementsByName("bring_them_on")[0]
+        .setAttribute("disabled", "true");
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
+            id_usuario.toString() +
+            "/",
+          { params: { usuario_rol: rol, sede: sede } }
+        );
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        setFiltered(response.data);
+        // Oculta el gif de carga
+        document.getElementsByName("loading_data")[0].style.visibility =
+          "hidden";
+        // habilita el botón de traer todos
+        document
+          .getElementsByName("bring_them_on")[0]
+          .removeAttribute("disabled");
+        // Habilita el selector de sedes
+        setIsDisabled(false);
+      } catch (error) {}
+    };
+    traer_estudiantes_selector();
+  };
+
+  // Botón Traer todos
+  const traer_todos = () => {
+    // Habilita el gif de carga
+    document.getElementsByName("loading_data")[0].style.visibility = "visible";
+    // Deshabilita el botón de traer todos
+    document
+      .getElementsByName("bring_them_on")[0]
+      .setAttribute("disabled", "true");
+    // Deshabilita el selector de sedes
+    setIsDisabled(true);
+    //
+    let rolTodo = encriptar("traer_todos_estudiantes");
+    let sede = sessionStorage.getItem("selectedSede")
+      ? desencriptarInt(sessionStorage.getItem("selectedSede"))
+      : desencriptarInt(sessionStorage.getItem("sede_id"));
+    // console.log(desencriptarInt(sessionStorage.getItem("selectedSede")));
+    // console.log(desencriptarInt(sessionStorage.getItem("sede_id")));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+    const traer_todos_estudiantes_boton = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
+            id_usuario.toString() +
+            "/",
+          { params: { usuario_rol: desencriptar(rolTodo), sede: sede } }
+        );
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        setFiltered(response.data);
+
+        // Habilita el gif de carga
+        document.getElementsByName("loading_data")[0].style.visibility =
+          "hidden";
+        // Habilita el botón de traer todos
+        document
+          .getElementsByName("bring_them_on")[0]
+          .removeAttribute("disabled");
+        // Habilita el selector de sedes
+        setIsDisabled(false);
+      } catch (error) {}
+    };
+    traer_todos_estudiantes_boton();
+  };
+
+  // console.log(state.estudiante);
+
+  // Cambio de datos de la coumna programa - csv
+  const csv_data = filtered.map((row) => ({
+    ...row, // Mantiene todos los demás campos originales
+    csv_programa_academico:
+      Array.isArray(row.programas) && row.programas.length > 0
+        ? row.programas
+            .map(
+              (programa) =>
+                `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`
+            )
+            .join(" | ") // Usamos `|` en lugar de `,` para separar mejor los programas
+        : "Sin datos",
+  }));
+
   return (
     <>
       <>
@@ -1427,8 +1670,41 @@ const Reporte = () => {
             <div>
               <h1>Reporte General</h1>
             </div>
-            <br />
             {/* Cabeceras de Filtros */}
+            {(userRole === "super_ases" ||
+              userRole === "socioeducativo" ||
+              userRole === "socioeducativo_reg" ||
+              userRole === "dir_academico") && (
+              <div>
+                <hr></hr>
+
+                <Row>
+                  <Col sm={2}>
+                    <Button
+                      name="bring_them_on"
+                      title="Traer todos los estudiantes puede tomar más tiempo del esperado. Por favor, sea paciente."
+                      onClick={() => traer_todos()}
+                    >
+                      Traer todos
+                    </Button>
+                  </Col>
+
+                  <Col title="Traer todos los estudiantes puede tomar más tiempo del esperado. Por favor, sea paciente.">
+                    <Select
+                      name="sede_reporte_general"
+                      disabled={true}
+                      class="option"
+                      options={opciones}
+                      onMenuOpen={handle_sedes}
+                      onChange={(e) => handleShow(e)}
+                      isDisabled={isDisabled}
+                      placeholder="Seleccione una sede"
+                    />
+                  </Col>
+                </Row>
+              </div>
+            )}
+            <hr></hr>
             <Row>
               {/* <Col> */}
               {cabecerasFiltros.map((Item, index) => (
@@ -1585,7 +1861,7 @@ const Reporte = () => {
               // value={}
               onChange={(e) => on_search_base(e)}
             />
-            <br />
+            <hr></hr>
 
             {/* <DataTableExtensions
                 columns={columnas}
@@ -1611,9 +1887,9 @@ const Reporte = () => {
               fixedHeaderScrollHeight="400px"
               highlightOnHover
               onRowClicked={(row) => {
-                // redirect(`/ficha_estudiante/${row.id}`);
                 cambiar_ruta(`/ficha_estudiante/${row.id}`);
-                // // // // console.log(row);
+                // console.log(row);
+                console.log(row.id);
               }}
               responsive
               striped
@@ -1625,7 +1901,7 @@ const Reporte = () => {
               <Col style={{ padding: 10 }}>
                 <CSVLink
                   headers={csv_headers}
-                  data={filtered}
+                  data={csv_data}
                   filename="Reporte general Campus Virtual Ases universidad del Valle"
                 >
                   {/* headers={columns} */}

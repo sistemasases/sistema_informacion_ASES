@@ -3,7 +3,7 @@ import Select from "react-select";
 import { Row, Col } from "styled-bootstrap-grid";
 import { Button } from "react-bootstrap";
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual";
-import Seguimiento_individual_v2 from '../seguimiento_forms/form_seguimiento_individual_v2';
+import Seguimiento_individual_v2 from "../seguimiento_forms/form_seguimiento_individual_v2";
 import { useEffect } from "react";
 import axios from "axios";
 import Selector from "../../components/ficha_estudiante/selector";
@@ -24,6 +24,7 @@ import {
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 const Info_basica = (props) => {
+  // console.log(props);
   const config = {
     headers: {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
@@ -182,10 +183,12 @@ const Info_basica = (props) => {
   const [url_estudiante, setUrl] = useState("");
 
   useEffect(() => {
-    const currentUrl = desencriptar(sessionStorage.getItem('path'));
+    // console.log("TRY # N");
+    const currentUrl = desencriptar(sessionStorage.getItem("path"));
     const subUrl = currentUrl.substring(currentUrl.lastIndexOf("/") + 1);
-    console.log(subUrl)
+    // console.log(subUrl);
     setUrl(subUrl);
+    // console.log(url_estudiante);
   }, []);
 
   const fetchData = async (index) => {
@@ -195,11 +198,12 @@ const Info_basica = (props) => {
       };
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
-        state.data_user[index]["id"] +
-        "/datos_ficha_estudiante/",
+          state.data_user[index]["id"] +
+          "/datos_ficha_estudiante/",
         config,
         { paramsget }
       );
+      // console.log(response.data);
       state.total_datos_estudiantes.push(response.data);
       // document.getElementsByName("loading_data")[0].style.visibility = "hidden";
     } catch (error) {
@@ -211,6 +215,8 @@ const Info_basica = (props) => {
   const searchParams = new URLSearchParams(location.search);
   const id_parametros = searchParams.get("id");
 
+  const [estudiante_no_lista, setEstudiante_no_lista] = useState(false);
+  // var estudiante_no_lista = false;
   const handle_users = (e) => {
     // Getting the files from the input
     if (bandera_option_user === true) {
@@ -229,6 +235,7 @@ const Info_basica = (props) => {
         //alert(dato.value+' '+url_estudiante+' '+state.ya_selecciono_automatico)
 
         //este if lo pongo para que abra academico de una
+
         if (url_estudiante == dato.value && state.ya_selecciono_automatico) {
           setSelectedOption(dato);
           const paramsget = {
@@ -252,15 +259,70 @@ const Info_basica = (props) => {
                 tab_abierto: 3,
                 ya_selecciono_automatico: false,
               });
-              // document.getElementsByName("loading_data")[0].style.visibility =
-              //   "hidden";
             })
 
             .catch((err) => {
-              console.log("no tomo el dato");
+              // console.log("no tomo el dato");
             });
         }
+        if (
+          props.data_user.some((estudiante) => estudiante.id === url_estudiante)
+        ) {
+          setEstudiante_no_lista(false);
+          // console.log("NO EXISTE EN LA LISTA");
+        } else {
+          // break;
+          // estudiante_no_lista = true;
+          setEstudiante_no_lista(true);
+        }
       }
+
+      if (estudiante_no_lista == false) {
+        // ENTRA AQUÍ CUÁNDO EN ESTUDIANTE NO ESTÁ EN LA LISTA PRE CARGADA DE ESTUDIANTES
+
+        // console.log("ERAZO");
+
+        const paramsget = {
+          id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
+        };
+        const url_axios =
+          `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
+          url_estudiante +
+          "/datos_ficha_estudiante/";
+        axios({
+          // Endpoint to send files
+          url: url_axios,
+          params: paramsget,
+          method: "GET",
+          headers: config2,
+        })
+          .then((respuesta) => {
+            set_state({
+              ...state,
+              total_datos_estudiantes: respuesta.data,
+              tab_abierto: 3,
+              ya_selecciono_automatico: false,
+            });
+
+            const dato = {
+              value: respuesta.data["id"],
+              label:
+                respuesta.data["cod_univalle"] +
+                " " +
+                respuesta.data["nombre"] +
+                " " +
+                respuesta.data["apellido"],
+              id: props.data_user["length"] + 1,
+            };
+            datos_option_user.push(dato);
+            setSelectedOption(dato);
+          })
+
+          .catch((err) => {
+            // console.log("no tomo el dato");
+          });
+      }
+
       bandera_option_user = false;
     }
   };
@@ -309,7 +371,7 @@ const Info_basica = (props) => {
         });
       })
       .catch((err) => {
-        console.log("Error al obtener el dato del estudiante: " + err);
+        // console.log("Error al obtener el dato del estudiante: " + err);
       });
 
     setSelectedOption(e);
@@ -324,7 +386,7 @@ const Info_basica = (props) => {
       alert("problema con el celular_numerico");
     }
   };
-  // console.log(state.total_datos_estudiante_seleccionado);
+  // // console.log(state.total_datos_estudiante_seleccionado);
 
   return (
     <Row className="row_prueba">
@@ -525,11 +587,14 @@ const Info_basica = (props) => {
                         <Row>
                           <h4 className="texto_mas_pequeño">
                             <br />
-                            Profesional: {state.profesional.first_name } {state.profesional.last_name}
+                            Profesional: {state.profesional.first_name}{" "}
+                            {state.profesional.last_name}
                             <br />
-                            Practicante: {state.practicante.first_name} {state.practicante.last_name}
+                            Practicante: {state.practicante.first_name}{" "}
+                            {state.practicante.last_name}
                             <br />
-                            Monitor: {state.monitor.first_name} {state.monitor.last_name}
+                            Monitor: {state.monitor.first_name}{" "}
+                            {state.monitor.last_name}
                             <br />
                             Ultima actualización:{" "}
                             {state.total_datos_estudiantes.ult_modificacion}
@@ -543,17 +608,21 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-datos"}
                           >
-                            <a href="https://sistemaases.univalle.edu.co/U2FsdGVkX18hjszpddLoSgU/HywzCP8D13edFaHOV+PmxYYqsxUx7dICZxdkz/bz" target="_blank">
+                            <a
+                              href="https://sistemaases.univalle.edu.co/U2FsdGVkX18hjszpddLoSgU/HywzCP8D13edFaHOV+PmxYYqsxUx7dICZxdkz/bz"
+                              target="_blank"
+                            >
                               <i
                                 class="bi bi-check2-square"
                                 style={
                                   state.total_datos_estudiante_seleccionado
-                                    .firma_tratamiento_datos == "SIN FIRMAR"
+                                    .firma_tratamiento_datos == "SIN AUTORIZAR"
                                     ? { color: "red" }
                                     : state.total_datos_estudiante_seleccionado
-                                      .firma_tratamiento_datos == "NO AUTORIZA"
-                                      ? { color: "red" }
-                                      : { color: " #AAB5A6" }
+                                        .firma_tratamiento_datos ==
+                                      "NO AUTORIZA"
+                                    ? { color: "red" }
+                                    : { color: " #AAB5A6" }
                                 }
                                 title="Tratamiento de datos Sin Firmar"
                               ></i>
@@ -564,7 +633,10 @@ const Info_basica = (props) => {
                             md={"1"}
                             className={"alert_item alert_item-admitidos"}
                           >
-                            <a href="https://encuestaadmitidos.univalle.edu.co/" target="_blank">
+                            <a
+                              href="https://encuestaadmitidos.univalle.edu.co/"
+                              target="_blank"
+                            >
                               <i
                                 class="bi bi-card-checklist"
                                 style={
@@ -691,13 +763,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                      <Button
-                        className="boton_nuevo_registro_pequeño"
-                        onClick={handleModal}
-                      >
-                        NUEVO SEGUIMIENTO
-                      </Button>
-                    )}
+                    <Button
+                      className="boton_nuevo_registro_pequeño"
+                      onClick={handleModal}
+                    >
+                      NUEVO SEGUIMIENTO
+                    </Button>
+                  )}
                 </Row>
               </Col>
             ) : (
@@ -738,13 +810,13 @@ const Info_basica = (props) => {
                     userRole === "profesional" ||
                     userRole === "practicante" ||
                     userRole === "monitor") && (
-                      <Button
-                        className="boton_nuevo_registro_pequeño"
-                        onClick={handleModal}
-                      >
-                        NUEVO SEGUIMIENTO
-                      </Button>
-                    )}
+                    <Button
+                      className="boton_nuevo_registro_pequeño"
+                      onClick={handleModal}
+                    >
+                      NUEVO SEGUIMIENTO
+                    </Button>
+                  )}
                 </Row>
               </Col>
             )}
@@ -859,6 +931,7 @@ const Info_basica = (props) => {
       </Col>
 
       <Col xs={"12"} lg={"3"} className="prueba1">
+        {/* { console.log(state.total_datos_estudiantes["id"])} */}
         <Info_registros
           id_estudiante={state.total_datos_estudiantes["id"]}
         ></Info_registros>
@@ -879,7 +952,7 @@ const Info_basica = (props) => {
           />
         </Col>
       </div>
-      
+
       <Modal show={show2} onHide={handleClose2} size={"lg"}>
         <Modal.Header closeButton>
           <Modal.Title>Importante</Modal.Title>

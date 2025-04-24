@@ -302,6 +302,11 @@ const Pagina_inicio = () => {
             ) : (
               <>{}</>
             )}
+            {userRole === "monitor_academico" ? (
+              <>{cambiar_ruta(`/academico_asistencia`)}</>
+            ) : (
+              <>{}</>
+            )}
           </Col>
           <Col className="vertical-line-col">
             <div className="vertical"></div>
@@ -313,8 +318,9 @@ const Pagina_inicio = () => {
             >
               <img src={boton1} className="boton" alt="/"></img>
             </Link>
+            {/* TO CHANGE */}
             <Link
-              to={`https://asesinteractiva.univalle.edu.co/semaforoalertas/`}
+              to={`https://semaforo-alertas-ases.vercel.app/`}
               target="_blank"
             >
               <img src={boton2} className="boton" alt="/"></img>
@@ -323,6 +329,7 @@ const Pagina_inicio = () => {
               to={`https://sistemaases.univalle.edu.co/caja-herramientas/`}
               target="_blank"
             >
+              {/* STOP CHANGE */}
               <img src={boton3} className="boton" alt="/"></img>
             </Link>
             <Link to={`https://ases.univalle.edu.co/`} target="_blank">

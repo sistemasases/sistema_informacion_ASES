@@ -14,10 +14,10 @@ class programa_estudiante_dexia_serializer(serializers.ModelSerializer):
         fields = ['nombre_programa', 'cod_univalle',
                   'jornada']
 class ases_dexia_serializer(serializers.ModelSerializer):
-	programas= programa_estudiante_dexia_serializer(source='id_estudiante_in_programa_estudiante',many=True)
+	# programas= programa_estudiante_dexia_serializer(source='id_estudiante_in_programa_estudiante',many=True)
 	class Meta:
 		model = estudiante
-		fields = ['cod_univalle','programas']
+		fields = ['cod_univalle']
 
 	def get_barrio_ini(self, obj):
 		if obj.barrio_ini:

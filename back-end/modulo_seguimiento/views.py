@@ -116,8 +116,6 @@ class seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
                     lista_semestre.append(j)
             if(len(lista_semestre) >= 2):
                 list_final.append(lista_semestre)
-            else:
-                list_semestre.remove(i)  
         return Response(list_final,status=status.HTTP_200_OK)
         
 class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewSet):

@@ -16,6 +16,7 @@ import All_monitorias_formularios_externos from "../../service/all_monitorias_fo
 import Formularios_externos_asistencia_envio from "../../service/formularios_externos_asistencia_envio.js";
 import { Container, Col, Row, Button, Modal } from "react-bootstrap";
 import "../../Scss/formularios_externos/formulario_asistencia_style.css";
+import Swal from "sweetalert2";
 
 const FormularioAsistencia = (props) => {
   const [documentType, setDocumentType] = useState("");
@@ -48,39 +49,6 @@ const FormularioAsistencia = (props) => {
       });
   }, []);
 
-  const handleDocumentTypeChange = (e) => {
-    setDocumentType(e.target.value);
-
-    if (e.target.value === "C.C.") {
-      setData({
-        ...data,
-        tipo_documento: e.target.value,
-      });
-    } else if (e.target.value === "T.I.") {
-      setData({
-        ...data,
-        tipo_documento: e.target.value,
-      });
-    } else if (e.target.value === "Otros") {
-      setData({
-        ...data,
-        tipo_documento: "",
-      });
-    }
-    // setData({
-    //   ...data,
-    //   nombre: e.target.value,
-    // });
-  };
-
-  const handle_otherDocumentType = (e) => {
-    setOtherDocumentType(e.target.value);
-    setData({
-      ...data,
-      tipo_documento: e.target.value,
-    });
-  };
-
   const [data, setData] = useState({
     codigo_estudiante: "",
     id_monitoria: "",
@@ -91,13 +59,34 @@ const FormularioAsistencia = (props) => {
     const regex = /^[0-9]*$/;
 
     if (data.codigo_estudiante === "" || data.id_monitoria === "") {
-      alert("Por favor llene todos los campos obligatorios");
+      // alert("Por favor llene todos los campos obligatorios");
+      Swal.fire({
+        title: "Error",
+        text: "Por favor llene todos los campos obligatorios",
+        icon: "error",
+        timer: 2500,
+        showConfirmButton: false,
+      });
       return;
     } else if (data.codigo_estudiante.length !== 7) {
-      alert("Ocurrió un error");
+      // alert("Ocurrió un error");
+      Swal.fire({
+        title: "Error",
+        text: "El código no debe ser mayor ni menor a 7 dígitos",
+        icon: "error",
+        timer: 2500,
+        showConfirmButton: false,
+      });
       setError("El código no debe ser mayor ni menor a 7 dígitos");
     } else if (regex.test(data.codigo_estudiante) == false) {
-      alert("Ocurrió un error");
+      // alert("Ocurrió un error");
+      Swal.fire({
+        title: "Error",
+        text: "El código de estudiante no puede contener caracteres especiales",
+        icon: "error",
+        timer: 2500,
+        showConfirmButton: false,
+      });
       setError(
         "El código de estudiante no puede contener caracteres especiales"
       );
@@ -107,16 +96,17 @@ const FormularioAsistencia = (props) => {
       )
         .then((res) => {
           // console.log(res);
-          // if (res) {
-          //   alert("Datos enviados correctamente");
-          // } else {
-          //   alert("Error al enviar los datos, vuelva a intentarlo");
-          //   // // console.log("Error al enviar los datos, vuelva a intentarlo");
-          // }
         })
         .catch((error) => {
           console.error(error);
-          alert("Error al enviar los datos, vuelva a intentarlo");
+          // alert("Error al enviar los datos, vuelva a intentarlo");
+          Swal.fire({
+            title: "Error",
+            text: "Error al enviar los datos, vuelva a intentarlo",
+            icon: "error",
+            timer: 2500,
+            showConfirmButton: false,
+          });
         });
     }
   };
@@ -129,9 +119,6 @@ const FormularioAsistencia = (props) => {
    */
 
   const handle_open_monitorias = () => {
-    // // console.log(sede.data_sede);
-    // // console.log("HOLAAA");
-    // // console.log(semestres.data_semestre.length);
     for (let i = 0; i < opciones_monitoria.data_monitorias.length; i++) {
       opciones.pop(i);
     }
