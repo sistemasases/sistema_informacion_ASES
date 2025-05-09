@@ -22,45 +22,84 @@ class seguimiento_individual_serializer(serializers.ModelSerializer):
     def get_nombre_creador(self, obj):
         return f"{obj.id_creador.first_name} {obj.id_creador.last_name}"
     
+    # def create(self, validated_data):
+    #     # Extraer `id_semestre` antes de crear la instancia
+    #     id_semestre = validated_data.pop('id_semestre', None)
+    #     instance = super().create(validated_data)
+
+    #     # Realizar operaciones adicionales con `id_semestre` después de crear la instancia
+    #     if id_semestre:
+    #         estudiante_instancia = validated_data['id_estudiante']
+    #         fecha = validated_data.get('fecha')
+    #         riesgo_instancia, created = riesgo_individual.objects.get_or_create(
+    #             id_estudiante=estudiante_instancia,id_semestre=id_semestre,defaults={
+    #             'fecha': fecha,
+    #             'riesgo_individual': validated_data.get('riesgo_individual'),
+    #             'riesgo_familiar': validated_data.get('riesgo_familiar'),
+    #             'riesgo_academico': validated_data.get('riesgo_academico'),
+    #             'riesgo_economico': validated_data.get('riesgo_economico'),
+    #             'riesgo_vida_universitaria_ciudad': validated_data.get('riesgo_vida_universitaria_ciudad'),
+    #         }
+    #         )
+
+    #         if not created and riesgo_instancia.fecha <= validated_data['fecha']:
+    #             riesgo_instancia.fecha = validated_data['fecha']
+    #             riesgo_instancia.id_semestre = id_semestre
+    #             # Mantener el valor actual si el campo enviado es `None`
+    #             if 'riesgo_individual' in validated_data:
+    #                 if validated_data['riesgo_individual'] is not None:
+    #                     riesgo_instancia.riesgo_individual = validated_data['riesgo_individual']
+    #             if 'riesgo_familiar' in validated_data:
+    #                 if validated_data['riesgo_familiar'] is not None:
+    #                     riesgo_instancia.riesgo_familiar = validated_data['riesgo_familiar']
+    #             if 'riesgo_academico' in validated_data:
+    #                 if validated_data['riesgo_academico'] is not None:
+    #                     riesgo_instancia.riesgo_academico = validated_data['riesgo_academico']
+    #             if 'riesgo_economico' in validated_data:
+    #                 if validated_data['riesgo_economico'] is not None:
+    #                     riesgo_instancia.riesgo_economico = validated_data['riesgo_economico']
+    #             if 'riesgo_vida_universitaria_ciudad' in validated_data:
+    #                 if validated_data['riesgo_vida_universitaria_ciudad'] is not None:
+    #                     riesgo_instancia.riesgo_vida_universitaria_ciudad = validated_data['riesgo_vida_universitaria_ciudad']
+
+    #             riesgo_instancia.save()
+
+    #     return instance
+    
+    # Modificar el método create para manejar `id_semestre` y crear/actualizar `riesgo_individual`
+    # 
     def create(self, validated_data):
+        # Copia de validated_data para evitar modificar el original
+        data_copy = validated_data.copy()
         # Extraer `id_semestre` antes de crear la instancia
-        id_semestre = validated_data.pop('id_semestre', None)
-        instance = super().create(validated_data)
+        id_semestre = data_copy.pop('id_semestre', None)
+        instance = super().create(data_copy)
 
         # Realizar operaciones adicionales con `id_semestre` después de crear la instancia
         if id_semestre:
-            estudiante_instancia = validated_data['id_estudiante']
-            fecha = validated_data.get('fecha')
+            estudiante_instancia = data_copy['id_estudiante']
+            fecha = data_copy.get('fecha')
             riesgo_instancia, created = riesgo_individual.objects.get_or_create(
-                id_estudiante=estudiante_instancia,id_semestre=id_semestre,defaults={
-                'fecha': fecha,
-                'riesgo_individual': validated_data.get('riesgo_individual'),
-                'riesgo_familiar': validated_data.get('riesgo_familiar'),
-                'riesgo_academico': validated_data.get('riesgo_academico'),
-                'riesgo_economico': validated_data.get('riesgo_economico'),
-                'riesgo_vida_universitaria_ciudad': validated_data.get('riesgo_vida_universitaria_ciudad'),
-            }
+                id_estudiante=estudiante_instancia,
+                id_semestre=id_semestre,
+                defaults={
+                    'fecha': fecha,
+                    'riesgo_individual': data_copy.get('riesgo_individual'),
+                    'riesgo_familiar': data_copy.get('riesgo_familiar'),
+                    'riesgo_academico': data_copy.get('riesgo_academico'),
+                    'riesgo_economico': data_copy.get('riesgo_economico'),
+                    'riesgo_vida_universitaria_ciudad': data_copy.get('riesgo_vida_universitaria_ciudad'),
+                }
             )
 
-            if not created and riesgo_instancia.fecha <= validated_data['fecha']:
-                riesgo_instancia.fecha = validated_data['fecha']
+            if not created and riesgo_instancia.fecha <= data_copy['fecha']:
+                riesgo_instancia.fecha = data_copy['fecha']
                 riesgo_instancia.id_semestre = id_semestre
-                # Mantener el valor actual si el campo enviado es `None`
-                if 'riesgo_individual' in validated_data:
-                    if validated_data['riesgo_individual'] is not None:
-                        riesgo_instancia.riesgo_individual = validated_data['riesgo_individual']
-                if 'riesgo_familiar' in validated_data:
-                    if validated_data['riesgo_familiar'] is not None:
-                        riesgo_instancia.riesgo_familiar = validated_data['riesgo_familiar']
-                if 'riesgo_academico' in validated_data:
-                    if validated_data['riesgo_academico'] is not None:
-                        riesgo_instancia.riesgo_academico = validated_data['riesgo_academico']
-                if 'riesgo_economico' in validated_data:
-                    if validated_data['riesgo_economico'] is not None:
-                        riesgo_instancia.riesgo_economico = validated_data['riesgo_economico']
-                if 'riesgo_vida_universitaria_ciudad' in validated_data:
-                    if validated_data['riesgo_vida_universitaria_ciudad'] is not None:
-                        riesgo_instancia.riesgo_vida_universitaria_ciudad = validated_data['riesgo_vida_universitaria_ciudad']
+
+                # Mantener valores actuales si no son None
+                for field in ['riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad']:
+                    if field in data_copy and data_copy[field] is not None:
+                        setattr(riesgo_instancia, field, data_copy[field])
 
                 riesgo_instancia.save()
 
@@ -82,7 +121,10 @@ class seguimiento_individual_serializer(serializers.ModelSerializer):
             estudiante_instancia = validated_data['id_estudiante']
             fecha = validated_data.get('fecha')
             try:
-                riesgo_instancia = riesgo_individual.objects.get(id_estudiante=estudiante_instancia, id_semestre=id_semestre)
+                # Obtener la primera instancia de riesgo_individual en caso de qué aparezcan más de 1 el mismo semestre
+                riesgo_instancia = riesgo_individual.objects.filter(id_estudiante=estudiante_instancia, id_semestre=id_semestre).first()
+                # riesgo_instancia = riesgo_individual.objects.get(id_estudiante=estudiante_instancia, id_semestre=id_semestre)
+
                 # Verificar si la fecha de `riesgo_instancia` es menor o igual a la fecha validada
                 if riesgo_instancia.fecha <= fecha:
                     riesgo_instancia.fecha = validated_data['fecha']

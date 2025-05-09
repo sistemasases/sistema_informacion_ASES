@@ -80,17 +80,18 @@ var columns = [
       {
         when: (row) => row.firma_tratamiento_datos == "NO AUTORIZA",
         style: {
-          backgroundColor: "yellow",
-          color: "#552CC4",
+          backgroundColor: "orange",
+          // color: "#552CC4",
+          color: "white",
           "&:hover": {
             cursor: "pointer",
           },
         },
       },
       {
-        when: (row) => row.firma_tratamiento_datos == "SIN AUTORIZAR",
+        when: (row) => row.firma_tratamiento_datos == "AUTORIZA",
         style: {
-          backgroundColor: "red",
+          backgroundColor: "#4BF619",
           color: "white",
           "&:hover": {
             cursor: "pointer",

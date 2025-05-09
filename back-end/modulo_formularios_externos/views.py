@@ -195,7 +195,7 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
                 firma_creada = False  # Bandera para verificar si se creó una firma
 
                 for estudiante_firma in consulta_estudiante:
-                    print(estudiante_firma)
+                    # print(estudiante_firma)
                     if estudiante_firma.firma_existe == False:
                         try:
                             estudiante_firma.firma_existe = True
