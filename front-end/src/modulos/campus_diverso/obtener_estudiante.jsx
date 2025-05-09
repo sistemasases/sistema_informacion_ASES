@@ -604,6 +604,7 @@ const handleFormSubmit = (e) => {
      observacion_general_redes_de_apoyo: editableUser.observacion_general_redes_de_apoyo,
      observacion_general_factores_de_riesgo: editableUser.observacion_general_factores_de_riesgo,
      regimen_eps: editableUser.regimen_eps,
+     nombre_eps: editableUser.nombre_eps,
      //Info academica
      codigo_estudiante: editableUser.codigo_estudiante,
      sedes: editableUser.sedes,

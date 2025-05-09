@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Col,   } from 'react-bootstrap';
+import { Container, Col, OverlayTrigger, Tooltip,   } from 'react-bootstrap';
 import Select from 'react-select';
 
 
@@ -32,7 +32,7 @@ const DiversidadSexual = ({
         <Col className="form-column" xs={"7"} md={"6"}>
 
         <div>
-              <label className='custom-div'>Sexo asignado al nacer</label>
+              <label className='custom-div'>Sexo asignado al nacer<span className='simbolo-obligatorio'> *</span></label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>
@@ -43,7 +43,7 @@ const DiversidadSexual = ({
                   name="sexo_asignado"
                   placeholder='Selecciona el sexo asignado al nacer'
                   options={sexoAsignadoOptions}
-                  value={sexoAsignadoOptions.find(option => option.value === state.sexo_asignado)}
+                  value={sexoAsignadoOptions.find(option => option.label === state.sexo_asignado?.[0]) || null}
                   onChange={handleSelectNoMultiChange}
     
                   />
@@ -53,7 +53,7 @@ const DiversidadSexual = ({
       
 
         <div>
-            <label className='custom-div'>Identidad de género</label>
+            <label className='custom-div'>Identidad de género<span className='simbolo-obligatorio'> *</span></label>
             <div>
               {isLoading ? (
                 <p>Cargando...</p>
@@ -63,7 +63,7 @@ const DiversidadSexual = ({
                   name="identidades_de_genero"
                   placeholder='Seleccione su orientación sexual'
                   options={identidadesGeneroOptions}
-                  value={identidadesGeneroOptions.find(option => option.value === state.identidades_de_genero)}
+                  value={identidadesGeneroOptions.find(option => option.label === state.identidades_de_genero?.[0]) || null}
                   onChange={handleSelectNoMultiChange}
                 />
               )}
@@ -71,7 +71,7 @@ const DiversidadSexual = ({
           </div>
 
          <div>
-              <label className='custom-div'>Expresión de género</label>
+              <label className='custom-div'>Expresión de género<span className='simbolo-obligatorio'> *</span></label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>
@@ -82,7 +82,7 @@ const DiversidadSexual = ({
                   name="expresiones_de_genero"
                   placeholder='Seleccione expresiones de género'
                   options={expresionesOptions}
-                  value={expresionesOptions.find(option => option.value === state.expresiones_de_genero)}
+                  value={expresionesOptions.find(option => option.label === state.expresiones_de_genero?.[0]) || null}
                   onChange={handleSelectNoMultiChange}
     
                   />
@@ -91,7 +91,7 @@ const DiversidadSexual = ({
           </div>
 
           <div>
-            <label className='custom-div'>Orientación sexual</label>
+            <label className='custom-div'>Orientación sexual<span className='simbolo-obligatorio'> *</span></label>
             <div>
               {isLoading ? (
                 <p>Cargando...</p>
@@ -101,7 +101,7 @@ const DiversidadSexual = ({
                   name="orientaciones_sexuales"
                   placeholder='Seleccione su orientación sexual'
                   options={orientacionOptions}
-                  value={orientacionOptions.find(option => option.value === state.orientaciones_sexuales)}
+                  value={orientacionOptions.find(option => option.label === state.orientaciones_sexuales?.[0]) || null}
                   onChange={handleSelectNoMultiChange}
                 />
               )}
@@ -113,7 +113,7 @@ const DiversidadSexual = ({
       <Col className="form-column" xs={"7"} md={"6"}>
     
       <div>
-          <label className='custom-div'>¿Has realizado algún cambio en el componente nombre y/o sexo en el documento de identidad  </label>
+          <label className='custom-div'>¿Has realizado algún cambio en el componente nombre y/o sexo en el documento de identidad<span className='simbolo-obligatorio'> *</span>  </label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -123,7 +123,7 @@ const DiversidadSexual = ({
                 name="respuestas_cambio_documento"
                 placeholder='Seleccione su respuesta de cambio de documento'
                 options={documentoOptions}
-                value={documentoOptions.find(option => option.value === state.respuestas_cambio_documento)}
+                value={documentoOptions.find(option => option.label === state.respuestas_cambio_documento?.[0]) || null}
                 onChange={handleSelectNoMultiChange}
               />
             )}
@@ -132,7 +132,18 @@ const DiversidadSexual = ({
             
   
         <div >
-              <label className='custom-div'>Pertenencia grupo poblacional</label>
+              <label className='custom-div'>Pertenencia grupo poblacional<span className='simbolo-obligatorio'> *</span>
+              <OverlayTrigger
+                placement="bottom"
+                overlay={
+                  <Tooltip id="tooltip-custom" className='tooltip-custom'>
+                    Una persona puede identificarse con uno o varios grupos poblacionales. Indica con cuál o cuáles te identificas.
+                  </Tooltip>
+                }
+              >
+                <span className="tooltip-icon">?</span>
+              </OverlayTrigger>
+              </label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>

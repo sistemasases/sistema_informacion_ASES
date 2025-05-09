@@ -56,7 +56,7 @@ const Pagina_inicio = () => {
   } else if (userRole === 'profesor') {
     desplegable = 'PROFESOR';
   } else if (userRole === 'CAMPUS DIVERSO'){
-    desplegable = 'campus diverso';
+    desplegable = 'Campus Diverso';
   }
   //Constante y variable que se usaran para el select
   const opciones = [];

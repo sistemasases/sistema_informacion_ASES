@@ -13,74 +13,66 @@ from app_registro.models import Persona
 from rest_framework import viewsets
 
 # RespuestaCambioDocumento
-""" class RespuestaCambioDocumentoListCreateView(generics.ListCreateAPIView):
-    queryset = RespuestaCambioDocumento.objects.all()
-    serializer_class = RespuestaCambioDocumentoSerializer
-   
-class RespuestaCambioDocumentoRetrievelUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = RespuestaCambioDocumento.objects.all()
-    serializer_class = RespuestaCambioDocumentoSerializer """
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-class respuesta_cambio_documento_viewsets (viewsets.ModelViewSet):
+class respuesta_cambio_documento_viewsets(viewsets.ModelViewSet):
     serializer_class = RespuestaCambioDocumentoSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = RespuestaCambioDocumentoSerializer.Meta.model.objects.all()
 
-# OrientacionSexual
-""" class OrientacionSexualListCreateView(generics.ListCreateAPIView):
-    queryset = OrientacionSexual.objects.all()
-    serializer_class = OrientacionSexualSerializer
-   
-class OrientacionSexualRetrievelUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = OrientacionSexual.objects.all()
-    serializer_class = OrientacionSexualSerializer """
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
-class orientacion_sexual_viewsets (viewsets.ModelViewSet):
+
+class orientacion_sexual_viewsets(viewsets.ModelViewSet):
     serializer_class = OrientacionSexualSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = OrientacionSexualSerializer.Meta.model.objects.all()
 
-# ExpresionGenero
-""" class ExpresionGeneroListCreateView(generics.ListCreateAPIView):
-    queryset = ExpresionGenero.objects.all()
-    serializer_class = ExpresionGeneroSerializer
-    
-class ExpresionGeneroRetrievelUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ExpresionGenero.objects.all()
-    serializer_class = ExpresionGeneroSerializer """
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
-class expresion_genero_viewsets (viewsets.ModelViewSet):
+
+class expresion_genero_viewsets(viewsets.ModelViewSet):
     serializer_class = ExpresionGeneroSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ExpresionGeneroSerializer.Meta.model.objects.all()
 
-# IdentidadGenero
-""" class IdentidadGeneroListCreateView(generics.ListCreateAPIView):
-    queryset = IdentidadGenero.objects.all()
-    serializer_class = IdentidadGeneroSerializer
-    
-class IdentidadGeneroRetrievelUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = IdentidadGenero.objects.all()
-    serializer_class = IdentidadGeneroSerializer """
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
-class identidad_genero_viewsets (viewsets.ModelViewSet):
+
+class identidad_genero_viewsets(viewsets.ModelViewSet):
     serializer_class = IdentidadGeneroSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = IdentidadGeneroSerializer.Meta.model.objects.all()
 
-# Pronombre
-""" class PronombreListCreateView(generics.ListCreateAPIView):
-    queryset = Pronombre.objects.all()
-    serializer_class = PronombreSerializer
-    
-class PronombreRetrievelUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Pronombre.objects.all()
-    serializer_class = PronombreSerializer """
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
-class pronombre_viewsets (viewsets.ModelViewSet):
+
+class pronombre_viewsets(viewsets.ModelViewSet):
     serializer_class = PronombreSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = PronombreSerializer.Meta.model.objects.all()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
 
 # Diversidad Sexual

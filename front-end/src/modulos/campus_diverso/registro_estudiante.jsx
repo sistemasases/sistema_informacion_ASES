@@ -21,6 +21,7 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [mensaje, setMensaje] = useState(null);
+  const [showModalInfo, setShowModalInfo] = useState(true);
   const handleClose2 = () => setShow(false);
   const [show, setShow] = useState(false);
   const [showModalAutorizacion, setShowModalAutorizacion] = useState(true);
@@ -100,12 +101,12 @@ import AgradeciemintoEncuesta from './components/agradecimientoEncuesta';
     programas:[],
     codigo_estudiante:"",
     semestre_academico:"",
-    pertenencia_univalle:null,
+    pertenencia_univalle:true,
     estamentos: [],
     
     //Informacion general
     dedicacion_externa:"",
-    tiene_eps:null,
+    tiene_eps:true,
     nombre_eps:"",
     regimen_eps:[],
     tipo_entidad_acompanamiento_recibido:"",
@@ -374,7 +375,7 @@ useEffect(() => {
 
   // Efecto para detectar cuando "Estudiante de pregrado" es seleccionado y salga una alerta
 useEffect(() => {
-  if (state.estamentos.includes("Estudiante de pregrado")) {
+  if (state.estamentos?.includes("Estudiante de pregrado inactivo")) {
       setShowEstamentoModal(true);
       } else {
       setShowEstamentoModal(false);
@@ -483,20 +484,20 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
 const handleSelectNoMultiChange = (selectedOption, actionMeta) => {
   const { name } = actionMeta;
 
-  const labels = selectedOption ? [selectedOption.label] : [];
-
   set_state(prevState => ({
     ...prevState,
-    [name]: labels
+    [name]: selectedOption ? [selectedOption.label] : []
   }));
+
+
 
   console.log(`eventooo : ${state[name]}`);
   console.log('selectedOption no multi select', selectedOption);
-  console.log('state de tipo de programas', state.programas)
+  console.log('state de tipo de de documento', state.tipo_documento)
 };
 
 
-// HANDLE SELECT EXCLUSIVO PARA ESTAMENTOS -- REVISAR DESPUES
+
 const handleSelectChange2 = (selectedOptions, actionMeta) => {
   const { name } = actionMeta;
 
@@ -513,7 +514,7 @@ const handleSelectChange2 = (selectedOptions, actionMeta) => {
 
 const handleSelectChange3 = (selectedOption, fieldName) => {
   console.log("selectedOption", selectedOption);
-  console.log("fieldName", fieldName); // Esto debería mostrar: apgar_pregunta1
+  console.log("fieldName", fieldName); 
 
   set_state(prevState => ({
     ...prevState,
@@ -521,13 +522,6 @@ const handleSelectChange3 = (selectedOption, fieldName) => {
   }));
 };
 
-
-
-
-
-useEffect(() => {
-  console.log("apgaaar1", state.apgar_pregunta1);
-}, [state.apgar_pregunta1]);
 
 
 const handleArrayFieldChange = (fieldName, index, field, value) => {
@@ -602,6 +596,101 @@ const handleRecaptchaChange = (token) => {
   setRecaptchaToken(token);
 };
 
+
+
+const handleClickEnviar = (e) => {
+  e.preventDefault(); // Prevenir el comportamiento por defecto del botón
+
+  const requiredFields = [
+   
+    'numero_documento',
+    'tiene_eps',
+    'email',
+    'pertenencia_univalle',
+    'identidades_de_genero',
+    'orientaciones_sexuales',
+    'expresiones_de_genero',
+    'identidad_etnico_racial',
+    'estado_civil',
+    'Ocupaciones_actules',
+    'actividades_especificas_tiempo_libre',
+    'calificacion_relacion_familiar',
+    'creencia_religiosa',
+    'origen_descubrimiento_campus_diverso',
+    'acompanamiento_que_recibio',
+    
+  ];
+
+  const listFields = [ 
+  
+    'estamentos',
+    'identidades_de_genero',
+    'orientaciones_sexuales',
+    'expresiones_de_genero',
+    'identidad_etnico_racial',
+    'estado_civil',
+    'redes_apoyo',
+    'decision_encuentro_inicial',
+    'factores_riesgos',
+    'fuentes_ingresos',
+    'sexo_asignado'
+    
+  ];
+
+  if (state.estamentos?.includes("Estudiante de posgrado")) {
+    requiredFields.push('codigo_estudiante', 'semestre_academico', 'pertenencia_univalle');
+    listFields.push('programas', 'sedes');
+  }
+
+  const invalidFields = [
+    ...requiredFields.filter(field => !state[field]),
+    ...listFields.filter(field =>
+      !state[field] || (Array.isArray(state[field]) && state[field].length === 0)
+    )
+  ];
+
+  const fieldNames = {
+    
+    estamentos: "Estamentos",
+    semestre_academico: "Semestre académico",
+    numero_documento: "Número de documento",
+    tiene_eps: "¿Tiene EPS?",
+    pertenencia_univalle: "Pertenencia a Univalle",
+    identidades_de_genero: "Identidades de género",
+    orientaciones_sexuales: "Orientaciones sexuales",
+    expresiones_de_genero: "Expresiones de género",
+    identidad_etnico_racial: "Identidad étnico-racial",
+    estado_civil: "Estado civil",
+    email: "Email",
+    Ocupaciones_actules: "Ocupación actual",
+    actividades_especificas_tiempo_libre: "Actividades en tiempo libre",
+    redes_apoyo: "Redes de apoyo",
+    calificacion_relacion_familiar: "Relación familiar",
+    decision_encuentro_inicial: "Profesional para cita",
+    creencia_religiosa: "Creencia religiosa",
+    origen_descubrimiento_campus_diverso: "Cómo descubriste Campus Diverso",
+    acompanamiento_que_recibio: "Acompañamiento recibido",
+    factores_riesgos: "Factores de riesgo",
+    fuentes_ingresos: "Fuentes de ingreso",
+    sexo_asignado: "Sexo asignado al nacer",
+    programas: "Programas",
+    sedes: "Sedes",
+    codigo_estudiante: "Código de estudiante"
+   
+  };
+
+  if (invalidFields.length > 0) {
+    const formattedInvalidFields = invalidFields.map(field => fieldNames[field] || field);
+    setMensaje(`Los siguientes campos son obligatorios y están vacíos: ${formattedInvalidFields.join(', ')}`);
+    setShowErrorAlert(true);
+    setTimeout(() => setShowErrorAlert(false), 25000);
+    return;
+  }
+
+
+  handleSubmit(e);
+};
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -618,93 +707,18 @@ const handleSubmit = async (e) => {
 
 
 
-  const requiredFields = [
-    /*
-    'numero_documento',
-    'tiene_eps',
-    'email',
-    'pertenencia_univalle',
-    'identidades_de_genero',
-    'orientaciones_sexuales',
-    'expresiones_de_genero',
-    'identidad_etnico_racial',
-    'estado_civil',
-    'Ocupaciones_actules',
-    'actividades_especificas_tiempo_libre',
-    'calificacion_relacion_familiar',
-    'creencia_religiosa',
-    'origen_descubrimiento_campus_diverso',
-    'acompanamiento_que_recibio',
- */
-];
 
-const fieldNames = {
-    numero_documento: "número de documento",
-    tiene_eps: "¿Tiene EPS?",
-    pertenencia_univalle: "pertenencia a Univalle",
-   
-    identidades_de_genero: "identidades de género",
-    orientaciones_sexuales: "orientaciones sexuales",
-    expresiones_de_genero: "expresiones de género",
-    identidad_etnico_racial: "identidad étnico-racial",
-    estado_civil: "estado civil",
-    email: "email",
-    Ocupaciones_actules: "Ocupacion actual",
-    actividades_especificas_tiempo_libre: "Actividades especificas en tiempo libre",
-    redes_apoyo: "Redes de apoyo",
-    calificacion_relacion_familiar: "Calificacion de relacion familiar",
-    decision_encuentro_inicial: "Que profesional  prefieres para agendar tu cita?",
-    origen_descubrimiento_campus_diverso: "¿Cómo descubriste a Campus Diverso?",
-    acompanamiento_que_recibio: "Tipo de acompañamiento recibido",
-    factores_riesgos: "Factores de riesgo",
-    fuentes_ingresos: "Fuentes de ingreso",
-    sexo_asignado: "Sexo asignado al nacer"
-};
 
-const listFields = [
-  /*
-  'identidades_de_genero',
-  'orientaciones_sexuales',
-  'expresiones_de_genero',
-  'identidad_etnico_racial',
-  'estado_civil',
-  'redes_apoyo',
-  'decision_encuentro_inicial',
-  'factores_riesgos',
-  'fuentes_ingresos',
-  'sexo_asignado'
-  */
-];
 
+
+
+
+ 
+ 
   // Remueve elementos vacios del formulario a la base de datos
   const removeEmptyFields = (data) => {
     return Object.fromEntries(Object.entries(data).filter(([key, value]) => value !== ""));
   };
-
-  const invalidFields = [
-    ...requiredFields.filter(field => state[field] === null || state[field] === undefined || state[field] === ''),
-    ...listFields.filter(field =>
-      state[field] === null ||
-      state[field] === undefined ||
-      (Array.isArray(state[field]) && state[field].length === 0)
-    )
-  ];
-
-if (invalidFields.length > 0) {
-  // Convertir los nombres técnicos a descripciones personalizadas
-  const formattedInvalidFields = invalidFields.map(field => fieldNames[field] || field);
-
-
-  // Alerta de campos vacíos que están en la lista de requiredFields
-  setMensaje(`Los siguientes campos son obligatorios y están vacíos: ${formattedInvalidFields.join(', ')}`);
-  setTimeout(() => {
-    setShowErrorAlert(true);
-    setTimeout(() => setShowErrorAlert(false), 25000);
-  }, 3000); // Simulación de una solicitud exitosa después de 1 segundo
-  return;
-}
- 
-
  
 
   const personaData = removeEmptyFields ({
@@ -869,6 +883,7 @@ if (invalidFields.length > 0) {
             setRecaptchaToken("");// se reinicia el captcha
             // Restablecer los valores del formulario a vacío
             set_state({
+            
               nombre_identitario: "",
               nombre_y_apellido: "",
               email: "",
@@ -1211,13 +1226,30 @@ const prevStep = () => {
                   {currentStep === steps.length - 1 && (
                     <Button
                       className="button-inicial"
-                      onClick={handleSubmit}
+                      onClick={handleClickEnviar}
                       disabled={!recaptchaToken || isSubmitting}
                     >
                       Enviar
                     </Button>
                   )}
                 </div>
+
+              <Modal
+                  show={showModalInfo}
+                  onHide={() => setShowModalInfo(false)}
+                  backdrop="static"
+                  keyboard={false}
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title>Atención</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <p style={{ fontSize: "16px", lineHeight: "1.5" }}>
+                      Por favor rellena la siguiente ficha de registro para conocerte mejor. Las preguntas que tengan este símbolo (<span className='simbolo-obligatorio'>*</span>)  son obligatorias diligenciarlas.
+                    </p>    
+                  </Modal.Body>
+                </Modal>
+
 
                 {/* Modal para autorización de manejo de datos */}
                 <Modal

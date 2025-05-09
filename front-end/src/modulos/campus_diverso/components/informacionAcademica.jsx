@@ -32,7 +32,7 @@ const InformacionAcademica = ({
 
     <div className="custom-div-check-documentos">
         <div className="custom-checkbox-label">
-          ¿Pertenece a univalle?
+          ¿Pertenece a univalle?<span className='simbolo-obligatorio'> *</span>
         </div>
         <label className="custom-radio">
           <input
@@ -58,20 +58,22 @@ const InformacionAcademica = ({
       </div>
 
       <div>
-        <label className='custom-div'>Estamentos</label>
+        <label className='custom-div'>Estamentos<span className='simbolo-obligatorio'> *</span></label>
         <Select
           className='create-select'
           name="estamentos"
           placeholder='Seleccione estamentos'
           options={estamentoOptions}
-          value={estamentoOptions.find(option => option.value === state.estamentos)}
+          value={estamentoOptions.find(option => option.label === state.estamentos?.[0]) || null}
           onChange={handleSelectNoMultiChange}
           isDisabled={state.pertenencia_univalle === false}
         />
       </div>
 
           <div>
-          <label className='custom-div'>Sede de universidad del valle</label>
+          <label className='custom-div'>Sede de universidad del valle{state.estamentos?.includes("Estudiante de posgrado") && (
+          <span className='simbolo-obligatorio'> *</span>
+        )}</label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -81,7 +83,7 @@ const InformacionAcademica = ({
                 name="sedes"
                 placeholder='Seleccione sede'
                 options={sedeOptions}
-                value={sedeOptions.find(option => option.value === state.sedes)}
+                value={sedeOptions.find(option => option.label === state.sedes?.[0]) || null}
                 onChange={handleSelectNoMultiChange}
                 isDisabled={state.pertenencia_univalle === false}
 
@@ -96,7 +98,9 @@ const InformacionAcademica = ({
     <Col className="form-column" xs={"6"} md={"6"}>
 
     <div>
-      <label className='custom-div'>Nombre del programa académico</label>
+      <label className='custom-div'>Nombre del programa académico{state.estamentos?.includes("Estudiante de posgrado") && (
+          <span className='simbolo-obligatorio'> *</span>
+        )}</label>
       <div>
         {isLoading ? (
           <p>Cargando...</p>
@@ -106,7 +110,7 @@ const InformacionAcademica = ({
             name="programas"
             placeholder='Seleccione programa'
             options={programaOptions}
-            value={programaOptions.find(option => option.value === state.programas)}
+            value={programaOptions.find(option => option.label === state.programas?.[0]) || null}
             onChange={handleSelectNoMultiChange}
             isDisabled={state.pertenencia_univalle === false}
 
@@ -116,7 +120,10 @@ const InformacionAcademica = ({
     </div>
     
         <div>
-                <label className='custom-div'>Codigo de estudiante (escribir sin los dos primeros dígitos EJ: 1424550)</label>
+                <label className='custom-div'>Codigo de estudiante (escribir sin los dos primeros dígitos EJ: 1424550){state.estamentos?.includes("Estudiante de posgrado") && (
+                  <span className='simbolo-obligatorio'> *</span>
+                )}
+              </label>
                 <div>
                 <input
                 className='input-updated'
@@ -133,8 +140,9 @@ const InformacionAcademica = ({
         </div>
     
         <div>
-                <label className='custom-div'>Semestre del estudiante</label>
-                
+                <label className='custom-div'>Semestre del estudiante{state.estamentos?.includes("Estudiante de posgrado") && (
+                  <span className='simbolo-obligatorio'> *</span>
+                )}</label>      
                 <input
                 className='input-updated'
                   type="text"

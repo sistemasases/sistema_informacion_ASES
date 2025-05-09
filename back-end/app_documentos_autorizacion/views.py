@@ -7,6 +7,7 @@ from app_registro.models import Persona
 from .models import DocumentosAutorizacion
 from .serializers import DocumentosAutorizacionSerializer, ApgarPregunta1Serializer, ApgarPregunta2Serializer, ApgarPregunta3Serializer,ApgarPregunta4Serializer, ApgarPregunta5Serializer, ApgarPregunta6Serializer, ApgarPregunta7Serializer
 from rest_framework import viewsets
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 # DocumentosAutorizacion
@@ -45,44 +46,100 @@ class DocumentosAutorizacionRetrievelUpdateDestroyView(generics.RetrieveUpdateDe
         self.perform_destroy(documentos_autorizacion)
         return Response(status.HTTP_204_NO_CONTENT) """
 
-class apgar_pregunta1_viewsets (viewsets.ModelViewSet):
+class apgar_pregunta1_viewsets(viewsets.ModelViewSet):
     serializer_class = ApgarPregunta1Serializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ApgarPregunta1Serializer.Meta.model.objects.all()
 
-class apgar_pregunta2_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class apgar_pregunta2_viewsets(viewsets.ModelViewSet):
     serializer_class = ApgarPregunta2Serializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ApgarPregunta2Serializer.Meta.model.objects.all()
-class apgar_pregunta3_viewsets (viewsets.ModelViewSet):
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class apgar_pregunta3_viewsets(viewsets.ModelViewSet):
     serializer_class = ApgarPregunta3Serializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ApgarPregunta3Serializer.Meta.model.objects.all()
 
-class apgar_pregunta4_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class apgar_pregunta4_viewsets(viewsets.ModelViewSet):
     serializer_class = ApgarPregunta4Serializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ApgarPregunta4Serializer.Meta.model.objects.all()
-    
-class apgar_pregunta5_viewsets (viewsets.ModelViewSet):
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class apgar_pregunta5_viewsets(viewsets.ModelViewSet):
     serializer_class = ApgarPregunta5Serializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ApgarPregunta5Serializer.Meta.model.objects.all()
 
-class apgar_pregunta6_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class apgar_pregunta6_viewsets(viewsets.ModelViewSet):
     serializer_class = ApgarPregunta6Serializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ApgarPregunta6Serializer.Meta.model.objects.all()
 
-class apgar_pregunta7_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class apgar_pregunta7_viewsets(viewsets.ModelViewSet):
     serializer_class = ApgarPregunta7Serializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ApgarPregunta7Serializer.Meta.model.objects.all()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 class documentos_autorizacion_viewsets(viewsets.ModelViewSet):
     serializer_class = DocumentosAutorizacionSerializer
     # permission_classes = (IsAuthenticated,)
     queryset = DocumentosAutorizacionSerializer.Meta.model.objects.all()
     lookup_field = 'id_persona'
+
+    def get_permissions(self):
+        if self.action == 'create':  # Solo para el método POST (crear)
+            self.permission_classes = [AllowAny]  # Permite acceso sin autenticación
+        else:
+            self.permission_classes = [IsAuthenticated]  # Requiere autenticación para otros métodos
+        return super().get_permissions() 
     
     def get_serializer(self, *args, **kwargs):  
         kwargs['partial'] = True

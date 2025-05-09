@@ -73,8 +73,8 @@ const Descarga_campus = () => {
         const factoresCount = {"No registrado": 0}; // Inicializa el contador de redes vacíos
         const actividadesCount = {"No registrado": 0}; // Inicializa el contador de actividades vacíos
         const fuentesCount = {"No registrado": 0}; // Inicializa el contador de fuentes vacíos
-        const programasCount = {"No registrado": 0}; // Inicializa el contador de fuentes vacíos
-        const sedesCount = {"No registrado": 0}; // Inicializa el contador de sedes vacíos
+        const programasCount = {"Externo": 0}; // Inicializa el contador de fuentes vacíos
+        const sedesCount = {"Externo": 0}; // Inicializa el contador de sedes vacíos
         const estamentosCount = {"No registrado": 0};
         const sexoAsignadoCount = {"No registrado": 0};
         const razaCount = {"No registrado": 0};
@@ -215,7 +215,7 @@ const Descarga_campus = () => {
 
           // Si el array está vacío, contar como "No registrado"
           if (programs.length === 0) {
-            programasCount["No registrado"]++;
+            programasCount["Externo"]++;
           } else {
             // Si es un array, procesar cada programa
             programs.forEach(index => {
@@ -223,7 +223,7 @@ const Descarga_campus = () => {
             });
           }
         } else {
-          programasCount["No registrado"]++;
+          programasCount["Externo"]++;
         }
 
         // Procesar sedes academicos
@@ -235,7 +235,7 @@ const Descarga_campus = () => {
           }
 
           if (headquarters.length === 0) {
-            sedesCount["No registrado"]++;
+            sedesCount["Externo"]++;
           } else {
   
             headquarters.forEach(index => {
@@ -243,7 +243,7 @@ const Descarga_campus = () => {
             });
           }
         } else {
-          sedesCount["No registrado"]++;
+          sedesCount["Externo"]++;
         }
         // Procesar estamentos
         if (user.informacion_academica && user.informacion_academica.estamentos) {
@@ -481,17 +481,27 @@ const Descarga_campus = () => {
 
   // Prepare data and download as Excel
   const handleDownload = async () => {
-    // Define the schema for the Excel file (optional but useful for formatting)
+  
     const schema = [
       {
         column: 'Nombre',
         type: String,
-        value: user => user.nombre_y_apellido // Adjust according to your data structure
+        value: user => user.nombre_y_apellido 
+      },
+      {
+        column: 'Tipo de documento',
+        type: String,
+        value: user => user.tipo_documento.join(', ')
       },
       {
         column: 'nombre identitario',
         type: String,
         value: user => user.nombre_identitario
+      },
+      {
+        column: 'Pronombres',
+        type: String,
+        value: user => user.diversidad_sexual.pronombres.join(', ')
       },
       {
         column: 'No. documento',
@@ -560,19 +570,14 @@ const Descarga_campus = () => {
         value: user => user.corregimiento_nacimiento
       },
       {
-        column: 'Municipio de Nacimiento',
+        column: 'Departamento de Nacimiento',
         type: String,
-        value: user => user.municipio_nacimiento
+        value: user => user.departamento_nacimiento
       },
       {
         column: 'País de Nacimiento',
         type: String,
         value: user => user.pais_nacimiento
-      },
-      {
-        column: 'Departamento de Nacimiento',
-        type: String,
-        value: user => user.departamento_nacimiento
       },
       {
         column: 'Fecha de Nacimiento',
@@ -583,11 +588,6 @@ const Descarga_campus = () => {
         column: 'Grupo Poblacional',
         type: String,
         value: user => user.pertenencia_grupo_poblacional.join(', ')
-      },
-      {
-        column: 'Comuna/Barrio',
-        type: String,
-        value: user => user.comuna_barrio ? user.comuna_barrio : 'No disponible'
       },
       {
         column: 'Barrio de Residencia',
@@ -604,17 +604,16 @@ const Descarga_campus = () => {
         type: String,
         value: user => user.direccion_residencia
       },
-
-      /* Diversidad sexual */
       {
-        column: 'Cambio Nombre/Sexo en Documento',
+        column: 'Zona de residencia',
         type: String,
-        value: user => user.diversidad_sexual?.cambio_nombre_sexo_documento 
+        value: user => user.zona_residencia.join(', ')
       },
-      {
-        column: 'Pronombres',
-        type: String,
-        value: user => user.diversidad_sexual.pronombres.join(', ')
+      /* Diversidad sexual */
+    {
+      column: 'Sexo asignado al nacer',
+      type: String,
+      value: user => user.sexo_asignado.join(', ')
     },
     {
         column: 'Identidades de Género',
@@ -649,11 +648,6 @@ const Descarga_campus = () => {
     value: user => user.informacion_general?.Ocupaciones_actules || ''
 },
 {
-    column: 'Profesionales que Brindaron Atención',
-    type: String,
-    value: user => user.informacion_general?.profesionales_que_brindaron_atencion
-},
-{
     column: 'Acompañamiento que Recibió',
     type: String,
     value: user => user.informacion_general?.acompanamiento_que_recibio
@@ -678,21 +672,6 @@ const Descarga_campus = () => {
     column: 'Régimen EPS',
     type: String,
     value: user => user.informacion_general?.regimen_eps.join(', ')
-},
-{
-    column: 'Tipo de Entidad de Acompañamiento Recibido',
-    type: String,
-    value: user => user.informacion_general?.tipo_entidad_acompanamiento_recibido
-},
-{
-    column: 'Calificación del Acompañamiento Recibido',
-    type: Number,
-    value: user => user.informacion_general?.calificacion_acompanamiento_recibido
-},
-{
-    column: 'Motivo de la Calificación del Acompañamiento',
-    type: String,
-    value: user => user.informacion_general?.motivo_calificacion_acompanamiento
 },
 {
     column: 'Actividades Específicas en Tiempo Libre',
@@ -737,12 +716,7 @@ const Descarga_campus = () => {
 {
     column: 'Decisión en Encuentro Inicial con Profesional',
     type: String,
-    value: user => user.informacion_general?.decision_encuentro_inicial_con_profesional
-},
-{
-    column: 'Observación del Horario',
-    type: String,
-    value: user => user.informacion_general?.observacion_horario
+    value: user => user.informacion_general?.decision_encuentro_inicial.join(', ')
 },
 {
     column: 'Origen del Descubrimiento de Campus Diverso',
@@ -750,10 +724,77 @@ const Descarga_campus = () => {
     value: user => user.informacion_general?.origen_descubrimiento_campus_diverso
 },
 {
-    column: 'Comentarios o Sugerencias del Usuario',
-    type: String,
-    value: user => user.informacion_general?.comentarios_o_sugerencias_de_usuario
-}, {
+  column: 'Me satisface la ayuda que recibo de mi familia cuando tengo algún problema y/o necesidad',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta1.join(', ')
+},
+{
+  column: 'Me satisface como en mi familia hablamos y compartimos nuestros problemas',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta2.join(', ')
+},
+{
+  column: 'Me satisface como mi familia acepta y apoya mi deseo de emprender nuevas actividades',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta3.join(', ')
+},
+{
+  column: 'Me satisface como mi familia expresa afecto y responde a mis emociones tales como rabia, tristeza, amor',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta4.join(', ')
+},
+{
+  column: 'Me satisface como compartimos en mi familia: tiempo/espacio/dinero',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta5.join(', ')
+},
+{
+  column: 'Tengo un(a) amigo(a) cercano quien pueda buscar cuando necesito ayuda',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta6.join(', ')
+},
+{
+  column: 'Estoy satisfecho(a) con el soporte que recibo de mis amigos(as)',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta7.join(', ')
+},
+{
+  column: 'Puntaje APGAR',
+  type: String,
+  value: user => {
+    const valoraciones = {
+      'nunca': 0,
+      'casi nunca': 1,
+      'algunas veces': 2,
+      'casi siempre': 3,
+      'siempre': 4
+    };
+
+    const preguntas = [
+      user.documentos_autorizacion?.apgar_pregunta1,
+      user.documentos_autorizacion?.apgar_pregunta2,
+      user.documentos_autorizacion?.apgar_pregunta3,
+      user.documentos_autorizacion?.apgar_pregunta4,
+      user.documentos_autorizacion?.apgar_pregunta5
+    ];
+
+    let puntaje = 0;
+
+    preguntas.forEach(pregunta => {
+      if (Array.isArray(pregunta)) {
+        pregunta.forEach(respuesta => {
+          const valor = valoraciones[respuesta?.toLowerCase()];
+          if (valor !== undefined) puntaje += valor;
+        });
+      }
+    });
+
+    return `${puntaje} puntos`;
+  }
+},
+
+
+{
   column: 'Seguimientos',
   type: String,
   value: user => user.seguimientos
@@ -827,7 +868,7 @@ const Descarga_campus = () => {
             width="100%"
             height="300px"
             options={{
-              title: 'Distribución de tipo de documento',
+              title: 'Distribución de Tipo de documento',
               is3D: true,
             }}
           />
@@ -842,7 +883,7 @@ const Descarga_campus = () => {
             width="100%"
             height="300px"
             options={{
-              title: 'Distribución de identidad étnico racial',
+              title: 'Distribución de Identidad étnico racial',
               is3D: true,
             }}
           />
@@ -859,7 +900,7 @@ const Descarga_campus = () => {
             width="100%"
             height="300px"
             options={{
-              title: 'Distribución de estado civil',
+              title: 'Distribución de Estado civil',
               is3D: true,
   
               
@@ -876,7 +917,7 @@ const Descarga_campus = () => {
             width="100%"
             height="300px"
             options={{
-              title: 'Distribución de zona de residencia',
+              title: 'Distribución de Zona de residencia',
               is3D: true,
             }}
           />
@@ -910,21 +951,7 @@ const Descarga_campus = () => {
             height="300px"
             options={{
               title: 'Distribución de Identidades de Género',
-              is3D: true,
-              colors: [
-                '#5E2B91', // Morado fuerte
-                '#7A4BCA', // Morado oscuro
-                '#9A6DC4', // Morado medio oscuro
-                '#B689D2', // Morado medio
-                '#D1A6E0', // Morado claro
-                '#E8C6E9', // Morado suave
-                '#F1D6F0', // Morado muy suave
-                '#F6E0F2', // Lavanda
-                '#FAE6F5', // Lavanda suave
-                '#FDF3F8', // Lavanda muy suave
-                '#FFFFFF'  // Blanco (opcional, para un contraste final)
-              ],
-              
+              is3D: true,     
             }}
           />
         )}
@@ -940,20 +967,6 @@ const Descarga_campus = () => {
             options={{
               title: 'Distribución de Pronombres',
               is3D: true,
-              colors: [
-                '#FF8387', // Morado fuerte
-                '#FFBA86', // Morado oscuro
-                '#F7EA82', // Morado medio oscuro
-                '#65E682', // Morado medio
-                '#69B0E8', // Morado claro
-                '#B381E4', // Morado suave
-                '#FF9AEA', // Morado muy suave
-                '#3A3A3A', // Lavanda
-                '#C87F56', // Lavanda suave
-                '#FDF3F8', // Lavanda muy suave
-                '#FFFFFF'  // Blanco (opcional, para un contraste final)
-              ],
-              
             }}
           />
         )}
@@ -967,7 +980,7 @@ const Descarga_campus = () => {
             width="100%"
             height="300px"
             options={{
-              title: 'Distribución de pertenencia grupo poblacional',
+              title: 'Distribución de Pertenencia grupo poblacional',
               is3D: true,
   
               
@@ -1071,7 +1084,7 @@ const Descarga_campus = () => {
             width="100%"
             height="300px"
             options={{
-              title: 'Distribución de redes de apoyo',
+              title: 'Distribución de Redes de apoyo',
               is3D: true,
             }}
           />
@@ -1115,20 +1128,6 @@ const Descarga_campus = () => {
             options={{
               title: 'Distribución de programas de universidad',
               is3D: true,
-              colors: [
-                '#5E2B91', // Morado fuerte
-                '#7A4BCA', // Morado oscuro
-                '#9A6DC4', // Morado medio oscuro
-                '#B689D2', // Morado medio
-                '#D1A6E0', // Morado claro
-                '#E8C6E9', // Morado suave
-                '#F1D6F0', // Morado muy suave
-                '#F6E0F2', // Lavanda
-                '#FAE6F5', // Lavanda suave
-                '#FDF3F8', // Lavanda muy suave
-                '#FFFFFF'  // Blanco (opcional, para un contraste final)
-              ],
-              
             }}
             
           />
@@ -1146,20 +1145,6 @@ const Descarga_campus = () => {
             options={{
               title: 'Distribución de Estamentos',
               is3D: true,
-              colors: [
-                '#5E2B91', // Morado fuerte
-                '#7A4BCA', // Morado oscuro
-                '#9A6DC4', // Morado medio oscuro
-                '#B689D2', // Morado medio
-                '#D1A6E0', // Morado claro
-                '#E8C6E9', // Morado suave
-                '#F1D6F0', // Morado muy suave
-                '#F6E0F2', // Lavanda
-                '#FAE6F5', // Lavanda suave
-                '#FDF3F8', // Lavanda muy suave
-                '#FFFFFF'  // Blanco (opcional, para un contraste final)
-              ],
-              
             }}
             
           />
@@ -1179,20 +1164,6 @@ const Descarga_campus = () => {
             options={{
               title: 'Distribución de Sedes de universidad',
               is3D: true,
-              colors: [
-                '#5E2B91', // Morado fuerte
-                '#7A4BCA', // Morado oscuro
-                '#9A6DC4', // Morado medio oscuro
-                '#B689D2', // Morado medio
-                '#D1A6E0', // Morado claro
-                '#E8C6E9', // Morado suave
-                '#F1D6F0', // Morado muy suave
-                '#F6E0F2', // Lavanda
-                '#FAE6F5', // Lavanda suave
-                '#FDF3F8', // Lavanda muy suave
-                '#FFFFFF'  // Blanco (opcional, para un contraste final)
-              ],
-              
             }}
             
           />

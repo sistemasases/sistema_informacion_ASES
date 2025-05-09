@@ -34,7 +34,7 @@ const DocumentosAutorizacion = ({
         <Col className="form-column" xs={"10"} md={"6"}>
             
         <div>
-          <label className='custom-label'>Me satisface la ayuda que recibo de mi familia cuando tengo algún problema y/o necesidad</label>
+          <label className='custom-label'>Me satisface la ayuda que recibo de mi familia cuando tengo algún problema y/o necesidad<span className='simbolo-obligatorio'> *</span></label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -42,16 +42,16 @@ const DocumentosAutorizacion = ({
               <Select
                 className='create-select'
                 name="apgar_pregunta1"
-                placeholder='Seleccione su respuesta de cambio de documento'
+                placeholder='Seleccione su respuesta'
                 options={apgarpregunta1Options}
-                value={apgarpregunta1Options.find(option => option.value === state.apgar_pregunta1)}
+                value={apgarpregunta1Options.find(option => option.label === state.apgar_pregunta1?.[0]) || null}
                 onChange={handleSelectNoMultiChange}              />
             )}
           </div>
         </div>
 
         <div>
-          <label className='custom-label'>Me satisface como en mi familia hablamos y compartimos nuestros problemas</label>
+          <label className='custom-label'>Me satisface como en mi familia hablamos y compartimos nuestros problemas<span className='simbolo-obligatorio'> *</span></label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -59,9 +59,9 @@ const DocumentosAutorizacion = ({
               <Select
                 className='create-select'
                 name="apgar_pregunta2"
-                placeholder='Seleccione su respuesta de cambio de documento'
+                placeholder='Seleccione su respuesta'
                 options={apgarpregunta2Options}
-                value={apgarpregunta2Options.find(option => option.value === state.apgar_pregunta2)}
+                value={apgarpregunta2Options.find(option => option.label === state.apgar_pregunta2?.[0]) || null}
                 onChange={handleSelectNoMultiChange}
               />
             )}
@@ -70,7 +70,7 @@ const DocumentosAutorizacion = ({
         
 
         <div>
-          <label className='custom-label'>Me satisface como mi familia acepta y apoya mi deseo de emprender nuevas actividades</label>
+          <label className='custom-label'>Me satisface como mi familia acepta y apoya mi deseo de emprender nuevas actividades<span className='simbolo-obligatorio'> *</span></label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -78,9 +78,9 @@ const DocumentosAutorizacion = ({
               <Select
                 className='create-select'
                 name="apgar_pregunta3"
-                placeholder='Seleccione su respuesta de cambio de documento'
+                placeholder='Seleccione su respuesta'
                 options={apgarpregunta3Options}
-                value={apgarpregunta3Options.find(option => option.value === state.apgar_pregunta3)}
+                value={apgarpregunta3Options.find(option => option.label === state.apgar_pregunta3?.[0]) || null}
                 onChange={handleSelectNoMultiChange}
               />
             )}
@@ -88,7 +88,7 @@ const DocumentosAutorizacion = ({
         </div>
 
         <div>
-          <label className='custom-label'>Me satisface como mi familia expresa afecto y responde a mis emociones tales como rabia, tristeza, amor</label>
+          <label className='custom-label'>Me satisface como mi familia expresa afecto y responde a mis emociones tales como rabia, tristeza, amor<span className='simbolo-obligatorio'> *</span></label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -96,9 +96,9 @@ const DocumentosAutorizacion = ({
               <Select
                 className='create-select'
                 name="apgar_pregunta4"
-                placeholder='Seleccione su respuesta de cambio de documento'
+                placeholder='Seleccione su respuesta'
                 options={apgarpregunta4Options}
-                value={apgarpregunta4Options.find(option => option.value === state.apgar_pregunta4)}
+                value={apgarpregunta4Options.find(option => option.label === state.apgar_pregunta4?.[0]) || null}
                 onChange={handleSelectNoMultiChange}
               />
             )}
@@ -111,7 +111,7 @@ const DocumentosAutorizacion = ({
         
        
         <div>
-          <label className='custom-label'>Me satisface como compartimos en mi familia: tiempo/espacio/dinero</label>
+          <label className='custom-label'>Me satisface como compartimos en mi familia: tiempo/espacio/dinero<span className='simbolo-obligatorio'> *</span></label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -119,9 +119,9 @@ const DocumentosAutorizacion = ({
               <Select
                 className='create-select'
                 name="apgar_pregunta5"
-                placeholder='Seleccione su respuesta de cambio de documento'
+                placeholder='Seleccione su respuesta'
                 options={apgarpregunta5Options}
-                value={apgarpregunta5Options.find(option => option.value === state.apgar_pregunta5)}
+                value={apgarpregunta5Options.find(option => option.label === state.apgar_pregunta5?.[0]) || null}
                 onChange={handleSelectNoMultiChange}
               />
             )}
@@ -129,7 +129,7 @@ const DocumentosAutorizacion = ({
         </div>
 
         <div>
-          <label className='custom-label'>Tengo un(a) amigo(a) cercano quien pueda buscar cuando necesito ayuda</label>
+          <label className='custom-label'>Tengo un(a) amigo(a) cercano quien pueda buscar cuando necesito ayuda<span className='simbolo-obligatorio'> *</span></label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -137,9 +137,9 @@ const DocumentosAutorizacion = ({
               <Select
                 className='create-select'
                 name="apgar_pregunta6"
-                placeholder='Seleccione su respuesta de cambio de documento'
+                placeholder='Seleccione su respuesta'
                 options={apgarpregunta6Options}
-                value={apgarpregunta6Options.find(option => option.value === state.apgar_pregunta6)}
+                value={apgarpregunta6Options.find(option => option.label === state.apgar_pregunta6?.[0]) || null}
                 onChange={handleSelectNoMultiChange}
               />
             )}
@@ -147,7 +147,7 @@ const DocumentosAutorizacion = ({
         </div>
 
         <div>
-          <label className='custom-label'>Estoy satisfecho(a) con el soporte que recibo de mis amigos(as)</label>
+          <label className='custom-label'>Estoy satisfecho(a) con el soporte que recibo de mis amigos(as)<span className='simbolo-obligatorio'> *</span></label>
           <div>
             {isLoading ? (
               <p>Cargando...</p>
@@ -155,9 +155,9 @@ const DocumentosAutorizacion = ({
               <Select
                 className='create-select'
                 name="apgar_pregunta7"
-                placeholder='Seleccione su respuesta de cambio de documento'
+                placeholder='Seleccione su respuesta'
                 options={apgarpregunta7Options}
-                value={apgarpregunta7Options.find(option => option.value === state.apgar_pregunta7)}
+                value={apgarpregunta7Options.find(option => option.label === state.apgar_pregunta7?.[0]) || null}
                 onChange={handleSelectNoMultiChange}
               />
             )}

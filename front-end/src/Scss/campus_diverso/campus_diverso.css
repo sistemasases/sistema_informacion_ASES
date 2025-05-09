@@ -1,9 +1,8 @@
 
 /* registro_estudiante.css */
 .registro-estudiante-container {
-  /*background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg') !important;*/
   background-color: #F5F5DC;
-  background-image: url('/public/imgs/pride-seamless3.jpeg'); /* Asegúrate de poner la ruta correcta de la imagen */
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); 
   background-repeat: no-repeat; /* Repite la imagen por toda la página */
   background-size: 100% 100%; 
   min-height: 100vh;
@@ -55,7 +54,7 @@
 .container_informacion_general {
   /* Estilo por defecto (para xs: 10 en Bootstrap) */
   width: 100%; /* 100% para pantallas muy pequeñas */
-  max-width: 100%; /* Puedes ajustar esto según la proporción deseada */
+  max-width: 100%; 
 }
 
 /* Medidas del css para teléfono*/
@@ -64,9 +63,8 @@
 
   /* registro_estudiante.css */
 .registro-estudiante-container {
-  /*background-image: url('../../modulos/campus_diverso/utils/images/form-background.jpg') !important;*/
   background-color: #050505;
-  background-image: url('/public/imgs/pride-seamless3.jpeg'); /* Asegúrate de poner la ruta correcta de la imagen */
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); 
   background-repeat: no-repeat; /* Repite la imagen por toda la página */
   background-size: cover; /* Para móviles, ajusta para que la imagen siempre quepa sin deformarse */
   min-height: 100vh; /* También en móviles se asegura que la altura ocupe el 100% del viewport */
@@ -144,9 +142,8 @@
 }
 
 .container_informacion_general {
-  /* Estilo por defecto (para xs: 10 en Bootstrap) */
   width: 100%; /* 100% para pantallas muy pequeñas */
-  max-width: 100%; /* Puedes ajustar esto según la proporción deseada */
+  max-width: 100%; 
 }
 
 
@@ -170,7 +167,7 @@
   padding: 5px;
   position: absolute;
   z-index: 1;
-  bottom: auto; /* Ajusta esta propiedad según tu necesidad */
+  bottom: auto;
   left: 50%;
   margin-left: -100px;
   opacity: 0;
@@ -191,11 +188,9 @@
     background-color: #ec4c4c;
     top: -300%;
     bottom: 100%;
-        /* Ajustes para que salga justo arriba del componente */
-        
-        /* Otros estilos opcionales */
+
     transition: opacity 1s;
-    transform: translateX(30%); /* Ajustar la posición horizontal del tooltip */
+    transform: translateX(30%); 
   }
 
 /* AgradecimientoEncuesta.css */
@@ -801,17 +796,17 @@
       position: relative;
       display: inline-block;
       margin-left: 8px;
-      color: #ff0000; /* Cambia el color según tu preferencia */
+      color: #ff0000; 
       cursor: pointer;
       font-weight: bold;
     }
     
     .tooltip-custom .tooltip-inner {
-      text-align: center !important;
+      text-align:left !important;
       background-color: #ec4c4c !important;
       color: white !important;
-      word-break: break-word;
-      hyphens: auto; 
+      white-space: normal;
+      
     
     }
 /*  Css agradecimiento*/
@@ -822,9 +817,9 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-image: url('/public/imgs/pride-seamless3.jpeg'); /* Asegúrate de poner la ruta correcta de la imagen */
-  background-repeat: repeat; /* Repite la imagen por toda la página */
-  background-size: 100% 100%; /* Ajusta el tamaño del patrón de la imagen */
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); 
+  background-repeat: repeat; 
+  background-size: 100% 100%; 
 }
 
 
@@ -884,9 +879,9 @@
 }
 
 .custom-datepicker-textfield .MuiInputLabel-root.Mui-focused {
-  transform: translateY(-0.1em) !important; /* Mueve el label hacia arriba cuando está enfocado */
+  transform: translateY(-0.1em) !important; 
   top: 0 !important;
-  font-size: 0.8rem !important; /* Puedes ajustar el tamaño si lo deseas */
+  font-size: 0.8rem !important; 
   margin-right: 3px;
 }
 
@@ -894,7 +889,7 @@
 .custom-datepicker-textfield .MuiInputLabel-root.MuiInputLabel-shrink {
   transform: translateY(-0.1em) !important; /* Mueve el label hacia arriba cuando hay un valor */
   top: 0 !important;
-  font-size: 0.8rem !important; /* Puedes ajustar el tamaño si lo deseas */
+  font-size: 0.8rem !important; 
   margin-right: 3px;
 }
 
@@ -908,4 +903,9 @@
   overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
   word-wrap: break-word; /*ajusta palabras largas */
   hyphens: auto; /* Habilita la separación de palabras si es necesario */
+}
+
+.simbolo-obligatorio{
+  color: #ff0000;
+  font-weight: bold;
 }

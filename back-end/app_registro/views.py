@@ -60,31 +60,73 @@ class PertenenciaGrupoPoblacionalRetrieveUpdateDestroyView(generics.RetrieveUpda
     queryset = PertenenciaGrupoPoblacional.objects.all()
     serializer_class = PertenenciaGrupoPoblacionalSerializer  """
     
-class pertenencia_grupo_poblacional_viewsets (viewsets.ModelViewSet):
+class pertenencia_grupo_poblacional_viewsets(viewsets.ModelViewSet):
     serializer_class = PertenenciaGrupoPoblacionalSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = PertenenciaGrupoPoblacionalSerializer.Meta.model.objects.all()
 
-class tipo_documento_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        # `list` y `retrieve` son los métodos GET en DRF
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]  # Permitir acceso sin token solo para GET
+        else:
+            self.permission_classes = [IsAuthenticated]  # Requiere autenticación para POST, PUT, PATCH, DELETE
+        return super().get_permissions()
+
+class tipo_documento_viewsets(viewsets.ModelViewSet):
     serializer_class = TipoDocumentoSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = TipoDocumentoSerializer.Meta.model.objects.all()
 
-class estado_civil_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]  # No requiere autenticación para GET
+        else:
+            self.permission_classes = [IsAuthenticated]  # Requiere autenticación para POST, PUT, etc.
+        return super().get_permissions()
+
+
+class estado_civil_viewsets(viewsets.ModelViewSet):
     serializer_class = EstadoCivilSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = EstadoCivilSerializer.Meta.model.objects.all()
 
-class zona_residencia_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class zona_residencia_viewsets(viewsets.ModelViewSet):
     serializer_class = ZonaResidenciaSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ZonaResidenciaSerializer.Meta.model.objects.all()
 
-class identidad_etnico_racial_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class identidad_etnico_racial_viewsets(viewsets.ModelViewSet):
     serializer_class = IdentidadEtnicoRacialSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = IdentidadEtnicoRacialSerializer.Meta.model.objects.all()
-class sexo_asignado_viewsets (viewsets.ModelViewSet):
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class sexo_asignado_viewsets(viewsets.ModelViewSet):
     serializer_class = SexoAsignadoSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = SexoAsignadoSerializer.Meta.model.objects.all()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()

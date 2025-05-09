@@ -8,6 +8,7 @@ from app_registro.models import Persona
 from .models import InformacionGeneral, EncuentroDiaHora
 from .serializers import InformacionGeneralSerializer,EncuentroDiaHoraSerializer, FactoresRiesgoSerializer, RedesApoyoSerializer, FuentesIngresoSerializer, ActividadesTiempoLibreSerializer, RegimenEpsSerializer, DecisionEncuentroInicialSerializer
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 # EncuentroDiaHora
@@ -42,43 +43,76 @@ class encuentro_dia_hora_viewsets(viewsets.ModelViewSet):
 
 
 # FactorRiesgo
-class factores_riesgo_viewset (viewsets.ModelViewSet):
+class factores_riesgo_viewset(viewsets.ModelViewSet):
     serializer_class = FactoresRiesgoSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = FactoresRiesgoSerializer.Meta.model.objects.all()
 
-# Redes de apoyo
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
-class redes_apoyo_viewsets (viewsets.ModelViewSet):
+
+class redes_apoyo_viewsets(viewsets.ModelViewSet):
     serializer_class = RedesApoyoSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = RedesApoyoSerializer.Meta.model.objects.all()
 
- # Regimen de EPS
-class regimen_eps_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class regimen_eps_viewsets(viewsets.ModelViewSet):
     serializer_class = RegimenEpsSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = RegimenEpsSerializer.Meta.model.objects.all()
 
-# Decision encuentro inicial
-class decision_encuentro_inicial_viewsets (viewsets.ModelViewSet):
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
+class decision_encuentro_inicial_viewsets(viewsets.ModelViewSet):
     serializer_class = DecisionEncuentroInicialSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = DecisionEncuentroInicialSerializer.Meta.model.objects.all()
 
-# Fuentes de ingresos
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
-class fuentes_ingresos_viewsets (viewsets.ModelViewSet):
+
+class fuentes_ingresos_viewsets(viewsets.ModelViewSet):
     serializer_class = FuentesIngresoSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = FuentesIngresoSerializer.Meta.model.objects.all()
 
-# Actividades tiempo libre
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
-class actividades_tiempo_libre_viewsets (viewsets.ModelViewSet):
+
+class actividades_tiempo_libre_viewsets(viewsets.ModelViewSet):
     serializer_class = ActividadesTiempoLibreSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = ActividadesTiempoLibreSerializer.Meta.model.objects.all()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
 
 
@@ -90,6 +124,13 @@ class informacion_general_viewsets (viewsets.ModelViewSet):
     queryset = InformacionGeneralSerializer.Meta.model.objects.all()
     lookup_field = 'id_persona'
 
+    def get_permissions(self):
+        if self.action == 'create':  # Solo para el método POST (crear)
+            self.permission_classes = [AllowAny]  # Permite acceso sin autenticación
+        else:
+            self.permission_classes = [IsAuthenticated]  # Requiere autenticación para otros métodos
+        return super().get_permissions()  
+    
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return super().partial_update(request, *args, **kwargs)

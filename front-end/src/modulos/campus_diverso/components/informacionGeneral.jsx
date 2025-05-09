@@ -71,13 +71,13 @@ const InformacionGeneral = ({state,
       </div>
 
       <div>
-                <label className='custom-div'>Nombre de la EPS</label>
+                <label className='custom-div'>Nombre de la EPS<span className='simbolo-obligatorio'> *</span></label>
                 <div>
                 <input
                 className='input-updated'
                   type="text"
                   name="nombre_eps"
-                  placeholder='Ingrese su ocupación'
+                  placeholder='Ingrese el nombre de la EPS'
                   value={state.nombre_eps}
                   onChange={handleChange}
                   maxLength={maxLengthBasicInput}
@@ -90,13 +90,13 @@ const InformacionGeneral = ({state,
         </div>  
 
         <div>
-        <label className='custom-div'>Régimen de su EPS</label>
+        <label className='custom-div'>Régimen de su EPS<span className='simbolo-obligatorio'> *</span></label>
         <Select
           className='create-select'
           name="regimen_eps"
-          placeholder='Seleccione estamentos'
+          placeholder='Seleccione el régimen de la EPS'
           options={regimenEpsOptions}
-          value={regimenEpsOptions.find(option => option.value === state.regimen_eps)}
+          value={regimenEpsOptions.find(option => option.label === state.regimen_eps?.[0]) || null}
           onChange={handleSelectNoMultiChange}
           isDisabled={!state.tiene_eps} // Deshabilita si tiene_eps es false
         />
@@ -104,7 +104,7 @@ const InformacionGeneral = ({state,
 
 
         <div>
-                <label className='custom-div'>¿Ocupación actual?</label>
+                <label className='custom-div'>Ocupación actual<span className='simbolo-obligatorio'> *</span></label>
                 <div>
                 <input
                 className='input-updated'
@@ -163,7 +163,7 @@ const InformacionGeneral = ({state,
 
 
         <div>
-              <label className='custom-div'>Redes de apoyo</label>
+              <label className='custom-div'>Redes de apoyo<span className='simbolo-obligatorio'> *</span></label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>
@@ -186,7 +186,7 @@ const InformacionGeneral = ({state,
             </div>
 
         <div>
-                <label className='custom-div'>Calificacion de relación familiar</label>
+                <label className='custom-div'>Calificacion de relación familiar<span className='simbolo-obligatorio'> *</span></label>
                 <input
                 className='input-updated'
                   type="text"
@@ -246,7 +246,7 @@ const InformacionGeneral = ({state,
 
 
         <div>
-                <label className='custom-div'>Creencia religiosa</label>
+                <label className='custom-div'>Creencia religiosa<span className='simbolo-obligatorio'> *</span></label>
                 <input
                 className='input-updated'
                   type="text"
@@ -260,7 +260,7 @@ const InformacionGeneral = ({state,
         </div> 
 
         <div>
-        <label className='custom-div'>¿Qué profesional prefieres para agendar la reunión inicial?
+        <label className='custom-div'>¿Qué profesional prefieres para agendar la reunión inicial?<span className='simbolo-obligatorio'> *</span>
           <OverlayTrigger
             placement="bottom"
             overlay={
@@ -277,7 +277,7 @@ const InformacionGeneral = ({state,
           name="decision_encuentro_inicial"
           placeholder='Seleccione la profesión'
           options={decisionEncuentroInicialOptions}
-          value={decisionEncuentroInicialOptions.find(option => option.value === state.decision_encuentro_inicial)}
+          value={decisionEncuentroInicialOptions.find(option => option.label === state.decision_encuentro_inicial?.[0]) || null}
           onChange={handleSelectNoMultiChange}
         />
       </div>
@@ -286,7 +286,7 @@ const InformacionGeneral = ({state,
 
 
         <div>
-                <label className='custom-div'>¿Cómo conociste a campus diverso?</label>
+                <label className='custom-div'>¿Cómo conociste a campus diverso?<span className='simbolo-obligatorio'> *</span></label>
                 <input
                 className='input-updated'
                   type="text"
@@ -306,7 +306,7 @@ const InformacionGeneral = ({state,
 
 
         <div>
-                <label className='custom-div'>¿tipo(s) de acompañamiento(s) recibido(s)?</label>
+                <label className='custom-div'>¿tipo(s) de acompañamiento(s) recibido(s)?<span className='simbolo-obligatorio'> *</span></label>
                 <div>
                 <textarea
                 className='input-updated'
@@ -326,7 +326,7 @@ const InformacionGeneral = ({state,
 
 
         <div>
-              <label className='custom-div'>Factores de riesgo</label>
+              <label className='custom-div'>Factores de riesgo<span className='simbolo-obligatorio'> *</span></label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>
@@ -352,7 +352,7 @@ const InformacionGeneral = ({state,
 
 
             <div>
-              <label className='custom-div'>Fuentes de ingresos</label>
+              <label className='custom-div'>Fuentes de ingresos<span className='simbolo-obligatorio'> *</span></label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>

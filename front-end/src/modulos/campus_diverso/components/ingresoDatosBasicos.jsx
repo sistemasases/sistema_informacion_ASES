@@ -48,7 +48,7 @@ const IngresoDatosBasicos = ({state,
       <Col className="form-column" xs={"6"} md={"6"}>
       
           <div>
-            <label className='custom-div'>Pronombres
+            <label className='custom-div'>Pronombres<span className='simbolo-obligatorio'> *</span>
               <OverlayTrigger
                 placement="bottom"
                 overlay={
@@ -65,24 +65,19 @@ const IngresoDatosBasicos = ({state,
                   <p>Cargando...</p>
                 ):(
                 <Select
-                  isMulti
                   className='create-select'
                   name="pronombres"
                   placeholder='Seleccione pronombres'
                   options={pronombresOptions}
-                  value={state.pronombres.map(option => ({
-                  value: option,
-                  label: pronombresOptions.find(o => o.value === option).label
-                  }))}
-                  onChange={handleSelectChange}
-    
+                  value={pronombresOptions.find(option => option.label === state.pronombres?.[0]) || null}
+                  onChange={handleSelectNoMultiChange}
                   />
                   )}
               </div>
         </div>
 
     <div className="input-container">
-  <label className='custom-div'>Nombre Identitario</label>
+  <label className='custom-div'>Nombre Identitario<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="text"
@@ -96,7 +91,7 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div className="input-container">
-  <label className='custom-div'>Nombre y apellido</label>
+  <label className='custom-div'>Nombre y apellido<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="text"
@@ -110,19 +105,21 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div>
-  <label className='custom-div'>Tipo documento</label>
+  <label className='custom-div'>Tipo documento<span className='simbolo-obligatorio'> *</span></label>
   <div>
     {isLoading ? (
       <p>Cargando...</p>
     ) : (
       <Select
-        className='create-select'
-        name="tipo_documento"
-        placeholder='Seleccione su documento'
-        options={tipoDocumentoOptions}
-        value={tipoDocumentoOptions.find(option => option.value === state.tipo_documento)}
-        onChange={handleSelectNoMultiChange}
-      />
+  className='create-select'
+  name="tipo_documento"
+  placeholder='Seleccione su documento'
+  options={tipoDocumentoOptions}
+  value={
+    tipoDocumentoOptions.find(option => option.label === state.tipo_documento?.[0]) || null
+  }
+  onChange={handleSelectNoMultiChange}
+/>
     )}
   </div>
 </div>
@@ -133,7 +130,7 @@ const IngresoDatosBasicos = ({state,
 
 
 <div className="input-container">
-  <label className='custom-div'>Email</label>
+  <label className='custom-div'>Email<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="email"
@@ -150,7 +147,7 @@ const IngresoDatosBasicos = ({state,
 
 
 <div className="input-container">
-  <label className='custom-div'>Número de documento</label>
+  <label className='custom-div'>Número de documento<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="number"
@@ -167,7 +164,7 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div className="input-container">
-  <label className='custom-div'>Estrato socioeconómico</label>
+  <label className='custom-div'>Estrato socioeconómico<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="text"
@@ -184,7 +181,7 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div className="input-container">
-  <label className='custom-div'>Teléfono</label>
+  <label className='custom-div'>Teléfono<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="text"
@@ -199,7 +196,7 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div>
-  <label className='custom-div'>Estado civil</label>
+  <label className='custom-div'>Estado civil<span className='simbolo-obligatorio'> *</span></label>
   <div>
     {isLoading ? (
       <p>Cargando...</p>
@@ -209,7 +206,7 @@ const IngresoDatosBasicos = ({state,
         name="estado_civil"
         placeholder='Seleccione tu estado civil'
         options={estadocivilOptions}
-        value={estadocivilOptions.find(option => option.value === state.estado_civil)}
+        value={estadocivilOptions.find(option => option.label === state.estado_civil?.[0]) || null}
         onChange={handleSelectNoMultiChange}
       />
     )}
@@ -217,7 +214,7 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div>
-  <label className='custom-div'>Identidad étnico racial</label>
+  <label className='custom-div'>Identidad étnico racial<span className='simbolo-obligatorio'> *</span></label>
   <div>
     {isLoading ? (
       <p>Cargando...</p>
@@ -227,7 +224,7 @@ const IngresoDatosBasicos = ({state,
         name="identidad_etnico_racial"
         placeholder='Seleccione tu identidad'
         options={identidadEtnicoRacialOptions}
-        value={identidadEtnicoRacialOptions.find(option => option.value === state.identidad_etnico_racial)}
+        value={identidadEtnicoRacialOptions.find(option => option.label === state.identidad_etnico_racial?.[0]) || null}
         onChange={handleSelectNoMultiChange}
       />
     )}
@@ -235,7 +232,7 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div className="input-container">
-  <label className='custom-div'>Nombre de persona de confianza</label>
+  <label className='custom-div'>Nombre de persona de confianza<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="text"
@@ -249,7 +246,7 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div className="input-container">
-  <label className='custom-div'>Relación con la persona de confianza</label>
+  <label className='custom-div'>Relación con la persona de confianza<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="text"
@@ -263,7 +260,7 @@ const IngresoDatosBasicos = ({state,
 </div>
 
 <div className="input-container">
-  <label className='custom-div'>Número de persona de confianza</label>
+  <label className='custom-div'>Número de persona de confianza<span className='simbolo-obligatorio'> *</span></label>
   <input
     className='input-updated'
     type="text"
@@ -389,7 +386,7 @@ const IngresoDatosBasicos = ({state,
           name="zona_residencia"
           placeholder='Seleccione su zona de residencia'
           options={zonaResidencialOptions}
-          value={zonaResidencialOptions.find(option => option.value === state.zona_residencia)}
+          value={zonaResidencialOptions.find(option => option.label === state.zona_residencia?.[0]) || null}
           onChange={handleSelectNoMultiChange}
         />
       )}

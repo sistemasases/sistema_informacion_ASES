@@ -7,6 +7,7 @@ from app_registro.models import Persona
 from .models import InformacionAcademica, Estamento, SedeUniversidad, NombrePrograma
 from .serializers import InformacionAcademicaSerializer, EstamentoSerializer, SedeUniversidadSerializer, NombreProgramaSerializer
 from rest_framework import viewsets 
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 # Estamento
 """ class EstamentoListCreateView(generics.ListCreateAPIView):
@@ -19,18 +20,38 @@ class EstamentoRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     
 class estamento_viewsets(viewsets.ModelViewSet):
     serializer_class = EstamentoSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = EstamentoSerializer.Meta.model.objects.all()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
 
 class sede_viewsets(viewsets.ModelViewSet):
     serializer_class = SedeUniversidadSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = SedeUniversidadSerializer.Meta.model.objects.all()
-    
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+
 class programa_viewsets(viewsets.ModelViewSet):
     serializer_class = NombreProgramaSerializer
-    # permission_classes = (IsAuthenticated,)
     queryset = NombreProgramaSerializer.Meta.model.objects.all()
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
 
 # InformacionAcademica
 """ class InformacionAcademicaListCreateView(generics.ListCreateAPIView):
@@ -69,6 +90,13 @@ class informacion_academica_viewsets(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = InformacionAcademicaSerializer.Meta.model.objects.all()
     lookup_field = 'id_persona'
+    
+    def get_permissions(self):
+        if self.action == 'create':  # Solo para el método POST (crear)
+            self.permission_classes = [AllowAny]  # Permite acceso sin autenticación
+        else:
+            self.permission_classes = [IsAuthenticated]  # Requiere autenticación para otros métodos
+        return super().get_permissions()  
     
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True

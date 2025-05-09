@@ -17,7 +17,7 @@ class InformacionAcademica(models.Model):
     id_informacion_academica = models.AutoField(primary_key=True)
     id_persona = models.OneToOneField(Persona, on_delete=models.CASCADE, null=False, blank=False, related_name="informacion_academica")
     pertenencia_univalle = models.BooleanField()
-    codigo_estudiante = models.CharField(max_length=20, unique=True, blank=True,null=True)
+    codigo_estudiante = models.CharField(max_length=20, blank=True,null=True)
     semestre_academico = models.IntegerField(default=0, blank=True,)
     estamentos = models.ManyToManyField(Estamento, max_length=100, blank=True)
     sedes = models.ManyToManyField(SedeUniversidad, max_length=200, blank=True)

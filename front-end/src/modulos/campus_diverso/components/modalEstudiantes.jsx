@@ -219,6 +219,20 @@ const ModalEstudiantes = ({
                     </div>
                     
 
+        <div className='div-modal'>
+          <b>Estrato socioeconómico: </b>
+          {isEditing ? (
+            <input
+              type="text"
+              name="estrato_socioeconomico"
+              className='input-updated'
+              value={editableUser.estrato_socioeconomico !== undefined ? editableUser.estrato_socioeconomico : selectedUser.estrato_socioeconomico || ''}
+              onChange={handleInputChange}
+            />
+          ) : (
+            selectedUser.estrato_socioeconomico 
+          )}
+        </div>
 
         <div className='div-modal'>
           <b>Teléfono: </b>
@@ -236,7 +250,7 @@ const ModalEstudiantes = ({
         </div>
 
   <div className='div-modal'>
-  <b>Pertenencia grupo poblacional:</b>
+  <b>Identidad étnico racial: </b>
   {isEditing ? (
     <Select
       
@@ -245,7 +259,11 @@ const ModalEstudiantes = ({
       name="identidad_etnico_racial"
       // Opciones disponibles, excluyendo las ya seleccionadas
       options={identidadEtnicoRacialOptions}
-      value={identidadEtnicoRacialOptions.find(option => option.value === editableUser.identidad_etnico_racial)}
+      // Opciones seleccionadas
+      value={(editableUser.identidad_etnico_racial || selectedUser.identidad_etnico_racial|| []).map(value => {
+        const foundOption = identidadEtnicoRacialOptions.find(o => o.value === value);
+        return foundOption || { value, label: value };
+      })}
       onChange={handleSelectChange3}
       isOptionDisabled={(option) => option.value === editableUser.identidad_etnico_racial}
     />
@@ -404,10 +422,10 @@ const ModalEstudiantes = ({
 
 
  <div className='div-modal'>
-  <b>Pertenencia grupo poblacional:</b>
+  <b>Pertenencia grupo poblacional: </b>
   {isEditing ? (
     <Select
-      isMulti
+      
       className='create-select'
       placeholder='Seleccione grupo poblacional'
       name="pertenencia_grupo_poblacional"
@@ -462,7 +480,7 @@ const ModalEstudiantes = ({
 
 
 <div className='div-modal'>
-  <b>Zona de residencia</b>
+  <b>Zona de residencia: </b>
   {isEditing ? (
     <Select
       
@@ -513,16 +531,21 @@ const ModalEstudiantes = ({
              
                       
             <div className='div-modal'>
-              <b>Sexo asignado al nacer </b>
+              <b>Sexo asignado al nacer: </b>
                     {isEditing ? (
               <Select
                 className='create-select'
                 name="sexo_asignado"
                 placeholder='Seleccione el sexo asignado al nacer'
-                options={sexoAsignadoOptions}
-                value={sexoAsignadoOptions.find(option => option.value === editableUser.sexo_asignado)}
+                options={sexoAsignadoOptions.filter(option => 
+                  !( editableUser.sexo_asignado || selectedUser.sexo_asignado).includes(option.value && option.label) 
+                )}
+                // Opciones seleccionadas
+                value={(editableUser.sexo_asignado || selectedUser.sexo_asignado|| []).map(value => {
+                  const foundOption = sexoAsignadoOptions.find(o => o.value === value);
+                  return foundOption || { value, label: value };
+                })}
                 onChange={handleSelectChange3}
-                isOptionDisabled={(option) => option.value === editableUser.sexo_asignado} 
               />
             ) : (
               (selectedUser.sexo_asignado && selectedUser.sexo_asignado.length)
@@ -651,7 +674,7 @@ const ModalEstudiantes = ({
                              
 
 <div className='div-modal'>
-  <b>¿Tiene EPS?:</b>
+  <b>¿Tiene EPS?: </b>
   {isEditing ? (
     <input 
       type="checkbox" 
@@ -665,7 +688,7 @@ const ModalEstudiantes = ({
 
 
 <div className='div-modal'>
-  <b>Nombre de la EPS:</b>
+  <b>Nombre de la EPS: </b>
   {isEditing ? (
     <input 
       type="text" 
@@ -678,7 +701,7 @@ const ModalEstudiantes = ({
 </div>
 
 <div className='div-modal'>
-  <b>Régimen EPS </b>
+  <b>Régimen EPS: </b>
   {isEditing ? (
     <Select
       placeholder='Seleccione regimen'
@@ -701,7 +724,7 @@ const ModalEstudiantes = ({
   </div>   
 
   <div className='div-modal'>
-  <b>Ocupaciones actuales:</b>
+  <b>Ocupaciones actuales: </b>
   {isEditing ? (
     <input 
       type="text" 
@@ -716,7 +739,7 @@ const ModalEstudiantes = ({
 </div>
 
 <div className='div-modal'>
-        <b>Actividades específicas en tiempo libre:</b>
+        <b>Actividades específicas en tiempo libre: </b>
         {isEditing ? (
           <input
             type="text"
@@ -758,7 +781,7 @@ const ModalEstudiantes = ({
       </div>
 
       <div className='div-modal'>
-        <b>Creencia religiosa:</b>
+        <b>Creencia religiosa: </b>
         {isEditing ? (
           <input
             type="text"
@@ -796,7 +819,7 @@ const ModalEstudiantes = ({
         </div>      
 
       <div className='div-modal'>
-        <b>¿Cómo conociste a campus diverso?</b>
+        <b>¿Cómo conociste a campus diverso?: </b>
         {isEditing ? (
           <input
             type="text"
@@ -993,7 +1016,7 @@ const ModalEstudiantes = ({
                       <Col className="form-column" xs={"10"} md={"6"}>
 
                       <div className='div-modal'>
-                          <b>Pertenencia a univalle:</b>
+                          <b>¿Pertenece a univalle?: </b>
                           {isEditing ? (
                             <input
                               type="checkbox"
@@ -1038,12 +1061,14 @@ const ModalEstudiantes = ({
                               className='create-select'
                               name="programas"
                               placeholder='Seleccione programa'
-                              options={programaOptions}
-                              value={
-                                editableUser.programas && editableUser.programas.length
-                                  ? programaOptions.find(option => option.value === editableUser.programas[0])
-                                  : null
-                              }
+                              options={programaOptions.filter(option => 
+                                !( editableUser.programas || academicoInfo.programas).includes(option.label)
+                              )}
+                              // Opciones seleccionadas
+                              value={(editableUser.programas || academicoInfo.programas|| []).map(value => {
+                                const foundOption = programaOptions.find(o => o.value === value);
+                                return foundOption || { value, label: value };
+                              })}
                               onChange={handleSelectChange3}
                             />
                           ) : (
@@ -1055,9 +1080,32 @@ const ModalEstudiantes = ({
         
                       </Col>
                       <Col className="form-column" xs={"10"} md={"6"}>
-                      
+                        
+                        <div className='div-modal'>
+                        <b>Sede: </b>
+                          {isEditing ? (
+                            <Select
+                              className='create-select'
+                              name="sedes"
+                              placeholder='Seleccione programa'   
+                              options={sedeOptions.filter(option => 
+                                !( editableUser.sedes || academicoInfo.sedes).includes(option.label)
+                              )}
+                              // Opciones seleccionadas
+                              value={(editableUser.sedes || academicoInfo.sedes|| []).map(value => {
+                                const foundOption = sedeOptions.find(o => o.value === value);
+                                return foundOption || { value, label: value };
+                              })}
+                              onChange={handleSelectChange3}
+                            />
+                          ) : (
+                            (academicoInfo.sedes && academicoInfo.sedes.length)
+                              ? academicoInfo.sedes.join(', ')
+                              : 'No especificado'
+                          )}
+                        </div>   
 
-                      <div className='div-modal'>
+                        <div className='div-modal'>
                           <b>Código de estudiante:</b>
                           {isEditing ? (
                             <input
@@ -1071,28 +1119,21 @@ const ModalEstudiantes = ({
                             academicoInfo.codigo_estudiante
                           )}
                         </div>
-                        
+
                         <div className='div-modal'>
-                        <b>Sede: </b>
+                          <b>semestre académico: </b>
                           {isEditing ? (
-                            <Select
-                              className='create-select'
-                              name="sedes"
-                              placeholder='Seleccione programa'
-                              options={sedeOptions}
-                              value={
-                                editableUser.sedes && editableUser.sedes.length
-                                  ? sedeOptions.find(option => option.value === editableUser.sedes[0])
-                                  : null
-                              }
-                              onChange={handleSelectChange3}
+                            <input
+                              type="text"
+                              name="semestre_academico"
+                              className='input-updated'
+                              value={editableUser.semestre_academico !== undefined ? editableUser.semestre_academico : academicoInfo.semestre_academico || ''}
+                              onChange={handleInputChange}
                             />
                           ) : (
-                            (academicoInfo.sedes && academicoInfo.sedes.length)
-                              ? academicoInfo.sedes.join(', ')
-                              : 'No especificado'
+                            academicoInfo.semestre_academico
                           )}
-                        </div>   
+                        </div>
 
                       </Col>
                     </Row>
@@ -1106,7 +1147,7 @@ const ModalEstudiantes = ({
             <Row>
               <Col className="form-column" xs={"10"} md={"6"}>
                 <div className='div-modal'>
-                  <b>Autorización manejo de datos:</b>
+                  <b>Autorización manejo de datos: </b>
                   {isEditing ? (
                     <input
                       type="checkbox"
@@ -1119,7 +1160,7 @@ const ModalEstudiantes = ({
                   )}
                 </div>
                 <div className='div-modal'>
-                  <b>Firma consentimiento informado:</b>
+                  <b>Firma consentimiento informado: </b>
                   {isEditing ? (
                     <input
                       type="checkbox"
@@ -1131,39 +1172,14 @@ const ModalEstudiantes = ({
                     documentosInfo.firma_consentimiento_informado ? 'Sí' : 'No'
                   )}
                 </div>
-                <div className='div-modal'>
-                  <b>Firma terapia hormonal:</b>
-                  {isEditing ? (
-                    <input
-                      type="checkbox"
-                      name="firma_terapia_hormonal"
-                      checked={editableUser.firma_terapia_hormonal ?? documentosInfo.firma_terapia_hormonal}
-                      onChange={handleCheckboxChange}
-                    />
-                  ) : (
-                    documentosInfo.firma_terapia_hormonal ? 'Sí' : 'No'
-                  )}
-                </div>
-                <div className='div-modal'>
-                  <b>Apgar familiar:</b>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      name="apgar_familiar"
-                      className='input-updated'
-                      value={editableUser.apgar_familiar !== undefined ? editableUser.apgar_familiar : documentosInfo.apgar_familiar || ''}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    documentosInfo.apgar_familiar
-                  )}
-                </div>
+                
+            
                
               </Col>
               <Col className="form-column" xs={"10"} md={"6"}>
   
                 <div className='div-modal'>
-                  <b>Árbol familiar:</b>
+                  <b>Árbol familiar: </b>
                   {isEditing ? (
                     <input
                       type="checkbox"
@@ -1256,6 +1272,7 @@ const ModalEstudiantes = ({
               <div className='div-modal'>
                 <b>
                 Tengo un(a) amigo(a) cercano quien pueda buscar cuando necesito ayuda
+                <span className='simbolo-obligatorio'> NO puntúa APGAR </span>
                 </b>
                 <div className='apgar-respuesta'>
                   {
@@ -1269,6 +1286,7 @@ const ModalEstudiantes = ({
               <div className='div-modal'>
                 <b>
                 Estoy satisfecho(a) con el soporte que recibo de mis amigos(as)
+                <span className='simbolo-obligatorio'> NO puntúa APGAR </span>
                 </b>
                 <div className='apgar-respuesta'>
                   {
