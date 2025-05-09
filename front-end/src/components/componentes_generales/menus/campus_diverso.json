@@ -1,0 +1,22 @@
+[
+    {
+        "id":"2",
+        "path":"/campus_diverso/registro_estudiante",
+        "name":"Registro",
+        "icon":"bi-journal-bookmark-fill",
+        "childrens":[
+            {
+                "id":2,  
+                "path":"/campus_diverso/registro_estudiante",
+                "name":"Registro de persona",
+                "icon":"bi bi-file-earmark-person-fill"
+            },
+            {
+                "id":1,
+                "path":"/campus_diverso/obtener_estudiante",
+                "name":"Consultar persona",
+                "icon":"bi bi-file-earmark-ruled-fill"
+            }
+        ]
+    }
+]
