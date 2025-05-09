@@ -1,0 +1,1203 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import writeXlsxFile from "write-excel-file";
+import { saveAs } from 'file-saver';
+import { Chart } from 'react-google-charts';
+import { Button, Container, Col, Row } from 'react-bootstrap';
+
+import {
+  decryptTokenFromSessionStorage,
+  desencriptar,
+} from "../utilidades_seguridad/utilidades_seguridad";
+const Descarga_campus = () => {
+
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true); 
+  const [paginaActual, setPaginaActual] = useState(0);
+  /* Informacion persona */
+  const [sexoAsignadoData, setSexoAsignadoData] = useState([]);
+  const [razasData, setRazasOptionsData] = useState([]);
+  const [tipoDocumentoData, setTipoDocumentoData] = useState([]);
+  const [estadocivilData, setEstadoCivilData] = useState([]);
+  const [zonaResidencialData, setZonaResidencialData] = useState([]);
+  const [identidadEtnicoRacialData, setIdentidadEtnicoRacialData] = useState([]);
+  /*Diversidad sexual */
+  const [genderData, setGenderData] = useState([['Identidad de Género', 'Cantidad']]);
+  const [pronombreData, setPronombreData] = useState([['Pronombres','Cantidad']]);
+  const [expresionesData, setExpresionesData] = useState([['Expresiones', 'Cantidad']]);
+  const [orientacionesData, setOrientacionesData] = useState([['Orientaciones', 'Cantidad']]);
+  /*Información general */
+  const [redesData, seteRedesData] = useState([['Redes', 'Cantidad']]);
+  const [factoresRiesgoData, setFactoresRiesgoData] = useState((['Factores', 'Cantidad']))
+  const [actividadesData, setActividadesData] = useState((['Actividades', 'Cantidad']))
+  const [fuentesData, setFuentesData] = useState((['Fuentes', 'Cantidad']))
+  const [regimenEpsData, setRegimenEpsData] = useState([]);
+  const [decisionEncuentroInicialOptionsData, setDecisionENcuentroInicialData] = useState([]);
+  /*Información académico */
+  const [programaData, setProgramaData] = useState((['Programa', 'Cantidad']))
+  const [sedeData, setSedeData] = useState((['Sede', 'Cantidad']))
+  const [EstamentosData, setEstamentosData] = useState((['Estamento', 'Cantidad']))
+
+  const headers = {
+    Authorization: "Bearer " + decryptTokenFromSessionStorage(),  
+  };
+  
+
+  const irAdelante = () => {
+    if (paginaActual <= 2) { // Cambia el límite a 1 para dos páginas (0 y 1)
+      setPaginaActual(paginaActual + 1);
+    }
+  };
+
+  // Función para ir a la página anterior
+  const irAtras = () => {
+    if (paginaActual > 0) {
+      setPaginaActual(paginaActual - 1);
+    }
+  };
+
+  // Fetch data from the API
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/persona/persona/`, { headers })
+      .then(response => {
+
+        const sortedUsers = response.data.sort((a, b) => new Date(a.fecha_creacion_usuario) - new Date(b.fecha_creacion_usuario));
+
+        setUsers(sortedUsers);
+       
+        const genderCount = { "No registrado": 0 }; // Inicializa el contador de identidades
+        const pronounCount = { "No registrado": 0 }; // Inicializa el contador de pronombres vacíos
+        const expresionesCount = { "No registrado": 0 }; // Inicializa el contador de pronombres vacíos
+        const orientacionesCount = {"No registrado": 0}; // Inicializa el contador de orientaciones vacíos
+        const redesCount = {"No registrado": 0}; // Inicializa el contador de redes vacíos
+        const factoresCount = {"No registrado": 0}; // Inicializa el contador de redes vacíos
+        const actividadesCount = {"No registrado": 0}; // Inicializa el contador de actividades vacíos
+        const fuentesCount = {"No registrado": 0}; // Inicializa el contador de fuentes vacíos
+        const programasCount = {"Externo": 0}; // Inicializa el contador de fuentes vacíos
+        const sedesCount = {"Externo": 0}; // Inicializa el contador de sedes vacíos
+        const estamentosCount = {"No registrado": 0};
+        const sexoAsignadoCount = {"No registrado": 0};
+        const razaCount = {"No registrado": 0};
+        const estadoCivilCount = {"No registrado": 0};
+        const TipoDocumentoCount = {"No registrado": 0};
+        const regimenEpsCount = {"No registrado": 0};
+        const zonaResidenciaCount = {"No registrado": 0};
+        const identidadEtnicaRacialCount = {"No registrado": 0};
+
+        sortedUsers.forEach(user => {
+          // Procesar identidades de género
+          if (user.diversidad_sexual && user.diversidad_sexual.identidades_de_genero) {
+            const identidades = user.diversidad_sexual.identidades_de_genero;
+
+            if (identidades.length === 0) {
+              genderCount["No registrado"]++;
+            } else {
+              identidades.forEach(gender => {
+                genderCount[gender] = (genderCount[gender] || 0) + 1;
+              });
+            }
+          } else {
+            genderCount["No registrado"]++;
+          }
+
+          // Procesar pronombres
+          if (user.diversidad_sexual && user.diversidad_sexual.pronombres) {
+            const pronombres = user.diversidad_sexual.pronombres;
+
+            if (pronombres.length === 0) {
+              pronounCount["No registrado"]++;
+            } else {
+              pronombres.forEach(pronoun => {
+                pronounCount[pronoun] = (pronounCount[pronoun] || 0) + 1;
+              });
+            }
+          } else {
+            pronounCount["No registrado"]++;
+          }
+
+           // Procesar expresiones de genero
+           if (user.diversidad_sexual && user.diversidad_sexual.expresiones_de_genero) {
+            const expresiones = user.diversidad_sexual.expresiones_de_genero;
+
+            if (expresiones.length === 0) {
+              expresionesCount["No registrado"]++;
+            } else {
+              expresiones.forEach(expression => {
+                expresionesCount[expression] = (expresionesCount[expression] || 0) + 1;
+              });
+            }
+          } else {
+            expresionesCount["No registrado"]++;
+          }
+
+           // Procesar orientaciones sexuales
+           if (user.diversidad_sexual && user.diversidad_sexual.orientaciones_sexuales) {
+            const orientaciones = user.diversidad_sexual.orientaciones_sexuales;
+
+            if (orientaciones.length === 0) {
+              orientacionesCount["No registrado"]++;
+            } else {
+              orientaciones.forEach(index => {
+                orientacionesCount[index] = (orientacionesCount[index] || 0) + 1;
+              });
+            }
+          } else {
+            orientacionesCount["No registrado"]++;
+          }          
+
+        // Procesar redes de apoyo
+        if (user.informacion_general && user.informacion_general.redes_apoyo) {
+          const redes = user.informacion_general.redes_apoyo;
+
+          if (redes.length === 0) {
+            redesCount["No registrado"]++;
+          } else {
+            redes.forEach(index => {
+              redesCount[index] = (redesCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          redesCount["No registrado"]++;
+        }
+        
+        // Procesar factores de riesgo
+        if (user.informacion_general && user.informacion_general.factores_riesgos) {
+          const factores = user.informacion_general.factores_riesgos;
+
+          if (factores.length === 0) {
+            factoresCount["No registrado"]++;
+          } else {
+            factores.forEach(index => {
+              factoresCount[index] = (factoresCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          factoresCount["No registrado"]++;
+        }
+
+        // Procesar factores de riesgo
+        if (user.informacion_general && user.informacion_general.actividades_tiempo_libre) {
+          const actividades = user.informacion_general.actividades_tiempo_libre;
+
+          if (actividades.length === 0) {
+            actividadesCount["No registrado"]++;
+          } else {
+            actividades.forEach(index => {
+              actividadesCount[index] = (actividadesCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          actividadesCount["No registrado"]++;
+        } 
+        // Procesar fuentes de ingreso
+        if (user.informacion_general && user.informacion_general.fuentes_ingresos) {
+          const fuentes = user.informacion_general.fuentes_ingresos;
+
+          if (fuentes.length === 0) {
+            fuentesCount["No registrado"]++;
+          } else {
+            fuentes.forEach(index => {
+              fuentesCount[index] = (fuentesCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          fuentesCount["No registrado"]++;
+        } 
+        
+        // Procesar programas academicos
+        if (user.informacion_academica && user.informacion_academica.programas) {
+          let programs = user.informacion_academica.programas;
+
+          // Convierte "programs" en un array si no lo es
+          if (!Array.isArray(programs)) {
+            programs = typeof programs === 'string' ? [programs] : [];
+          }
+
+          // Si el array está vacío, contar como "No registrado"
+          if (programs.length === 0) {
+            programasCount["Externo"]++;
+          } else {
+            // Si es un array, procesar cada programa
+            programs.forEach(index => {
+              programasCount[index] = (programasCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          programasCount["Externo"]++;
+        }
+
+        // Procesar sedes academicos
+        if (user.informacion_academica && user.informacion_academica.sedes) {
+          let headquarters = user.informacion_academica.sedes;
+
+          if (!Array.isArray(headquarters)) {
+            headquarters = typeof headquarters === 'string' ? [headquarters] : [];
+          }
+
+          if (headquarters.length === 0) {
+            sedesCount["Externo"]++;
+          } else {
+  
+            headquarters.forEach(index => {
+              sedesCount[index] = (sedesCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          sedesCount["Externo"]++;
+        }
+        // Procesar estamentos
+        if (user.informacion_academica && user.informacion_academica.estamentos) {
+          const estates = user.informacion_academica.estamentos;
+
+          if (estates.length === 0) {
+            estamentosCount["No registrado"]++;
+          } else {
+            estates.forEach(index => {
+              estamentosCount[index] = (estamentosCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          estamentosCount["No registrado"]++;
+        }
+
+        if (user && user.sexo_asignado) {
+          const estates = user.sexo_asignado;
+
+          if (estates.length === 0) {
+            sexoAsignadoCount["No registrado"]++;
+          } else {
+            estates.forEach(index => {
+              sexoAsignadoCount[index] = (sexoAsignadoCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          sexoAsignadoCount["No registrado"]++;
+        }
+
+        if (user && user.pertenencia_grupo_poblacional) {
+          const estates = user.pertenencia_grupo_poblacional;
+
+          if (estates.length === 0) {
+            razaCount["No registrado"]++;
+          } else {
+            estates.forEach(index => {
+              razaCount[index] = (razaCount[index] || 0) + 1;
+            });
+          }
+        } else {
+          razaCount["No registrado"]++;
+        }
+   
+     
+      if (user && user.estado_civil) {
+        const estates = user.estado_civil;
+
+        if (estates.length === 0) {
+          estadoCivilCount["No registrado"]++;
+        } else {
+          estates.forEach(index => {
+            estadoCivilCount[index] = (estadoCivilCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        estadoCivilCount["No registrado"]++;
+      }
+
+      if (user && user.tipo_documento) {
+        const estates = user.tipo_documento;
+
+        if (estates.length === 0) {
+          TipoDocumentoCount["No registrado"]++;
+        } else {
+          estates.forEach(index => {
+            TipoDocumentoCount[index] = (TipoDocumentoCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        TipoDocumentoCount["No registrado"]++;
+      }
+
+      if (user.informacion_general && user.informacion_general.regimen_eps) {
+        const fuentes = user.informacion_general.regimen_eps;
+
+        if (fuentes.length === 0) {
+          regimenEpsCount["No registrado"]++;
+        } else {
+          fuentes.forEach(index => {
+            regimenEpsCount[index] = (regimenEpsCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        regimenEpsCount["No registrado"]++;
+      } 
+
+      if (user && user.zona_residencia) {
+        const estates = user.zona_residencia;
+
+        if (estates.length === 0) {
+          zonaResidenciaCount["No registrado"]++;
+        } else {
+          estates.forEach(index => {
+            zonaResidenciaCount[index] = (zonaResidenciaCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        zonaResidenciaCount["No registrado"]++;
+      }
+      
+      if (user && user.identidad_etnico_racial) {
+        const estates = user.identidad_etnico_racial;
+
+        if (estates.length === 0) {
+          identidadEtnicaRacialCount["No registrado"]++;
+        } else {
+          estates.forEach(index => {
+            identidadEtnicaRacialCount[index] = (identidadEtnicaRacialCount[index] || 0) + 1;
+          });
+        }
+      } else {
+        identidadEtnicaRacialCount["No registrado"]++;
+      }
+    });
+             // Formatear datos para el gráfico de pastel
+             const genderChartData = Object.entries(genderCount).map(([gender, count]) => {
+              return genderCount === 'Genero'
+              ? [gender, count]
+              : [`${gender} (${count})`, count];
+              });
+
+              const pronounChartData = Object.entries(pronounCount).map(([pronoun, count])  => {
+              return genderCount === 'pronombre'
+              ? [pronoun, count]
+              : [`${pronoun} (${count})`, count];
+              });
+
+              const orientationChartData = Object.entries(orientacionesCount).map(([index, count])  => {
+                return orientacionesCount === 'orientacion'
+                ? [index, count]
+                : [`${index} (${count})`, count];
+                });
+
+              const redesChartData = Object.entries(redesCount).map(([index, count])  => {
+                  return redesCount === 'redes'
+                  ? [index, count]
+                  : [`${index} (${count})`, count];
+                  });
+              const factoreschartData = Object.entries(factoresCount).map(([index, count])   => {
+                  return factoresCount === 'factores'
+                  ? [index, count]
+                  : [`${index} (${count})`, count];
+                  });
+              const actividadesChartData = Object.entries(actividadesCount).map(([index, count])   => {
+                return actividadesCount === 'Actividades'
+                ? [index, count]
+                : [`${index} (${count})`, count];
+                });
+              const fuentesChartData = Object.entries(fuentesCount).map(([index, count])   => {
+                return fuentesCount === 'Fuentes'
+                ? [index, count]
+                : [`${index} (${count})`, count];
+                }); 
+
+              const programaChartData = Object.entries(programasCount).map(([index, count])   => {
+              return programasCount === 'Programas'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const sedesChartData = Object.entries(sedesCount).map(([index, count])   => {
+              return sedesCount === 'Sedes'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });  
+
+              const estamentosChartData = Object.entries(estamentosCount).map(([index, count]) => {
+              return estamentosCount === 'Estamentos'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+
+              const sexoAsignadoChartData = Object.entries(sexoAsignadoCount).map(([index, count]) => {
+              return sexoAsignadoCount === 'Sexo Asignado'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const razaChartData = Object.entries(razaCount).map(([index, count]) => {
+              return razaCount === 'Pertenencia grupo poblacional'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const estadoCivilChartData = Object.entries(estadoCivilCount).map(([index, count]) => {
+              return estadoCivilCount === 'Estado Civil'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const tipoDocumentoChartData = Object.entries(TipoDocumentoCount).map(([index, count]) => {
+              return TipoDocumentoCount === 'Tipo documento'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const regimenEpsChartData = Object.entries(regimenEpsCount).map(([index, count]) => {
+              return regimenEpsCount === 'Regimen EPS'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const zonaResidenciaChartData = Object.entries(zonaResidenciaCount).map(([index, count]) => {
+              return zonaResidenciaCount === 'Zona residencia'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+              const identidadEtnicoRacialChartData = Object.entries(identidadEtnicaRacialCount).map(([index, count]) => {
+              return identidadEtnicaRacialCount === 'Identidad etnico racial'
+              ? [index, count]
+              : [`${index} (${count})`, count];
+              });
+            setGenderData([['Identidad de Género', 'Cantidad'], ...genderChartData]);
+            setPronombreData([['Pronombres', 'Cantidad'], ...pronounChartData]);
+            setOrientacionesData([['Orientaciones', 'Cantidad'], ...orientationChartData]);    
+            setExpresionesData([['Expresion', 'Cantidad'], ...Object.entries(expresionesCount)]);
+            seteRedesData([['Redes','Cantidad'], ...redesChartData]);
+            setFactoresRiesgoData([['Factores','Cantidad'], ...factoreschartData]);
+            setActividadesData([['Actividades','Cantidad'], ...actividadesChartData]);
+            setFuentesData([['Fuentes','Cantidad'], ...fuentesChartData]);
+            setProgramaData([['Programas','Cantidad'], ...programaChartData]);
+            setSedeData([['Sedes','Cantidad'], ...sedesChartData]);
+            setEstamentosData([['Estamentos','Cantidad'], ...estamentosChartData]);
+            setSexoAsignadoData([['Sexo Asignado','Cantidad'], ...sexoAsignadoChartData]);
+            setRazasOptionsData([['Pertenencia grupo poblacional','Cantidad'], ...razaChartData]);
+            setEstadoCivilData([['Estado Civil','Cantidad'], ...estadoCivilChartData]);
+            setTipoDocumentoData([['Tipo documento','Cantidad'], ...tipoDocumentoChartData]);
+            setRegimenEpsData([['Regimen EPS','Cantidad'], ...regimenEpsChartData]);
+            setZonaResidencialData([['Zona residencia','Cantidad'], ...zonaResidenciaChartData]);
+            setIdentidadEtnicoRacialData([['Identidad etnico racial','Cantidad'], ...identidadEtnicoRacialChartData]);
+
+            setLoading(false);
+          })
+           
+      .catch(error => {
+        console.error('Error al obtener usuarios:', error);
+        setLoading(false); // muestra los datos aunque haya un error
+      });
+  }, []);
+
+  // Prepare data and download as Excel
+  const handleDownload = async () => {
+  
+    const schema = [
+      {
+        column: 'Nombre',
+        type: String,
+        value: user => user.nombre_y_apellido 
+      },
+      {
+        column: 'Tipo de documento',
+        type: String,
+        value: user => user.tipo_documento.join(', ')
+      },
+      {
+        column: 'nombre identitario',
+        type: String,
+        value: user => user.nombre_identitario
+      },
+      {
+        column: 'Pronombres',
+        type: String,
+        value: user => user.diversidad_sexual.pronombres.join(', ')
+      },
+      {
+        column: 'No. documento',
+        type: String,
+        value: user => user.numero_documento
+      },
+      { column: 'Fecha de Creación', 
+        type: String,
+        value: user => user.fecha_creacion_usuario
+      }, 
+      {
+        column: 'Email',
+        type: String,
+        value: user => user.email
+      },
+     
+      {
+        column: 'Estrato Socioeconómico',
+        type: Number,
+        value: users => users.estrato_socioeconomico
+      },
+       
+
+
+      {
+        column: 'Teléfono',
+        type: String,  // Usamos String para permitir texto y números
+        value: user => user.telefono ? user.telefono : 'No disponible'
+      },
+      
+      {
+        column: 'Identidad Étnico-Racial',
+        type: String,
+        value: users => users.identidad_etnico_racial.join(', ')
+      }, 
+      
+      {
+        column: 'Persona de Confianza',
+        type: String,
+        value: user => user.nombre_persona_de_confianza
+      },
+      {
+        column: 'Teléfono Persona de Confianza',
+        type: String,  // Dejamos como Number ya que queremos valores numéricos
+        value: user => user.telefono_persona_de_confianza ? user.telefono_persona_de_confianza : 'No disponible'
+      },
+      {
+        column: 'Relación Persona de Confianza',
+        type: String,
+        value: user => user.relacion_persona_de_confianza
+      },
+      
+      {
+        column: 'Estado Civil',
+        type: String,
+        value: user => user.estado_civil.join(', ')
+      },
+      {
+        column: 'Ciudad de Nacimiento',
+        type: String,
+        value: user => user.ciudad_nacimiento
+      },
+      {
+        column: 'Corregimiento de Nacimiento',
+        type: String,
+        value: user => user.corregimiento_nacimiento
+      },
+      {
+        column: 'Departamento de Nacimiento',
+        type: String,
+        value: user => user.departamento_nacimiento
+      },
+      {
+        column: 'País de Nacimiento',
+        type: String,
+        value: user => user.pais_nacimiento
+      },
+      {
+        column: 'Fecha de Nacimiento',
+        type: String,
+        value: user => user.fecha_nacimiento
+      },
+      {
+        column: 'Grupo Poblacional',
+        type: String,
+        value: user => user.pertenencia_grupo_poblacional.join(', ')
+      },
+      {
+        column: 'Barrio de Residencia',
+        type: String,
+        value: user => user.barrio_residencia
+      },
+      {
+        column: 'Ciudad de Residencia',
+        type: String,
+        value: user => user.ciudad_residencia
+      },
+      {
+        column: 'Dirección de Residencia',
+        type: String,
+        value: user => user.direccion_residencia
+      },
+      {
+        column: 'Zona de residencia',
+        type: String,
+        value: user => user.zona_residencia.join(', ')
+      },
+      /* Diversidad sexual */
+    {
+      column: 'Sexo asignado al nacer',
+      type: String,
+      value: user => user.sexo_asignado.join(', ')
+    },
+    {
+        column: 'Identidades de Género',
+        type: String,
+        value: user => user.diversidad_sexual.identidades_de_genero.join(', ')
+    },
+    {
+        column: 'Expresiones de Género',
+        type: String,
+        value: user => user.diversidad_sexual.expresiones_de_genero.join(', ')
+    },
+    {
+        column: 'Orientaciones Sexuales',
+        type: String,
+        value: user => user.diversidad_sexual.orientaciones_sexuales.join(', ')
+    },
+    {
+        column: 'Respuestas Cambio Documento',
+        type: String,
+        value: user => user.diversidad_sexual.respuestas_cambio_documento.join(', ')
+    },
+    {
+      column: 'Recibir orientacion cambio de documento',
+      type: String,
+      value: user => user.diversidad_sexual.recibir_orientacion_cambio_en_documento ? 'Sí' : 'No'
+  },
+  /* Información general */
+
+  {
+    column: 'Ocupaciones Actuales',
+    type: String,
+    value: user => user.informacion_general?.Ocupaciones_actules || ''
+},
+{
+    column: 'Acompañamiento que Recibió',
+    type: String,
+    value: user => user.informacion_general?.acompanamiento_que_recibio
+},
+{
+    column: 'Dedicación Externa',
+    type: String,
+    value: user => user.informacion_general?.dedicacion_externa
+},
+{
+    column: 'Tiene EPS',
+    type: String,
+    value: user => user.informacion_general?.tiene_eps ? 'Sí' : 'No'
+
+},
+{
+    column: 'Nombre EPS',
+    type: String,
+    value: user => user.informacion_general?.nombre_eps
+},
+{
+    column: 'Régimen EPS',
+    type: String,
+    value: user => user.informacion_general?.regimen_eps.join(', ')
+},
+{
+    column: 'Actividades Específicas en Tiempo Libre',
+    type: String,
+    value: user => user.informacion_general?.actividades_especificas_tiempo_libre
+},
+{
+    column: 'Observación Actividades Específicas Tiempo Libre',
+    type: String,
+    value: user => user.informacion_general?.observacion_general_actividades_especificas_tiempo_libre
+},
+{
+    column: 'Observación Fuentes de Ingresos',
+    type: String,
+    value: user => user.informacion_general?.observacion_general_fuente_de_ingresos
+},
+{
+    column: 'Observación Relación Convivencia/Vivienda',
+    type: String,
+    value: user => user.informacion_general?.observacion_general_relacion_convivencia_vivienda
+},
+{
+    column: 'Calificación Relación Familiar',
+    type: Number,
+    value: user => user.informacion_general?.calificacion_relacion_familiar
+},
+{
+    column: 'Observación Redes de Apoyo',
+    type: String,
+    value: user => user.informacion_general?.observacion_general_redes_de_apoyo
+},
+{
+    column: 'Observación Factores de Riesgo',
+    type: String,
+    value: user => user.informacion_general?.observacion_general_factores_de_riesgo
+},
+{
+    column: 'Creencia Religiosa',
+    type: String,
+    value: user => user.informacion_general?.creencia_religiosa
+},
+{
+    column: 'Decisión en Encuentro Inicial con Profesional',
+    type: String,
+    value: user => user.informacion_general?.decision_encuentro_inicial.join(', ')
+},
+{
+    column: 'Origen del Descubrimiento de Campus Diverso',
+    type: String,
+    value: user => user.informacion_general?.origen_descubrimiento_campus_diverso
+},
+{
+  column: 'Me satisface la ayuda que recibo de mi familia cuando tengo algún problema y/o necesidad',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta1.join(', ')
+},
+{
+  column: 'Me satisface como en mi familia hablamos y compartimos nuestros problemas',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta2.join(', ')
+},
+{
+  column: 'Me satisface como mi familia acepta y apoya mi deseo de emprender nuevas actividades',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta3.join(', ')
+},
+{
+  column: 'Me satisface como mi familia expresa afecto y responde a mis emociones tales como rabia, tristeza, amor',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta4.join(', ')
+},
+{
+  column: 'Me satisface como compartimos en mi familia: tiempo/espacio/dinero',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta5.join(', ')
+},
+{
+  column: 'Tengo un(a) amigo(a) cercano quien pueda buscar cuando necesito ayuda',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta6.join(', ')
+},
+{
+  column: 'Estoy satisfecho(a) con el soporte que recibo de mis amigos(as)',
+  type: String,
+  value: user => user.documentos_autorizacion?.apgar_pregunta7.join(', ')
+},
+{
+  column: 'Puntaje APGAR',
+  type: String,
+  value: user => {
+    const valoraciones = {
+      'nunca': 0,
+      'casi nunca': 1,
+      'algunas veces': 2,
+      'casi siempre': 3,
+      'siempre': 4
+    };
+
+    const preguntas = [
+      user.documentos_autorizacion?.apgar_pregunta1,
+      user.documentos_autorizacion?.apgar_pregunta2,
+      user.documentos_autorizacion?.apgar_pregunta3,
+      user.documentos_autorizacion?.apgar_pregunta4,
+      user.documentos_autorizacion?.apgar_pregunta5
+    ];
+
+    let puntaje = 0;
+
+    preguntas.forEach(pregunta => {
+      if (Array.isArray(pregunta)) {
+        pregunta.forEach(respuesta => {
+          const valor = valoraciones[respuesta?.toLowerCase()];
+          if (valor !== undefined) puntaje += valor;
+        });
+      }
+    });
+
+    return `${puntaje} puntos`;
+  }
+},
+
+
+{
+  column: 'Seguimientos',
+  type: String,
+  value: user => user.seguimientos
+    // Ordena los seguimientos por fecha en orden descendente (más nuevos primero)
+    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+    .map(seguimiento => {
+      // Accede al nombre y cargo de cada profesional dentro del seguimiento
+      const profesionales = seguimiento.profesional.length > 0 
+        ? seguimiento.profesional.map(prof => `${prof.nombre_profesional} (${prof.cargo_profesional})`).join(', ') 
+        : 'N/A'; // Si no hay profesionales asociados, retornar 'N/A'
+      
+      // Retorna la información del seguimiento con un guion "-" o bullet "•" para cada uno
+      return `• Fecha: ${seguimiento.fecha}\n  - Observación: ${seguimiento.observacion}\n  - Profesionales: ${profesionales}.`;
+    })
+    .join('\n\n') // Doble salto de línea para separar los seguimientos
+},
+
+
+
+
+
+    ];
+
+    // Write the data to an Excel file
+    await writeXlsxFile(users, {
+      schema,
+      fileName: 'usuarios.xlsx'
+    });
+
+    //espera a que se cree el gráfico
+  };
+  
+
+  
+
+  return (
+    
+    <div>
+      <h1 className='title-agradecimiento'>Datos históricos</h1>
+ {/* Placeholder para el dashboard */}
+ <div className="custom-div">
+
+        <Container>
+        <Row>
+        {paginaActual === 0 && (
+          <>
+        <h2>Gráfico de datos básicos</h2>
+
+        <Col className="form-column" xs={"6"} md={"6"}>
+        
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={sexoAsignadoData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Sexo asignado al nacer',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={tipoDocumentoData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Tipo de documento',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={identidadEtnicoRacialData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Identidad étnico racial',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+        </Col>
+
+        <Col className="form-column" xs={"6"} md={"6"}>
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={estadocivilData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Estado civil',
+              is3D: true,
+  
+              
+            }}
+          />
+        )}
+        </div>
+      
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={zonaResidencialData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Zona de residencia',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+      
+
+        
+        </Col>
+        </>
+        )}
+      
+
+        </Row>
+
+        <Row>
+      
+
+        {paginaActual === 1 && (
+          <>
+        <h2>Gráfico enfocado a Diversidad Sexual</h2>
+
+        <Col className="form-column" xs={"6"} md={"6"}>
+        
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={genderData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Identidades de Género',
+              is3D: true,     
+            }}
+          />
+        )}
+        </div>
+        {/* Grafia de pronombres*/}
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={pronombreData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Pronombres',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+        
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={razasData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Pertenencia grupo poblacional',
+              is3D: true,
+  
+              
+            }}
+          />
+        )}
+        </div>
+        </Col>
+        
+      
+        {/* Grafia de expresiones*/}
+        <Col className="form-column" xs={"6"} md={"6"}>
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={expresionesData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Expresiones de género',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+
+        {/* Grafia de orientaciones*/}
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={orientacionesData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Orientaciones Sexuales',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+        
+        </Col>
+        </>
+        )}
+        {/* Información general*/}
+
+        
+        </Row>
+
+        
+        <Row>
+        {paginaActual === 2 && (
+          <>
+          <h2>Gráfico enfocado a Información General</h2>
+        <Col className="form-column" xs={"6"} md={"6"}>
+        
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={regimenEpsData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de régimen de EPS',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={factoresRiesgoData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Factores de Riesgo',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+       
+
+        
+        </Col>
+        
+      
+        {/* Grafia de expresiones*/}
+        <Col className="form-column" xs={"6"} md={"6"}>
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={redesData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Redes de apoyo',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+
+        {/* Grafia de orientaciones*/}
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={fuentesData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Fuentes de Ingresos',
+              is3D: true,
+            }}
+          />
+        )}
+        </div>
+        
+        </Col>
+        </>
+        )}
+        </Row>
+
+<Row>
+        {paginaActual === 3 && (
+          <>
+          <h2>Gráfico enfocado a Información Académica</h2>
+        <Col className="form-column" xs={"6"} md={"6"}>
+        
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={programaData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de programas de universidad',
+              is3D: true,
+            }}
+            
+          />
+        )}
+        </div>
+
+
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={EstamentosData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Estamentos',
+              is3D: true,
+            }}
+            
+          />
+        )}
+        </div>
+      </Col>
+
+      <Col className="form-column" xs={"6"} md={"6"}>
+        
+        <div>
+        {loading ? <p>Cargando datos...</p> : (
+          <Chart
+            chartType="PieChart"
+            data={sedeData}
+            width="100%"
+            height="300px"
+            options={{
+              title: 'Distribución de Sedes de universidad',
+              is3D: true,
+            }}
+            
+          />
+        )}
+        </div>
+      </Col>
+
+        
+
+
+        </>
+        )}
+        </Row>
+
+        </Container>
+
+
+      </div>
+      
+
+      <Container>
+      <Button className='button-inicial' onClick={irAtras} disabled={paginaActual === 0}>
+          Anterior
+        </Button>
+        <Button className='button-inicial' onClick={irAdelante} disabled={paginaActual === 3}>
+          Siguiente
+        </Button>
+        <Button className='button-inicial' 
+        onClick={handleDownload}
+        disabled={loading}> 
+        {loading ? 'Cargando...' : 'Descargar'}
+        </Button>  
+      </Container>
+    </div>
+  );
+};
+export default Descarga_campus;
