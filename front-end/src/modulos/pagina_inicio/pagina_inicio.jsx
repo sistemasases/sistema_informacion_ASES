@@ -29,6 +29,7 @@ import { Row, Button, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import "../../Scss/campus_diverso/inicioCampus.css";
 
 const Pagina_inicio = () => {
   // Desencriptar los permisos del usuario desde el sessionStorage y los asignamos a userRole
@@ -59,6 +60,8 @@ const Pagina_inicio = () => {
     desplegable = "PROFESIONAL";
   } else if (userRole === "profesor") {
     desplegable = "PROFESOR";
+  } else if (userRole === "CAMPUS DIVERSO") {
+    desplegable = "Campus Diverso";
   }
   //Constante y variable que se usaran para el select
   const opciones = [];
@@ -146,6 +149,167 @@ const Pagina_inicio = () => {
     sessionStorage.setItem("path", encriptar(e));
     window.location.reload();
   };
+  if (userRole === "CAMPUS DIVERSO") {
+    return (
+      <Row className="fondo_inicio">
+        <Col xs={"12"} md={"6"} className="col_background-campus">
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Importante</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Está seguro qué desea seleccionar otra sede?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="primary"
+                onClick={handle_storage}
+                onClickCapture={handleClose}
+                autoFocus
+              >
+                Cambiar de Sede
+              </Button>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {(userRole === "super_ases" ||
+            userRole === "socioeducativo" ||
+            userRole === "socioeducativo_reg") && (
+            <Row className="rowJustFlex">
+              <h4>Para cambiar de sede:</h4>
+            </Row>
+          )}
+          {(userRole === "super_ases" ||
+            userRole === "socioeducativo" ||
+            userRole === "socioeducativo_reg") && (
+            <Row className="selector_reg">
+              {(userRole === "super_ases" ||
+                userRole === "socioeducativo" ||
+                userRole === "socioeducativo_reg") && (
+                <Select
+                  name="def"
+                  class="option"
+                  options={opciones}
+                  onMenuOpen={handle_sedes}
+                  onChange={handleShow}
+                  className="option"
+                  placeholder="Selecione una sede"
+                />
+              )}
+            </Row>
+          )}
+          <p className="estilo_bienvenido_campus"> ¡Bienvenido!</p>
+          <p className="estilo_sesion_campus">iniciaste sesion </p>
+          <p className="estilo_como_campus">como {desplegable}</p>
+        </Col>
+
+        <Col xs={"12"} md={"3"} className="botones-container-campus">
+          {(userRole === "super_ases" || userRole === "sistemas") && (
+            <img
+              src={boton6}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/gestion_usuario_rol`)}
+            ></img>
+          )}
+          {(userRole === "dir_academico" ||
+            userRole === "dir_programa" ||
+            userRole === "vcd_academico" ||
+            userRole === "practicante" ||
+            userRole === "monitor" ||
+            userRole === "profesional" ||
+            userRole === "socioeducativo" ||
+            userRole === "socioeducativo_reg" ||
+            userRole === "super_ases" ||
+            userRole === "sistemas") && (
+            <img
+              src={boton9}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/ficha_estudiante/sin_seleccion`)}
+            ></img>
+          )}
+          {(userRole === "dir_academico" ||
+            userRole === "dir_programa" ||
+            userRole === "vcd_academico" ||
+            userRole === "practicante" ||
+            userRole === "monitor" ||
+            userRole === "profesional" ||
+            userRole === "socioeducativo" ||
+            userRole === "socioeducativo_reg" ||
+            userRole === "super_ases" ||
+            userRole === "sistemas") && (
+            <img
+              src={boton15}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/reporte`)}
+            ></img>
+          )}
+          {(userRole === "super_ases" || userRole === "sistemas") && (
+            <img
+              src={boton21}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/carga_masiva`)}
+            ></img>
+          )}
+          {(userRole === "practicante" ||
+            userRole === "profesional" ||
+            userRole === "socioeducativo" ||
+            userRole === "socioeducativo_reg") && (
+            <img
+              src={boton17}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/reporte_seguimientos`)}
+            ></img>
+          )}
+          {(userRole === "socioeducativo" ||
+            userRole === "socioeducativo_reg" ||
+            userRole === "profesional") && (
+            <img
+              src={boton8}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/sin_seguimientos`)}
+            ></img>
+          )}
+          {userRole === "dir_academico" && (
+            <img
+              src={boton20}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/academico`)}
+            ></img>
+          )}
+          {userRole === "CAMPUS DIVERSO" && (
+            <img
+              src={boton15}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/campus_diverso/descarga_campus`)}
+            ></img>
+          )}
+          {userRole === "CAMPUS DIVERSO" && (
+            <img
+              src={boton6}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/campus_diverso/obtener_estudiante`)}
+            ></img>
+          )}
+          {userRole === "profesor" ? (
+            <>{cambiar_ruta(`/academico`)}</>
+          ) : (
+            <>{}</>
+          )}
+        </Col>
+      </Row>
+    );
+  }
 
   return (
     <Row className="fondo_inicio">
@@ -295,6 +459,26 @@ const Pagina_inicio = () => {
                 className="boton"
                 alt="/"
                 onClick={() => cambiar_ruta(`/academico`)}
+              ></img>
+            )}
+            {userRole === "CAMPUS DIVERSO" && (
+              <img
+                src={boton15}
+                className="boton"
+                alt="/"
+                onClick={() =>
+                  cambiar_ruta(`/campus_diverso/registro_estudiante`)
+                }
+              ></img>
+            )}
+            {userRole === "CAMPUS DIVERSO" && (
+              <img
+                src={boton6}
+                className="boton"
+                alt="/"
+                onClick={() =>
+                  cambiar_ruta(`/campus_diverso/obtener_estudiante`)
+                }
               ></img>
             )}
             {userRole === "profesor" ? (

@@ -1,0 +1,72 @@
+.col_background-campus {
+    background-image: url('../../modulos/campus_diverso/components/imgs/BANNER-FOTO 01.png');
+    background-size: cover;
+    background-position: center top; /* Muestra más de la parte superior de la imagen */
+    min-height: 300px;
+    width: 900px;
+    color: white;
+    
+}
+
+  
+  .selector_reg{
+  color: rgb(0, 0, 0);
+  }
+  
+  .estilo_bienvenido_campus {
+    font-weight: bolder;
+    font-size: 3.5rem;
+    background: linear-gradient(90deg, #fa0820, #f39e2f, #f7f705, #2ee20a, #1818eb, #a11498);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: purple;
+    text-shadow: -1px 0 rgb(255, 255, 255), 0 1px #ffffff, 1px 0 rgb(248, 247, 247), 0 -1px rgb(255, 255, 255);
+    background-clip: text;
+    color: purple;
+  }
+  
+  @media (max-width: 992px) {
+    .estilo_bienvenido_campus {
+      font-size: 2.5rem;
+    }
+  }
+  
+  .estilo_sesion_campus {
+    font-weight: bolder;
+    font-size: 3.5rem;
+    background: linear-gradient(90deg, #fa0820, #f39e2f, #f7f705, #2ee20a, #1818eb, #a11498);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: purple;
+    text-shadow: -1px 0 rgb(255, 255, 255), 0 1px #ffffff, 1px 0 rgb(248, 247, 247), 0 -1px rgb(255, 255, 255);
+    background-clip: text;
+    color: purple;
+  }
+  
+  .estilo_como_campus {
+    font-weight: bolder;
+    font-size: 3.5rem;
+    background: linear-gradient(90deg, #fa0820, #f39e2f, #f7f705, #2ee20a, #1818eb, #a11498);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: purple;
+    text-shadow: -1px 0 rgb(255, 255, 255), 0 1px #ffffff, 1px 0 rgb(248, 247, 247), 0 -1px rgb(255, 255, 255);
+    background-clip: text;
+    color: purple;
+    margin-bottom: 40%;
+  }
+  
+  
+  
+  .botones-container-campus {
+  display: flex;
+  flex-direction: column; /* Cambiar la dirección de los elementos a columna */
+  align-items: center;
+  margin-top: 2%; /* Centrar horizontalmente los elementos */
+  gap: 1px;
+  }
+  
+  .boton {
+  height: 100%; /* Igual a la altura de la imagen */
+  width: 90%; /* Igual al ancho de la imagen */
+  cursor: pointer; /* Cambiar el cursor al pasar el ratón por encima */
+  }
+  
+ 

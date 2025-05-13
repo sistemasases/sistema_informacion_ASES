@@ -5,6 +5,7 @@ import Login from "./modulos/login/login.jsx";
 import FormularioAutorizacion from "./components/formularios_externos/formulario_autorizacion.jsx";
 import FormularioAsistenica from "./components/formularios_externos/formulario_asistencia.jsx";
 import FormularioPrimerIngreso from "./components/formularios_externos/formulario_primer_ingreso.jsx";
+import Registro_estudiante from "./modulos/campus_diverso/registro_estudiante.jsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -24,7 +25,12 @@ root.render(
   ) : window.location.pathname ===
     "/U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7" ? (
     <FormularioPrimerIngreso />
-  ) : (
+  ) : window.location.pathname ===
+  "/campus-formulario" ? (
+  <Registro_estudiante />
+)
+  
+  : (
     <Login />
   )
   // <Login />

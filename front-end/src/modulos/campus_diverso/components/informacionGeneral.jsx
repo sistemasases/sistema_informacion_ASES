@@ -1,0 +1,387 @@
+import React from 'react';
+import { Container, Col, Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import Select from 'react-select';
+const preventNonNumericValues = (e) => {
+  const allowedKeys = ['1', '2', '3', '4', '5', 'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'];
+  if (!allowedKeys.includes(e.key)) {
+    e.preventDefault(); // Evita que se escriban otros valores
+  }
+};
+
+
+const InformacionGeneral = ({state,
+    handleChange,
+    handleChangeTextField,
+    handleSelectChange,
+    handleArrayFieldChange,
+    handleAgregarItem,
+    handleEliminarItem,
+    handleArrayChange,
+    handleAddItem,
+    handleDeleteItem,
+    factoresOptions,
+    actividadesOptions,
+    fuentesOptions,
+    redesOptions,
+    isLoading,
+    handleSelectChange2,
+    maxLengthBasicInput,
+    maxLengthTextAreas,
+    handleChangeNumber,
+    handleCheckboxChange,
+    regimenEpsOptions,
+    decisionEncuentroInicialOptions,
+    handleSelectNoMultiChange
+
+}) => {
+  return (
+    <>
+    <h1 className='title-banner'> Información General </h1>
+    <div className='div-scroll-registro'>
+    <Container className="container_informacion_general" xs={"10"} sm={"6"}>
+        
+        <Col className="form-column" xs={"7"} md={"6"}>
+
+
+        <div className="custom-div-check-documentos">
+        <div className="custom-checkbox-label">
+          ¿Tiene EPS?
+        </div>
+        <label className="custom-radio">
+          <input
+            type="radio"
+            name="tiene_eps"
+            value={true}
+            checked={state.tiene_eps === true}
+            onChange={handleCheckboxChange}
+          />
+          Sí
+        </label>
+        <label className="custom-radio">
+          <input
+            type="radio"
+            name="tiene_eps"
+            value={false}
+            checked={state.tiene_eps === false}
+            onChange={handleCheckboxChange}
+
+          />
+          No
+        </label>
+      </div>
+
+      <div>
+                <label className='custom-div'>Nombre de la EPS<span className='simbolo-obligatorio'> *</span></label>
+                <div>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="nombre_eps"
+                  placeholder='Ingrese el nombre de la EPS'
+                  value={state.nombre_eps}
+                  onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
+                  disabled={!state.tiene_eps} // Deshabilita si tiene_eps es false
+
+                />
+                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_eps.length}`}</span>
+
+        </div>  
+
+        <div>
+        <label className='custom-div'>Régimen de su EPS<span className='simbolo-obligatorio'> *</span></label>
+        <Select
+          className='create-select'
+          name="regimen_eps"
+          placeholder='Seleccione el régimen de la EPS'
+          options={regimenEpsOptions}
+          value={regimenEpsOptions.find(option => option.label === state.regimen_eps?.[0]) || null}
+          onChange={handleSelectNoMultiChange}
+          isDisabled={!state.tiene_eps} // Deshabilita si tiene_eps es false
+        />
+      </div>
+
+
+        <div>
+                <label className='custom-div'>Ocupación actual<span className='simbolo-obligatorio'> *</span></label>
+                <div>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="Ocupaciones_actules"
+                  placeholder='Ingrese su ocupación'
+                  value={state.Ocupaciones_actules}
+                  onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
+                />
+                </div>
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.Ocupaciones_actules.length}`}</span>
+
+        </div>  
+
+{/*
+        <div>
+          <label className='custom-div'>
+            Calificación de acompañamiento recibido
+            <span className="tooltip-icon">?
+              <span className="tooltip-text">
+                Por favor califique del 1 al 5. (1 significa muy malo, 5 significa muy bueno)
+              </span>
+            </span>
+          </label>
+          <input
+            className='input-updated'
+            type="text"
+            name="calificacion_acompanamiento_recibido"
+            placeholder='Ingrese la calificación'
+            pattern='[1-5]'
+            onKeyDown={preventNonNumericValues}
+            min="0"
+            value={state.calificacion_acompanamiento_recibido}
+            onChange={handleChangeNumber}
+            maxLength="1"
+          />
+        </div>
+*/}
+        
+
+
+        <div>
+                <label className='custom-div'>Actividad específica en tiempo libre</label>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="actividades_especificas_tiempo_libre"
+                  placeholder='Ingrese la actividad'
+                  value={state.actividades_especificas_tiempo_libre}
+                  onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
+                />
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.actividades_especificas_tiempo_libre.length}`}</span>
+        </div>
+
+
+        <div>
+              <label className='custom-div'>Redes de apoyo<span className='simbolo-obligatorio'> *</span></label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="redes_apoyo"
+                  placeholder='Seleccione sus redes de apoyo'
+                  options={redesOptions}
+                  value={state.redes_apoyo.map(option => ({
+                  label: option,
+                  value: redesOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
+
+        <div>
+                <label className='custom-div'>Calificacion de relación familiar<span className='simbolo-obligatorio'> *</span></label>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="calificacion_relacion_familiar"
+                  placeholder='Califíque del 1 al 5. (1 significa muy malo, 5 significa muy bueno)'
+                  pattern='[0-9]*'
+                  onKeyDown={preventNonNumericValues}
+                  min="0"
+                  value={state.calificacion_relacion_familiar}
+                  onChange={handleChangeNumber}
+                  maxLength="1"
+                />
+        </div>
+
+
+    {/*
+        <div>
+            <label className='custom-div'>Encuentro Dias/horas</label>
+            {state.encuentro_dias_horas.map((encuentro, index) => (
+                
+              <div key={index}>
+                <input
+                  type="text"
+                  name="dia"
+                  placeholder="Nombre del día"
+                  value={encuentro.dia}
+                  onChange={(e) => handleArrayFieldChange('encuentro_dias_horas', index, 'dia', e.target.value)}
+                />
+                <input 
+                  type="time"
+                  name="hora"
+                  placeholder="ingrese hora"
+                  value={encuentro.hora}
+                  onChange={(e) => handleArrayFieldChange('encuentro_dias_horas', index, 'hora', e.target.value)}
+                />
+                <Button variant="danger" className='boton-container' onClick={() => handleEliminarItem('encuentro_dias_horas', index)}>Eliminar</Button>
+              </div>             
+            ))}
+            <div>
+            <Button variant="secondary" className='boton-container' 
+            onClick={() => handleAgregarItem('encuentro_dias_horas', { dia: '', hora: '' })}
+            disabled={state.encuentro_dias_horas.length >= 3}
+            >
+              Agregar Encuentro
+            </Button></div>
+          </div>
+      */}
+
+
+
+    </Col>
+
+
+    <Col className="form-column" xs={"7"} md={"6"}>
+
+
+
+
+        <div>
+                <label className='custom-div'>Creencia religiosa<span className='simbolo-obligatorio'> *</span></label>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="creencia_religiosa"
+                  placeholder='Ingrese la creencia'
+                  value={state.creencia_religiosa}
+                  onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
+                />
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.creencia_religiosa.length}`}</span>
+        </div> 
+
+        <div>
+        <label className='custom-div'>¿Qué profesional prefieres para agendar la reunión inicial?<span className='simbolo-obligatorio'> *</span>
+          <OverlayTrigger
+            placement="bottom"
+            overlay={
+              <Tooltip id="tooltip-prfesional" className='tooltip-custom'>
+                La asignación con el profesional está sujeta a su disponibilidad.
+              </Tooltip>
+            }
+          >
+            <span className="tooltip-icon">?</span>
+          </OverlayTrigger>
+        </label>
+        <Select
+          className='create-select'
+          name="decision_encuentro_inicial"
+          placeholder='Seleccione la profesión'
+          options={decisionEncuentroInicialOptions}
+          value={decisionEncuentroInicialOptions.find(option => option.label === state.decision_encuentro_inicial?.[0]) || null}
+          onChange={handleSelectNoMultiChange}
+        />
+      </div>
+
+
+
+
+        <div>
+                <label className='custom-div'>¿Cómo conociste a campus diverso?<span className='simbolo-obligatorio'> *</span></label>
+                <input
+                className='input-updated'
+                  type="text"
+                  name="origen_descubrimiento_campus_diverso"
+                  placeholder='Redes sociales, amigos, etc...'
+                  value={state.origen_descubrimiento_campus_diverso}
+                  onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
+                />
+                <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.origen_descubrimiento_campus_diverso.length}`}</span>
+        </div> 
+
+ 
+
+
+        
+
+
+        <div>
+                <label className='custom-div'>¿tipo(s) de acompañamiento(s) recibido(s)?<span className='simbolo-obligatorio'> *</span></label>
+                <div>
+                <textarea
+                className='input-updated'
+                  type="textarea"
+                  name="acompanamiento_que_recibio"
+                  placeholder='Ingrese acompañamiento(s) que ha recibido'
+                  value={state.acompanamiento_que_recibio}
+                  onChange={handleChangeTextField}
+                  maxLength={maxLengthTextAreas}
+                />
+                </div>
+              <span className="char-count">{`Caracteres restantes: ${maxLengthTextAreas - state.acompanamiento_que_recibio.length}`}</span>
+
+        </div>  
+
+
+
+
+        <div>
+              <label className='custom-div'>Factores de riesgo<span className='simbolo-obligatorio'> *</span></label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="factores_riesgos"
+                  placeholder='Seleccione sus factores de riesgo'
+                  options={factoresOptions}
+                  value={state.factores_riesgos.map(option => ({
+                  label: option,
+                  value: factoresOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
+
+
+
+
+            <div>
+              <label className='custom-div'>Fuentes de ingresos<span className='simbolo-obligatorio'> *</span></label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ):(
+                <Select
+                  isMulti
+                  className='create-select'
+                  name="fuentes_ingresos"
+                  placeholder='Seleccione sus fuentes de ingresos'
+                  options={fuentesOptions}
+                  value={state.fuentes_ingresos.map(option => ({
+                  label: option,
+                  value: fuentesOptions.find(o => o.label === option).value
+                  }))}
+                  onChange={handleSelectChange2}
+    
+                  />
+                  )}
+              </div>
+            </div>
+
+
+
+
+    </Col>
+    </Container>
+    </div>
+    </>
+  );
+};
+
+export default InformacionGeneral;

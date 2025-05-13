@@ -341,11 +341,21 @@ class estudiante_viewsets(viewsets.ModelViewSet):
     #     else:
     #         return "SIN FIRMAR"
 
-    def get_firma(self, firma_existe):
-        if firma_existe:
-            return 'AUTORIZA'
+    def get_firma(self, firma, _id_estudiante):
+        autoriza = firma_tratamiento_datos.objects.filter(
+            id_estudiante=_id_estudiante).values()
+        # print(autoriza )
+        if firma:
+            if firma == True and len(autoriza) == 0:
+                return 'FIRMA INEXISTENTE'
+            elif firma == True and autoriza[0]['autoriza_tratamiento_datos'] == True:
+                return 'AUTORIZA' ## Verde
+            elif firma == True and autoriza[0]['autoriza_tratamiento_datos'] == False:
+                return 'NO AUTORIZA' ## Naranja
+            return "SIN FIRMAR" ## Rojo
         else:
-            return 'SIN AUTORIZAR'
+            return "SIN FIRMAR" ## Rojo
+            
 
 
     # Se redefine la función retrieve para poder traer todos los campos que se relacionan con el estudiante, independeinte de si estan en el modelo estudiante o no.
@@ -454,11 +464,11 @@ class estudiante_viewsets(viewsets.ModelViewSet):
         try:
             firma_existe = estudiante.objects.filter(pk=pk).values_list('firma_existe', flat=True).first()
             firma = {
-                'firma_tratamiento_datos': self.get_firma(firma_existe),
+                'firma_tratamiento_datos': self.get_firma(firma_existe, pk),
             }
         except estudiante.DoesNotExist:
             firma = {
-                'firma_tratamiento_datos': 'SIN AUTORIZAR'
+                'firma_tratamiento_datos': 'SIN FIRMAR'
             }
 
         

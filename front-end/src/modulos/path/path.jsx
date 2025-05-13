@@ -30,6 +30,9 @@ import FichaEstudianteDiscapacidad from "../discapacidad/ficha_estudiante/FichaE
 import ReporteDiscapacidad from "../discapacidad/reporte/ReporteDiscapacidad.jsx";
 import Registro from "../discapacidad/registro/Registro.jsx";
 import FichaEstudianteV2 from "../ficha_estudiante_V2/FichaEstudianteV2.jsx";
+import Registro_estudiante from '../campus_diverso/registro_estudiante.jsx';
+import ObtenerEstudiante from '../campus_diverso/obtener_estudiante.jsx';
+import Descarga_campus from '../campus_diverso/descarga_campus.jsx';
 
 import Academico_reportes from "../../modulos/academico_reportes/academico_reportes.jsx";
 import AcademicoAsistencia from '../academico_asistencia/AcademicoAsistencia.jsx';
@@ -81,6 +84,9 @@ const Path = (props) => {
 
           {path.startsWith("/horas_monitores") ? (<HorasMonitores path_actual={"/horas_monitores"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
           {path.startsWith("/hoja_monitor") ? (<HojaMonitor path_actual={"/hoja_monitor"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/campus_diverso/descarga_campus") ? (<Descarga_campus path_actual={"/campus_diverso/descarga_campus"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+          {path.startsWith("/campus_diverso/obtener_estudiante") ? (<ObtenerEstudiante path_actual={"/campus_diverso/obtener_estudiante"} usuario={props.usuario} rolUsuario={props.rolUsuario} area={props.area} periodo={props.periodo}/>):(<></>)}
+
         </>
       ) : (
         <Pagina_no_encontrada/>

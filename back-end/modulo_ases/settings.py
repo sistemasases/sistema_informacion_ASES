@@ -53,6 +53,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app_registro', 
+    'app_diversidad_sexual',
+    'app_informacion_academica',
+    'app_informacion_general',
+    'app_documentos_autorizacion',
+    'app_seguimiento',
     'django_otp',
     'django_otp.plugins.otp_totp',
     'django_otp.plugins.otp_static',
@@ -96,12 +102,21 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'modulo_ases.urls'
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = os.environ.get(
-    'DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
-CSRF_TRUSTED_ORIGINS = os.environ.get(
-    'DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
-CORS_ORIGIN_WHITELIST = os.environ.get(
-    'DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000"
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://localhost:8000"
+]
+
 
 TEMPLATES = [
     {
@@ -140,8 +155,8 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+         'rest_framework_simplejwt.authentication.JWTAuthentication',
+     )
 }
 
 
