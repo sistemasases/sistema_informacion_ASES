@@ -34,6 +34,8 @@ import "../../Scss/campus_diverso/inicioCampus.css";
 const Pagina_inicio = () => {
   // Desencriptar los permisos del usuario desde el sessionStorage y los asignamos a userRole
   const userRole = desencriptar(sessionStorage.getItem("rol"));
+  const decryptSede = desencriptar(sessionStorage.getItem("sede"));
+  
   // Variable para guardar el rol
   let desplegable;
   // Setear la variable desplegable según el rol
@@ -61,6 +63,8 @@ const Pagina_inicio = () => {
   } else if (userRole === "profesor") {
     desplegable = "PROFESOR";
   } else if (userRole === "CAMPUS DIVERSO") {
+    desplegable = "Campus Diverso";
+  } else if (decryptSede === "Campus Diverso") {
     desplegable = "Campus Diverso";
   }
   //Constante y variable que se usaran para el select
@@ -285,7 +289,7 @@ const Pagina_inicio = () => {
               onClick={() => cambiar_ruta(`/academico`)}
             ></img>
           )}
-          {userRole === "CAMPUS DIVERSO" && (
+          {(decryptSede === "Campus Diverso" || userRole === "CAMPUS DIVERSO") && (
             <img
               src={boton15}
               className="boton"
@@ -293,7 +297,7 @@ const Pagina_inicio = () => {
               onClick={() => cambiar_ruta(`/campus_diverso/descarga_campus`)}
             ></img>
           )}
-          {userRole === "CAMPUS DIVERSO" && (
+          {(decryptSede === "Campus Diverso" || userRole === "CAMPUS DIVERSO") && (
             <img
               src={boton6}
               className="boton"
@@ -461,17 +465,17 @@ const Pagina_inicio = () => {
                 onClick={() => cambiar_ruta(`/academico`)}
               ></img>
             )}
-            {userRole === "CAMPUS DIVERSO" && (
+            {(decryptSede === "Campus Diverso" || userRole === "CAMPUS DIVERSO") && (
               <img
                 src={boton15}
                 className="boton"
                 alt="/"
                 onClick={() =>
-                  cambiar_ruta(`/campus_diverso/registro_estudiante`)
+                  cambiar_ruta(`/campus_diverso/descarga_campus`)
                 }
               ></img>
             )}
-            {userRole === "CAMPUS DIVERSO" && (
+            {decryptSede === "Campus Diverso" && (
               <img
                 src={boton6}
                 className="boton"

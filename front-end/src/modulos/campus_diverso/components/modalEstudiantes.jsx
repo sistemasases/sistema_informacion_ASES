@@ -1159,7 +1159,11 @@ const ModalEstudiantes = ({
                     documentosInfo.autorizacion_manejo_de_datos ? 'Sí' : 'No'
                   )}
                 </div>
-                <div className='div-modal'>
+
+              </Col>
+              <Col className="form-column" xs={"10"} md={"6"}>
+  
+                 <div className='div-modal'>
                   <b>Firma consentimiento informado: </b>
                   {isEditing ? (
                     <input
@@ -1173,24 +1177,6 @@ const ModalEstudiantes = ({
                   )}
                 </div>
                 
-            
-               
-              </Col>
-              <Col className="form-column" xs={"10"} md={"6"}>
-  
-                <div className='div-modal'>
-                  <b>Árbol familiar: </b>
-                  {isEditing ? (
-                    <input
-                      type="checkbox"
-                      name="arbol_familiar"
-                      checked={editableUser.arbol_familiar ?? documentosInfo.arbol_familiar}
-                      onChange={handleCheckboxChange}
-                    />
-                  ) : (
-                    documentosInfo.arbol_familiar ? 'Sí' : 'No'
-                  )}
-                </div>
               </Col>
             </Row>
           </div>
