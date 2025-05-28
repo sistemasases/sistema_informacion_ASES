@@ -3,7 +3,7 @@
     background-size: cover;
     background-position: center top; /* Muestra más de la parte superior de la imagen */
     min-height: 300px;
-    width: 900px;
+    width: 70%;
     color: white;
     
 }
@@ -60,6 +60,7 @@
   flex-direction: column; /* Cambiar la dirección de los elementos a columna */
   align-items: center;
   margin-top: 2%; /* Centrar horizontalmente los elementos */
+  margin-left: 1%;
   gap: 1px;
   }
   
