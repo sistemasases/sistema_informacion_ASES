@@ -57,6 +57,7 @@ const SideBar = (props) => {
   };
 
   const userRole = desencriptar(sessionStorage.getItem("rol"));
+  const decryptSede = desencriptar(sessionStorage.getItem("sede"));
 
   //   Variables de estado que almacenan los menus que se encuentran segun el rol del usuario
   const [state, set_state] = useState({
@@ -84,7 +85,7 @@ const SideBar = (props) => {
         : desencriptar(sessionStorage.rol) === "profesor"
         ? Menu9
         : desencriptar(sessionStorage.rol) === "CAMPUS DIVERSO" ||
-          desencriptar(sessionStorage.rol) === "super_ases"
+          desencriptar(sessionStorage.sede) === "Campus Diverso"
         ? Menu12
         : desencriptar(sessionStorage.rol) === "discapacidad" ||
           desencriptar(sessionStorage.rol) === "monitor_disc" ||
@@ -180,7 +181,7 @@ const SideBar = (props) => {
 
   /* Implementacion de diseño para campus diverso*/
 
-  if (userRole === "CAMPUS DIVERSO") {
+  if (userRole === "CAMPUS DIVERSO" || decryptSede === "Campus Diverso") {
     return (
       <Container className="containerSidebar">
         <Row className="top_selection-campus">
