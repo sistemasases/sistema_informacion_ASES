@@ -1,4 +1,3 @@
-o;
 /**
  * @file carga_masiva_component.jsx
  * @version 1.0.0
@@ -122,6 +121,7 @@ const Carga_masiva_component = () => {
         <Col sm={9}>
           <Form.Select name="option" onChange={handle_options}>
             <option value="Estudiante">Estudiante</option>
+            <option value="EstudiantesConId">Estudiantes con id</option>
             <option value="Activar_estudiante">Activar estudiante</option>
             <option value="Programa_estudiante">Programa estudiante</option>
             <option value="Estudiante_Cohorte">Cohorte estudiante</option>

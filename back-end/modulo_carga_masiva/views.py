@@ -42,6 +42,8 @@ class Validador_carga(APIView):
             file = request.data.get('FILES')
             if(tipo == 'Estudiante'):
                 return carga_estudiantes(file)
+            elif(tipo == 'EstudiantesConId'):
+                return carga_estudiantes_con_id(file)
             elif(tipo == "Activar_estudiante"):
                 return activar_estudiante(file)
             elif(tipo == "Programa_estudiante"):
@@ -241,7 +243,96 @@ def carga_estudiantes(file):
             {"error": "Ocurrió un error al intentar crear los estudiantes.", "detail": error_detail},
             status=status.HTTP_400_BAD_REQUEST
         )
-    
+
+def carga_estudiantes_con_id(file):
+    list_dict_result = []
+    lista_estudiantes = []
+
+    try:
+        datos = pd.read_csv(file, header=0)
+        for i in range(datos.shape[0]):
+            try:
+                cod_univalle = datos.iat[i, 23]  # Ajustado al nuevo índice
+                if estudiante.objects.filter(cod_univalle=cod_univalle).exists():
+                    consulta_estudiante = estudiante.objects.filter(cod_univalle=cod_univalle).first()
+                    consulta_programa = programa.objects.filter(
+                        codigo_univalle=datos.iat[i, 24],  # Ajustado
+                        id_sede=datos.iat[i, 25]          # Ajustado
+                    ).first()
+                    if programa_estudiante.objects.filter(
+                        id_estudiante=consulta_estudiante,
+                        id_programa=consulta_programa
+                    ).exists():
+                        list_dict_result.append({
+                            'dato': cod_univalle,
+                            'mensaje': 'Ya existe en la BD este estudiante.'
+                        })
+                    else:
+                        list_dict_result.append({
+                            'dato': cod_univalle,
+                            'mensaje': 'El estudiante existe pero no en este programa.'
+                        })
+                else:
+                    consulta_cond_excep = None
+                    if not pd.isna(datos.iat[i, 26]):  # Ajustado
+                        consulta_cond_excep = cond_excepcion.objects.filter(alias=datos.iat[i, 26]).first()
+
+                    Estudiante = estudiante(
+                        id=int(datos.iat[i, 0]),  # id manual
+                        tipo_doc_ini=str(datos.iat[i, 1]),
+                        num_doc_ini=int(datos.iat[i, 2]),
+                        tipo_doc=str(datos.iat[i, 3]),
+                        num_doc=str(datos.iat[i, 4]),
+                        barrio_ini_id=int(datos.iat[i, 5]),
+                        ciudad_ini_id=int(datos.iat[i, 6]),
+                        dir_ini=str(datos.iat[i, 7]),
+                        telefono_ini=datos.iat[i, 8],
+                        dir_res=str(datos.iat[i, 9]),
+                        telefono_res=int(datos.iat[i, 10]),
+                        email=str(datos.iat[i, 11]),
+                        acudiente=str(datos.iat[i, 12]),
+                        telefono_acudiente=int(datos.iat[i, 13]),
+                        sexo=str(datos.iat[i, 14]),
+                        colegio=str(datos.iat[i, 15]),
+                        estamento=str(datos.iat[i, 16]),
+                        celular=datos.iat[i, 17],
+                        hijos=datos.iat[i, 18],
+                        barrio_res_id=int(datos.iat[i, 19]),
+                        ciudad_res_id=int(datos.iat[i, 20]),
+                        nombre=str(datos.iat[i, 21]),
+                        apellido=str(datos.iat[i, 22]),
+                        cod_univalle=str(datos.iat[i, 23]),
+                        id_cond_excepcion=consulta_cond_excep,
+                        fecha_nac=datetime.strptime("1900-1-1", '%Y-%m-%d'),
+                    )
+                    lista_estudiantes.append(Estudiante)
+                    list_dict_result.append({
+                        'dato': cod_univalle,
+                        'mensaje': 'Se cargó correctamente este estudiante.'
+                    })
+            except Exception as e:
+                list_dict_result.append({
+                    'dato': datos.iat[i, 23],
+                    'mensaje': f'Error al cargar este estudiante: {str(e)}'
+                })
+
+    except Exception as e:
+        return Response(
+            {"error": "Ocurrió un error al procesar el archivo CSV.", "detail": str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        with transaction.atomic():
+            estudiante.objects.bulk_create(lista_estudiantes)
+        return Response(list_dict_result, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response(
+            {"error": "Ocurrió un error al intentar crear los estudiantes en la base de datos.", "detail": str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
 def carga_programa_estudiante(file):
     list_dict_result = []
     lista_programa_estudiante =[]
