@@ -62,6 +62,8 @@ class Validador_carga(APIView):
                 return carga_fichas(file)
             elif(tipo == "FichaV2"):
                 return carga_fichas2(file)
+            elif(tipo == "ActualizarFichas"):
+                return actualizar_fichas(file)
             elif(tipo == "Inasistencia"):
                 return carga_inasistencias(file)
             elif(tipo == "Vcd_academico"):
@@ -1228,6 +1230,147 @@ def carga_fichas2(file):
             {"error": "Ocurrió un error al intentar crear los seguimientos.", "detail": error_detail},
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+def actualizar_fichas(file):
+
+    
+
+    list_dict_result = []
+    list_estudiantes = []
+    fichas_para_actualizar = []
+    datos = pd.read_csv(file, header=0)
+
+    try:
+        for i in range(datos.shape[0]):
+            try:
+                creador_id = datos.iat[i, 61]
+                estudiante_id = datos.iat[i, 60]
+
+                if not User.objects.filter(id=creador_id).exists():
+                    list_dict_result.append({
+                        'dato': datos.iat[i, 0],
+                        'mensaje': f'El usuario con id {creador_id} no existe.'
+                    })
+                    
+                    continue
+
+                if not estudiante.objects.filter(id=estudiante_id).exists():
+                    list_dict_result.append({
+                        'dato': datos.iat[i, 0],
+                        'mensaje': f'El estudiante con id {estudiante_id} no existe.'
+                    })
+                    list_estudiantes.append(int(estudiante_id))
+                    continue
+
+                ficha = seguimiento_individual.objects.filter(
+                    fecha=datetime.strptime(str(datos.iat[i, 0]), '%Y-%m-%d'),
+                    hora_inicio=datetime.strptime(str(datos.iat[i, 2]), '%H:%M'),
+                    hora_finalización=datetime.strptime(str(datos.iat[i, 3]), '%H:%M'),
+                    id_creador_id=creador_id,
+                    id_estudiante_id=estudiante_id
+                ).first()
+
+                if not ficha:
+                    list_dict_result.append({
+                        'dato': datos.iat[i, 0],
+                        'mensaje': f'Esta ficha no existe en el sistema por tanto no puede ser actualizada.'
+                    })
+                    continue
+
+                #Validaciones del modelo original
+                if math.isnan(datos.iat[i,6]):
+                    riesgo_individual_dato = int('-1')
+                else:
+                    riesgo_individual_dato =  int(datos.iat[i,6]) 
+                if math.isnan(datos.iat[i,18]):
+                    riesgo_familiar_dato = int('-1')
+                else:
+                    riesgo_familiar_dato =  int(datos.iat[i,18])  
+                if math.isnan(datos.iat[i,21]):
+                    riesgo_academico_dato = int('-1')
+                else:
+                    riesgo_academico_dato =  int(datos.iat[i,21]) 
+                if math.isnan(datos.iat[i,26]):
+                    riesgo_economico_dato = int('-1')
+                else:
+                    riesgo_economico_dato =  int(datos.iat[i,26]) 
+                if math.isnan(datos.iat[i,32]):
+                    riesgo_vida_universitaria_ciudad_dato = int('-1')
+                else:
+                    riesgo_vida_universitaria_ciudad_dato =  int(datos.iat[i,32]) 
+
+                # Actualizamos campos relevantes. Aquí van solo unos de ejemplo:
+                ficha.riesgo_individual = riesgo_individual_dato
+                ficha.riesgo_familiar = riesgo_familiar_dato
+                ficha.riesgo_academico = riesgo_academico_dato
+                ficha.riesgo_economico = riesgo_economico_dato 
+                ficha.riesgo_vida_universitaria_ciudad = riesgo_vida_universitaria_ciudad_dato
+                #Tematicas dimension individual
+                ficha.autoconocimiento = bool(datos.iat[i,7])
+                ficha.rasgos_de_personalidad = bool(datos.iat[i,8])
+                ficha.identificación = bool(datos.iat[i,9])
+                ficha.red_de_apoyo = bool(datos.iat[i,10])
+                ficha.proyecto_de_vida = bool(datos.iat[i,11])
+                ficha.salud = bool(datos.iat[i,12])
+                ficha.aspectos_motivacionales = bool(datos.iat[i,13])
+                ficha.historia_de_vida = bool(datos.iat[i,14])
+                ficha.relación_eriótico_afectivas = bool(datos.iat[i,15])
+                ficha.diversidad_sexual = bool(datos.iat[i,16])
+                #Tematicas dimension familiar
+                ficha.dinamica_familiar = str(datos.iat[i,19])
+                #Tematicas dimension academica 22-24
+                ficha.desempeño_académico = bool(datos.iat[i,22])
+                ficha.elección_vocacional = bool(datos.iat[i,23])
+                ficha.manejo_del_tiempo = bool(datos.iat[i,24])
+                #Tematicas dimension economica 27-30
+                ficha.apoyos_económicos_institucionales = bool(datos.iat[i,27])
+                ficha.manejo_finanzas = bool(datos.iat[i,28])
+                ficha.apoyo_económico_familiar = bool(datos.iat[i,29])
+                ficha.situación_laboral_ocupacional = bool(datos.iat[i,30])
+                #Tematicas dimension vida universitaria y ciudad 33-38
+                ficha.motivación_compañamiento = bool(datos.iat[i,33])
+                ficha.referencia_geográfica = bool(datos.iat[i,34])
+                ficha.adaptación_ciudad_Universidad = bool(datos.iat[i,35])
+                ficha.oferta_servicios = bool(datos.iat[i,36])
+                ficha.vivienda = bool(datos.iat[i,37])
+                ficha.vinculación_grupos_actividades_extracurriculares = bool(datos.iat[i,38])
+                # Agrega a la lista para actualizar masivamente
+                fichas_para_actualizar.append(ficha)
+
+                list_dict_result.append({
+                    'dato': datos.iat[i, 0],
+                    'mensaje': f'Ficha del estudiante con id {estudiante_id} preparada para actualización.'
+                })
+
+            except Exception as e:
+                list_dict_result.append({
+                    'dato': datos.iat[i, 0],
+                    'mensaje': f'Error al preparar actualización de la ficha. Detalle: {str(e)}'
+                })
+
+        # Lógica de actualización masiva
+        if fichas_para_actualizar:
+            seguimiento_individual.objects.bulk_update(
+                fichas_para_actualizar,
+                [
+                    "riesgo_individual", "riesgo_familiar", "riesgo_academico", "riesgo_economico", "riesgo_vida_universitaria_ciudad",
+                    "autoconocimiento", "rasgos_de_personalidad", "identificación", "red_de_apoyo", "proyecto_de_vida", "salud", "aspectos_motivacionales",
+                    "historia_de_vida", "relación_eriótico_afectivas", "diversidad_sexual", "dinamica_familiar", "desempeño_académico", 
+                    "elección_vocacional", "manejo_del_tiempo", "apoyos_económicos_institucionales", "manejo_finanzas", "apoyo_económico_familiar",
+                    "situación_laboral_ocupacional", "motivación_compañamiento", "referencia_geográfica", "adaptación_ciudad_Universidad", 
+                    "oferta_servicios", "vivienda", "vinculación_grupos_actividades_extracurriculares"
+                ] 
+            )
+        print(list_estudiantes)
+        return Response(list_dict_result, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({
+            "error": "Ocurrió un error al procesar la actualización masiva.",
+            "detail": str(e)
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
 
 def carga_inasistencias(file):
     list_dict_result = []
