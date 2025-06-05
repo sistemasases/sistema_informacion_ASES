@@ -49,7 +49,7 @@ const ObtenerEstudiante = () => {
     fetch(`${process.env.REACT_APP_API_URL}/persona/persona/`, {headers})
       .then((response) => response.json())
       .then((data) =>{
-        console.log(data); // Verifica cómo llega la respuesta
+       /* console.log(data); // Verifica cómo llega la respuesta */
        setUsers(data)
       })
       
@@ -169,9 +169,8 @@ const updateUser = async (endpointsList, userId, updatedData) => {
 
   for (const endpoint of endpointsList) {
     try {
-      console.log("ROPEPEWER");
-      console.log(editableUser);
-      console.log(endpoint);
+      /* console.log(editableUser);
+      console.log(endpoint);*/
       const response = await axios.put(`${process.env.REACT_APP_API_URL}/${endpoint}/${userId}/`, updatedData, { headers });
       console.log(`Usuario actualizado en ${endpoint}:`, response.data);
       results.push(response.data);
@@ -418,9 +417,6 @@ const handleSelectChange = (selectedOptions, actionMeta) => {
     ...prevState,
     [name]: values
   }));
-
-  console.log('selectedOptions:', selectedOptions);
-  console.log('updatedValues:', values);
 };
 
 
@@ -487,7 +483,6 @@ const handleSelectChange3 = (selectedOption, actionMeta) => {
 
 //handle para atributos de un solo item 
 const handleArrayChange = (fieldName, index, value) => {
-  console.log(`Changing ${fieldName} at index ${index}, value ${value}`);
 
   const updatedArray = [...(editableUser[fieldName] || [])];
   updatedArray[index] = value;
@@ -501,7 +496,6 @@ const handleArrayChange = (fieldName, index, value) => {
 
 
 const handleArrayFieldChange = (fieldName, index, field, value) => {
-  console.log(`Changing ${fieldName} at index ${index}, field ${field}, value ${value}`);
 
   const updatedArray = [...editableUser[fieldName]];
   updatedArray[index][field] = value;
@@ -512,7 +506,6 @@ const handleArrayFieldChange = (fieldName, index, field, value) => {
   });
 };
 const handleAddItem = (fieldName, newItem = '') => {
-  console.log(`Adding new item to ${fieldName}`);
 
   setEditableUser({
     ...editableUser,
@@ -521,7 +514,6 @@ const handleAddItem = (fieldName, newItem = '') => {
 };
 
 const handleDeleteItem = (fieldName, index) => {
-  console.log(`Deleting item from ${fieldName} at index ${index}`);
 
   const updatedArray = [...(editableUser[fieldName] || [])];
   updatedArray.splice(index, 1);
@@ -753,7 +745,6 @@ const handleCheckboxChange = (event) => {
     ...prevState,
     [name]: checked,
   }));
-  console.log(`Checkbox ${name} changed to ${checked}`);
 };
 
 // Handle input change

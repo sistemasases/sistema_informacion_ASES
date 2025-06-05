@@ -396,7 +396,6 @@ const handleCheckboxChange = (event) => {
       [name]: booleanValue, // Asigna el valor booleano al estado
     }));
 
-    console.log(`Radio ${name} changed to ${booleanValue}`);
   } else {
     // Para otros checkboxes, usa el enfoque normal de "checked"
     set_state((prevState) => ({
@@ -404,7 +403,6 @@ const handleCheckboxChange = (event) => {
       [name]: checked, // Asigna el valor de checked
     }));
 
-    console.log(`Checkbox ${name} changed to ${checked}`);
   }
 
   // Cierra el modal si se aceptan el manejo de datos
@@ -488,12 +486,6 @@ const handleSelectNoMultiChange = (selectedOption, actionMeta) => {
     ...prevState,
     [name]: selectedOption ? [selectedOption.label] : []
   }));
-
-
-
-  console.log(`eventooo : ${state[name]}`);
-  console.log('selectedOption no multi select', selectedOption);
-  console.log('state de tipo de de documento', state.tipo_documento)
 };
 
 
@@ -513,8 +505,6 @@ const handleSelectChange2 = (selectedOptions, actionMeta) => {
  
 
 const handleSelectChange3 = (selectedOption, fieldName) => {
-  console.log("selectedOption", selectedOption);
-  console.log("fieldName", fieldName); 
 
   set_state(prevState => ({
     ...prevState,
@@ -525,7 +515,6 @@ const handleSelectChange3 = (selectedOption, fieldName) => {
 
 
 const handleArrayFieldChange = (fieldName, index, field, value) => {
-  console.log(`Changing ${fieldName} at index ${index}, field ${field}, value ${value}`);
 
   const updatedArray = [...state[fieldName]];
   updatedArray[index][field] = value;
@@ -537,7 +526,6 @@ const handleArrayFieldChange = (fieldName, index, field, value) => {
 };
 
 const handleAgregarItem = (fieldName, newItem) => {
-  console.log(`Adding new item to ${fieldName}`);
 
   set_state({
     ...state,
@@ -546,7 +534,6 @@ const handleAgregarItem = (fieldName, newItem) => {
 };
 
 const handleEliminarItem = (fieldName, index) => {
-  console.log(`Deleting item from ${fieldName} at index ${index}`);
 
   const updatedArray = [...state[fieldName]];
   updatedArray.splice(index, 1);
@@ -559,7 +546,6 @@ const handleEliminarItem = (fieldName, index) => {
 
 //handle para atributos de un solo item 
 const handleArrayChange = (fieldName, index, value) => {
-  console.log(`Changing ${fieldName} at index ${index}, value ${value}`);
 
   const updatedArray = [...state[fieldName]];
   updatedArray[index] = value;
@@ -571,7 +557,6 @@ const handleArrayChange = (fieldName, index, value) => {
 };
 
 const handleAddItem = (fieldName, newItem = '') => {
-  console.log(`Adding new item to ${fieldName}`);
 
   set_state({
     ...state,
@@ -580,7 +565,6 @@ const handleAddItem = (fieldName, newItem = '') => {
 };
 
 const handleDeleteItem = (fieldName, index) => {
-  console.log(`Deleting item from ${fieldName} at index ${index}`);
 
   const updatedArray = [...state[fieldName]];
   updatedArray.splice(index, 1);
@@ -701,7 +685,7 @@ const handleSubmit = async (e) => {
     setMensaje('Por favor completa el reCAPTCHA.');
     return;
   }
-  console.log('Enviando formulario con token reCAPTCHA:', recaptchaToken);
+  /* console.log('Enviando formulario con token reCAPTCHA:', recaptchaToken); */
 
   
 
@@ -843,7 +827,7 @@ const handleSubmit = async (e) => {
 
   try {
     const personaResponse = await axios.post(`${process.env.REACT_APP_API_URL}/persona/persona/`, personaData);
-    console.log('Respuesta del servidor (persona):', personaResponse.data);
+    /* console.log('Respuesta del servidor (persona):', personaResponse.data); */
     const personaId = personaResponse.data.numero_documento; // Utiliza el número de documento como ID
     setIsSubmitting(true);
 
@@ -852,28 +836,28 @@ const handleSubmit = async (e) => {
         ...DiversidadSexualData,
         id_persona: personaId,
       });
-      console.log('Respuesta del servidor (diversidad sexual):', diversidadSexualResponse.data);
+      /* console.log('Respuesta del servidor (diversidad sexual):', diversidadSexualResponse.data); */
 
       try {
         const informacionGeneralResponse = await axios.post(`${process.env.REACT_APP_API_URL}/informacion-general/informacion-general/`, {
           ...InformacionGeneralData,
           id_persona: personaId,
         });
-        console.log('Respuesta del servidor (informacion general):', informacionGeneralResponse.data);
+        /*console.log('Respuesta del servidor (informacion general):', informacionGeneralResponse.data);*/
 
         try {
           const informacionAcademicaResponse = await axios.post(`${process.env.REACT_APP_API_URL}/informacion-academica/informacion-academica/`, {
             ...InformacionAcademicaData,
             id_persona: personaId,
           });
-          console.log('Respuesta del servidor (informacion academica):', informacionAcademicaResponse.data);
+          /*console.log('Respuesta del servidor (informacion academica):', informacionAcademicaResponse.data);*/
 
           try {
             const documentosAutorizacionResponse = await axios.post(`${process.env.REACT_APP_API_URL}/documentos-autorizacion/documentos-autorizacion/`, {
               ...DocumentosAutorizacionData,
               id_persona: personaId,
             });
-            console.log('Respuesta del servidor (documentos autorizacion):', documentosAutorizacionResponse.data);
+           /* (console.log('Respuesta del servidor (documentos autorizacion):', documentosAutorizacionResponse.data);)*/
 
             
             setShowModal(true);
