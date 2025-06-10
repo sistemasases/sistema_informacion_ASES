@@ -1363,9 +1363,10 @@ def actualizar_fichas(file):
                 ).first()
 
                 if not ficha:
+                    crear_result = crear_ficha_from_row(datos.iloc[i])
                     list_dict_result.append({
                         'dato': datos.iat[i, 0],
-                        'mensaje': f'Esta ficha no existe en el sistema por tanto no puede ser actualizada.'
+                        'mensaje': f'Ficha no existía, resultado de creación: {crear_result}'
                     })
                     continue
 
@@ -2355,3 +2356,124 @@ def carga_activar_monitoria_academica(file):
                     status=status.HTTP_400_BAD_REQUEST
                 )
     return Response(list_dict_result)
+
+def crear_ficha_from_row(row):
+    try:
+        # Check if creator exists
+        if not User.objects.filter(id=row[61]).exists():
+            return f"El usuario suministrado como creador de la ficha no existe (id: {row[61]})."
+        consulta_creador = User.objects.get(id=row[61])
+
+        # Check if student exists
+        if not estudiante.objects.filter(id=row[60]).exists():
+            return f"Error al cargar la ficha: el estudiante con id {row[60]} no existe."
+        consulta_estudiante = estudiante.objects.get(id=row[60])
+
+        # Check if ficha already exists
+        if seguimiento_individual.objects.filter(
+            fecha=datetime.strptime(str(row[0]), '%Y-%m-%d'),
+            hora_inicio=convertir_hora(str(row[2])),
+            hora_finalización=convertir_hora(str(row[3])),
+            id_creador=consulta_creador,
+            id_estudiante=consulta_estudiante
+        ).exists():
+            return f"Ya existe esta ficha para el estudiante con id: {row[60]}."
+
+        # Handle NaN and string conversions
+        def safe_str(val, maxlen=10000):
+            return "" if str(val) == "nan" else str(val)[:maxlen]
+
+        def safe_int(val, default=-1):
+            try:
+                return int(val)
+            except:
+                return default
+
+        def safe_bool(val):
+            return bool(val)
+
+        # Prepare all fields
+        riesgo_individual_dato = safe_int(row[6])
+        riesgo_familiar_dato = safe_int(row[18])
+        riesgo_academico_dato = safe_int(row[21])
+        riesgo_economico_dato = safe_int(row[26])
+        riesgo_vida_universitaria_ciudad_dato = safe_int(row[32])
+
+        objetivo_dato = safe_str(row[4])
+        individual_dato = safe_str(row[5])
+        familiar_dato = safe_str(row[17])
+        academico_dato = safe_str(row[20])
+        economico_dato = safe_str(row[25])
+        vida_universitaria_ciudad_dato = safe_str(row[31])
+        observaciones_dato = safe_str(row[55])
+
+        # Create the ficha
+        ficha = seguimiento_individual(
+            fecha=datetime.strptime(str(row[0]), '%Y-%m-%d'),
+            lugar=str(row[1]),
+            hora_inicio=convertir_hora(str(row[2])),
+            hora_finalización=convertir_hora(str(row[3])),
+            objetivos=objetivo_dato,
+            individual=individual_dato,
+            riesgo_individual=riesgo_individual_dato,
+            autoconocimiento=safe_bool(row[7]),
+            rasgos_de_personalidad=safe_bool(row[8]),
+            identificación=safe_bool(row[9]),
+            red_de_apoyo=safe_bool(row[10]),
+            proyecto_de_vida=safe_bool(row[11]),
+            salud=safe_bool(row[12]),
+            aspectos_motivacionales=safe_bool(row[13]),
+            historia_de_vida=safe_bool(row[14]),
+            relación_eriótico_afectivas=safe_bool(row[15]),
+            diversidad_sexual=safe_bool(row[16]),
+            familiar=familiar_dato,
+            riesgo_familiar=riesgo_familiar_dato,
+            dinamica_familiar=safe_bool(row[19]),
+            academico=academico_dato,
+            riesgo_academico=riesgo_academico_dato,
+            desempeño_académico=safe_bool(row[22]),
+            elección_vocacional=safe_bool(row[23]),
+            manejo_del_tiempo=safe_bool(row[24]),
+            economico=economico_dato,
+            riesgo_economico=riesgo_economico_dato,
+            apoyos_económicos_institucionales=safe_bool(row[27]),
+            manejo_finanzas=safe_bool(row[28]),
+            apoyo_económico_familiar=safe_bool(row[29]),
+            situación_laboral_ocupacional=safe_bool(row[30]),
+            vida_universitaria_ciudad=vida_universitaria_ciudad_dato,
+            riesgo_vida_universitaria_ciudad=riesgo_vida_universitaria_ciudad_dato,
+            motivación_compañamiento=safe_bool(row[33]),
+            referencia_geográfica=safe_bool(row[34]),
+            adaptación_ciudad_Universidad=safe_bool(row[35]),
+            oferta_servicios=safe_bool(row[36]),
+            vivienda=safe_bool(row[37]),
+            vinculación_grupos_actividades_extracurriculares=safe_bool(row[38]),
+            apoyo_académico=safe_bool(row[39]),
+            taller_par_par=safe_bool(row[40]),
+            reconocimiento_ciudad_U=safe_bool(row[41]),
+            rem_profesional_SE=safe_bool(row[42]),
+            rem_racticante_SE=safe_bool(row[43]),
+            rem_actividades_grupales=safe_bool(row[44]),
+            rem_monitorías_académicas=safe_bool(row[45]),
+            rem_proyectos_Universidad=safe_bool(row[46]),
+            rem_servicio_salud=safe_bool(row[47]),
+            rem_registro_académico=safe_bool(row[48]),
+            rem_matrícula_financiera=safe_bool(row[49]),
+            rem_desarrollo_humano_promoción_SE=safe_bool(row[50]),
+            rem_directores_programa=safe_bool(row[51]),
+            rem_grupos_universidad=safe_bool(row[52]),
+            rem_externa=safe_bool(row[53]),
+            Ninguna_acción_realizada=safe_bool(row[54]),
+            observaciones=observaciones_dato,
+            revisado_profesional=safe_bool(row[56]),
+            revisado_practicante=safe_bool(row[57]),
+            primer_acercamiento=safe_bool(row[58]),
+            cierre=safe_bool(row[59]),
+            id_creador=consulta_creador,
+            id_modificador=None,
+            id_estudiante=consulta_estudiante,
+        )
+        ficha.save()
+        return f"Se creó correctamente la ficha del estudiante con id: {row[60]}."
+    except Exception as e:
+        return f"Error al crear la ficha del estudiante con id: {row[60]}. Detalle: {str(e)}"
