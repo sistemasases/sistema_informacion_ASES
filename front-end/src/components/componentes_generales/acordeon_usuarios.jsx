@@ -9,14 +9,17 @@ import axios from "axios";
 import { Container, Button, Accordion, Modal, Form } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-import all_users_rols_service from "../../service/all_users_rol";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
 } 
 from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import { FaEdit } from "react-icons/fa";
+
+// Services
 import all_rols from "../../service/all_rols";
+import all_users_rols_service from "../../service/all_users_rol";
+import create_user from "../../service/admin_crear_usuario.js";
 
 const SelectorUsuarios = () => {
   const [state, setState] = useState({
@@ -38,6 +41,8 @@ const SelectorUsuarios = () => {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
     },
   };
+
+  console.log(config);
 
   const consultaAllUserRol = async () => {
     try {
