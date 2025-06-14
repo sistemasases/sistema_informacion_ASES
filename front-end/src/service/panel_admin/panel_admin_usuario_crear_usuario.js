@@ -1,5 +1,5 @@
 /**
- * @file panel_admin_crear_usuario.js
+ * @file panel_admin_usuarios_crear.js
  * @version 1.0.0
  * @description Service para crear un nuevo usuario mediante el panel del administrador.
  * @author @iMrStevenS2
@@ -11,10 +11,13 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-} from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import Swal from "sweetalert2";
 
 const crear_usuario = async (data) => {
+  // Recibe el objeto data con los datos del nuevo usuario
+  // usuario  nombre	apellido	correo	clave
+
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
@@ -23,8 +26,10 @@ const crear_usuario = async (data) => {
   try {
     axios.post(url_axios, data, { headers: config }).then((response) => {
       if (response.status === 201) {
+        // Registro creado exitosamente
+        // alert(response.data.mensaje);
         Swal.fire({
-          title: "Operación exitosa",
+          title: "Creación exitosa",
           text: response.data.mensaje,
           icon: "success",
           timer: 2500,
@@ -32,14 +37,34 @@ const crear_usuario = async (data) => {
         });
         setTimeout(() => {
           window.location.reload();
-        }, 1000);
+        }, 2000);
+        return true;
+      } else if (response.status === 400) {
+        // Error en la solicitud
+        Swal.fire({
+          title: "Error",
+          text: response.data.mensaje,
+          icon: "error",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+        return false;
       }
-      return true;
+
+      // return true;
     });
   } catch (error) {
-    console.error("Error en la operación:", error);
+    console.error("Error al crear el usuario:", error);
+    Swal.fire({
+      title: "Error",
+      text: "No se pudo crear el usuario. Por favor, inténtelo de nuevo más tarde.",
+      icon: "error",
+      timer: 2500,
+      showConfirmButton: false,
+    });
+    // Manejo de errores específicos
     return false;
   }
 };
 
-export default crear_usuario;
+export default { crear_usuario };

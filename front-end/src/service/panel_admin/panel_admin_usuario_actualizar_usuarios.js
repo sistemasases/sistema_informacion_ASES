@@ -11,7 +11,7 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-} from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import Swal from "sweetalert2";
 
 const actualizar_usuarios = async (data) => {
@@ -22,7 +22,7 @@ const actualizar_usuarios = async (data) => {
 
   try {
     axios.post(url_axios, data, { headers: config }).then((response) => {
-      if (response.status === 201) {
+      if (response.status === 200) {
         Swal.fire({
           title: "Operación exitosa",
           text: response.data.mensaje,
@@ -30,10 +30,26 @@ const actualizar_usuarios = async (data) => {
           timer: 2500,
           showConfirmButton: false,
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+      } else if (response.status === 400) {
+        Swal.fire({
+          title: "Error",
+          text: response.data.mensaje,
+          icon: "error",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+      } else if (response.status === 404) {
+        Swal.fire({
+          title: "Usuario o Rol no encontrado",
+          text: response.data.mensaje,
+          icon: "warning",
+          timer: 2500,
+          showConfirmButton: false,
+        });
       }
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
       return true;
     });
   } catch (error) {
@@ -42,4 +58,4 @@ const actualizar_usuarios = async (data) => {
   }
 };
 
-export default actualizar_usuarios;
+export default { actualizar_usuarios };

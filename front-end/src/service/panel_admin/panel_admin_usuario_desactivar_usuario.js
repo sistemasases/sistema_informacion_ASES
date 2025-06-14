@@ -11,7 +11,7 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-} from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import Swal from "sweetalert2";
 
 const desactivar_usuario = async (data) => {
@@ -22,7 +22,7 @@ const desactivar_usuario = async (data) => {
 
   try {
     axios.post(url_axios, data, { headers: config }).then((response) => {
-      if (response.status === 201) {
+      if (response.status === 200) {
         Swal.fire({
           title: "Operación exitosa",
           text: response.data.mensaje,
@@ -33,6 +33,14 @@ const desactivar_usuario = async (data) => {
         setTimeout(() => {
           window.location.reload();
         }, 1000);
+      } else if (response.status === 400) {
+        Swal.fire({
+          title: "Error",
+          text: response.data.mensaje,
+          icon: "error",
+          timer: 2500,
+          showConfirmButton: false,
+        });
       }
       return true;
     });
@@ -42,4 +50,4 @@ const desactivar_usuario = async (data) => {
   }
 };
 
-export default desactivar_usuario;
+export default { desactivar_usuario };

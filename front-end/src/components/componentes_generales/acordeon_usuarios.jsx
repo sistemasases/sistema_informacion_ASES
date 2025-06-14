@@ -12,14 +12,17 @@ import DataTableExtensions from "react-data-table-component-extensions";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-} 
-from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+  desencriptarInt,
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import { FaEdit } from "react-icons/fa";
 
 // Services
 import all_rols from "../../service/all_rols";
 import all_users_rols_service from "../../service/all_users_rol";
-import create_user from "../../service/admin_crear_usuario.js";
+import Create_user from "../../service/panel_admin/panel_admin_usuario_crear_usuario.js";
+import Read_user from "../../service/panel_admin/panel_admin_usuario_listar_usuarios.js";
+import Update_user from "../../service/panel_admin/panel_admin_usuario_actualizar_usuarios.js";
+import Deactivate_usar from "../../service/panel_admin/panel_admin_usuario_desactivar_usuario.js";
 
 const SelectorUsuarios = () => {
   const [state, setState] = useState({
@@ -30,6 +33,7 @@ const SelectorUsuarios = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [newUser, setNewUser] = useState({
+    user_username: "",
     user_first_name: "",
     user_last_name: "",
     user_email: "",
@@ -42,14 +46,20 @@ const SelectorUsuarios = () => {
     },
   };
 
-  console.log(config);
-
   const consultaAllUserRol = async () => {
     try {
-      const pk = desencriptar(sessionStorage.getItem("sede_id"));
-      const response = await all_users_rols_service.all_users_rols(pk);
-      if (response && Array.isArray(response.data)) {
-        setState({ ...state, data_user_rol: response.data });
+      // const pk = desencriptar(sessionStorage.getItem("sede_id"));
+      // const response = await all_users_rols_service.all_users_rols(pk);
+      // if (response && Array.isArray(response.data)) {
+      //   setState({ ...state, data_user_rol: response.data });
+      // }
+      const semestre = desencriptarInt(
+        sessionStorage.getItem("id_semestre_actual")
+      );
+      const response = await Read_user.listar_usuarios({ semestre: semestre });
+      // console.log(response);
+      if (response && Array.isArray(response)) {
+        setState({ ...state, data_user_rol: response });
       }
     } catch (error) {
       console.error("Error al consultar usuarios con roles:", error);
@@ -91,7 +101,16 @@ const SelectorUsuarios = () => {
   };
 
   const handleSaveEdit = () => {
-    setShowEditModal(false);
+    setSelectedUser((prevUser) => ({
+      ...prevUser,
+      semestre: desencriptarInt(sessionStorage.getItem("id_semestre_actual")),
+    }));
+
+    console.log(selectedUser);
+
+    Update_user.actualizar_usuarios(selectedUser);
+
+    // setShowEditModal(false);
   };
 
   const handleShowCreateModal = () => setShowCreateModal(true);
@@ -107,17 +126,41 @@ const SelectorUsuarios = () => {
   };
 
   const handleCreateUser = () => {
-
+    // console.log(newUser);
+    Create_user.crear_usuario(newUser);
     setShowCreateModal(false);
+  };
+
+  const handleDeactivate = () => {
+    // Verificar si hay filas seleccionadas
+    if (selectedRows.length === 0) {
+      alert("Por favor, seleccione al menos un usuario para desactivar.");
+      return;
+    }
+    const usernamesToDeactivate = selectedRows.map((row) => {
+      return { usuario: row.usuario };
+    });
+    Deactivate_usar.desactivar_usuario(usernamesToDeactivate);
+    setSelectedRows([]); // Limpiar la selección después de desactivar
   };
 
   // Definición de las columnas de la tabla
   const columnas = [
-    { name: "NOMBRES", selector: (row) => row.user_first_name, sortable: true },
-    { name: "APELLIDOS", selector: (row) => row.user_last_name, sortable: true },
-    { name: "EMAIL", selector: (row) => row.user_email, sortable: true },
-    { name: "ROL", selector: (row) => row.rol_nombre, sortable: true },
-    { name: "CLAVE", selector: (row) => row.user_password, sortable: true },
+    { name: "USUARIO", selector: (row) => row.usuario, sortable: true },
+    { name: "NOMBRES", selector: (row) => row.nombre, sortable: true },
+    {
+      name: "APELLIDOS",
+      selector: (row) => row.apellido,
+      sortable: true,
+    },
+    { name: "EMAIL", selector: (row) => row.correo, sortable: true },
+    { name: "ROL", selector: (row) => row.rol, sortable: true },
+    // { name: "CLAVE", selector: (row) => row.user_password, sortable: true },
+    {
+      name: "ESTADO",
+      selector: (row) => (row.estado == true ? "ACTIVO" : "INACTIVO"),
+      sortable: true,
+    },
     {
       name: "EDITAR",
       cell: (row) => (
@@ -133,10 +176,13 @@ const SelectorUsuarios = () => {
   }, []);
 
   return (
+    // TABLA DE USUARIOS CON ROLES
     <Container>
       <Accordion>
         <Accordion.Item eventKey="1">
-          <Accordion.Header onClick={consultaAllUserRol}>Usuarios</Accordion.Header>
+          <Accordion.Header onClick={consultaAllUserRol}>
+            Usuarios
+          </Accordion.Header>
           <Accordion.Body>
             <DataTableExtensions columns={columnas} data={state.data_user_rol}>
               <DataTable
@@ -148,8 +194,8 @@ const SelectorUsuarios = () => {
                 striped
               />
             </DataTableExtensions>
-            <Button variant="danger">
-              Eliminar Usuarios Seleccionados
+            <Button variant="danger" onClick={handleDeactivate}>
+              Desactivar Usuarios Seleccionados
             </Button>
             <Button variant="primary" onClick={handleShowCreateModal}>
               Crear Usuario
@@ -158,18 +204,28 @@ const SelectorUsuarios = () => {
         </Accordion.Item>
       </Accordion>
 
+      {/* MODAL EDITAR ESTUDIANTE */}
       <Modal show={showEditModal} onHide={handleCloseEditModal}>
         <Modal.Header closeButton>
           <Modal.Title>Editar Usuario</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
+            <Form.Group controlId="editUsername">
+              <Form.Label>Nombre de Usuario</Form.Label>
+              <Form.Control
+                type="text"
+                name="usuario"
+                value={selectedUser?.usuario || ""}
+                onChange={handleEditChange}
+              />
+            </Form.Group>
             <Form.Group controlId="editFirstName">
               <Form.Label>Nombre</Form.Label>
               <Form.Control
                 type="text"
-                name="user_first_name"
-                value={selectedUser?.user_first_name || ""}
+                name="nombre"
+                value={selectedUser?.nombre || ""}
                 onChange={handleEditChange}
               />
             </Form.Group>
@@ -177,8 +233,8 @@ const SelectorUsuarios = () => {
               <Form.Label>Apellido</Form.Label>
               <Form.Control
                 type="text"
-                name="user_last_name"
-                value={selectedUser?.user_last_name || ""}
+                name="apellido"
+                value={selectedUser?.apellido || ""}
                 onChange={handleEditChange}
               />
             </Form.Group>
@@ -186,8 +242,8 @@ const SelectorUsuarios = () => {
               <Form.Label>Correo</Form.Label>
               <Form.Control
                 type="email"
-                name="user_email"
-                value={selectedUser?.user_email || ""}
+                name="correo"
+                value={selectedUser?.correo || ""}
                 onChange={handleEditChange}
               />
             </Form.Group>
@@ -195,13 +251,15 @@ const SelectorUsuarios = () => {
               <Form.Label>Rol</Form.Label>
               <Form.Control
                 as="select"
-                name="rol_nombre"
-                value={selectedUser?.rol_nombre || ""}
+                name="rol"
+                value={selectedUser?.rol || ""}
                 onChange={handleEditChange}
               >
                 <option value="">Seleccionar Rol</option>
                 {roles.map((role) => (
-                  <option key={role.id} value={role.nombre}>{role.nombre}</option>
+                  <option key={role.id} value={role.nombre}>
+                    {role.nombre}
+                  </option>
                 ))}
               </Form.Control>
             </Form.Group>
@@ -226,12 +284,22 @@ const SelectorUsuarios = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* MODAL CREAR USUARIO */}
       <Modal show={showCreateModal} onHide={handleCloseCreateModal}>
         <Modal.Header closeButton>
           <Modal.Title>Crear Usuario</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
+            <Form.Group controlId="createUsername">
+              <Form.Label>Nombre de Usuario</Form.Label>
+              <Form.Control
+                type="text"
+                name="user_username"
+                value={newUser.user_username}
+                onChange={handleCreateChange}
+              />
+            </Form.Group>
             <Form.Group controlId="createFirstName">
               <Form.Label>Nombre</Form.Label>
               <Form.Control

@@ -7,6 +7,8 @@ from rest_framework import viewsets
 from rest_framework import generics
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.utils import timezone
+from django.db import transaction
 
 from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso
 from modulo_programa.models import programa, programa_estudiante, facultad
@@ -41,16 +43,16 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         # print(request.data)
         try:
             new_user = User.objects.create_user(
-                password=request.data['contrasenia'],
+                password=request.data['user_password'],
                 last_login=None,
                 is_superuser=False,
-                username=request.data['usuario'],
-                first_name=request.data['nombre'],
-                last_name=request.data['apellido'],
-                email=request.data['correo'],
+                username=request.data['user_username'],
+                first_name=request.data['user_first_name'],
+                last_name=request.data['user_last_name'],
+                email=request.data['user_email'],
                 is_staff=False,
                 is_active=True,
-                date_joined=datetime.now()
+                date_joined=timezone.now()
             )
             new_user.save()
             return Response({"mensaje": "Usuario creado exitosamente"}, status=status.HTTP_201_CREATED)
@@ -70,7 +72,7 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             "nombre": "Juanito",
             "apellido": "Péreza",
             "correo": "juanitopereza@correo.com",
-            "contrasenia": "juanito123",
+            "user_password": "juanito123",
             "rol": ""   ## <-Que recibe? id ? sólo el nombre? ,
             "semestre": "" ## En caso de no existir usuario_rol, se crea uno nuevo
         }
@@ -81,7 +83,12 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             user.first_name = request.data['nombre']
             user.last_name = request.data['apellido']
             user.email = request.data['correo']
-            user.set_password(request.data['contrasenia'])
+            # Obtiene la contraseña si se proporciona
+            password = request.data.get('user_password', None)
+            if password:
+                # Verifica si se ha proporcionado una nueva contraseña
+                # Actualiza la contraseña
+                user.set_password(request.data['user_password'])
             user.save()
             # return Response({"mensaje": " actualizado exitosamente"})
         except User.DoesNotExist:
@@ -93,12 +100,21 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         Actualizamos el rol del usuario.
         """
         try:
-            rol_obj = rol.objects.get(nombre=request.data['rol'])
-            user_rol = usuario_rol.objects.get(id_usuario=user.id)
-            user_rol.id_rol = rol_obj
-            print(user_rol)
-            user_rol.save()
-            return Response({"mensaje": "Usuario y Rol actualizado exitosamente"})
+            rol_ = request.data['rol']
+            user_rol = usuario_rol.objects.get(
+                id_usuario=user.id, id_semestre=request.data['semestre'])
+            if not rol_ or rol_ == "SIN ROL":
+
+                user_rol.estado = "INACTIVO"
+                user_rol.save()
+                # return Response({"mensaje": "Se desactivo el rol del usuario"}, status=status.HTTP_200_OK)
+            else:
+                rol_obj = rol.objects.get(nombre=request.data['rol'])
+                # user_rol = usuario_rol.objects.get(id_usuario=user.id)
+                user_rol.id_rol = rol_obj
+                user_rol.estado = "ACTIVO"
+                user_rol.save()
+            return Response({"mensaje": "Usuario y Rol actualizado exitosamente"}, status=status.HTTP_200_OK)
         except rol.DoesNotExist:
             return Response({"error": "Rol no encontrado"}, status=status.HTTP_404_NOT_FOUND)
         except usuario_rol.DoesNotExist:
@@ -131,23 +147,65 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         }
         """
 
+        # try:
+        #     user = User.objects.get(username=request.data['usuario'])
+        #     user.is_active = False
+        #     user.is_staff = False
+        #     user.is_superuser = False
+        #     user.save()
+        # except User.DoesNotExist:
+        #     return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        # except Exception as e:
+        #     return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # try:
+        #     user_rol = usuario_rol.objects.get(id_usuario=user.id)
+        #     user_rol.estado = "INACTIVO"
+        #     user_rol.save()
+        # except usuario_rol.DoesNotExist:
+        #     return Response({"error": "Usuario no encontrado en la tabla de usuario_rol"}, status=status.HTTP_404_NOT_FOUND)
+        # return Response({"mensaje": "Usuario desactivado exitosamente"}, status=status.HTTP_200_OK)
+
         try:
-            user = User.objects.get(username=request.data['usuario'])
-            user.is_active = False
-            user.is_staff = False
-            user.is_superuser = False
-            user.save()
-        except User.DoesNotExist:
-            return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            usuarios_data = request.data  # Lista de diccionarios con clave "usuario"
+
+            if not isinstance(usuarios_data, list) or not usuarios_data:
+                return Response({"error": "Debes proporcionar una lista de usuarios válida."}, status=status.HTTP_400_BAD_REQUEST)
+            mensajes = []
+
+            with transaction.atomic():
+                for item in usuarios_data:
+                    username = item.get("usuario")
+                    if not username:
+                        mensajes.append(
+                            {"usuario": None, "error": "Falta el campo 'usuario'"})
+                        continue
+
+                    try:
+                        user = User.objects.get(username=username)
+                        user.is_active = False
+                        user.is_staff = False
+                        user.is_superuser = False
+                        user.save()
+
+                        try:
+                            user_rol = usuario_rol.objects.get(
+                                id_usuario=user.id)
+                            user_rol.estado = "INACTIVO"
+                            user_rol.save()
+                            mensajes.append(
+                                {"usuario": username, "mensaje": "Desactivado exitosamente"})
+                        except usuario_rol.DoesNotExist:
+                            mensajes.append(
+                                {"usuario": username, "error": "No tiene rol asignado"})
+
+                    except User.DoesNotExist:
+                        mensajes.append(
+                            {"usuario": username, "error": "Usuario no encontrado"})
+
+            return Response(mensajes, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            user_rol = usuario_rol.objects.get(id_usuario=user.id)
-            user_rol.estado = "INACTIVO"
-            user_rol.save()
-        except usuario_rol.DoesNotExist:
-            return Response({"error": "Usuario no encontrado en la tabla de usuario_rol"}, status=status.HTTP_404_NOT_FOUND)
-        return Response({"mensaje": "Usuario desactivado exitosamente"}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'], url_path='activar_usuario')
     def activar_usuario(self, request, pk=None):
@@ -184,7 +242,24 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         Listar todos los usuarios.
         """
         try:
-            users = User.objects.all()
+            semestre_ = get_object_or_404(
+                semestre, semestre_actual=True, id=request.data['semestre']
+            )
+
+            # Prefetch los roles activos del semestre para todos los usuarios
+            roles_activos = usuario_rol.objects.filter(
+                estado="ACTIVO", id_semestre=semestre_.id
+            ).select_related("id_rol")
+
+            # Creamos un diccionario con los roles por usuario para acceso rápido
+            roles_por_usuario = {
+                ur.id_usuario_id: ur.id_rol.nombre for ur in roles_activos
+            }
+
+            users = User.objects.all().only(
+                "id", "first_name", "last_name", "email", "username", "is_active"
+            )
+
             user_list = []
             for user in users:
                 user_list.append({
@@ -193,20 +268,12 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     "apellido": user.last_name,
                     "correo": user.email,
                     "usuario": user.username,
-                    "estado": user.is_active
+                    "estado": user.is_active,
+                    "rol": roles_por_usuario.get(user.id, "SIN ROL")
                 })
-                semestre_ = get_object_or_404(
-                    semestre, semestre_actual=True, id=request.data['semestre'])
-
-                ur = usuario_rol.objects.filter(
-                    id_usuario=user.id, estado="ACTIVO", id_semestre=semestre_.id).first()
-                if ur:
-                    user_list[-1]["rol"] = ur.id_rol.nombre
-                #
-                else:
-                    user_list[-1]["rol"] = ""
 
             return Response(user_list, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

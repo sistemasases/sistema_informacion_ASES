@@ -11,7 +11,7 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-} from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import Swal from "sweetalert2";
 
 const listar_usuarios = async (data) => {
@@ -21,25 +21,20 @@ const listar_usuarios = async (data) => {
   const url_axios = `${process.env.REACT_APP_API_URL}/admin_ases/panel_admin_usuario/listar_usuarios/`;
 
   try {
-    axios.post(url_axios, data, { headers: config }).then((response) => {
-      if (response.status === 201) {
-        Swal.fire({
-          title: "Operación exitosa",
-          text: response.data.mensaje,
-          icon: "success",
-          timer: 2500,
-          showConfirmButton: false,
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      }
-      return true;
-    });
+    const response = await axios.post(url_axios, data, { headers: config });
+    return response.data;
   } catch (error) {
-    console.error("Error en la operación:", error);
+    Swal.fire({
+      title: "Error",
+      text: "No se pudo listar los usuarios. Por favor, inténtelo de nuevo más tarde.",
+      icon: "error",
+      timer: 1500,
+      showConfirmButton: true,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#3085d6",
+    });
     return false;
   }
 };
 
-export default listar_usuarios;
+export default { listar_usuarios };
