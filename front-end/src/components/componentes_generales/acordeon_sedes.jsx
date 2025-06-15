@@ -1,19 +1,31 @@
 /**
-  * @file acordeon_sedes.jsx
-  * @version 1.0.0
-  * @description info de rendizar las sedes.
-  * @author Valentina Salamanca
+ * @file acordeon_sedes.jsx
+ * @version 1.0.0
+ * @description info de rendizar las sedes.
+ * @author Valentina Salamanca
  * @contact salamanca.valentina@correounivalle.edu.co
  * @date 13 de noviembre del 2024
-*/
+ */
 
 import React, { useState, useEffect } from "react";
-import { Container, Button, Accordion, Modal, Form, Row, Col } from "react-bootstrap";
+import {
+  Container,
+  Button,
+  Accordion,
+  Modal,
+  Form,
+  Row,
+  Col,
+} from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-import all_sede_service from "../../service/all_sede";
 import { decryptTokenFromSessionStorage } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 import { FaEdit } from "react-icons/fa";
+
+import Read_sedes from "../../service/panel_admin/panel_admin_sedes_listar_sedes.js";
+import Read_municipios from "../../service/panel_admin/panel_admin_sedes_listar_sedes";
+import Update_sedes from "../../service/panel_admin/panel_admin_sedes_actualizar_sede.js";
+import Create_sedes from "../../service/panel_admin/panel_admin_sedes_crear_sede.js";
 
 const SelectorSedes = () => {
   const [state, setState] = useState({
@@ -24,6 +36,7 @@ const SelectorSedes = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newSede, setNewSede] = useState({
+    id: "",
     codigo_univalle: "",
     nombre: "",
     municipio: "",
@@ -37,7 +50,8 @@ const SelectorSedes = () => {
 
   const consultaAllSedes = async () => {
     try {
-      const response = await all_sede_service.all_sede();
+      // const response = await all_sede_service.all_sede();
+      const response = await Read_sedes.listar_sedes({});
       if (response && Array.isArray(response)) {
         setState((prevState) => ({ ...prevState, data_sedes: response }));
       }
@@ -49,8 +63,9 @@ const SelectorSedes = () => {
   const consultaMunicipios = async () => {
     try {
       // Reemplazar con el servicio o lista de municipios
-      const response = await all_sede_service.all_municipios();
+      const response = await Read_municipios.listar_municipios({});
       if (response && Array.isArray(response)) {
+        // console.log(response);
         setState((prevState) => ({ ...prevState, municipios: response }));
       }
     } catch (error) {
@@ -72,17 +87,27 @@ const SelectorSedes = () => {
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
+    // console.log(e.target);
     setSelectedSede((prevSede) => ({
       ...prevSede,
       [name]: value,
     }));
+    if (name === "municipio") {
+      setSelectedSede((prevSede) => ({
+        ...prevSede,
+        id_municipio: parseInt(e?.target?.selectedOptions[0]?.id), // Actualizar el id del municipio
+      }));
+    }
   };
 
   const handleSaveEdit = async () => {
     try {
-      console.log("Guardando cambios:", selectedSede);
+      // console.log("Guardando cambios:", selectedSede);
+
+      Update_sedes.actualizar_sede(selectedSede);
       setShowEditModal(false);
       consultaAllSedes();
+      setSelectedSede({}); // Limpiar la sede seleccionada después de guardar
     } catch (error) {
       console.error("Error al guardar los cambios:", error);
     }
@@ -98,13 +123,20 @@ const SelectorSedes = () => {
       ...prevSede,
       [name]: value,
     }));
+    if (name === "municipio") {
+      setNewSede((prevSede) => ({
+        ...prevSede,
+        id_municipio_id: parseInt(e?.target?.selectedOptions[0]?.id), // Actualizar el id del municipio
+      }));
+    }
   };
 
   const handleCreateSede = async () => {
     try {
-      console.log("Creando nueva sede:", newSede);
-      setShowCreateModal(false);
-      consultaAllSedes();
+      // console.log("Creando nueva sede:", newSede);
+      Create_sedes.crear_sede(newSede);
+      // setShowCreateModal(false);
+      // consultaAllSedes();
     } catch (error) {
       console.error("Error al crear sede:", error);
     }
@@ -120,9 +152,13 @@ const SelectorSedes = () => {
   };
 
   const columnas = [
-    { name: "CÓDIGO UNIVALLE", selector: (row) => row.codigo_univalle, sortable: true },
+    {
+      name: "CÓDIGO UNIVALLE",
+      selector: (row) => row.codigo_univalle,
+      sortable: true,
+    },
     { name: "NOMBRE", selector: (row) => row.nombre, sortable: false },
-    { name: "MUNICIPIO", selector: (row) => row.nombre },
+    { name: "MUNICIPIO", selector: (row) => row.municipio, sortable: false },
     {
       name: "EDITAR",
       cell: (row) => (
@@ -137,9 +173,7 @@ const SelectorSedes = () => {
     <Container>
       <Accordion>
         <Accordion.Item eventKey="2">
-          <Accordion.Header onClick={consultaAllSedes}>
-            Sedes
-          </Accordion.Header>
+          <Accordion.Header onClick={consultaAllSedes}>Sedes</Accordion.Header>
           <Accordion.Body>
             <DataTableExtensions columns={columnas} data={state.data_sedes}>
               <DataTable
@@ -155,11 +189,11 @@ const SelectorSedes = () => {
                   Crear Sede
                 </Button>
               </Col>
-              <Col>
-                <Button variant="danger" onClick={handleDelete}>
+              {/* <Col>
+                <Button variant="danger" onClick={handleDelete} hidden={true}>
                   Eliminar Sedes
                 </Button>
-              </Col>
+              </Col> */}
             </Row>
           </Accordion.Body>
         </Accordion.Item>
@@ -193,14 +227,14 @@ const SelectorSedes = () => {
             <Form.Group controlId="editMunicipio">
               <Form.Label>Municipio</Form.Label>
               <Form.Select
-                name="municipio"
-                value={selectedSede?.nombre || ""}
+                name="municipio" // debe coincidir con la clave que actualizas en el estado
+                value={selectedSede?.municipio || ""}
                 onChange={handleEditChange}
               >
                 <option value="">Seleccione un municipio</option>
-                {state.municipios.map((nombre, index) => (
-                  <option key={index} value={nombre}>
-                    {nombre}
+                {state.municipios.map((mun) => (
+                  <option key={mun.id} id={mun.id} value={mun.nombre}>
+                    {mun.nombre}
                   </option>
                 ))}
               </Form.Select>
@@ -250,9 +284,9 @@ const SelectorSedes = () => {
                 onChange={handleCreateChange}
               >
                 <option value="">Seleccione un municipio</option>
-                {state.municipios.map((municipio, index) => (
-                  <option key={index} value={municipio}>
-                    {municipio}
+                {state.municipios.map((mun) => (
+                  <option key={mun.id} id={mun.id} value={mun.nombre}>
+                    {mun.nombre}
                   </option>
                 ))}
               </Form.Select>

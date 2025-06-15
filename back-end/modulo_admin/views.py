@@ -18,6 +18,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
 from rest_framework.response import Response
 from rest_framework import status
+from modulo_geografico.models import municipio
 
 # # Create your views here.
 
@@ -40,7 +41,6 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         }
         """
 
-        # print(request.data)
         try:
             new_user = User.objects.create_user(
                 password=request.data['user_password'],
@@ -279,7 +279,7 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
 
 
 class panel_admin_estudiante_viewset(viewsets.ViewSet):
-    
+
     @action(detail=False, methods=['post'], url_path='crear_estudiante', permission_classes=[IsAuthenticated])
     def crear_estudiante(self, request, pk=None):
         return Response({"mensaje": "Estudiante creado correctamente"})
@@ -560,6 +560,7 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
                     "id": s['id'],
                     "codigo_univalle": s['codigo_univalle'],
                     "nombre": s['nombre'],
+                    "id_municipio": s['id_municipio_id'],
                     "municipio": sedes_municipios.get(id=s['id']).id_municipio.nombre if sedes_municipios else None
                 }
                 for s in sedes
@@ -569,21 +570,22 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='actualizar_sede', permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=['post'], url_path='actualizar_sede')
     def actualizar_sede(self, request):
         """
         Actualizar una sede existente.
         Recibes:
         {
             "id": 1,
-            "id_municipio_id": 1,
+            "id_municipio": 1,
             "codigo_univalle": "S001",
             "nombre": "Sede Principal Actualizada"
         }
         """
+
         try:
             sede_obj = sede.objects.get(id=request.data['id'])
-            sede_obj.id_municipio_id = request.data['id_municipio_id']
+            sede_obj.id_municipio_id = request.data['id_municipio']
             sede_obj.codigo_univalle = request.data['codigo_univalle']
             sede_obj.nombre = request.data['nombre']
             sede_obj.save()
@@ -611,6 +613,12 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
     #         return Response({"error": "Sede no encontrada"}, status=status.HTTP_404_NOT_FOUND)
     #     except Exception as e:
     #         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='listar_municipios')
+    def listar_municipios(self, request):
+        lista_municipios = municipio.objects.all().order_by(
+            'nombre').values()  # Ordena por el campo 'nombre'
+        return Response(lista_municipios, status=status.HTTP_200_OK)
 
 
 class panel_admin_cohortes_viewset(viewsets.ViewSet):
