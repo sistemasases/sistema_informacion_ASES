@@ -28,7 +28,7 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
     API endpoint that allows users to be created.
     Revceives: nombre	apellido	correo	clave
     """
-    @action(detail=False, methods=['post'], url_path='crear_usuario')
+    @action(detail=False, methods=['post'], url_path='crear_usuario', permission_classes=[IsAuthenticated])
     def crear_usuario(self, request):
         """
         data = {
@@ -63,7 +63,7 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
     """
     Actualiza un usuario existente.
     """
-    @action(detail=False, methods=['post'], url_path='actualizar_usuarios')
+    @action(detail=False, methods=['post'], url_path='actualizar_usuarios', permission_classes=[IsAuthenticated])
     def actualizar_usuario(self, request, pk=None):
         """
         Recibes:
@@ -136,7 +136,7 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
     """
     Desactiva un usuario existente y activo en el sistema.
     """
-    @action(detail=False, methods=['post'], url_path='desactivar_usuario')
+    @action(detail=False, methods=['post'], url_path='desactivar_usuario', permission_classes=[IsAuthenticated])
     def desactivar_usuario(self, request, pk=None):
         """
         Desactiva un usuario existente y activo en el sistema.
@@ -207,7 +207,7 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='activar_usuario')
+    @action(detail=False, methods=['post'], url_path='activar_usuario', permission_classes=[IsAuthenticated])
     def activar_usuario(self, request, pk=None):
         """
         Activa un usuario existente y activo en el sistema.
@@ -236,7 +236,7 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             return Response({"error": "Usuario no encontrado en la tabla de usuario_rol"}, status=status.HTTP_404_NOT_FOUND)
         return Response({"mensaje": "Usuario activado exitosamente"}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'], url_path='listar_usuarios')
+    @action(detail=False, methods=['post'], url_path='listar_usuarios', permission_classes=[IsAuthenticated])
     def listar_usuarios(self, request):
         """
         Listar todos los usuarios.
@@ -279,13 +279,12 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
 
 
 class panel_admin_estudiante_viewset(viewsets.ViewSet):
-    # permission_classes = [IsAuthenticated]
-
-    @action(detail=False, methods=['post'], url_path='crear_estudiante')
+    
+    @action(detail=False, methods=['post'], url_path='crear_estudiante', permission_classes=[IsAuthenticated])
     def crear_estudiante(self, request, pk=None):
         return Response({"mensaje": "Estudiante creado correctamente"})
 
-    @action(detail=False, methods=['post'], url_path='listar_estudiantes')
+    @action(detail=False, methods=['post'], url_path='listar_estudiantes', permission_classes=[IsAuthenticated])
     def listar_estudiantes(self, request, pk=None):
         """
         Mostrar: 
@@ -345,7 +344,7 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='actualizar_estudiante')
+    @action(detail=False, methods=['post'], url_path='actualizar_estudiante', permission_classes=[IsAuthenticated])
     def actualizar_estudiante(self, request, pk=None):
         """
         Recibes:
@@ -423,7 +422,7 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             return Response({"error": "Registro no encontrado"}, status=status.HTTP_404_NOT_FOUND)
         return Response({"mensaje": "Estudiante actualizado correctamente"})
 
-    @action(detail=False, methods=['post'], url_path='desactivar_estudiante')
+    @action(detail=False, methods=['post'], url_path='desactivar_estudiante', permission_classes=[IsAuthenticated])
     def desactivar_estudiante(self, request):
         """
         Desactiva un estudiante existente y activo en el sistema.
@@ -474,14 +473,14 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"mensaje": "Estudiante desactivado correctamente"})
 
-    @action(detail=False, methods=['post'], url_path='activar_estudiante')
+    @action(detail=False, methods=['post'], url_path='activar_estudiante', permission_classes=[IsAuthenticated])
     def activar_estudiante(self, request):
         return Response({"mensaje": "Estudiante activado correctamente"})
 
 
 class panel_admin_roles_viewset(viewsets.ViewSet):
 
-    @action(detail=False, methods=['post'], url_path='listar_roles')
+    @action(detail=False, methods=['post'], url_path='listar_roles', permission_classes=[IsAuthenticated])
     def listar_roles(self, request):
         """
         Listar todos los roles.
@@ -508,11 +507,12 @@ class panel_admin_roles_viewset(viewsets.ViewSet):
 
 class panel_admin_permisos_viewset(viewsets.ViewSet):
 
-    @action(detail=False, methods=['post'], url_path='listar_permisos')
+    @action(detail=False, methods=['post'], url_path='listar_permisos', permission_classes=[IsAuthenticated])
     def listar_permisos(self, request):
         """
         Listar todos los permisos.
         """
+
         try:
             permisos = permiso.objects.all().values('id', 'nombre', 'descripcion')
             return Response(list(permisos), status=status.HTTP_200_OK)
@@ -522,7 +522,7 @@ class panel_admin_permisos_viewset(viewsets.ViewSet):
 
 class panel_admin_sedes_viewset(viewsets.ViewSet):
 
-    @action(detail=False, methods=['post'], url_path='crear_sede')
+    @action(detail=False, methods=['post'], url_path='crear_sede', permission_classes=[IsAuthenticated])
     def crear_sede(self, request):
         """
         Crear una nueva sede.
@@ -544,7 +544,7 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='listar_sedes')
+    @action(detail=False, methods=['post'], url_path='listar_sedes', permission_classes=[IsAuthenticated])
     def listar_sedes(self, request):
         """
         Listar todas las sedes.
@@ -569,7 +569,7 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='actualizar_sede')
+    @action(detail=False, methods=['post'], url_path='actualizar_sede', permission_classes=[IsAuthenticated])
     def actualizar_sede(self, request):
         """
         Actualizar una sede existente.
@@ -593,7 +593,7 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    # @action(detail=False, methods=['post'], url_path='desactivar_sede')
+    # @action(detail=False, methods=['post'], url_path='desactivar_sede', permission_classes=[IsAuthenticated])
     # def desactivar_sede(self, request):
     #     """
     #     Desactivar una sede existente.
@@ -615,7 +615,7 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
 
 class panel_admin_cohortes_viewset(viewsets.ViewSet):
 
-    @action(detail=False, methods=['post'], url_path='crear_cohorte')
+    @action(detail=False, methods=['post'], url_path='crear_cohorte', permission_classes=[IsAuthenticated])
     def crear_cohorte(self, request):
         """
         Crear una nueva cohorte.
@@ -639,7 +639,7 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='listar_cohortes')
+    @action(detail=False, methods=['post'], url_path='listar_cohortes', permission_classes=[IsAuthenticated])
     def listar_cohortes(self, request):
         """
         Listar todas las cohortes.
@@ -651,7 +651,7 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='actualizar_cohorte')
+    @action(detail=False, methods=['post'], url_path='actualizar_cohorte', permission_classes=[IsAuthenticated])
     def actualizar_cohorte(self, request):
         """
         Actualizar una cohorte existente.
@@ -680,7 +680,7 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
 
 class panel_admin_facultades_viewset(viewsets.ViewSet):
 
-    @action(detail=False, methods=['post'], url_path='crear_facultad')
+    @action(detail=False, methods=['post'], url_path='crear_facultad', permission_classes=[IsAuthenticated])
     def crear_facultad(self, request):
         """
         Crear una nueva facultad.
@@ -701,7 +701,7 @@ class panel_admin_facultades_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='listar_facultades')
+    @action(detail=False, methods=['post'], url_path='listar_facultades', permission_classes=[IsAuthenticated])
     def listar_facultades(self, request):
         """
         Listar todas las facultades.
@@ -712,7 +712,7 @@ class panel_admin_facultades_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='actualizar_facultad')
+    @action(detail=False, methods=['post'], url_path='actualizar_facultad', permission_classes=[IsAuthenticated])
     def actualizar_facultad(self, request):
         """
         Actualizar una facultad existente.
