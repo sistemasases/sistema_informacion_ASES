@@ -287,8 +287,8 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
     @action(detail=False, methods=['post'], url_path='listar_estudiantes', permission_classes=[IsAuthenticated])
     def listar_estudiantes(self, request, pk=None):
         """
-        Mostrar: 
-        Tabla Estudiante:  nombre	apellido	codigo	documento	correo	
+        Mostrar:
+        Tabla Estudiante:  nombre	apellido	codigo	documento	correo
         estudiante
         Otras Tablas:  programas	cohortes
         cohorte_estudiante
@@ -299,30 +299,36 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
         try:
             # Obtener todos los estudiantes
             estudiantes = estudiante.objects.all().values(
-                'id', 'nombre', 'apellido', 'cod_univalle', 'num_doc', 'email'
+                'id', 'nombre', 'apellido', 'cod_univalle', 'num_doc', 'email', 'estudiante_elegible', 'fecha_nac'
             )
             ids_estudiantes = [e['id'] for e in estudiantes]
 
             # Obtener todos los programas y cohortes relacionados con esos estudiantes
             programas_estudiantes = programa_estudiante.objects.filter(
                 id_estudiante__in=ids_estudiantes
-            ).select_related('id_programa').values('id_estudiante', 'id_programa', 'id_programa__nombre')
+            ).select_related('id_programa').values('id', 'id_estudiante', 'id_programa', 'id_programa__nombre')
 
             cohortes_estudiantes = cohorte_estudiante.objects.filter(
                 id_estudiante__in=ids_estudiantes
-            ).select_related('id_cohorte').values('id_estudiante', 'id_cohorte', 'id_cohorte__id_number')
+            ).select_related('id_cohorte').values('id', 'id_estudiante', 'id_cohorte', 'id_cohorte__id_number')
 
             # Agrupar programas y cohortes por estudiante
             programas_por_estudiante = {}
             for p in programas_estudiantes:
-                programas_por_estudiante.setdefault(p['id_estudiante'], []).append(
-                    f"programa: {p['id_programa__nombre']}"
-                )
+                programas_por_estudiante.setdefault(p['id_estudiante'], []).append({
+                    "id": p['id'],
+                    "id_programa": p['id_programa'],
+                    "nombre_programa": p['id_programa__nombre']
+                })
 
             cohortes_por_estudiante = {}
             for c in cohortes_estudiantes:
                 cohortes_por_estudiante.setdefault(c['id_estudiante'], []).append(
-                    f"cohorte: {c['id_cohorte__id_number']}"
+                    {
+                        "id": c['id'],
+                        "id_cohorte": c['id_cohorte'],
+                        "nombre_cohorte": c['id_cohorte__id_number']
+                    }
                 )
 
             # Construir respuesta final
@@ -332,9 +338,11 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
                     "id": e['id'],
                     "nombre": e['nombre'],
                     "apellido": e['apellido'],
-                    "codigo": e['cod_univalle'],
-                    "documento": e['num_doc'],
-                    "correo": e['email'],
+                    "cod_univalle": e['cod_univalle'],
+                    "fecha_nac": e['fecha_nac'],
+                    "num_doc": e['num_doc'],
+                    "email": e['email'],
+                    "estudiante_elegible": e['estudiante_elegible'],
                     "programas": programas_por_estudiante.get(e['id'], []),
                     "cohortes": cohortes_por_estudiante.get(e['id'], [])
                 })
@@ -353,6 +361,7 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             "nombre": "LEANDRO",
             "apellido": "RODRIGUEZ PEÑA",
             "codigo": "2325028",
+            "fecha_nac": "1998-01-01",
             "documento": "1065443727",
             "correo": "leandrorodriguezpea@gmail.com",
             "programas": [
@@ -387,9 +396,10 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             estudiante_obj = estudiante.objects.get(id=request.data['id'])
             estudiante_obj.nombre = request.data['nombre']
             estudiante_obj.apellido = request.data['apellido']
-            estudiante_obj.cod_univalle = request.data['codigo']
-            estudiante_obj.num_doc = request.data['documento']
-            estudiante_obj.email = request.data['correo']
+            estudiante_obj.cod_univalle = request.data['cod_univalle']
+            estudiante_obj.num_doc = request.data['num_doc']
+            estudiante_obj.email = request.data['email']
+            estudiante_obj.fecha_nac = request.data['fecha_nac']
             estudiante_obj.save()
         except estudiante.DoesNotExist:
             return Response({"error": "Estudiante no encontrado"}, status=status.HTTP_404_NOT_FOUND)
@@ -397,6 +407,8 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            if not request.data.get('programas') or not request.data.get('cohortes'):
+                return Response({"mensaje": "No se proporcionaron programas o cohortes para actualizar, Datos básicos actualizados"}, status=status.HTTP_200_OK)
             # Actualizar programas
             for p in request.data['programas']:
                 programa_estudiante_obj = get_object_or_404(
@@ -411,7 +423,7 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             for c in request.data['cohortes']:
                 cohorte_estudiante_obj = get_object_or_404(
                     cohorte_estudiante, id=c['id'])
-                print(cohorte_estudiante_obj.id_cohorte)
+                # print(cohorte_estudiante_obj.id_cohorte)
 
                 if cohorte_estudiante_obj.id_cohorte.id != c['id_cohorte']:
                     cohorte_estudiante_obj.id_cohorte = get_object_or_404(
@@ -428,50 +440,34 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
         Desactiva un estudiante existente y activo en el sistema.
 
         Recibes:
-        {
-            "id": 12365,
-            "nombre": "LEANDRO",
-            "apellido": "RODRIGUEZ PEÑA",
-            "codigo": "2325028",
-            "documento": "1065443727",
-            "correo": "leandrorodriguezpea@gmail.com",
-            "programas": [
-                {
-                    "id": 768,
-                    "id_programa": 60,
-                    "nombre_programa": "BIOLOGÍA"
-                },
-                {
-                    "id": 1534,
-                    "id_programa": 60,
-                    "nombre_programa": "BIOLOGÍA"
-                }
-            ],
-            "cohortes": [
-                {
-                    "id": 2242,
-                    "id_cohorte": 79,
-                    "nombre_cohorte": "X, front"
-                },
-                {
-                    "id": 611,
-                    "id_cohorte": 79,
-                    "nombre_cohorte": "X, front"
-                }
-            ]
-        }
+        [27435, 10660, 27771]
 
         """
 
         try:
-            estudiante_obj = estudiante.objects.get(id=request.data['id'])
-            estudiante_obj.estudiante_elegible = False
-            estudiante_obj.save()
-        except estudiante.DoesNotExist:
-            return Response({"error": "Estudiante no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            # Lista directa: [27435, 10660, 27771]
+            ids_estudiantes = request.data
+
+            if not isinstance(ids_estudiantes, list) or not ids_estudiantes:
+                return Response({"error": "Debes enviar una lista de IDs de estudiantes."}, status=status.HTTP_400_BAD_REQUEST)
+
+            resultados = []
+
+            with transaction.atomic():
+                for est_id in ids_estudiantes:
+                    try:
+                        estudiante_obj = estudiante.objects.get(id=est_id)
+                        estudiante_obj.estudiante_elegible = False
+                        estudiante_obj.save()
+                        # resultados.append(
+                        #     {"id": est_id, "mensaje": "Estudiante desactivado correctamente"})
+                    except estudiante.DoesNotExist:
+                        resultados.append(
+                            {"id": est_id, "error": "Estudiante no encontrado"})
+                        return Response(resultados, status=status.HTTP_404_NOT_FOUND)
+            return Response({"mensaje": "Estudiante(s) desactivado(s) correctamente"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"mensaje": "Estudiante desactivado correctamente"})
 
     @action(detail=False, methods=['post'], url_path='activar_estudiante', permission_classes=[IsAuthenticated])
     def activar_estudiante(self, request):

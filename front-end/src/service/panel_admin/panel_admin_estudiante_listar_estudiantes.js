@@ -11,7 +11,7 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-} from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import Swal from "sweetalert2";
 
 const listar_estudiantes = async (data) => {
@@ -21,25 +21,12 @@ const listar_estudiantes = async (data) => {
   const url_axios = `${process.env.REACT_APP_API_URL}/admin_ases/panel_admin_estudiante/listar_estudiantes/`;
 
   try {
-    axios.post(url_axios, data, { headers: config }).then((response) => {
-      if (response.status === 201) {
-        Swal.fire({
-          title: "Operación exitosa",
-          text: response.data.mensaje,
-          icon: "success",
-          timer: 2500,
-          showConfirmButton: false,
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      }
-      return true;
-    });
+    const response = await axios.post(url_axios, data, { headers: config });
+    return response.data;
   } catch (error) {
     console.error("Error en la operación:", error);
     return false;
   }
 };
 
-export default listar_estudiantes;
+export default { listar_estudiantes };

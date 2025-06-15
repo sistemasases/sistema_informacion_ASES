@@ -11,7 +11,7 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-} from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import Swal from "sweetalert2";
 
 const actualizar_estudiante = async (data) => {
@@ -22,7 +22,7 @@ const actualizar_estudiante = async (data) => {
 
   try {
     axios.post(url_axios, data, { headers: config }).then((response) => {
-      if (response.status === 201) {
+      if (response.status === 200) {
         Swal.fire({
           title: "Operación exitosa",
           text: response.data.mensaje,
@@ -32,14 +32,23 @@ const actualizar_estudiante = async (data) => {
         });
         setTimeout(() => {
           window.location.reload();
-        }, 1000);
+        }, 1500);
       }
       return true;
     });
   } catch (error) {
     console.error("Error en la operación:", error);
+    Swal.fire({
+      title: "Error",
+      text: "No se pudo actualizar el estudiante. Por favor, inténtelo de nuevo más tarde.",
+      icon: "error",
+      timer: 1500,
+      showConfirmButton: true,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#3085d6",
+    });
     return false;
   }
 };
 
-export default actualizar_estudiante;
+export default { actualizar_estudiante };

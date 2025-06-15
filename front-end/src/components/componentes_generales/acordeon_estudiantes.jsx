@@ -8,13 +8,16 @@ import React, { useState, useEffect } from "react";
 import { Container, Button, Accordion, Modal, Form } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-import all_estudiantes_service from "../../service/all_estudiantes";
+// import all_estudiantes_service from "../../service/all_estudiantes";
 import { FaEdit } from "react-icons/fa";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 
+import Read_estudiantes from "../../service/panel_admin/panel_admin_estudiante_listar_estudiantes.js";
+import Update_estudiantes from "../../service/panel_admin/panel_admin_estudiante_actualizar_estudiante.js";
+import Deactivate_estudiantes from "../../service/panel_admin/panel_admin_estudiante_desactivar_estudiante.js";
 const SelectorEstudiantes = () => {
   const [state, setState] = useState({
     data_estudiantes: [],
@@ -31,8 +34,11 @@ const SelectorEstudiantes = () => {
 
   const consultaAllEstudiantes = async () => {
     try {
-      const pk = desencriptar(sessionStorage.getItem("sede_id"));
-      const response = await all_estudiantes_service.all_estudiantes(pk);
+      // const pk = desencriptar(sessionStorage.getItem("sede_id"));
+      // const response = await all_estudiantes_service.all_estudiantes(pk);
+
+      const response = await Read_estudiantes.listar_estudiantes({});
+
       if (response && Array.isArray(response)) {
         setState({ ...state, data_estudiantes: response });
       }
@@ -63,18 +69,105 @@ const SelectorEstudiantes = () => {
   };
 
   const handleSaveEdit = () => {
-    // Aquí se puede implementar la lógica para guardar los cambios en el estudiante.
-    console.log("Guardando estudiante editado:", selectedEstudiante);
-    setShowEditModal(false);
+    // console.log("Guardando estudiante editado:", selectedEstudiante);
+    Update_estudiantes.actualizar_estudiante(selectedEstudiante);
+    // setShowEditModal(false);
   };
 
+  const handleDeactivate = () => {
+    if (selectedRows.length === 0) {
+      alert("Por favor, seleccione al menos un estudiante para eliminar.");
+      return;
+    }
+    const confirmDelete = window.confirm(
+      `¿Está seguro de que desea desactivar ${selectedRows.length} estudiante(s)? Esta acción no se puede deshacer.`
+    );
+    if (confirmDelete) {
+      const idsToDelete = selectedRows.map((row) => row.id);
+      // console.log("Eliminando estudiantes con IDs:", idsToDelete);
+      Deactivate_estudiantes.desactivar_estudiante(idsToDelete);
+      consultaAllEstudiantes();
+      setSelectedRows([]); // Limpiar la selección después de eliminar
+    }
+  };
   // Definición de las columnas de la tabla
   const columnas = [
-    { name: "NOMBRES", selector: (row) => row.nombre, sortable: true },
-    { name: "APELLIDOS", selector: (row) => row.apellido, sortable: true },
-    { name: "CÓDIGO", selector: (row) => row.cod_univalle, sortable: true },
-    { name: "DOCUMENTO", selector: (row) => row.num_doc, sortable: true },
-    { name: "CORREO", selector: (row) => row.email, sortable: true },
+    {
+      name: "NOMBRES",
+      selector: (row) => row.nombre,
+      sortable: true,
+      wrap: true,
+      grow: 0.9,
+    },
+    {
+      name: "APELLIDOS",
+      selector: (row) => row.apellido,
+      sortable: true,
+      wrap: true,
+      grow: 0.9,
+    },
+    {
+      name: "CÓDIGO",
+      selector: (row) => row.cod_univalle,
+      sortable: true,
+      wrap: true,
+      grow: 0.5,
+    },
+    {
+      name: "NACIMIENTO",
+      selector: (row) => row.fecha_nac,
+      sortable: true,
+      wrap: true,
+      grow: 0.8,
+      format: (row) => {
+        const date = new Date(row.fecha_nac);
+        return date.toLocaleDateString("es-CO", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+      },
+    },
+    {
+      name: "DOCUMENTO",
+      selector: (row) => row.num_doc,
+      sortable: true,
+      wrap: true,
+      grow: 0.8,
+    },
+    {
+      name: "CORREO",
+      selector: (row) => row.email,
+      sortable: true,
+      wrap: true,
+      grow: 0.8,
+    },
+    {
+      name: "ESTUDIANTE ELEGIBLE",
+      selector: (row) =>
+        row.estudiante_elegible == true ? "ELEGIBLE" : "NO ELEGIBLE",
+      sortable: true,
+      wrap: true,
+      grow: 0.8,
+      title: "Estudiante Elegible",
+    },
+    {
+      name: "PROGRAMAS",
+      selector: (row) =>
+        row?.programas?.map((p) => p.nombre_programa).join(", ") ||
+        "Sin programas",
+      sortable: true,
+      wrap: true,
+      grow: 0.8,
+    },
+    {
+      name: "COHORTE",
+      selector: (row) =>
+        row?.cohortes?.map((c) => c.nombre_cohorte).join(", ") || "Sin cohorte",
+      sortable: false,
+      wrap: true,
+      grow: 0.8,
+    },
     {
       name: "EDITAR",
       cell: (row) => (
@@ -106,7 +199,9 @@ const SelectorEstudiantes = () => {
                 striped
               />
             </DataTableExtensions>
-            <Button variant="danger">Eliminar Estudiantes Seleccionados</Button>
+            <Button variant="danger" onClick={handleDeactivate}>
+              Eliminar Estudiantes Seleccionados
+            </Button>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
@@ -139,25 +234,52 @@ const SelectorEstudiantes = () => {
               <Form.Label>Código</Form.Label>
               <Form.Control
                 type="text"
-                name="codigo"
+                name="cod_univalle"
                 value={selectedEstudiante?.cod_univalle || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,7}$/.test(value)) {
+                    handleEditChange(e);
+                  }
+                }}
+              />
+            </Form.Group>
+            <Form.Group controlId="editFechaNacimiento">
+              <Form.Label>Fecha de Nacimiento</Form.Label>
+              <Form.Control
+                type="date"
+                name="fecha_nac"
+                value={
+                  selectedEstudiante?.fecha_nac
+                    ? new Date(selectedEstudiante.fecha_nac)
+                        .toISOString()
+                        .split("T")[0]
+                    : ""
+                }
                 onChange={handleEditChange}
+                max={new Date().toISOString().split("T")[0]} // fecha máxima: hoy
+                min={"1950-01-01"} // fecha mínima
               />
             </Form.Group>
             <Form.Group controlId="editDocumento">
               <Form.Label>Documento</Form.Label>
               <Form.Control
                 type="text"
-                name="documento"
+                name="num_doc"
                 value={selectedEstudiante?.num_doc || ""}
-                onChange={handleEditChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    handleEditChange(e);
+                  }
+                }}
               />
             </Form.Group>
             <Form.Group controlId="editCorreo">
               <Form.Label>Correo</Form.Label>
               <Form.Control
                 type="email"
-                name="correo"
+                name="email"
                 value={selectedEstudiante?.email || ""}
                 onChange={handleEditChange}
               />
