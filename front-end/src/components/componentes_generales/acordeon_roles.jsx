@@ -70,7 +70,13 @@ const SelectorRoles = () => {
         <Accordion.Item eventKey="2">
           <Accordion.Header onClick={consultaAllRoles}>Roles</Accordion.Header>
           <Accordion.Body>
-            <DataTableExtensions columns={columnas} data={state.data_roles}>
+            <DataTableExtensions
+              columns={columnas}
+              data={state.data_roles}
+              export={false}
+              print={false}
+              filterPlaceholder="Buscar roles..."
+            >
               <DataTable
                 title="Roles"
                 noDataComponent="Cargando Información."

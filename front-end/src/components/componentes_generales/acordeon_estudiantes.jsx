@@ -189,6 +189,9 @@ const SelectorEstudiantes = () => {
             <DataTableExtensions
               columns={columnas}
               data={state.data_estudiantes}
+              export={false}
+              print={false}
+              filterPlaceholder="Buscar estudiantes..."
             >
               <DataTable
                 title="Estudiantes"

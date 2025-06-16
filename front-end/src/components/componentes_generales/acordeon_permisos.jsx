@@ -57,7 +57,13 @@ const SelectorPermisos = () => {
             Permisos
           </Accordion.Header>
           <Accordion.Body>
-            <DataTableExtensions columns={columnas} data={state.data_permisos}>
+            <DataTableExtensions
+              columns={columnas}
+              data={state.data_permisos}
+              export={false}
+              print={false}
+              filterPlaceholder="Buscar Permisos..."
+            >
               <DataTable
                 title="Permisos"
                 noDataComponent="Cargando Información."

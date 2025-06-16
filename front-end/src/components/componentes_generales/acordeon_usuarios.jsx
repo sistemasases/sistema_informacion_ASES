@@ -184,7 +184,13 @@ const SelectorUsuarios = () => {
             Usuarios
           </Accordion.Header>
           <Accordion.Body>
-            <DataTableExtensions columns={columnas} data={state.data_user_rol}>
+            <DataTableExtensions
+              columns={columnas}
+              data={state.data_user_rol}
+              export={false}
+              print={false}
+              filterPlaceholder="Buscar usuarios..."
+            >
               <DataTable
                 title="Usuarios"
                 noDataComponent="Cargando Información."

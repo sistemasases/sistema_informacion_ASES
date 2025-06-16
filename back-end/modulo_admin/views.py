@@ -723,14 +723,14 @@ class panel_admin_facultades_viewset(viewsets.ViewSet):
         Actualizar una facultad existente.
         Recibes:
         {
-                        "id": 14,
+            "id": 14,
             "codigo_univalle": "F1",
             "nombre": "Facultad de PRUEBA"
         }
         """
         try:
             facultad_obj = facultad.objects.get(id=request.data['id'])
-            # facultad_obj.codigo_univalle = request.data['codigo_univalle']
+            facultad_obj.codigo_univalle = request.data['codigo_univalle']
             facultad_obj.nombre = request.data['nombre']
             facultad_obj.save()
             return Response({"mensaje": "Facultad actualizada exitosamente"}, status=status.HTTP_200_OK)

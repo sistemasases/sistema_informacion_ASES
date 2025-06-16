@@ -11,7 +11,7 @@ import axios from "axios";
 import {
   decryptTokenFromSessionStorage,
   desencriptar,
-} from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import Swal from "sweetalert2";
 
 const crear_facultad = async (data) => {
@@ -32,14 +32,23 @@ const crear_facultad = async (data) => {
         });
         setTimeout(() => {
           window.location.reload();
-        }, 1000);
+        }, 1500);
       }
       return true;
     });
   } catch (error) {
     console.error("Error en la operación:", error);
+    Swal.fire({
+      title: "Error",
+      text: "No se pudo crear la facultad. Por favor, inténtelo de nuevo más tarde.",
+      icon: "error",
+      timer: 1500,
+      showConfirmButton: true,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#3085d6",
+    });
     return false;
   }
 };
 
-export default crear_facultad;
+export default { crear_facultad };

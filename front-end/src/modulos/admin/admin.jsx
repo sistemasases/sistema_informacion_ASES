@@ -26,7 +26,10 @@ const Gestion_usuario_roles = () => {
   return (
     <>
       {userRole.includes("view_gestion_usuarios") ? (
-        <Col className="contenido_children">
+        <Col
+          className="contenido_children"
+          style={{ position: "relative", zIndex: 0 }}
+        >
           <Row className="rowJustFlex_usuario_rol">
             <h1>Administrador Ases</h1>
           </Row>
@@ -36,14 +39,15 @@ const Gestion_usuario_roles = () => {
             <SelectorRoles />       {/* CONECTADO */}
             <SelectorPermisos />    {/* CONECTADO */}
             <SelectorSedes />       {/* CONECTADO */}
-            <SelectorCohortes />    {/*  */}
-            <SelectorFacultad />    {/*  */}
+            <SelectorCohortes />    {/* CONECTADO */}
+            <SelectorFacultad />    {/* CONEC- */}
           </Row>
           <Row></Row>
         </Col>
       ) : (
         <Acceso_denegado />
       )}
+      <br />
     </>
   );
 };

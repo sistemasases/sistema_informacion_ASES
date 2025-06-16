@@ -143,7 +143,13 @@ const SelectorCohortes = () => {
             Cohortes
           </Accordion.Header>
           <Accordion.Body>
-            <DataTableExtensions columns={columnas} data={state.data_cohortes}>
+            <DataTableExtensions
+              columns={columnas}
+              data={state.data_cohortes}
+              export={false}
+              print={false}
+              filterPlaceholder="Buscar cohortes..."
+            >
               <DataTable
                 title="Cohortes"
                 noDataComponent="Cargando Información."

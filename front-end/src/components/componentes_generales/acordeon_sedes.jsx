@@ -175,7 +175,13 @@ const SelectorSedes = () => {
         <Accordion.Item eventKey="2">
           <Accordion.Header onClick={consultaAllSedes}>Sedes</Accordion.Header>
           <Accordion.Body>
-            <DataTableExtensions columns={columnas} data={state.data_sedes}>
+            <DataTableExtensions
+              columns={columnas}
+              data={state.data_sedes}
+              export={false}
+              print={false}
+              filterPlaceholder="Buscar sedes..."
+            >
               <DataTable
                 title="Sedes"
                 noDataComponent="Cargando Información."
