@@ -1,0 +1,61 @@
+/**
+ * @file panel_admin_actualizar_usuarios.js
+ * @version 1.0.0
+ * @description Service para actualizar los datos de uno o varios usuarios mediante el panel del administrador.
+ * @author @iMrStevenS2
+ * @contact steven.bernal@correounivalle.edu.co
+ * @date 29 de Abril del 2025
+ */
+
+import axios from "axios";
+import {
+  decryptTokenFromSessionStorage,
+  desencriptar,
+} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import Swal from "sweetalert2";
+
+const actualizar_usuarios = async (data) => {
+  const config = {
+    Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+  };
+  const url_axios = `${process.env.REACT_APP_API_URL}/admin_ases/panel_admin_usuario/actualizar_usuarios/`;
+
+  try {
+    axios.post(url_axios, data, { headers: config }).then((response) => {
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Operación exitosa",
+          text: response.data.mensaje,
+          icon: "success",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+      } else if (response.status === 400) {
+        Swal.fire({
+          title: "Error",
+          text: response.data.mensaje,
+          icon: "error",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+      } else if (response.status === 404) {
+        Swal.fire({
+          title: "Usuario o Rol no encontrado",
+          text: response.data.mensaje,
+          icon: "warning",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+      return true;
+    });
+  } catch (error) {
+    console.error("Error en la operación:", error);
+    return false;
+  }
+};
+
+export default { actualizar_usuarios };
