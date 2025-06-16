@@ -672,8 +672,9 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
             cohorte_obj = cohorte.objects.get(id=request.data['id'])
             cohorte_obj.id_number = request.data['id_number']
             cohorte_obj.nombre = request.data['nombre']
-            cohorte_obj.tiempo_creacion = request.data['tiempo_creacion_']
-            cohorte_obj.tiempo_modificacion = request.data['tiempo_modificacion_']
+            # cohorte_obj.tiempo_creacion = request.data['tiempo_creacion_']
+            # Actualiza la fecha de modificación a ahora
+            cohorte_obj.tiempo_modificacion = timezone.now()
             cohorte_obj.save()
             return Response({"mensaje": "Cohorte actualizada exitosamente"}, status=status.HTTP_200_OK)
         except cohorte.DoesNotExist:

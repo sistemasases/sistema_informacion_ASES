@@ -1,19 +1,31 @@
 /**
-  * @file acordeon_cohortes.jsx
-  * @version 1.0.0
-  * @description info de rendizar las cohortes.
-  * @author Valentina Salamanca
+ * @file acordeon_cohortes.jsx
+ * @version 1.0.0
+ * @description info de rendizar las cohortes.
+ * @author Valentina Salamanca
  * @contact salamanca.valentina@correounivalle.edu.co
  * @date 13 de noviembre del 2024
-*/
+ */
 
 import React, { useState, useEffect } from "react";
-import { Container, Button, Accordion, Modal, Form, Row, Col } from "react-bootstrap";
+import {
+  Container,
+  Button,
+  Accordion,
+  Modal,
+  Form,
+  Row,
+  Col,
+} from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-import all_cohorte_service from "../../service/all_cohorte"; 
+// import all_cohorte_service from "../../service/all_cohorte";
 import { decryptTokenFromSessionStorage } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 import { FaEdit } from "react-icons/fa";
+
+import Read_cohorte from "../../service/panel_admin/panel_admin_cohortes_listar_cohortes.js";
+import Update_cohorte from "../../service/panel_admin/panel_admin_cohortes_actualizar_cohorte.js";
+import Create_cohorte from "../../service/panel_admin/panel_admin_cohortes_crear_cohorte.js";
 
 const SelectorCohortes = () => {
   const [state, setState] = useState({
@@ -23,7 +35,7 @@ const SelectorCohortes = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newCohorte, setNewCohorte] = useState({
-    id: "",
+    id_number: "",
     nombre: "",
   });
 
@@ -35,7 +47,8 @@ const SelectorCohortes = () => {
 
   const consultaAllCohortes = async () => {
     try {
-      const response = await all_cohorte_service.all_cohorte();
+      // const response = await all_cohorte_service.all_cohorte();
+      const response = await Read_cohorte.listar_cohortes({});
       if (response && Array.isArray(response)) {
         setState((prevState) => ({ ...prevState, data_cohortes: response }));
       }
@@ -65,8 +78,9 @@ const SelectorCohortes = () => {
 
   const handleSaveEdit = async () => {
     try {
-      console.log("Guardando cambios:", selectedCohorte);
-      setShowEditModal(false);
+      // console.log("Guardando cambios:", selectedCohorte);
+      // setShowEditModal(false);
+      Update_cohorte.actualizar_cohorte(selectedCohorte);
       consultaAllCohortes();
     } catch (error) {
       console.error("Error al guardar los cambios:", error);
@@ -87,8 +101,10 @@ const SelectorCohortes = () => {
 
   const handleCreateCohorte = async () => {
     try {
-      console.log("Creando nuevo cohorte:", newCohorte);
-      setShowCreateModal(false);
+      // console.log("Creando nuevo cohorte:", newCohorte);
+      Create_cohorte.crear_cohorte(newCohorte);
+      setNewCohorte({ id_number: "", nombre: "" }); // Reset form
+      // setShowCreateModal(false);
       consultaAllCohortes();
     } catch (error) {
       console.error("Error al crear cohorte:", error);
@@ -96,8 +112,19 @@ const SelectorCohortes = () => {
   };
 
   const columnas = [
-    { name: "ID", selector: (row) => row.id, sortable: true },
-    { name: "NOMBRE", selector: (row) => row.nombre, sortable: false },
+    { name: "ID", selector: (row) => row.id, sortable: true, grow: 0.3 },
+    {
+      name: "ID NUMBER",
+      selector: (row) => row.id_number,
+      sortable: true,
+      grow: 0.4,
+    },
+    {
+      name: "NOMBRE",
+      selector: (row) => row.nombre,
+      sortable: false,
+      grow: 0.9,
+    },
     {
       name: "EDITAR",
       cell: (row) => (
@@ -130,11 +157,14 @@ const SelectorCohortes = () => {
                   Crear Cohorte
                 </Button>
               </Col>
-              <Col>
-                <Button variant="danger" onClick={() => console.log('Eliminar cohortes')}>
+              {/* <Col>
+                <Button
+                  variant="danger"
+                  onClick={() => console.log("Eliminar cohortes")}
+                >
                   Eliminar Cohortes
                 </Button>
-              </Col>
+              </Col> */}
             </Row>
           </Accordion.Body>
         </Accordion.Item>
@@ -157,6 +187,16 @@ const SelectorCohortes = () => {
                 disabled
               />
             </Form.Group>
+            <Form.Group controlId="editIdNumber">
+              <Form.Label>ID Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="id_number"
+                value={selectedCohorte?.id_number || ""}
+                onChange={handleEditChange}
+                maxLength={20}
+              />
+            </Form.Group>
             <Form.Group controlId="editNombre">
               <Form.Label>Nombre</Form.Label>
               <Form.Control
@@ -164,6 +204,7 @@ const SelectorCohortes = () => {
                 name="nombre"
                 value={selectedCohorte?.nombre || ""}
                 onChange={handleEditChange}
+                maxLength={50}
               />
             </Form.Group>
           </Form>
@@ -185,13 +226,23 @@ const SelectorCohortes = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="createId">
+            {/* <Form.Group controlId="createId">
               <Form.Label>ID</Form.Label>
               <Form.Control
                 type="text"
                 name="id"
                 value={newCohorte.id}
                 onChange={handleCreateChange}
+              />
+            </Form.Group> */}
+            <Form.Group controlId="createIdNumber">
+              <Form.Label>ID Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="id_number"
+                value={newCohorte.id_number}
+                onChange={handleCreateChange}
+                maxLength={20}
               />
             </Form.Group>
             <Form.Group controlId="createNombre">
@@ -201,6 +252,7 @@ const SelectorCohortes = () => {
                 name="nombre"
                 value={newCohorte.nombre}
                 onChange={handleCreateChange}
+                maxLength={50}
               />
             </Form.Group>
           </Form>
