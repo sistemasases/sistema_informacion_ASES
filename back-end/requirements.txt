@@ -7,3 +7,7 @@ psycopg2-binary
 pandas
 django_otp
 requests
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
