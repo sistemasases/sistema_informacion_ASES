@@ -18,6 +18,8 @@ import SelectorPermisos from "../../components/componentes_generales/acordeon_pe
 import SelectorSedes from "../../components/componentes_generales/acordeon_sedes.jsx";
 import SelectorCohortes from "../../components/componentes_generales/acordeon_cohortes.jsx";
 import SelectorFacultad from "../../components/componentes_generales/acordeon_facultades.jsx";
+import SelectorAsignaciones from "../../components/componentes_generales/acordeon_asignaciones.jsx";
+import SelectorAsignacionesMonitores from "../../components/componentes_generales/acordeon_asignaciones_monitores.jsx"; 
 
 const Gestion_usuario_roles = () => {
   // Desencriptar los permisos del usuario desde el sessionStorage
@@ -34,13 +36,16 @@ const Gestion_usuario_roles = () => {
             <h1>Administrador Ases</h1>
           </Row>
           <Row className="rowJustFlex_usuario_rol2">
-            <SelectorUsuarios />    {/* CONECTADO */}
-            <SelectorEstudiantes /> {/* CONECTADO */}
-            <SelectorRoles />       {/* CONECTADO */}
-            <SelectorPermisos />    {/* CONECTADO */}
-            <SelectorSedes />       {/* CONECTADO */}
-            <SelectorCohortes />    {/* CONECTADO */}
-            <SelectorFacultad />    {/* CONEC- */}
+            <SelectorUsuarios />                {/* CONECTADO */}
+            <SelectorEstudiantes />             {/* CONECTADO */}
+            <SelectorRoles />                   {/* CONECTADO */}
+            <SelectorPermisos />                {/* CONECTADO */}
+            <SelectorSedes />                   {/* CONECTADO */}
+            <SelectorCohortes />                {/* CONECTADO */}
+            <SelectorFacultad />                {/* CONECTADO */}
+            <SelectorAsignaciones />            {/* CONECTADO */}
+            <SelectorAsignacionesMonitores />   {/* CONECTADO */}
+
           </Row>
           <Row></Row>
         </Col>

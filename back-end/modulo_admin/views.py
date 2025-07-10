@@ -13,7 +13,9 @@ from django.db import transaction
 from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso
 from modulo_programa.models import programa, programa_estudiante, facultad
 from modulo_instancia.models import sede, cohorte, semestre
+from modulo_asignacion.models import asignacion
 from django.shortcuts import get_object_or_404
+
 
 from django.db.models import Prefetch
 from rest_framework.response import Response
@@ -129,7 +131,6 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             new_user_rol.save()
             return Response({"mensaje": "Usuario creado exitosamente en la tabla de usuario_rol"})
 
-            # return Response({"error": "Usuario no encontrado en la tabla de usuario_rol"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -146,24 +147,6 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             "usuario": "123456789",
         }
         """
-
-        # try:
-        #     user = User.objects.get(username=request.data['usuario'])
-        #     user.is_active = False
-        #     user.is_staff = False
-        #     user.is_superuser = False
-        #     user.save()
-        # except User.DoesNotExist:
-        #     return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-        # except Exception as e:
-        #     return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        # try:
-        #     user_rol = usuario_rol.objects.get(id_usuario=user.id)
-        #     user_rol.estado = "INACTIVO"
-        #     user_rol.save()
-        # except usuario_rol.DoesNotExist:
-        #     return Response({"error": "Usuario no encontrado en la tabla de usuario_rol"}, status=status.HTTP_404_NOT_FOUND)
-        # return Response({"mensaje": "Usuario desactivado exitosamente"}, status=status.HTTP_200_OK)
 
         try:
             usuarios_data = request.data  # Lista de diccionarios con clave "usuario"
@@ -279,10 +262,6 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
 
 
 class panel_admin_estudiante_viewset(viewsets.ViewSet):
-
-    @action(detail=False, methods=['post'], url_path='crear_estudiante', permission_classes=[IsAuthenticated])
-    def crear_estudiante(self, request, pk=None):
-        return Response({"mensaje": "Estudiante creado correctamente"})
 
     @action(detail=False, methods=['post'], url_path='listar_estudiantes', permission_classes=[IsAuthenticated])
     def listar_estudiantes(self, request, pk=None):
@@ -566,7 +545,7 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='actualizar_sede')
+    @action(detail=False, methods=['post'], url_path='actualizar_sede', permission_classes=[IsAuthenticated])
     def actualizar_sede(self, request):
         """
         Actualizar una sede existente.
@@ -610,7 +589,7 @@ class panel_admin_sedes_viewset(viewsets.ViewSet):
     #     except Exception as e:
     #         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path='listar_municipios')
+    @action(detail=False, methods=['post'], url_path='listar_municipios', permission_classes=[IsAuthenticated])
     def listar_municipios(self, request):
         lista_municipios = municipio.objects.all().order_by(
             'nombre').values()  # Ordena por el campo 'nombre'
@@ -738,3 +717,203 @@ class panel_admin_facultades_viewset(viewsets.ViewSet):
             return Response({"error": "Facultad no encontrada"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class panel_admin_asignaciones_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar asignaciones de monitores a estudiantes.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_asignaciones_estudiantes',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_asignaciones_estudiantes(self, request):
+        """
+        Listar todas las asignaciones de monitores a estudiantes.
+        """
+        try:
+            estudiantes = estudiante.objects.filter(estudiante_elegible=True).values('id', 'nombre', 'apellido',
+                                                                                     'cod_univalle', 'num_doc', 'estudiante_elegible')
+            ids_estudiantes = [e['id'] for e in estudiantes]
+
+            asignaciones_data = asignacion.objects.filter(
+                id_estudiante__in=ids_estudiantes
+            ).select_related('id', 'id_usuario', 'id_usuario__first_name', 'id_usuario__last_name', 'id_usuario__email').values(
+                'id', 'id_estudiante', 'id_usuario_id', 'id_usuario__first_name', 'id_usuario__last_name', 'id_usuario__email', 'estado', 'id_semestre_id'
+            )
+
+            lista_asignaciones = []
+            for e in estudiantes:
+                lista_asignaciones.append({
+                    "id_estudiante": e['id'],
+                    "nombre": e['nombre'],
+                    "apellido": e['apellido'],
+                    "cod_univalle": e['cod_univalle'],
+                    "num_doc": e['num_doc'],
+                    "estudiante_elegible": e['estudiante_elegible'],
+                    "asignaciones": [
+                        {
+                            "id": a['id'],
+                            "id_usuario": a['id_usuario_id'],
+                            "nombre_monitor": a['id_usuario__first_name'] + ' ' + a['id_usuario__last_name'],
+                            "correo_monitor": a['id_usuario__email'],
+                            "estado": a['estado'],
+                            "semestre": a['id_semestre_id']
+                        } for a in asignaciones_data if a['id_estudiante'] == e['id']
+                    ]
+                })
+
+            return Response(lista_asignaciones, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='actualizar_asignacion', permission_classes=[IsAuthenticated])
+    def actualizar_asignacion(self, request):
+        """
+        Actualizar una asignación de monitor a estudiante.
+        Recibes:
+
+        {
+        "id":8478,                                                  ## ID de la asignación
+        "id_usuario":243413,                                        ## ID del monitor (usuario)
+        "nombre_monitor":"HENRY ESTEBAN PINEDA TORRES",             ## Nombre del monitor
+        "correo_monitor":"henry.pineda@correounivalle.edu.co",      ## Correo del monitor
+        "estado":true,                                              ## Estado de la asignación (ACTIVO/INACTIVO)      
+        "semestre":"61"                                             ## ID del semestre al que pertenece la asignación                      
+        }
+
+        """
+        try:
+            asignacion_obj = asignacion.objects.get(id=request.data['id'])
+            # asignacion_obj.id_estudiante_id = request.data['id_estudiante']
+            # asignacion_obj.id_usuario_id = request.data['id_usuario']
+            asignacion_obj.estado = request.data['estado']
+            asignacion_obj.id_semestre_id = request.data['semestre']
+            asignacion_obj.save()
+            return Response({"mensaje": "Asignación actualizada exitosamente"}, status=status.HTTP_200_OK)
+        except asignacion.DoesNotExist:
+            return Response({"error": "Asignación no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='eliminar_asignacion', permission_classes=[IsAuthenticated])
+    def eliminar_asignacion(self, request):
+        """
+        Eliminar una asignación de monitor a estudiante.
+        Recibes:
+        {
+            "id": 123
+        }
+        """
+        try:
+            asignacion_obj = asignacion.objects.get(id=request.data['id'])
+            asignacion_obj.delete()
+            return Response({"mensaje": "Asignación eliminada exitosamente"}, status=status.HTTP_200_OK)
+        except asignacion.DoesNotExist:
+            return Response({"error": "Asignación no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar asignaciones de monitores a estudiantes.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_asignaciones_monitores',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_asignaciones_monitores(self, request):
+        """
+        Listar todas las asignaciones de monitores a estudiantes.
+        """
+
+        monitores = usuario_rol.objects.filter(
+            id_rol__id=5,  # ID del rol de monitor
+            estado="ACTIVO",
+        ).values('id_usuario', 'id_usuario__first_name', 'id_usuario__last_name', 'id_usuario__email')
+
+        ids_monitores = [m['id_usuario'] for m in monitores]
+
+        asignaciones_data = asignacion.objects.filter(
+            id_usuario__in=ids_monitores
+        ).select_related('id', 'id_estudiante', 'id_estudiante__nombre', 'id_estudiante__apellido', 'id_estudiante__cod_univalle',
+                         'id_estudiante__num_doc', 'id_estudiante__estudiante_elegible').values(
+            'id', 'id_estudiante_id', 'id_estudiante__nombre', 'id_estudiante__apellido',
+            'id_estudiante__cod_univalle', 'id_estudiante__num_doc', 'id_estudiante__estudiante_elegible',
+            'id_usuario_id', 'estado', 'id_semestre_id'
+        )
+
+        lista_asignaciones_monitor = []
+        for m in monitores:
+            lista_asignaciones_monitor.append({
+                "id_monitor": m['id_usuario'],
+                "nombre_monitor": m['id_usuario__first_name'] + ' ' + m['id_usuario__last_name'],
+                "correo_monitor": m['id_usuario__email'],
+                "asignaciones": [
+                    {
+                        "id": a['id'],
+                        "id_estudiante": a['id_estudiante_id'],
+                        "nombre_estudiante": a['id_estudiante__nombre'],
+                        "apellido_estudiante": a['id_estudiante__apellido'],
+                        "cod_univalle_estudiante": a['id_estudiante__cod_univalle'],
+                        "num_doc_estudiante": a['id_estudiante__num_doc'],
+                        "estudiante_elegible": a['id_estudiante__estudiante_elegible'],
+                        "estado": a['estado'],
+                        "semestre": a['id_semestre_id']
+                    } for a in asignaciones_data if a['id_usuario_id'] == m['id_usuario']
+                ]
+            })
+
+        return Response(lista_asignaciones_monitor, status=status.HTTP_200_OK)
+        # return Response({"mensaje": "Listar asignaciones de monitores a estudiantes"}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], url_path='eliminar_asignacion_monitores',
+            permission_classes=[IsAuthenticated]
+            )
+    def eliminar_asignacion_monitores(self, request):
+        """
+        Eliminar una asignación de monitor a estudiante.
+        Recibes:
+        {
+            "id": 123
+        }
+        """
+        try:
+            asignacion_obj = asignacion.objects.get(id=request.data['id'])
+            asignacion_obj.delete()
+            return Response({"mensaje": "Asignación eliminada exitosamente"}, status=status.HTTP_200_OK)
+        except asignacion.DoesNotExist:
+            return Response({"error": "Asignación no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='actualizar_asignacion_monitores', permission_classes=[IsAuthenticated])
+    def actualizar_asignacion_monitores(self, request):
+        """
+        Recibes:
+        {
+            'id': 4635, 
+            'id_estudiante': 27302, 
+            'nombre_estudiante': 'DUBAN CAMILO', 
+            'apellido_estudiante': 'LOPEZ PARDO', 
+            'cod_univalle_estudiante': '2422482', 
+            'num_doc_estudiante': 1086133642, 
+            'estudiante_elegible': True, 
+            'estado': True, 
+            'semestre': 40
+        }
+        """
+
+        try:
+            asignacion_obj = asignacion.objects.get(id=request.data['id'])
+            asignacion_obj.estado = request.data['estado']
+            asignacion_obj.id_semestre_id = request.data['semestre']
+            asignacion_obj.save()
+        except asignacion.DoesNotExist:
+            return Response({"error": "Asignación no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"mensaje": "Actualizar asignación de monitores a estudiantes"}, status=status.HTTP_200_OK)
