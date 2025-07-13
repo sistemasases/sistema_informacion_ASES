@@ -42,12 +42,6 @@ const SelectorSedes = () => {
     municipio: "",
   });
 
-  const config = {
-    headers: {
-      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
-    },
-  };
-
   const consultaAllSedes = async () => {
     try {
       // const response = await all_sede_service.all_sede();
@@ -153,9 +147,18 @@ const SelectorSedes = () => {
 
   const columnas = [
     {
+      name: "ID",
+      selector: (row) => row.id,
+      sortable: true,
+      wrap: true,
+      grow: 0.2,
+    },
+    {
       name: "CÓDIGO UNIVALLE",
       selector: (row) => row.codigo_univalle,
       sortable: true,
+      wrap: true,
+      grow: 0.5,
     },
     { name: "NOMBRE", selector: (row) => row.nombre, sortable: false },
     { name: "MUNICIPIO", selector: (row) => row.municipio, sortable: false },

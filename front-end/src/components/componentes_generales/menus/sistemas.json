@@ -34,8 +34,8 @@
             },
             {
                 "path":"/admin_usuarios",
-                "name":"Admin usuarios",
-                "icon":"bi bi-file-earmark-arrow-down"
+                "name":"Panel de administrador",
+                "icon":"bi bi-file-earmark-person-fill"
             },{
                 "path":"/horas_monitores",
                 "name":"Horas de monitores",

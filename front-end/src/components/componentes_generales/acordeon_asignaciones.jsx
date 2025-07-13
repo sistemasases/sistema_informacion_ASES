@@ -111,7 +111,9 @@ const SelectorAsignaciones = () => {
       name: "ASIGNACIONES",
       selector: (row) =>
         row?.asignaciones?.map((a) =>
-          a.semestre == semestreActual ? a.nombre_monitor : ""
+          a.semestre == semestreActual
+            ? a.nombre_monitor.toUpperCase() + " , "
+            : ""
         ) || "Sin asignaciones",
       sortable: true,
       wrap: true,

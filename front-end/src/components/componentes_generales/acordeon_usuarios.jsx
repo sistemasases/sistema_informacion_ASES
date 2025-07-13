@@ -40,19 +40,8 @@ const SelectorUsuarios = () => {
     user_password: "",
   });
 
-  const config = {
-    headers: {
-      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
-    },
-  };
-
   const consultaAllUserRol = async () => {
     try {
-      // const pk = desencriptar(sessionStorage.getItem("sede_id"));
-      // const response = await all_users_rols_service.all_users_rols(pk);
-      // if (response && Array.isArray(response.data)) {
-      //   setState({ ...state, data_user_rol: response.data });
-      // }
       const semestre = desencriptarInt(
         sessionStorage.getItem("id_semestre_actual")
       );
@@ -101,16 +90,22 @@ const SelectorUsuarios = () => {
   };
 
   const handleSaveEdit = () => {
+    const semestre_actual = desencriptarInt(
+      sessionStorage.getItem("id_semestre_actual")
+    );
     setSelectedUser((prevUser) => ({
       ...prevUser,
-      semestre: desencriptarInt(sessionStorage.getItem("id_semestre_actual")),
+      semestre: semestre_actual,
     }));
 
-    console.log(selectedUser);
-
-    Update_user.actualizar_usuarios(selectedUser);
-
-    // setShowEditModal(false);
+    setTimeout(() => {
+      Update_user.actualizar_usuarios({
+        ...selectedUser,
+        semestre: semestre_actual,
+      });
+      consultaAllUserRol();
+      setShowEditModal(false);
+    }, 0); // Espera un ciclo del event loop para asegurar que el estado haya cambiado
   };
 
   const handleShowCreateModal = () => setShowCreateModal(true);
@@ -146,20 +141,47 @@ const SelectorUsuarios = () => {
 
   // Definición de las columnas de la tabla
   const columnas = [
-    { name: "USUARIO", selector: (row) => row.usuario, sortable: true },
+    {
+      name: "ID",
+      selector: (row) => row.id,
+      sortable: true,
+      wrap: true,
+      grow: 0.2,
+    },
+    {
+      name: "USUARIO",
+      selector: (row) => row.usuario,
+      sortable: true,
+      wrap: true,
+      grow: 0.5,
+    },
     { name: "NOMBRES", selector: (row) => row.nombre, sortable: true },
     {
       name: "APELLIDOS",
       selector: (row) => row.apellido,
       sortable: true,
+      wrap: true,
     },
-    { name: "EMAIL", selector: (row) => row.correo, sortable: true },
-    { name: "ROL", selector: (row) => row.rol, sortable: true },
-    // { name: "CLAVE", selector: (row) => row.user_password, sortable: true },
+    {
+      name: "EMAIL",
+      selector: (row) => row.correo,
+      sortable: true,
+      wrap: true,
+      grow: 1.5,
+    },
+    {
+      name: "ROL",
+      selector: (row) => row.rol,
+      sortable: true,
+      wrap: true,
+      grow: 0.6,
+    },
     {
       name: "ESTADO",
       selector: (row) => (row.estado == true ? "ACTIVO" : "INACTIVO"),
       sortable: true,
+      wrap: true,
+      grow: 0.6,
     },
     {
       name: "EDITAR",

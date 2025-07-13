@@ -85,53 +85,57 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             user.first_name = request.data['nombre']
             user.last_name = request.data['apellido']
             user.email = request.data['correo']
+            user.is_active = request.data['estado']
             # Obtiene la contraseña si se proporciona
             password = request.data.get('user_password', None)
             if password:
-                # Verifica si se ha proporcionado una nueva contraseña
-                # Actualiza la contraseña
+                # Verifica si se ha proporcionado una nueva contraseña y
+                # actualiza la contraseña
                 user.set_password(request.data['user_password'])
             user.save()
             # return Response({"mensaje": " actualizado exitosamente"})
         except User.DoesNotExist:
             return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            # print(str(e))
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         """
         Actualizamos el rol del usuario.
         """
-        try:
-            rol_ = request.data['rol']
-            user_rol = usuario_rol.objects.get(
-                id_usuario=user.id, id_semestre=request.data['semestre'])
-            if not rol_ or rol_ == "SIN ROL":
 
-                user_rol.estado = "INACTIVO"
-                user_rol.save()
-                # return Response({"mensaje": "Se desactivo el rol del usuario"}, status=status.HTTP_200_OK)
-            else:
-                rol_obj = rol.objects.get(nombre=request.data['rol'])
-                # user_rol = usuario_rol.objects.get(id_usuario=user.id)
+        try:
+            # print(request.data)
+            rol_nombre = request.data.get('rol')
+            semestre_id = request.data.get('semestre')
+
+            if not rol_nombre or rol_nombre == "SIN ROL":
+                return Response({"mensaje": "Usuario sin rol, se actualizaron únicamente los datos del mismo"}, status=status.HTTP_200_OK)
+            try:
+                rol_obj = rol.objects.get(nombre=rol_nombre)
+            except rol.DoesNotExist:
+                return Response({"error": "Rol no encontrado, intente nuevamente."}, status=status.HTTP_404_NOT_FOUND)
+            try:
+                user_rol = usuario_rol.objects.get(
+                    id_usuario=user.id, id_semestre=semestre_id)
                 user_rol.id_rol = rol_obj
                 user_rol.estado = "ACTIVO"
                 user_rol.save()
-            return Response({"mensaje": "Usuario y Rol actualizado exitosamente"}, status=status.HTTP_200_OK)
-        except rol.DoesNotExist:
-            return Response({"error": "Rol no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-        except usuario_rol.DoesNotExist:
-            new_user_rol = usuario_rol.objects.create(
-                estado="ACTIVO",
-                id_jefe=None,
-                id_rol=rol_obj,
-                id_semestre=get_object_or_404(
-                    semestre, semestre_actual=True, id=request.data['semestre']),
-                id_usuario=user,
-            )
-            new_user_rol.save()
-            return Response({"mensaje": "Usuario creado exitosamente en la tabla de usuario_rol"})
+                return Response({"mensaje": "Usuario y Rol actualizado exitosamente"}, status=status.HTTP_200_OK)
+            except usuario_rol.DoesNotExist:
+                semestre_obj = get_object_or_404(
+                    semestre, semestre_actual=True, id=semestre_id)
+                usuario_rol.objects.create(
+                    estado="ACTIVO",
+                    id_jefe=None,
+                    id_rol=rol_obj,
+                    id_semestre=semestre_obj,
+                    id_usuario=user
+                )
+                return Response({"mensaje": "Se ha asignado correctamente el rol al usuario seleccionado"}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
+            # print(str(e))
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     """
@@ -379,6 +383,7 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             estudiante_obj.num_doc = request.data['num_doc']
             estudiante_obj.email = request.data['email']
             estudiante_obj.fecha_nac = request.data['fecha_nac']
+            estudiante_obj.estudiante_elegible = request.data['estudiante_elegible']
             estudiante_obj.save()
         except estudiante.DoesNotExist:
             return Response({"error": "Estudiante no encontrado"}, status=status.HTTP_404_NOT_FOUND)
