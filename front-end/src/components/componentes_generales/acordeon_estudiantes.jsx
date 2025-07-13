@@ -26,17 +26,8 @@ const SelectorEstudiantes = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedEstudiante, setSelectedEstudiante] = useState(null);
 
-  const config = {
-    headers: {
-      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
-    },
-  };
-
   const consultaAllEstudiantes = async () => {
     try {
-      // const pk = desencriptar(sessionStorage.getItem("sede_id"));
-      // const response = await all_estudiantes_service.all_estudiantes(pk);
-
       const response = await Read_estudiantes.listar_estudiantes({});
 
       if (response && Array.isArray(response)) {
@@ -92,6 +83,13 @@ const SelectorEstudiantes = () => {
   };
   // Definición de las columnas de la tabla
   const columnas = [
+    {
+      name: "ID",
+      selector: (row) => row.id,
+      sortable: true,
+      wrap: true,
+      grow: 0.2,
+    },
     {
       name: "NOMBRES",
       selector: (row) => row.nombre,
@@ -203,7 +201,7 @@ const SelectorEstudiantes = () => {
               />
             </DataTableExtensions>
             <Button variant="danger" onClick={handleDeactivate}>
-              Eliminar Estudiantes Seleccionados
+              Desactivar estudiantes seleccionados
             </Button>
           </Accordion.Body>
         </Accordion.Item>
@@ -286,6 +284,26 @@ const SelectorEstudiantes = () => {
                 value={selectedEstudiante?.email || ""}
                 onChange={handleEditChange}
               />
+            </Form.Group>
+            <Form.Group controlId="editElegible">
+              <Form.Label>Estudiante Elegible</Form.Label>
+              <Form.Select
+                name="estudiante_elegible"
+                value={
+                  selectedEstudiante?.estudiante_elegible ? "true" : "false"
+                }
+                onChange={(e) =>
+                  handleEditChange({
+                    target: {
+                      name: "estudiante_elegible",
+                      value: e.target.value === "true",
+                    },
+                  })
+                }
+              >
+                <option value="true">ELEGIBLE</option>
+                <option value="false">NO ELEGIBLE</option>
+              </Form.Select>
             </Form.Group>
           </Form>
         </Modal.Body>

@@ -113,11 +113,26 @@ const SelectorFacultad = () => {
 
   const columnas = [
     {
+      name: "ID",
+      selector: (row) => row.id,
+      sortable: true,
+      wrap: true,
+      grow: 0.3,
+    },
+    {
       name: "CÓDIGO UNIVALLE",
       selector: (row) => row.codigo_univalle,
       sortable: true,
+      wrap: true,
+      grow: 0.5,
     },
-    { name: "NOMBRE", selector: (row) => row.nombre, sortable: false },
+    {
+      name: "NOMBRE",
+      selector: (row) => row.nombre,
+      sortable: false,
+      wrap: true,
+      grow: 1.2,
+    },
     {
       name: "EDITAR",
       cell: (row) => (

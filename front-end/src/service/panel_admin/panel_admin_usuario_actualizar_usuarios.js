@@ -30,6 +30,20 @@ const actualizar_usuarios = async (data) => {
           timer: 2500,
           showConfirmButton: false,
         });
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
+      } else if (response.status === 201) {
+        Swal.fire({
+          title: "Operación exitosa",
+          text: response.data.mensaje,
+          icon: "success",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
       } else if (response.status === 400) {
         Swal.fire({
           title: "Error",
@@ -47,9 +61,7 @@ const actualizar_usuarios = async (data) => {
           showConfirmButton: false,
         });
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 2500);
+
       return true;
     });
   } catch (error) {
