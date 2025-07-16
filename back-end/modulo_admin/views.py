@@ -81,7 +81,8 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         """
 
         try:
-            user = User.objects.get(username=request.data['usuario'])
+            user = User.objects.get(id=request.data['id'])
+            user.username = request.data['usuario']
             user.first_name = request.data['nombre']
             user.last_name = request.data['apellido']
             user.email = request.data['correo']
@@ -827,7 +828,7 @@ class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
     """
 
     @action(detail=False, methods=['post'], url_path='listar_asignaciones_monitores',
-            permission_classes=[IsAuthenticated]
+            # permission_classes=[IsAuthenticated]
             )
     def listar_asignaciones_monitores(self, request):
         """
@@ -837,7 +838,7 @@ class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
         monitores = usuario_rol.objects.filter(
             id_rol__id=5,  # ID del rol de monitor
             estado="ACTIVO",
-        ).values('id_usuario', 'id_usuario__first_name', 'id_usuario__last_name', 'id_usuario__email')
+        ).values('id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name', 'id_usuario__email')
 
         ids_monitores = [m['id_usuario'] for m in monitores]
 
@@ -854,6 +855,7 @@ class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
         for m in monitores:
             lista_asignaciones_monitor.append({
                 "id_monitor": m['id_usuario'],
+                "usuario_monitor": m['id_usuario__username'],
                 "nombre_monitor": m['id_usuario__first_name'] + ' ' + m['id_usuario__last_name'],
                 "correo_monitor": m['id_usuario__email'],
                 "asignaciones": [

@@ -86,11 +86,18 @@ const SelectorAsignaciones = () => {
 
   const columnas = [
     {
-      name: "USUARIO",
+      name: "ID",
       selector: (row) => row.id_monitor,
       sortable: true,
       wrap: true,
       grow: 0.3,
+    },
+    {
+      name: "USUARIO",
+      selector: (row) => row.usuario_monitor,
+      sortable: true,
+      wrap: true,
+      grow: 0.5,
     },
     {
       name: "NOMBRES",

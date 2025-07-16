@@ -60,7 +60,7 @@ const SelectorEstudiantes = () => {
   };
 
   const handleSaveEdit = () => {
-    // console.log("Guardando estudiante editado:", selectedEstudiante);
+    console.log("Guardando estudiante editado:", selectedEstudiante);
     Update_estudiantes.actualizar_estudiante(selectedEstudiante);
     // setShowEditModal(false);
   };
