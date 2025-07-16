@@ -35,3 +35,9 @@ front-end/.env
 # Static Files
 front-end/build/
 back-end/staticfiles
+
+# Personal Docker
+Dockerfile
+docker-compose.yml
+deploy.sh
+.github/workflows/docker-build.yml
