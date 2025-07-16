@@ -828,7 +828,7 @@ class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
     """
 
     @action(detail=False, methods=['post'], url_path='listar_asignaciones_monitores',
-            # permission_classes=[IsAuthenticated]
+            permission_classes=[IsAuthenticated]
             )
     def listar_asignaciones_monitores(self, request):
         """
