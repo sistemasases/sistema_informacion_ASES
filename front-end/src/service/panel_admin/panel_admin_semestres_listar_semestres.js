@@ -1,7 +1,7 @@
 /**
- * @file panel_admin_programas_listar_programas.js
+ * @file panel_admin_semestres_listar_semestres.js
  * @version 1.0.0
- * @description Service para Listar todos los programas mediante el panel del administrador.
+ * @description Service para Listar todos los semestres mediante el panel del administrador.
  * @author @iMrStevenS2
  * @contact steven.bernal@correounivalle.edu.co
  * @date 2025-07-23
@@ -14,11 +14,11 @@ import {
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import Swal from "sweetalert2";
 
-const listar_programas = async (data) => {
+const listar_semestres = async (data) => {
   const config = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
-  const url_axios = `${process.env.REACT_APP_API_URL}/admin_ases/panel_admin_programas/listar_programas/`;
+  const url_axios = `${process.env.REACT_APP_API_URL}/admin_ases/panel_admin_semestres/listar_semestres/`;
 
   try {
     const response = await axios.post(url_axios, data, { headers: config });
@@ -27,7 +27,7 @@ const listar_programas = async (data) => {
     console.error("Error en la operación:", error);
     Swal.fire({
       title: "Error",
-      text: "No se pudo listar los programas. Por favor, inténtelo de nuevo más tarde.",
+      text: "No se pudo listar los semestres. Por favor, inténtelo de nuevo más tarde.",
       icon: "error",
       timer: 1500,
       showConfirmButton: true,
@@ -38,4 +38,4 @@ const listar_programas = async (data) => {
   }
 };
 
-export default { listar_programas };
+export default { listar_semestres };
