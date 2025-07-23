@@ -20,6 +20,8 @@ import SelectorCohortes from "../../components/componentes_generales/acordeon_co
 import SelectorFacultad from "../../components/componentes_generales/acordeon_facultades.jsx";
 import SelectorAsignaciones from "../../components/componentes_generales/acordeon_asignaciones.jsx";
 import SelectorAsignacionesMonitores from "../../components/componentes_generales/acordeon_asignaciones_monitores.jsx"; 
+import SelectorProgramas from "../../components/componentes_generales/acordeon_programas.jsx"; 
+import SelectorSemestres from "../../components/componentes_generales/acordeon_semestres.jsx";
 
 const Gestion_usuario_roles = () => {
   // Desencriptar los permisos del usuario desde el sessionStorage
@@ -45,7 +47,8 @@ const Gestion_usuario_roles = () => {
             <SelectorFacultad />                {/* CONECTADO */}
             <SelectorAsignaciones />            {/* CONECTADO */}
             <SelectorAsignacionesMonitores />   {/* CONECTADO */}
-
+            <SelectorProgramas />               {/* CONECTADO */}
+            <SelectorSemestres />               {/* CONECTADO */}
           </Row>
           <Row></Row>
         </Col>

@@ -924,3 +924,143 @@ class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"mensaje": "Actualizar asignación de monitores a estudiantes"}, status=status.HTTP_200_OK)
+
+
+class panel_admin_programas_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar programas académicos.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_programas',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_programas(self, request):
+        """
+        Listar todos los programas académicos.
+        """
+        try:
+            programas = programa.objects.all().select_related('id_facultad',
+                                                              'id_sede').values('id', 'codigo_snies','codigo_univalle','nombre','jornada',
+                                                                                'id_facultad_id','id_facultad_id__nombre', 
+                                                                                'id_facultad_id__codigo_univalle','id_sede_id', 
+                                                                                'id_sede_id__codigo_univalle', 'id_sede_id__nombre', 
+                                                                                'id_sede_id__id_municipio_id__nombre')
+
+            lista_programas = []
+
+            for p in programas:
+                lista_programas.append({
+                    "id": p['id'],
+                    "codigo_snies": p['codigo_snies'],
+                    "codigo_univalle": p['codigo_univalle'],
+                    "nombre": p['nombre'],
+                    "jornada": p['jornada'],
+                    "id_facultad": p['id_facultad_id'],
+                    "nombre_facultad": p['id_facultad_id__nombre'],
+                    "codigo_univalle_facultad": p['id_facultad_id__codigo_univalle'],
+                    "id_sede": p['id_sede_id'],
+                    "nombre_sede": p['id_sede_id__nombre'],
+                    "codigo_univalle_sede": p['id_sede_id__codigo_univalle'],
+                    "municipio_sede": p['id_sede_id__id_municipio_id__nombre']
+                })
+
+            return Response(lista_programas, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='actualizar_programa', 
+            permission_classes=[IsAuthenticated]
+            )
+    def actualizar_programa(self, request):
+        """
+        Actualizar un programa académico.
+        """
+        try:
+            programa_obj = programa.objects.get(id=request.data['id'])
+            programa_obj.codigo_snies = request.data['codigo_snies']
+            programa_obj.codigo_univalle = request.data['codigo_univalle']
+            programa_obj.nombre = request.data['nombre']
+            programa_obj.jornada = request.data['jornada']
+            programa_obj.id_facultad_id = request.data['id_facultad']
+            programa_obj.id_sede_id = request.data['id_sede']
+            programa_obj.save()
+        except programa.DoesNotExist:
+            return Response({"error": "Programa no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"mensaje": "Programa actualizado correctamente"}, status=status.HTTP_200_OK)
+    
+    
+class panel_admin_semestres_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar semestres académicos.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_semestres', 
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_semestres(self, request):
+        """
+        Listar todos los semestres académicos.
+        """
+        try:
+            semestres = semestre.objects.all().select_related('id_sede_id').values('id', 'nombre', 'fecha_inicio', 'fecha_fin', 'semestre_actual', 'estado', 'id_sede_id', 'id_sede_id__nombre',)
+            return Response(list(semestres), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='actualizar_semestre',
+            permission_classes=[IsAuthenticated]
+            )
+    def actualizar_semestre(self, request):
+        """
+        Actualizar un semestre académico.
+        """
+        try:
+            semestre_obj = semestre.objects.get(id=request.data['id'])
+            semestre_obj.nombre = request.data['nombre']
+            semestre_obj.fecha_inicio = request.data['fecha_inicio']
+            semestre_obj.fecha_fin = request.data['fecha_fin']
+            semestre_obj.semestre_actual = request.data['semestre_actual']
+            semestre_obj.id_sede_id = request.data['id_sede_id']
+            semestre_obj.save()
+        except semestre.DoesNotExist:
+            return Response({"error": "Semestre no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"mensaje": "Semestre actualizado correctamente"}, status=status.HTTP_200_OK)
+    
+    
+    @action(detail=False, methods=['post'], url_path='crear_semestre', 
+            permission_classes=[IsAuthenticated]
+            )
+    def crear_semestre(self, request):
+        """
+        Crear un nuevo semestre académico.
+        Recibes:
+        {
+            "nombre": "Semestre 2023-1",
+            "fecha_inicio": "2023-01-01",
+            "fecha_fin": "2023-06-30",
+            "semestre_actual": true,
+            "id_sede_id": 1
+        }
+        """
+        try:
+            new_semestre = semestre.objects.create(
+                nombre=request.data['nombre'],
+                fecha_inicio=request.data['fecha_inicio'],
+                fecha_fin=request.data['fecha_fin'],
+                semestre_actual=request.data['semestre_actual'],
+                id_sede_id=request.data['id_sede_id']
+            )
+            new_semestre.save()
+            return Response({"mensaje": "Semestre creado exitosamente"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        

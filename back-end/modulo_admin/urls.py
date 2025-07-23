@@ -13,6 +13,8 @@ router.register(r'panel_admin_cohortes', views.panel_admin_cohortes_viewset, bas
 router.register(r'panel_admin_facultades', views.panel_admin_facultades_viewset, basename='panel_admin_facultades')
 router.register(r'panel_admin_asignaciones', views.panel_admin_asignaciones_viewset, basename='panel_admin_asignaciones')
 router.register(r'panel_admin_asignaciones_monitores', views.panel_admin_asignaciones_monitores_viewset, basename='panel_admin_asignaciones_monitores')
+router.register(r'panel_admin_programas', views.panel_admin_programas_viewset, basename='panel_admin_programas')
+router.register(r'panel_admin_semestres', views.panel_admin_semestres_viewset, basename='panel_admin_semestres')
 
 
 urlpatterns = [
