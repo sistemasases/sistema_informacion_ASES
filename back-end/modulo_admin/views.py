@@ -998,7 +998,7 @@ class panel_admin_semestres_viewset(viewsets.ViewSet):
     """
 
     @action(detail=False, methods=['post'], url_path='listar_semestres', 
-            # permission_classes=[IsAuthenticated]
+            permission_classes=[IsAuthenticated]
             )
     def listar_semestres(self, request):
         """
