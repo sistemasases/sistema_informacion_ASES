@@ -388,6 +388,7 @@ const Info_basica = (props) => {
   };
   // // console.log(state.total_datos_estudiante_seleccionado);
 
+  // Renderizado del componente para visualizar seguimientos
   return (
     <Row className="row_prueba">
       <Seguimiento_individual_v2

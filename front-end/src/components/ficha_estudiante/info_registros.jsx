@@ -6,6 +6,7 @@ import { Row, Col } from "styled-bootstrap-grid";
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual";
 import Inasistencia from "../seguimiento_forms/form_inasistencia";
 import Seguimiento_individual_v2 from "../seguimiento_forms/form_seguimiento_individual_v2";
+import Seguimiento_individual_v3 from "../seguimiento_forms/form_seguimiento_individual_v3";
 import All_semestres from "../../service/all_semestres.js";
 import Semestre_por_sede from "../../service/semestres_por_sede.js";
 import { useEffect } from "react";
@@ -161,9 +162,19 @@ const Info_registros = (props) => {
       });
   };
 
+  // Renderizado del componente para Crear Nuevo Seguimiento
   return (
     <Row className="container_info_registro">
-      <Seguimiento_individual_v2
+      {/* <Seguimiento_individual_v2
+        estudiante_seleccionado={props.id_estudiante}
+        recarga_ficha_estudiante={true}
+        show={show}
+        onHide={handleClose}
+        handleClose={handleClose}
+        handleModalIn={handleModalIn}
+        size="lg"
+      /> */}
+      <Seguimiento_individual_v3
         estudiante_seleccionado={props.id_estudiante}
         recarga_ficha_estudiante={true}
         show={show}
