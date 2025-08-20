@@ -17,8 +17,6 @@ class seguimiento_individual (models.Model):
     riesgo_individual= models.IntegerField(null=True)
     autoconocimiento= models.BooleanField()
     autonomia= models.BooleanField(default=False)
-    proyecto_de_vida= models.BooleanField(default=False)
-    historia_de_vida= models.BooleanField(default=False)
     rasgos_de_personalidad=models.BooleanField()
     identificación=models.BooleanField()
     red_de_apoyo=models.BooleanField()
