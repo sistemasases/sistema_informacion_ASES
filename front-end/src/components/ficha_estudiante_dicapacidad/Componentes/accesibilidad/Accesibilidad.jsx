@@ -5,10 +5,37 @@ import Instrumental from "./Instrumental";
 import Metodologia from "./Metodologia";
 import Programatica from "./Programatica";
 import withSwal from "../withSwal";
+import { decryptTokenFromSessionStorage, desencriptar } from "../../../../modulos/utilidades_seguridad/utilidades_seguridad";
+import { useEffect, useState } from "react";
+import semestres_discapacidad from "../../../../service/semestres_discapacidad";
+
+
 
 const Accesibilidad = () => {
+  const config = {
+    Authorization: 'Bearer ' +  decryptTokenFromSessionStorage
+  };
+  const [semestres, setSemestres] = useState([]);
+  const [semestreActual, setSemestreActual] = useState("");
+
+  useEffect(() => {
+    semestres_discapacidad.semestres_discapacidad().then((res) => {
+      setSemestres(res);
+    });
+
+    const semestre = desencriptar(sessionStorage.semestre_actual);
+    setSemestreActual(semestre);
+  }, []);
   return (
     <div className="container-acordion container-subacordion">
+      <p>Periodo de Accesibilidad:</p>
+      <select name="periodo" id="periodo" value={semestreActual} onChange={(e) => setSemestreActual(e.target.value)}>
+        {semestres.map((semestre) => (
+          <option key={semestre.id} value={semestre.id}>
+            {semestre.nombre}
+          </option>
+        ))}
+      </select>
       <p className="title">COMPONENTES DE ACCESIBILIDAD:</p>
       <Acordion
         title="Accesibilidad Comunicacional"

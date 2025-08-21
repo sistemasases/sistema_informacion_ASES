@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, } from "react-bootstrap";
 import axios from 'axios';
 import {decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import { useState } from "react";
 
 const Listas_no_seleccion = (props) => {
     const config = {
@@ -9,32 +10,45 @@ const Listas_no_seleccion = (props) => {
     };
 
     const{childClicked, childClicked2} = props
+    const [practicanteDisabled, setPracticanteDisabled] = useState(false);
+    const [monitorDisabled, setMonitorDisabled] = useState(false);
+    const [studentDisabled, setStudentDisabled] = useState(false);
 
     const añadir_estudiante = (e) =>{
+        setStudentDisabled(true);
         let formData = new FormData();
-        
+        if (studentDisabled) return;
+
         formData.append("llamada", "asignar");
         formData.append("id_usuario", props.monitor_seleccionado);
         formData.append("id_estudiante", props.item.id);
         formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
         formData.append("detalle", ".");
-
         axios({
-      // Endpoint to send files
-      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
-      method: "POST",
-      headers: config,
-      data: formData,
-        })
-        .then((res)=>{
-            childClicked2(props.monitor_seleccionado)
-        })
-        .catch(err=>{
-        })
+        // Endpoint to send files
+            url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
+            method: "POST",
+            headers: config,
+            data: formData,
+                })
+                .then((res)=>{
+                    childClicked2(props.monitor_seleccionado);
+                    // setStudentDisabled(false);
+                })
+                .catch(err=>{
+                    console.error(err);
+                    // setStudentDisabled(false);
+                }).finally(() => {
+                    setTimeout(() => {
+                        setStudentDisabled(false);
+                    }, 2000);
+                });
 
-    }
+    };
     
     const añadir_usuario_monitor = (e) =>{
+        setMonitorDisabled(true);
+        if (monitorDisabled) return;
         let formData = new FormData();
 
         formData.append("llamada", "asignar");
@@ -53,10 +67,16 @@ const Listas_no_seleccion = (props) => {
             childClicked(props.practicante_seleccionado)
         })
         .catch(err=>{
-        })
+        }).finally(() => {
+            setTimeout(() => {
+                setMonitorDisabled(false);
+            }, 2000);
+        });
     }
 
     const añadir_usuario_practicante = (e) =>{
+        setPracticanteDisabled(true);
+        if (practicanteDisabled) return;
         let formData = new FormData();
 
         formData.append("llamada", "asignar");
@@ -76,7 +96,11 @@ const Listas_no_seleccion = (props) => {
         //console.log(res)
         })
         .catch(err=>{
-        })
+        }).finally(() => {
+            setTimeout(() => {
+                setPracticanteDisabled(false);
+            }, 2000);
+        });
     }
 
 
@@ -107,7 +131,7 @@ const Listas_no_seleccion = (props) => {
                 <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.nombre)}>
                     <Row className="asignaciones_hover1">
                         <Col  xs={"2"} md={"2"} className="center_asignacion"> 
-                            <button onClick={()=>añadir_usuario_practicante()} className="asignaciones_icons_añadir">
+                            <button onClick={()=>añadir_usuario_practicante()} className="asignaciones_icons_añadir" disabled={practicanteDisabled}>
                                 <i class="bi bi-chevron-left"></i>                                                    
                             </button>
                         </Col>
@@ -139,7 +163,7 @@ const Listas_no_seleccion = (props) => {
                 <Col className= "listas_cuerpo">
                     <Row className="asignaciones_hover1">
                         <Col  xs={"2"} md={"2"} className="center_asignacion"> 
-                        <button onClick={()=>añadir_usuario_monitor()} className="asignaciones_icons_añadir">
+                        <button onClick={()=>añadir_usuario_monitor()} className="asignaciones_icons_añadir" disabled={monitorDisabled}>
                             <i class="bi bi-chevron-left"></i>                                                    
                         </button>
                         </Col>
@@ -174,7 +198,7 @@ const Listas_no_seleccion = (props) => {
         <Col className="listas_cuerpo">
                                 <Row className="asignaciones_hover1">
                                                 <Col xs={"2"} md={"2"} className="center_asignacion"> 
-                                                    <button onClick={()=>añadir_estudiante()} className="asignaciones_icons_añadir">
+                                                    <button onClick={()=>añadir_estudiante()} className="asignaciones_icons_añadir" disabled={studentDisabled}>
                                                     <i class="bi bi-chevron-left"></i>                                                    
                                                     </button>
                                                 </Col>

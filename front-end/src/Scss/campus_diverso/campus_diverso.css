@@ -1,0 +1,911 @@
+
+/* registro_estudiante.css */
+.registro-estudiante-container {
+  background-color: #F5F5DC;
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); 
+  background-repeat: no-repeat; /* Repite la imagen por toda la página */
+  background-size: 100% 100%; 
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.registro-estudiante-form {
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-height: 100%;
+  text-align: left;
+  
+}
+
+
+.div-scroll-registro {
+  height: 500px;
+  overflow-y: auto;  
+  padding-right: 10px; 
+  text-align: justify;
+  text-justify: inter-word; 
+  word-wrap: break-word;
+  overflow-x: auto;
+  
+}
+
+
+.create-select {
+  width: 100%;
+  color: #000;
+ 
+  [class$="IndicatorsContainer"] {
+      min-height: 38px !important;
+      max-height: 28px;
+  }
+  [class$="-Input"] {
+      min-height: 28px !important;
+      max-height: 18px !important;
+  }
+
+}
+
+.container_informacion_general {
+  /* Estilo por defecto (para xs: 10 en Bootstrap) */
+  width: 100%; /* 100% para pantallas muy pequeñas */
+  max-width: 100%; 
+}
+
+/* Medidas del css para teléfono*/
+@media (max-width: 850px) {
+
+
+  /* registro_estudiante.css */
+.registro-estudiante-container {
+  background-color: #050505;
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); 
+  background-repeat: no-repeat; /* Repite la imagen por toda la página */
+  background-size: cover; /* Para móviles, ajusta para que la imagen siempre quepa sin deformarse */
+  min-height: 100vh; /* También en móviles se asegura que la altura ocupe el 100% del viewport */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.custom-div {
+  width: 100%; 
+  height: 100%; 
+  font-size: 4em; 
+  padding-top: 3px;
+  color: #000000;
+  text-align:left;
+  overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+  word-wrap: break-word; /*ajusta palabras largas */
+  hyphens: auto; /* Habilita la separación de palabras si es necesario */
+
+
+  }
+
+  .custom-label {
+    width: 100%; 
+    height: 100%;  
+    font-size: 0.780em; 
+    padding-top: 3px;
+    color: #000000;
+    text-align:left;
+    overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+    word-wrap: break-word; /*ajusta palabras largas */
+    hyphens: auto; /* Habilita la separación de palabras si es necesario */
+  
+  
+    }
+
+  .input-updated {
+    border: 0.1px solid #d9d9d9 !important;
+    border-radius: 0.3em;
+    box-sizing: border-box;    
+    padding: 0.5em;
+    width: 100%;
+    height: auto;
+  }
+
+
+.registro-estudiante-form {
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 10px;
+  width: 100%;
+  text-align: left;
+}
+
+
+.div-scroll-registro {
+  height: 30em;
+  overflow-y: auto;  
+  padding-right: 1em; 
+ /* text-align: justify; */
+  text-justify: inter-word; 
+  word-wrap: break-word;
+  overflow-x: auto;
+  font-size: 0.8em; /* Reduce ligeramente el tamaño de la fuente */
+  
+}
+
+
+
+
+.form-column {
+
+  padding: 10em;
+}
+
+.container_informacion_general {
+  width: 100%; /* 100% para pantallas muy pequeñas */
+  max-width: 100%; 
+}
+
+
+.tooltip-icon {
+  position: relative;
+  display: inline-block;
+  margin-left: 3em;
+  color: #ff0000; /* Cambia el color según tu preferencia */
+  cursor: pointer;
+  font-weight: bold;
+}
+
+
+.tooltip-text {
+  visibility: hidden;
+  width: auto;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: auto;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+  .tooltip-icon:hover .tooltip-text {
+    visibility: visible;
+    max-height: 15em; /* Altura máxima del tooltip */
+
+    opacity: 1;
+    width: 13em;
+    position: absolute;
+    font-size: 0.85em;
+    white-space: normal; /* Texto junto */
+    text-align: justify;
+
+    background-color: #ec4c4c;
+    top: -300%;
+    bottom: 100%;
+
+    transition: opacity 1s;
+    transform: translateX(30%); 
+  }
+
+/* AgradecimientoEncuesta.css */
+.container-agradecimiento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); /* Asegúrate de poner la ruta correcta de la imagen */
+  background-repeat: repeat; /* Repite la imagen por toda la página */
+  background-size: cover !important;
+}
+
+
+/* estilos en telefono del datepicker*/
+
+.custom-datepicker-container {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  margin-top: 8px;
+}
+
+
+.custom-datepicker-textfield .MuiInputBase-root {
+  height: 36px !important; 
+  font-size: 0.4rem !important; 
+}
+
+
+.custom-datepicker-textfield .MuiFormLabel-root {
+  font-size: 0.7rem !important;
+  transform: translateY(0);
+  margin-top: -10px; 
+  top: 50% !important; 
+  margin-left: 10px;
+}
+
+.custom-datepicker-textfield .MuiInputLabel-root.Mui-focused {
+  transform: translateY(-0.1em) !important; 
+  top: 0 !important;
+  font-size: 0.7rem !important; 
+  margin-right: 3px;
+}
+
+
+.custom-datepicker-textfield .MuiInputLabel-root.MuiInputLabel-shrink {
+  transform: translateY(-0.1em) !important; /* Mueve el label hacia arriba cuando hay un valor */
+  top: 0 !important;
+  font-size: 0.8rem !important; /* Puedes ajustar el tamaño si lo deseas */
+  margin-right: 3px;
+}
+
+
+.subtitle-forms{
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 0.75em !important; 
+  color: #000000;
+  text-align:center;
+  overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+  word-wrap: break-word; /*ajusta palabras largas */
+  hyphens: auto; /* Habilita la separación de palabras si es necesario */
+}
+
+
+
+}
+
+.label {
+    color: #3d3d3d;
+    display: block;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  .error {
+    color: red;
+    font-family: sans-serif;
+    font-size: 12px;
+    height: 30px;
+  }
+  .submitButton {
+    background-color: #6976d9;
+    color: rgb(187, 12, 12);
+    font-family: sans-serif;
+     font-size: 14px;
+    margin: 20px 0px;
+  }
+
+  .form-column {
+
+    padding: 10px;
+  }
+
+
+  .input-updated {
+    border: 0.1px solid #d9d9d9 !important;
+    border-radius: 0.3em;
+    box-sizing: border-box;    
+    padding: 7px;
+    width: 100%;
+    height: 90%;
+  }
+
+  .textarea {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    box-sizing: border-box; 
+    padding: 20px;
+    width: 90%;
+    height: auto; 
+  }
+
+ 
+
+
+
+  .custom-div {
+    width: 100%; 
+    height: 100%; 
+    font-size: 0.9em; 
+    padding-top: 3px;
+    color: #000000;
+    }
+
+    .custom-label {
+      width: 100%; 
+      height: 100%;  
+      font-size: 0.850em !important;
+      padding-top: 3px;
+      color: #000000;
+      text-align:left;
+      overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+      word-wrap: break-word; /*ajusta palabras largas */
+      hyphens: auto; /* Habilita la separación de palabras si es necesario */
+    
+    
+      }
+
+    .boton-container {
+      display:block ; /* Habilita el diseño flexible */
+      padding: 8px;
+      margin-top: 10px;
+    }
+  
+
+    .div-search {
+      width: 120%; 
+      height: auto; 
+      font-size: 16px; 
+      padding-top: 15px;
+      position: relative;
+      left: -70px; /* Ajusta este valor según sea necesario */
+      }
+  
+  
+ 
+    
+      .div-search {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Arial', sans-serif; /* Cambia la fuente aquí */
+      }
+      
+      .search-input {
+        width: 40%;
+        height: 55px;
+        padding: 15px; /* Hacer el input un poco más grande */
+        margin-bottom: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        margin: 0 ;
+        margin-right: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+
+    
+      .title-search{
+          text-align: left;
+          font-size: 2.5rem;
+          margin-bottom: 20px;
+          margin-left: 10px;
+          margin-top: 15px;
+          color: #090909;
+          letter-spacing: 1.1px;
+          font-family: sans-serif; /* Cambia la fuente aquí */
+       
+      
+      }
+      .result-count {
+        font-size: 14px;
+        margin-bottom: 10px;
+        margin-top:22px;
+        color: #555;
+      }
+      
+      .user-list {
+        list-style: none;
+        padding: 0;
+      }
+      
+      .list-item {
+        position: relative;
+        padding: 10px;
+        margin-bottom: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      .list-item:hover {
+        background-color: #e9e9e9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      
+      .user-name {
+        font-size: 18px;
+        margin: 0;
+        color: #333;
+      }
+      
+      .user-email {
+        font-size: 14px;
+        margin: 5px 0 0 0;
+        color: #777;
+      }
+      
+
+
+    .div-modal{
+      word-wrap: break-word;
+      border: 1px solid #d9d9d9;
+      padding: 3px;
+      margin: 8px;
+      margin-bottom: 10px;
+      padding: 15px; 
+      margin: 10px 0; 
+      background-color: #f9f9f9; 
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);       border: 1px solid #d9d9d9;
+
+      border-radius: 8px; 
+      font-family: 'Arial', sans-serif; 
+      font-size: 16px; 
+    }
+    
+    .div-modal-justify {
+      text-justify: inter-word; 
+      word-wrap: break-word;
+      text-align: justify;
+    }
+
+    .div-observacion{
+      text-align: justify;
+      text-justify: inter-word; 
+      word-wrap: break-word;
+    
+    }
+
+    .modal-content {
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(236, 6, 6, 0.1);
+    }
+
+    .modal-content-seguimientos {
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(236, 6, 6, 0.1);
+      height: 400px;
+      max-height: 100%;
+      padding-right: 10px; 
+      text-justify: inter-word; 
+      word-wrap: break-word;
+      
+    }
+    
+    .title-modal{
+      margin-left: 15px;
+      
+    }
+
+    .ul-style{
+        padding-left: 20px; 
+        list-style-type: none; 
+      
+    }
+
+    .li-style {
+      margin-bottom: 15px; 
+      padding: 8px; 
+      border: 1px solid #ececec; 
+      background-color: #ffffff; 
+      border-radius: 5px; 
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+      margin-top: 15px;
+    }
+
+    .custom-modal-header .btn-close {
+      position: absolute;
+      top: 10px; 
+      right: 10px; 
+      font-size: 1.2rem; 
+      color: #000; 
+      opacity: 1; 
+    }
+    .custom-modal-header {
+      display: flex;
+      justify-content: center; 
+      position: relative;
+    }
+
+
+    .title-banner {
+      background-color: #E55151; 
+      padding: 20px; 
+      text-align: center; 
+      width: 100%; 
+      box-sizing: border-box; 
+      margin-bottom: 20px; 
+      border-radius: 4px; 
+      color: #ffffff !important; 
+      font-size: 35px;
+    }
+    /*
+    .title-banner h1 {
+      margin: 0; 
+      font-size: 35px; 
+      color: #ffffff !important; 
+    } */
+    
+    .alert-style {
+
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index:999;
+      min-width: 300px;
+
+    }
+
+
+
+    .button-inicial {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #E55151;
+      color: rgb(245, 239, 236);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease; 
+    }
+    
+
+    .button-inicial:hover {
+      background-color: #E55151; /* Color cuando se pasa el mouse por encima */
+    }
+    .button-inicial:active {
+      background-color: #d43737 !important; /* Color cuando se presiona el botón */
+      outline: none ; /* Elimina el borde azul predeterminado */
+      box-shadow: none ;  /* Elimina la sombra del borde predeterminado */
+    }
+    .button-inicial:disabled {
+      background-color: #fca5a2; 
+      color: #747373; 
+      cursor: not-allowed; 
+    }
+ 
+    .buttons-container {
+      display:flex;
+      justify-content: center; /* Centrar horizontalmente */
+      align-items: center; /* Centrar verticalmente */
+      height: 100%; 
+    }
+
+    .buttons-container-captcha {
+      display:flex;
+      flex-direction: column;
+      align-items: center; /* Centrar verticalmente */
+      height: 100%; /* Asegúrate de que el contenedor ocupe toda la altura disponible */
+    }
+    .recaptcha-container {
+      margin-bottom: 20px; /* Espacio entre el reCAPTCHA y los botones */
+    }
+    .modal-seguimiento {
+      position: absolute;
+      left: 14px; /* Ajusta este valor según sea necesario */
+    }
+
+  
+    .input-container {
+      position: relative;
+    
+    }
+    
+    .char-count {
+      font-size: 0.8em; /* Tamaño de fuente pequeño */
+      color: #888;
+      margin-top: 0; /* Espacio entre el input y el contador */
+      display: block; /* Asegura que el contador aparezca en una nueva línea */
+    }
+
+    .custom-calendar .MuiInputBase-root {
+      height: 20px !important; 
+      padding: 0 10px !important; 
+    }
+    
+    .custom-calendar .MuiInputBase-input {
+      font-size: 14px !important; 
+      height: 20px;
+      padding: 8px 0 !important;
+    }
+
+    .custom-div-check {
+      display: flex;
+      align-items: center;
+      padding: 4px ;
+
+      margin-top: 4px;
+      margin-right: 4px;
+      justify-content: space-between; 
+    }
+
+    /* Estilos para los checkbox */
+    
+    .custom-div-check-documentos {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      margin-right: 30px;
+      gap: 20px; /* Ajusta el espacio como desees */
+      justify-content: space-between; 
+    }
+
+    .custom-checkbox-label {
+      font-size: 1em;
+      color: #333;
+      padding: 3px;
+      white-space: normal;
+      word-wrap: break-word;
+      text-align: justify;
+
+    }
+    
+    .custom-checkbox {
+      position: relative;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      margin-left: 35px;
+      
+    }
+    
+    .custom-checkbox input {
+      opacity: 0;
+      width: 80%;
+      height: 80%;
+    }
+    
+    .custom-checkbox .checkmark {
+      position:absolute;
+      top: 0;
+      bottom: 26%;
+      left: 0;
+      height: 22px;
+      width: 22px;
+      background-color: #eee;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    
+    .custom-checkbox input:checked + .checkmark {
+      background-color: #da4d29;
+      border-color: #f9fdf9;
+    }
+    
+    .custom-checkbox .checkmark:after {
+      content: "";
+      position: absolute;
+      display:flex;
+    }
+    
+    .custom-checkbox input:checked + .checkmark:after {
+      display: block;
+    }
+    
+    .custom-checkbox .checkmark:after {
+      left: 5px;
+      top: 2px;
+      width: 10px;
+      height: 15px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      transform: rotate(45deg);
+    }
+    
+
+    .check-div {   
+      display: 'flex';
+      align-items:'center';
+    }
+
+    .texto-enfatico {
+      color: red;
+      font-weight: bold;
+    }
+
+    .div-scroll {
+      height: 400px;
+      overflow-y: auto;  
+      padding-right: 10px; 
+      text-justify: inter-word; 
+      word-wrap: break-word;
+      overflow-x: hidden;
+      
+    }
+
+    .table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+    
+    .table-scroll {
+      max-height: 600px; /* Ajusta esta altura según sea necesario */
+      overflow-y: auto;
+    }
+
+    .table-name {
+      color: #ffffff;
+      
+    }
+    
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .user-table thead th {
+      position: sticky; 
+      top: 0; 
+      z-index: 1;
+      
+      
+    }
+    
+    .user-table th, .user-table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    
+    .user-table th {
+      background-color: rgb(98, 98, 99); 
+    }
+    
+    .even-row {
+      background-color: rgb(255, 255, 255); 
+    }
+    
+    .odd-row {
+      background-color: rgb(233, 233, 233); 
+    }
+    
+    .user-table tr:hover {
+      background-color: rgb(199, 199, 199); 
+      cursor: pointer;
+    }
+    
+    
+    
+    
+    .new-user {
+      font-weight: bold;
+      color: green;
+    }
+    
+    .pending-review {
+      color: red;
+    }
+    
+    
+ 
+  /* Estilos del indicador de usuario nuevo*/
+
+    
+   
+    .new-indicator {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: 24px; /* Tamaño más grande para el signo de admiración */
+      color: red;
+      font-weight: bold;
+    }
+
+
+
+    .tooltip-icon {
+      position: relative;
+      display: inline-block;
+      margin-left: 8px;
+      color: #ff0000; 
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .tooltip-custom .tooltip-inner {
+      text-align:left !important;
+      background-color: #ec4c4c !important;
+      color: white !important;
+      white-space: normal;
+      
+    
+    }
+/*  Css agradecimiento*/
+
+/* AgradecimientoEncuesta.css */
+.container-agradecimiento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image: url('/public/imgs/pride-seamless3.jpeg'); 
+  background-repeat: repeat; 
+  background-size: 100% 100%; 
+}
+
+
+.content-agradecimiento {
+  background-color: rgba(238, 238, 238, 0.9);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 350px;
+}
+
+.title-agradecimiento {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color:#000000;
+}
+
+.subtitle-agradecimiento {
+  font-size: 18px;
+  color: #000000;
+}
+
+.icon-container-agradecimiento {
+  margin-top: 20px;
+}
+
+.heart-icon-agradecimiento{
+  width: 38px;
+  height: 38px;
+  fill: rgb(206, 133, 206) !important;
+}
+
+/* Estilos del datepicker */
+
+.custom-datepicker-container {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  margin-top: 25px;
+}
+
+
+.custom-datepicker-textfield .MuiInputBase-root {
+  height: 36px !important; /* Ajusta la altura total */
+  font-size: 1rem !important; 
+}
+
+
+.custom-datepicker-textfield .MuiFormLabel-root {
+  font-size: 1rem !important; /* Tamaño del texto del label */
+  transform: translateY(0) !important; /* Centra el label */
+  margin-top: -10px; /* Ajusta el desplazamiento del label */
+  top: 50% !important; /* Centra el label en la parte superior */
+  margin-left: 10px;
+}
+
+.custom-datepicker-textfield .MuiInputLabel-root.Mui-focused {
+  transform: translateY(-0.1em) !important; 
+  top: 0 !important;
+  font-size: 0.8rem !important; 
+  margin-right: 3px;
+}
+
+/* El siguiente estilo asegura que el label solo se mueva hacia arriba si el campo tiene un valor */
+.custom-datepicker-textfield .MuiInputLabel-root.MuiInputLabel-shrink {
+  transform: translateY(-0.1em) !important; /* Mueve el label hacia arriba cuando hay un valor */
+  top: 0 !important;
+  font-size: 0.8rem !important; 
+  margin-right: 3px;
+}
+
+
+.subtitle-forms{
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 0.95em; 
+  color: #000000;
+  text-align:center;
+  overflow-wrap: break-word; /* Permite ajustar palabras largas sin romper abruptamente */
+  word-wrap: break-word; /*ajusta palabras largas */
+  hyphens: auto; /* Habilita la separación de palabras si es necesario */
+}
+
+.simbolo-obligatorio{
+  color: #ff0000;
+  font-weight: bold;
+}

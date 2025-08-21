@@ -7,7 +7,7 @@
  * @date 13 de febrero del 2024
  */
 
-import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/utilidades_seguridad";
+import { decryptTokenFromSessionStorage } from "../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import axios from "axios";
 
 const all_estudiantes = async () => {
@@ -23,7 +23,7 @@ const all_estudiantes = async () => {
       id_sede: sessionStorage.getItem("sede_id"),
     };
     // url de la API
-    const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante_selected/`;
+    const url_axios = `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/`;
     // Interacción con la API
     const res = await axios.get(url_axios, config, { paramsget });
     return res.data;

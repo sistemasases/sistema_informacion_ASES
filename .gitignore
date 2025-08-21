@@ -1,4 +1,13 @@
 
+# Ignorar archivos de basura 
+*~
+*.tgz
+*.tar.gz
+*.DS_Store
+nbproject/*
+.scannerwork
+sonar-project.properties
+
 # General
 *.pyc
 *.pyo
@@ -8,11 +17,14 @@ __pycache__
 dist/
 build/
 .vscode/
+.vscode-server/
+back-end/modulo_correos/*.json
 
 # Environment
 venv/
 env/
 ENV/
+entornoBack/
 .env
 .htaccess
 front-end/.env
@@ -23,3 +35,9 @@ front-end/.env
 # Static Files
 front-end/build/
 back-end/staticfiles
+
+# Personal Docker
+Dockerfile
+docker-compose.yml
+deploy.sh
+.github/workflows/docker-build.yml

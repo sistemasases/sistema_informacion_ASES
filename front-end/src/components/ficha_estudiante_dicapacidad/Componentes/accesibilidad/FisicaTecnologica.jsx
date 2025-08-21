@@ -1,7 +1,73 @@
 import AcordionesHijos from "../AcordionesHijos";
 import Columns from "../Columns";
+import React, { useState } from 'react';
 
 const FisicaTecnologica = () => {
+  const [isYesSelected, setIsYesSelected] = useState(false);
+  const [elementId, setElementId] = useState("");
+
+  const [selection, setSelection] = useState(() => {
+    const initialSelection = {};
+    for (let i = 51; i <= 61; i++) {
+      initialSelection[i] = { binaryChoice: '', tripleChoiceDisabled: false, tripleChoice: '' };
+    }
+    return initialSelection;
+  });
+
+
+  const handleRadioChange = (event) => {
+    const { id, value, name } = event.target;
+    setSelection(prevState => ({
+      ...prevState,
+      [id]: {
+        ...prevState[id],
+        [name.includes('binaryChoice') ? 'binaryChoice' : 'tripleChoice']: value,
+        tripleChoiceDisabled: name.includes('binaryChoice') && value === "No"
+      }
+    }));
+  };
+
+  const createColumns = (id, name) => (
+    [
+      { type: "text", name },
+      { type: "radio", name: `binaryChoice-${id}`, value: "Si", onChange: handleRadioChange, id: id.toString(), checked: selection[id].binaryChoice === "Si" },
+      { type: "radio", name: `binaryChoice-${id}`, value: "No", onChange: handleRadioChange, id: id.toString(), checked: selection[id].binaryChoice === "No" },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Independiente",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Independiente"
+      },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Dependiente",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Dependiente"
+      },
+      {
+        type: "radio",
+        name: `tripleChoice-${id}`,
+        value: "Requiere apoyo",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+        checked: selection[id].tripleChoice === "Requiere apoyo"
+      },
+      {
+        type: "input",
+        name: "tipo de apoyo",
+        disabled: selection[id].tripleChoiceDisabled,
+        onChange: handleRadioChange,
+        id: id.toString(),
+      }
+    ]
+  )
   return (
     <AcordionesHijos
       acordiones={[
@@ -15,90 +81,10 @@ const FisicaTecnologica = () => {
                   content: (
                     <Columns
                       columns={[
-                        [
-                          { type: "text", name: "Aulas de clase" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "Edificios" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "Laboratorios" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "Facultades zonas" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
+                        createColumns(51, "Aulas de clase"),
+                        createColumns(52, "Edificios"),
+                        createColumns(53, "Laboratorios"),
+                        createColumns(54, "Facultades zonas"),
                       ]}
                     />
                   ),
@@ -108,111 +94,10 @@ const FisicaTecnologica = () => {
                   content: (
                     <Columns
                       columns={[
-                        [
-                          { type: "text", name: "Cafetería" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "Parqueadero" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "CDU" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "Auditorios" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "Plazoletas" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
+                        createColumns(55, "Cafeteria"),
+                        createColumns(56, "Parqueadero"),
+                        createColumns(57, "CDU"),
+                        createColumns(58, "Auditorios"),
                       ]}
                     />
                   ),
@@ -234,71 +119,11 @@ const FisicaTecnologica = () => {
                     "Experiencia y manejo de las herramientas tecnológicas",
                   content: (
                     <Columns
-                      columns={[
-                        [
-                          { type: "text", name: "Acceso básico" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "Acceso intermedio" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                        [
-                          { type: "text", name: "Acceso avanzado" },
-                          { type: "radio", name: "binaryChoice", value: "Si" },
-                          { type: "radio", name: "binaryChoice", value: "No" },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Independiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Dependiente",
-                          },
-                          {
-                            type: "radio",
-                            name: "tripleChoice",
-                            value: "Requiere apoyo",
-                          },
-                          { type: "input", name: "tipo de apoyo" },
-                        ],
-                      ]}
+                    columns={[
+                      createColumns(59, "Acceso básico"),
+                      createColumns(60, "Acceso intermedio"),
+                      createColumns(61, "Acceso avanzado"),
+                    ]}
                     />
                   ),
                 },

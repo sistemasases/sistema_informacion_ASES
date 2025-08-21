@@ -136,7 +136,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                 fecha, "%Y-%m-%d")
             if inasistencia == None or inasistencia == '':
                 if date_obj.date() <= fecha_limite.date():
-                  
+
                     # print("AQUI NO FUE")
 
                     return "FICHA FALTANTE"
@@ -150,18 +150,30 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     return "FICHA FALTANTE"
             return "SEGUIMIENTO RECIENTE"
 
-                
-                
-             
+    # def get_firma(self, firma):
+    #     if firma:
+    #         if firma['autoriza_tratamiento_datos'] == True:
+    #             return 'AUTORIZA'
+    #         elif firma['autoriza_tratamiento_datos'] == False:
+    #             return 'NO AUTORIZA'
+    #     else:
+    #         return "SIN AUTORIZAR"
 
-    def get_firma(self, firma):
+    def get_firma_tratamiento(self, firma, _id_estudiante):
+        autoriza = firma_tratamiento_datos.objects.filter(
+            id_estudiante=_id_estudiante).values()
+        # print(autoriza )
         if firma:
-            if firma['autoriza_tratamiento_datos'] == True:
-                return 'AUTORIZA'
-            elif firma['autoriza_tratamiento_datos'] == False:
-                return 'NO AUTORIZA'
+            if firma == True and len(autoriza) == 0:
+                return 'FIRMA INEXISTENTE'
+            elif firma == True and autoriza[0]['autoriza_tratamiento_datos'] == True:
+                return 'AUTORIZA' ## Verde
+            elif firma == True and autoriza[0]['autoriza_tratamiento_datos'] == False:
+                return 'NO AUTORIZA' ## Naranja
+            return "SIN FIRMAR" ## Rojo
         else:
-            return "SIN FIRMAR"
+            return "SIN FIRMAR" ## Rojo
+            
 
     def get_encuesta_admitido(self, encuesta):
         if encuesta == None:
@@ -239,7 +251,6 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
 
         # # # # print(inasistencias_registradas)
 
-
         for i in serializer_estudiantes.data:
 
             # try:
@@ -250,15 +261,27 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                 seguimiento_reciente = next(
                     (s for s in seguimientos_recientes if s['id_estudiante'] == estudiante_id), None)
                 # Obtener firma de tratamiento de datos del estudiante
-                firma_tratamiento = next(
-                    (s for s in firma_tratamientos if s['id_estudiante_id'] == estudiante_id), None)
+
+                # firmas_para_estudiante = [
+                #     s for s in firma_tratamientos if s['id_estudiante_id'] == estudiante_id]
+
+                # # Obtener firma de tratamiento de datos del estudiante
+                # # firma_tratamiento = next(
+                # #     (s for s in firma_tratamientos if s['id_estudiante_id'] == estudiante_id), None)
+
+                # # Toma la primera firma con `true`, o la primera firma si no hay ninguna en `true`
+                # firma_tratamiento = next((s for s in firmas_para_estudiante if s['autoriza_tratamiento_datos']), None) or (
+                #     firmas_para_estudiante[0] if firmas_para_estudiante else None
+                # )
+
+                new_firma_tratamiento = i['firma_existe']
 
                 # # # # print(firma_tratamiento_datos.objects.filter(
 
                 #     id_estudiante=i['id']))
 
                 inasistencia_regs = max(
-                    (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == estudiante_id), 
+                    (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == estudiante_id),
                     key=lambda x: x['fecha'],
                     default=None
                 )
@@ -267,7 +290,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
 
                 # Crear un diccionario con los datos de riesgo del seguimiento
 
-                if seguimiento_reciente and firma_tratamiento and inasistencia_regs:
+                if seguimiento_reciente and new_firma_tratamiento and inasistencia_regs:
                     riesgo = {
                         'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
                         'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente['riesgo_familiar']),
@@ -276,12 +299,13 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad']),
                         'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente['fecha']), str(inasistencia_regs['fecha']))),
                         # 'registra_inasistencia': ,
-                        'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        # 'firma_tratamiento_datos': self.get_firma_tratamiento(firma_tratamiento),
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
 
                     # # # print("CASE 1")
-                elif seguimiento_reciente and not firma_tratamiento and inasistencia_regs:
+                elif seguimiento_reciente and not new_firma_tratamiento and inasistencia_regs:
                     riesgo = {
                         'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
                         'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente['riesgo_familiar']),
@@ -290,11 +314,11 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad']),
                         'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente['fecha']), str(inasistencia_regs['fecha']))),
                         # 'registra_inasistencia': ,
-                        'firma_tratamiento_datos': 'SIN FIRMAR',
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
                     # # # print("CASE 2")
-                elif seguimiento_reciente and firma_tratamiento and not inasistencia_regs:
+                elif seguimiento_reciente and new_firma_tratamiento and not inasistencia_regs:
 
                     riesgo = {
                         'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
@@ -304,11 +328,12 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad']),
                         'fecha_seguimiento': (self.get_fecha_seguimiento(str(seguimiento_reciente['fecha']), '')),
                         # 'registra_inasistencia': '',
-                        'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        # 'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
                     # # # print("CASE 3")
-                elif not seguimiento_reciente and not firma_tratamiento and inasistencia_regs:
+                elif not seguimiento_reciente and not new_firma_tratamiento and inasistencia_regs:
                     riesgo = {
 
                         'riesgo_individual': 'N/A',
@@ -318,12 +343,12 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': 'N/A',
                         'fecha_seguimiento': (self.get_fecha_seguimiento('', str(inasistencia_regs['fecha']))),
                         # 'registra_inasistencia': '',
-                        'firma_tratamiento_datos': 'SIN FIRMAR',
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
                     # # # print("new CASE 6")
 
-                elif not seguimiento_reciente and not firma_tratamiento and not inasistencia_regs:
+                elif not seguimiento_reciente and not new_firma_tratamiento and not inasistencia_regs:
                     riesgo = {
                         'riesgo_individual': 'N/A',
                         'riesgo_familiar': 'N/A',
@@ -331,7 +356,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'N/A',
                         'riesgo_vida_universitaria_ciudad': 'N/A',
                         'fecha_seguimiento': 'FICHA FALTANTE',
-                        'firma_tratamiento_datos': 'SIN FIRMAR',
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
                     # # # print("CASE 4")
@@ -344,7 +369,8 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': 'N/A',
                         'fecha_seguimiento': (self.get_fecha_seguimiento('', str(inasistencia_regs['fecha']))),
                         # 'registra_inasistencia': '',
-                        'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        # 'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
                 else:
@@ -355,7 +381,8 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                         'riesgo_economico': 'N/A',
                         'riesgo_vida_universitaria_ciudad': 'N/A',
                         'fecha_seguimiento': 'FICHA FALTANTE',
-                        'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        # 'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
                     # # # print("CASE NOT FOUND")
@@ -370,8 +397,8 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     'riesgo_economico': 'SIN REGISTRAR',
                     'riesgo_vida_universitaria_ciudad': 'SIN REGISTRAR',
                     'fecha_seguimiento': 'FICHA FALTANTE',
-                    'encuesta_admitido': self.get_encuesta_admitido(str(False)),
-                    'firma_tratamiento_datos': 'SIN FIRMAR'
+                    'encuesta_admitido': self.get_encuesta_admitido(str(False)),    
+                    'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                 }
             data = dict(i, **riesgo)
 
@@ -410,14 +437,23 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
         date_obj = datetime.strptime(fecha, "%Y-%m-%d").date
         return date_obj
 
-    def get_firma(self, firma):
+    # def get_firma(self, firma):
+    #     if firma:
+    #         if firma['autoriza_tratamiento_datos'] == True:
+    #             return 'AUTORIZA'
+    #         elif firma['autoriza_tratamiento_datos'] == False:
+    #             return 'NO AUTORIZA'
+    #     else:
+    #         return "SIN AUTORIZAR"
+
+    def get_firma_tratamiento(self, firma):
         if firma:
-            if firma['autoriza_tratamiento_datos'] == True:
+            if firma == True:
                 return 'AUTORIZA'
-            elif firma['autoriza_tratamiento_datos'] == False:
+            elif firma == False:
                 return 'NO AUTORIZA'
         else:
-            return "SIN FIRMAR"
+            return "SIN AUTORIZAR"
 
     def get_encuesta_admitido(self, encuesta):
         if encuesta:
@@ -436,7 +472,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
         counter_riesgo_vida_universitaria_ciudad = 0
 
         counter_fecha_seguimiento = 0
-        
+
         counter_inasistencia = 0
 
         counter_empty_date = 0
@@ -467,7 +503,6 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
             if i['fecha_seguimiento'] == '' or i['fecha_seguimiento'] == None:
                 if i['registra_inasistencia'] == None or i['registra_inasistencia'] == '':
                     counter_empty_date += 1
-                    
 
                 else:
                     otra_inasistencia = datetime.strptime(
@@ -497,15 +532,15 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                         # print(fecha_limite.date())
                         if ina.date() <= fecha_limite.date():
                             counter_inasistencia += 1
-                    else: 
+                    else:
                         if date_obj.date() <= fecha_limite.date():
-                            
+
                             # return str(ina.date())
-                            counter_fecha_seguimiento +=1
+                            counter_fecha_seguimiento += 1
                             # counter_inasistencia += 1
                     # else:
                     #     counter_fecha_seguimiento += 1
-            if i['firma_tratamiento_datos'] == 'NO AUTORIZA' or i['firma_tratamiento_datos'] == None or i['firma_tratamiento_datos'] == 'SIN FIRMAR':
+            if i['firma_tratamiento_datos'] == 'NO AUTORIZA' or i['firma_tratamiento_datos'] == None or i['firma_tratamiento_datos'] == 'SIN AUTORIZAR':
                 counter_firma_datos += 1
                 # # # print(i)
 
@@ -533,7 +568,6 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
         # print(counter_empty_date)
         # print(counter_firma_datos)
         # print(counter_encuesta_admitido)
-
 
         contador_total = counter_riesgo_individual + counter_riesgo_familiar + counter_riesgo_academico + counter_riesgo_economico + \
             counter_riesgo_vida_universitaria_ciudad + \
@@ -587,7 +621,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
 
         elif data_usuario_rol == "super_ases":
             serializer_estudiantes = estudiante_serializer(
-                estudiante.objects.filter(estudiante_elegible = True), many=True)
+                estudiante.objects.filter(estudiante_elegible=True), many=True)
 
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
             list_id_programas = programa.objects.filter(
@@ -595,7 +629,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
             list_id_estudiantes = programa_estudiante.objects.filter(
                 id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes,estudiante_elegible = True )
+                id__in=list_id_estudiantes, estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
 
@@ -606,6 +640,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
 
         firma_tratamientos = firma_tratamiento_datos.objects.filter(
             id_estudiante__in=estudiantes_ids).values()
+        # print(firma_tratamientos)
 
         inasistencias_registradas = inasistencia.objects.filter(
             id_estudiante__in=estudiantes_ids).values()
@@ -619,20 +654,32 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                 # Obtener el seguimiento más reciente del estudiante especificado
                 seguimiento_reciente = next(
                     (s for s in seguimientos_recientes if s['id_estudiante'] == estudiante_id), None)
+
+                firmas_para_estudiante = [
+                    s for s in firma_tratamientos if s['id_estudiante_id'] == estudiante_id]
+
+                # Toma la primera firma con `true`, o la primera firma si no hay ninguna en `true`
+                # firma_tratamiento = next((s for s in firmas_para_estudiante if s['autoriza_tratamiento_datos']), None) or (
+                #     firmas_para_estudiante[0] if firmas_para_estudiante else None
+                # )
+
                 # Obtener firma de tratamiento de datos del estudiante
-                firma_tratamiento = next(
-                    (s for s in firma_tratamientos if s['id_estudiante_id'] == estudiante_id), None)
-                # # # # print(seguimiento_reciente)
+                # firma_tratamiento = next(
+                # (s for s in firma_tratamientos if s['id_estudiante_id'] == estudiante_id), None)
+                # print(firma_tratamiento)
+
+                new_firma_tratamiento = i['firma_existe']
+                # print(new_firma_tratamiento)
 
                 inasistencia_regs = max(
-                    (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == estudiante_id), 
+                    (ina for ina in inasistencias_registradas if ina['id_estudiante_id'] == estudiante_id),
                     key=lambda x: x['fecha'],
                     default=None
                 )
                 encuesta_admitido = i['encuesta_admitido']
 
                 # Crear un diccionario con los datos de riesgo del seguimiento
-                if seguimiento_reciente and firma_tratamiento and inasistencia_regs:
+                if seguimiento_reciente and new_firma_tratamiento and inasistencia_regs:
                     riesgo = {
                         'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
                         'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente['riesgo_familiar']),
@@ -641,11 +688,12 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad']),
                         'fecha_seguimiento': str(seguimiento_reciente['fecha'], ),
                         'registra_inasistencia': str(inasistencia_regs['fecha']),
-                        'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        # 'firma_tratamiento_datos': self.get_firma(new_firma_tratamiento),
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
 
                     }
-                elif seguimiento_reciente and firma_tratamiento and not inasistencia_regs:
+                elif seguimiento_reciente and new_firma_tratamiento and not inasistencia_regs:
                     riesgo = {
                         'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
                         'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente['riesgo_familiar']),
@@ -654,10 +702,11 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad']),
                         'fecha_seguimiento': str(seguimiento_reciente['fecha']),
                         'registra_inasistencia': '',
-                        'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        # 'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
-                elif seguimiento_reciente and not firma_tratamiento and inasistencia_regs:
+                elif seguimiento_reciente and not new_firma_tratamiento and inasistencia_regs:
                     riesgo = {
                         'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
                         'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente['riesgo_familiar']),
@@ -666,10 +715,10 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad']),
                         'fecha_seguimiento': str(seguimiento_reciente['fecha']),
                         'registra_inasistencia': str(inasistencia_regs['fecha']),
-                        'firma_tratamiento_datos': 'SIN FIRMAR',
+                        'firma_tratamiento_datos': 'SIN AUTORIZAR',
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
-                elif seguimiento_reciente and not firma_tratamiento and not inasistencia_regs:
+                elif seguimiento_reciente and not new_firma_tratamiento and not inasistencia_regs:
                     riesgo = {
                         'riesgo_individual': self.get_nivel_riesgo(seguimiento_reciente['riesgo_individual']),
                         'riesgo_familiar': self.get_nivel_riesgo(seguimiento_reciente['riesgo_familiar']),
@@ -678,10 +727,10 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': self.get_nivel_riesgo(seguimiento_reciente['riesgo_vida_universitaria_ciudad']),
                         'fecha_seguimiento': str(seguimiento_reciente['fecha']),
                         'registra_inasistencia': '',
-                        'firma_tratamiento_datos': 'SIN FIRMAR',
+                        'firma_tratamiento_datos': 'SIN AUTORIZAR',
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
-                elif not seguimiento_reciente and not firma_tratamiento and not inasistencia_regs:
+                elif not seguimiento_reciente and not new_firma_tratamiento and not inasistencia_regs:
                     riesgo = {
                         'riesgo_individual': 'N/A',
                         'riesgo_familiar': 'N/A',
@@ -690,7 +739,7 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': 'N/A',
                         'fecha_seguimiento': '',
                         'registra_inasistencia': '',
-                        'firma_tratamiento_datos': 'SIN FIRMAR',
+                        'firma_tratamiento_datos': 'SIN AUTORIZAR',
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
                 else:
@@ -702,7 +751,8 @@ class alert_counter_viewsets(viewsets.ModelViewSet):
                         'riesgo_vida_universitaria_ciudad': 'N/A',
                         'fecha_seguimiento': '',
                         'registra_inasistencia': '',
-                        'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        # 'firma_tratamiento_datos': self.get_firma(firma_tratamiento),
+                        'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento),
                         'encuesta_admitido': self.get_encuesta_admitido(str(encuesta_admitido))
                     }
 

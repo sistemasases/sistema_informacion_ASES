@@ -1,0 +1,7 @@
+#opcion_por_defecto{
+    display: none;
+}
+.custom-select-width {
+    width: 100%;
+    height: 50px; /* Ajusta este valor según tus necesidades */
+  }

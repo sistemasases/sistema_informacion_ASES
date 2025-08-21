@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from modulo_usuario_rol.models import estudiante
+from modulo_instancia.models import semestre
 
 # Create your models here.
 class seguimiento_individual (models.Model):
@@ -10,9 +11,12 @@ class seguimiento_individual (models.Model):
     hora_inicio = models.TimeField()
     hora_finalización= models.TimeField()
     objetivos= models.CharField(null=True,blank=True,max_length=10000)
+    objetivos2= models.CharField(null=True,blank=True,max_length=10000)
+    objetivos3= models.CharField(null=True,blank=True,max_length=10000)
     individual= models.CharField(null=True,blank=True,max_length=10000)
     riesgo_individual= models.IntegerField(null=True)
     autoconocimiento= models.BooleanField()
+    autonomia= models.BooleanField(default=False)
     rasgos_de_personalidad=models.BooleanField()
     identificación=models.BooleanField()
     red_de_apoyo=models.BooleanField()
@@ -25,11 +29,15 @@ class seguimiento_individual (models.Model):
     familiar=models.CharField(null=True,blank=True,max_length=10000)
     riesgo_familiar=models.IntegerField(null=True)
     dinamica_familiar=models.BooleanField()
+    relaciones_familiares=models.BooleanField(default=False)
+    red_de_apoyo_familiar=models.BooleanField(default=False)
+    rol_del_estudiante_en_la_familia=models.BooleanField(default=False)
     academico=models.CharField(null=True,blank=True,max_length=10000)
     riesgo_academico= models.IntegerField(null=True)
     desempeño_académico=models.BooleanField()
     elección_vocacional=models.BooleanField()
     manejo_del_tiempo =models.BooleanField()
+    autogestion_academica=models.BooleanField(default=False)
     economico=models.CharField(null=True,blank=True,max_length=10000)
     riesgo_economico=models.IntegerField(null=True)
     apoyos_económicos_institucionales=models.BooleanField()
@@ -44,6 +52,9 @@ class seguimiento_individual (models.Model):
     oferta_servicios=models.BooleanField()
     vivienda=models.BooleanField()
     vinculación_grupos_actividades_extracurriculares=models.BooleanField()
+    movilidad_y_transporte = models.BooleanField(default=False)
+    integracion_a_la_cultura_universitaria = models.BooleanField(default=False)
+    uso_de_los_servicios_universitarios = models.BooleanField(default=False)
 
     apoyo_académico = models.BooleanField(default=False)
     taller_par_par = models.BooleanField(default=False)
@@ -61,6 +72,19 @@ class seguimiento_individual (models.Model):
     rem_grupos_universidad = models.BooleanField(default=False)
     rem_externa = models.BooleanField(default=False)
     Ninguna_acción_realizada = models.BooleanField(default=False)
+
+    asist_actividades_grupales=models.BooleanField(default=None, null=True)
+    asist_monitoria_aca=models.BooleanField(default=None, null=True)
+    asist_matricula_financiera=models.BooleanField(default=None, null=True)
+    asist_desa_humano=models.BooleanField(default=None, null=True)
+    asist_proyect_uni=models.BooleanField(default=None, null=True)
+    asist_dir_programa=models.BooleanField(default=None, null=True)
+    asist_prof_se=models.BooleanField(default=None, null=True)
+    asist_servi_salud=models.BooleanField(default=None, null=True)
+    asist_grupo_uni=models.BooleanField(default=None, null=True)
+    asist_practicante_se=models.BooleanField(default=None, null=True)
+    asist_regis_academico=models.BooleanField(default=None, null=True)
+    asist_rem_externa=models.BooleanField(default=None, null=True)
 
     observaciones=models.CharField(null=True,blank=True,max_length=10000)
     revisado_profesional = models.BooleanField(default=False)
@@ -94,6 +118,15 @@ class inasistencia (models.Model):
     class Meta:
         db_table = "inasistencia"
 
+class historial_ficha (models.Model):
+
+    id_ficha = models.ForeignKey(seguimiento_individual,on_delete=models.CASCADE,null=True,related_name='id_ficha_in_historial_ficha')
+    id_user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name='id_user_in_historial_ficha')
+    fecha= models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "historial_ficha"
+
 class riesgo_individual (models.Model):
 
     fecha = models.DateField(auto_now_add=False, null=True)
@@ -103,6 +136,7 @@ class riesgo_individual (models.Model):
     riesgo_economico = models.IntegerField(null=True)
     riesgo_vida_universitaria_ciudad = models.IntegerField(null=True)
     id_estudiante = models.ForeignKey(estudiante,on_delete=models.CASCADE,default=0)
+    id_semestre= models.ForeignKey(semestre,on_delete=models.CASCADE,default=40,related_name='id_semestre_in_riesgo_individual')
 
     class Meta:
         db_table = "riesgo_individual"

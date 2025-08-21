@@ -31,6 +31,19 @@
                 "path":"/descarga_fichas",
                 "name":"Descarga de fichas",
                 "icon":"bi bi-file-earmark-arrow-down"
+            },
+            {
+                "path":"/admin_usuarios",
+                "name":"Panel de administrador",
+                "icon":"bi bi-file-earmark-person-fill"
+            },{
+                "path":"/horas_monitores",
+                "name":"Horas de monitores",
+                "icon":"bi bi-clock-fill"
+            },{
+                "path": "/hoja_monitor",
+                "name": "Hoja de monitores",
+                "icon": "bi bi-file-earmark-person"
             }
         ]
     },
@@ -125,6 +138,16 @@
                 "path":"/academico",
                 "name":"Calificador",
                 "icon":"bi bi-calculator-fill"
+            },
+            {
+                "path":"/academico_asistencia",
+                "name":"Control de asistencia",
+                "icon":"bi bi-card-checklist"
+            },
+            {
+                "path":"/academico_listado_asistencia",
+                "name":"Listado de asistencia",
+                "icon":"bi bi-card-list"
             }
         ]
     },

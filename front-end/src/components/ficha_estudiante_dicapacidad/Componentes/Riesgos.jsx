@@ -36,24 +36,24 @@ const Riesgos = () => {
 
       <div className="container-casos">
         <div className="casos casosG">
-          <p className="letras B">B</p>
-          <p className="grupo bajo">INDIVIDUAL</p>
+          <p className="letras N">N</p>
+          <p className="grupo nan">INDIVIDUAL</p>
         </div>
         <div className="casos casosG">
-          <p className="letras M">M</p>
-          <p className="grupo medio">FAMILIAR</p>
+          <p className="letras N">N</p>
+          <p className="grupo nan">FAMILIAR</p>
         </div>
         <div className="casos casosG">
-          <p className="letras A">A</p>
-          <p className="grupo alto">ACADÉMICO</p>
+          <p className="letras N">N</p>
+          <p className="grupo nan">ACADÉMICO</p>
         </div>
         <div className="casos casosG">
-          <p className="letras B">B</p>
-          <p className="grupo bajo">ECONÓMICO</p>
+          <p className="letras N">N</p>
+          <p className="grupo nan">ECONÓMICO</p>
         </div>
         <div className="casos casosG">
-          <p className="letras B">B</p>
-          <p className="grupo bajo espV">VIDA UNIVERSITARIA</p>
+          <p className="letras N">N</p>
+          <p className="grupo nan">VIDA UNIVERSITARIA</p>
         </div>
         <div className="casos casosG">
           <p className="letras N">N</p>

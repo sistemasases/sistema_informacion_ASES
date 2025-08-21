@@ -22,3 +22,8 @@ export const useAuthStore = create(
     )
   )
 );
+
+// Eliminar el estado del almacenamiento persistido al recargar la página
+window.addEventListener('beforeunload', () => {
+  localStorage.removeItem('auth'); //
+});

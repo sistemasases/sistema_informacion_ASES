@@ -22,7 +22,6 @@ import AccesoDenegado from "../../../components/ficha_estudiante_dicapacidad/Com
 
 const FichaEstudianteDiscapacidad = (props) => {
   const { user, setUser } = useAuthStore();
-
   useEffect(() => {
     setUser({
       rol: desencriptar(sessionStorage.getItem("rol")).toString(),
@@ -32,7 +31,6 @@ const FichaEstudianteDiscapacidad = (props) => {
       ).toString(),
       userRole: desencriptar(sessionStorage.getItem("permisos")).toString(),
     });
-    console.log("USER: ", user);
   }, []);
 
   return (

@@ -2,6 +2,8 @@ import React from 'react';
 import {useState } from "react";
 import {Row, Col} from "react-bootstrap";
 import Seguimiento_individual from '../../seguimiento_forms/form_seguimiento_individual_sin_boton';
+import Seguimiento_individual_edit_v2 from '../../seguimiento_forms/form_seguimiento_individual_edit_v2';
+import Seguimiento_individual_edit_v3 from '../../seguimiento_forms/form_seguimiento_individual_edit_v3';
 import Seguimiento_inasistencia from '../../seguimiento_forms/form_inasistencia_sin_boton';
 import { desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_seguridad';
 
@@ -15,6 +17,11 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
     const [show2, setShow2] = useState(false);
     const handleCloseIn = () => setShow2(false);
     const handleShow2 = () => setShow2(true);
+    const fechaReferencia = new Date('2024-07-10'); // Fecha desde que corre la versión 2 de la ficha
+    const fechaReferenciaV3 = new Date('2025-08-15'); // Fecha desde que corre la versión 3 de la ficha
+
+    // Convierte la fecha de item a un objeto Date si es necesario
+    const itemFecha = new Date(item.fecha);
 
     const userRole = desencriptar(sessionStorage.getItem('rol'));
 
@@ -91,9 +98,64 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
                 }
                 </Col>
                 
-                <Seguimiento_inasistencia recarga_ficha_estudiante={true} show={show2} onHide={handleCloseIn} handleCloseIn={handleCloseIn} item={item} size="lg"/>
-
-                <Seguimiento_individual recarga_ficha_estudiante={true} show={show} onHide={handleClose} handleClose={handleClose} item={item} size="lg"/>
+               {itemFecha < fechaReferencia ? (
+                    <>
+                        <Seguimiento_inasistencia 
+                            recarga_ficha_estudiante={true} 
+                            show={show2} 
+                            onHide={handleCloseIn} 
+                            handleCloseIn={handleCloseIn} 
+                            item={item} 
+                            size="lg" 
+                        />
+                        <Seguimiento_individual 
+                            recarga_ficha_estudiante={true} 
+                            show={show} 
+                            onHide={handleClose} 
+                            handleClose={handleClose} 
+                            item={item} 
+                            size="lg" 
+                        />
+                    </>
+                ) : itemFecha < fechaReferenciaV3 ? (
+                    <>
+                        <Seguimiento_inasistencia  
+                            recarga_ficha_estudiante={true} 
+                            show={show2} 
+                            onHide={handleCloseIn} 
+                            handleCloseIn={handleCloseIn} 
+                            item={item} 
+                            size="lg" 
+                        />
+                        <Seguimiento_individual_edit_v2 
+                            recarga_ficha_estudiante={true} 
+                            show={show} 
+                            onHide={handleClose} 
+                            handleClose={handleClose} 
+                            item={item} 
+                            size="lg" 
+                        />
+                    </>
+                ) : (
+                    <>
+                        <Seguimiento_inasistencia  
+                            recarga_ficha_estudiante={true} 
+                            show={show2} 
+                            onHide={handleCloseIn} 
+                            handleCloseIn={handleCloseIn} 
+                            item={item} 
+                            size="lg" 
+                        />
+                        <Seguimiento_individual_edit_v3  
+                            recarga_ficha_estudiante={true} 
+                            show={show} 
+                            onHide={handleClose} 
+                            handleClose={handleClose} 
+                            item={item} 
+                            size="lg" 
+                        />
+                    </>
+                )}
             </Row>
             }</>
         )

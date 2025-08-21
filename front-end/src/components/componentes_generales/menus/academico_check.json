@@ -1,0 +1,15 @@
+[
+    {
+        "id":"1",
+        "path":"/",
+        "name":"academico_check",
+        "icon":"bi-mortarboard-fill",
+        "childrens":[
+            {
+                "path":"/academico_asistencia",
+                "name":"Control de asistencia",
+                "icon":"bi bi-card-checklist"
+            }
+        ]
+    }
+]
