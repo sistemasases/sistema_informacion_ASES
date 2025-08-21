@@ -11,7 +11,7 @@ class hisotrial_ficha_serializer(serializers.ModelSerializer):
     def get_id_user(self, obj):
         return f"{obj.id_user.first_name} {obj.id_user.last_name}"
 
-class seguimiento_individual_serializer(serializers.ModelSerializer):
+class seguimiento_individual_serializer(serializers.ModelSerializer): 
     id_editors= hisotrial_ficha_serializer(source='id_ficha_in_historial_ficha',many=True,read_only=True)
     nombre_creador = serializers.SerializerMethodField(source='id_creador_seguimiento', allow_null=True,read_only=True)
     id_semestre = serializers.PrimaryKeyRelatedField(queryset=semestre.objects.all(), write_only=True)
@@ -153,7 +153,6 @@ class seguimiento_individual_serializer(serializers.ModelSerializer):
                 pass
         return instance
 
-
 class inasistencia_serializer(serializers.ModelSerializer):
 
 	# create a meta class
@@ -167,3 +166,32 @@ class riesgo_individual_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = riesgo_individual
 		fields = '__all__'
+          
+class seguimiento_individual_export_serializer(serializers.ModelSerializer):
+    id_creador_id = serializers.IntegerField(source="id_creador.id", read_only=True)
+    id_estudiante_id = serializers.IntegerField(source="id_estudiante.id", read_only=True)
+    id_modificador_id = serializers.IntegerField(source="id_modificador.id", read_only=True)
+
+    class Meta:
+        model = seguimiento_individual
+        fields = '__all__'
+
+class inasistencia_export_serializer(serializers.ModelSerializer):
+    id_creador_id = serializers.IntegerField(source="id_creador.id", read_only=True)
+    id_estudiante_id = serializers.IntegerField(source="id_estudiante.id", read_only=True)
+    id_modificador_id = serializers.IntegerField(source="id_modificador.id", read_only=True)
+
+    class Meta:
+        model = inasistencia
+        fields = [
+            "id",
+            "fecha",
+            "observaciones",
+            "revisado_profesional",
+            "revisado_practicante",
+            "creacion",
+            "modificacion",
+            "id_creador_id",
+            "id_estudiante_id",
+            "id_modificador_id"
+        ]

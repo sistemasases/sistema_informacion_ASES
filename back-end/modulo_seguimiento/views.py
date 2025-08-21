@@ -13,7 +13,7 @@ from modulo_seguimiento.models import *
 from modulo_instancia.models import *
 from modulo_instancia.serializers import semestre_serializer
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db.models import Q
 from operator import and_
 from functools import reduce
@@ -22,6 +22,11 @@ from rest_framework.generics import GenericAPIView
 from django.views import View
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import MultipleObjectsReturned
+
+import csv
+from django.http import HttpResponse
+from modulo_seguimiento.utils.csv_export import ExportarCSVBaseView
+from .filters import build_filtros
 
 # Create your views here.
 
@@ -74,12 +79,10 @@ class seguimiento_individual_viewsets (viewsets.ModelViewSet):
         except seguimiento_individual.DoesNotExist:
             return Response({})
 
-
 class inasistencia_viewsets (viewsets.ModelViewSet):
     serializer_class = inasistencia_serializer
     permission_classes = (IsAuthenticated,)
     queryset = inasistencia_serializer.Meta.model.objects.all()
-
 
 class riesgo_individual_viewsets (viewsets.ModelViewSet):
     serializer_class = riesgo_individual_serializer
@@ -150,7 +153,6 @@ class seguimientos_estudiante_solo_semestre_actual_viewsets (viewsets.ModelViewS
                     lista_semestre.append(j)
             list_final.append(lista_semestre)
         return Response(list_final,status=status.HTTP_200_OK)
-
 
 class conteo_seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
     serializer_class = seguimiento_individual_serializer
@@ -225,81 +227,6 @@ class conteo_seguimientos_estudiante_viewsets (viewsets.ModelViewSet):
 #   * @param {ModelViewSet} viewsets.ModelViewSet, View set usada por django.
 #   * @return {Json} seguimientos, inasistencias, Json con todos los seguimientos e inasistencias filtradas.
 #
-class descarga_seguimientos_inasistencias_viewsets (viewsets.ModelViewSet):
-
-    serializer_class = seguimiento_individual_serializer
-    permission_classes = (IsAuthenticated,)
-    queryset = seguimiento_individual_serializer.Meta.model.objects.all()
-
-    def post(self, request, pk=None):
-
-        filters_and = []
-        try:
-            if request.data['estudiante']:
-                estudiante_obj = estudiante.objects.get(cod_univalle=request.data['estudiante'])
-                filters_and.append(Q(**{ "id_estudiante": estudiante_obj }))
-            else:
-                estudiante_obj = estudiante.objects.all()
-                filters_and.append(Q(**{ "id_estudiante__in": estudiante_obj }))
-        except:
-                estudiante_obj = []
-                filters_and.append(Q(**{ "id_estudiante__in": estudiante_obj }))
-        try:
-            if request.data['fecha_inicio']:
-                filters_and.append(Q(**{ "fecha__gte": request.data['fecha_inicio'] }))
-        except:
-            pass
-        try:
-            if request.data['fecha_fin']:
-                filters_and.append(Q(**{ "fecha__lte": request.data['fecha_fin'] }))
-        except:
-            pass
-        try:
-            if request.data['programa']:
-                programa_obj = programa.objects.filter(codigo_univalle=request.data['programa'])
-                estudiantes_del_programa = programa_estudiante.objects.filter(id_programa__in=programa_obj).values_list('id_estudiante', flat=True)
-                filters_and.append(Q(**{ "id_estudiante__in": estudiantes_del_programa }))
-        except:
-            pass
-        try:
-            if request.data['sede']:
-                sede_obj = sede.objects.filter(nombre=request.data['sede'])
-                programa_obj = programa.objects.filter(id_sede__in=sede_obj)
-                estudiantes_del_programa = programa_estudiante.objects.filter(id_programa__in=programa_obj).values_list('id_estudiante', flat=True)
-                filters_and.append(Q(**{ "id_estudiante__in": estudiantes_del_programa }))
-        except:
-            pass
-        try:
-            if request.data['cohorte']:
-                cohorte_obj = cohorte.objects.filter(id_number=request.data['cohorte'])
-                estudiantes_del_programa = cohorte_estudiante.objects.filter(id_cohorte__in=cohorte_obj).values_list('id_estudiante', flat=True)
-                filters_and.append(Q(**{ "id_estudiante__in": estudiantes_del_programa }))
-        except:
-            pass
-
-        reduce_and = reduce(and_, filters_and)
-        filters = []
-        filters.append(reduce_and)
-
-        seguimientos_data = seguimiento_individual_serializer(
-            seguimiento_individual.objects.filter(*filters).select_related('id_estudiante').order_by("fecha"),
-            many=True).data
-
-        inasistencias_data = inasistencia_serializer(
-            inasistencia.objects.filter(*filters).select_related('id_estudiante').order_by("fecha"),
-            many=True).data
-
-        # Diccionario de id_estudiante a cod_univalle para evitar múltiples consultas
-        estudiante_cod_map = {e.id: e.cod_univalle for e in estudiante.objects.all()}
-
-        # Agregar el código del estudiante a los resultados
-        for seguimiento in seguimientos_data:
-            seguimiento['codigo_estudiante'] = estudiante_cod_map.get(seguimiento['id_estudiante'])
-
-        for inasistencia_obj in inasistencias_data:
-            inasistencia_obj['codigo_estudiante'] = estudiante_cod_map.get(inasistencia_obj['id_estudiante'])
-
-        return Response({"seguimientos": seguimientos_data, "inasistencias": inasistencias_data},status=status.HTTP_200_OK)
 
 class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
     serializer_class = basic_estudiante_serializer
@@ -430,3 +357,25 @@ class consulta_DEXIA_viewsets (viewsets.GenericViewSet):
         except estudiante.DoesNotExist:
             final_list_estudiantes = list()
             return Response(final_list_estudiantes,status=status.HTTP_204_NO_CONTENT)
+
+class ExportarSeguimientosCSV(ExportarCSVBaseView):
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        return seguimiento_individual.objects.all()  # Para ExportarSeguimientosCSV
+    serializer_class = seguimiento_individual_export_serializer
+    filename = "seguimientos.csv"
+
+    def post(self, request):
+        self.filtros = build_filtros(request.data)
+        return super().post(request)
+
+class ExportarInasistenciasCSV(ExportarCSVBaseView):
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        return inasistencia.objects.all()  # Para ExportarInasistenciasCSV
+    serializer_class = inasistencia_export_serializer
+    filename = "inasistencias.csv"
+
+    def post(self, request):
+        self.filtros = build_filtros(request.data)
+        return super().post(request)
