@@ -12,105 +12,29 @@ import Descargar_fichas from "../../service/descargar_fichas";
 import All_cohorte_service from "../../service/all_cohorte";
 import All_sede_service from "../../service/all_sede";
 import Form from "react-bootstrap/Form";
-import React, { useState } from "react";
-import { CSVLink } from "react-csv";
+import React, {useEffect, useState } from "react";
 import Select from "react-select";
 
 const Descarga_fichas_component = () => {
-  // Aquí se guardará todas las sedes en el sistema.
-  var opciones_sede = [];
-  // Aquí se guardará todos los cohortes en el sistema.
-  var opciones_cohorte = [];
-  // Variable para guardar la respuesta del axios
-  var response = undefined;
-  // constante para almacenar el modelo de los seguimientos
-  const [seguimientosData, set_seguimientosData] = useState([
-    {
-      id: 0,
-      fecha: "",
-      lugar: "",
-      hora_inicio: "",
-      hora_finalización: "",
-      objetivos: "",
-      individual: "",
-      riesgo_individual: null,
-      autoconocimiento: false,
-      rasgos_de_personalidad: false,
-      identificación: false,
-      red_de_apoyo: false,
-      proyecto_de_vida: false,
-      salud: false,
-      aspectos_motivacionales: false,
-      historia_de_vida: false,
-      relación_eriótico_afectivas: false,
-      diversidad_sexual: false,
-      familiar: "",
-      riesgo_familiar: null,
-      dinamica_familiar: false,
-      academico: "",
-      riesgo_academico: null,
-      desempeño_académico: false,
-      elección_vocacional: false,
-      manejo_del_tiempo: false,
-      economico: "",
-      riesgo_economico: null,
-      apoyos_económicos_institucionales: false,
-      manejo_finanzas: false,
-      apoyo_económico_familiar: false,
-      situación_laboral_ocupacional: false,
-      vida_universitaria_ciudad: "",
-      riesgo_vida_universitaria_ciudad: null,
-      motivación_compañamiento: false,
-      referencia_geográfica: false,
-      adaptación_ciudad_Universidad: false,
-      oferta_servicios: false,
-      vivienda: false,
-      vinculación_grupos_actividades_extracurriculares: false,
-      apoyo_académico: false,
-      taller_par_par: false,
-      reconocimiento_ciudad_U: false,
-      rem_profesional_SE: false,
-      rem_racticante_SE: false,
-      rem_actividades_grupales: false,
-      rem_monitorías_académicas: false,
-      rem_proyectos_Universidad: false,
-      rem_servicio_salud: false,
-      rem_registro_académico: false,
-      rem_matrícula_financiera: false,
-      rem_desarrollo_humano_promoción_SE: false,
-      rem_directores_programa: false,
-      rem_grupos_universidad: false,
-      rem_externa: false,
-      Ninguna_acción_realizada: false,
-      observaciones: "",
-      revisado_profesional: false,
-      revisado_practicante: false,
-      primer_acercamiento: false,
-      cierre: false,
-      creacion: "",
-      modificacion: "",
-      id_creador: null,
-      id_modificador: null,
-      id_estudiante: null,
-    },
-  ]);
-  // constante para almacenar el modelo de las inasistencias
-  const [inasistenciasData, set_inasistenciasData] = useState([
-    {
-      id: 0,
-      fecha: "",
-      observaciones: "",
-      revisado_profesional: false,
-      revisado_practicante: false,
-      creacion: "",
-      modificacion: "",
-      id_creador: null,
-      id_modificador: null,
-      id_estudiante: null,
-    },
-  ]);
+  // Estados para opciones de select
+  const [opciones_sede, setOpcionesSede] = useState([]);
+  const [opciones_cohorte, setOpcionesCohorte] = useState([]);
+  
+  // Se inicializan como arreglos vacíos (sin datos por defecto)
+  const [seguimientosData, set_seguimientosData] = useState([]);
+  const [inasistenciasData, set_inasistenciasData] = useState([]);
+
+  // Banderas para controlar si hay contenido descargable
+  const [tieneSeguimientos, setTieneSeguimientos] = useState(false);
+  const [tieneInasistencias, setTieneInasistencias] = useState(false);
+
   // constante con mensaje para el modal
   const [respuesta, set_respuesta] = useState("Cargando, espera un momento.");
+  // Constante para permitir activar el botón de descarga una vez finalice el axios
+  const [descargaHabilitada, setDescargaHabilitada] = useState(true);
+  // Show para manejar la vista del modal
+  const [show, setShow] = useState(false);
+
   // constante para almacenar los filtros escogidos
   const [form, set_form] = useState({
     estudiante: "",
@@ -120,8 +44,7 @@ const Descarga_fichas_component = () => {
     sede: "",
     cohorte: "",
   });
-  // Constante para permitir activar el botón de descarga una vez finalice el axios
-  const [descargaHabilitada, setDescargaHabilitada] = useState(true);
+  
   /**
    * Función para cambiar los valores de los filtros.
    * @param {Event} e Información del evento del filtro que está cambiando.
@@ -152,12 +75,12 @@ const Descarga_fichas_component = () => {
       cohorte: e.value,
     });
   };
-  // Show para manejar la vista del modal
-  const [show, setShow] = useState(false);
+  
   /**
    * Función para abrir el modal, cambiando el show a true.
    */
   const handle_open = () => setShow(true);
+  
   /**
    * Función para cerrar el modal, cambiando el show a false.
    */
@@ -165,54 +88,118 @@ const Descarga_fichas_component = () => {
     setShow(false);
     set_respuesta("Cargando, espera un momento.");
     setDescargaHabilitada(true);
+    setTieneSeguimientos(false);
+    setTieneInasistencias(false);
+    set_seguimientosData([]);
+    set_inasistenciasData([]);
   };
+  
   /**
    * Función asincronica que hace la consulta en la API para traer las fichas.
    */
   const handle_upload = async () => {
+    // Validar que al menos un filtro tenga valor en el form
+    const alMenosUnFiltroActivo = Object.values(form).some(
+      (valor) => valor !== "" && valor !== null && valor !== undefined
+    );
+
+    if (!alMenosUnFiltroActivo) {
+      set_respuesta("Por favor, ingrese al menos un filtro antes de continuar.");
+      setShow(true);
+      return;
+    }
+
     set_respuesta("Cargando, espera un momento.");
     setDescargaHabilitada(true);
     handle_open();
-    await Descargar_fichas.descargar_fichas(form)
-      .then((res) => {
-        response = res.data;
-        set_seguimientosData(response["seguimientos"]);
-        set_inasistenciasData(response["inasistencias"]);
-        set_respuesta("Busqueda finalizada.");
-        setDescargaHabilitada(false);
-      })
-      .catch((err) => {
-        set_respuesta("Error al momento de buscar las fichas.");
-        setDescargaHabilitada(true);
-      });
+
+    try {
+      const res = await Descargar_fichas.descargar_fichas(form);
+
+      // Si hubo un error en la respuesta, lanzar error
+      if (!res || !res.data) {
+        throw new Error("No se obtuvieron datos de la API");
+      }
+
+      // Validar si los CSV tienen contenido real (no están vacíos)
+      const tieneContenidoValido = (csv) =>
+        typeof csv === "string" && csv.trim() !== "";
+
+      // Procesar seguimientos
+      if (tieneContenidoValido(res.data.seguimientos)) {
+        const seguimientosBlob = new Blob(["\uFEFF" + res.data.seguimientos], {
+          type: "text/csv;charset=utf-8",
+        });
+        const seguimientosUrl = URL.createObjectURL(seguimientosBlob);
+        set_seguimientosData([seguimientosUrl]);
+        setTieneSeguimientos(true);
+      } else {
+        set_seguimientosData([]);
+        setTieneSeguimientos(false);
+      }
+      // Procesar inasistencias
+      if (tieneContenidoValido(res.data.inasistencias)) {
+        const inasistenciasBlob = new Blob(["\uFEFF" + res.data.inasistencias], {
+          type: "text/csv;charset=utf-8",
+        });
+        const inasistenciasUrl = URL.createObjectURL(inasistenciasBlob);
+        set_inasistenciasData([inasistenciasUrl]);
+        setTieneInasistencias(true);
+      } else {
+        set_inasistenciasData([]);
+        setTieneInasistencias(false);
+      }      
+
+      set_respuesta("Búsqueda finalizada.");
+      setDescargaHabilitada(false);
+    } catch (err) {
+      // Registrar errores y mostrar un mensaje de error
+      //console.log("response.seguimientos:", response?.seguimientos);
+      //console.log("response.inasistencias:", response?.inasistencias);
+      console.error("Error en handle_upload:", err);
+      set_respuesta("Error al momento de buscar las fichas.");
+      setDescargaHabilitada(true);
+      setTieneSeguimientos(false);
+      setTieneInasistencias(false);
+    }
   };
+
   /**
    * Función asincronica para cargar los select de sedes y cohortes con la información en el sistema.
    */
   const cargar_selects = async () => {
-    await All_sede_service.all_sede().then((res) => {
-      for (var i = 0; i < res["length"]; i++) {
-        const dato = {
-          value: res[i]["nombre"],
-          label: res[i]["nombre"],
-          id: res[i]["id"],
-        };
-        opciones_sede.push(dato);
-      }
-    });
-    await All_cohorte_service.all_cohorte().then((res) => {
-      for (var i = 0; i < res["length"]; i++) {
-        const dato = {
-          value: res[i]["id_number"],
-          label: res[i]["id_number"],
-          id: res[i]["id"],
-        };
-        opciones_cohorte.push(dato);
-      }
-    });
+    const sedes = await All_sede_service.all_sede();
+    const cohortes = await All_cohorte_service.all_cohorte();
+
+    setOpcionesSede(
+      sedes.map((sede) => ({
+        value: sede.nombre,
+        label: sede.nombre,
+        id: sede.id,
+      }))
+    );
+
+    setOpcionesCohorte(
+      cohortes.map((cohorte) => ({
+        value: cohorte.id_number,
+        label: cohorte.id_number,
+        id: cohorte.id,
+      }))
+    );
   };
 
-  cargar_selects();
+  useEffect(() => {
+    cargar_selects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);  
+
+  // Efecto para disparar la descarga cuando los datos estén listos
+  useEffect(() => {
+    if (descargaHabilitada === false) {
+      // Ya se prepararon los archivos, mostramos el modal
+      setShow(true);
+    }
+  }, [descargaHabilitada]);  
 
   return (
     <Container className="mi-clase-background">
@@ -235,7 +222,7 @@ const Descarga_fichas_component = () => {
                 type="date"
                 name="fecha_inicio"
                 value={form.fecha_inicio}
-                onChange={(e) => handle_form(e)}
+                onChange={handle_form}
               />
             </Form.Group>
             <br />
@@ -245,7 +232,7 @@ const Descarga_fichas_component = () => {
                 type="date"
                 name="fecha_fin"
                 value={form.fecha_fin}
-                onChange={(e) => handle_form(e)}
+                onChange={handle_form}
               />
             </Form.Group>
             <br />
@@ -255,29 +242,27 @@ const Descarga_fichas_component = () => {
                 type="text"
                 name="programa"
                 value={form.programa}
-                onChange={(e) => handle_form(e)}
+                onChange={handle_form}
               />
             </Form.Group>
             <br />
-            <Form.Group onClick={cargar_selects}>
+            <Form.Group>
               <Form.Label>Sede</Form.Label>
               <Select
-                class="option"
                 className="option"
                 options={opciones_sede}
-                onChange={(e) => handle_form_sede(e)}
-                placeholder="Selecione una sede"
+                onChange={handle_form_sede}
+                placeholder="Seleccione una sede"
               />
             </Form.Group>
             <br />
-            <Form.Group onClick={cargar_selects}>
+            <Form.Group>
               <Form.Label>Cohorte</Form.Label>
               <Select
-                class="option"
                 className="option"
                 options={opciones_cohorte}
-                onChange={(e) => handle_form_cohorte(e)}
-                placeholder="Selecione una cohorte"
+                onChange={handle_form_cohorte}
+                placeholder="Seleccione una cohorte"
               />
             </Form.Group>
           </Form>
@@ -286,7 +271,11 @@ const Descarga_fichas_component = () => {
       </Row>
       <br />
       <Col>
-        <Button variant="primary" onClick={handle_upload}>
+        <Button
+          variant="primary"
+          onClick={handle_upload}
+          disabled={!Object.values(form).some((valor) => valor !== "" && valor !== null && valor !== undefined)}
+        >
           Filtrar
         </Button>
       </Col>
@@ -297,38 +286,33 @@ const Descarga_fichas_component = () => {
         </Modal.Header>
         <Modal.Body>{respuesta}</Modal.Body>
         <Modal.Footer>
-          {!descargaHabilitada ? (
-            <>
-              {" "}
-              {inasistenciasData[1] ? (
-                <CSVLink
-                  data={inasistenciasData}
-                  headers={Object.keys(inasistenciasData[0])}
-                  filename="inasistencias.csv"
-                  className="hidden"
-                  separator="|"
-                >
-                  Descargar Inasistencias
-                </CSVLink>
-              ) : (
-                <></>
-              )}
-              {seguimientosData[1] ? (
-                <CSVLink
-                  data={seguimientosData}
-                  headers={Object.keys(seguimientosData[0])}
-                  filename="seguimientos.csv"
-                  className="hidden"
-                  separator="*"
-                >
-                  Descargar Seguimientos
-                </CSVLink>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
+          {/* Mostrar botón solo si hay datos de inasistencias */}
+          {descargaHabilitada === false && tieneInasistencias && (
+            <a
+              href={inasistenciasData[0]}
+              download="inasistencias.csv"
+              className="btn btn-primary m-2"
+            >
+              Descargar Inasistencias
+            </a>
+          )}
+          {/* Mostrar botón solo si hay datos de seguimientos */}
+          {descargaHabilitada === false && tieneSeguimientos && (
+            <a
+              href={seguimientosData[0]}
+              download="seguimientos.csv"
+              className="btn btn-primary m-2"
+            >
+              Descargar Seguimientos
+            </a>
+          )}
+          {/* Mensaje si no hay nada para descargar */}
+          {descargaHabilitada === false &&
+            !tieneInasistencias &&
+            !tieneSeguimientos && (
+              <div className="text-muted w-100 text-center">
+                No se encontraron datos para descargar.
+              </div>
           )}
           <Button variant="secondary" onClick={handle_close}>
             Salir
