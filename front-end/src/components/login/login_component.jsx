@@ -149,6 +149,13 @@ const Login_component = () => {
     // console.log("HOLAAA");
     console.log(mail);
 
+
+    // Primero se valida que los campos no estén vacíos
+    if (mail.correo === "" || mail.username === "") {
+      alert("Por favor ingrese tanto el correo como el nombre de usuario, tambien asegurese que ninguno de los campos tenga espacios en blanco.");
+      return;
+    }
+
     // setShow(true);
     axios
       .post(
@@ -306,8 +313,9 @@ const Login_component = () => {
                       style={{
                         marginTop: "10px",
                         width: "100%",
-                      }}
+                      }}                
                       type="text"
+                      required
                       placeholder="Nombre de Usuario"
                       onChange={(e) => {
                         setMail({
