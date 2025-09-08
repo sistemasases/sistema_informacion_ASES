@@ -23,6 +23,8 @@ import {
   encriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
+import Asiste_academico from "../../service/ficha_estudiante_consulta_academico.js";
+
 const Info_basica = (props) => {
   // console.log(props);
   const config = {
@@ -122,6 +124,7 @@ const Info_basica = (props) => {
     tab_abierto: "",
     seleccionado: "",
     ya_selecciono_automatico: true,
+    asistencia_academica: [],
 
     id_usuario: "",
     nombres: "",
@@ -388,6 +391,27 @@ const Info_basica = (props) => {
   };
   // // console.log(state.total_datos_estudiante_seleccionado);
 
+  const asistenciaAcademicos = async () => {
+    const response = await Asiste_academico.ficha_estudiante_consulta_academico(
+      {
+        id_estudiante: state.total_datos_estudiante_seleccionado.id,
+        semestre_actual: desencriptar(
+          sessionStorage.getItem("semestre_actual")
+        ),
+        id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
+      }
+    );
+    set_state({
+      ...state,
+      asistencia_academica: response,
+    });
+  };
+
+  // Consulta si el estudiante asiste a monitorias academicas
+  useEffect(() => {
+    asistenciaAcademicos();
+  }, [state.total_datos_estudiante_seleccionado]);
+
   // Renderizado del componente para visualizar seguimientos
   return (
     <Row className="row_prueba">
@@ -512,6 +536,10 @@ const Info_basica = (props) => {
                             <br />
                           </h4>
                         </Row>
+                        <Row>
+                          <br />
+                          Es academico?
+                        </Row>
                         <Row md={"5"}>
                           {/* Tratamiento de Datos */}
                           <Col
@@ -602,7 +630,85 @@ const Info_basica = (props) => {
                             <br />
                           </h4>
                         </Row>
-
+                        <Row>¿Es académico?</Row>
+                        <Row md={"2"}>
+                          <Col md={"2"}>
+                            <input
+                              type="checkbox"
+                              readOnly
+                              checked={
+                                state?.total_datos_estudiante_seleccionado
+                                  ?.es_academico == true
+                                  ? true
+                                  : false
+                              }
+                            ></input>
+                            {"Sí"}
+                          </Col>
+                          <Col md={"2"}>
+                            <input
+                              type="checkbox"
+                              readOnly
+                              checked={
+                                state?.total_datos_estudiante_seleccionado
+                                  ?.es_academico == false
+                                  ? true
+                                  : false
+                              }
+                            ></input>
+                            {"No"}
+                          </Col>
+                        </Row>
+                        {state?.total_datos_estudiante_seleccionado
+                          ?.es_academico == true ? (
+                          <Col>
+                            <Row>
+                              <Col md={"6"}>Asiste en semestre actual </Col>
+                              <Col md={"1"}>
+                                {state?.asistencia_academica[0]
+                                  ?.asiste_monitoria == true
+                                  ? "Sí"
+                                  : "NO"}
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md={"6"}> Nombre de la monitoria</Col>
+                              <Col md={"6"}>
+                                {state?.asistencia_academica[0]
+                                  ?.nombre_monitoria[0]
+                                  ? state?.asistencia_academica[0]?.nombre_monitoria.map(
+                                      (monitoria, index) => (
+                                        <div key={index}>
+                                          {monitoria.nombre}
+                                        </div>
+                                      )
+                                    )
+                                  : "N/A"}
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md={"6"}>Cantidad de asistenicas</Col>
+                              <Col md={"1"}>
+                                {
+                                  state?.asistencia_academica[0]
+                                    ?.cantidad_asistencias
+                                }
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md={"6"}>Fecha de la última asistencia</Col>
+                              <Col md={"3"}>
+                                {state?.asistencia_academica[0]
+                                  ?.fecha_ult_asistencia
+                                  ? state?.asistencia_academica[0]
+                                      ?.fecha_ult_asistencia
+                                  : "N/A"}
+                              </Col>
+                            </Row>
+                          </Col>
+                        ) : (
+                          <></>
+                        )}
                         <Row md={"5"}>
                           {/* Tratamiento de Datos */}
                           <Col
