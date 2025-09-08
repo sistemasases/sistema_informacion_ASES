@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from modulo_seguimiento.models import *
+from modulo_usuario_rol.models import usuario_rol
 from datetime import date
 
 class hisotrial_ficha_serializer(serializers.ModelSerializer):
@@ -15,6 +16,37 @@ class seguimiento_individual_serializer(serializers.ModelSerializer):
     id_editors= hisotrial_ficha_serializer(source='id_ficha_in_historial_ficha',many=True,read_only=True)
     nombre_creador = serializers.SerializerMethodField(source='id_creador_seguimiento', allow_null=True,read_only=True)
     id_semestre = serializers.PrimaryKeyRelatedField(queryset=semestre.objects.all(), write_only=True)
+    rol_creador = serializers.SerializerMethodField(allow_null=True,read_only=True) 
+    id_rol_creador = serializers.SerializerMethodField(allow_null=True,read_only=True)   
+
+
+    # funcion que se llama de manera automatica, se encarga de agregar el campo rol_creador, 
+    # que obtiene el rol del usuario que creo la ficha de seguimiento, y lo agrega al serializador.
+    def get_rol_creador(self, obj):
+        usuario_rol_qs = usuario_rol.objects.filter(
+            id_usuario=obj.id_creador,
+            estado="ACTIVO"
+        ).select_related("id_rol").first()
+
+        # validamos si el usuario tiene un rol activo, si es asi, retornamos el nombre del rol, si no, retornamos None
+        if usuario_rol_qs:
+            return usuario_rol_qs.id_rol.nombre 
+        return None
+    
+
+    # funcion que se llama de manera automatica, se encarga de agregar el campo id_rol_creador, 
+    # que obtiene el id del rol del usuario que creo la ficha de seguimiento, y lo agrega al serializador.
+    def get_id_rol_creador(self, obj):
+        id_rol = usuario_rol.objects.filter(
+            id_usuario=obj.id_creador,
+            estado="ACTIVO"
+        ).select_related("id_rol").first() 
+
+        # validamos si el usuario tiene un rol activo, si es asi, retornamos el id del rol, si no, retornamos None
+        if id_rol:
+            return id_rol.id_rol.id
+        return None
+
 
     class Meta:
         model = seguimiento_individual
