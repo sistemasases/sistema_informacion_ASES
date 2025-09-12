@@ -23,6 +23,7 @@ import { CSVLink } from "react-csv";
 import axios from "axios";
 import All_sede_service from "../../service/all_sede";
 import Select from "react-select";
+import "../../Scss/reportes/reporte.css";
 
 // Columnas del reporte
 var columns = [
@@ -121,9 +122,17 @@ const Reporte = () => {
     let rol = desencriptar(sessionStorage.getItem("rol"));
     let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
     let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+    
+    // Roles que tienen acceso al botón "Traer todos"
+    const rolesConBoton = ["super_ases", "socioeducativo", "socioeducativo_reg", "dir_academico"];
+    
+    // Roles que cargan datos automáticamente sin botón
+    const rolesAutoCarga = ["profesional", "practicante", "monitor"];
+    
     const config = {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
     };
+    
     const estudiantes_por_rol = async () => {
       try {
         const response = await axios.get(
@@ -137,9 +146,18 @@ const Reporte = () => {
           estudiante: response.data,
         });
         setFiltered(response.data);
-      } catch (error) {}
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error al cargar estudiantes por rol:", error);
+        setIsLoading(false);
+      }
     };
-    estudiantes_por_rol();
+    
+    // Solo ejecutar para roles que no tienen botón "Traer todos"
+    // Los roles con botón cargarán los datos en el segundo useEffect
+    if (!rolesConBoton.includes(rol)) {
+      estudiantes_por_rol();
+    }
   }, []);
 
   // Conexión con el back para traer los estudiantes por filtro
@@ -148,14 +166,25 @@ const Reporte = () => {
     let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
     let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
 
+    // Roles que tienen acceso al botón "Traer todos"
+    const rolesConBoton = ["super_ases", "socioeducativo", "socioeducativo_reg", "dir_academico"];
+    
+    // Roles que cargan datos automáticamente sin botón
+    const rolesAutoCarga = ["profesional", "practicante", "monitor"];
+
     // Funcion que busca el reporte del estudiante logueado.
     const riesgos_estudiante = async () => {
-      // Deshabilitar el botón de traer todos los estudiantes, mientras se hace la consulta
-      document
-        .getElementsByName("bring_them_on")[0]
-        .setAttribute("disabled", "true");
+      // Solo deshabilitar el botón si el rol tiene acceso a él
+      if (rolesConBoton.includes(rol)) {
+        const botonElement = document.getElementsByName("bring_them_on")[0];
+        if (botonElement) {
+          botonElement.setAttribute("disabled", "true");
+        }
+      }
+      
       // Deshabilitar el selector de sedes mientras se hace la consulta
       setIsDisabled(true);
+      
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
@@ -168,14 +197,22 @@ const Reporte = () => {
           estudiante: response.data,
         });
         setFiltered(response.data);
+        setIsLoading(false);
+        
         // Oculta el gif de carga
-
-        document.getElementsByName("loading_data")[0].style.visibility =
-          "hidden";
-        // Habilita el botón de traer todos los estudiantes una vez termina la consulta
-        document
-          .getElementsByName("bring_them_on")[0]
-          .removeAttribute("disabled");
+        const loadingElement = document.getElementsByName("loading_data")[0];
+        if (loadingElement) {
+          loadingElement.style.visibility = "hidden";
+        }
+        
+        // Solo habilitar el botón si el rol tiene acceso a él
+        if (rolesConBoton.includes(rol)) {
+          const botonElement = document.getElementsByName("bring_them_on")[0];
+          if (botonElement) {
+            botonElement.removeAttribute("disabled");
+          }
+        }
+        
         // Habilita el selector de sedes
         setIsDisabled(false);
 
@@ -191,9 +228,16 @@ const Reporte = () => {
         for (let i = 0; i < header_checks.length; i++) {
           header_checks[i].firstElementChild.removeAttribute("disabled");
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+        setIsLoading(false);
+      }
     };
-    riesgos_estudiante();
+
+    // Solo ejecutar la función si el rol debe cargar datos automáticamente
+    if (rolesAutoCarga.includes(rol) || rolesConBoton.includes(rol)) {
+      riesgos_estudiante();
+    }
   }, []);
 
   // Sedes
@@ -530,6 +574,8 @@ const Reporte = () => {
   const [filtered, setFiltered] = useState(state.estudiante);
   // Constante si no hay resultados
   const [noResults, setNoResults] = useState(false);
+  // Estado para controlar si está cargando
+  const [isLoading, setIsLoading] = useState(true);
   /**
    * Función para buscar según un evento de busqueda.
    * @param {Event} e Información del evento con el valor a buscar.
@@ -1585,6 +1631,7 @@ const Reporte = () => {
           estudiante: response.data,
         });
         setFiltered(response.data);
+        setIsLoading(false);
         // Oculta el gif de carga
         document.getElementsByName("loading_data")[0].style.visibility =
           "hidden";
@@ -1631,6 +1678,7 @@ const Reporte = () => {
           estudiante: response.data,
         });
         setFiltered(response.data);
+        setIsLoading(false);
 
         // Habilita el gif de carga
         document.getElementsByName("loading_data")[0].style.visibility =
@@ -1647,6 +1695,69 @@ const Reporte = () => {
   };
 
   // console.log(state.estudiante);
+
+  // Componente personalizado para mensajes de la tabla
+  const CustomNoDataComponent = () => {
+    let rol = desencriptar(sessionStorage.getItem("rol"));
+    
+    if (isLoading) {
+      return (
+        <div className="reporte-no-data-container">
+          <div>Cargando información...</div>
+        </div>
+      );
+    }
+    
+    if (filtered.length === 0) {
+      if (rol === "monitor") {
+        return (
+          <div className="reporte-no-data-container">
+            <div className="reporte-message-title">
+              <strong>No tienes estudiantes asignados</strong>
+            </div>
+            <div className="reporte-message-subtitle">
+              Contacta a tu profesional a cargo.
+            </div>
+          </div>
+        );
+      } else if (rol === "practicante") {
+        return (
+          <div className="reporte-no-data-container">
+            <div className="reporte-message-title">
+              <strong>No hay estudiantes asignados a tus monitores</strong>
+            </div>
+            <div className="reporte-message-subtitle">
+              Verifica que tus monitores tengan estudiantes asignados
+            </div>
+          </div>
+        );
+      } else if (rol === "profesional") {
+        return (
+          <div className="reporte-no-data-container">
+            <div className="reporte-message-title">
+              <strong>No hay estudiantes asignados a tu equipo</strong>
+            </div>
+            <div className="reporte-message-subtitle">
+              Verifica que tus practicantes y monitores tengan estudiantes asignados
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div className="reporte-no-data-container">
+            <div className="reporte-message-title">
+              <strong>No se encontraron datos</strong>
+            </div>
+            <div className="reporte-message-subtitle">
+              No hay información disponible para mostrar
+            </div>
+          </div>
+        );
+      }
+    }
+    
+    return null;
+  };
 
   // Cambio de datos de la coumna programa - csv
   const csv_data = filtered.map((row) => ({
@@ -1880,7 +1991,7 @@ const Reporte = () => {
               data={filtered}
               // data = {filtered}
               // data={state.estudiante}
-              noDataComponent="Cargando Información..."
+              noDataComponent={<CustomNoDataComponent />}
               pagination
               paginationComponentOptions={paginacionOpciones}
               fixedHeader
@@ -1888,8 +1999,6 @@ const Reporte = () => {
               highlightOnHover
               onRowClicked={(row) => {
                 cambiar_ruta(`/ficha_estudiante/${row.id}`);
-                // console.log(row);
-                console.log(row.id);
               }}
               responsive
               striped
