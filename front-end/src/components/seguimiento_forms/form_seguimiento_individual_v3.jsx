@@ -9,6 +9,9 @@ import {
   encriptar,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 
+// se separa la logica de descargar el csv y registrar el seguimiento en otro componente  btn_registar.jsx
+import RegistroConCSV from "./btn_registrar";
+
 const Seguimiento_individual_v3 = (props) => {
   const recargarPagina = () => {
     // Cambiar la URL a la página con el ID del estudiante seleccionado
@@ -120,31 +123,36 @@ const Seguimiento_individual_v3 = (props) => {
         if (!!state.hora_inicio) {
           if (!!state.hora_finalización) {
             if (!!state.objetivos) {
-              verificador_tematicas();
+              return verificador_tematicas();
             } else {
               window.confirm(
                 "Debes diligenciar el campo 'Objetivos', por favor verifica este campo."
               );
+              return false; 
             }
           } else {
             window.confirm(
               "Debes introducir una Hora de finalización válida, por favor verifica este dato."
             );
+            return false;
           }
         } else {
           window.confirm(
             "Debes introducir una Hora de inicio válida, por favor verifica este dato."
           );
+          return false;
         }
       } else {
         window.confirm(
           "Debes introducir un lugar de encuentro válido, por favor verifica este dato."
         );
+        return false;
       }
     } else {
       window.confirm(
         "Debes introducir una fecha válida, por favor verifica este dato."
       );
+      return false;
     }
   };
   const verificador_tematicas = () => {
@@ -164,16 +172,18 @@ const Seguimiento_individual_v3 = (props) => {
         state.economico.length < 5000 &&
         state.vida_universitaria_ciudad.length < 5000
       ) {
-        verificador_individual();
+        return verificador_individual();
       } else {
         window.confirm(
           "Recuerda que el límite máximo de caracteres, por cuadro de texto, es de 5000."
         );
+        return false;
       }
     } else {
       window.confirm(
         "Debes diligenciar al menos una dimesión, por favor verifica estos campos."
       );
+      return false;
     }
   };
   const verificador_individual = () => {
@@ -195,19 +205,22 @@ const Seguimiento_individual_v3 = (props) => {
           !!state.diversidad_sexual ||
           !!state.red_de_apoyo
         ) {
-          verificador_familiar();
+          return verificador_familiar();
         } else {
           window.confirm(
             "Debes marcar al menos una temática de la dimensión 'Individual', por favor verifica este dato."
           );
+          return false;
         }
       } else {
         window.confirm(
           "Debes diligenciar el riesgo de la dimensión 'Individual', por favor verifica este dato."
         );
+        return false;
       }
     } else {
-      verificador_familiar();
+      return verificador_familiar();
+
     }
   };
 
@@ -223,19 +236,21 @@ const Seguimiento_individual_v3 = (props) => {
           !!state.red_de_apoyo_familiar ||
           !!state.rol_del_estudiante_en_la_familia
         ) {
-          verificador_academico();
+          return verificador_academico();
         } else {
           window.confirm(
             "Debes marcar al menos una temática de la dimensión 'Familiar', por favor verifica este dato."
           );
+          return false;
         }
       } else {
         window.confirm(
           "Debes diligenciar el riesgo de la dimensión 'Familiar', por favor verifica este dato."
         );
+        return false;
       }
     } else {
-      verificador_academico();
+      return verificador_academico();
     }
   };
 
@@ -251,19 +266,21 @@ const Seguimiento_individual_v3 = (props) => {
           !!state.elección_vocacional ||
           !!state.autogestion_academica
         ) {
-          verificador_economico();
+          return verificador_economico();
         } else {
           window.confirm(
             "Debes marcar al menos una temática de la dimensión 'Académico', por favor verifica este dato."
           );
+          return false;
         }
       } else {
         window.confirm(
           "Debes diligenciar el riesgo de la dimensión 'Académico', por favor verifica este dato."
         );
+        return false;
       }
     } else {
-      verificador_economico();
+      return verificador_economico();
     }
   };
 
@@ -280,19 +297,21 @@ const Seguimiento_individual_v3 = (props) => {
           !!state.manejo_finanzas ||
           !!state.situación_laboral_ocupacional
         ) {
-          verificador_vida();
+          return verificador_vida();
         } else {
           window.confirm(
             "Debes marcar al menos una temática de la dimensión 'Económico', por favor verifica este dato."
           );
+          return false;
         }
       } else {
         window.confirm(
           "Debes diligenciar el riesgo de la dimensión 'Económico', por favor verifica este dato."
         );
+        return false;
       }
     } else {
-      verificador_vida();
+      return verificador_vida();
     }
   };
 
@@ -313,19 +332,21 @@ const Seguimiento_individual_v3 = (props) => {
           !!state.vivienda ||
           !!state.vinculación_grupos_actividades_extracurriculares
         ) {
-          verificador_acciones();
+          return verificador_acciones();
         } else {
           window.confirm(
             "Debes marcar al menos una temática de la dimensión 'Vida Universitaria', por favor verifica este dato."
           );
+          return false;
         }
       } else {
         window.confirm(
           "Debes diligenciar el riesgo de la dimensión 'Vida Universitaria', por favor verifica este dato."
         );
+        return false;
       }
     } else {
-      verificador_acciones();
+      return verificador_acciones();
     }
   };
 
@@ -347,15 +368,33 @@ const Seguimiento_individual_v3 = (props) => {
       !!state.rem_grupos_universidad ||
       !!state.rem_externa ||
       !!state.Ninguna_acción_realizada
-    ) {
-      set_info();
+    ) {      
+      //set_info();
+      return true;
     } else {
       window.confirm(
         "Debes marcar al menos una acción realizada o en su defecto marcar 'Ninguna acción realizada', por favor verifica este dato."
       );
+      return false;
     }
   };
 
+
+  //esta funcion se encarga de enviar la info al backend despues de descargar el csv, es la que se le pasa por parametro al RegistroConCSV
+  const enviarDespuesDeDescarga = () => {
+    Create_Seguimiento.create_seguimiento(state).then((res) => {
+      if (res) {
+        recargarPagina();
+        props.handleClose();
+      } else {
+        window.confirm(
+          "Hubo un error con el servidor al momento de crear el seguimiento, por favor envianos el documento CSV o vuelve a intentar el registro."
+        );
+      }
+    });
+  };
+
+  // esta funcion es la que usaba anteriormente para enviar la info al backend
   const set_info = () => {
     console.log(state);
     Create_Seguimiento.create_seguimiento(state).then((res) => {
@@ -2106,9 +2145,13 @@ const Seguimiento_individual_v3 = (props) => {
         <hr></hr>
       </Modal.Body>
       <Modal.Footer>
-        <CSVLink
+
+        {/* esta es la version antigua del boton de registrar con csv, con esta no importaba si el form estava correcto o no
+        el csv se descargaba de todas maneras */}
+        
+        {/* <CSVLink
           data={[state]}
-          filename={"Seguimiento Individual " + state.fecha}
+          filename={"Seguimiento Individual" + state.fecha}
         >
           <Button
             variant="secondary"
@@ -2118,7 +2161,13 @@ const Seguimiento_individual_v3 = (props) => {
           >
             Registrar
           </Button>
-        </CSVLink>
+        </CSVLink> */}
+
+        <RegistroConCSV 
+          state={state} 
+          verificador_datos_basicos={verificador_datos_basicos}
+          onConfirmDownload={enviarDespuesDeDescarga}
+        />
 
         <Button
           variant="secondary"
