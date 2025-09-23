@@ -50,7 +50,11 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
                 <Col className="col_reportes" >
                 { item.revisado_profesional === true ?
                 (
-                    <Row className="col_reportes_hover_block">
+                    <Row className={
+                        item.id_rol_creador === 3
+                        ? "col_reportes_hover_profesional_block" :
+                        "col_reportes_hover_block"
+                    }>
 
                     {
                         item.hora_inicio ?
@@ -73,7 +77,11 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
                     </Row>
                 ):
                 (
-                    <Row className="col_reportes_hover">
+                    <Row className={
+                        item.id_rol_creador === 3
+                        ? "col_reportes_profesional"
+                        : "col_reportes_hover"
+                    }>
 
                     {
                         item.hora_inicio ?
