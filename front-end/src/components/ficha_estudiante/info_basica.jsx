@@ -409,8 +409,10 @@ const Info_basica = (props) => {
 
   // Consulta si el estudiante asiste a monitorias academicas
   useEffect(() => {
-    asistenciaAcademicos();
-  }, [state.total_datos_estudiante_seleccionado]);
+    if (state?.total_datos_estudiante_seleccionado?.id) {
+      asistenciaAcademicos();
+    }
+  }, [state?.total_datos_estudiante_seleccionado?.id]);
 
   // Renderizado del componente para visualizar seguimientos
   return (

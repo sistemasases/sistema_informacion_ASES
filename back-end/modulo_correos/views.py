@@ -377,10 +377,10 @@ class enviar_correos_riesgos_viewset(ViewSet):
 
         asignacion_estudiante = asignacion.objects.filter(
             estado=True, id_estudiante=var_estudiante[0]['id'], id_semestre_id=obj_rol_creador[0]["id_semestre_id"]).values()
-        # print(asignacion_estudiante)
+        print(asignacion_estudiante)
         var_monitor = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=asignacion_estudiante[0]['id_usuario_id']).values()
-        # print(var_monitor)
+        print(var_monitor)
         var_practicante = usuario_rol.objects.filter(
             estado='ACTIVO', id_usuario=var_monitor[0]['id_jefe_id']).values()
         # print(var_practicante[0])
@@ -1644,7 +1644,7 @@ class enviar_riesgo_editado_viewset(ViewSet):
                 User.objects.get(id=data_riesgos['id_modificador'])).data
 
         except Exception as e:
-            return Response({'error': f'Ocurrió un error al intentar obtener los datos: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER)
+            return Response({'error': f'Ocurrió un error al intentar obtener los datos: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         try:
             # Cargar el token desde el archivo
