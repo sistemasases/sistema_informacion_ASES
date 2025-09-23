@@ -65,62 +65,95 @@ const Selector = (props) =>{
         )
         
     }
+    // SIn uso aparente
+    //   const loadInfo = (e) => {
+    //     const paramsget = {
+    //         id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
+    //     };
 
-      const loadInfo = (e) => {
-        const paramsget = {
-            id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
-        };
+    //     const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
+    //         axios({
+    //         // Endpoint to send files
+    //         url:  url_axios,
+    //         params : paramsget,
+    //         method: "GET",
+    //         headers: config,
+    //         })
+    //         .then((respuesta)=>{
+    //             set_state({
+    //                 ...state,
+    //                 data_user_socioedu: respuesta.data
+    //               })
+    //              document.getElementsByName("loading_data")[0].style.visibility = "hidden";
+    //         })
+    //         .catch(err=>{
+    //             return (err)
+    //         })
 
-        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
-            axios({
-            // Endpoint to send files
-            url:  url_axios,
-            params : paramsget,
-            method: "GET",
-            headers: config,
-            })
-            .then((respuesta)=>{
-                set_state({
-                    ...state,
-                    data_user_socioedu: respuesta.data
-                  })
-                 document.getElementsByName("loading_data")[0].style.visibility = "hidden";
-            })
-            .catch(err=>{
-                return (err)
-            })
+    // }
 
-    }
+    // useEffect(() => {
+    //     const paramsget = {
+    //         id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
+    //     };
+    //     // console.log("Selector", props);
+
+    //     document.getElementsByName("loading_data")[0].style.visibility = "visible";
+    //     const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
+    //         axios({
+    //         // Endpoint to send files
+    //         url:  url_axios,
+    //         params : paramsget,
+    //         method: "GET",
+    //         headers: config,
+    //         })
+    //         .then((respuesta)=>{
+    //             document.getElementsByName("loading_data")[0].style.visibility = "hidden";
+            
+    //             set_state({
+    //                 ...state,
+    //                 data_user_socioedu: respuesta.data,
+    //                 tiene_datos_cargados: true
+    //               })
+    //         })
+    //         .catch(err=>{
+    //             return (err)
+    //         })
+    //     activeTab('') 
+    // }, [props?.seleccionado]);
 
     useEffect(() => {
+        if (!props?.seleccionado) return;
+
         const paramsget = {
             id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
         };
-        // console.log("Selector", props);
 
         document.getElementsByName("loading_data")[0].style.visibility = "visible";
-        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/`+props.seleccionado+"/";
-            axios({
-            // Endpoint to send files
-            url:  url_axios,
-            params : paramsget,
+        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/` + props.seleccionado + "/";
+
+        axios({
+            url: url_axios,
+            params: paramsget,
             method: "GET",
             headers: config,
-            })
-            .then((respuesta)=>{
-                document.getElementsByName("loading_data")[0].style.visibility = "hidden";
-            
-                set_state({
-                    ...state,
-                    data_user_socioedu: respuesta.data,
-                    tiene_datos_cargados: true
-                  })
-            })
-            .catch(err=>{
-                return (err)
-            })
-        activeTab('') 
-    }, [props.seleccionado]);
+        })
+        .then((respuesta) => {
+            document.getElementsByName("loading_data")[0].style.visibility = "hidden";
+            set_state((prev) => ({
+                ...prev,
+                data_user_socioedu: respuesta.data,
+                tiene_datos_cargados: true
+            }));
+        })
+        .catch(err => err);
+
+    }, [props?.seleccionado]);
+
+
+    useEffect(() => {
+        activeTab('');
+    }, [props?.seleccionado]);
 
 
     const tabs=[
@@ -188,6 +221,7 @@ const Selector = (props) =>{
                     right: 0,
                     bottom: 0,
                     visibility: "visible",
+                    zIndex: 1000,
                 }}
                 />
             </div>

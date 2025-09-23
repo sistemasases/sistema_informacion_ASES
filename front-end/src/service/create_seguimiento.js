@@ -29,8 +29,8 @@ const create_seguimiento = async (formData) => {
       hora_inicio: formData.hora_inicio,
       hora_finalización: formData.hora_finalización,
       objetivos: formData.objetivos,
-            "objetivos2": formData.objetivos2,
-            "objetivos3": formData.objetivos3,
+      objetivos2: formData.objetivos2,
+      objetivos3: formData.objetivos3,
       individual: formData.individual,
       riesgo_individual: formData.riesgo_individual,
       autoconocimiento: formData.autoconocimiento,
@@ -43,21 +43,24 @@ const create_seguimiento = async (formData) => {
       aspectos_motivacionales: formData.aspectos_motivacionales,
       diversidad_sexual: formData.diversidad_sexual,
       red_de_apoyo: formData.red_de_apoyo,
-      rasgos_de_personalidad: formData.rasgos_de_personalidad,
+      rasgos_de_personalidad: false,
       familiar: formData.familiar,
       riesgo_familiar: formData.riesgo_familiar,
-      dinamica_familiar: formData.dinamica_familiar,
+      dinamica_familiar: false,
       //   nuevos en v3
       relaciones_familiares: formData.relaciones_familiares,
       red_de_apoyo_familiar: formData.red_de_apoyo_familiar,
-      rol_del_estudiante_en_la_familia: formData.rol_del_estudiante_en_la_familia,
+      rol_del_estudiante_en_la_familia:
+        formData.rol_del_estudiante_en_la_familia,
       //   fin nuevos en v3
       academico: formData.academico,
       riesgo_academico: formData.riesgo_academico,
+      // V3
       desempeño_académico: formData.desempeño_académico,
       elección_vocacional: formData.elección_vocacional,
       autogestion_academica: formData.autogestion_academica,
-      manejo_del_tiempo: formData.manejo_del_tiempo,
+      // fin V3
+      manejo_del_tiempo: false,
       economico: formData.economico,
       riesgo_economico: formData.riesgo_economico,
       apoyos_económicos_institucionales:
@@ -72,12 +75,14 @@ const create_seguimiento = async (formData) => {
       referencia_geográfica: formData.referencia_geográfica,
       adaptación_ciudad_Universidad: formData.adaptación_ciudad_Universidad,
       movilidad_y_transporte: formData.movilidad_y_transporte,
-      integracion_a_la_cultura_universitaria: formData.integracion_a_la_cultura_universitaria,
+      integracion_a_la_cultura_universitaria:
+        formData.integracion_a_la_cultura_universitaria,
       vinculación_grupos_actividades_extracurriculares:
-      formData.vinculación_grupos_actividades_extracurriculares,
-      uso_de_los_servicios_universitarios: formData.uso_de_los_servicios_universitarios,
+        formData.vinculación_grupos_actividades_extracurriculares,
+      uso_de_los_servicios_universitarios:
+        formData.uso_de_los_servicios_universitarios,
       vivienda: formData.vivienda,
-      oferta_servicios: formData.oferta_servicios,
+      oferta_servicios: false,
       apoyo_académico: formData.apoyo_académico,
       taller_par_par: formData.taller_par_par,
       reconocimiento_ciudad_U: formData.reconocimiento_ciudad_U,
@@ -95,18 +100,18 @@ const create_seguimiento = async (formData) => {
       rem_grupos_universidad: formData.rem_grupos_universidad,
       rem_externa: formData.rem_externa,
       Ninguna_acción_realizada: formData.Ninguna_acción_realizada,
-            "asist_actividades_grupales": formData.asist_actividades_grupales,
-            "asist_monitoria_aca": formData.asist_monitoria_aca,
-            "asist_matricula_financiera": formData.asist_matricula_financiera,
-            "asist_desa_humano": formData.asist_desa_humano,
-            "asist_proyect_uni": formData.asist_proyect_uni,
-            "asist_dir_programa": formData.asist_dir_programa,
-            "asist_prof_se": formData.asist_prof_se,
-            "asist_servi_salud": formData.asist_servi_salud,
-            "asist_grupo_uni": formData.asist_grupo_uni,
-            "asist_practicante_se": formData.asist_practicante_se,
-            "asist_regis_academico": formData.asist_regis_academico,
-            "asist_rem_externa": formData.asist_rem_externa,
+      asist_actividades_grupales: formData.asist_actividades_grupales,
+      asist_monitoria_aca: formData.asist_monitoria_aca,
+      asist_matricula_financiera: formData.asist_matricula_financiera,
+      asist_desa_humano: formData.asist_desa_humano,
+      asist_proyect_uni: formData.asist_proyect_uni,
+      asist_dir_programa: formData.asist_dir_programa,
+      asist_prof_se: formData.asist_prof_se,
+      asist_servi_salud: formData.asist_servi_salud,
+      asist_grupo_uni: formData.asist_grupo_uni,
+      asist_practicante_se: formData.asist_practicante_se,
+      asist_regis_academico: formData.asist_regis_academico,
+      asist_rem_externa: formData.asist_rem_externa,
       observaciones: formData.observaciones,
       revisado_profesional: formData.revisado_profesional,
       revisado_practicante: formData.revisado_practicante,
@@ -115,7 +120,7 @@ const create_seguimiento = async (formData) => {
       id_creador: formData.id_creador,
       id_modificador: formData.id_modificador,
       id_estudiante: formData.id_estudiante,
-            "id_semestre":formData.id_semestre,
+      id_semestre: formData.id_semestre,
     };
     // Conexion con la API
     await axios
@@ -130,16 +135,19 @@ const create_seguimiento = async (formData) => {
 
     // Cambiar condición de envío ?
     // if (seguimiento.observaciones !== "") {
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/correos/enviar_correos_riesgos/`, {
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/correos/enviar_correos_riesgos/`,
+        {
           params: { estudiante_seleccionado: seguimiento },
-        })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     // } else {
     //   console.log("No se envió el correo porque no hay observaciones");
     // }
