@@ -93,11 +93,30 @@
 .col_reportes_hover:hover{
   background: red;
 }
+
+.col_reportes_profesional{
+  background: rgba(166, 220, 240, 0.939);
+  display: flex;
+  height: 5vh;
+}
+
+.col_reportes_profesional:hover{
+  background: red;
+}
+
+
 .col_reportes_hover_block{
   background:  #636363;
   display: flex;
   height: 5vh;
 }
+
+.col_reportes_hover_profesional_block{
+  background:  rgba(11, 125, 167, 0.939);
+  display: flex;
+  height: 5vh;
+}
+
 .col_reportes_hover_block:hover{
   background: red;
 }

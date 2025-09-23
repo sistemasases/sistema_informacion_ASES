@@ -1644,7 +1644,7 @@ class enviar_riesgo_editado_viewset(ViewSet):
                 User.objects.get(id=data_riesgos['id_modificador'])).data
 
         except Exception as e:
-            return Response({'error': f'Ocurrió un error al intentar obtener los datos: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER)
+            return Response({'error': f'Ocurrió un error al intentar obtener los datos: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         try:
             # Cargar el token desde el archivo
