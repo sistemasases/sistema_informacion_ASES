@@ -92,6 +92,16 @@ const Tabla_sin_Seguimientos = (props) => {
     {
       name: (
         <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Codigo Univalle</h4>
+          <input onChange={handleFilter_cod_univalle} />
+        </Row>
+      ),
+      selector: (row) => row.cod_univalle, 
+      sortable: true,
+    },
+    {
+      name: (
+        <Row className="center_tabla_sin_seguimientos">
           <h4 className="texto_mas_pequeño">Nombres</h4>
           <input onChange={handleFilter_nombre} />
         </Row>
@@ -231,6 +241,7 @@ const Tabla_sin_Seguimientos = (props) => {
   var csv_headers = [
     { label: "ID", key: "id" },
     { label: "Cedula", key: "cedula" },
+    { label: "Codigo uunivalle", key: "cod_univalle"},
     { label: "Nombres", key: "nombres" },
     { label: "Apellidos", key: "apellidos" },
     { label: "Cantidad de fichas", key: "cantidad_de_fichas" },
@@ -249,6 +260,7 @@ const Tabla_sin_Seguimientos = (props) => {
       new_data.push({
         id: data[i].id,
         cedula: data[i].cedula,
+        cod_univalle: data[i].cod_univalle,
         nombres: data[i].nombres,
         apellidos: data[i].apellidos,
         cantidad_de_fichas: data[i].cantidad_de_fichas,
@@ -285,6 +297,17 @@ const Tabla_sin_Seguimientos = (props) => {
   function handleFilter_cedula(event) {
     const newData = state.la_info_de_la_tabla.filter((row) =>
       row.cedula.toString().includes(event.target.value)
+    );
+    const updatedData =
+      newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
+  }
+
+
+  function handleFilter_cod_univalle(event) {
+    const newData = state.la_info_de_la_tabla.filter((row) =>
+      row.cod_univalle.toLowerCase().includes(event.target.value.toLowerCase())
     );
     const updatedData =
       newData.length > 0 ? newData : state.la_info_de_la_tabla;
