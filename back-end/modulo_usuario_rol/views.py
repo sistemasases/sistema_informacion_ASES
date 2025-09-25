@@ -635,7 +635,134 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
     # permission_classes = (IsAuthenticated,)
     queryset = usuario_rol_serializer.Meta.model.objects.all()
 
+    """
+    CAMBIO IMPORTANTE: Esta versión ya NO utiliza el parámetro 'pk' que se usaba 
+    anteriormente para filtrar por profesional específico. Ahora muestra todos 
+    los estudiantes de la sede independientemente de las asignaciones jerárquicas.
+
+    Args:
+        request: Objeto HttpRequest con parámetros GET:
+                - id_sede (int): ID de la sede para filtrar estudiantes
+                - rol (str): Rol del usuario ('socioeducativo', 'super_ases', 
+                        'socioeducativo_reg', 'profesional')
+        pk: OBSOLETO - No se utiliza en esta versión, mantenido por compatibilidad
+            del ViewSet. Anteriormente se usaba para filtrar por profesional específico.
+
+    Returns:
+        Response: Lista de estudiantes con información completa de asignaciones
+                y estadísticas de seguimiento
+    """
+
+    # a diferencia de la version pasada, esta trae a todos los estudiantes asi no tengan un prefesional-practicante-monitor asignado
     def retrieve(self, request, pk):
+        list_total_datos = []
+        request_sede = int(request.GET.get('id_sede'))
+        request_rol = request.GET.get('rol')
+
+        var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=request_sede)
+
+        if request_rol in ["socioeducativo", "super_ases", "socioeducativo_reg"]:
+            list_id_programas = programa.objects.filter(id_sede=request_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(
+                id_programa__in=list_id_programas
+            ).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes, estudiante_elegible=True
+            )
+        elif request_rol == "profesional":
+            list_id_programas = programa.objects.filter(id_sede=request_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(
+                id_programa__in=list_id_programas
+            ).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes, estudiante_elegible=True
+            )
+        else:
+            list_estudiantes = estudiante.objects.none()
+
+        serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+
+        for data_del_estudiante in serializer_estudiantes.data:
+            # Conteos (estos siempre aplican)
+            count_seguimientos = seguimiento_individual.objects.filter(
+                id_estudiante=data_del_estudiante['id'],
+                fecha__range=(var_semestre.fecha_inicio, var_semestre.fecha_fin)
+            ).count()
+
+            count_inasistencias = inasistencia.objects.filter(
+                id_estudiante=data_del_estudiante['id'],
+                fecha__range=(var_semestre.fecha_inicio, var_semestre.fecha_fin)
+            ).count()
+
+            
+            monitor = practicante = profesional = "No asignado"
+
+            id_monitor_estudiante = asignacion.objects.filter(
+                id_estudiante=data_del_estudiante['id'],
+                estado=True,
+                id_semestre=var_semestre.id
+            ).values('id_usuario')
+
+            if id_monitor_estudiante.exists():
+                data_monitor = User.objects.filter(
+                    id=id_monitor_estudiante[0]['id_usuario']
+                ).values('id','first_name','last_name').first()
+
+                if data_monitor:
+                    monitor = f"{data_monitor['first_name']} {data_monitor['last_name']}"
+
+                    consulta_jefe_monitor = usuario_rol.objects.filter(
+                        id_usuario=data_monitor['id'],
+                        id_semestre=var_semestre.id,
+                        estado="ACTIVO"
+                    ).values('id_jefe').first()
+
+                    if consulta_jefe_monitor:
+                        data_practicante = User.objects.filter(
+                            id=consulta_jefe_monitor['id_jefe']
+                        ).values('id','first_name','last_name').first()
+
+                        if data_practicante:
+                            practicante = f"{data_practicante['first_name']} {data_practicante['last_name']}"
+
+                            consulta_jefe_practicante = usuario_rol.objects.filter(
+                                id_usuario=data_practicante['id'],
+                                id_semestre=var_semestre.id,
+                                estado="ACTIVO"
+                            ).values('id_jefe').first()
+
+                            if consulta_jefe_practicante:
+                                data_profesional = User.objects.filter(
+                                    id=consulta_jefe_practicante['id_jefe']
+                                ).values('first_name','last_name').first()
+
+                                if data_profesional:
+                                    profesional = f"{data_profesional['first_name']} {data_profesional['last_name']}"
+
+            datos = {
+                'id': data_del_estudiante['id'],
+                'cod_univalle': data_del_estudiante['cod_univalle'],
+                'cedula': data_del_estudiante['num_doc'],
+                'nombres': data_del_estudiante['nombre'],
+                'apellidos': data_del_estudiante['apellido'],
+                'cantidad_de_fichas': count_seguimientos,
+                'cantidad_de_inasistencias': count_inasistencias,
+                'total_fichas': count_seguimientos + count_inasistencias,
+                'monitor': monitor,
+                'practicante': practicante,
+                'profesional': profesional,
+            }
+
+            list_total_datos.append(datos)
+
+        return Response(list_total_datos, status=status.HTTP_200_OK)
+
+    
+
+
+
+"""
+def retrieve(self, request, pk):
 
         list_total_datos = []
         request_sede = int(request.GET.get('id_sede'))
@@ -679,8 +806,17 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
                 list_total_datos.append(datos)
             except:
                 pass
+            
+            print(list_total_datos)
 
         return Response(list_total_datos,status=status.HTTP_200_OK)
+
+
+"""
+
+
+
+
 
 class cohortes_lista_viewsets (viewsets.ModelViewSet):
     serializer_class = cohorte_serializer
