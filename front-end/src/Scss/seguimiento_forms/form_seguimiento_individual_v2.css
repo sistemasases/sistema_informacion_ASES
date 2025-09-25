@@ -4,4 +4,17 @@
 .custom-select-width {
     width: 100%;
     height: 50px; /* Ajusta este valor según tus necesidades */
-  }
+}
+
+/* Mantener solo el borde externo */
+.modal-oscuro .modal-content {
+  border: 3px solid #444 !important;   
+  border-radius: 10px !important;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Quitar las líneas internas */
+.modal-oscuro .modal-header,
+.modal-oscuro .modal-footer {
+  border: none !important;
+}
