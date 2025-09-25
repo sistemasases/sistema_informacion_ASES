@@ -123,36 +123,49 @@ const Selector = (props) =>{
     // }, [props?.seleccionado]);
 
     useEffect(() => {
-        if (!props?.seleccionado) return;
+      if (!props?.seleccionado) return;
 
-        const paramsget = {
-            id_sede: desencriptarInt(sessionStorage.getItem('sede_id')),
-        };
+      let cancelado = false; // evita actualizar estado si el efecto se limpia
 
-        document.getElementsByName("loading_data")[0].style.visibility = "visible";
-        const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/` + props.seleccionado + "/";
+      const fetchData = async () => {
+        try {
+          document.getElementsByName("loading_data")[0].style.visibility =
+            "visible";
 
-        axios({
-            url: url_axios,
+          const paramsget = {
+            id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
+          };
+
+          const url_axios = `${process.env.REACT_APP_API_URL}/seguimiento/seguimientos_estudiante/${props.seleccionado}/`;
+
+          const respuesta = await axios.get(url_axios, {
             params: paramsget,
-            method: "GET",
             headers: config,
-        })
-        .then((respuesta) => {
-            document.getElementsByName("loading_data")[0].style.visibility = "hidden";
+          });
+
+          if (!cancelado) {
+            document.getElementsByName("loading_data")[0].style.visibility =
+              "hidden";
+
             set_state((prev) => ({
-                ...prev,
-                data_user_socioedu: respuesta.data,
-                tiene_datos_cargados: true
+              ...prev,
+              data_user_socioedu: respuesta.data,
+              tiene_datos_cargados: true,
             }));
-        })
-        .catch(err => err);
 
-    }, [props?.seleccionado]);
+            // resetear tab activo solo una vez al cambiar seleccionado
+            setActiveTabIndex(0);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
 
+      fetchData();
 
-    useEffect(() => {
-        activeTab('');
+      return () => {
+        cancelado = true; // cleanup
+      };
     }, [props?.seleccionado]);
 
 
