@@ -452,6 +452,147 @@ const Seguimiento_individual_edit_v3 = (props) => {
       [e.target.name]: e.target.checked,
     });
   };
+
+  // Limitar temáticas
+  // Helper: cuenta cuántos del grupo están marcados en el state
+  const countSelected = (state, group) =>
+    group.reduce((acc, key) => acc + (state[key] ? 1 : 0), 0);
+
+  // Individual
+  const limitarSeleccionIndividual = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoIndividual = [
+      "autoconocimiento",
+      "autonomia",
+      "proyecto_de_vida",
+      "historia_de_vida",
+      "salud",
+      "relación_eriótico_afectivas",
+      "identificación",
+      "aspectos_motivacionales",
+      "diversidad_sexual",
+      "red_de_apoyo",
+    ];
+
+    if (!grupoIndividual.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoIndividual);
+
+    // Si intenta marcar un tercero → bloquear
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Individual'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+
+  // Familiar
+  const limitarSeleccionFamiliar = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoFamiliar = [
+      "relaciones_familiares",
+      "red_de_apoyo_familiar",
+      "rol_del_estudiante_en_la_familia",
+    ];
+
+    if (!grupoFamiliar.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoFamiliar);
+
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Familiar'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+
+  // Fin - Familiar
+
+  // Académico
+  const limitarSeleccionAcademico = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoAcademico = [
+      "desempeño_académico",
+      "elección_vocacional",
+      "autogestion_academica",
+      "manejo_del_tiempo",
+    ];
+
+    if (!grupoAcademico.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoAcademico);
+
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Academico'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+  // Fin - Académico
+
+  // Económico
+  const limitarSeleccionEconomico = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoEconomico = [
+      "apoyos_económicos_institucionales",
+      "manejo_finanzas",
+      "apoyo_económico_familiar",
+      "situación_laboral_ocupacional",
+    ];
+
+    if (!grupoEconomico.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoEconomico);
+
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Economico'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+  // Fin - Económico
+  // Vida Universitaria y Ciudad
+  const limitarSeleccionVida = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoVida = [
+      "motivación_compañamiento",
+      "referencia_geográfica",
+      "adaptación_ciudad_Universidad",
+      "movilidad_y_transporte",
+      "uso_de_los_servicios_universitarios",
+      "integracion_a_la_cultura_universitaria",
+      "vivienda",
+      "vinculación_grupos_actividades_extracurriculares",
+    ];
+
+    if (!grupoVida.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoVida);
+
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Vida Universitaria'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+  // Fin - Vida Universitaria y Ciudad
+
+  // Manejo de los checkbox de riesgo
   const handleForm = (e) => {
     //console.log(e.target.checked)
     if (e.target.name === "riesgo_individual_bajo") {
@@ -815,11 +956,22 @@ const Seguimiento_individual_edit_v3 = (props) => {
         });
       }
     } else {
+      // Ejecutar los bloqueos (devuelven true si se bloquea)
+      const bloqueado =
+        limitarSeleccionIndividual(e, state) ||
+        limitarSeleccionFamiliar(e, state) ||
+        limitarSeleccionAcademico(e, state) ||
+        limitarSeleccionEconomico(e, state) ||
+        limitarSeleccionVida(e, state);
+
+      if (bloqueado) return;
+
+      // Actualización normal del estado:
       set_form({
         ...form,
-        [e.target.name]: e.target.value,
+        [e.target.name]:
+          e.target.type === "checkbox" ? e.target.checked : e.target.value,
       });
-      // console.log(e.target.name);
     }
   };
 
@@ -1274,9 +1426,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Tipo de saber que tiene cada sujeto de sí mismo, ya sea de sus representaciones, estados mentales, percepciones, acciones, de su cuerpo, entre otros. En esta temática se incluyen todos los aspectos de conocimiento de sí mismos que los estudiantes expresan sobre cómo se sienten, lo que desean, lo que piensan, lo que los impulsa a actuar, sus valores, todo aquello que constituye su ser desde tres pilares: identidad, autoestima y autoconstrucción."
               type="checkbox"
               label="Autoconocimiento"
-              defaultChecked={props.item.autoconocimiento}
               name="autoconocimiento"
+              checked={!!form.autoconocimiento}
               onChange={handleFormChecks}
+              disabled={
+                !form.autoconocimiento &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1284,9 +1454,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Se refiere a la capacidad de autogestión, resolución y toma de decisiones del/la estudiante. Reconociendo su momento vital, recursos de gestión de las emociones y de situaciones retadoras."
               type="checkbox"
               label="Autonomia"
-              defaultChecked={props.item.autonomia}
               name="autonomia"
+              checked={!!form.autonomia}
               onChange={handleFormChecks}
+              disabled={
+                !form.autonomia &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1294,9 +1482,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Engloba todos los proyectos y metas a mediano y largo plazo que los estudiantes manifestan en los acompañamientos entre pares. El proyecto de vida articula la identidad con las perspectivas y posibilidades de desarrollo futuro."
               type="checkbox"
               label="Proyecto de vida"
-              defaultChecked={props.item.proyecto_de_vida}
               name="proyecto_de_vida"
+              checked={!!form.proyecto_de_vida}
               onChange={handleFormChecks}
+              disabled={
+                !form.proyecto_de_vida &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1306,9 +1512,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Esta temática hace referencia a todas las narraciones de vida en tiempo pasado que realizan los estudiantes desde los diferentes contextos socioculturales que vivieron; da cuenta de las prácticas, creencias y valores familiares y culturales que influyen en sus decisiones y en sus formas de ver el mundo."
               type="checkbox"
               label="Historia de vida"
-              defaultChecked={props.item.historia_de_vida}
               name="historia_de_vida"
+              checked={!!form.historia_de_vida}
               onChange={handleFormChecks}
+              disabled={
+                !form.historia_de_vida &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1319,9 +1543,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
                * Informe sobre trámites de la EPS, del Servicio médico y psicológico."
               type="checkbox"
               label="Salud"
-              defaultChecked={props.item.salud}
               name="salud"
+              checked={!!form.salud}
               onChange={handleFormChecks}
+              disabled={
+                !form.salud &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1329,9 +1571,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Esta temática contiene todo lo referido por los estudiantes narrativamente en relación con sus relaciones eróticas, afectivas y sentimentales."
               type="checkbox"
               label="Relaciones erótico-afectivas"
-              defaultChecked={props.item.relación_eriótico_afectivas}
               name="relación_eriótico_afectivas"
+              checked={!!form.relación_eriótico_afectivas}
               onChange={handleFormChecks}
+              disabled={
+                !form.relación_eriótico_afectivas &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1341,9 +1601,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Documento oficial emitido por la Administración que sirve para identificar a las personas por su nombre, nacimiento, nacionalidad y domicilio."
               type="checkbox"
               label="Documentos de identificación"
-              defaultChecked={props.item.identificación}
               name="identificación"
+              checked={!!form.identificación}
               onChange={handleFormChecks}
+              disabled={
+                !form.identificación &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1351,9 +1629,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="El proceso psicológico básico de la motivación contiene dos componentes principales:“los direccionales (que dan cuenta de la elección) y los energizadores (que dan cuenta de la iniciación, la persistencia y el vigor) de la conducta dirigida a meta”"
               type="checkbox"
               label="Aspectos motivacionales"
-              defaultChecked={props.item.aspectos_motivacionales}
               name="aspectos_motivacionales"
+              checked={!!form.aspectos_motivacionales}
               onChange={handleFormChecks}
+              disabled={
+                !form.aspectos_motivacionales &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1361,9 +1657,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Todos aquellos reconocimientos, prácticas y relaciones establecidas por el estudiante; frente a su género, identidad sexual, preferencia sexual y, ante la diversidad sexual de las personas en su contexto cotidiano."
               type="checkbox"
               label="Diversidad sexual"
-              defaultChecked={props.item.diversidad_sexual}
               name="diversidad_sexual"
+              checked={!!form.diversidad_sexual}
               onChange={handleFormChecks}
+              disabled={
+                !form.diversidad_sexual &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1373,9 +1687,27 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Todos aquellos vínculos que tiene el estudiante con otros individuos y/o grupos que sirven para mejorar la adaptación cuando este se enfrenta a situaciones de estrés, reto o privación y que sirven como instancia mediadora en la que se brinda apoyo social de tipo emocional, afectivo e informacional"
               type="checkbox"
               label="Red de apoyo"
-              defaultChecked={props.item.red_de_apoyo}
               name="red_de_apoyo"
+              checked={!!form.red_de_apoyo}
               onChange={handleFormChecks}
+              disabled={
+                !form.red_de_apoyo &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1435,9 +1767,20 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Narraciones del/la estudiante que den cuenta del tipo de conexiones y vínculos entre los miembros de su círculo familia.  Así como, del efecto de estos vínculos en su vida cotidiana."
               type="checkbox"
               label="Relaciones Familiares"
-              defaultChecked={props.item.relaciones_familiares}
               name="relaciones_familiares"
+              checked={!!form.relaciones_familiares}
               onChange={handleFormChecks}
+              disabled={
+                !form.relaciones_familiares &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "relaciones_familiares",
+                      "red_de_apoyo_familiar",
+                      "rol_del_estudiante_en_la_familia",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1445,9 +1788,20 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Narraciones del/la estudiante acerca de la respuesta de su familia y de su círculo de mayor confianza ante situaciones en las que él requiere apoyo y el efecto de estas respuestas en su vida cotidiana."
               type="checkbox"
               label="Red de Apoyo Familiar"
-              defaultChecked={props.item.red_de_apoyo_familiar}
               name="red_de_apoyo_familiar"
+              checked={!!form.red_de_apoyo_familiar}
               onChange={handleFormChecks}
+              disabled={
+                !form.red_de_apoyo_familiar &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "relaciones_familiares",
+                      "red_de_apoyo_familiar",
+                      "rol_del_estudiante_en_la_familia",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1455,9 +1809,20 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Narraciones de el/la estudiante que den cuenta de las responsabilidades, actividades, expectativas frente a la vida familiar que se le encargan al estudiante  y, el efecto de estas en su vida cotidiana."
               type="checkbox"
               label="Rol del Estudiante en la Familia"
-              defaultChecked={props.item.rol_del_estudiante_en_la_familia}
               name="rol_del_estudiante_en_la_familia"
+              checked={!!form.rol_del_estudiante_en_la_familia}
               onChange={handleFormChecks}
+              disabled={
+                !form.rol_del_estudiante_en_la_familia &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "relaciones_familiares",
+                      "red_de_apoyo_familiar",
+                      "rol_del_estudiante_en_la_familia",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1517,9 +1882,21 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Las narraciones realizadas por los estudiantes en torno a las metodologias utilizadas en las clases, información de las diversas asignaturas y seguimientos académicos; ejemplo: reporte del rendimiento académico (notas), reporte de la carga académica, informe de las necesidades académicas identificadas con el estudiante (bases conceptules para las diversas asignaturas) y refuerzo académico (asesorías académicas). Además, se incluye la revisión de las habilidades académicas y recursos con los que el estudiante cuenta para superar la exigencia en sus asignaturas."
               type="checkbox"
               label="Desempeño académico"
-              defaultChecked={props.item.desempeño_académico}
               name="desempeño_académico"
+              checked={!!form.desempeño_académico}
               onChange={handleFormChecks}
+              disabled={
+                !form.desempeño_académico &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "desempeño_académico",
+                      "elección_vocacional",
+                      "autogestion_academica",
+                      "manejo_del_tiempo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1527,9 +1904,21 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Esta temática hace referencia a las preferencias de áreas di linares y carreras de los estudiantes, la búsqueda de información y conocimiento de sus carreras de elección y las estrategias implementadas por los monitores para contribuir en sus procesos de orientación vocacional concebida ésta como un vínculo conversacional en el que el estudiante recibe apoyo en el marco de encontrar alternativas y tomar ndecisiones, de manera consciente voluntaria y comprometida (De Mori 2, Santiviago, sf."
               type="checkbox"
               label="Elección vocacional"
-              defaultChecked={props.item.elección_vocacional}
               name="elección_vocacional"
+              checked={!!form.elección_vocacional}
               onChange={handleFormChecks}
+              disabled={
+                !form.elección_vocacional &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "desempeño_académico",
+                      "elección_vocacional",
+                      "autogestion_academica",
+                      "manejo_del_tiempo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1537,9 +1926,21 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Hace referencia a la capacidad del estudiante para organizar, regular y orientar de forma autónoma su proceso de aprendizaje. Implica planificar su tiempo, establecer metas, identificar y aplicar estrategias de estudio, mantener la motivación, manejar el estrés académico y la procrastinación con el fin de tomar decisiones conscientes que favorezcan su desempeño y bienestar académico."
               type="checkbox"
               label="Autogestión académica"
-              defaultChecked={props.item.autogestion_academica}
               name="autogestion_academica"
+              checked={!!form.autogestion_academica}
               onChange={handleFormChecks}
+              disabled={
+                !form.autogestion_academica &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "desempeño_académico",
+                      "elección_vocacional",
+                      "autogestion_academica",
+                      "manejo_del_tiempo",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1599,9 +2000,21 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="El reporte de la necesidad del estudiante de acceder a los apoyos institucionales o gubernamentales; así como todos las gestiones que los estudiantes realizan para recibir apoyos económicos. (ICETEX, Jóvenes en Acción / renta jóven  Bienestar Universitario,  monitorias, etc.)"
               type="checkbox"
               label="Apoyos económicos institucionales"
-              defaultChecked={props.item.apoyos_económicos_institucionales}
               name="apoyos_económicos_institucionales"
+              checked={!!form.apoyos_económicos_institucionales}
               onChange={handleFormChecks}
+              disabled={
+                !form.apoyos_económicos_institucionales &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "apoyos_económicos_institucionales",
+                      "manejo_finanzas",
+                      "apoyo_económico_familiar",
+                      "situación_laboral_ocupacional",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1609,9 +2022,21 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Principios y herramientas que ayudan a optimizar los recursos financieros con que cuenta una persona. Esta temática contiene todos los aspectos de manejo de dinero, inversión de recursos, ingresos y egresos financieros, mecanismos de ahorro, entre otros."
               type="checkbox"
               label="Manejo de sus finanzas"
-              defaultChecked={props.item.manejo_finanzas}
               name="manejo_finanzas"
+              checked={!!form.manejo_finanzas}
               onChange={handleFormChecks}
+              disabled={
+                !form.manejo_finanzas &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "apoyos_económicos_institucionales",
+                      "manejo_finanzas",
+                      "apoyo_económico_familiar",
+                      "situación_laboral_ocupacional",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1619,9 +2044,21 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Lo socioeconómico, entendido como un “enfoque teórico y metodológico necesariamente transdisciplinar, que pretende entender integralmente la complejidad social a partir de la observación, descripción y análisis orientada a la acción en y desde la realidad” (Coraggio €: Arancibia, 2006). Esta temática involucra aspectos económicos y sociológicos como la preparación laboral, ubicación social y familiar en la sociedad."
               type="checkbox"
               label="Apoyo económico familiar"
-              defaultChecked={props.item.apoyo_económico_familiar}
               name="apoyo_económico_familiar"
+              checked={!!form.apoyo_económico_familiar}
               onChange={handleFormChecks}
+              disabled={
+                !form.apoyo_económico_familiar &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "apoyos_económicos_institucionales",
+                      "manejo_finanzas",
+                      "apoyo_económico_familiar",
+                      "situación_laboral_ocupacional",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1631,9 +2068,21 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Se refiere a las diversas actividades que realiza el/la estudiante para cubrir sus gastos personales y académicos; y la relación de estas ocupaciones con su actividad académica en la Universidad."
               type="checkbox"
               label="Situación laboral y ocupacional"
-              defaultChecked={props.item.situación_laboral_ocupacional}
               name="situación_laboral_ocupacional"
+              checked={!!form.situación_laboral_ocupacional}
               onChange={handleFormChecks}
+              disabled={
+                !form.situación_laboral_ocupacional &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "apoyos_económicos_institucionales",
+                      "manejo_finanzas",
+                      "apoyo_económico_familiar",
+                      "situación_laboral_ocupacional",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1693,9 +2142,25 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Esta temática aborda los momentos de presentación entre el monitor y el estudiante, incluyendo además la explicación de la estrategia ASES y expectativas de ingreso a la universidad de parte de los estudiantes y del acompañamiento que van a tener."
               type="checkbox"
               label="Motivación para el acompañamiento"
-              defaultChecked={props.item.motivación_compañamiento}
               name="motivación_compañamiento"
+              checked={!!form.motivación_compañamiento}
               onChange={handleFormChecks}
+              disabled={
+                !form.motivación_compañamiento &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1703,9 +2168,25 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="El conocimiento por parte de los/las estudiantes, de las caracteristicas y lugares de los territorios cotidianos (tanto en la universidad como en la ciudad, municipio o distrito que habitan)"
               type="checkbox"
               label="Referenciación geográfica"
-              defaultChecked={props.item.referencia_geográfica}
               name="referencia_geográfica"
+              checked={!!form.referencia_geográfica}
               onChange={handleFormChecks}
+              disabled={
+                !form.referencia_geográfica &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1713,9 +2194,25 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Todo lo expresado por los/las estudiantes en relación a la adaptación a las dinámicas, caracteristicas culturales, sociales y climáticas del territorio en el que se encuentran cursando su formación universitaria."
               type="checkbox"
               label="Adaptación al territorio"
-              defaultChecked={props.item.adaptación_ciudad_Universidad}
               name="adaptación_ciudad_Universidad"
+              checked={!!form.adaptación_ciudad_Universidad}
               onChange={handleFormChecks}
+              disabled={
+                !form.adaptación_ciudad_Universidad &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1725,9 +2222,25 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Todo lo relacionado con el deplazamiento que realizan los y las estudiantes para llegar desde su vivienda al campus; teniendo en cuenta que algunos son foráneos, otros residen fuera del municipio y no todos cuentan con transporte particular para desplazarse."
               type="checkbox"
               label="Movilidad y transporte"
-              defaultChecked={props.item.movilidad_y_transporte}
               name="movilidad_y_transporte"
+              checked={!!form.movilidad_y_transporte}
               onChange={handleFormChecks}
+              disabled={
+                !form.movilidad_y_transporte &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1735,9 +2248,25 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Hace referencia a cómo el/la estudiante se identifica y se siente acogido/a en la comunidad universitaria; donde se identifica su nivel de conexión con el entorno, el grado de integración a las dinámicas institucionales, la calidad de sus relaciones con compañeros/as, docentes y equipos de apoyo, así como su disposición a participar en actividades, espacios y servicios ofrecidos por la universidad."
               type="checkbox"
               label="Integración a la cultura universitaria"
-              defaultChecked={props.item.integracion_a_la_cultura_universitaria}
               name="integracion_a_la_cultura_universitaria"
+              checked={!!form.integracion_a_la_cultura_universitaria}
               onChange={handleFormChecks}
+              disabled={
+                !form.integracion_a_la_cultura_universitaria &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1745,11 +2274,25 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Lo relacionado con el interés, exploración y vinculación de los estudiantes a grupos estudiantiles, académicos, investigativos, culturales, y deportivos de la Universidad del Valle o externos."
               type="checkbox"
               label="Vinculación a grupos y realización de actividades extracurriculares"
-              defaultChecked={
-                props.item.vinculación_grupos_actividades_extracurriculares
-              }
               name="vinculación_grupos_actividades_extracurriculares"
+              checked={!!form.vinculación_grupos_actividades_extracurriculares}
               onChange={handleFormChecks}
+              disabled={
+                !form.vinculación_grupos_actividades_extracurriculares &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1759,9 +2302,25 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="El reconocimiento y la participación de los y las estudiantes en los espacios y servicios institucionales (servicio de psicología, bienestar universitario, acompañamiento socioeducativo, talleres, actividades, etc.)"
               type="checkbox"
               label="Uso de los servicios universitarios"
-              defaultChecked={props.item.uso_de_los_servicios_universitarios}
               name="uso_de_los_servicios_universitarios"
+              checked={!!form.uso_de_los_servicios_universitarios}
               onChange={handleFormChecks}
+              disabled={
+                !form.uso_de_los_servicios_universitarios &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1769,9 +2328,25 @@ const Seguimiento_individual_edit_v3 = (props) => {
               title="Esta temática contiene todas las particularidades de vivienda de los estudiantes, incluyendo organización del espacio, problemas con los inquilinos, entre otros y la utilización del programa GeoCalízate."
               type="checkbox"
               label="Vivienda"
-              defaultChecked={props.item.vivienda}
               name="vivienda"
+              checked={!!form.vivienda}
               onChange={handleFormChecks}
+              disabled={
+                !form.vivienda &&
+                Object.values(form).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(form)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col></Col>

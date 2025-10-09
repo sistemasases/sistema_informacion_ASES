@@ -39,17 +39,124 @@ class monitorias_viewset(viewsets.ModelViewSet):
     queryset = monitoria_academica_serializer.Meta.model.objects.all()
 
     @action(detail=False, methods=['post'], url_path='lista_asistencia')
-    def lista_asistencia(self, request, pk=None):
-        if (request.data["rol"] == "monitor_academico"):
-            monitoria_monitor = monitoria_academica.objects.filter(id_monitor=request.data["id_user"],estado=True)
-            lista_asistencia = asistencia.objects.filter(fecha=request.data["fecha"], id_monitoria__in=monitoria_monitor)
-            serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
-            return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+    def lista_asistencia(self, request, pk=None): 
+        # carga de la fecha semestre actual (para todos los casos)
+        semestreActual = semestre.objects.get(id=request.data['semestre'])
+        fechaSemestreActual = semestreActual.fecha_inicio
+        fechaSemestreActualFin = semestreActual.fecha_fin
+        fechaSemestreActualStr = fechaSemestreActual.strftime("%Y-%m-%d")
+        fechaSemestreActualFinStr = fechaSemestreActualFin.strftime("%Y-%m-%d")
 
-        else:
-            lista_asistencia = asistencia.objects.filter(fecha=request.data["fecha"])
-            serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
-            return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+        # valido que las fechas que lleguen en el request esten dentro del rango del semestre actual
+        fecha = None
+        fecha_hasta = None
+
+        if (request.data['fecha']):
+            fecha = fechaSemestreActualStr if request.data['fecha'] < fechaSemestreActualStr else request.data['fecha']
+        
+        if (request.data['fechaHasta']):
+            fecha_hasta = fechaSemestreActualFinStr if request.data['fechaHasta'] > fechaSemestreActualFinStr else request.data['fechaHasta']
+        
+        
+        # busqueda por si tiene nombre-codigo y fechas 
+        if (request.data['estudiante']):    
+
+            # primero se busca a el estudiante ya sea por nombre o por codigo, si se busca por nombre, es posible
+            # que traiga otros registros 
+            estudiante_asistencia = None
+            valor = request.data['estudiante']
+            if valor.isdigit():
+                # si es un numero, estonces se busca por codigo
+                estudiante_asistencia = estudiante.objects.filter(cod_univalle=valor)
+            else:
+                nombreCompleto = valor.upper() 
+                separado = nombreCompleto.split(" ")
+                estudiante_asistencia = estudiante.objects.filter(
+                    nombre__icontains=separado[0],
+                    apellido__icontains=separado[-1]
+                )            
+            if (request.data['rol'] == "monitor_academico"):
+                monitoria_monitor = monitoria_academica.objects.filter(id_monitor=request.data["id_user"],estado=True)
+                lista_asistencia = None
+
+                # validaciones por si tambien tienen fechas
+                if (fecha and fecha_hasta):
+                    lista_asistencia = asistencia.objects.filter(id_monitoria__in=monitoria_monitor, id_estudiante__in=estudiante_asistencia, fecha__range=[fecha, fecha_hasta])
+                elif(fecha and fecha_hasta==None):
+                    lista_asistencia = asistencia.objects.filter(id_monitoria__in=monitoria_monitor, id_estudiante__in=estudiante_asistencia, fecha=fecha)
+                else:
+                    
+                    lista_asistencia = asistencia.objects.filter(id_monitoria__in=monitoria_monitor, id_estudiante__in=estudiante_asistencia)
+                
+                serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
+                return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+            else:
+                # validaciones por si tambien tienen fechas
+                lista_asistencia = None
+                if (fecha and fecha_hasta):
+                    lista_asistencia = asistencia.objects.filter(id_estudiante__in=estudiante_asistencia, fecha__range=[fecha, fecha_hasta])
+                elif(request.data['fecha'] and request.data['fechaHasta']==None):
+                    lista_asistencia = asistencia.objects.filter(id_estudiante__in=estudiante_asistencia, fecha=fecha)
+                elif(request.data['fecha'] == None and request.data['fechaHasta']==None):
+                    lista_asistencia = asistencia.objects.filter(id_estudiante__in=estudiante_asistencia)
+                serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
+                return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+
+
+
+        # carga principal con la fecha de hoy, carga de cuando solo tiene la fecha desde
+        if (request.data['fecha'] and
+            request.data['fechaHasta'] == None):
+
+            if (request.data["rol"] == "monitor_academico"):
+                monitoria_monitor = monitoria_academica.objects.filter(id_monitor=request.data["id_user"],estado=True)
+                lista_asistencia = asistencia.objects.filter(
+                    fecha=fecha,
+                    id_monitoria__in=monitoria_monitor
+                )
+                serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
+                return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+            else:
+                lista_asistencia = asistencia.objects.filter(fecha=fecha)
+                serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
+                return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+
+
+
+
+        # busqueda por si no tiene fechas ni tampoco codigo o nombre
+        if (request.data['fecha'] == None and request.data['estudiante'] == None):
+            if (request.data['rol'] == "monitor_academico"):
+                monitoria_monitor = monitoria_academica.objects.filter(id_monitor=request.data["id_user"],estado=True)
+                lista_asistencia = asistencia.objects.filter(id_monitoria__in=monitoria_monitor, fecha__gte=fechaSemestreActualStr)
+                serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
+                return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+            else:
+                lista_asistencia = asistencia.objects.filter(fecha__gte=fechaSemestreActualStr)
+                serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
+                return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+            
+        
+
+
+        # busqueda por si tiene una o dos fechas, pero no Nombre
+        if (request.data['fecha']):
+            if (request.data['fechaHasta']):
+
+                if (request.data["rol"] == "monitor_academico"):
+                    monitoria_monitor = monitoria_academica.objects.filter(id_monitor=request.data["id_user"],estado=True)
+                    lista_asistencia = asistencia.objects.filter(
+                        fecha__range=[fecha, fecha_hasta],
+                        id_monitoria__in=monitoria_monitor
+                    )
+                    serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
+                    return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+                else:
+                    lista_asistencia = asistencia.objects.filter(fecha__range=[fecha, fecha_hasta])
+                    serializer_asistencia = asistencia_serializer_lista(lista_asistencia,many=True)
+                    return Response(serializer_asistencia.data, status=status.HTTP_200_OK)
+
+
         
     @action(detail=False, methods=['post'], url_path='fecha_asistencia')
     def fecha_asistencia(self, request, pk=None):

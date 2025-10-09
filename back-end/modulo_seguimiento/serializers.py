@@ -154,11 +154,12 @@ class seguimiento_individual_serializer(serializers.ModelSerializer):
             fecha = validated_data.get('fecha')
             try:
                 # Obtener la primera instancia de riesgo_individual en caso de qué aparezcan más de 1 el mismo semestre
+                # print("estudiante_instancia:", estudiante_instancia)
+                # print("id_semestre:", id_semestre)
                 riesgo_instancia = riesgo_individual.objects.filter(id_estudiante=estudiante_instancia, id_semestre=id_semestre).first()
-                # riesgo_instancia = riesgo_individual.objects.get(id_estudiante=estudiante_instancia, id_semestre=id_semestre)
-
                 # Verificar si la fecha de `riesgo_instancia` es menor o igual a la fecha validada
-                if riesgo_instancia.fecha <= fecha:
+                # print(riesgo_instancia)
+                if riesgo_instancia and riesgo_instancia.fecha <= fecha:
                     riesgo_instancia.fecha = validated_data['fecha']
                     riesgo_instancia.id_semestre = id_semestre
                     # Mantener el valor actual si el campo enviado es `None`
