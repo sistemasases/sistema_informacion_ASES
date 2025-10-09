@@ -177,6 +177,14 @@ class estudiante_filtros_viewsets(viewsets.ModelViewSet):
             list_estudiantes = estudiante.objects.filter(id__in=list_id_estudiantes)
             serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
+        else:
+            # Si el rol no coincide con ninguno de los casos anteriores, retornar lista vacía
+            return Response([], status=status.HTTP_200_OK)
+
+        # Verificar que serializer_estudiantes esté definido antes de continuar
+        if not serializer_estudiantes:
+            return Response([], status=status.HTTP_200_OK)
+
         estudiantes_ids = [data['id'] for data in serializer_estudiantes.data]
 
         # Obtener los datos relacionados a las condiciones de excepción de una vez
