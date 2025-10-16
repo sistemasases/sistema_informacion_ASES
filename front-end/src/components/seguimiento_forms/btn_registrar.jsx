@@ -15,7 +15,7 @@ import "../../Scss/seguimiento_forms/form_seguimiento_individual_v2.css";
  * @returns {JSX.Element} Botón de registro con descarga CSV opcional y modal de confirmación.
  */
 
-export default function RegistroConCSV({ state, verificador_datos_basicos, onConfirmDownload }) {
+export default function RegistroConCSV({ state, verificador_datos_basicos, onConfirmDownload, filename = null }) {
   
   const [showModal, setShowModal] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
@@ -36,6 +36,8 @@ export default function RegistroConCSV({ state, verificador_datos_basicos, onCon
       setShowModal(true);
     }
   };
+
+  const definedFinename = filename || `Seguimiento_Individual_${state.fecha}`;
 
   const handleConfirmDownload = () => {
     setShowModal(false);
@@ -85,7 +87,7 @@ export default function RegistroConCSV({ state, verificador_datos_basicos, onCon
 
       <CSVLink
         data={[state]}
-        filename={`Seguimiento_Individual_${state.fecha}`}
+        filename={definedFinename}
         style={{ display: "none" }}
         ref={csvRef}
       />

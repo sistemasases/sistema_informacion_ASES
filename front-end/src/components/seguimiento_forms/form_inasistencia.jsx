@@ -11,6 +11,8 @@ import Form from 'react-bootstrap/Form';
 import Create_Inasistencia from '../../service/create_inasistencia';
 import { CSVLink } from 'react-csv';
 import { desencriptarInt, desencriptar, encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
+import RegistroConCSV from "./btn_registrar";
+
 
 /**
  * Componente funcional que representa un formulario de inasistencia.
@@ -38,6 +40,20 @@ const Inasistencia = (props) => {
         // Cambiar la URL a la página con el ID del estudiante seleccionado
         sessionStorage.setItem("path", encriptar(`/ficha_estudiante/${state.id_estudiante}`))
         window.location.reload()
+    };
+
+    const verificador_de_datos = () => {
+        if (!state.fecha) {
+            window.alert("Debes diligenciar el campo de fecha.");
+            return false;
+        }
+
+        if (!state.observaciones || state.observaciones.trim() === "") {
+            window.alert("Debes diligenciar el campo de observaciones.");
+            return false;
+        }
+
+        return true;
     };
 
     useEffect(() => {
@@ -118,14 +134,12 @@ const Inasistencia = (props) => {
                 <br/>
             </Modal.Body>
             <Modal.Footer>
-                <CSVLink
-                    data={[state]}
-                    filename={"Inasistencia Individual " + state.fecha}
-                >   
-                    <Button variant="secondary" onClick={() => {set_info()}}>
-                        Registrar
-                    </Button>
-                </CSVLink>
+                <RegistroConCSV 
+                    state={state} 
+                    verificador_datos_basicos={verificador_de_datos}
+                    onConfirmDownload={set_info}
+                    filename={`Inasistencia_${state.fecha}`}
+                />
                 
                 <Button variant="secondary" onClick={() => { props.handleCloseIn() }}>
                     Cerrar
