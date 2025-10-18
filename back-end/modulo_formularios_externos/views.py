@@ -14,7 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from modulo_usuario_rol.models import User, firma_tratamiento_datos
 from modulo_usuario_rol.serializers import firma_tratamiento_datos_serializer
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from django.utils import timezone
 
 
 class sede_viewsets (viewsets.ModelViewSet):
@@ -140,7 +141,8 @@ class form_primer_ingreso(viewsets.GenericViewSet):
                 return Response({'mensaje': 'El estudiante ya está registrado, pero en otro programa. Se asignó el estudiante al nuevo programa.'}, status=status.HTTP_201_CREATED)
 
         except:
-
+            fecha = datetime(2000, 1, 1, 0, 0, 0)
+            fecha = timezone.make_aware(fecha, timezone.get_current_timezone())
             Estudiante = estudiante.objects.create(
                 tipo_doc_ini=str(request.data["tipo_doc"]),
                 num_doc_ini=int(request.data["num_doc"]),
@@ -166,7 +168,8 @@ class form_primer_ingreso(viewsets.GenericViewSet):
                 apellido=str(request.data["apellido"]),
                 cod_univalle=int(request.data["codigo_estudiante"]),
                 estudiante_elegible=False,
-                es_academico=True
+                es_academico=True,
+                fecha_nac = fecha
             )
             estudiante_prog = programa_estudiante.objects.create(
                 id_programa=programa.objects.get(
