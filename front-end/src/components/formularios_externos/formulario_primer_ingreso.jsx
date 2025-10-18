@@ -342,10 +342,11 @@ const FormularioPrimerIngreso = (props) => {
                       <Form.Control
                         type="text"
                         placeholder="Tu respuesta"
+                        style={{ textTransform: "uppercase" }}
                         onChange={(e) =>
                           setData({
                             ...data,
-                            nombre: e.target.value,
+                            nombre: e.target.value.toUpperCase(),
                           })
                         }
                       />
@@ -363,10 +364,11 @@ const FormularioPrimerIngreso = (props) => {
                       <Form.Control
                         type="text"
                         placeholder="Tu respuesta"
+                        style={{ textTransform: "uppercase" }}
                         onChange={(e) =>
                           setData({
                             ...data,
-                            apellido: e.target.value,
+                            apellido: e.target.value.toUpperCase(),
                           })
                         }
                       />
