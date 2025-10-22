@@ -15,7 +15,7 @@ import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 import Logos from "./logo_campus-02.png";
 import axios from "axios";
-import '../../../Scss/campus_diverso/navbarCampus.css';
+import "../../../Scss/campus_diverso/navbarCampus.css";
 
 import {
   encriptar,
@@ -49,7 +49,7 @@ const NavbarCampus = (props) => {
    */
   useEffect(() => {
     // Obtener la ruta actual
-    const currentUrl = desencriptar(sessionStorage.getItem('path'));
+    const currentUrl = desencriptar(sessionStorage.getItem("path"));
     // Obtener las rutas almacenadas en sessionStorage
     const storedRoutes = sessionStorage.getItem("lastVisitedRoutes");
     // Arreglo para actualizar las rutas
@@ -166,7 +166,7 @@ const NavbarCampus = (props) => {
    * @function cambiar_ruta
    * @param e Es el nombre de la ruta
    * @description Cambia la vista según los links seleccionados
-  */
+   */
   const cambiar_ruta = (e) => {
     sessionStorage.setItem("path", encriptar(e));
     window.location.reload();
@@ -176,13 +176,15 @@ const NavbarCampus = (props) => {
     <Container>
       <Row className="nav-campus">
         <Col xs={"5"} md={"2"} href={"/"}>
-          <img src="/imgs/logo-campus-03.png" className="logo-campus" onClick={() => cambiar_ruta("/")}></img>
+          <img
+            src="/imgs/logo-campus-04.png"
+            className="logo-campus"
+            onClick={() => cambiar_ruta("/")}
+          ></img>
         </Col>
 
         <div class="d-none d-md-inline col-md-5">
-          <Col className="ulDropdown">
-
-          </Col>
+          <Col className="ulDropdown"></Col>
         </div>
 
         <Col md={"1"} xs={"1"} className="alert_icon">
@@ -197,13 +199,19 @@ const NavbarCampus = (props) => {
               // <i class="bi bi-exclamation-diamond-fill"></i>
               <>
                 <Col md={"4"}>
-                  <a onClick={()=>cambiar_ruta("/alertas")}>
-                    <i class="bi bi-exclamation-diamond" onClick={()=>cambiar_ruta("/alertas")}></i>
+                  <a onClick={() => cambiar_ruta("/alertas")}>
+                    <i
+                      class="bi bi-exclamation-diamond"
+                      onClick={() => cambiar_ruta("/alertas")}
+                    ></i>
                   </a>
                 </Col>
                 <Col md={"1"} className="alert_counter">
                   {" "}
-                  <a onClick={()=>cambiar_ruta("/alertas")} className="inner-counter">
+                  <a
+                    onClick={() => cambiar_ruta("/alertas")}
+                    className="inner-counter"
+                  >
                     <Contador_alertas></Contador_alertas>
                   </a>
                 </Col>
