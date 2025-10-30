@@ -16,31 +16,38 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 export const Contador_alertas = () => {
-  // constante para guardar el total de alertas
-  const [state, set_state] = useState({ alertas_total: "" });
-  // Contabiliza todas las alertas
+  const rol = desencriptar(sessionStorage.getItem("rol"));
+  const sede = desencriptarInt(sessionStorage.getItem("sede_id"));
+  const id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+  
+  const [state, set_state] = useState({ 
+    alertas_total: sessionStorage.getItem("alertas_total") || "" 
+  });
+
   useEffect(() => {
-    let rol = desencriptar(sessionStorage.getItem("rol"));
-    let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
-    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
-    const config = {
-      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
-    };
-    const estudiantes_por_rol = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/alertas/contador_alertas/` +
-            id_usuario.toString() +
-            "/",
-          { params: { usuario_rol: rol, sede: sede } }
-        );
-        set_state({
-          ...state,
-          alertas_total: response.data,
-        });
-      } catch (error) {}
-    };
-    estudiantes_por_rol();
+
+
+    // Evita hacer la solicitud si el rol es usper_ases y ya hay un valor guardado en el estado,
+    // se hace ya que este componente se recarga cada vez que se cambia de vista, de esta manera evitamos tener 
+    // tener que hacer esa peticion cada vez si tenemos un dato ya guardado
+    if (rol === "super_ases" && state.alertas_total) return;
+
+    axios.get(
+      `${process.env.REACT_APP_API_URL}/alertas/contador_alertas/${id_usuario}/`,
+      { 
+        params: { usuario_rol: rol, sede: sede },
+        headers: {
+          Authorization: "Bearer " + decryptTokenFromSessionStorage()
+        }
+      }
+    )
+    .then(response => {
+      set_state({ alertas_total: response.data });
+      sessionStorage.setItem("alertas_total", response.data);
+    })
+    .catch(error => {
+      console.error("Error cargando alertas:", error);
+    });
   }, []);
 
   return <>{state.alertas_total}</>;
