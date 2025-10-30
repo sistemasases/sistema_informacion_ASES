@@ -2,105 +2,134 @@ import React from 'react';
 import { Row, Col, } from "react-bootstrap";
 import axios from 'axios';
 import {decryptTokenFromSessionStorage, desencriptarInt} from '../../modulos/utilidades_seguridad/utilidades_seguridad.jsx';
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Spinner } from "react-bootstrap";
+
+
+/*
+Este es el componente de la lista de los estudiantes-monitores-practicantes no asignados
+
+recive el profesional seleccionado 
+*/
+
+
+
 
 const Listas_no_seleccion = (props) => {
     const config = {
         Authorization: 'Bearer ' + decryptTokenFromSessionStorage(),
     };
 
-    const{childClicked, childClicked2} = props
+    const [loading, setLoading] = useState(false);
+
+    const{childClicked, childClicked2} = props // desestructuracion de las props, 
     const [practicanteDisabled, setPracticanteDisabled] = useState(false);
+    const [loadingMonitor, setLoadingMonitor] = useState(false); 
+    const [loadingPracticante, setLoadingPracticante] = useState(false);  
     const [monitorDisabled, setMonitorDisabled] = useState(false);
     const [studentDisabled, setStudentDisabled] = useState(false);
+    const isAssigningRef = useRef(false);
 
-    const añadir_estudiante = (e) =>{
+
+    const añadir_estudiante = async (e) => {
+        if (isAssigningRef.current) return;
+        isAssigningRef.current = true;
+
         setStudentDisabled(true);
-        let formData = new FormData();
-        if (studentDisabled) return;
+        setLoading(true);
 
-        formData.append("llamada", "asignar");
-        formData.append("id_usuario", props.monitor_seleccionado);
-        formData.append("id_estudiante", props.item.id);
-        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
-        formData.append("detalle", ".");
-        axios({
-        // Endpoint to send files
-            url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
-            method: "POST",
-            headers: config,
-            data: formData,
-                })
-                .then((res)=>{
-                    childClicked2(props.monitor_seleccionado);
-                    // setStudentDisabled(false);
-                })
-                .catch(err=>{
-                    console.error(err);
-                    // setStudentDisabled(false);
-                }).finally(() => {
-                    setTimeout(() => {
-                        setStudentDisabled(false);
-                    }, 2000);
-                });
+        try {
+            const formData = new FormData();
+            formData.append("llamada", "asignar");
+            formData.append("id_usuario", props.monitor_seleccionado);
+            formData.append("id_estudiante", props.item.id);
+            formData.append("id_sede", desencriptarInt(sessionStorage.getItem("sede_id")));
+            formData.append("detalle", ".");
 
+            await axios({
+                url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_estudiante/`,
+                method: "POST",
+                headers: config,
+                data: formData,
+            });
+
+            // Actualizar inmediatamente sin delay
+            childClicked2(props.monitor_seleccionado);
+
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+            setStudentDisabled(false);
+            isAssigningRef.current = false;
+        }
     };
     
-    const añadir_usuario_monitor = (e) =>{
+    const añadir_usuario_monitor = async (e) => {
+        
+        if (monitorDisabled || loadingMonitor) return;
+        
         setMonitorDisabled(true);
-        if (monitorDisabled) return;
+        setLoadingMonitor(true);
+        
+        
         let formData = new FormData();
-
         formData.append("llamada", "asignar");
         formData.append("id_jefe", props.practicante_seleccionado);
         formData.append("id_usuario", props.item.id);
-        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
+        formData.append("id_sede", desencriptarInt(sessionStorage.getItem('sede_id')));
 
-        axios({
-      // Endpoint to send files
-      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
-      method: "POST",
-      headers: config,
-      data: formData,
-        })
-        .then((res)=>{
-            childClicked(props.practicante_seleccionado)
-        })
-        .catch(err=>{
-        }).finally(() => {
-            setTimeout(() => {
-                setMonitorDisabled(false);
-            }, 2000);
-        });
+        try {
+            await axios({
+                url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
+                method: "POST",
+                headers: config,
+                data: formData,
+            });
+            
+            
+            
+            childClicked(props.practicante_seleccionado);
+            
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoadingMonitor(false);
+            setMonitorDisabled(false);
+        }
     }
 
-    const añadir_usuario_practicante = (e) =>{
-        setPracticanteDisabled(true);
-        if (practicanteDisabled) return;
-        let formData = new FormData();
+    const añadir_usuario_practicante = async (e) => {
+        if (practicanteDisabled || loadingPracticante) return;  
 
+        setPracticanteDisabled(true);
+        setLoadingPracticante(true); 
+        
+        let formData = new FormData();
         formData.append("llamada", "asignar");
         formData.append("id_jefe", props.profesional_seleccionado);
         formData.append("id_usuario", props.item.id);
-        formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
+        formData.append("id_sede", desencriptarInt(sessionStorage.getItem('sede_id')));
 
-
-        axios({
-      // Endpoint to send files
-      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
-      method: "POST",
-      headers: config,
-      data: formData,
-        })
-        .then((res)=>{
-        //console.log(res)
-        })
-        .catch(err=>{
-        }).finally(() => {
-            setTimeout(() => {
-                setPracticanteDisabled(false);
-            }, 2000);
-        });
+        try {
+            await axios({
+                url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
+                method: "POST",
+                headers: config,
+                data: formData,
+            });
+            
+            // Actualizar inmediatamente sin delay
+            if (props.actualizarPracticantes) {
+                props.actualizarPracticantes();
+            }
+            
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoadingPracticante(false);  
+            setPracticanteDisabled(false);
+        }
     }
 
 
@@ -131,8 +160,26 @@ const Listas_no_seleccion = (props) => {
                 <Col className="listas_cuerpo" onClick={()=>childClicked(props.item.nombre)}>
                     <Row className="asignaciones_hover1">
                         <Col  xs={"2"} md={"2"} className="center_asignacion"> 
-                            <button onClick={()=>añadir_usuario_practicante()} className="asignaciones_icons_añadir" disabled={practicanteDisabled}>
-                                <i class="bi bi-chevron-left"></i>                                                    
+                            <button 
+                                onClick={() => añadir_usuario_practicante()} 
+                                className="asignaciones_icons_añadir" 
+                                disabled={practicanteDisabled || loadingPracticante}
+                                style={{
+                                    opacity: loadingPracticante ? 0.5 : 1,
+                                    backgroundColor: loadingPracticante ? '#cccccc' : '',
+                                    cursor: loadingPracticante ? 'not-allowed' : 'pointer'
+                                }}
+                            >
+                                <i class="bi bi-chevron-left"></i>
+                                {loadingPracticante && (
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />
+                                )}
                             </button>
                         </Col>
                         <Col  xs={"10"} md={"4"}> 
@@ -163,8 +210,26 @@ const Listas_no_seleccion = (props) => {
                 <Col className= "listas_cuerpo">
                     <Row className="asignaciones_hover1">
                         <Col  xs={"2"} md={"2"} className="center_asignacion"> 
-                        <button onClick={()=>añadir_usuario_monitor()} className="asignaciones_icons_añadir" disabled={monitorDisabled}>
-                            <i class="bi bi-chevron-left"></i>                                                    
+                        <button 
+                            onClick={() => añadir_usuario_monitor()} 
+                            className="asignaciones_icons_añadir" 
+                            disabled={monitorDisabled || loadingMonitor}
+                            style={{
+                                opacity: loadingMonitor ? 0.5 : 1,
+                                backgroundColor: loadingMonitor ? '#cccccc' : '',
+                                cursor: loadingMonitor ? 'not-allowed' : 'pointer'
+                            }}
+                        >
+                            <i class="bi bi-chevron-left"></i>
+                            {loadingMonitor && (
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                />
+                            )}
                         </button>
                         </Col>
 
@@ -198,8 +263,29 @@ const Listas_no_seleccion = (props) => {
         <Col className="listas_cuerpo">
                                 <Row className="asignaciones_hover1">
                                                 <Col xs={"2"} md={"2"} className="center_asignacion"> 
-                                                    <button onClick={()=>añadir_estudiante()} className="asignaciones_icons_añadir" disabled={studentDisabled}>
+                                                    {/* <button onClick={()=>añadir_estudiante()} className="asignaciones_icons_añadir" disabled={studentDisabled || loading}>
                                                     <i class="bi bi-chevron-left"></i>                                                    
+                                                    </button> */}
+                                                    <button
+                                                        onClick={() => añadir_estudiante()}
+                                                        className="asignaciones_icons_añadir"
+                                                        disabled={studentDisabled || loading}
+                                                        style={{
+                                                            opacity: loading ? 0.5 : 1,
+                                                            backgroundColor: loading ? '#cccccc' : '',
+                                                            cursor: loading ? 'not-allowed' : 'pointer'
+                                                        }}
+                                                    >
+                                                        <i class="bi bi-chevron-left"></i>
+                                                        {loading && (
+                                                            <Spinner
+                                                                as="span"
+                                                                animation="border"
+                                                                size="sm"
+                                                                role="status"
+                                                                aria-hidden="true"
+                                                            />
+                                                        )}
                                                     </button>
                                                 </Col>
 

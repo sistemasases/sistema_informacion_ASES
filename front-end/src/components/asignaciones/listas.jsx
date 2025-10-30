@@ -134,21 +134,22 @@ const Listas = (props) => {
         formData.append("id_jefe", props.profesional_seleccionado);
         formData.append("id_sede",desencriptarInt(sessionStorage.getItem('sede_id')));
 
-      axios({
-      // Endpoint to send files
-      url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
-      method: "POST",
-      headers: config2,
-      data: formData,
+        axios({
+            url: `${process.env.REACT_APP_API_URL}/asignacion/asignacion_usuario/`,
+            method: "POST",
+            headers: config2,
+            data: formData,
         })
         .then((res)=>{
+            if (props.actualizarPracticantes) {
+                props.actualizarPracticantes();
+            }
             handleClose2()
             handleClose()
         })
         .catch(err=>{
             console.log(err)
         })
-
     }
 
     if(props.rol === "practicante"){
