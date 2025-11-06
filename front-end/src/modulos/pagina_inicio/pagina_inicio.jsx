@@ -215,7 +215,7 @@ const Pagina_inicio = () => {
               src={boton6}
               className="boton"
               alt="/"
-              onClick={() => cambiar_ruta(`/gestion_usuario_rol`)}
+              onClick={() => cambiar_ruta(`/admin_usuarios`)}
             ></img>
           )}
           {(userRole === "dir_academico" ||
@@ -378,7 +378,7 @@ const Pagina_inicio = () => {
                 src={boton6}
                 className="boton"
                 alt="/"
-                onClick={() => cambiar_ruta(`/gestion_usuario_rol`)}
+                onClick={() => cambiar_ruta(`/admin_usuarios`)}
               ></img>
             )}
             {(userRole === "dir_academico" ||

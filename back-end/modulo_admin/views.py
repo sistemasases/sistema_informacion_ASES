@@ -86,7 +86,8 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             user.first_name = request.data['nombre']
             user.last_name = request.data['apellido']
             user.email = request.data['correo']
-            user.is_active = request.data['estado']
+            # user.is_active = request.data['estado']
+            user.is_active = True
             # Obtiene la contraseña si se proporciona
             password = request.data.get('user_password', None)
             if password:
@@ -104,7 +105,6 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         """
         Actualizamos el rol del usuario.
         """
-
         try:
             rol_nombre = request.data.get('rol')
             sede_nombre = request.data.get('sede')
@@ -116,21 +116,16 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     status=status.HTTP_200_OK
                 )
 
-            # Buscar el rol, sede nueva y sede antigua en bloque
+            # Buscar rol y sedes (nueva y antigua)
             try:
-                # Rol siempre se busca normalmente
                 rol_obj = rol.objects.get(nombre=rol_nombre)
+                nueva_sede_obj = None
+                antigua_sede_obj = None
 
-                # Manejo especial para sede nueva
-                if sede_nombre == "SIN SEDE":
-                    nueva_sede_obj = None
-                else:
+                if sede_nombre and sede_nombre != "SIN SEDE":
                     nueva_sede_obj = sede.objects.get(nombre=sede_nombre)
 
-                # Manejo especial para sede antigua
-                if old_sede_nombre == "SIN SEDE":
-                    antigua_sede_obj = None
-                else:
+                if old_sede_nombre and old_sede_nombre != "SIN SEDE":
                     antigua_sede_obj = sede.objects.get(nombre=old_sede_nombre)
 
             except (rol.DoesNotExist, sede.DoesNotExist):
@@ -139,10 +134,9 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-            # Buscar los semestres activos de ambas sedes
+            # Buscar los semestres activos asociados a las sedes
             sede_ids = [s.id for s in [nueva_sede_obj,
                                        antigua_sede_obj] if s is not None]
-
             if not sede_ids:
                 return Response(
                     {"error": "No se proporcionaron sedes válidas para buscar semestres."},
@@ -164,37 +158,68 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                 None
             )
 
-            # Si no hay alguna sede válida o semestre correspondiente
             if (nueva_sede_obj and not nuevo_semestre_obj) or (antigua_sede_obj and not antiguo_semestre_obj):
                 return Response(
                     {"error": "Semestre actual no encontrado para alguna de las sedes."},
                     status=status.HTTP_404_NOT_FOUND
                 )
-                
-            # Si el usuario no cambió de sede, evitar actualizaciones innecesarias
+
+            # CASO 1: El usuario no cambió de sede
             if sede_nombre == old_sede_nombre:
-                user_rol, created = usuario_rol.objects.get_or_create(
+                # Solo buscamos registros ACTIVOS
+                user_rol_activo = usuario_rol.objects.filter(
                     id_usuario=user,
+                    id_rol=rol_obj,
                     id_semestre=nuevo_semestre_obj,
-                    defaults={
-                        "id_rol": rol_obj,
-                        "estado": "ACTIVO",
-                        "id_jefe": None
-                    }
+                    estado="ACTIVO"
+                ).first()
+
+                if user_rol_activo:
+                    # Ya tiene uno activo -> actualizar
+                    user_rol_activo.id_rol = rol_obj
+                    user_rol_activo.estado = "ACTIVO"
+                    user_rol_activo.save()
+                    return Response({"mensaje": "Usuario y rol actualizado exitosamente"}, status=status.HTTP_200_OK)
+
+                # Si hay inactivo, NO se toca -> se crea nuevo
+                usuario_rol.objects.create(
+                    id_usuario=user,
+                    id_rol=rol_obj,
+                    id_semestre=nuevo_semestre_obj,
+                    estado="ACTIVO",
+                    id_jefe=None
                 )
-                if not created:
+                return Response({"mensaje": "Se ha creado un nuevo rol activo sin modificar el anterior inactivo"}, status=status.HTTP_201_CREATED)
+
+            # CASO 2: old_sede_nombre es None o "SIN SEDE"
+            if old_sede_nombre in ["SIN SEDE", None]:
+                # Solo buscamos registros ACTIVOS, para no tocar los inactivos
+                user_rol = usuario_rol.objects.filter(
+                    id_usuario=user,
+                    estado="ACTIVO"
+                ).first()
+
+                if user_rol:
+                    user_rol.id_semestre = nuevo_semestre_obj
                     user_rol.id_rol = rol_obj
-                    user_rol.estado = "ACTIVO"
                     user_rol.save()
+                    return Response({"mensaje": "Rol y sede actualizados exitosamente"}, status=status.HTTP_200_OK)
+                else:
+                    # No hay activo -> se crea nuevo
+                    usuario_rol.objects.create(
+                        estado="ACTIVO",
+                        id_jefe=None,
+                        id_rol=rol_obj,
+                        id_semestre=nuevo_semestre_obj,
+                        id_usuario=user
+                    )
+                    return Response({"mensaje": "Se ha asignado correctamente el rol al usuario seleccionado"}, status=status.HTTP_201_CREATED)
 
-                mensaje = "Usuario y rol actualizado exitosamente" if not created else \
-                    "Se ha asignado correctamente el rol al usuario seleccionado"
-                return Response({"mensaje": mensaje}, status=status.HTTP_200_OK)
-
-            # Si cambió de sede, actualizar el semestre correspondiente
+            # CASO 3: Cambió de sede
             user_rol = usuario_rol.objects.filter(
                 id_usuario=user,
-                id_semestre=antiguo_semestre_obj
+                id_semestre=antiguo_semestre_obj,
+                estado="ACTIVO"  # esto evita tocar inactivos
             ).first()
 
             if user_rol:
@@ -234,7 +259,11 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             usuarios_data = request.data  # Lista de diccionarios con clave "usuario"
 
             if not isinstance(usuarios_data, list) or not usuarios_data:
-                return Response({"error": "Debes proporcionar una lista de usuarios válida."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Debes proporcionar una lista de usuarios válida."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             mensajes = []
 
             with transaction.atomic():
@@ -252,16 +281,16 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                         user.is_superuser = False
                         user.save()
 
-                        try:
-                            user_rol = usuario_rol.objects.get(
-                                id_usuario=user.id)
-                            user_rol.estado = "INACTIVO"
-                            user_rol.save()
+                        # Desactivar todos los roles activos asociados al usuario
+                        roles_activos = usuario_rol.objects.filter(
+                            id_usuario=user.id, estado="ACTIVO")
+                        if roles_activos.exists():
+                            roles_activos.update(estado="INACTIVO")
                             mensajes.append(
                                 {"usuario": username, "mensaje": "Desactivado exitosamente"})
-                        except usuario_rol.DoesNotExist:
+                        else:
                             mensajes.append(
-                                {"usuario": username, "error": "No tiene rol asignado"})
+                                {"usuario": username, "error": "No tiene rol activo"})
 
                     except User.DoesNotExist:
                         mensajes.append(
