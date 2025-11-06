@@ -129,6 +129,7 @@ const SelectorUsuarios = () => {
   };
 
   const handleSaveEdit = () => {
+    // console.log(selectedUser);
     const semestre_actual = desencriptarInt(
       sessionStorage.getItem("id_semestre_actual")
     );
