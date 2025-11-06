@@ -118,9 +118,21 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
 
             # Buscar el rol, sede nueva y sede antigua en bloque
             try:
+                # Rol siempre se busca normalmente
                 rol_obj = rol.objects.get(nombre=rol_nombre)
-                nueva_sede_obj = sede.objects.get(nombre=sede_nombre)
-                antigua_sede_obj = sede.objects.get(nombre=old_sede_nombre)
+
+                # Manejo especial para sede nueva
+                if sede_nombre == "SIN SEDE":
+                    nueva_sede_obj = None
+                else:
+                    nueva_sede_obj = sede.objects.get(nombre=sede_nombre)
+
+                # Manejo especial para sede antigua
+                if old_sede_nombre == "SIN SEDE":
+                    antigua_sede_obj = None
+                else:
+                    antigua_sede_obj = sede.objects.get(nombre=old_sede_nombre)
+
             except (rol.DoesNotExist, sede.DoesNotExist):
                 return Response(
                     {"error": "Rol o sede no encontrada, intente nuevamente."},
@@ -128,22 +140,37 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                 )
 
             # Buscar los semestres activos de ambas sedes
+            sede_ids = [s.id for s in [nueva_sede_obj,
+                                       antigua_sede_obj] if s is not None]
+
+            if not sede_ids:
+                return Response(
+                    {"error": "No se proporcionaron sedes válidas para buscar semestres."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             semestres = semestre.objects.filter(
                 semestre_actual=True,
-                id_sede__in=[nueva_sede_obj.id, antigua_sede_obj.id]
+                id_sede__in=sede_ids
             ).select_related("id_sede")
 
             nuevo_semestre_obj = next(
-                (s for s in semestres if s.id_sede == nueva_sede_obj), None)
+                (s for s in semestres if nueva_sede_obj and s.id_sede == nueva_sede_obj),
+                None
+            )
             antiguo_semestre_obj = next(
-                (s for s in semestres if s.id_sede == antigua_sede_obj), None)
+                (s for s in semestres if antigua_sede_obj and s.id_sede ==
+                 antigua_sede_obj),
+                None
+            )
 
-            if not nuevo_semestre_obj or not antiguo_semestre_obj:
+            # Si no hay alguna sede válida o semestre correspondiente
+            if (nueva_sede_obj and not nuevo_semestre_obj) or (antigua_sede_obj and not antiguo_semestre_obj):
                 return Response(
                     {"error": "Semestre actual no encontrado para alguna de las sedes."},
                     status=status.HTTP_404_NOT_FOUND
                 )
-
+                
             # Si el usuario no cambió de sede, evitar actualizaciones innecesarias
             if sede_nombre == old_sede_nombre:
                 user_rol, created = usuario_rol.objects.get_or_create(
