@@ -10,7 +10,7 @@ from datetime import datetime
 from django.utils import timezone
 from django.db import transaction
 
-from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso
+from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso, firma_tratamiento_datos
 from modulo_programa.models import programa, programa_estudiante, facultad
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
@@ -1129,3 +1129,72 @@ class panel_admin_semestres_viewset(viewsets.ViewSet):
         except Exception as e:
             print(e)
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class panel_admin_firma_tratamiento_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar la firma de tratamiento de datos.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_firmas',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_firmas(self, request):
+        """
+        Listar todas las firmas de tratamiento de datos.
+        """
+        try:
+            firmas = firma_tratamiento_datos.objects.all().select_related('id_estudiante').values('id', 'id_estudiante_id',
+                                                                                                  'id_estudiante__nombre', 'id_estudiante__apellido',
+                                                                                                  'id_estudiante__cod_univalle',
+                                                                                                  'id_estudiante__num_doc',
+                                                                                                  'fecha_firma', 'nombre_firma', 'correo_firma',
+                                                                                                  'autoriza_tratamiento_datos', 'autoriza_tratamiento_imagen',
+                                                                                                  )
+            data = [
+                {
+                    "id": f["id"],
+                    "id_estudiante": f["id_estudiante_id"],
+                    "nombre_estudiante": f["id_estudiante__nombre"],
+                    "apellido_estudiante": f["id_estudiante__apellido"],
+                    "codigo_univalle": f["id_estudiante__cod_univalle"],
+                    "num_doc": f["id_estudiante__num_doc"],
+                    "fecha_firma": f["fecha_firma"],
+                    "nombre_firma": f["nombre_firma"],
+                    "correo_firma": f["correo_firma"],
+                    "autoriza_tratamiento_datos": f["autoriza_tratamiento_datos"],
+                    "autoriza_tratamiento_imagen": f["autoriza_tratamiento_imagen"],
+                }
+                for f in firmas
+            ]
+
+            return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='actualizar_tratamiento',
+            permission_classes=[IsAuthenticated]
+            )
+    def actualizar_tratamiento(self, request):
+        """
+        Actualizar la firma de tratamiento de datos de un estudiante.
+        Recibes:
+        {
+            "id": 1,
+            "id_estudiante": 1,
+            "autoriza_tratamiento_datos": false,
+            "autoriza_tratamiento_imagen": true
+        }
+        """
+        try:
+            firma_obj = firma_tratamiento_datos.objects.get(
+                id=request.data['id'], id_estudiante=request.data['id_estudiante'])
+            firma_obj.autoriza_tratamiento_datos = request.data['autoriza_tratamiento_datos']
+            firma_obj.autoriza_tratamiento_imagen = request.data['autoriza_tratamiento_imagen']
+            firma_obj.save()
+        except firma_tratamiento_datos.DoesNotExist:
+            return Response({"error": "Firma no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"mensaje": "Firma de tratamiento de datos actualizada correctamente"}, status=status.HTTP_200_OK)
