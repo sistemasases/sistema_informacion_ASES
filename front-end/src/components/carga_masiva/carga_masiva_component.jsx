@@ -134,8 +134,8 @@ const Carga_masiva_component = () => {
             <option value="FichaV2">Ficha de seguimiento V2</option>
             <option value="ActualizarFichas"> Actualizacion de fichas </option>
             <option value="Inasistencia">Inasistencia</option>
-            {/* <option value="Dir_programa">Director de programa</option>
-                  <option value="Vcd_academico">Vicedecano</option> */}
+            <option value="Dir_programa">Director de programa</option>
+                  {/* <option value="Vcd_academico">Vicedecano</option> */}
             <option value="Cambio_contrasena">Contraseña</option>
             <option value="Eliminar_matricula">Eliminar matricula</option>
             <option value="Firma_datos">Firma Trtamiento de Datos</option>

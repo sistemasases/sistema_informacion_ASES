@@ -23,7 +23,7 @@ const Asignaciones_component = (props) =>{
   const [opciones_retiro, set_opciones_retiro] = useState([]);
 
 
-
+  // este estado se usa para manejar la seleccion de las tabs en las tres listas, parapintar la seleccion de un color distinto
   const [selectedTabIndices, setSelectedTabIndices] = useState({
     practicantes: null,
     monitores: null,
@@ -94,12 +94,9 @@ const isTabSelected_monitor = (username) => {
   })
 
 
-//  console.log("primero : "+ state.data_profesionales)
-//  console.log("segundo : "+ state.data_profesionales[0])
-//  console.log("tercero : "+ state.data_profesionales[0]['username'])
-//  console.log("primero : "+ state.data_profesionales)
 
-    
+  // llenarlas opciones de profesionales, Aquí se transforma la lista data_profesionales en el formato que usa react-select.
+  // el useEffect se ejecuta una vez al montar el componente.
   useEffect(()=>{
 
     if(state.data_profesionales.length > state.opciones_profesionales.length)
@@ -150,12 +147,14 @@ const isTabSelected_monitor = (username) => {
 
 
 
-
+  // cuando seleccionas un profesional en el Select, se hace una peticion para obtener los
+  // practicantes asignados a ese profesional, y se guarda el resultado en separacion_practicantes.
   const cambiar_dato_select = (e) =>{
 
     let data = new FormData();
     data.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
 
+    // peticion al back para ontener los practicantes asignados al profesional seleccionado
     axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+e.id+'/', data,config)
     .then(response => {
       set_state(prevState => ({
@@ -184,7 +183,7 @@ const isTabSelected_monitor = (username) => {
 
 
 
-
+  // esta funcion se encarga de actualizar la lista de monitores cuando se selecciona un practicante
   function practicante_seleccion(name){
 
     let formData = new FormData();
@@ -209,7 +208,7 @@ const isTabSelected_monitor = (username) => {
   }
 
 
-
+  // esta funcion se encarga de actualizar la lista de estudiantes cuando se selecciona un monitor
   function monitor_seleccion(name){
 
     let formData = new FormData();
@@ -271,6 +270,26 @@ const isTabSelected_monitor = (username) => {
     })
   }
 
+    // En Asignaciones_component
+  const actualizar_lista_practicantes = () => {
+    let data = new FormData();
+    
+    data.append('id_sede', desencriptarInt(sessionStorage.getItem('sede_id')));
+
+    axios.put(`${process.env.REACT_APP_API_URL}/usuario_rol/practicante/`+state.profesional_seleccionado+'/', data,config)
+    .then(response => {
+      set_state(prevState => ({
+        ...prevState,
+        separacion_practicantes : response.data
+      }));
+    })
+    .catch(error => {
+      console.log(error);
+      console.log(state.profesional_seleccionado)
+    });
+  }
+
+
 
   return (
         <Container className="container_asignaciones">
@@ -293,9 +312,12 @@ const isTabSelected_monitor = (username) => {
               </Row>
               <Row >
 
+                {/* aca valida que ya este cargado la lista de practicante antes de mostrar los monitores y estudiantes correspondientes  */}
                 {
                     isLoading_practicantes_separados ?
                     (
+
+                      // en caso de que el profesional no este seleccionado entonces lo que hara es cargar todos los practicantes de la sede 
                       <Col className="scroll_listas">
                         <Row className="asignaciones_no_seleccion">
                           profesional no seleccionado 
@@ -309,16 +331,17 @@ const isTabSelected_monitor = (username) => {
                           item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                         }).map((item, index) => 
 
-                        <Col className={isTabSelected_practicante(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'} 
-                              onClick={() => selectTab_practicante(item.username)}>
-                          <Listas  
-                            key={index} item={item} rol={rol} 
-                            profesional_seleccionado={state.profesional_seleccionado}
-                            opciones_retiro={opciones_retiro}
-                            childClicked={(name)=>practicante_seleccion(name)}
-                            childClicked2={(name) => monitor_seleccion(name)}>
-                          </Listas>
-                        </Col>
+                        <Col className={isTabSelected_practicante(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'}  
+                          onClick={() => selectTab_practicante(item.username)}>
+                        <Listas 
+                          key={index} 
+                          item={item} 
+                          rol={rol} 
+                          profesional_seleccionado={state.profesional_seleccionado}
+                          opciones_retiro={opciones_retiro}
+                          childClicked={(name)=>practicante_seleccion(name)}
+                          actualizarPracticantes={actualizar_lista_practicantes}/>
+                      </Col>
                         ) }
 
                       </Scrollbars>
@@ -327,6 +350,8 @@ const isTabSelected_monitor = (username) => {
                     )
                     :
                     (
+
+                    // si el profesional si esta seleccionado entonces mostrara la informacion respecto a el 
                     <Col className="scroll_listas">
                           <br></br> 
                           <Scrollbars>
@@ -338,15 +363,17 @@ const isTabSelected_monitor = (username) => {
                         item.last_name.toLowerCase().includes(state.practicante_filtro);                      
                       }).map((item, index) => 
 
-                      <Col className={isTabSelected_practicante(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'}  
-                            onClick={() => selectTab_practicante(item.username)}>
-                          <Listas 
-                          key={index} item={item} rol={rol} profesional_seleccionado={state.profesional_seleccionado}
-                          opciones_retiro={opciones_retiro}
-                          childClicked={(name)=>practicante_seleccion(name)}/>
-                        </Col>
-                       
-
+                    <Col className={isTabSelected_practicante(item.username) ? 'asignaciones_hover_seleccionado' : 'asignaciones_hover_no_seleccionado'}  
+                        onClick={() => selectTab_practicante(item.username)}>
+                      <Listas 
+                        key={index} 
+                        item={item} 
+                        rol={rol} 
+                        profesional_seleccionado={state.profesional_seleccionado}
+                        opciones_retiro={opciones_retiro}
+                        childClicked={(name)=>practicante_seleccion(name)}
+                        actualizarPracticantes={actualizar_lista_practicantes}/>  
+                    </Col>
                     ) }
 
                     
@@ -357,10 +384,15 @@ const isTabSelected_monitor = (username) => {
                         item.username.toLowerCase().includes(state.practicante_filtro) ||
                         item.first_name.toLowerCase().includes(state.practicante_filtro) ||
                         item.last_name.toLowerCase().includes(state.practicante_filtro);                      
-                      }).map((item, index) => <Listas_no_seleccion 
-                    key={index} item={item} rol={rol} 
-                    profesional_seleccionado={state.profesional_seleccionado}
-                    childClicked={(name)=>practicante_seleccion(name)}/>) }
+                      }).map((item, index) => 
+                      <Listas_no_seleccion 
+                        key={index} 
+                        item={item} 
+                        rol={rol} 
+                        profesional_seleccionado={state.profesional_seleccionado}
+                        childClicked={(name)=>practicante_seleccion(name)}
+                        actualizarPracticantes={actualizar_lista_practicantes}/> 
+                    )}
                     </Scrollbars>
                     </Col>
                     
@@ -550,12 +582,14 @@ const isTabSelected_monitor = (username) => {
                       { state.separacion_estudiantes['1'].filter((item)=>{
                         return state.estudiante_filtro.toLowerCase() === '' ? item 
                         : 
-                        item.nombre.toLowerCase().includes(state.estudiante_filtro), 
-                        item.apellido.toLowerCase().includes(state.estudiante_filtro),
+                        item.nombre.toLowerCase().includes(state.estudiante_filtro) || 
+                        item.apellido.toLowerCase().includes(state.estudiante_filtro) ||
                         item.cod_univalle.toLowerCase().includes(state.estudiante_filtro);                      
-                      }).map((item, index) => 
+                      }).map((item) => 
                       <Listas_no_seleccion 
-                        key={index} item={item} rol={rol3} 
+                        key={item.id}  
+                        item={item} 
+                        rol={rol3} 
                         filtro={state.estudiante_filtro}
                         monitor_seleccionado={state.monitor_seleccionado}
                         childClicked2={(name)=>monitor_seleccion(name)}>

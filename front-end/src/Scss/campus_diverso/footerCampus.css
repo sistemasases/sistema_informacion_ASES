@@ -1,161 +1,178 @@
-.container_footer_campus{
-    width: 100%;
-    background:red;
-    word-break: break-all;
+.container_footer_campus {
+  width: 100%;
+  background: red;
+  word-break: break-all;
 }
 
-.footer_icons_campus{
-    margin-bottom: 50px;
-    display: flex;
-    width: 100%;
-    justify-content: right;
+.footer_icons_campus {
+  margin-bottom: 50px;
+  display: flex;
+  width: 100%;
+  justify-content: right;
 }
-.footer_facebook_campus{
-    margin: 5px;
-    font-size: 25px;
-    background: blue;
-    border-radius: 10px;
-    width: 55px;
-    height: 35px;
-    color:white;
+.footer_facebook_campus {
+  margin: 5px;
+  font-size: 25px;
+  background: blue;
+  border-radius: 10px;
+  width: 55px;
+  height: 35px;
+  color: white;
 }
-.footer_twitter_campus{
-    margin: 5px;
-    font-size: 25px;
-    background: lightseagreen;
-    border-radius: 10px;
-    width: 55px;
-    height: 35px;
-    color:white;
+.footer_twitter_campus {
+  margin: 5px;
+  font-size: 25px;
+  background: lightseagreen;
+  border-radius: 10px;
+  width: 55px;
+  height: 35px;
+  color: white;
 }
-.footer_instagram_campus{
-    margin: 5px;
-    font-size: 25px;
-    background: purple;
-    border-radius: 10px;
-    width: 55px;
-    height: 35px;
-    color:white;
+.footer_instagram_campus {
+  margin: 5px;
+  font-size: 25px;
+  background: purple;
+  border-radius: 10px;
+  width: 55px;
+  height: 35px;
+  color: white;
 }
-.footer_youtube_campus{
-    margin: 5px;
-    font-size: 25px;
-    background: red;
-    border-radius: 10px;
-    width: 55px;
-    height: 35px;
-    color:white;
-}
-
-
-.footer_links_campus{
-    color: white;
-    padding-left: 40px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background: grey;
-    width: 100%;
-}
-.footer_links_bajo_campus{
-    color:rgb(128, 128, 128);
-    padding-left: 40px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background: lightgrey;
-    width: 100%;
+.footer_youtube_campus {
+  margin: 5px;
+  font-size: 25px;
+  background: red;
+  border-radius: 10px;
+  width: 55px;
+  height: 35px;
+  color: white;
 }
 
+.footer_links_campus {
+  color: white;
+  padding-left: 40px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: grey;
+  width: 100%;
+}
+.footer_links_bajo_campus {
+  color: rgb(128, 128, 128);
+  padding-left: 40px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: lightgrey;
+  width: 100%;
+}
 
+/* Estilo para la línea del correo electrónico */
+.email-line {
+  display: flex; /* Habilita Flexbox para alinear contenido */
+  align-items: center; /* Alinea verticalmente el icono y el texto */
+  margin-top: 0.5rem; /* Espacio después de la dirección */
+  /* margin-bottom: 0; */ /* Si no quieres espacio después del correo */
+}
 
-.footer_links_pequeño_campus{
-    color: white;
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background: grey;
+/* Estilo para el icono del sobre */
+.mail-icon {
+  font-size: 1.2rem; /* Ajusta el tamaño del icono */
+  margin-right: 0.5rem; /* Espacio entre el icono y el texto */
 }
-.footer_links_bajo_pequeño_campus{
-    color:grey;
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background: lightgrey;
-}
-.texto_footer_pequeño_campus{
-    font-size: 9pt;
 
+.footer_links_pequeño_campus {
+  color: white;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: grey;
 }
-.texto_pequeño_campus{
-    font-size: 12pt;
-    
+.footer_links_bajo_pequeño_campus {
+  color: grey;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: lightgrey;
 }
- 
+.texto_footer_pequeño_campus {
+  font-size: 9pt;
+}
+.texto_pequeño_campus {
+  font-size: 12pt;
+}
+
 /* ESTILOS FOOTER CAMPUS DOS*/
 
 .footer-container {
-    background-color: #007bff; /* bg-primary color */
-    color: #fff;
-    text-justify: inter-word; 
-    word-break: keep-all; /* Se lleva la palabra para que no quede partida*/
-    overflow-x: hidden;
-  }
-  
-  .logo-container {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px auto;
-  }
-  
-  .footer-bottom {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-  .footer-container {
-    background-color: rgb(110, 57, 101);
-    color: #fff; /* Color del texto */
-    align-items: center;
+  background-color: #007bff; /* bg-primary color */
+  color: #fff;
+  text-justify: inter-word;
+  word-break: keep-all; /* Se lleva la palabra para que no quede partida*/
+  overflow-x: hidden;
+}
 
-    
-  }
- 
-  /* contactos */
-  .contacto-col {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  .contacto-col h5 {
-    text-transform: uppercase;
-  }
-  
-  .contacto-col ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .contacto-col li {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    
-  }
-  
-  .contacto-col i {
-    margin-right: 0.5rem;
-    text-wrap: nowrap;
-  }
-  
-  @media (max-width: 800px) {
+.logo-container {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
 
-    .container_footer_campus{
-      width: 100%;
-      background:red;
-      word-break: break-all;
+.footer-bottom {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.footer-container {
+  /*background-color: rgb(110, 57, 101); actual */
+  /*background-color: rgb(220, 145, 27);*/
+  /*background-color: rgb(162, 192, 55);*/
+  /*background-color: rgb(89, 152, 118);*/
+  /*background-color: rgb(61, 90, 162);*/
+  /*background-color: rgb(82, 56, 136);*/
+  background-color: rgb(66, 168, 191);
+  /*background-color: rgb(155, 29, 28);*/
+  color: #fff; /* Color del texto */
+  align-items: center;
+}
+
+/* contactos */
+.contacto-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.contacto-col h5 {
+  text-transform: uppercase;
+}
+
+.contacto-col ul {
+  list-style: none;
+  padding: 0;
+}
+
+.contacto-col li {
+  display: flex;
+  align-items: center;
+  list-style: none;
+}
+
+.contacto-col i {
+  margin-right: 0.5rem;
+  text-wrap: nowrap;
+}
+
+.contacto-col ul li p {
+  margin-bottom: 0.5rem; /* Reduce el margen inferior por defecto de <p> */
+  line-height: 1.5; /* Ajusta la altura de línea para compactar la dirección */
+}
+
+@media (max-width: 800px) {
+  .container_footer_campus {
+    width: 100%;
+    background: red;
+    word-break: break-all;
   }
-  }
+}

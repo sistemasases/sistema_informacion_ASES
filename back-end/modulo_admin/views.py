@@ -10,7 +10,7 @@ from datetime import datetime
 from django.utils import timezone
 from django.db import transaction
 
-from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso
+from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso, firma_tratamiento_datos
 from modulo_programa.models import programa, programa_estudiante, facultad
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
@@ -86,7 +86,8 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             user.first_name = request.data['nombre']
             user.last_name = request.data['apellido']
             user.email = request.data['correo']
-            user.is_active = request.data['estado']
+            # user.is_active = request.data['estado']
+            user.is_active = True
             # Obtiene la contraseña si se proporciona
             password = request.data.get('user_password', None)
             if password:
@@ -104,39 +105,140 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         """
         Actualizamos el rol del usuario.
         """
-
         try:
-            # print(request.data)
             rol_nombre = request.data.get('rol')
-            semestre_id = request.data.get('semestre')
+            sede_nombre = request.data.get('sede')
+            old_sede_nombre = request.data.get('oldSede')
 
             if not rol_nombre or rol_nombre == "SIN ROL":
-                return Response({"mensaje": "Usuario sin rol, se actualizaron únicamente los datos del mismo"}, status=status.HTTP_200_OK)
+                return Response(
+                    {"mensaje": "Usuario sin rol, se actualizaron únicamente los datos del mismo"},
+                    status=status.HTTP_200_OK
+                )
+
+            # Buscar rol y sedes (nueva y antigua)
             try:
                 rol_obj = rol.objects.get(nombre=rol_nombre)
-            except rol.DoesNotExist:
-                return Response({"error": "Rol no encontrado, intente nuevamente."}, status=status.HTTP_404_NOT_FOUND)
-            try:
-                user_rol = usuario_rol.objects.get(
-                    id_usuario=user.id, id_semestre=semestre_id)
+                nueva_sede_obj = None
+                antigua_sede_obj = None
+
+                if sede_nombre and sede_nombre != "SIN SEDE":
+                    nueva_sede_obj = sede.objects.get(nombre=sede_nombre)
+
+                if old_sede_nombre and old_sede_nombre != "SIN SEDE":
+                    antigua_sede_obj = sede.objects.get(nombre=old_sede_nombre)
+
+            except (rol.DoesNotExist, sede.DoesNotExist):
+                return Response(
+                    {"error": "Rol o sede no encontrada, intente nuevamente."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # Buscar los semestres activos asociados a las sedes
+            sede_ids = [s.id for s in [nueva_sede_obj,
+                                       antigua_sede_obj] if s is not None]
+            if not sede_ids:
+                return Response(
+                    {"error": "No se proporcionaron sedes válidas para buscar semestres."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            semestres = semestre.objects.filter(
+                semestre_actual=True,
+                id_sede__in=sede_ids
+            ).select_related("id_sede")
+
+            nuevo_semestre_obj = next(
+                (s for s in semestres if nueva_sede_obj and s.id_sede == nueva_sede_obj),
+                None
+            )
+            antiguo_semestre_obj = next(
+                (s for s in semestres if antigua_sede_obj and s.id_sede ==
+                 antigua_sede_obj),
+                None
+            )
+
+            if (nueva_sede_obj and not nuevo_semestre_obj) or (antigua_sede_obj and not antiguo_semestre_obj):
+                return Response(
+                    {"error": "Semestre actual no encontrado para alguna de las sedes."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # CASO 1: El usuario no cambió de sede
+            if sede_nombre == old_sede_nombre:
+                # Solo buscamos registros ACTIVOS
+                user_rol_activo = usuario_rol.objects.filter(
+                    id_usuario=user,
+                    id_rol=rol_obj,
+                    id_semestre=nuevo_semestre_obj,
+                    estado="ACTIVO"
+                ).first()
+
+                if user_rol_activo:
+                    # Ya tiene uno activo -> actualizar
+                    user_rol_activo.id_rol = rol_obj
+                    user_rol_activo.estado = "ACTIVO"
+                    user_rol_activo.save()
+                    return Response({"mensaje": "Usuario y rol actualizado exitosamente"}, status=status.HTTP_200_OK)
+
+                # Si hay inactivo, NO se toca -> se crea nuevo
+                usuario_rol.objects.create(
+                    id_usuario=user,
+                    id_rol=rol_obj,
+                    id_semestre=nuevo_semestre_obj,
+                    estado="ACTIVO",
+                    id_jefe=None
+                )
+                return Response({"mensaje": "Se ha creado un nuevo rol activo sin modificar el anterior inactivo"}, status=status.HTTP_201_CREATED)
+
+            # CASO 2: old_sede_nombre es None o "SIN SEDE"
+            if old_sede_nombre in ["SIN SEDE", None]:
+                # Solo buscamos registros ACTIVOS, para no tocar los inactivos
+                user_rol = usuario_rol.objects.filter(
+                    id_usuario=user,
+                    estado="ACTIVO"
+                ).first()
+
+                if user_rol:
+                    user_rol.id_semestre = nuevo_semestre_obj
+                    user_rol.id_rol = rol_obj
+                    user_rol.save()
+                    return Response({"mensaje": "Rol y sede actualizados exitosamente"}, status=status.HTTP_200_OK)
+                else:
+                    # No hay activo -> se crea nuevo
+                    usuario_rol.objects.create(
+                        estado="ACTIVO",
+                        id_jefe=None,
+                        id_rol=rol_obj,
+                        id_semestre=nuevo_semestre_obj,
+                        id_usuario=user
+                    )
+                    return Response({"mensaje": "Se ha asignado correctamente el rol al usuario seleccionado"}, status=status.HTTP_201_CREATED)
+
+            # CASO 3: Cambió de sede
+            user_rol = usuario_rol.objects.filter(
+                id_usuario=user,
+                id_semestre=antiguo_semestre_obj,
+                estado="ACTIVO"  # esto evita tocar inactivos
+            ).first()
+
+            if user_rol:
+                user_rol.id_semestre = nuevo_semestre_obj
                 user_rol.id_rol = rol_obj
                 user_rol.estado = "ACTIVO"
                 user_rol.save()
-                return Response({"mensaje": "Usuario y Rol actualizado exitosamente"}, status=status.HTTP_200_OK)
-            except usuario_rol.DoesNotExist:
-                semestre_obj = get_object_or_404(
-                    semestre, semestre_actual=True, id=semestre_id)
+                return Response({"mensaje": "Usuario y rol actualizado exitosamente"}, status=status.HTTP_200_OK)
+            else:
                 usuario_rol.objects.create(
                     estado="ACTIVO",
                     id_jefe=None,
                     id_rol=rol_obj,
-                    id_semestre=semestre_obj,
+                    id_semestre=nuevo_semestre_obj,
                     id_usuario=user
                 )
                 return Response({"mensaje": "Se ha asignado correctamente el rol al usuario seleccionado"}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
-            # print(str(e))
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     """
@@ -157,7 +259,11 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             usuarios_data = request.data  # Lista de diccionarios con clave "usuario"
 
             if not isinstance(usuarios_data, list) or not usuarios_data:
-                return Response({"error": "Debes proporcionar una lista de usuarios válida."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Debes proporcionar una lista de usuarios válida."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             mensajes = []
 
             with transaction.atomic():
@@ -175,16 +281,16 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                         user.is_superuser = False
                         user.save()
 
-                        try:
-                            user_rol = usuario_rol.objects.get(
-                                id_usuario=user.id)
-                            user_rol.estado = "INACTIVO"
-                            user_rol.save()
+                        # Desactivar todos los roles activos asociados al usuario
+                        roles_activos = usuario_rol.objects.filter(
+                            id_usuario=user.id, estado="ACTIVO")
+                        if roles_activos.exists():
+                            roles_activos.update(estado="INACTIVO")
                             mensajes.append(
                                 {"usuario": username, "mensaje": "Desactivado exitosamente"})
-                        except usuario_rol.DoesNotExist:
+                        else:
                             mensajes.append(
-                                {"usuario": username, "error": "No tiene rol asignado"})
+                                {"usuario": username, "error": "No tiene rol activo"})
 
                     except User.DoesNotExist:
                         mensajes.append(
@@ -230,26 +336,43 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         Listar todos los usuarios.
         """
         try:
-            semestre_ = get_object_or_404(
-                semestre, semestre_actual=True, id=request.data['semestre']
-            )
+            # Obtener los semestres actuales y sus sedes
+            data_semestres = semestre.objects.filter(
+                semestre_actual=True
+            ).select_related("id_sede").values("id", "id_sede__nombre")
 
-            # Prefetch los roles activos del semestre para todos los usuarios
+            # Mapeo de id_semestre -> nombre de sede
+            sede_por_semestre = {
+                item["id"]: item["id_sede__nombre"] for item in data_semestres}
+
+            # Extraer los IDs de los semestres actuales
+            ids_semestres = list(sede_por_semestre.keys())
+
+            # Roles activos asociados a esos semestres
             roles_activos = usuario_rol.objects.filter(
-                estado="ACTIVO", id_semestre=semestre_.id
-            ).select_related("id_rol")
+                estado="ACTIVO",
+                id_semestre__in=ids_semestres
+            ).select_related("id_rol", "id_semestre")
 
-            # Creamos un diccionario con los roles por usuario para acceso rápido
+            # Diccionario con los roles y sede por usuario
             roles_por_usuario = {
-                ur.id_usuario_id: ur.id_rol.nombre for ur in roles_activos
+                ur.id_usuario_id: {
+                    "rol": ur.id_rol.nombre,
+                    "sede": sede_por_semestre.get(ur.id_semestre_id, "SIN SEDE")
+                }
+                for ur in roles_activos
             }
 
+            # Usuarios del sistema
             users = User.objects.all().only(
                 "id", "first_name", "last_name", "email", "username", "is_active"
             )
 
+            # Construir la lista final
             user_list = []
             for user in users:
+                datos_usuario = roles_por_usuario.get(
+                    user.id, {"rol": "SIN ROL", "sede": "SIN SEDE"})
                 user_list.append({
                     "id": user.id,
                     "nombre": user.first_name,
@@ -257,7 +380,8 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     "correo": user.email,
                     "usuario": user.username,
                     "estado": user.is_active,
-                    "rol": roles_por_usuario.get(user.id, "SIN ROL")
+                    "rol": datos_usuario["rol"],
+                    "sede": datos_usuario["sede"],
                 })
 
             return Response(user_list, status=status.HTTP_200_OK)
@@ -940,10 +1064,10 @@ class panel_admin_programas_viewset(viewsets.ViewSet):
         """
         try:
             programas = programa.objects.all().select_related('id_facultad',
-                                                              'id_sede').values('id', 'codigo_snies','codigo_univalle','nombre','jornada',
-                                                                                'id_facultad_id','id_facultad_id__nombre', 
-                                                                                'id_facultad_id__codigo_univalle','id_sede_id', 
-                                                                                'id_sede_id__codigo_univalle', 'id_sede_id__nombre', 
+                                                              'id_sede').values('id', 'codigo_snies', 'codigo_univalle', 'nombre', 'jornada',
+                                                                                'id_facultad_id', 'id_facultad_id__nombre',
+                                                                                'id_facultad_id__codigo_univalle', 'id_sede_id',
+                                                                                'id_sede_id__codigo_univalle', 'id_sede_id__nombre',
                                                                                 'id_sede_id__id_municipio_id__nombre')
 
             lista_programas = []
@@ -967,8 +1091,8 @@ class panel_admin_programas_viewset(viewsets.ViewSet):
             return Response(lista_programas, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-    @action(detail=False, methods=['post'], url_path='actualizar_programa', 
+
+    @action(detail=False, methods=['post'], url_path='actualizar_programa',
             permission_classes=[IsAuthenticated]
             )
     def actualizar_programa(self, request):
@@ -990,14 +1114,14 @@ class panel_admin_programas_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"mensaje": "Programa actualizado correctamente"}, status=status.HTTP_200_OK)
-    
-    
+
+
 class panel_admin_semestres_viewset(viewsets.ViewSet):
     """
     ViewSet para gestionar semestres académicos.
     """
 
-    @action(detail=False, methods=['post'], url_path='listar_semestres', 
+    @action(detail=False, methods=['post'], url_path='listar_semestres',
             permission_classes=[IsAuthenticated]
             )
     def listar_semestres(self, request):
@@ -1005,11 +1129,12 @@ class panel_admin_semestres_viewset(viewsets.ViewSet):
         Listar todos los semestres académicos.
         """
         try:
-            semestres = semestre.objects.all().select_related('id_sede_id').values('id', 'nombre', 'fecha_inicio', 'fecha_fin', 'semestre_actual', 'estado', 'id_sede_id', 'id_sede_id__nombre',)
+            semestres = semestre.objects.all().select_related('id_sede_id').values('id', 'nombre',
+                                                                                   'fecha_inicio', 'fecha_fin', 'semestre_actual', 'estado', 'id_sede_id', 'id_sede_id__nombre',)
             return Response(list(semestres), status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
     @action(detail=False, methods=['post'], url_path='actualizar_semestre',
             permission_classes=[IsAuthenticated]
             )
@@ -1031,9 +1156,8 @@ class panel_admin_semestres_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"mensaje": "Semestre actualizado correctamente"}, status=status.HTTP_200_OK)
-    
-    
-    @action(detail=False, methods=['post'], url_path='crear_semestre', 
+
+    @action(detail=False, methods=['post'], url_path='crear_semestre',
             permission_classes=[IsAuthenticated]
             )
     def crear_semestre(self, request):
@@ -1061,6 +1185,72 @@ class panel_admin_semestres_viewset(viewsets.ViewSet):
         except Exception as e:
             print(e)
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
 
-        
+
+class panel_admin_firma_tratamiento_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar la firma de tratamiento de datos.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_firmas',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_firmas(self, request):
+        """
+        Listar todas las firmas de tratamiento de datos.
+        """
+        try:
+            firmas = firma_tratamiento_datos.objects.all().select_related('id_estudiante').values('id', 'id_estudiante_id',
+                                                                                                  'id_estudiante__nombre', 'id_estudiante__apellido',
+                                                                                                  'id_estudiante__cod_univalle',
+                                                                                                  'id_estudiante__num_doc',
+                                                                                                  'fecha_firma', 'nombre_firma', 'correo_firma',
+                                                                                                  'autoriza_tratamiento_datos', 'autoriza_tratamiento_imagen',
+                                                                                                  )
+            data = [
+                {
+                    "id": f["id"],
+                    "id_estudiante": f["id_estudiante_id"],
+                    "nombre_estudiante": f["id_estudiante__nombre"],
+                    "apellido_estudiante": f["id_estudiante__apellido"],
+                    "codigo_univalle": f["id_estudiante__cod_univalle"],
+                    "num_doc": f["id_estudiante__num_doc"],
+                    "fecha_firma": f["fecha_firma"],
+                    "nombre_firma": f["nombre_firma"],
+                    "correo_firma": f["correo_firma"],
+                    "autoriza_tratamiento_datos": f["autoriza_tratamiento_datos"],
+                    "autoriza_tratamiento_imagen": f["autoriza_tratamiento_imagen"],
+                }
+                for f in firmas
+            ]
+
+            return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='actualizar_tratamiento',
+            permission_classes=[IsAuthenticated]
+            )
+    def actualizar_tratamiento(self, request):
+        """
+        Actualizar la firma de tratamiento de datos de un estudiante.
+        Recibes:
+        {
+            "id": 1,
+            "id_estudiante": 1,
+            "autoriza_tratamiento_datos": false,
+            "autoriza_tratamiento_imagen": true
+        }
+        """
+        try:
+            firma_obj = firma_tratamiento_datos.objects.get(
+                id=request.data['id'], id_estudiante=request.data['id_estudiante'])
+            firma_obj.autoriza_tratamiento_datos = request.data['autoriza_tratamiento_datos']
+            firma_obj.autoriza_tratamiento_imagen = request.data['autoriza_tratamiento_imagen']
+            firma_obj.save()
+        except firma_tratamiento_datos.DoesNotExist:
+            return Response({"error": "Firma no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"mensaje": "Firma de tratamiento de datos actualizada correctamente"}, status=status.HTTP_200_OK)

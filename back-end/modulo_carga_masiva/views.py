@@ -180,11 +180,11 @@ def carga_estudiantes(file):
                         hijos = datos.iat[i,17],
                         barrio_res_id = int(datos.iat[i,18]),
                         ciudad_res_id = int(datos.iat[i,19]),
-                        nombre = str(datos.iat[i,20]),
-                        apellido = str(datos.iat[i,21]),
+                        nombre = str(datos.iat[i,20]).upper(),
+                        apellido = str(datos.iat[i,21]).upper(),
                         cod_univalle = str(datos.iat[i,22]),
                         id_cond_excepcion=consulta_cond_excep,
-                        fecha_nac = datetime.strptime("1900-1-1",'%Y-%m-%d'),
+                        fecha_nac = datetime.strptime("2000-1-1",'%Y-%m-%d'),
                         )
                     else:
                         Estudiante = estudiante(
@@ -208,10 +208,10 @@ def carga_estudiantes(file):
                         hijos = datos.iat[i,17],
                         barrio_res_id = int(datos.iat[i,18]),
                         ciudad_res_id = int(datos.iat[i,19]),
-                        nombre = str(datos.iat[i,20]),
-                        apellido = str(datos.iat[i,21]),
+                        nombre = str(datos.iat[i,20]).upper(),
+                        apellido = str(datos.iat[i,21]).upper(),
                         cod_univalle = str(datos.iat[i,22]),
-                        fecha_nac = datetime.strptime("1900-1-1",'%Y-%m-%d'),
+                        fecha_nac = datetime.strptime("2000-1-1",'%Y-%m-%d'),
                         )
                     lista_estudiantes.append(Estudiante)
                     dict_result = {
@@ -299,11 +299,11 @@ def carga_estudiantes_con_id(file):
                         hijos=datos.iat[i, 18],
                         barrio_res_id=int(datos.iat[i, 19]),
                         ciudad_res_id=int(datos.iat[i, 20]),
-                        nombre=str(datos.iat[i, 21]),
-                        apellido=str(datos.iat[i, 22]),
+                        nombre=str(datos.iat[i, 21]).upper(),
+                        apellido=str(datos.iat[i, 22]).upper(),
                         cod_univalle=str(datos.iat[i, 23]),
                         id_cond_excepcion=consulta_cond_excep,
-                        fecha_nac=datetime.strptime("1900-1-1", '%Y-%m-%d'),
+                        fecha_nac=datetime.strptime("2000-1-1", '%Y-%m-%d'),
                     )
                     lista_estudiantes.append(Estudiante)
                     list_dict_result.append({
@@ -407,8 +407,8 @@ def carga_estudiante_cohorte(file):
     datos = pd.read_csv(file,header=0)
     try:
         for i in range(datos.shape[0]):
-            if (estudiante.objects.filter(num_doc = datos.iat[i,0]).first()):
-                consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0]).first()
+            if (estudiante.objects.filter(num_doc = datos.iat[i,0], cod_univalle = datos.iat[i, 2]).first()):
+                consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle = datos.iat[i, 2]).first()
                 if(cohorte.objects.filter(id_number= datos.iat[i,1]).first()):
                     consulta_cohorte = cohorte.objects.filter(id_number= datos.iat[i,1]).first()
                     if(cohorte_estudiante.objects.filter(id_cohorte = consulta_cohorte,id_estudiante=consulta_estudiante).values()):
@@ -444,7 +444,7 @@ def carga_estudiante_cohorte(file):
             else:
                 dict_result = {
                     'dato' : datos.iat[i,0],
-                    'mensaje' : 'No existe un estudiante con este numero de documento.'
+                    'mensaje': 'No existe un estudiante con este número de documento y código Univalle.'
                 }
                 list_dict_result.append(dict_result)
     except Exception as e:

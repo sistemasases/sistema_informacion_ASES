@@ -2,19 +2,19 @@
     {
         "id":"2",
         "path":"/campus_diverso/registro_estudiante",
-        "name":"Registro",
+        "name":"Menú",
         "icon":"bi-journal-bookmark-fill",
         "childrens":[
             {
-                "id":2,  
-                "path":"/campus_diverso/registro_estudiante",
-                "name":"Registro de persona",
+                "id":1,
+                "path":"/campus_diverso/obtener_estudiante",
+                "name":"Gestión de usuarios",
                 "icon":"bi bi-file-earmark-person-fill"
             },
             {
-                "id":1,
-                "path":"/campus_diverso/obtener_estudiante",
-                "name":"Consultar persona",
+                "id":2,  
+                "path":"/campus_diverso/descarga_campus",
+                "name":"Reporte General",
                 "icon":"bi bi-file-earmark-ruled-fill"
             }
         ]

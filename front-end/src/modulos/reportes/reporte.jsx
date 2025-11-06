@@ -122,17 +122,27 @@ const Reporte = () => {
     let rol = desencriptar(sessionStorage.getItem("rol"));
     let sede = desencriptarInt(sessionStorage.getItem("sede_id"));
     let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
-    
+
     // Roles que tienen acceso al botón "Traer todos"
-    const rolesConBoton = ["super_ases", "socioeducativo", "socioeducativo_reg", "dir_academico"];
-    
+    const rolesConBoton = [
+      "super_ases",
+      "socioeducativo",
+      "socioeducativo_reg",
+      "dir_academico",
+    ];
+
     // Roles que cargan datos automáticamente sin botón
-    const rolesAutoCarga = ["profesional", "practicante", "monitor"];
-    
+    const rolesAutoCarga = [
+      "profesional",
+      "practicante",
+      "monitor",
+      "dir_programa",
+    ];
+
     const config = {
       Authorization: "Bearer " + decryptTokenFromSessionStorage(),
     };
-    
+
     const estudiantes_por_rol = async () => {
       try {
         const response = await axios.get(
@@ -152,7 +162,7 @@ const Reporte = () => {
         setIsLoading(false);
       }
     };
-    
+
     // Solo ejecutar para roles que no tienen botón "Traer todos"
     // Los roles con botón cargarán los datos en el segundo useEffect
     if (!rolesConBoton.includes(rol)) {
@@ -167,10 +177,20 @@ const Reporte = () => {
     let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
 
     // Roles que tienen acceso al botón "Traer todos"
-    const rolesConBoton = ["super_ases", "socioeducativo", "socioeducativo_reg", "dir_academico"];
-    
+    const rolesConBoton = [
+      "super_ases",
+      "socioeducativo",
+      "socioeducativo_reg",
+      "dir_academico",
+    ];
+
     // Roles que cargan datos automáticamente sin botón
-    const rolesAutoCarga = ["profesional", "practicante", "monitor"];
+    const rolesAutoCarga = [
+      "profesional",
+      "practicante",
+      "monitor",
+      "dir_programa",
+    ];
 
     // Funcion que busca el reporte del estudiante logueado.
     const riesgos_estudiante = async () => {
@@ -181,10 +201,10 @@ const Reporte = () => {
           botonElement.setAttribute("disabled", "true");
         }
       }
-      
+
       // Deshabilitar el selector de sedes mientras se hace la consulta
       setIsDisabled(true);
-      
+
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
@@ -198,13 +218,13 @@ const Reporte = () => {
         });
         setFiltered(response.data);
         setIsLoading(false);
-        
+
         // Oculta el gif de carga
         const loadingElement = document.getElementsByName("loading_data")[0];
         if (loadingElement) {
           loadingElement.style.visibility = "hidden";
         }
-        
+
         // Solo habilitar el botón si el rol tiene acceso a él
         if (rolesConBoton.includes(rol)) {
           const botonElement = document.getElementsByName("bring_them_on")[0];
@@ -212,7 +232,7 @@ const Reporte = () => {
             botonElement.removeAttribute("disabled");
           }
         }
-        
+
         // Habilita el selector de sedes
         setIsDisabled(false);
 
@@ -1699,7 +1719,7 @@ const Reporte = () => {
   // Componente personalizado para mensajes de la tabla
   const CustomNoDataComponent = () => {
     let rol = desencriptar(sessionStorage.getItem("rol"));
-    
+
     if (isLoading) {
       return (
         <div className="reporte-no-data-container">
@@ -1707,7 +1727,7 @@ const Reporte = () => {
         </div>
       );
     }
-    
+
     if (filtered.length === 0) {
       if (rol === "monitor") {
         return (
@@ -1738,7 +1758,8 @@ const Reporte = () => {
               <strong>No hay estudiantes asignados a tu equipo</strong>
             </div>
             <div className="reporte-message-subtitle">
-              Verifica que tus practicantes y monitores tengan estudiantes asignados
+              Verifica que tus practicantes y monitores tengan estudiantes
+              asignados
             </div>
           </div>
         );
@@ -1755,7 +1776,7 @@ const Reporte = () => {
         );
       }
     }
-    
+
     return null;
   };
 

@@ -204,9 +204,9 @@ const Pagina_inicio = () => {
               )}
             </Row>
           )}
-          <p className="estilo_bienvenido_campus"> ¡Bienvenido!</p>
-          <p className="estilo_sesion_campus">iniciaste sesion </p>
-          <p className="estilo_como_campus">como {desplegable}</p>
+          <p className="estilo_bienvenido_campus"> ¡Bienvenida/e/o!</p><br/>
+          <p className="estilo_sesion_campus">iniciaste sesión </p><br/>
+          <p className="estilo_como_campus">como {desplegable}</p><br/>
         </Col>
 
         <Col xs={"12"} md={"3"} className="botones-container-campus">
@@ -215,7 +215,7 @@ const Pagina_inicio = () => {
               src={boton6}
               className="boton"
               alt="/"
-              onClick={() => cambiar_ruta(`/gestion_usuario_rol`)}
+              onClick={() => cambiar_ruta(`/admin_usuarios`)}
             ></img>
           )}
           {(userRole === "dir_academico" ||
@@ -291,18 +291,18 @@ const Pagina_inicio = () => {
           )}
           {(decryptSede === "Campus Diverso" || userRole === "CAMPUS DIVERSO") && (
             <img
-              src={boton15}
-              className="boton"
-              alt="/"
-              onClick={() => cambiar_ruta(`/campus_diverso/descarga_campus`)}
-            ></img>
-          )}
-          {(decryptSede === "Campus Diverso" || userRole === "CAMPUS DIVERSO") && (
-            <img
               src={boton6}
               className="boton"
               alt="/"
               onClick={() => cambiar_ruta(`/campus_diverso/obtener_estudiante`)}
+            ></img>
+          )}          
+          {(decryptSede === "Campus Diverso" || userRole === "CAMPUS DIVERSO") && (
+            <img
+              src={boton15}
+              className="boton"
+              alt="/"
+              onClick={() => cambiar_ruta(`/campus_diverso/descarga_campus`)}
             ></img>
           )}
           {userRole === "profesor" ? (
@@ -378,7 +378,7 @@ const Pagina_inicio = () => {
                 src={boton6}
                 className="boton"
                 alt="/"
-                onClick={() => cambiar_ruta(`/gestion_usuario_rol`)}
+                onClick={() => cambiar_ruta(`/admin_usuarios`)}
               ></img>
             )}
             {(userRole === "dir_academico" ||
