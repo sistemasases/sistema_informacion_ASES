@@ -42,6 +42,21 @@ const FormularioActualizacion = (props) => {
     }
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (email === "") {
+      setEmailError("");
+      return;
+    }
+    
+    if (!emailRegex.test(email)) {
+      setEmailError("El correo no tiene un formato válido (ejemplo: nombre@dominio.com)");
+    } else {
+      setEmailError("");
+    }
+  };
+
   const handle_otherDocumentType = (e) => {
     setOtherDocumentType(e.target.value);
     setData({
@@ -83,9 +98,6 @@ const FormularioActualizacion = (props) => {
       });
       return;
     } else if (!emailRegex.test(data.correo_firma)) {
-      // alert(
-      //   "El correo ingresado no tiene un formato válido. Por favor, corrígelo para continuar."
-      // );
       Swal.fire({
         title: "Mensaje de alerta",
         text: "El correo ingresado no tiene un formato válido. Por favor, corrígelo para continuar.",
@@ -286,13 +298,21 @@ const FormularioActualizacion = (props) => {
                       <label style={{ color: "red" }}> *</label>
                     </Form.Label>
                     <Form.Control
-                      type="text"
+                      type="email"
                       placeholder="Tu respuesta"
-                      onChange={(e) =>
+                      onChange={(e) =>{
                         setData({
                           ...data,
                           correo_firma: e.target.value,
                         })
+
+                        if (!e.target.value.includes("@")) {
+                          validateEmail(e.target.value);
+                        }else {
+                          setEmailError("");
+                        }
+                        
+                      }
                       }
                       title="Debe ingresar un correo electrónico válido: nombre@dominio.com"
                     />
@@ -308,12 +328,16 @@ const FormularioActualizacion = (props) => {
                     <Form.Control
                       type="text"
                       placeholder="Tu respuesta"
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        // eliminar cualquier caracter que no sea letra o espacio
+                        const onlyLetters = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
                         setData({
                           ...data,
-                          nombre_firma: e.target.value,
-                        })
-                      }
+                          nombre_firma: onlyLetters,
+                        });
+                        // actualizar el valor del input
+                        e.target.value = onlyLetters;
+                      }}
                     />
                   </Form.Group>
                   <hr></hr>
@@ -371,7 +395,7 @@ const FormularioActualizacion = (props) => {
                       <label style={{ color: "red" }}> *</label>
                     </Form.Label>
                     <Form.Control
-                      type="text"
+                      type="number"
                       placeholder="Tu respuesta"
                       onChange={(e) =>
                         setData({
@@ -391,12 +415,12 @@ const FormularioActualizacion = (props) => {
                       type="radio"
                       id="si"
                       label="Sí"
-                      value={true} // Asegúrate de pasar el valor booleano
+                      value={true} 
                       name="dataAuth"
                       onChange={(e) =>
                         setData({
                           ...data,
-                          autoriza_tratamiento_datos: true, // Establece el valor booleano explícito
+                          autoriza_tratamiento_datos: true, 
                         })
                       }
                     />
@@ -404,12 +428,12 @@ const FormularioActualizacion = (props) => {
                       type="radio"
                       id="no"
                       label="No"
-                      value={false} // Asegúrate de pasar el valor booleano
+                      value={false} 
                       name="dataAuth"
                       onChange={(e) =>
                         setData({
                           ...data,
-                          autoriza_tratamiento_datos: false, // Establece el valor booleano explícito
+                          autoriza_tratamiento_datos: false, 
                         })
                       }
                     />
@@ -426,7 +450,7 @@ const FormularioActualizacion = (props) => {
                       label="Sí"
                       value="true"
                       name="imageAuth"
-                      // checked={documentType === "C.C."}
+                      
                       onChange={(e) =>
                         setData({
                           ...data,

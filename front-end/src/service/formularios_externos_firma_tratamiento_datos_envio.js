@@ -41,7 +41,7 @@ const formularios_externos_firma = async (formData) => {
             title: "Error",
             text: error.response.data.Respuesta,
             icon: "error",
-            timer: 2500,
+            timer: 3500,
             showConfirmButton: false,
           });
         } else if (error.response.status === 404) {
@@ -50,7 +50,7 @@ const formularios_externos_firma = async (formData) => {
             title: "Error",
             text: error.response.data.Respuesta,
             icon: "error",
-            timer: 2500,
+            timer: 3500,
             showConfirmButton: false,
           });
         } else if (error.response.status === 500) {
@@ -59,7 +59,7 @@ const formularios_externos_firma = async (formData) => {
             title: "Error",
             text: error.response.data.Respuesta,
             icon: "error",
-            timer: 2500,
+            timer: 3500,
             showConfirmButton: false,
           });
         } else {
