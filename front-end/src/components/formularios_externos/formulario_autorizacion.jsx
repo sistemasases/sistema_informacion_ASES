@@ -314,6 +314,11 @@ const FormularioActualizacion = (props) => {
                         
                       }
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === ' ') {
+                          e.preventDefault();
+                        }
+                      }}
                       title="Debe ingresar un correo electrónico válido: nombre@dominio.com"
                     />
                     {emailError && <p style={{ color: "red" }}>{emailError}</p>}
@@ -338,6 +343,7 @@ const FormularioActualizacion = (props) => {
                         // actualizar el valor del input
                         e.target.value = onlyLetters;
                       }}
+                      
                     />
                   </Form.Group>
                   <hr></hr>
@@ -395,14 +401,24 @@ const FormularioActualizacion = (props) => {
                       <label style={{ color: "red" }}> *</label>
                     </Form.Label>
                     <Form.Control
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       placeholder="Tu respuesta"
-                      onChange={(e) =>
+                      value={data.documento}
+                      onChange={(e) => {
+                        // Solo permite dígitos (0-9), elimina cualquier otro carácter
+                        const numericValue = e.target.value.replace(/\D/g, '');
                         setData({
                           ...data,
-                          documento: e.target.value,
-                        })
-                      }
+                          documento: numericValue,
+                        });
+                      }}
+                      onKeyDown={(e) => {
+                        // Previene la entrada de espacios
+                        if (e.key === ' ') {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </Form.Group>
                   <hr></hr>
