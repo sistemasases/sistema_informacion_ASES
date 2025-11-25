@@ -414,7 +414,7 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             # Obtener todos los programas y cohortes relacionados con esos estudiantes
             programas_estudiantes = programa_estudiante.objects.filter(
                 id_estudiante__in=ids_estudiantes
-            ).select_related('id_programa').values('id', 'id_estudiante', 'id_programa', 'id_programa__nombre')
+            ).select_related('id_programa').values('id', 'id_estudiante', 'id_programa', 'id_programa__nombre', 'id_programa__id_sede__nombre')
 
             cohortes_estudiantes = cohorte_estudiante.objects.filter(
                 id_estudiante__in=ids_estudiantes
@@ -426,7 +426,8 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
                 programas_por_estudiante.setdefault(p['id_estudiante'], []).append({
                     "id": p['id'],
                     "id_programa": p['id_programa'],
-                    "nombre_programa": p['id_programa__nombre']
+                    "nombre_programa": p['id_programa__nombre'],
+                    "sede_programa": p['id_programa__id_sede__nombre']
                 })
 
             cohortes_por_estudiante = {}

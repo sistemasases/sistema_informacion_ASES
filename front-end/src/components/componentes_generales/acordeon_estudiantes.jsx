@@ -156,13 +156,21 @@ const SelectorEstudiantes = () => {
         "Sin programas",
       sortable: true,
       wrap: true,
-      grow: 0.8,
+      grow: 1.2,
     },
     {
       name: "COHORTE",
       selector: (row) =>
         row?.cohortes?.map((c) => c.nombre_cohorte).join(", ") || "Sin cohorte",
       sortable: false,
+      wrap: true,
+      grow: 0.8,
+    },
+    {
+      name: "SEDE",
+      selector: (row) =>
+        row?.programas?.map((p) => p.sede_programa).join(", ") || "Sin sede",
+      sortable: true,
       wrap: true,
       grow: 0.8,
     },
