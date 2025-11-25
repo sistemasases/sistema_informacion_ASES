@@ -204,7 +204,11 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
                             estudiante_firma.firma_existe = True
                             estudiante_firma.save()
                             if firma_tratamiento_datos.objects.filter(id_estudiante=estudiante_firma).exists():
-                                return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
+                                firma_creada = firma_tratamiento_datos.objects.get(id_estudiante=estudiante_firma)
+                                fechaFirma = firma_creada.fecha_firma.strftime("%Y-%m-%d")
+                                nombreFirma = firma_creada.id_estudiante.nombre + " " + firma_creada.id_estudiante.apellido
+
+                                return Response({'Respuesta': f'El estudiante {nombreFirma} ya ha firmado en la fecha {fechaFirma}'}, status=status.HTTP_400_BAD_REQUEST)
                             Firma = firma_tratamiento_datos.objects.create(
                                 id_estudiante=estudiante_firma,
                                 fecha_firma=serializer.data["fecha_firma"],
@@ -224,7 +228,11 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
                             return Response({'Respuesta': 'Error al crear la firma'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                     else:
                         if firma_tratamiento_datos.objects.filter(id_estudiante=estudiante_firma).exists():
-                            return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
+                            firma_creada = firma_tratamiento_datos.objects.get(id_estudiante=estudiante_firma)
+                            fechaFirma = firma_creada.fecha_firma.strftime("%Y-%m-%d")
+                            nombreFirma = firma_creada.id_estudiante.nombre + " " + firma_creada.id_estudiante.apellido
+
+                            return Response({'Respuesta': f'El estudiante {nombreFirma} ya ha firmado en la fecha {fechaFirma}'}, status=status.HTTP_400_BAD_REQUEST)
                         Firma = firma_tratamiento_datos.objects.create(
                             id_estudiante=estudiante_firma,
                             fecha_firma=serializer.data["fecha_firma"],
