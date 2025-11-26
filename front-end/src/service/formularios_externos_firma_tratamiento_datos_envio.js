@@ -38,9 +38,9 @@ const formularios_externos_firma = async (formData) => {
         if (error.response.status === 400) {
           // alert(error.response.data.Respuesta);
           Swal.fire({
-            title: "Error",
+            title: "Exito",
             text: error.response.data.Respuesta,
-            icon: "error",
+            icon: "success",
             timer: 3500,
             showConfirmButton: false,
           });

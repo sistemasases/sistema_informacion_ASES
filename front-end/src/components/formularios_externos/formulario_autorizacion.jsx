@@ -20,6 +20,19 @@ const FormularioActualizacion = (props) => {
   const [documentType, setDocumentType] = useState("");
   const [otherDocumentType, setOtherDocumentType] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [autorizacionDatos, setAutorizacionDatos] = useState(false);
+  const [autError, setAutError] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+
+  const handleCheckboxChange = (e) => {
+    setAutorizacionDatos(e.target.checked);
+    setData({
+      ...data,
+      autoriza_tratamiento_datos: e.target.checked,
+    });
+  };
+
 
   const handleDocumentTypeChange = (e) => {
     setDocumentType(e.target.value);
@@ -70,14 +83,14 @@ const FormularioActualizacion = (props) => {
     tipo_id_estudiante: "",
     documento: "",
     correo_firma: "",
-    autoriza_tratamiento_datos: null,
     autoriza_tratamiento_imagen: null,
+    autoriza_tratamiento_datos: null,
     fecha_firma: new Date().toISOString().split("T")[0],
   });
 
   const send_data = async (e) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+    console.log(data.autoriza_tratamiento_datos);
     // Verificar que los campos obligatorios no estén vacíos
     if (
       data.nombre_firma === "" ||
@@ -110,36 +123,10 @@ const FormularioActualizacion = (props) => {
       setEmailError("El correo no tiene un formato válido");
       return;
     } else if (data.autoriza_tratamiento_datos === false) {
+      console.log("No autorizó el tratamiento de datos");
       try {
-        const isConfirm = await Swal.fire({
-          title: "Mensaje de confirmación",
-          text: "Recuerde que si no autoriza el tratamiento de datos, no podrá continuar con el proceso de acompañamiento.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#DD6B55",
-          confirmButtonText: "Sí",
-          cancelButtonText: "No",
-        });
-
-        if (!isConfirm.isConfirmed) {
-          return; // Si el usuario cancela, se sale de la función
-        }
-
-        // Llamar al servicio para guardar los datos
-        const res =
-          await Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
-            data
-          );
-
-        if (res) {
-          Swal.fire({
-            title: "Éxito",
-            text: "Los datos fueron guardados correctamente.",
-            icon: "success",
-            timer: 3000,
-            showConfirmButton: false,
-          });
-        }
+        setAutError("Debe autorizar el tratamiento de datos personales para continuar.");
+        return;
       } catch (error) {
         Swal.fire({
           title: "Error",
@@ -150,34 +137,63 @@ const FormularioActualizacion = (props) => {
         });
       }
     } else {
-      const res =
-        await Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
-          data
-        );
-      try {
-        if (res) {
-          Swal.fire({
-            title: "Éxito",
-            text: "Los datos fueron guardados correctamente.",
-            icon: "success",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        }
-      } catch (error) {
+      setShowConfirmModal(true);   
+    }
+  };
+
+  const result = async (e) => {
+    const res =
+      await Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
+        data
+      );
+    try {
+      if (res) {
         Swal.fire({
-          title: "Error",
-          text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
-          icon: "error",
+          title: "Éxito",
+          text: "Los datos fueron guardados correctamente.",
+          icon: "success",
           timer: 2000,
           showConfirmButton: false,
         });
       }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     }
   };
 
   return (
+
     <div className="auth-all-background">
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar número de documento</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p style={{ fontSize: "1rem" }}>
+            ¿Confirmas que tu número de documento es:
+            <br />
+            <strong style={{ fontSize: "1.2rem" }}>{data.documento}</strong> ?
+          </p>
+          <p style={{ color: "red", fontSize: "0.9rem" }}>
+            ⚠️ Este valor es muy importante para validar tu identidad.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={result}>
+            Confirmar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <div className="auth-form-div">
         <Container>
           <Col>
@@ -400,6 +416,9 @@ const FormularioActualizacion = (props) => {
                       Número de documento de identidad{" "}
                       <label style={{ color: "red" }}> *</label>
                     </Form.Label>
+                    <p style={{ fontSize: "0.9rem", color: "red", fontWeight: "bold" }}>
+                      ⚠️ Este número debe ser EXACTO. Con él se verifican tus registros en el sistema. Por favor asegurese de que sea correcto.
+                    </p>
                     <Form.Control
                       type="text"
                       inputMode="numeric"
@@ -422,39 +441,7 @@ const FormularioActualizacion = (props) => {
                     />
                   </Form.Group>
                   <hr></hr>
-                  <Form.Group controlId="formDataAuth">
-                    <Form.Label>
-                      ¿Autoriza el tratamiento de datos personales y sensibles?{" "}
-                      <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Check
-                      type="radio"
-                      id="si"
-                      label="Sí"
-                      value={true} 
-                      name="dataAuth"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          autoriza_tratamiento_datos: true, 
-                        })
-                      }
-                    />
-                    <Form.Check
-                      type="radio"
-                      id="no"
-                      label="No"
-                      value={false} 
-                      name="dataAuth"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          autoriza_tratamiento_datos: false, 
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <hr></hr>
+
                   <Form.Group controlId="formImageAuth">
                     <Form.Label>
                       ¿Autoriza el uso de imágenes en material publicitario?{" "}
@@ -491,6 +478,24 @@ const FormularioActualizacion = (props) => {
                   </Form.Group>
 
                   <hr></hr>
+
+                  <Form.Group controlId="formDataAuth">
+                    <Form.Label>
+                      ¿Autoriza el tratamiento de datos personales y sensibles?{" "}
+                      <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Check
+                      type="checkbox"
+                      id="dataAuthCheckbox"
+                      label="Autorizo el tratamiento de mis datos personales"
+                      checked={autorizacionDatos}
+                      onChange={handleCheckboxChange}
+                    />
+                  </Form.Group>
+                  {autError && <p style={{ color: "red" }}>{autError}</p>}
+                  <hr></hr>
+
+
                   <div style={{ textAlign: "center", alignItems: "center" }}>
                     <Button
                       variant="primary"

@@ -7,3 +7,9 @@ class monitoria_academica_serializer(serializers.ModelSerializer):
 	class Meta:
 		model = monitoria_academica
 		fields = '__all__'
+
+
+class FirmaTempSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = firma_tratamiento_datos_temp
+        fields = '__all__'
