@@ -15,6 +15,7 @@ router.register(r'panel_admin_asignaciones', views.panel_admin_asignaciones_view
 router.register(r'panel_admin_asignaciones_monitores', views.panel_admin_asignaciones_monitores_viewset, basename='panel_admin_asignaciones_monitores')
 router.register(r'panel_admin_programas', views.panel_admin_programas_viewset, basename='panel_admin_programas')
 router.register(r'panel_admin_semestres', views.panel_admin_semestres_viewset, basename='panel_admin_semestres')
+router.register(r'panel_admin_tratamiento_datos', views.panel_admin_firma_tratamiento_viewset, basename='panel_admin_tratamiento_datos')
 
 
 urlpatterns = [

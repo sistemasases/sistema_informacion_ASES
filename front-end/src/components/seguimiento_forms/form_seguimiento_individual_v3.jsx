@@ -128,7 +128,7 @@ const Seguimiento_individual_v3 = (props) => {
               window.confirm(
                 "Debes diligenciar el campo 'Objetivos', por favor verifica este campo."
               );
-              return false; 
+              return false;
             }
           } else {
             window.confirm(
@@ -220,7 +220,6 @@ const Seguimiento_individual_v3 = (props) => {
       }
     } else {
       return verificador_familiar();
-
     }
   };
 
@@ -368,7 +367,7 @@ const Seguimiento_individual_v3 = (props) => {
       !!state.rem_grupos_universidad ||
       !!state.rem_externa ||
       !!state.Ninguna_acción_realizada
-    ) {      
+    ) {
       //set_info();
       return true;
     } else {
@@ -378,7 +377,6 @@ const Seguimiento_individual_v3 = (props) => {
       return false;
     }
   };
-
 
   //esta funcion se encarga de enviar la info al backend despues de descargar el csv, es la que se le pasa por parametro al RegistroConCSV
   const enviarDespuesDeDescarga = () => {
@@ -396,7 +394,7 @@ const Seguimiento_individual_v3 = (props) => {
 
   // esta funcion es la que usaba anteriormente para enviar la info al backend
   const set_info = () => {
-    console.log(state);
+    // console.log(state);
     Create_Seguimiento.create_seguimiento(state).then((res) => {
       if (res) {
         recargarPagina();
@@ -510,6 +508,146 @@ const Seguimiento_individual_v3 = (props) => {
     riesgo_vida_universitaria_ciudad_alto: false,
   });
 
+  // Limitar temáticas
+  // Helper: cuenta cuántos del grupo están marcados en el state
+  const countSelected = (state, group) =>
+    group.reduce((acc, key) => acc + (state[key] ? 1 : 0), 0);
+
+  // Individual
+  const limitarSeleccionIndividual = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoIndividual = [
+      "autoconocimiento",
+      "autonomia",
+      "proyecto_de_vida",
+      "historia_de_vida",
+      "salud",
+      "relación_eriótico_afectivas",
+      "identificación",
+      "aspectos_motivacionales",
+      "diversidad_sexual",
+      "red_de_apoyo",
+    ];
+
+    if (!grupoIndividual.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoIndividual);
+
+    // Si intenta marcar un tercero → bloquear
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Individual'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+
+  // Familiar
+  const limitarSeleccionFamiliar = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoFamiliar = [
+      "relaciones_familiares",
+      "red_de_apoyo_familiar",
+      "rol_del_estudiante_en_la_familia",
+    ];
+
+    if (!grupoFamiliar.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoFamiliar);
+
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Familiar'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+
+  // Fin - Familiar
+
+  // Académico
+  const limitarSeleccionAcademico = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoAcademico = [
+      "desempeño_académico",
+      "elección_vocacional",
+      "autogestion_academica",
+      "manejo_del_tiempo",
+    ];
+
+    if (!grupoAcademico.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoAcademico);
+
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Academico'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+  // Fin - Académico
+
+  // Económico
+  const limitarSeleccionEconomico = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoEconomico = [
+      "apoyos_económicos_institucionales",
+      "manejo_finanzas",
+      "apoyo_económico_familiar",
+      "situación_laboral_ocupacional",
+    ];
+
+    if (!grupoEconomico.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoEconomico);
+
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Economico'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+  // Fin - Económico
+  // Vida Universitaria y Ciudad
+  const limitarSeleccionVida = (e, state) => {
+    const { name, checked } = e.target;
+    const grupoVida = [
+      "motivación_compañamiento",
+      "referencia_geográfica",
+      "adaptación_ciudad_Universidad",
+      "movilidad_y_transporte",
+      "uso_de_los_servicios_universitarios",
+      "integracion_a_la_cultura_universitaria",
+      "vivienda",
+      "vinculación_grupos_actividades_extracurriculares",
+    ];
+
+    if (!grupoVida.includes(name)) return false;
+
+    const seleccionados = countSelected(state, grupoVida);
+
+    if (checked && seleccionados >= 2) {
+      window.alert(
+        "Solo puedes seleccionar 2 temáticas en la dimensión 'Vida Universitaria'."
+      );
+      return true; // bloqueado
+    }
+
+    return false; // no bloqueado
+  };
+  // Fin - Vida Universitaria y Ciudad
+
+  // Manejo de los checkbox de riesgo
   const handleForm = (e) => {
     if (e.target.name === "riesgo_individual_bajo") {
       if (e.target.checked === true) {
@@ -872,9 +1010,21 @@ const Seguimiento_individual_v3 = (props) => {
         });
       }
     } else {
+      // Ejecutar los bloqueos (devuelven true si se bloquea)
+      const bloqueado =
+        limitarSeleccionIndividual(e, state) ||
+        limitarSeleccionFamiliar(e, state) ||
+        limitarSeleccionAcademico(e, state) ||
+        limitarSeleccionEconomico(e, state) ||
+        limitarSeleccionVida(e, state);
+
+      if (bloqueado) return;
+
+      // Actualización normal del estado:
       set_state({
         ...state,
-        [e.target.name]: e.target.value,
+        [e.target.name]:
+          e.target.type === "checkbox" ? e.target.checked : e.target.value,
       });
     }
   };
@@ -1221,7 +1371,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Autoconocimiento"
               name="autoconocimiento"
+              checked={!!state.autoconocimiento}
               onChange={handleForm}
+              disabled={
+                !state.autoconocimiento &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1230,7 +1399,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Autonomía"
               name="autonomia"
+              checked={!!state.autonomia}
               onChange={handleForm}
+              disabled={
+                !state.autonomia &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1239,7 +1427,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Proyecto de vida"
               name="proyecto_de_vida"
+              checked={!!state.proyecto_de_vida}
               onChange={handleForm}
+              disabled={
+                !state.proyecto_de_vida &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1250,7 +1457,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Historia de vida"
               name="historia_de_vida"
+              checked={!!state.historia_de_vida}
               onChange={handleForm}
+              disabled={
+                !state.historia_de_vida &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1262,7 +1488,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Salud"
               name="salud"
+              checked={!!state.salud}
               onChange={handleForm}
+              disabled={
+                !state.salud &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1271,7 +1516,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Relaciones erótico-afectivas"
               name="relación_eriótico_afectivas"
+              checked={!!state.relación_eriótico_afectivas}
               onChange={handleForm}
+              disabled={
+                !state.relación_eriótico_afectivas &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1282,7 +1546,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Documentos de identificación"
               name="identificación"
+              checked={!!state.identificación}
               onChange={handleForm}
+              disabled={
+                !state.identificación &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1291,7 +1574,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Aspectos motivacionales"
               name="aspectos_motivacionales"
+              checked={!!state.aspectos_motivacionales}
               onChange={handleForm}
+              disabled={
+                !state.aspectos_motivacionales &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1300,7 +1602,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Diversidad sexual"
               name="diversidad_sexual"
+              checked={!!state.diversidad_sexual}
               onChange={handleForm}
+              disabled={
+                !state.diversidad_sexual &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1311,7 +1632,26 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Red de apoyo"
               name="red_de_apoyo"
+              checked={!!state.red_de_apoyo}
               onChange={handleForm}
+              disabled={
+                !state.red_de_apoyo &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "autoconocimiento",
+                      "autonomia",
+                      "proyecto_de_vida",
+                      "historia_de_vida",
+                      "salud",
+                      "relación_eriótico_afectivas",
+                      "identificación",
+                      "aspectos_motivacionales",
+                      "diversidad_sexual",
+                      "red_de_apoyo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1372,7 +1712,19 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Relaciones familiares"
               name="relaciones_familiares"
+              checked={!!state.relaciones_familiares}
               onChange={handleForm}
+              disabled={
+                !state.relaciones_familiares &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "relaciones_familiares",
+                      "red_de_apoyo_familiar",
+                      "rol_del_estudiante_en_la_familia",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1381,7 +1733,19 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Red de apoyo familiar"
               name="red_de_apoyo_familiar"
+              checked={!!state.red_de_apoyo_familiar}
               onChange={handleForm}
+              disabled={
+                !state.red_de_apoyo_familiar &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "relaciones_familiares",
+                      "red_de_apoyo_familiar",
+                      "rol_del_estudiante_en_la_familia",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1390,7 +1754,19 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Rol del estudiante en la familia"
               name="rol_del_estudiante_en_la_familia"
+              checked={!!state.rol_del_estudiante_en_la_familia}
               onChange={handleForm}
+              disabled={
+                !state.rol_del_estudiante_en_la_familia &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "relaciones_familiares",
+                      "red_de_apoyo_familiar",
+                      "rol_del_estudiante_en_la_familia",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1451,7 +1827,20 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Desempeño académico"
               name="desempeño_académico"
+              checked={!!state.desempeño_académico}
               onChange={handleForm}
+              disabled={
+                !state.desempeño_académico &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "desempeño_académico",
+                      "elección_vocacional",
+                      "autogestion_academica",
+                      "manejo_del_tiempo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1460,7 +1849,20 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Elección vocacional"
               name="elección_vocacional"
+              checked={!!state.elección_vocacional}
               onChange={handleForm}
+              disabled={
+                !state.elección_vocacional &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "desempeño_académico",
+                      "elección_vocacional",
+                      "autogestion_academica",
+                      "manejo_del_tiempo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1469,7 +1871,20 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Autogestión Académica"
               name="autogestion_academica"
+              checked={!!state.autogestion_academica}
               onChange={handleForm}
+              disabled={
+                !state.autogestion_academica &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "desempeño_académico",
+                      "elección_vocacional",
+                      "autogestion_academica",
+                      "manejo_del_tiempo",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1530,7 +1945,20 @@ const Seguimiento_individual_v3 = (props) => {
               label="Apoyos económicos institucionales"
               type="checkbox"
               name="apoyos_económicos_institucionales"
+              checked={!!state.apoyos_económicos_institucionales}
               onChange={handleForm}
+              disabled={
+                !state.apoyos_económicos_institucionales &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "apoyos_económicos_institucionales",
+                      "manejo_finanzas",
+                      "apoyo_económico_familiar",
+                      "situación_laboral_ocupacional",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1539,7 +1967,20 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Manejo de sus finanzas"
               name="manejo_finanzas"
+              checked={!!state.manejo_finanzas}
               onChange={handleForm}
+              disabled={
+                !state.manejo_finanzas &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "apoyos_económicos_institucionales",
+                      "manejo_finanzas",
+                      "apoyo_económico_familiar",
+                      "situación_laboral_ocupacional",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1548,7 +1989,20 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Apoyo económico familiar"
               name="apoyo_económico_familiar"
+              checked={!!state.apoyo_económico_familiar}
               onChange={handleForm}
+              disabled={
+                !state.apoyo_económico_familiar &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "apoyos_económicos_institucionales",
+                      "manejo_finanzas",
+                      "apoyo_económico_familiar",
+                      "situación_laboral_ocupacional",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1559,7 +2013,20 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Situación laboral y ocupacional"
               name="situación_laboral_ocupacional"
+              checked={!!state.situación_laboral_ocupacional}
               onChange={handleForm}
+              disabled={
+                !state.situación_laboral_ocupacional &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "apoyos_económicos_institucionales",
+                      "manejo_finanzas",
+                      "apoyo_económico_familiar",
+                      "situación_laboral_ocupacional",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1620,7 +2087,24 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Motivaciones para el acompañamiento"
               name="motivación_compañamiento"
+              checked={!!state.motivación_compañamiento}
               onChange={handleForm}
+              disabled={
+                !state.motivación_compañamiento &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1629,7 +2113,24 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Referenciación geográfica"
               name="referencia_geográfica"
+              checked={!!state.referencia_geográfica}
               onChange={handleForm}
+              disabled={
+                !state.referencia_geográfica &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1638,7 +2139,24 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Adaptación al territorio"
               name="adaptación_ciudad_Universidad"
+              checked={!!state.adaptación_ciudad_Universidad}
               onChange={handleForm}
+              disabled={
+                !state.adaptación_ciudad_Universidad &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1649,7 +2167,24 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Movilidad y transporte"
               name="movilidad_y_transporte"
+              checked={!!state.movilidad_y_transporte}
               onChange={handleForm}
+              disabled={
+                !state.movilidad_y_transporte &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1658,7 +2193,24 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Integración a la cultura universitaria"
               name="integracion_a_la_cultura_universitaria"
+              checked={!!state.integracion_a_la_cultura_universitaria}
               onChange={handleForm}
+              disabled={
+                !state.integracion_a_la_cultura_universitaria &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1667,7 +2219,24 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Vinculación a grupos estudiantiles y externos"
               name="vinculación_grupos_actividades_extracurriculares"
+              checked={!!state.vinculación_grupos_actividades_extracurriculares}
               onChange={handleForm}
+              disabled={
+                !state.vinculación_grupos_actividades_extracurriculares &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
         </Row>
@@ -1678,7 +2247,24 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Uso de los servicios universitarios"
               name="uso_de_los_servicios_universitarios"
+              checked={!!state.uso_de_los_servicios_universitarios}
               onChange={handleForm}
+              disabled={
+                !state.uso_de_los_servicios_universitarios &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col>
@@ -1687,7 +2273,24 @@ const Seguimiento_individual_v3 = (props) => {
               type="checkbox"
               label="Vivienda"
               name="vivienda"
+              checked={!!state.vivienda}
               onChange={handleForm}
+              disabled={
+                !state.vivienda &&
+                Object.values(state).filter(
+                  (v, i) =>
+                    [
+                      "motivación_compañamiento",
+                      "referencia_geográfica",
+                      "adaptación_ciudad_Universidad",
+                      "movilidad_y_transporte",
+                      "uso_de_los_servicios_universitarios",
+                      "integracion_a_la_cultura_universitaria",
+                      "vivienda",
+                      "vinculación_grupos_actividades_extracurriculares",
+                    ].includes(Object.keys(state)[i]) && v
+                ).length >= 2
+              }
             />
           </Col>
           <Col></Col>
@@ -2145,10 +2748,9 @@ const Seguimiento_individual_v3 = (props) => {
         <hr></hr>
       </Modal.Body>
       <Modal.Footer>
-
         {/* esta es la version antigua del boton de registrar con csv, con esta no importaba si el form estava correcto o no
         el csv se descargaba de todas maneras */}
-        
+
         {/* <CSVLink
           data={[state]}
           filename={"Seguimiento Individual" + state.fecha}
@@ -2163,8 +2765,8 @@ const Seguimiento_individual_v3 = (props) => {
           </Button>
         </CSVLink> */}
 
-        <RegistroConCSV 
-          state={state} 
+        <RegistroConCSV
+          state={state}
           verificador_datos_basicos={verificador_datos_basicos}
           onConfirmDownload={enviarDespuesDeDescarga}
         />

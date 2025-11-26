@@ -4,6 +4,9 @@ import writeXlsxFile from "write-excel-file";
 import { saveAs } from 'file-saver';
 import { Chart } from 'react-google-charts';
 import { Button, Container, Col, Row } from 'react-bootstrap';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 import {
   decryptTokenFromSessionStorage,
@@ -1184,16 +1187,21 @@ const Descarga_campus = () => {
       </div>
       
 
-      <Container>
-      <Button className='button-inicial' onClick={irAtras} disabled={paginaActual === 0}>
+      <Container className='container-botones-reporte'>
+        <div>
+      <Button className='btn-action btn-nav' onClick={irAtras} disabled={paginaActual === 0}>
+          <ArrowBackIcon />
           Anterior
         </Button>
-        <Button className='button-inicial' onClick={irAdelante} disabled={paginaActual === 3}>
+        <Button className='btn-action btn-nav' onClick={irAdelante} disabled={paginaActual === 3}>
+          <ArrowForwardIcon />
           Siguiente
         </Button>
-        <Button className='button-inicial' 
+        </div>
+        <Button className='btn-action btn-guardar' 
         onClick={handleDownload}
         disabled={loading}> 
+        <ArrowDownwardIcon />
         {loading ? 'Cargando...' : 'Descargar'}
         </Button>  
       </Container>

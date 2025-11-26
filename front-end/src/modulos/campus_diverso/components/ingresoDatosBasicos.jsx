@@ -1,433 +1,569 @@
-import React from 'react';
-import { Container, Col, Tooltip, OverlayTrigger  } from 'react-bootstrap';
-import Select from 'react-select';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TextField } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import 'dayjs/locale/es'; 
+import React from "react";
+import { Container, Col, Tooltip, OverlayTrigger } from "react-bootstrap";
+import Select from "react-select";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TextField } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
 
-dayjs.locale('es'); 
-export const preventNegativeValues = (e) => ["e", "E", "+", "-", ".",",",].includes(e.key) && e.preventDefault()
+dayjs.locale("es");
+export const preventNegativeValues = (e) =>
+  ["e", "E", "+", "-", ".", ","].includes(e.key) && e.preventDefault();
 
 export const preventNonNumericValues = (e) => {
-  const nonNumericKeys = [ "ArrowLeft", "ArrowRight", "Backspace", "Delete", "Tab", "Enter", "Shift", "Control", "Alt", "CapsLock"];
+  const nonNumericKeys = [
+    "ArrowLeft",
+    "ArrowRight",
+    "Backspace",
+    "Delete",
+    "Tab",
+    "Enter",
+    "Shift",
+    "Control",
+    "Alt",
+    "CapsLock",
+  ];
   if (!/^[0-9]$/.test(e.key) && !nonNumericKeys.includes(e.key)) {
     e.preventDefault();
   }
 };
 export const disablePaste = (e) => {
-  e.preventDefault();  // Previene que el usuario pueda pegar algo
+  e.preventDefault(); // Previene que el usuario pueda pegar algo
 };
 const maxLengthNumber = 20;
 
-const IngresoDatosBasicos = ({state,
-    handleChange,
-    handleChangeTextField,
-    handleChangeUniqueDigit,
-    handleChangeNumber,
-    isLoading,
-    razasOptions,
-    handleSelectChange,
-    maxLengthBasicInput,
-    pronombresOptions,
-    tipoDocumentoOptions,
-    handleSelectNoMultiChange,
-    estadocivilOptions,
-    zonaResidencialOptions,
-    identidadEtnicoRacialOptions,
-
+const IngresoDatosBasicos = ({
+  state,
+  handleChange,
+  handleChangeTextField,
+  handleChangeUniqueDigit,
+  handleChangeNumber,
+  isLoading,
+  razasOptions,
+  handleSelectChange,
+  maxLengthBasicInput,
+  pronombresOptions,
+  tipoDocumentoOptions,
+  handleSelectNoMultiChange,
+  estadocivilOptions,
+  zonaResidencialOptions,
+  identidadEtnicoRacialOptions,
 }) => {
   return (
     <>
-        <h1 className='title-banner'> Ingreso de datos básicos </h1>
-        <div className='div-scroll-registro'>
-    <Container className="container_informacion_general" >
-    
-      <Col className="form-column" xs={"6"} md={"6"}>
-      
-          <div>
-            <label className='custom-div'>Pronombres<span className='simbolo-obligatorio'> *</span>
-              <OverlayTrigger
-                placement="bottom"
-                overlay={
-                  <Tooltip id="tooltip-custom" className='tooltip-custom'>
-                    Entendemos que una persona pueda identificarse con varios pronombres. Sin embargo, por motivos estadísticos, solo es posible seleccionar uno. Agradecemos su comprensión.
-                  </Tooltip>
-                }
-              >
-                <span className="tooltip-icon">?</span>
-              </OverlayTrigger>
-          </label>
+      <h1 className="title-banner">Datos Básicos </h1>
+      <div className="div-scroll-registro">
+        <Container className="container_informacion_general">
+          <Col className="form-column" xs={"6"} md={"6"}>
+            <div className="input-container">
+              <label className="custom-div">
+                Nombre y apellido<span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese nombre y apellido"
+                name="nombre_y_apellido"
+                value={state.nombre_y_apellido}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.nombre_y_apellido.length
+              }`}</span>
+            </div>
+
+            <div className="input-container">
+              <label className="custom-div">
+                Nombre Identitario
+                <span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese su nombre identitario"
+                name="nombre_identitario"
+                value={state.nombre_identitario}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput} // Limita la cantidad de caracteres
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.nombre_identitario.length
+              }`}</span>
+            </div>
+
+            <div>
+              <label className="custom-div">
+                Pronombres<span className="simbolo-obligatorio"> *</span>
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={
+                    <Tooltip id="tooltip-custom" className="tooltip-custom">
+                      Entendemos que una persona pueda identificarse con varios
+                      pronombres. Sin embargo, por motivos estadísticos, solo es
+                      posible seleccionar uno. Agradecemos su comprensión.
+                    </Tooltip>
+                  }
+                >
+                  <span className="tooltip-icon">?</span>
+                </OverlayTrigger>
+              </label>
               <div>
                 {isLoading ? (
                   <p>Cargando...</p>
-                ):(
-                <Select
-                  className='create-select'
-                  name="pronombres"
-                  placeholder='Seleccione pronombres'
-                  options={pronombresOptions}
-                  value={pronombresOptions.find(option => option.label === state.pronombres?.[0]) || null}
-                  onChange={handleSelectNoMultiChange}
+                ) : (
+                  <Select
+                    className="create-select"
+                    name="pronombres"
+                    placeholder="Seleccione pronombres"
+                    options={pronombresOptions}
+                    value={
+                      pronombresOptions.find(
+                        (option) => option.label === state.pronombres?.[0]
+                      ) || null
+                    }
+                    onChange={handleSelectNoMultiChange}
                   />
-                  )}
+                )}
               </div>
-        </div>
+            </div>
+            <div>
+              <label className="custom-div">
+                Tipo documento<span className="simbolo-obligatorio"> *</span>
+              </label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ) : (
+                  <Select
+                    className="create-select"
+                    name="tipo_documento"
+                    placeholder="Seleccione su documento"
+                    options={tipoDocumentoOptions}
+                    value={
+                      tipoDocumentoOptions.find(
+                        (option) => option.label === state.tipo_documento?.[0]
+                      ) || null
+                    }
+                    onChange={handleSelectNoMultiChange}
+                  />
+                )}
+              </div>
+            </div>
 
-    <div className="input-container">
-  <label className='custom-div'>Nombre Identitario<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Ingrese su nombre identitario"
-    name="nombre_identitario"
-    value={state.nombre_identitario}
-    onChange={handleChange}
-    maxLength={maxLengthBasicInput} // Limita la cantidad de caracteres
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_identitario.length}`}</span>
-</div>
+            <div className="input-container">
+              <label className="custom-div">
+                Número de documento
+                <span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="number"
+                placeholder="123456"
+                name="numero_documento"
+                inputMode="numeric"
+                onKeyDown={preventNonNumericValues}
+                min="0"
+                value={state.numero_documento}
+                onChange={handleChangeNumber}
+                maxLength={maxLengthNumber}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthNumber - state.numero_documento.length
+              }`}</span>
+            </div>
 
-<div className="input-container">
-  <label className='custom-div'>Nombre y apellido<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Ingrese nombre y apellido"
-    name="nombre_y_apellido"
-    value={state.nombre_y_apellido}
-    onChange={handleChange}
-    maxLength={maxLengthBasicInput}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_y_apellido.length}`}</span>
-</div>
+            <div className="input-container">
+              <label className="custom-div">
+                Email<span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="email"
+                inputMode="email"
+                placeholder="Ingrese email"
+                name="email"
+                value={state.email}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.email.length
+              }`}</span>
+            </div>
 
-<div>
-  <label className='custom-div'>Tipo documento<span className='simbolo-obligatorio'> *</span></label>
-  <div>
-    {isLoading ? (
-      <p>Cargando...</p>
-    ) : (
-      <Select
-  className='create-select'
-  name="tipo_documento"
-  placeholder='Seleccione su documento'
-  options={tipoDocumentoOptions}
-  value={
-    tipoDocumentoOptions.find(option => option.label === state.tipo_documento?.[0]) || null
-  }
-  onChange={handleSelectNoMultiChange}
-/>
-    )}
-  </div>
-</div>
+            <div className="input-container">
+              <label className="custom-div">
+                Teléfono<span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese número telefónico"
+                name="telefono"
+                onKeyDown={preventNonNumericValues}
+                value={state.telefono}
+                onChange={handleChangeNumber}
+                maxLength={maxLengthNumber}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthNumber - (state.telefono?.length || 0)
+              }`}</span>
+            </div>
 
+            <div>
+              <label className="custom-div">
+                Estado civil<span className="simbolo-obligatorio"> *</span>
+              </label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ) : (
+                  <Select
+                    className="create-select"
+                    name="estado_civil"
+                    placeholder="Seleccione tu estado civil"
+                    options={estadocivilOptions}
+                    value={
+                      estadocivilOptions.find(
+                        (option) => option.label === state.estado_civil?.[0]
+                      ) || null
+                    }
+                    onChange={handleSelectNoMultiChange}
+                  />
+                )}
+              </div>
+            </div>
 
+              <div>
+                <label className="custom-div">
+                  Creencia religiosa
+                  <span className="simbolo-obligatorio"> *</span>
+                </label>
+                <input
+                  className="input-updated"
+                  type="text"
+                  name="creencia_religiosa"
+                  placeholder="Ingrese la creencia"
+                  value={state.creencia_religiosa}
+                  onChange={handleChange}
+                  maxLength={maxLengthBasicInput}
+                />
+                <span className="char-count">{`Caracteres restantes: ${
+                  maxLengthBasicInput - state.creencia_religiosa.length
+                }`}</span>
+              </div>
+            <div>
+              <label className="custom-div">
+                Identidad étnico racial
+                <span className="simbolo-obligatorio"> *</span>
+              </label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ) : (
+                  <Select
+                    className="create-select"
+                    name="identidad_etnico_racial"
+                    placeholder="Seleccione tu identidad"
+                    options={identidadEtnicoRacialOptions}
+                    value={
+                      identidadEtnicoRacialOptions.find(
+                        (option) =>
+                          option.label === state.identidad_etnico_racial?.[0]
+                      ) || null
+                    }
+                    onChange={handleSelectNoMultiChange}
+                  />
+                )}
+              </div>
+            </div>
+            {/** ESTO SE MOVIO DE INFORMACIÓN DIVERSIDAD SEXUAL, PEDIR APROBACIÓN PARA CAMBIAR */}
+            <div>
+              <label className="custom-div">
+                Pertenencia grupo poblacional
+                <span className="simbolo-obligatorio"> *</span>
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={
+                    <Tooltip id="tooltip-custom" className="tooltip-custom">
+                      Una persona puede identificarse con uno o varios grupos
+                      poblacionales. Indica con cuál o cuáles te identificas.
+                    </Tooltip>
+                  }
+                >
+                  <span className="tooltip-icon">?</span>
+                </OverlayTrigger>
+              </label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ) : (
+                  <Select
+                    isMulti
+                    className="create-select"
+                    placeholder="Seleccione grupo poblacional"
+                    name="pertenencia_grupo_poblacional"
+                    options={razasOptions}
+                    value={state.pertenencia_grupo_poblacional.map(
+                      (option) => ({
+                        value: option,
+                        label: razasOptions.find((o) => o.value === option)
+                          .label,
+                      })
+                    )}
+                    onChange={handleSelectChange}
+                  />
+                )}
+              </div>
 
+            </div>
+          </Col>
 
+          <Col className="form-column" xs={"6"} md={"6"}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+              <div className="custom-datepicker-container">
+                <DatePicker
+                  label="Fecha de nacimiento"
+                  value={
+                    state.fecha_nacimiento
+                      ? dayjs(state.fecha_nacimiento)
+                      : null
+                  }
+                  onChange={(newDate) =>
+                    handleChange({
+                      target: { name: "fecha_nacimiento", value: newDate },
+                    })
+                  }
+                  slotProps={{
+                    textField: {
+                      className: "custom-datepicker-textfield",
+                    },
+                  }}
+                />
+              </div>
+            </LocalizationProvider>
 
+            <div className="input-container">
+              <label className="custom-div">País de nacimiento</label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese el país"
+                name="pais_nacimiento"
+                value={state.pais_nacimiento}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.pais_nacimiento.length
+              }`}</span>
+            </div>
 
-<div className="input-container">
-  <label className='custom-div'>Email<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="email"
-    inputMode='email'
-    placeholder="Ingrese email"
-    name="email"
-    value={state.email}
-    onChange={handleChange}
-    maxLength={maxLengthBasicInput}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.email.length}`}</span>
-</div>
+            <div className="input-container">
+              <label className="custom-div">Departamento de nacimiento</label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese el departamento"
+                name="departamento_nacimiento"
+                value={state.departamento_nacimiento}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.departamento_nacimiento.length
+              }`}</span>
+            </div>
 
+            <div className="input-container">
+              <label className="custom-div">Ciudad de nacimiento</label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese ciudad de nacimiento"
+                name="ciudad_nacimiento"
+                value={state.ciudad_nacimiento}
+                onChange={handleChange}
+                pattern="[0-9]*"
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.ciudad_nacimiento.length
+              }`}</span>
+            </div>
 
+            <div className="input-container">
+              <label className="custom-div">Corregimiento de nacimiento</label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese corregimiento de nacimiento"
+                name="corregimiento_nacimiento"
+                value={state.corregimiento_nacimiento}
+                onChange={handleChange}
+                pattern="[0-9]*"
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput -
+                (state.corregimiento_nacimiento?.length || 0)
+              }`}</span>
+            </div>
 
-<div className="input-container">
-  <label className='custom-div'>Número de documento<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="number"
-    placeholder="123456"
-    name="numero_documento"
-    inputMode="numeric"
-    onKeyDown={preventNonNumericValues}
-    min="0"
-    value={state.numero_documento}
-    onChange={handleChangeNumber}
-    maxLength={maxLengthNumber}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthNumber - state.numero_documento.length}`}</span>
-</div>
+            <div className="input-container">
+              <label className="custom-div">Ciudad de residencia</label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese ciudad de residencia"
+                name="ciudad_residencia"
+                value={state.ciudad_residencia}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.ciudad_residencia.length
+              }`}</span>
+            </div>
 
-<div className="input-container">
-  <label className='custom-div'>Estrato socioeconómico<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Estrato"
-    name="estrato_socioeconomico"
-    pattern='[0-9]*'
-    onKeyDown={preventNonNumericValues}
-    min="0"
-    value={state.estrato_socioeconomico}
-    onChange={handleChangeUniqueDigit}
-    maxLength="1"
-     />
-  
-</div>
+            <div>
+              <label className="custom-div">Zona de residencia</label>
+              <div>
+                {isLoading ? (
+                  <p>Cargando...</p>
+                ) : (
+                  <Select
+                    className="create-select"
+                    name="zona_residencia"
+                    placeholder="Seleccione su zona de residencia"
+                    options={zonaResidencialOptions}
+                    value={
+                      zonaResidencialOptions.find(
+                        (option) => option.label === state.zona_residencia?.[0]
+                      ) || null
+                    }
+                    onChange={handleSelectNoMultiChange}
+                  />
+                )}
+              </div>
+            </div>
 
-<div className="input-container">
-  <label className='custom-div'>Teléfono<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Ingrese número telefónico"
-    name="telefono"
-    onKeyDown={preventNonNumericValues}
-    value={state.telefono}
-    onChange={handleChangeNumber}
-    maxLength={maxLengthNumber}
-  />
-<span className="char-count">{`Caracteres restantes: ${maxLengthNumber - (state.telefono?.length || 0)}`}</span>
-</div>
+            <div className="input-container">
+              <label className="custom-div">Dirección de residencia</label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese su dirección"
+                name="direccion_residencia"
+                value={state.direccion_residencia}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.direccion_residencia.length
+              }`}</span>
+            </div>
 
-<div>
-  <label className='custom-div'>Estado civil<span className='simbolo-obligatorio'> *</span></label>
-  <div>
-    {isLoading ? (
-      <p>Cargando...</p>
-    ) : (
-      <Select
-        className='create-select'
-        name="estado_civil"
-        placeholder='Seleccione tu estado civil'
-        options={estadocivilOptions}
-        value={estadocivilOptions.find(option => option.label === state.estado_civil?.[0]) || null}
-        onChange={handleSelectNoMultiChange}
-      />
-    )}
-  </div>
-</div>
+            <div className="input-container">
+              <label className="custom-div">Barrio de residencia</label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese su barrio"
+                name="barrio_residencia"
+                value={state.barrio_residencia}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.barrio_residencia.length
+              }`}</span>
+            </div>
 
-<div>
-  <label className='custom-div'>Identidad étnico racial<span className='simbolo-obligatorio'> *</span></label>
-  <div>
-    {isLoading ? (
-      <p>Cargando...</p>
-    ) : (
-      <Select
-        className='create-select'
-        name="identidad_etnico_racial"
-        placeholder='Seleccione tu identidad'
-        options={identidadEtnicoRacialOptions}
-        value={identidadEtnicoRacialOptions.find(option => option.label === state.identidad_etnico_racial?.[0]) || null}
-        onChange={handleSelectNoMultiChange}
-      />
-    )}
-  </div>
-</div>
+            <div className="input-container">
+              <label className="custom-div">
+                Estrato socioeconómico
+                <span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Estrato"
+                name="estrato_socioeconomico"
+                pattern="[0-9]*"
+                onKeyDown={preventNonNumericValues}
+                min="0"
+                value={state.estrato_socioeconomico}
+                onChange={handleChangeUniqueDigit}
+                maxLength="1"
+              />
+            </div>
 
-<div className="input-container">
-  <label className='custom-div'>Nombre de persona de confianza<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Ingrese el nombre"
-    name="nombre_persona_de_confianza"
-    value={state.nombre_persona_de_confianza}
-    onChange={handleChange}
-    maxLength={maxLengthBasicInput}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.nombre_persona_de_confianza.length}`}</span>
-</div>
+            <div className="input-container">
+              <label className="custom-div">
+                Nombre de persona de confianza
+                <span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese el nombre"
+                name="nombre_persona_de_confianza"
+                value={state.nombre_persona_de_confianza}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.nombre_persona_de_confianza.length
+              }`}</span>
+            </div>
 
-<div className="input-container">
-  <label className='custom-div'>Relación con la persona de confianza<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Ingrese la relación"
-    name="relacion_persona_de_confianza"
-    value={state.relacion_persona_de_confianza}
-    onChange={handleChange}
-    maxLength={maxLengthBasicInput}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.relacion_persona_de_confianza.length}`}</span>
-</div>
+            <div className="input-container">
+              <label className="custom-div">
+                Relación con la persona de confianza
+                <span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese la relación"
+                name="relacion_persona_de_confianza"
+                value={state.relacion_persona_de_confianza}
+                onChange={handleChange}
+                maxLength={maxLengthBasicInput}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthBasicInput - state.relacion_persona_de_confianza.length
+              }`}</span>
+            </div>
 
-<div className="input-container">
-  <label className='custom-div'>Número de persona de confianza<span className='simbolo-obligatorio'> *</span></label>
-  <input
-    className='input-updated'
-    type="text"
-    placeholder="Ingrese número"
-    name="telefono_persona_de_confianza"
-    pattern='[0-9]*'
-    onKeyDown={preventNonNumericValues}
-    min="0"
-    value={state.telefono_persona_de_confianza}
-    onChange={handleChangeNumber}
-    maxLength={maxLengthNumber}
-  />
-  <span className="char-count">{`Caracteres restantes: ${maxLengthNumber - state.telefono_persona_de_confianza.length}`}</span>
-</div>
-
-
-      </Col>
-
- 
-
-      
-      <Col className="form-column" xs={"6"} md={"6"}>
-    
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-  <div className="custom-datepicker-container">
-    <DatePicker
-      label="Fecha de nacimiento"
-      value={state.fecha_nacimiento ? dayjs(state.fecha_nacimiento) : null}
-      onChange={(newDate) => handleChange({ target: { name: 'fecha_nacimiento', value: newDate } })}
-      slotProps={{
-        textField: {
-          className: "custom-datepicker-textfield",
-
-        }
-      }}
-    />
-  </div>
-</LocalizationProvider>
-
-<div className="input-container">
-      <label className='custom-div'>País de nacimiento</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese el país"
-        name="pais_nacimiento"
-        value={state.pais_nacimiento}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.pais_nacimiento.length}`}</span>
-    </div>
-      
-    <div className="input-container">
-      <label className='custom-div'>Departamento de nacimiento</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese el departamento"
-        name="departamento_nacimiento"
-        value={state.departamento_nacimiento}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.departamento_nacimiento.length}`}</span>
-    </div>
-
-
-    <div className="input-container">
-      <label className='custom-div'>Ciudad de nacimiento</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese ciudad de nacimiento"
-        name="ciudad_nacimiento"
-        value={state.ciudad_nacimiento}
-        onChange={handleChange}
-        pattern='[0-9]*'
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.ciudad_nacimiento.length}`}</span>
-    </div>
-
-
-    <div className="input-container">
-      <label className='custom-div'>Corregimiento de nacimiento</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese corregimiento de nacimiento"
-        name="corregimiento_nacimiento"
-        value={state.corregimiento_nacimiento}
-        onChange={handleChange}
-        pattern='[0-9]*'
-        maxLength={maxLengthBasicInput}
-      />
-     <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - (state.corregimiento_nacimiento?.length || 0)}`}</span>
-    </div>
-
-
-    <div className="input-container">
-      <label className='custom-div'>Ciudad de residencia</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese ciudad de residencia"
-        name="ciudad_residencia"
-        value={state.ciudad_residencia}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.ciudad_residencia.length}`}</span>
-    </div>
-
-    <div>
-    <label className='custom-div'>Zona de residencia</label>
-    <div>
-      {isLoading ? (
-        <p>Cargando...</p>
-      ) : (
-        <Select
-          className='create-select'
-          name="zona_residencia"
-          placeholder='Seleccione su zona de residencia'
-          options={zonaResidencialOptions}
-          value={zonaResidencialOptions.find(option => option.label === state.zona_residencia?.[0]) || null}
-          onChange={handleSelectNoMultiChange}
-        />
-      )}
-    </div>
-  </div>
-
-    <div className="input-container">
-      <label className='custom-div'>Dirección de residencia</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese su dirección"
-        name="direccion_residencia"
-        value={state.direccion_residencia}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.direccion_residencia.length}`}</span>
-    </div>
-
-    <div className="input-container">
-      <label className='custom-div'>Barrio de residencia</label>
-      <input
-        className='input-updated'
-        type="text"
-        placeholder="Ingrese su barrio"
-        name="barrio_residencia"
-        value={state.barrio_residencia}
-        onChange={handleChange}
-        maxLength={maxLengthBasicInput}
-      />
-      <span className="char-count">{`Caracteres restantes: ${maxLengthBasicInput - state.barrio_residencia.length}`}</span>
-    </div>
-
-  
-        
-      </Col>
-      
-
-    </Container>
-    </div>
+            <div className="input-container">
+              <label className="custom-div">
+                Número de persona de confianza
+                <span className="simbolo-obligatorio"> *</span>
+              </label>
+              <input
+                className="input-updated"
+                type="text"
+                placeholder="Ingrese número"
+                name="telefono_persona_de_confianza"
+                pattern="[0-9]*"
+                onKeyDown={preventNonNumericValues}
+                min="0"
+                value={state.telefono_persona_de_confianza}
+                onChange={handleChangeNumber}
+                maxLength={maxLengthNumber}
+              />
+              <span className="char-count">{`Caracteres restantes: ${
+                maxLengthNumber - state.telefono_persona_de_confianza.length
+              }`}</span>
+            </div>
+          </Col>
+        </Container>
+      </div>
     </>
   );
 };

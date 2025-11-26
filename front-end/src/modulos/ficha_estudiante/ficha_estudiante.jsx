@@ -51,6 +51,8 @@ const Ficha_estudiante = (props) => {
           ...state,
           data_user: respuesta.data,
         });
+        document.getElementsByName("loading_data")[0].style.visibility =
+          "hidden";
       })
       .catch((err) => {
         console.log("el error asfa:" + err);
