@@ -23,10 +23,14 @@ import Create_user from "../../service/panel_admin/panel_admin_usuario_crear_usu
 import Read_user from "../../service/panel_admin/panel_admin_usuario_listar_usuarios.js";
 import Update_user from "../../service/panel_admin/panel_admin_usuario_actualizar_usuarios.js";
 import Deactivate_usar from "../../service/panel_admin/panel_admin_usuario_desactivar_usuario.js";
+import Read_sedes from "../../service/panel_admin/panel_admin_sedes_listar_sedes.js";
 
 const SelectorUsuarios = () => {
   const [state, setState] = useState({
     data_user_rol: [],
+  });
+  const [sede, setSede] = useState({
+    data_sedes: [],
   });
   const [selectedRows, setSelectedRows] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -68,8 +72,20 @@ const SelectorUsuarios = () => {
     }
   };
 
+  const consultaAllSedes = async () => {
+    try {
+      const response = await Read_sedes.listar_sedes({});
+      if (response && Array.isArray(response)) {
+        setSede((prevState) => ({ ...prevState, data_sedes: response }));
+      }
+    } catch (error) {
+      console.error("Error al consultar sedes:", error);
+    }
+  };
+
   useEffect(() => {
     consultaRoles();
+    consultaAllSedes();
   }, []);
 
   const handleRowSelected = ({ selectedRows }) => setSelectedRows(selectedRows);
@@ -83,13 +99,37 @@ const SelectorUsuarios = () => {
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setSelectedUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
+
+    setSelectedUser((prevUser) => {
+      // Si se cambia la sede
+      if (name === "sede") {
+        const currentUser = state.data_user_rol.find(
+          (user) => user.id === prevUser.id
+        );
+
+        // Solo asignar oldSede si aún no existe
+        const oldSede =
+          prevUser.oldSede !== undefined
+            ? prevUser.oldSede
+            : currentUser?.sede ?? null;
+
+        return {
+          ...prevUser,
+          oldSede,
+          [name]: value,
+        };
+      }
+
+      // Si se cambia cualquier otro campo
+      return {
+        ...prevUser,
+        [name]: value,
+      };
+    });
   };
 
   const handleSaveEdit = () => {
+    // console.log(selectedUser);
     const semestre_actual = desencriptarInt(
       sessionStorage.getItem("id_semestre_actual")
     );
@@ -121,7 +161,6 @@ const SelectorUsuarios = () => {
   };
 
   const handleCreateUser = () => {
-    // console.log(newUser);
     Create_user.crear_usuario(newUser);
     setShowCreateModal(false);
   };
@@ -172,6 +211,13 @@ const SelectorUsuarios = () => {
     {
       name: "ROL",
       selector: (row) => row.rol,
+      sortable: true,
+      wrap: true,
+      grow: 0.6,
+    },
+    {
+      name: "SEDE",
+      selector: (row) => row.sede,
       sortable: true,
       wrap: true,
       grow: 0.6,
@@ -290,6 +336,26 @@ const SelectorUsuarios = () => {
                   </option>
                 ))}
               </Form.Control>
+            </Form.Group>
+            <Form.Group controlId="editSede">
+              <Form.Label>Sede</Form.Label>
+              <Form.Select
+                name="sede"
+                value={selectedUser?.sede || ""}
+                onChange={handleEditChange}
+              >
+                <option value="">Seleccione una Sede</option>
+                {sede.data_sedes.map((sede) => (
+                  <option
+                    key={sede.id}
+                    id={sede.id}
+                    name={sede.sede}
+                    value={sede.nombre}
+                  >
+                    {sede.nombre}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
             <Form.Group controlId="editPassword">
               <Form.Label>Contraseña</Form.Label>

@@ -19,7 +19,7 @@ class send_ases(viewsets.GenericViewSet):
     serializer_class = estudiante_serializer
     # permission_classes = [IsAuthenticated]
 
-    def get_nivel_riesgo(self, riesgo):
+    def get_nivel_riesgo(self, riesgo): 
         if riesgo == 0:
             return 'BAJO'
         if riesgo == 1:
@@ -32,12 +32,33 @@ class send_ases(viewsets.GenericViewSet):
     @action(detail=True, methods=['post'], url_path='estudiantes_socioedu')
     def estudiantes_socioedu_ases_dexia(self, request,pk=None):
         lista_estudiantes = list()
-        request_sede = sede.objects.get(codigo_univalle =pk)
-        var_semestre = semestre.objects.get(semestre_actual=True,id_sede=request_sede.id)
+        try:
+            request_sede = sede.objects.get(codigo_univalle=pk)
+        except sede.DoesNotExist:
+            return Response({'error': 'Sede no encontrada con ese código_univalle.'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            var_semestre = semestre.objects.get(semestre_actual=True, id_sede=request_sede.id)
+        except semestre.DoesNotExist:
+            return Response({'error': 'No hay semestre actual para esta sede.'}, status=status.HTTP_404_NOT_FOUND)
+
         serializer_semestre = semestre_serializer(var_semestre)
-        fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
-        fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
-        var_estudiante = estudiante.objects.filter(estudiante_elegible = True, es_discapacidad = False, es_academico=False)
+
+        try:
+            fecha_inicio = datetime.strptime(serializer_semestre.data['fecha_inicio'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
+            fecha_fin = datetime.strptime(serializer_semestre.data['fecha_fin'], "%Y-%m-%dT%H:%M:%fZ").strftime("%Y-%m-%d")
+        except Exception:
+            return Response({'error': 'Error procesando las fechas del semestre.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Filtrar estudiantes relacionados con la sede y semestre actual
+        var_estudiante = estudiante.objects.filter(
+            estudiante_elegible=True,
+            es_discapacidad=False,
+            es_academico=False,
+            id_estudiante_in_asignacion__id_semestre=var_semestre,
+            id_estudiante_in_asignacion__estado=True
+        ).distinct()
+
         for estudiante23 in var_estudiante :
             serializer_estudiante = ases_dexia_serializer(estudiante23)
             conteo_seguimientos = seguimiento_individual.objects.filter(
@@ -80,6 +101,7 @@ class send_ases(viewsets.GenericViewSet):
                 responsable = profesional.id_jefe.email
             except Exception:
                 responsable = "Correo no disponible"
+                
             porcentaje_avance = (conteo_seguimientos / 6) * 100
             if porcentaje_avance >= 100 :
                 conteo = {
