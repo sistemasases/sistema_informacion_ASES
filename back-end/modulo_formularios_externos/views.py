@@ -18,6 +18,7 @@ from modulo_usuario_rol.models import User, firma_tratamiento_datos
 from modulo_usuario_rol.serializers import firma_tratamiento_datos_serializer
 from datetime import datetime, timedelta
 from rest_framework.decorators import action
+from django.db import transaction
 
 
 
@@ -284,6 +285,8 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
+
+
 class firma_temp_viewsets(viewsets.GenericViewSet):
     """
     viewset para el modelo firma_tratamiento_datos_temp
@@ -303,30 +306,36 @@ class firma_temp_viewsets(viewsets.GenericViewSet):
         firmas_no_creadas = 0
         try:
             
-            for firma_temp in firmas_temporales:
-                documento = firma_temp.documento
-                estudiante_obj = estudiante.objects.filter(num_doc=documento, firma_existe=False).first()
+            # usamos una transaccion para asegurar la integridad de los datos
+            with transaction.atomic():
+
+                for firma_temp in firmas_temporales:
+                    documento = firma_temp.documento
+                    estudiante_obj = estudiante.objects.filter(num_doc=documento, firma_existe=False).first()
 
 
-                if estudiante_obj != None:
-                    # si existe el estudiante y no tiene firma, creamos la firma
-                    firma = firma_tratamiento_datos.objects.create(
-                        id_estudiante=estudiante_obj,
-                        fecha_firma=firma_temp.fecha_firma,
-                        tipo_id_estudiante=firma_temp.tipo_id_estudiante,
-                        nombre_firma=firma_temp.nombre_firma,
-                        correo_firma=firma_temp.correo_firma,
-                        autoriza_tratamiento_datos=firma_temp.autoriza_tratamiento_datos,
-                        autoriza_tratamiento_imagen=firma_temp.autoriza_tratamiento_imagen
-                    )
+                    if estudiante_obj != None:
+                        # si existe el estudiante y no tiene firma, creamos la firma
+                        firma = firma_tratamiento_datos.objects.create(
+                            id_estudiante=estudiante_obj,
+                            fecha_firma=firma_temp.fecha_firma,
+                            tipo_id_estudiante=firma_temp.tipo_id_estudiante,
+                            nombre_firma=firma_temp.nombre_firma,
+                            correo_firma=firma_temp.correo_firma,
+                            autoriza_tratamiento_datos=firma_temp.autoriza_tratamiento_datos,
+                            autoriza_tratamiento_imagen=firma_temp.autoriza_tratamiento_imagen
+                        )
 
-                    # actualizamos la bandera
-                    estudiante_obj.firma_existe = True
-                    estudiante_obj.save()
-                    contador_firmas_creadas += 1
-                
-                else:
-                    firmas_no_creadas += 1
+                        # actualizamos la bandera
+                        estudiante_obj.firma_existe = True
+                        estudiante_obj.save()
+                        contador_firmas_creadas += 1
+
+                        # eliminamos el rejistro temporal una vez creada la firma
+                        firma_temp.delete()
+                    
+                    else:
+                        firmas_no_creadas += 1
             
             # guardamos los resultados para mandarlos en la respuesta
             resultados = {

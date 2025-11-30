@@ -28,6 +28,11 @@ const formularios_externos_firma = async (formData) => {
             timer: 2500,
             showConfirmButton: false,
           });
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 2900);
+          
           return true;
         } else {
           return false;
@@ -41,7 +46,7 @@ const formularios_externos_firma = async (formData) => {
             title: "Exito",
             text: error.response.data.Respuesta,
             icon: "success",
-            timer: 3500,
+            timer: 4500,
             showConfirmButton: false,
           });
         } else if (error.response.status === 404) {

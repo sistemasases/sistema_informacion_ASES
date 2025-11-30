@@ -148,6 +148,7 @@ const FormularioActualizacion = (props) => {
       );
     try {
       if (res) {
+        setShowConfirmModal(false);
         Swal.fire({
           title: "Éxito",
           text: "Los datos fueron guardados correctamente.",
@@ -157,6 +158,7 @@ const FormularioActualizacion = (props) => {
         });
       }
     } catch (error) {
+      setShowConfirmModal(false);
       Swal.fire({
         title: "Error",
         text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
@@ -188,7 +190,10 @@ const FormularioActualizacion = (props) => {
           <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={result}>
+          <Button variant="primary" onClick={()=>{
+            result()
+            setShowConfirmModal(false)
+          }}>
             Confirmar
           </Button>
         </Modal.Footer>
@@ -416,9 +421,6 @@ const FormularioActualizacion = (props) => {
                       Número de documento de identidad{" "}
                       <label style={{ color: "red" }}> *</label>
                     </Form.Label>
-                    <p style={{ fontSize: "0.9rem", color: "red", fontWeight: "bold" }}>
-                      ⚠️ Este número debe ser EXACTO. Con él se verifican tus registros en el sistema. Por favor asegurese de que sea correcto.
-                    </p>
                     <Form.Control
                       type="text"
                       inputMode="numeric"
