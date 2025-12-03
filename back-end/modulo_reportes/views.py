@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 import time
@@ -14,13 +13,18 @@ from modulo_asignacion.models import asignacion
 from modulo_instancia.models import semestre, sede
 from modulo_programa.models import dir_programa, facultad, programa, programa_estudiante, estado_programa, vcd_academico
 from modulo_seguimiento.models import inasistencia, seguimiento_individual, riesgo_individual 
+from modulo_academico.models import monitoria_academica, materia
+from modulo_formularios_externos.models import asistencia as asistencia_model
+from datetime import datetime, timedelta, date
+from django.db.models.functions import TruncWeek
 
 from modulo_instancia.models import cohorte
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
-from django.db.models import Q
-from django.db.models import F, OuterRef, Subquery, Max
+from django.db.models import Q, F, OuterRef, Subquery, Max, Count, Avg, DateField
+from django.db.models.functions import TruncDate, TruncMonth
+from rest_framework.decorators import action
 
 
 # Create your views here.
@@ -413,3 +417,215 @@ class get_cohortes_viewsets(viewsets.GenericViewSet):
         
         return Response(last_list_cohortes)
 
+
+class estadisticas_monitorias_viewset(viewsets.ViewSet):
+
+    @action(detail=True, methods=['get'], url_path='facultades_sede')
+    def facultades_sede(self, request, pk=None):
+        """
+        Devuelve las facultades asociadas a una sede (por programas o materias).
+        """
+        facultades_qs = facultad.objects.filter(
+            id_facultad_in_programa__id_sede_id=pk
+        ).distinct().order_by('nombre')
+        data = [{'id': f.id, 'nombre': f.nombre} for f in facultades_qs]
+        return Response(data)
+
+    # @action(detail=True, methods=['get'], url_path='materias_sede')
+    # def materias_sede(self, request, pk=None):
+    #     """
+    #     Devuelve las materias asociadas a una sede.
+    #     """
+    #     materias_qs = materia.objects.filter(id_sede_id=pk).distinct().order_by('nombre')
+    #     data = [{'id': m.id, 'nombre': m.nombre} for m in materias_qs]
+    #     return Response(data)
+
+    # @action(detail=True, methods=['get'], url_path='programas_sede')
+    # def programas_sede(self, request, pk=None):
+    #     """
+    #     Devuelve los programas académicos de una sede.
+    #     """
+    #     programas_qs = programa.objects.filter(id_sede_id=pk).distinct().order_by('nombre')
+    #     data = [{'id': p.id, 'nombre': p.nombre} for p in programas_qs]
+    #     return Response(data)
+
+    @action(detail=False, methods=['post'], url_path='estadisticas_monitorias')
+    def estadisticas_monitorias(self, request):
+        try:
+            sede_id = request.data.get('sede_id')
+            semestre_id = request.data.get('semestre')
+            materia_filter = request.data.get('materia')
+            programa_filter = request.data.get('programa')
+            facultad_filter = request.data.get('facultad')
+
+            # Filtrar monitorías activas e inactivas
+            #monitorias_queryset = monitoria_academica.objects.filter(estado=True)
+            monitorias_queryset = monitoria_academica.objects.all()
+            if sede_id:
+                monitorias_queryset = monitorias_queryset.filter(id_sede=sede_id)
+            if semestre_id:
+                monitorias_queryset = monitorias_queryset.filter(id_semestre=semestre_id)
+
+            # Determinar rango de fechas del semestre actual si aplica
+            fecha_inicio = fecha_fin = None
+
+            if semestre_id:
+                sem = semestre.objects.filter(id=semestre_id).first()
+                if sem:
+                    fecha_inicio = sem.fecha_inicio.date() if hasattr(sem.fecha_inicio, 'date') else sem.fecha_inicio
+                    fecha_fin = sem.fecha_fin.date() if hasattr(sem.fecha_fin, 'date') else sem.fecha_fin
+                    monitorias_queryset = monitorias_queryset.filter(id_semestre=sem)
+            else:
+                # Si no se envía semestre, usar semestre actual
+                sem_actual = semestre.objects.filter(semestre_actual=True, id_sede_id=sede_id).first() if sede_id else semestre.objects.filter(semestre_actual=True).first()
+                if sem_actual:
+                    fecha_inicio = sem_actual.fecha_inicio.date() if hasattr(sem_actual.fecha_inicio, 'date') else sem_actual.fecha_inicio
+                    fecha_fin = sem_actual.fecha_fin.date() if hasattr(sem_actual.fecha_fin, 'date') else sem_actual.fecha_fin
+
+            # Filtrar por materia
+            if materia_filter:
+                monitorias_queryset = monitorias_queryset.filter(materia__icontains=materia_filter)
+
+            # IDs de monitorías
+            monitoria_ids = list(monitorias_queryset.values_list('id', flat=True))
+
+            # Filtrar asistencias dentro del rango de fechas
+            asistencias_queryset = asistencia_model.objects.filter(id_monitoria__in=monitoria_ids)
+            if fecha_inicio and fecha_fin:
+                asistencias_queryset = asistencias_queryset.filter(fecha__range=[fecha_inicio, fecha_fin])
+
+            # Filtrar por facultad o programa sobre los estudiantes
+            if facultad_filter:
+                facultad_ids = facultad.objects.filter(
+                    Q(id=facultad_filter) | Q(nombre__icontains=facultad_filter)
+                ).values_list('id', flat=True)
+                programas_ids = programa.objects.filter(id_facultad__in=facultad_ids).values_list('id', flat=True)
+            elif programa_filter:
+                programas_ids = programa.objects.filter(nombre__icontains=programa_filter).values_list('id', flat=True)
+            else:
+                programas_ids = None
+
+            if programas_ids:
+                estudiantes_ids = programa_estudiante.objects.filter(
+                    id_programa__in=programas_ids
+                ).values_list('id_estudiante', flat=True)
+                asistencias_queryset = asistencias_queryset.filter(id_estudiante__in=estudiantes_ids)
+
+            # KPIs globales
+            total_estudiantes = asistencias_queryset.values('id_estudiante').distinct().count()
+            total_asistencias = asistencias_queryset.filter(check_asistencia=True).count()
+
+            # Estudiantes y asistencias por materia
+            estudiantes_por_materia = []
+            asistencias_por_materia = []
+            materias_distintas = monitorias_queryset.values_list('materia', flat=True).distinct()
+            
+            for mat in materias_distintas:
+                monitorias_materia = monitorias_queryset.filter(materia=mat)
+                monitorias_materia_ids = list(monitorias_materia.values_list('id', flat=True))
+                asistentes_qs = asistencia_model.objects.filter(id_monitoria__in=monitorias_materia_ids)
+                if fecha_inicio and fecha_fin:
+                    asistentes_qs = asistentes_qs.filter(fecha__range=[fecha_inicio, fecha_fin])
+                estudiantes_por_materia.append({
+                    'materia': mat,
+                    'asistentes': asistentes_qs.values('id_estudiante').distinct().count()
+                })
+                asistencias_por_materia.append({
+                    'materia': mat,
+                    'asistentes': asistentes_qs.filter(check_asistencia=True).count()
+                })
+            estudiantes_por_materia = sorted(estudiantes_por_materia, key=lambda x: x['asistentes'], reverse=True)
+            asistencias_por_materia = sorted(asistencias_por_materia, key=lambda x: x['asistentes'], reverse=True)
+
+            # Estudiantes y asistencias por programa
+            distribucion_estudiantes_programa = []
+            asistencias_por_programa = []
+
+            # Programas de la sede
+            programas_distintos = programa.objects.all()
+            
+            if sede_id:
+                programas_distintos = programas_distintos.filter(id_sede=sede_id)
+            
+            for prog in programas_distintos:
+                # DIURNO / NOCTURNO → D / N
+                jornada_label = "D" if "DIURNA" in prog.jornada.upper() else "N"
+                nombre_programa = f"{prog.nombre} ({jornada_label})"                
+
+                # Estudiantes asignados al programa
+                estudiantes_prog = programa_estudiante.objects.filter(id_programa=prog.id, traker=True).values_list('id_estudiante', flat=True)
+                asistencias_prog_qs = asistencias_queryset.filter(id_estudiante__in=estudiantes_prog)
+
+                # Conteos
+                total_est_prog = asistencias_prog_qs.values('id_estudiante').distinct().count()
+                total_asist_prog = asistencias_prog_qs.filter(check_asistencia=True).count()
+
+                if total_est_prog > 0:                    
+
+                    distribucion_estudiantes_programa.append({
+                        'programa': nombre_programa,
+                        'valor': total_est_prog
+                    })
+                if total_asist_prog > 0:
+                    asistencias_por_programa.append({
+                        'programa': nombre_programa,
+                        'valor': total_asist_prog
+                    })
+                    
+            # Evolución temporal por meses
+            estudiantes_por_mes_qs = asistencias_queryset.annotate(mes=TruncMonth('fecha')).values('mes').annotate(
+                total_estudiantes=Count('id_estudiante', distinct=True)
+            ).order_by('mes')
+            asistencias_por_mes_qs = asistencias_queryset.filter(check_asistencia=True).annotate(mes=TruncMonth('fecha')).values('mes').annotate(
+                total_asistencias=Count('id')
+            ).order_by('mes')
+
+            # Construir línea de tiempo mensual completa del semestre
+            estudiantes_por_mes_map = {item['mes'].strftime('%Y-%m'): item['total_estudiantes'] for item in estudiantes_por_mes_qs if item['mes']}
+            asistencias_por_mes_map = {item['mes'].strftime('%Y-%m'): item['total_asistencias'] for item in asistencias_por_mes_qs if item['mes']}
+
+            estudiantes_por_mes = []
+            asistencias_por_mes = []
+            if fecha_inicio and fecha_fin:
+                # Normalizar a primer día de mes
+                start_month = fecha_inicio.replace(day=1)
+                end_month = fecha_fin.replace(day=1)
+                cur = start_month
+                while cur <= end_month:
+                    key = cur.strftime('%Y-%m')
+                    estudiantes_por_mes.append({'fecha': key, 'valor': estudiantes_por_mes_map.get(key, 0)})
+                    asistencias_por_mes.append({'fecha': key, 'valor': asistencias_por_mes_map.get(key, 0)})
+                    # avanzar 1 mes
+                    if cur.month == 12:
+                        cur = cur.replace(year=cur.year + 1, month=1)
+                    else:
+                        cur = cur.replace(month=cur.month + 1)
+            else:
+                # fallback: usar solo los meses presentes en data
+                for k in sorted(set(list(estudiantes_por_mes_map.keys()) + list(asistencias_por_mes_map.keys()))):
+                    estudiantes_por_mes.append({'fecha': k, 'valor': estudiantes_por_mes_map.get(k, 0)})
+                    asistencias_por_mes.append({'fecha': k, 'valor': asistencias_por_mes_map.get(k, 0)})
+
+            # Mayor / menor asistencia 
+            materia_mayor = asistencias_por_materia[0]['materia'] if asistencias_por_materia else "-"
+            materia_menor = asistencias_por_materia[-1]['materia'] if asistencias_por_materia else "-"
+
+            data = {
+                "kpis": {
+                    "totalEstudiantes": total_estudiantes,
+                    "totalAsistencias": total_asistencias,
+                    "materiaMayorAsistencia": materia_mayor,
+                    "materiaMenorAsistencia": materia_menor
+                },
+                "estudiantesPorMateria": estudiantes_por_materia,
+                "asistenciasPorMateria": asistencias_por_materia,
+                "estudiantesPorPrograma": distribucion_estudiantes_programa,
+                "asistenciasPorPrograma": asistencias_por_programa,
+                "estudiantesPorMes": estudiantes_por_mes,
+                "asistenciasPorMes": asistencias_por_mes,
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
