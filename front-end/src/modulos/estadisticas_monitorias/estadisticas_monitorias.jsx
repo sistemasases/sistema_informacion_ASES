@@ -6,18 +6,14 @@
  * @date 2025
  */
 
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { CartesianGrid, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts";
 import axios from "axios";
 import writeXlsxFile from "write-excel-file";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import {
-  decryptTokenFromSessionStorage,
-  desencriptarInt,
-  desencriptar,
-} from "../utilidades_seguridad/utilidades_seguridad.jsx";
+import { decryptTokenFromSessionStorage } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import All_sede_service from "../../service/all_sede";
 import Api_facultades_sede from "../../service/facultades_por_sede";
 
@@ -42,7 +38,7 @@ const EstadisticasMonitorias = () => {
 
   const [materias, setMaterias] = useState([]);
   const [programas, setProgramas] = useState([]);
-  const [allProgramas, setAllProgramas] = useState([]);
+  const [programasConId, setProgramasConId] = useState([]); // Almacenar programas con ID para mapeo
   const [semestres, setSemestres] = useState([]);
   const [sedes, setSedes] = useState([]);
   const [facultades, setFacultades] = useState([]);
@@ -66,17 +62,20 @@ const EstadisticasMonitorias = () => {
 
   const reportRef = useRef(null);
 
-  // Cargar catálogos (semestres, materias, programas)
-  const cargarCatalogos = async () => {
-    try {
-      const token = await decryptTokenFromSessionStorage();
-      const sede = desencriptarInt(sessionStorage.getItem("sede_id"));
-      const headers = { Authorization: `Bearer ${token}` };
+  // Función auxiliar para limpiar catálogos
+  const limpiarCatalogos = () => {
+    setSemestres([]);
+    setMaterias([]);
+    setProgramas([]);
+    setProgramasConId([]);
+  };
 
+  // Cargar Sedes
+  const cargarSedes = async () => {
+    try {
       // Cargar sedes
       const sedesLista = await All_sede_service.all_sede();
       if (Array.isArray(sedesLista)) setSedes(sedesLista);      
-      
     } catch (error) {
       console.error("Error cargando catálogos:", error);
     }
@@ -86,40 +85,49 @@ const EstadisticasMonitorias = () => {
   const cargarDesdeAPI = async () => {
     setLoading(true);
     try {
-      // const sede = desencriptarInt(sessionStorage.getItem("sede_id"));
       const token = await decryptTokenFromSessionStorage();
       const headers = { Authorization: `Bearer ${token}` };
+
+      // Convertir nombre formateado del programa a ID si existe
+      let programaId = null;
+      if (filtros.programa) {
+        const programaSeleccionado = programasConId.find(
+          p => p.nombreFormateado === filtros.programa
+        );
+        if (programaSeleccionado) {
+          programaId = programaSeleccionado.id;
+        }
+      }
 
       const payload = {
         sede_id: filtros.sede || null,
         semestre: filtros.semestre || null,
         materia: filtros.materia || null,
-        programa: filtros.programa || null,
+        programa: programaId ?? filtros.programa ?? null, // Enviar ID si existe, sino el nombre (compatibilidad)
         facultad: filtros.facultad || null,
       };
-      console.log("Payload enviado:", payload);
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/reportes/estadisticas_monitorias/estadisticas_monitorias/`,
         payload,
         { headers }
       );
-      console.log("Datos crudos del backend:", response.data);
       const data = response?.data || {};
 
       setKpis({
-        totalEstudiantes: data.kpis?.totalEstudiantes || 0,
-        totalAsistencias: data.kpis?.totalAsistencias || 0,
-        promedioAsistencia: data.kpis?.promedioAsistencia || 0,
-        materiaMayorAsistencia: data.kpis?.materiaMayorAsistencia || "-",
-        materiaMenorAsistencia: data.kpis?.materiaMenorAsistencia || "-",
+        totalEstudiantes: data.kpis?.totalEstudiantes ?? 0,
+        totalAsistencias: data.kpis?.totalAsistencias ?? 0,
+        promedioAsistencia: data.kpis?.promedioAsistencia ?? 0,
+        materiaMayorAsistencia: data.kpis?.materiaMayorAsistencia ?? "-",
+        materiaMenorAsistencia: data.kpis?.materiaMenorAsistencia ?? "-",
       });
+  
+      setEstudiantesPorMateria(data.estudiantesPorMateria ?? []);
+      setAsistenciasPorMateria(data.asistenciasPorMateria ?? []);
+      setEstudiantesPorPrograma(data.estudiantesPorPrograma ?? []);
+      setAsistenciasPorPrograma(data.asistenciasPorPrograma ?? []);
+      setEstudiantesPorMes(data.estudiantesPorMes ?? []);
+      setAsistenciasPorMes(data.asistenciasPorMes ?? []);
 
-      setEstudiantesPorMateria(data.estudiantesPorMateria || []);
-      setAsistenciasPorMateria(data.asistenciasPorMateria || []);
-      setEstudiantesPorPrograma(data.estudiantesPorPrograma || []);
-      setAsistenciasPorPrograma(data.asistenciasPorPrograma || []);
-      setEstudiantesPorMes(data.estudiantesPorMes || []);
-      setAsistenciasPorMes(data.asistenciasPorMes || []);
     } catch (error) {
       console.error("Error cargando estadísticas:", error);
       // En caso de error, mantener datos vacíos o mostrar mensaje
@@ -139,183 +147,9 @@ const EstadisticasMonitorias = () => {
     } finally {
       setLoading(false);
     }
-  };
+  };    
 
-  // Carga inicial al abrir la página
-  useEffect(() => {
-    const init = async () => {
-      try {
-        // Carga catálogos generales (sedes)
-        await cargarCatalogos();
-        // Carga inicial de estadísticas (todas las sedes, semestre actual)
-        await cargarDesdeAPI();
-      } catch (error) {
-        console.error("Error durante la carga inicial:", error);
-      }
-    };
-    init();
-  }, []);
-
-  // Actualiza catálogos dependientes al cambiar la sede
-  useEffect(() => {
-    // Si se selecciona "Todas", recargamos todo nuevamente
-    if (filtros.sede === "") {
-      // Solo limpiar dependientes y mostrar estadísticas globales
-      setSemestres([]);
-      setMaterias([]);
-      setProgramas([]);
-      cargarDesdeAPI();    // estadísticas globales
-      return;
-    }
-
-    if (!filtros.sede) return; // si aún no hay sede, no hace nada
-
-      const actualizarCatalogosPorSede = async () => {
-        try {
-          const token = await decryptTokenFromSessionStorage();
-          const headers = { Authorization: `Bearer ${token}` };
-          const sedeId = Number(filtros.sede);
-
-          // Cargar Semestres de la sede seleccionada
-          const respSem = await axios.get(
-            `${process.env.REACT_APP_API_URL}/wizard/semestre/${filtros.sede}/semestre_sede/`,
-            { headers }
-          );
-          setSemestres(respSem.data || []);
-
-          // Cargar facultades
-          const respFacultades = await Api_facultades_sede.facultades_por_sede(filtros.sede);
-          setFacultades(respFacultades || []);  
-
-          // Cargar materias (usando endpoint de estadísticas si aplica)
-          const payloadMaterias = { sede_id: sedeId };
-          const respStats = await axios.post(
-            `${process.env.REACT_APP_API_URL}/reportes/estadisticas_monitorias/estadisticas_monitorias/`,
-            payloadMaterias,
-            { headers }
-          );
-
-          const mats = respStats?.data?.estudiantesPorMateria || [];
-
-          // Normalizamos y eliminamos duplicados
-          const materiasUnicas = [
-            ...new Map(
-              mats
-                .filter(m => m.materia) // solo las que tienen nombre
-                .map(m => [m.materia.trim().toUpperCase(), m.materia.trim()])
-            ).values()
-          ];
-
-          setMaterias(materiasUnicas);          
-
-          // Cargar programas filtrados por sede
-          const respProgramas = await axios.get(
-            `${process.env.REACT_APP_API_URL}/formularios_externos/enviar_programas/`,
-            { headers }
-          );
-          if (Array.isArray(respProgramas.data)) {
-            const lista = respProgramas.data.filter(
-              (p) => Number(p.id_sede) === sedeId
-            );
-            const programasFormateados = lista.map((p) => {
-              const jornadaLabel = p.jornada && p.jornada.toUpperCase().includes("DIUR") ? "D" : "N";
-              return `${p.nombre} (${jornadaLabel})`;
-            });
-            
-            setProgramas([...new Set(programasFormateados)]);
-          }
-          
-        } catch (error) {
-          console.error("Error actualizando catálogos por sede:", error);
-        }
-      };
-
-    actualizarCatalogosPorSede();
-  }, [filtros.sede]);
-
-  // Actualizar programas al cambiar facultad (encadenado por sede + facultad)
-  useEffect(() => {
-    const actualizarProgramasPorFacultad = async () => {
-      try {
-        const sedeId = filtros.sede ? Number(filtros.sede) : null;
-        const facId = filtros.facultad ? Number(filtros.facultad) : null;
-        let lista = allProgramas || [];
-        if (sedeId) {
-          lista = lista.filter((p) => {
-            const s1 = p?.id_sede;
-            const s2 = p?.id_sede?.id;
-            const s3 = p?.id_sede_id;
-            return s1 === sedeId || s2 === sedeId || s3 === sedeId;
-          });
-        }
-        if (facId) {
-          lista = lista.filter((p) => {
-            const f1 = p?.id_facultad;
-            const f2 = p?.id_facultad?.id;
-            const f3 = p?.id_facultad_id;
-            return f1 === facId || f2 === facId || f3 === facId;
-          });
-        }
-        setProgramas([...new Set(lista.map((p) => p.nombre).filter(Boolean))]);
-      } catch (error) {
-        console.error("Error actualizando programas por facultad:", error);
-      }
-    };
-
-    // reiniciar programa cuando cambia facultad
-    setFiltros((prev) => ({ ...prev, programa: "" }));
-    actualizarProgramasPorFacultad();
-  }, [filtros.facultad]);
-
-
-  // Recarga de estadísticas al aplicar filtros
-  useEffect(() => {
-    // Solo recarga si hay sede seleccionada y se ha tocado algún filtro adicional
-    if (
-      filtros.sede &&
-      (filtros.semestre || filtros.facultad || filtros.materia || filtros.programa)
-    ) {
-      cargarDesdeAPI();
-    }
-  }, [filtros.semestre, filtros.facultad, filtros.materia, filtros.programa]);  
-
-  const onFiltro = (e) => {
-    const { name, value } = e.target;
-  
-    setFiltros((prev) => {
-      // Si cambia la sede
-      if (name === "sede") {
-        // Si selecciona “Todas”
-        if (value === "") {
-          setSemestres([]);
-          setMaterias([]);
-          setProgramas([]);
-          cargarDesdeAPI(); // global
-          return { sede: "", semestre: "", facultad: "", materia: "", programa: "" };
-        }
-  
-        // Si elige una sede específica
-        setSemestres([]);
-        setMaterias([]);
-        setProgramas([]);
-        return { sede: value, semestre: "", facultad: "", materia: "", programa: "" };
-      }
-  
-      // Otros filtros normales
-      return { ...prev, [name]: value };
-    });
-  };
-
-  const exportCSVHeaders = [
-    { label: "Materia", key: "materia" },
-    { label: "Estudiantes", key: "asistentes" },
-  ];
-
-  const csvEstudiantesPorMateria = useMemo(() => 
-    (estudiantesPorMateria || []).map((d) => ({ materia: d.materia, asistentes: d.asistentes })), 
-    [estudiantesPorMateria]
-  );
-
+  // Exportar a Excel
   const exportExcel = async () => {
     const schema = [
       { column: "Materia", type: String, value: (r) => r.materia },
@@ -327,6 +161,7 @@ const EstadisticasMonitorias = () => {
     });
   };
 
+  // Exportar a PDF
   const exportPDF = async () => {
     if (!reportRef.current) return;
 
@@ -354,6 +189,174 @@ const EstadisticasMonitorias = () => {
       alert("Error al generar el PDF. Por favor, intente nuevamente.");
     }
   };
+
+  const onFiltro = (e) => {
+    const { name, value } = e.target;
+  
+    setFiltros(prev => {
+      if (name === "sede") {
+        limpiarCatalogos();
+  
+        // Sede "Todas"
+        if (value === "") {
+          cargarDesdeAPI(); // estadísticas globales
+          return { sede: "", semestre: "", facultad: "", materia: "", programa: "" };
+        }
+  
+        // Sede específica
+        return { sede: value, semestre: "", facultad: "", materia: "", programa: "" };
+      }
+  
+      // Otros filtros
+      return { ...prev, [name]: value };
+    });
+  };
+
+  // ================== useEffect ==================
+  // Carga inicial al abrir la página
+  useEffect(() => {
+    const init = async () => {
+      try {
+        // Carga Sedes
+        await cargarSedes();
+        // Carga inicial de estadísticas (todas las sedes, semestre actual)
+        await cargarDesdeAPI();
+      } catch (error) {
+        console.error("Error durante la carga inicial:", error);
+      }
+    };
+    init();
+  }, []);
+
+  // Actualiza catálogos dependientes al cambiar la sede
+  useEffect(() => {
+    // Si sede está vacía ("Todas")
+    if (filtros.sede === "") {
+      limpiarCatalogos();
+      cargarDesdeAPI();    // estadísticas globales
+      return;
+    }
+
+    if (!filtros.sede) return; // si aún no hay sede, no hace nada
+
+    const actualizarCatalogosPorSede = async () => {
+      try {
+        const token = await decryptTokenFromSessionStorage();
+        const headers = { Authorization: `Bearer ${token}` };
+        const sedeId = Number(filtros.sede);
+
+        // Cargar Semestres de la sede seleccionada
+        const respSem = await axios.get(
+          `${process.env.REACT_APP_API_URL}/wizard/semestre/${filtros.sede}/semestre_sede/`,
+          { headers }
+        );
+        setSemestres(respSem.data || []);
+
+        // Cargar facultades
+        const respFacultades = await Api_facultades_sede.facultades_por_sede(filtros.sede);
+        setFacultades(respFacultades || []);  
+
+        // Cargar materias 
+        const payloadMaterias = { sede_id: sedeId };
+        const respStats = await axios.post(
+          `${process.env.REACT_APP_API_URL}/reportes/estadisticas_monitorias/estadisticas_monitorias/`,
+          payloadMaterias,
+          { headers }
+        );
+
+        const mats = respStats?.data?.estudiantesPorMateria || [];
+
+        // Normalizamos y eliminamos duplicados
+        const materiasUnicas = [
+          ...new Map(
+            mats
+              .filter(m => m.materia) // solo las que tienen nombre
+              .map(m => [m.materia.trim().toUpperCase(), m.materia.trim()])
+          ).values()
+        ];
+
+        setMaterias(materiasUnicas);          
+
+        // Cargar programas filtrados por sede
+        const respProgramas = await axios.get(
+          `${process.env.REACT_APP_API_URL}/formularios_externos/enviar_programas/`,
+          { headers }
+        );
+        if (Array.isArray(respProgramas.data)) {
+          const lista = respProgramas.data.filter(
+            (p) => Number(p.id_sede) === sedeId
+          );
+          // Guardar programas con ID para mapeo
+          const programasConIdMap = lista.map((p) => {
+            const jornadaLabel = p.jornada && p.jornada.toUpperCase().includes("DIUR") ? "D" : "N";
+            return {
+              id: p.id,
+              nombre: p.nombre,
+              nombreFormateado: `${p.nombre} (${jornadaLabel})`,
+              jornada: p.jornada,
+              id_facultad: p.id_facultad || p.id_facultad_id || null
+            };
+          });
+          
+          setProgramasConId(programasConIdMap);
+          // Para el select, usar solo los nombres formateados únicos
+          const nombresFormateados = [...new Set(programasConIdMap.map(p => p.nombreFormateado))];
+          setProgramas(nombresFormateados);
+        }
+        
+      } catch (error) {
+        console.error("Error actualizando catálogos por sede:", error);
+      }
+    };
+    limpiarCatalogos();
+    actualizarCatalogosPorSede();
+  }, [filtros.sede]);
+
+  // Actualizar programas al cambiar facultad (encadenado por sede + facultad)
+  useEffect(() => {
+    // Solo ejecutar si hay una sede seleccionada y programasConId tiene datos
+    if (!filtros.sede || !programasConId || programasConId.length === 0) return;
+
+    const actualizarProgramasPorFacultad = () => {
+      try {
+        const facId = filtros.facultad ? Number(filtros.facultad) : null;
+        
+        // Usar programasConId que ya están filtrados por sede
+        let listaFiltrada = programasConId;
+        
+        // Si hay una facultad seleccionada, filtrar por ella
+        if (facId) {
+          listaFiltrada = listaFiltrada.filter((p) => {
+            const idFacultad = p?.id_facultad;
+            return idFacultad === facId;
+          });
+        }
+        // Si no hay facultad seleccionada (filtros.facultad === ""), mostrar todos los programas de la sede
+        
+        // Actualizar la lista de programas con los nombres formateados
+        const nombresFormateados = [...new Set(listaFiltrada.map(p => p.nombreFormateado))];
+        setProgramas(nombresFormateados);
+      } catch (error) {
+        console.error("Error actualizando programas por facultad:", error);
+      }
+    };
+
+    // reiniciar programa cuando cambia facultad
+    setFiltros((prev) => ({ ...prev, programa: "" }));
+    actualizarProgramasPorFacultad();
+  }, [filtros.facultad, filtros.sede, programasConId]);
+
+
+  // Recarga de estadísticas al aplicar filtros
+  useEffect(() => {
+    // Solo recarga si hay sede seleccionada y se ha tocado algún filtro adicional
+    if (
+      filtros.sede &&
+      (filtros.semestre || filtros.facultad || filtros.materia || filtros.programa)
+    ) {
+      cargarDesdeAPI();
+    }
+  }, [filtros.semestre, filtros.facultad, filtros.materia, filtros.programa]);    
 
   return (
     <Col className="contenido_children">
@@ -498,7 +501,7 @@ const EstadisticasMonitorias = () => {
                         />
                         <YAxis />
                         <Tooltip />
-                        <Bar dataKey="asistentes" fill="#E30613" maxBarSize={60} />
+                        <Bar dataKey="estudiantes" fill="#E30613" maxBarSize={60} />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
@@ -524,7 +527,7 @@ const EstadisticasMonitorias = () => {
                         />
                         <YAxis />
                         <Tooltip />
-                        <Bar dataKey="asistentes" fill="#E30613" maxBarSize={60} />
+                        <Bar dataKey="asistencias" fill="#E30613" maxBarSize={60} />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
