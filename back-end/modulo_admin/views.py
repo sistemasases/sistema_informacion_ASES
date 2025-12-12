@@ -1264,7 +1264,7 @@ class panel_admin_firma_temporal_viewset(viewsets.ViewSet):
     """
 
     @action(detail=False, methods=['post'], url_path='listar_firmas_temporales',
-            # permission_classes=[IsAuthenticated]
+            permission_classes=[IsAuthenticated]
             )
     def listar_firmas_temporales(self, request):
         """
@@ -1277,10 +1277,6 @@ class panel_admin_firma_temporal_viewset(viewsets.ViewSet):
             data = [
                 {
                     "id": f["id"],
-                    # "id_estudiante": f["id_estudiante_id"],
-                    # "nombre_estudiante": f["id_estudiante__nombre"],
-                    # "apellido_estudiante": f["id_estudiante__apellido"],
-                    # "codigo_univalle": f["id_estudiante__cod_univalle"],
                     "num_doc": f["documento"],
                     "fecha_firma": f["fecha_firma"],
                     "nombre_firma": f["nombre_firma"],

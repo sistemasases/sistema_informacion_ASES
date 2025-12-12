@@ -296,7 +296,7 @@ class firma_temp_viewsets(viewsets.GenericViewSet):
     viewset para el modelo firma_tratamiento_datos_temp
     """
 
-    @action(detail=False, methods=['post'], url_path='pasarFirmasTemporales')
+    @action(detail=False, methods=['post'], url_path='pasarFirmasTemporales', permission_classes=[IsAuthenticated])
     def pasarFirmasTemporales(self, request):
         """
         este endpoint pasa las firmas temporales al modelo firma_tratamiento_datos, lo que hara es obtener todas las

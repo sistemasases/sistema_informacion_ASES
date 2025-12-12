@@ -35,9 +35,6 @@ const actualizar_tratamientos_temporales = async () => {
           timer: 2500,
           showConfirmButton: true,
         });
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1500);
       }
       return true;
     });
@@ -45,7 +42,9 @@ const actualizar_tratamientos_temporales = async () => {
     console.error("Error en la operación:", error);
     Swal.fire({
       title: "Error",
-      text: "No se pudo actualizar la autorización. Por favor, inténtelo de nuevo más tarde.",
+      text:
+        error.response.data.Respuesta ||
+        "No se pudo actualizar los tratamientos de datos temporales. Por favor, inténtelo de nuevo más tarde.",
       icon: "error",
       timer: 1500,
       showConfirmButton: true,
