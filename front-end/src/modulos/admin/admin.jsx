@@ -23,6 +23,7 @@ import SelectorAsignacionesMonitores from "../../components/componentes_generale
 import SelectorProgramas from "../../components/componentes_generales/acordeon_programas.jsx"; 
 import SelectorSemestres from "../../components/componentes_generales/acordeon_semestres.jsx";
 import SelectorTratamiento from "../../components/componentes_generales/acordeon_tratamiento_datos.jsx";
+import SelectorTratamientoTemporal from "../../components/componentes_generales/acordeon_tratamiento_datos_temporal.jsx";
 
 const Gestion_usuario_roles = () => {
   // Desencriptar los permisos del usuario desde el sessionStorage
@@ -51,6 +52,7 @@ const Gestion_usuario_roles = () => {
             <SelectorProgramas />               {/* CONECTADO */}
             <SelectorSemestres />               {/* CONECTADO */}
             <SelectorTratamiento />             {/* CONECTADO */}
+            <SelectorTratamientoTemporal />      {/* CONECTADO */}
           </Row>
           <Row></Row>
         </Col>
