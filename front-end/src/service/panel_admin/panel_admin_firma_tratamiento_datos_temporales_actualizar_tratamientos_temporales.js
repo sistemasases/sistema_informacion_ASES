@@ -20,8 +20,9 @@ const actualizar_tratamientos_temporales = async () => {
   };
   const url_axios = `${process.env.REACT_APP_API_URL}/formularios_externos/firma_tratamiento_datos_temp/pasarFirmasTemporales/`;
 
-  try {
-    axios.post(url_axios, { headers: config }).then((response) => {
+  axios
+    .post(url_axios, {}, { headers: config })
+    .then((response) => {
       console.log(response);
       if (response.status === 200) {
         Swal.fire({
@@ -37,22 +38,22 @@ const actualizar_tratamientos_temporales = async () => {
         });
       }
       return true;
+    })
+    .catch((error) => {
+      console.error("Error en la operación:", error);
+      Swal.fire({
+        title: "Error",
+        text:
+          error.response.data.Respuesta ||
+          "No se pudo actualizar los tratamientos de datos temporales. Por favor, inténtelo de nuevo más tarde.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: true,
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#3085d6",
+      });
+      return false;
     });
-  } catch (error) {
-    console.error("Error en la operación:", error);
-    Swal.fire({
-      title: "Error",
-      text:
-        error.response.data.Respuesta ||
-        "No se pudo actualizar los tratamientos de datos temporales. Por favor, inténtelo de nuevo más tarde.",
-      icon: "error",
-      timer: 1500,
-      showConfirmButton: true,
-      confirmButtonText: "Aceptar",
-      confirmButtonColor: "#3085d6",
-    });
-    return false;
-  }
 };
 
 export default { actualizar_tratamientos_temporales };
