@@ -43,8 +43,8 @@
             },
             {
                 "id":9,
-                "path":"/ficha_estudiante/sin_seleccion",
-                "name":"Reporte grafico ASES",
+                "path":"/estadisticas_monitorias",
+                "name":"Estadísticas de monitorías",
                 "icon":"bi-clipboard2-data-fill"
             },
             {

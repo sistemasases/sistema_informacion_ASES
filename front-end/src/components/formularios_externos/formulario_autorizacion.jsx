@@ -20,6 +20,19 @@ const FormularioActualizacion = (props) => {
   const [documentType, setDocumentType] = useState("");
   const [otherDocumentType, setOtherDocumentType] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [autorizacionDatos, setAutorizacionDatos] = useState(false);
+  const [autError, setAutError] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+
+  const handleCheckboxChange = (e) => {
+    setAutorizacionDatos(e.target.checked);
+    setData({
+      ...data,
+      autoriza_tratamiento_datos: e.target.checked,
+    });
+  };
+
 
   const handleDocumentTypeChange = (e) => {
     setDocumentType(e.target.value);
@@ -42,6 +55,21 @@ const FormularioActualizacion = (props) => {
     }
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (email === "") {
+      setEmailError("");
+      return;
+    }
+    
+    if (!emailRegex.test(email)) {
+      setEmailError("El correo no tiene un formato válido (ejemplo: nombre@dominio.com)");
+    } else {
+      setEmailError("");
+    }
+  };
+
   const handle_otherDocumentType = (e) => {
     setOtherDocumentType(e.target.value);
     setData({
@@ -55,14 +83,14 @@ const FormularioActualizacion = (props) => {
     tipo_id_estudiante: "",
     documento: "",
     correo_firma: "",
-    autoriza_tratamiento_datos: null,
     autoriza_tratamiento_imagen: null,
+    autoriza_tratamiento_datos: null,
     fecha_firma: new Date().toISOString().split("T")[0],
   });
 
   const send_data = async (e) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+    console.log(data.autoriza_tratamiento_datos);
     // Verificar que los campos obligatorios no estén vacíos
     if (
       data.nombre_firma === "" ||
@@ -83,9 +111,6 @@ const FormularioActualizacion = (props) => {
       });
       return;
     } else if (!emailRegex.test(data.correo_firma)) {
-      // alert(
-      //   "El correo ingresado no tiene un formato válido. Por favor, corrígelo para continuar."
-      // );
       Swal.fire({
         title: "Mensaje de alerta",
         text: "El correo ingresado no tiene un formato válido. Por favor, corrígelo para continuar.",
@@ -98,36 +123,10 @@ const FormularioActualizacion = (props) => {
       setEmailError("El correo no tiene un formato válido");
       return;
     } else if (data.autoriza_tratamiento_datos === false) {
+      console.log("No autorizó el tratamiento de datos");
       try {
-        const isConfirm = await Swal.fire({
-          title: "Mensaje de confirmación",
-          text: "Recuerde que si no autoriza el tratamiento de datos, no podrá continuar con el proceso de acompañamiento.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#DD6B55",
-          confirmButtonText: "Sí",
-          cancelButtonText: "No",
-        });
-
-        if (!isConfirm.isConfirmed) {
-          return; // Si el usuario cancela, se sale de la función
-        }
-
-        // Llamar al servicio para guardar los datos
-        const res =
-          await Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
-            data
-          );
-
-        if (res) {
-          Swal.fire({
-            title: "Éxito",
-            text: "Los datos fueron guardados correctamente.",
-            icon: "success",
-            timer: 3000,
-            showConfirmButton: false,
-          });
-        }
+        setAutError("Debe autorizar el tratamiento de datos personales para continuar.");
+        return;
       } catch (error) {
         Swal.fire({
           title: "Error",
@@ -138,34 +137,68 @@ const FormularioActualizacion = (props) => {
         });
       }
     } else {
-      const res =
-        await Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
-          data
-        );
-      try {
-        if (res) {
-          Swal.fire({
-            title: "Éxito",
-            text: "Los datos fueron guardados correctamente.",
-            icon: "success",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        }
-      } catch (error) {
+      setShowConfirmModal(true);   
+    }
+  };
+
+  const result = async (e) => {
+    const res =
+      await Formularios_externos_firma_tratamiento_datos_envio.formularios_externos_firma(
+        data
+      );
+    try {
+      if (res) {
+        setShowConfirmModal(false);
         Swal.fire({
-          title: "Error",
-          text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
-          icon: "error",
+          title: "Éxito",
+          text: "Los datos fueron guardados correctamente.",
+          icon: "success",
           timer: 2000,
           showConfirmButton: false,
         });
       }
+    } catch (error) {
+      setShowConfirmModal(false);
+      Swal.fire({
+        title: "Error",
+        text: "Hubo un problema al guardar los datos. Inténtalo nuevamente.",
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     }
   };
 
   return (
+
     <div className="auth-all-background">
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar número de documento</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p style={{ fontSize: "1rem" }}>
+            ¿Confirmas que tu número de documento es:
+            <br />
+            <strong style={{ fontSize: "1.2rem" }}>{data.documento}</strong> ?
+          </p>
+          <p style={{ color: "red", fontSize: "0.9rem" }}>
+            ⚠️ Este valor es muy importante para validar tu identidad.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={()=>{
+            result()
+            setShowConfirmModal(false)
+          }}>
+            Confirmar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <div className="auth-form-div">
         <Container>
           <Col>
@@ -286,14 +319,27 @@ const FormularioActualizacion = (props) => {
                       <label style={{ color: "red" }}> *</label>
                     </Form.Label>
                     <Form.Control
-                      type="text"
+                      type="email"
                       placeholder="Tu respuesta"
-                      onChange={(e) =>
+                      onChange={(e) =>{
                         setData({
                           ...data,
                           correo_firma: e.target.value,
                         })
+
+                        if (!e.target.value.includes("@")) {
+                          validateEmail(e.target.value);
+                        }else {
+                          setEmailError("");
+                        }
+                        
                       }
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === ' ') {
+                          e.preventDefault();
+                        }
+                      }}
                       title="Debe ingresar un correo electrónico válido: nombre@dominio.com"
                     />
                     {emailError && <p style={{ color: "red" }}>{emailError}</p>}
@@ -308,12 +354,17 @@ const FormularioActualizacion = (props) => {
                     <Form.Control
                       type="text"
                       placeholder="Tu respuesta"
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        // eliminar cualquier caracter que no sea letra o espacio
+                        const onlyLetters = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
                         setData({
                           ...data,
-                          nombre_firma: e.target.value,
-                        })
-                      }
+                          nombre_firma: onlyLetters,
+                        });
+                        // actualizar el valor del input
+                        e.target.value = onlyLetters;
+                      }}
+                      
                     />
                   </Form.Group>
                   <hr></hr>
@@ -372,49 +423,27 @@ const FormularioActualizacion = (props) => {
                     </Form.Label>
                     <Form.Control
                       type="text"
+                      inputMode="numeric"
                       placeholder="Tu respuesta"
-                      onChange={(e) =>
+                      value={data.documento}
+                      onChange={(e) => {
+                        // Solo permite dígitos (0-9), elimina cualquier otro carácter
+                        const numericValue = e.target.value.replace(/\D/g, '');
                         setData({
                           ...data,
-                          documento: e.target.value,
-                        })
-                      }
+                          documento: numericValue,
+                        });
+                      }}
+                      onKeyDown={(e) => {
+                        // Previene la entrada de espacios
+                        if (e.key === ' ') {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </Form.Group>
                   <hr></hr>
-                  <Form.Group controlId="formDataAuth">
-                    <Form.Label>
-                      ¿Autoriza el tratamiento de datos personales y sensibles?{" "}
-                      <label style={{ color: "red" }}> *</label>
-                    </Form.Label>
-                    <Form.Check
-                      type="radio"
-                      id="si"
-                      label="Sí"
-                      value={true} // Asegúrate de pasar el valor booleano
-                      name="dataAuth"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          autoriza_tratamiento_datos: true, // Establece el valor booleano explícito
-                        })
-                      }
-                    />
-                    <Form.Check
-                      type="radio"
-                      id="no"
-                      label="No"
-                      value={false} // Asegúrate de pasar el valor booleano
-                      name="dataAuth"
-                      onChange={(e) =>
-                        setData({
-                          ...data,
-                          autoriza_tratamiento_datos: false, // Establece el valor booleano explícito
-                        })
-                      }
-                    />
-                  </Form.Group>
-                  <hr></hr>
+
                   <Form.Group controlId="formImageAuth">
                     <Form.Label>
                       ¿Autoriza el uso de imágenes en material publicitario?{" "}
@@ -426,7 +455,7 @@ const FormularioActualizacion = (props) => {
                       label="Sí"
                       value="true"
                       name="imageAuth"
-                      // checked={documentType === "C.C."}
+                      
                       onChange={(e) =>
                         setData({
                           ...data,
@@ -451,6 +480,24 @@ const FormularioActualizacion = (props) => {
                   </Form.Group>
 
                   <hr></hr>
+
+                  <Form.Group controlId="formDataAuth">
+                    <Form.Label>
+                      ¿Autoriza el tratamiento de datos personales y sensibles?{" "}
+                      <label style={{ color: "red" }}> *</label>
+                    </Form.Label>
+                    <Form.Check
+                      type="checkbox"
+                      id="dataAuthCheckbox"
+                      label="Autorizo el tratamiento de mis datos personales"
+                      checked={autorizacionDatos}
+                      onChange={handleCheckboxChange}
+                    />
+                  </Form.Group>
+                  {autError && <p style={{ color: "red" }}>{autError}</p>}
+                  <hr></hr>
+
+
                   <div style={{ textAlign: "center", alignItems: "center" }}>
                     <Button
                       variant="primary"

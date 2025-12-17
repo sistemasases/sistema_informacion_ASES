@@ -103,7 +103,7 @@
             },
             {
                 "id":9,
-                "path":"/",
+                "path":"/estadisticas_monitorias",
                 "name":"Reporte grafico ASES",
                 "icon":"bi-clipboard2-data-fill"
             },

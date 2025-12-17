@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.db import transaction
 
 from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso, firma_tratamiento_datos
+from modulo_formularios_externos.models import firma_tratamiento_datos_temp
 from modulo_programa.models import programa, programa_estudiante, facultad
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
@@ -414,7 +415,7 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
             # Obtener todos los programas y cohortes relacionados con esos estudiantes
             programas_estudiantes = programa_estudiante.objects.filter(
                 id_estudiante__in=ids_estudiantes
-            ).select_related('id_programa').values('id', 'id_estudiante', 'id_programa', 'id_programa__nombre')
+            ).select_related('id_programa').values('id', 'id_estudiante', 'id_programa', 'id_programa__nombre', 'id_programa__id_sede__nombre')
 
             cohortes_estudiantes = cohorte_estudiante.objects.filter(
                 id_estudiante__in=ids_estudiantes
@@ -426,7 +427,8 @@ class panel_admin_estudiante_viewset(viewsets.ViewSet):
                 programas_por_estudiante.setdefault(p['id_estudiante'], []).append({
                     "id": p['id'],
                     "id_programa": p['id_programa'],
-                    "nombre_programa": p['id_programa__nombre']
+                    "nombre_programa": p['id_programa__nombre'],
+                    "sede_programa": p['id_programa__id_sede__nombre']
                 })
 
             cohortes_por_estudiante = {}
@@ -1254,3 +1256,39 @@ class panel_admin_firma_tratamiento_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"mensaje": "Firma de tratamiento de datos actualizada correctamente"}, status=status.HTTP_200_OK)
+    
+    
+class panel_admin_firma_temporal_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar la firma temporal de documentos.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_firmas_temporales',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_firmas_temporales(self, request):
+        """
+        Listar todas las firmas temporales de documentos.
+        """
+        try:
+            firmas = firma_tratamiento_datos_temp.objects.all().select_related('id_estudiante').values('id', 'documento', 'fecha_firma', 'nombre_firma', 'correo_firma',
+                                                                                                    'autoriza_tratamiento_datos', 'autoriza_tratamiento_imagen',
+                                                                                             )
+            data = [
+                {
+                    "id": f["id"],
+                    "num_doc": f["documento"],
+                    "fecha_firma": f["fecha_firma"],
+                    "nombre_firma": f["nombre_firma"],
+                    "correo_firma": f["correo_firma"],
+                    "autoriza_tratamiento_datos": f["autoriza_tratamiento_datos"],
+                    "autoriza_tratamiento_imagen": f["autoriza_tratamiento_imagen"],
+                }
+                for f in firmas
+            ]
+            
+            return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)      
+        
+            
