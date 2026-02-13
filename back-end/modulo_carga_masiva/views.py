@@ -413,30 +413,52 @@ def carga_estudiante_cohorte(file):
                 consulta_estudiante = estudiante.objects.filter(num_doc = datos.iat[i,0],cod_univalle = datos.iat[i, 2]).first()
                 if(cohorte.objects.filter(id_number= datos.iat[i,1]).first()):
                     consulta_cohorte = cohorte.objects.filter(id_number= datos.iat[i,1]).first()
-                    if(cohorte_estudiante.objects.filter(id_cohorte = consulta_cohorte,id_estudiante=consulta_estudiante).values()):
-                        dict_result = {
-                            'dato' : datos.iat[i,0],
-                            'mensaje' : 'El estudiante ya está relacionado con esta cohorte.'
-                        }
-                        list_dict_result.append(dict_result)
+                  
+                    # ¿Ya existe relación?
+                    relacion_existente = cohorte_estudiante.objects.filter(
+                        id_cohorte=consulta_cohorte,
+                        id_estudiante=consulta_estudiante
+                    ).exists()
+
+                    pertenece_a_cohorte_activa = cohorte_estudiante.objects.filter(
+                        id_estudiante=consulta_estudiante,
+                        id_cohorte__is_active=True
+                    ).exists()
+
+                    # ¿La cohorte que intento asignar es ACTIVA?
+                    cohorte_a_asignar_es_activa = consulta_cohorte.is_active
+
+                    if cohorte_a_asignar_es_activa and pertenece_a_cohorte_activa:
+                        list_dict_result.append({
+                            'dato': datos.iat[i, 0],
+                            'mensaje': 'El estudiante ya pertenece a una cohorte activa, no se puede asignar otra.'
+                        })
+
+                    elif relacion_existente:
+                        list_dict_result.append({
+                            'dato': datos.iat[i,0],
+                            'mensaje': 'El estudiante ya está relacionado con esta cohorte.'
+                        })
+
                     else:
                         try:
-                            Cohorte_estudiante =cohorte_estudiante(
-                                id_cohorte = consulta_cohorte,
-                                id_estudiante = consulta_estudiante,
+                            Cohorte_estudiante = cohorte_estudiante(
+                                id_cohorte=consulta_cohorte,
+                                id_estudiante=consulta_estudiante,
                             )
                             list_estudiante_cohorte.append(Cohorte_estudiante)
-                            dict_result = {
-                                'dato' : datos.iat[i,0],
-                                'mensaje' : 'Se relacionó correctamente el estudiante con la cohorte.'
-                            }
-                            list_dict_result.append(dict_result)
+
+                            list_dict_result.append({
+                                'dato': datos.iat[i,0],
+                                'mensaje': 'Se relacionó correctamente el estudiante con la cohorte.'
+                            })
+
                         except:
-                            dict_result = {
-                                'dato' : datos.iat[i,0],
-                                'mensaje' : 'Error al relacionar el estudiante con la cohorte.'
-                            }
-                            list_dict_result.append(dict_result)
+                            list_dict_result.append({
+                                'dato': datos.iat[i,0],
+                                'mensaje': 'Error al relacionar el estudiante con la cohorte.'
+                            })
+
                 else:
                     dict_result = {
                         'dato' : datos.iat[i,1],

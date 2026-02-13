@@ -740,14 +740,17 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
             "nombre": "Cohorte 2028-1",
             "tiempo_creacion_": "2023-01-01 00:00:00",
             "tiempo_modificacion_": "2023-01-01 00:00:00",
+            "is_active": true
         }
         """
         try:
+            print(request.data)
             new_cohorte = cohorte.objects.create(
                 id_number=request.data['id_number'],
                 nombre=request.data['nombre'],
                 tiempo_creacion=datetime.now(),
                 tiempo_modificacion=datetime.now(),
+                is_active=request.data['is_active']
             )
             new_cohorte.save()
             return Response({"mensaje": "Cohorte creada exitosamente"}, status=status.HTTP_201_CREATED)
@@ -776,7 +779,8 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
             "id_number": "Cohorte 2023-1 Actualizada",
             "nombre": "Cohorte 2028-1 Actualizada",
             "tiempo_creacion_": "2023-01-01 00:00:00",
-            "tiempo_modificacion_": "2023-01-01 00:00:00"
+            "tiempo_modificacion_": "2023-01-01 00:00:00",
+            "is_active": true
         }
         """
         try:
@@ -786,6 +790,7 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
             # cohorte_obj.tiempo_creacion = request.data['tiempo_creacion_']
             # Actualiza la fecha de modificación a ahora
             cohorte_obj.tiempo_modificacion = timezone.now()
+            cohorte_obj.is_active = request.data['is_active']
             cohorte_obj.save()
             return Response({"mensaje": "Cohorte actualizada exitosamente"}, status=status.HTTP_200_OK)
         except cohorte.DoesNotExist:
