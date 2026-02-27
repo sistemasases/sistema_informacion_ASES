@@ -149,7 +149,7 @@ const Reporte = () => {
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_por_rol/` +
             id_usuario.toString() +
             "/",
-          { params: { usuario_rol: rol, sede: sede } }
+          { params: { usuario_rol: rol, sede: sede } },
         );
         set_state({
           ...state,
@@ -210,7 +210,7 @@ const Reporte = () => {
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
             id_usuario.toString() +
             "/",
-          { params: { usuario_rol: rol, sede: sede } }
+          { params: { usuario_rol: rol, sede: sede } },
         );
         set_state({
           ...state,
@@ -299,8 +299,9 @@ const Reporte = () => {
     var key =
       item.value === "programa_academico"
         ? "csv_programa_academico"
-        : item.value;
-
+        : item.value === "registro_academico"
+          ? "csv_registro_academico"
+          : item.value;
     csv_headers.push({ label: label, key: key });
   };
 
@@ -334,8 +335,19 @@ const Reporte = () => {
           return student.programas
             .map(
               (programa) =>
-                `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`
+                `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`,
             )
+            .join(" | ");
+        },
+      });
+    } else if (item.name === "Registro Académico") {
+      schema.push({
+        column: item.name,
+        type: tipo,
+        value: (student) => {
+          if (!Array.isArray(student.registro_academico)) return "Sin datos";
+          return student.registro_academico
+            .map((registro_acad) => registro_acad.estado)
             .join(" | ");
         },
       });
@@ -384,7 +396,7 @@ const Reporte = () => {
           row.apellido.toLowerCase().includes(e.target.value.toLowerCase()) ||
           row.num_doc
             .toString()
-            .includes(e.target.value.toString().toLowerCase())
+            .includes(e.target.value.toString().toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -478,7 +490,7 @@ const Reporte = () => {
         return row.programas
           .map(
             (programa) =>
-              `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`
+              `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`,
           )
           .join(", ");
       },
@@ -611,7 +623,7 @@ const Reporte = () => {
     // BÚSQUEDA INDIVIDUAL POR FILTRO: DOCUMENTO
     if (e.target.name === "Tipo de documento") {
       const data_filtered = filtered.filter((row) =>
-        row.tipo_doc.toLowerCase().includes(e.target.value.toLowerCase())
+        row.tipo_doc.toLowerCase().includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -620,7 +632,7 @@ const Reporte = () => {
     // BÚSQUEDA INDIVIDUAL POR FILTRO: CORREO
     if (e.target.name === "Correo electrónico") {
       const data_filtered = filtered.filter((row) =>
-        row.email.toLowerCase().includes(e.target.value.toLowerCase())
+        row.email.toLowerCase().includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -629,7 +641,7 @@ const Reporte = () => {
     // BÚSQUEDA INDIVIDUAL POR FILTRO: CELULAR
     if (e.target.name === "Celular") {
       const data_filtered = filtered.filter((row) =>
-        row.celular.toLowerCase().includes(e.target.value.toLowerCase())
+        row.celular.toLowerCase().includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -638,7 +650,7 @@ const Reporte = () => {
     // BÚSQUEDA INDIVIDUAL POR FILTRO: DIRECCION
     if (e.target.name === "Dirección") {
       const data_filtered = filtered.filter((row) =>
-        row.dir_res.toLowerCase().includes(e.target.value.toLowerCase())
+        row.dir_res.toLowerCase().includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -663,8 +675,8 @@ const Reporte = () => {
         data_filtered.length > 0
           ? data_filtered
           : estado_select === "null"
-          ? empty_estado
-          : empty_stuff;
+            ? empty_estado
+            : empty_stuff;
       setFiltered(filtered_data);
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: REGISTRO
@@ -675,8 +687,8 @@ const Reporte = () => {
           row.registro_academico.some((registro_acad) =>
             registro_acad.estado
               .toLowerCase()
-              .includes(e.target.value.toLowerCase())
-          )
+              .includes(e.target.value.toLowerCase()),
+          ),
       );
 
       const filtered_data =
@@ -704,8 +716,8 @@ const Reporte = () => {
             (programa) =>
               programa.id_programa.toString().includes(filtro) ||
               programa.programa_academico.toLowerCase().includes(filtro) ||
-              programa.sede.toLowerCase().includes(filtro)
-          )
+              programa.sede.toLowerCase().includes(filtro),
+          ),
       );
 
       const filtered_data =
@@ -728,7 +740,7 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.asignacion_profesional
           .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+          .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -739,7 +751,7 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.asignacion_practicante
           .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+          .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -750,7 +762,7 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.asignacion_monitores
           .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+          .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -761,7 +773,7 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.riesgo_individual
           .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+          .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -769,7 +781,7 @@ const Reporte = () => {
     }
     if (e.target.name === "Riesgo familiar") {
       const data_filtered = filtered.filter((row) =>
-        row.riesgo_familiar.includes(e.target.value.toLowerCase())
+        row.riesgo_familiar.includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -779,7 +791,7 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.riesgo_academico
           .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+          .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -789,7 +801,7 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.riesgo_economico
           .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+          .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -799,7 +811,7 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.riesgo_vida_universitaria_ciudad
           .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+          .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -810,7 +822,7 @@ const Reporte = () => {
       const data_filtered = filtered.filter((row) =>
         row.condicion_excepcion
           .toLowerCase()
-          .includes(e.target.value.toLowerCase())
+          .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -825,7 +837,7 @@ const Reporte = () => {
           row.cohorte
             .join(", ")
             .toLowerCase()
-            .includes(e.target.value.toLowerCase())
+            .includes(e.target.value.toLowerCase()),
       );
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
@@ -890,29 +902,29 @@ const Reporte = () => {
    */
   const handleChange = (e) => {
     const seleccionado_contacto = filtros_Contacto.find(
-      (item) => item.name === e.target.name
+      (item) => item.name === e.target.name,
     );
     const seleccionado_riesgos = filtros_Riesgos.find(
-      (item) => item.name === e.target.name
+      (item) => item.name === e.target.name,
     );
     const seleccionado_estados = filtros_Estados.find(
-      (item) => item.name === e.target.name
+      (item) => item.name === e.target.name,
     );
     const seleccionado_academico = filtros_Academico.find(
-      (item) => item.name === e.target.name
+      (item) => item.name === e.target.name,
     );
     const seleccionado_asignaciones = filtros_Asignaciones.find(
-      (item) => item.name === e.target.name
+      (item) => item.name === e.target.name,
     );
     const seleccionado_cabeceras_filtros = cabecerasFiltros.find(
-      (item) => item.name === e.target.name
+      (item) => item.name === e.target.name,
     );
     const seleccionado_condiciones_excepcion_prueba =
       filtros_Condicion_Excepcion_prueba.find(
-        (item) => item.name === "Condición de Excepción"
+        (item) => item.name === "Condición de Excepción",
       );
     const seleccionado_cohorte = filtro_cohorte.find(
-      (item) => item.name === e.target.name
+      (item) => item.name === e.target.name,
     );
     if (seleccionado_contacto === undefined) {
     } else if (
@@ -1311,16 +1323,14 @@ const Reporte = () => {
         document.getElementsByName("Riesgo familiar")[0].checked = false;
         document.getElementsByName("Riesgo académico")[0].checked = false;
         document.getElementsByName("Riesgo económico")[0].checked = false;
-        document.getElementsByName(
-          "Riesgo vida universitaria"
-        )[0].checked = false;
+        document.getElementsByName("Riesgo vida universitaria")[0].checked =
+          false;
         document.getElementsByName("Riesgo individual")[0].checked = true;
         document.getElementsByName("Riesgo familiar")[0].checked = true;
         document.getElementsByName("Riesgo académico")[0].checked = true;
         document.getElementsByName("Riesgo económico")[0].checked = true;
-        document.getElementsByName(
-          "Riesgo vida universitaria"
-        )[0].checked = true;
+        document.getElementsByName("Riesgo vida universitaria")[0].checked =
+          true;
         for (let i = 0; i < columns.length; i++) {
           if (
             columns[i].value === "riesgo_individuall" ||
@@ -1524,9 +1534,8 @@ const Reporte = () => {
         document.getElementsByName("Riesgo familiar")[0].checked = false;
         document.getElementsByName("Riesgo académico")[0].checked = false;
         document.getElementsByName("Riesgo económico")[0].checked = false;
-        document.getElementsByName(
-          "Riesgo vida universitaria"
-        )[0].checked = false;
+        document.getElementsByName("Riesgo vida universitaria")[0].checked =
+          false;
 
         for (let i = 0; i < columns.length; i++) {
           if (
@@ -1644,7 +1653,7 @@ const Reporte = () => {
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
             id_usuario.toString() +
             "/",
-          { params: { usuario_rol: rol, sede: sede } }
+          { params: { usuario_rol: rol, sede: sede } },
         );
         set_state({
           ...state,
@@ -1691,7 +1700,7 @@ const Reporte = () => {
           `${process.env.REACT_APP_API_URL}/reportes/estudiante_filtros/` +
             id_usuario.toString() +
             "/",
-          { params: { usuario_rol: desencriptar(rolTodo), sede: sede } }
+          { params: { usuario_rol: desencriptar(rolTodo), sede: sede } },
         );
         set_state({
           ...state,
@@ -1788,9 +1797,13 @@ const Reporte = () => {
         ? row.programas
             .map(
               (programa) =>
-                `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`
+                `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`,
             )
             .join(" | ") // Usamos `|` en lugar de `,` para separar mejor los programas
+        : "Sin datos",
+    csv_registro_academico:
+      Array.isArray(row.registro_academico) && row.registro_academico.length > 0
+        ? row.registro_academico.map((item) => item.estado).join(" | ")
         : "Sin datos",
   }));
 

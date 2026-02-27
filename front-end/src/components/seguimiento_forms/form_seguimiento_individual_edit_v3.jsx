@@ -1156,9 +1156,9 @@ const Seguimiento_individual_edit_v3 = (props) => {
                 <option value="Reunión Virtual (Video llamada)">
                   Reunión Virtual (Video llamada)
                 </option>
-                <option value="Fuera de la Universidad">
+                {/* <option value="Fuera de la Universidad">
                   Fuera de la Universidad
-                </option>
+                </option> */}
               </Form.Select>
             </Row>
           </Col>
