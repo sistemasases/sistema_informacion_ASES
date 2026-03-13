@@ -102,7 +102,7 @@ class send_ases(viewsets.GenericViewSet):
             except Exception:
                 responsable = "Correo no disponible"
                 
-            porcentaje_avance = (conteo_seguimientos / 6) * 100
+            porcentaje_avance = (conteo_seguimientos / 5) * 100
             if porcentaje_avance >= 100 :
                 conteo = {
                         'criterio': [{'id':6,'porcentaje_avance': 100,}],
