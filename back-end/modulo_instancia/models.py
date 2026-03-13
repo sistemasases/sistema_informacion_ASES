@@ -42,6 +42,7 @@ class cohorte (models.Model):
     nombre= models.CharField(max_length=50)
     tiempo_creacion= models.DateTimeField(auto_now_add=True)
     tiempo_modificacion= models.DateTimeField(auto_now_add=False)
+    is_active= models.BooleanField(default=False)
 
     class Meta:
         db_table = "cohorte"

@@ -390,6 +390,72 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    """
+    Elimina un usuario existente y activo en el sistema.
+    """
+    @action(detail=False, methods=['post'], url_path='eliminar_usuario', permission_classes=[IsAuthenticated])
+    def eliminar_usuario(self, request, pk=None):
+        """
+        Elimina un usuario existente en el sistema.
+        """
+        """
+        {
+            "usuario": "123456789",
+        }
+        """
+        # WIP
+        try:
+            semestres_activos = semestre.objects.filter(semestre_actual=True).values_list('id', flat=True)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            asignaciones_usuario = asignacion.objects.filter(
+                id_usuario__username=request.data['usuario'])
+            if asignaciones_usuario.exists():
+                if asignaciones_usuario.filter(id_semestre__in=semestres_activos).exists():
+                    return Response({"error": "No se puede eliminar el usuario porque tiene asignaciones activas en el semestre actual."}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    id_user = asignaciones_usuario['id_usuario']
+                    
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        try:
+            usuarios_data = request.data  # Lista de diccionarios con clave "usuario"
+
+            if not isinstance(usuarios_data, list) or not usuarios_data:
+                return Response(
+                    {"error": "Debes proporcionar una lista de usuarios válida."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            mensajes = []
+
+            with transaction.atomic():
+                for item in usuarios_data:
+                    username = item.get("usuario")
+                    if not username:
+                        mensajes.append(
+                            {"usuario": None, "error": "Falta el campo 'usuario'"})
+                        continue
+
+                    try:
+                        user = User.objects.get(username=username)
+                        user.delete()
+                        mensajes.append(
+                            {"usuario": username, "mensaje": "Eliminado exitosamente"})
+
+                    except User.DoesNotExist:
+                        mensajes.append(
+                            {"usuario": username, "error": "Usuario no encontrado"})
+
+            return Response(mensajes, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class panel_admin_estudiante_viewset(viewsets.ViewSet):
 
@@ -740,14 +806,17 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
             "nombre": "Cohorte 2028-1",
             "tiempo_creacion_": "2023-01-01 00:00:00",
             "tiempo_modificacion_": "2023-01-01 00:00:00",
+            "is_active": true
         }
         """
         try:
+            print(request.data)
             new_cohorte = cohorte.objects.create(
                 id_number=request.data['id_number'],
                 nombre=request.data['nombre'],
                 tiempo_creacion=datetime.now(),
                 tiempo_modificacion=datetime.now(),
+                is_active=request.data['is_active']
             )
             new_cohorte.save()
             return Response({"mensaje": "Cohorte creada exitosamente"}, status=status.HTTP_201_CREATED)
@@ -776,7 +845,8 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
             "id_number": "Cohorte 2023-1 Actualizada",
             "nombre": "Cohorte 2028-1 Actualizada",
             "tiempo_creacion_": "2023-01-01 00:00:00",
-            "tiempo_modificacion_": "2023-01-01 00:00:00"
+            "tiempo_modificacion_": "2023-01-01 00:00:00",
+            "is_active": true
         }
         """
         try:
@@ -786,6 +856,7 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
             # cohorte_obj.tiempo_creacion = request.data['tiempo_creacion_']
             # Actualiza la fecha de modificación a ahora
             cohorte_obj.tiempo_modificacion = timezone.now()
+            cohorte_obj.is_active = request.data['is_active']
             cohorte_obj.save()
             return Response({"mensaje": "Cohorte actualizada exitosamente"}, status=status.HTTP_200_OK)
         except cohorte.DoesNotExist:
@@ -1256,8 +1327,8 @@ class panel_admin_firma_tratamiento_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"mensaje": "Firma de tratamiento de datos actualizada correctamente"}, status=status.HTTP_200_OK)
-    
-    
+
+
 class panel_admin_firma_temporal_viewset(viewsets.ViewSet):
     """
     ViewSet para gestionar la firma temporal de documentos.
@@ -1272,8 +1343,8 @@ class panel_admin_firma_temporal_viewset(viewsets.ViewSet):
         """
         try:
             firmas = firma_tratamiento_datos_temp.objects.all().select_related('id_estudiante').values('id', 'documento', 'fecha_firma', 'nombre_firma', 'correo_firma',
-                                                                                                    'autoriza_tratamiento_datos', 'autoriza_tratamiento_imagen',
-                                                                                             )
+                                                                                                       'autoriza_tratamiento_datos', 'autoriza_tratamiento_imagen',
+                                                                                                       )
             data = [
                 {
                     "id": f["id"],
@@ -1286,9 +1357,7 @@ class panel_admin_firma_temporal_viewset(viewsets.ViewSet):
                 }
                 for f in firmas
             ]
-            
+
             return Response(list(data), status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)      
-        
-            
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

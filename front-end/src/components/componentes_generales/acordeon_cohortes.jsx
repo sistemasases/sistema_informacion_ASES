@@ -22,6 +22,7 @@ import DataTableExtensions from "react-data-table-component-extensions";
 // import all_cohorte_service from "../../service/all_cohorte";
 import { decryptTokenFromSessionStorage } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 import { FaEdit } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 import Read_cohorte from "../../service/panel_admin/panel_admin_cohortes_listar_cohortes.js";
 import Update_cohorte from "../../service/panel_admin/panel_admin_cohortes_actualizar_cohorte.js";
@@ -100,14 +101,27 @@ const SelectorCohortes = () => {
   };
 
   const handleCreateCohorte = async () => {
-    try {
-      // console.log("Creando nuevo cohorte:", newCohorte);
-      Create_cohorte.crear_cohorte(newCohorte);
-      setNewCohorte({ id_number: "", nombre: "" }); // Reset form
-      // setShowCreateModal(false);
-      consultaAllCohortes();
-    } catch (error) {
-      console.error("Error al crear cohorte:", error);
+    if (newCohorte.id_number == "" || newCohorte.nombre == "") {
+      Swal.fire({
+        title: "Mensaje de alerta",
+        text: "Por favor, verifica que todos los campos obligatorios estén llenos antes de enviar",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Aceptar",
+        // cancelButtonText: "No",
+      });
+      return;
+    } else {
+      try {
+        // console.log("Creando nuevo cohorte:", newCohorte);
+        Create_cohorte.crear_cohorte(newCohorte);
+        setNewCohorte({ id_number: "", nombre: "" }); // Reset form
+        // setShowCreateModal(false);
+        consultaAllCohortes();
+      } catch (error) {
+        console.error("Error al crear cohorte:", error);
+      }
     }
   };
 
@@ -122,8 +136,15 @@ const SelectorCohortes = () => {
     {
       name: "NOMBRE",
       selector: (row) => row.nombre,
-      sortable: false,
+      sortable: true,
       grow: 0.9,
+    },
+    {
+      name: "ACTIVO",
+      selector: (row) => (row.is_active ? "Sí" : "No"),
+      sortable: true,
+      wrap: true,
+      grow: 0.4,
     },
     {
       name: "EDITAR",
@@ -213,6 +234,20 @@ const SelectorCohortes = () => {
                 maxLength={50}
               />
             </Form.Group>
+            <Form.Group controlId="editIsActive">
+              <Form.Label>Activo</Form.Label>
+              <Form.Check
+                type="checkbox"
+                name="is_active"
+                checked={selectedCohorte?.is_active || false}
+                onChange={(e) =>
+                  setSelectedCohorte((prev) => ({
+                    ...prev,
+                    is_active: e.target.checked,
+                  }))
+                }
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -259,6 +294,20 @@ const SelectorCohortes = () => {
                 value={newCohorte.nombre}
                 onChange={handleCreateChange}
                 maxLength={50}
+              />
+            </Form.Group>
+            <Form.Group controlId="createIsActive">
+              <Form.Label>Activo</Form.Label>
+              <Form.Check
+                type="checkbox"
+                name="is_active"
+                checked={newCohorte.is_active || false}
+                onChange={(e) =>
+                  setNewCohorte((prev) => ({
+                    ...prev,
+                    is_active: e.target.checked,
+                  }))
+                }
               />
             </Form.Group>
           </Form>
