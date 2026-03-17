@@ -18,13 +18,15 @@ import AgradeciemintoEncuesta from "./components/agradecimientoEncuesta";
 
 const Registro_estudiante = () => {
   const [showEstamentoModal, setShowEstamentoModal] = useState(false);
+  const [showInitialEstamentoModal, setShowInitialEstamentoModal] =
+    useState(true);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [mensaje, setMensaje] = useState(null);
-  const [showModalInfo, setShowModalInfo] = useState(true);
+  const [showModalInfo, setShowModalInfo] = useState(false);
   const handleClose2 = () => setShow(false);
   const [show, setShow] = useState(false);
-  const [showModalAutorizacion, setShowModalAutorizacion] = useState(true);
+  const [showModalAutorizacion, setShowModalAutorizacion] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false); // Estado para mostrar el componente
   const headers = {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
@@ -35,7 +37,7 @@ const Registro_estudiante = () => {
   const maxLengthUniqueDigit = 1;
   const maxLengthNumber = 20;
 
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const handleClose = () => {
     setShowModal(false);
   };
@@ -475,9 +477,20 @@ const Registro_estudiante = () => {
       }));
     }
 
-    // Cierra el modal si se aceptan el manejo de datos
+    // Cierra autorización y abre instrucciones
     if (name === "autorizacion_manejo_de_datos" && checked) {
-      setShowModal(false);
+      setShowModalAutorizacion(false);
+      setShowModalInfo(true);
+    }
+  };
+
+  const handleCloseEstamentoModal = () => {
+    const isInitialFlow = showInitialEstamentoModal;
+    setShowEstamentoModal(false);
+    setShowInitialEstamentoModal(false);
+
+    if (isInitialFlow) {
+      setShowModalAutorizacion(true);
     }
   };
 
@@ -1363,8 +1376,8 @@ const Registro_estudiante = () => {
 
                 {/* Modal para autorización de manejo de datos */}
                 <Modal
-                  show={showModal}
-                  onHide={() => setShowModal(false)}
+                  show={!showModalInfo && showModalAutorizacion}
+                  onHide={() => setShowModalAutorizacion(false)}
                   backdrop="static"
                   keyboard={false}
                 >
@@ -1404,8 +1417,12 @@ const Registro_estudiante = () => {
                 </Modal>
 
                 <Modal
-                  show={showEstamentoModal}
-                  onHide={() => setShowEstamentoModal(false)}
+                  show={
+                    !showModalInfo &&
+                    !showModalAutorizacion &&
+                    (showInitialEstamentoModal || showEstamentoModal)
+                  }
+                  onHide={handleCloseEstamentoModal}
                   backdrop="static"
                   keyboard={false}
                 >
@@ -1414,31 +1431,26 @@ const Registro_estudiante = () => {
                   </Modal.Header>
                   <Modal.Body>
                     <p>
-                      Si usted es un estudiante de pregrado{" "}
-                      <span style={{ fontWeight: "bold", color: "red" }}>
-                        ACTIVO
+                      Si eres <span style={{ fontWeight: "bold", color: "red" }}>estudiante de pregrado{" "}
+                        activo
                       </span>
-                      , le pedimos que acceda a este{" "}
+                      <b>*</b>, accede a este {" "}
                       <a
-                        href="https://l.instagram.com/?u=https%3A%2F%2Fforms.gle%2Fg8sX98ZoGKkLUTFf7&e=AT167gaFHQDwH-DM-ODAiu2copsIa6wr3qoSetkwsxiWWlgfnVsih6Z4z1PzkjB-68tnDGvkLN-I4QN-Nx5kPyUwiiey05Oz"
+                        href="https://forms.gle/urTenmm3zP1YuzKh7"
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{ color: "blue", textDecoration: "underline" }}
                       >
                         enlace
                       </a>{" "}
-                      y complete el formulario para ser atendido. De lo
-                      contrario, continúe llenando este formulario. ¡Gracias!
+                      y completa el formulario para ser atendidx. De lo
+                      contrario, continúa diligenciando este formulario. ¡Gracias!
+                      <br />
+                        <span style={{ fontSize: "0.85em", display: "block", marginTop: "10px", color: "red" }}>
+                          <b>*</b> Estudiante de pregrado activo: contar con matrícula (tabulado) para el periodo actual.
+                        </span>
                     </p>
                   </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      variant="secondary"
-                      onClick={() => setShowEstamentoModal(false)}
-                    >
-                      Cerrar
-                    </Button>
-                  </Modal.Footer>
                 </Modal>
 
                 {/* Alerta de éxito como modal */}
