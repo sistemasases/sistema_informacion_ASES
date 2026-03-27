@@ -18,7 +18,7 @@ from modulo_asignacion.models import asignacion
 from django.shortcuts import get_object_or_404
 
 
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Count, F, Window
 from rest_framework.response import Response
 from rest_framework import status
 from modulo_geografico.models import municipio
@@ -391,67 +391,86 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     """
-    Elimina un usuario existente y activo en el sistema.
+    Elimina un usuario existente y activo en el sistema. (Usado únicamente para usuarios duplicados)
     """
     @action(detail=False, methods=['post'], url_path='eliminar_usuario', permission_classes=[IsAuthenticated])
     def eliminar_usuario(self, request, pk=None):
-        """
-        Elimina un usuario existente en el sistema.
-        """
-        """
-        {
-            "usuario": "123456789",
-        }
-        """
-        # WIP
-        try:
-            semestres_activos = semestre.objects.filter(semestre_actual=True).values_list('id', flat=True)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            asignaciones_usuario = asignacion.objects.filter(
-                id_usuario__username=request.data['usuario'])
-            if asignaciones_usuario.exists():
-                if asignaciones_usuario.filter(id_semestre__in=semestres_activos).exists():
-                    return Response({"error": "No se puede eliminar el usuario porque tiene asignaciones activas en el semestre actual."}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    id_user = asignaciones_usuario['id_usuario']
-                    
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
         try:
-            usuarios_data = request.data  # Lista de diccionarios con clave "usuario"
-
-            if not isinstance(usuarios_data, list) or not usuarios_data:
+            ids = request.data.get('ids', [])
+            # print("DATA:", request.data)
+            # print("IDS:", ids)
+            if not isinstance(ids, list) or not ids:
                 return Response(
-                    {"error": "Debes proporcionar una lista de usuarios válida."},
+                    {"error": "Debes enviar una lista de IDs válida."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            mensajes = []
-
             with transaction.atomic():
-                for item in usuarios_data:
-                    username = item.get("usuario")
-                    if not username:
-                        mensajes.append(
-                            {"usuario": None, "error": "Falta el campo 'usuario'"})
-                        continue
+                usuarios = User.objects.annotate(
+                    total_asignaciones=Count(
+                        'id_creador_seguimiento', distinct=True)
+                ).filter(id__in=ids).distinct()
 
-                    try:
-                        user = User.objects.get(username=username)
-                        user.delete()
-                        mensajes.append(
-                            {"usuario": username, "mensaje": "Eliminado exitosamente"})
+                eliminados = []
+                bloqueados = []
 
-                    except User.DoesNotExist:
-                        mensajes.append(
-                            {"usuario": username, "error": "Usuario no encontrado"})
+                for user in usuarios:
+                    if user.total_asignaciones > 0:
+                        bloqueados.append({
+                            "id": user.id,
+                            "username": user.username,
+                            "total_asignaciones": user.total_asignaciones,
+                            "error": "Tiene asignaciones, no se puede eliminar"
+                        })
+                    else:
+                        eliminados.append({
+                            "id": user.id,
+                            "username": user.username
+                        })
 
-            return Response(mensajes, status=status.HTTP_200_OK)
+                # eliminar solo los que sí se pueden
+                ids_eliminar = [u["id"] for u in eliminados]
+
+                User.objects.filter(id__in=ids_eliminar).delete()
+
+            return Response({
+                "eliminados": eliminados,
+                "bloqueados": bloqueados,
+                "total_eliminados": len(eliminados),
+                "total_bloqueados": len(bloqueados)
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    """
+    Listar usuarios duplicados por nombre y apellido, junto con la cantidad de seguimientos que tienen cada uno.
+    """
+    @action(detail=False, methods=['post'], url_path='listar_usuarios_duplicados',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_usuarios_duplicados(self, request, pk=None):
+        try:
+            usuarios = User.objects.annotate(
+                duplicados=Window(
+                    expression=Count('id'),
+                    partition_by=[F('first_name'), F('last_name')]
+                ),
+                total_asignaciones=Count(
+                    'id_creador_seguimiento', distinct=True)
+            ).filter(
+                duplicados__gt=1
+            ).values(
+                'id',
+                'username',
+                'first_name',
+                'last_name',
+                'email',
+                'total_asignaciones'
+            ).order_by('first_name', 'last_name')
+
+            return Response(list(usuarios), status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
