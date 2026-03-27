@@ -1,5 +1,5 @@
 /**
- * @file admin_usuarios.jsx
+ * @file admin.jsx
  * @version 1.0.0
  * @description modulo para CRUD de los usuarios.
  * @author Valentina Salamanca
@@ -24,8 +24,9 @@ import SelectorProgramas from "../../components/componentes_generales/acordeon_p
 import SelectorSemestres from "../../components/componentes_generales/acordeon_semestres.jsx";
 import SelectorTratamiento from "../../components/componentes_generales/acordeon_tratamiento_datos.jsx";
 import SelectorTratamientoTemporal from "../../components/componentes_generales/acordeon_tratamiento_datos_temporal.jsx";
+import SelectorUsuariosDuplicados from "../../components/componentes_generales/acordeon_usuarios_duplicados.jsx";
 
-const Gestion_usuario_roles = () => {
+const Gestion_usuarios_duplicados = () => {
   // Desencriptar los permisos del usuario desde el sessionStorage
   const userRole = desencriptar(sessionStorage.getItem("permisos"));
 
@@ -41,6 +42,7 @@ const Gestion_usuario_roles = () => {
           </Row>
           <Row className="rowJustFlex_usuario_rol2">
             <SelectorUsuarios />                {/* CONECTADO */}
+            <SelectorUsuariosDuplicados />       {/* CONECTADO */}
             <SelectorEstudiantes />             {/* CONECTADO */}
             <SelectorRoles />                   {/* CONECTADO */}
             <SelectorPermisos />                {/* CONECTADO */}
@@ -64,4 +66,4 @@ const Gestion_usuario_roles = () => {
   );
 };
 
-export default Gestion_usuario_roles;
+export default Gestion_usuarios_duplicados;

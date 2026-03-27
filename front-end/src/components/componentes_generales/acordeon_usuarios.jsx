@@ -1,28 +1,22 @@
 /**
- * @file admin.jsx
+ * @file admin_usuarios.jsx
  * @version 1.0.0
- * @description Este archivo importa y renderiza los acordeones.
+ * @description Este archivo importa y renderiza el acordeón de usuarios.
  */
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Container, Button, Accordion, Modal, Form } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-import {
-  decryptTokenFromSessionStorage,
-  desencriptar,
-  desencriptarInt,
-} from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import { desencriptarInt } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import { FaEdit } from "react-icons/fa";
 
 // Services
 import all_rols from "../../service/all_rols";
-import all_users_rols_service from "../../service/all_users_rol";
 import Create_user from "../../service/panel_admin/panel_admin_usuario_crear_usuario.js";
 import Read_user from "../../service/panel_admin/panel_admin_usuario_listar_usuarios.js";
 import Update_user from "../../service/panel_admin/panel_admin_usuario_actualizar_usuarios.js";
-import Deactivate_usar from "../../service/panel_admin/panel_admin_usuario_desactivar_usuario.js";
+import Deactivate_user from "../../service/panel_admin/panel_admin_usuario_desactivar_usuario.js";
 import Read_sedes from "../../service/panel_admin/panel_admin_sedes_listar_sedes.js";
 
 const SelectorUsuarios = () => {
@@ -47,7 +41,7 @@ const SelectorUsuarios = () => {
   const consultaAllUserRol = async () => {
     try {
       const semestre = desencriptarInt(
-        sessionStorage.getItem("id_semestre_actual")
+        sessionStorage.getItem("id_semestre_actual"),
       );
       const response = await Read_user.listar_usuarios({ semestre: semestre });
       // console.log(response);
@@ -104,14 +98,14 @@ const SelectorUsuarios = () => {
       // Si se cambia la sede
       if (name === "sede") {
         const currentUser = state.data_user_rol.find(
-          (user) => user.id === prevUser.id
+          (user) => user.id === prevUser.id,
         );
 
         // Solo asignar oldSede si aún no existe
         const oldSede =
           prevUser.oldSede !== undefined
             ? prevUser.oldSede
-            : currentUser?.sede ?? null;
+            : (currentUser?.sede ?? null);
 
         return {
           ...prevUser,
@@ -131,7 +125,7 @@ const SelectorUsuarios = () => {
   const handleSaveEdit = () => {
     // console.log(selectedUser);
     const semestre_actual = desencriptarInt(
-      sessionStorage.getItem("id_semestre_actual")
+      sessionStorage.getItem("id_semestre_actual"),
     );
     setSelectedUser((prevUser) => ({
       ...prevUser,
@@ -174,7 +168,7 @@ const SelectorUsuarios = () => {
     const usernamesToDeactivate = selectedRows.map((row) => {
       return { usuario: row.usuario };
     });
-    Deactivate_usar.desactivar_usuario(usernamesToDeactivate);
+    Deactivate_user.desactivar_usuario(usernamesToDeactivate);
     setSelectedRows([]); // Limpiar la selección después de desactivar
   };
 
