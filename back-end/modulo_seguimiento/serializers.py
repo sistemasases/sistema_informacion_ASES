@@ -204,6 +204,8 @@ class seguimiento_individual_export_serializer(serializers.ModelSerializer):
     id_creador_id = serializers.IntegerField(source="id_creador.id", read_only=True)
     id_estudiante_id = serializers.IntegerField(source="id_estudiante.id", read_only=True)
     id_modificador_id = serializers.IntegerField(source="id_modificador.id", read_only=True)
+    cod_univalle_estudiante = serializers.CharField(source="id_estudiante.cod_univalle", read_only=True)
+    num_identificacion_estudiante = serializers.CharField(source="id_estudiante.num_doc_ini", read_only=True)
 
     class Meta:
         model = seguimiento_individual

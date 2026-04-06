@@ -201,6 +201,18 @@ const Tabla_sin_Seguimientos = (props) => {
       value: (row) => row.nombres,
     },
     {
+      column: "Codigo univalle",
+      type: String,
+      value: (row) => row.cod_univalle,
+    },
+
+    { 
+      column: "Cohorte", 
+      type: String, 
+      value: (row) => row.cohorte 
+    },
+
+    {
       column: "Apellidos",
       type: String,
       value: (row) => row.apellidos,
@@ -241,7 +253,8 @@ const Tabla_sin_Seguimientos = (props) => {
   var csv_headers = [
     { label: "ID", key: "id" },
     { label: "Cedula", key: "cedula" },
-    { label: "Codigo uunivalle", key: "cod_univalle"},
+    { label: "Codigo univalle", key: "cod_univalle"},
+    { label: "Cohorte", key: "cohorte" },
     { label: "Nombres", key: "nombres" },
     { label: "Apellidos", key: "apellidos" },
     { label: "Cantidad de fichas", key: "cantidad_de_fichas" },
@@ -254,6 +267,7 @@ const Tabla_sin_Seguimientos = (props) => {
 
   // Schema para el excel
   const imprimir_excel = (data) => {
+    
     let new_data_excel = [];
     for (let i = 0; i < data.length; i++) {
       let new_data = [];
@@ -261,6 +275,7 @@ const Tabla_sin_Seguimientos = (props) => {
         id: data[i].id,
         cedula: data[i].cedula,
         cod_univalle: data[i].cod_univalle,
+        cohorte: data[i].cohorte,
         nombres: data[i].nombres,
         apellidos: data[i].apellidos,
         cantidad_de_fichas: data[i].cantidad_de_fichas,

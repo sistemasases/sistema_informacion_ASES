@@ -683,6 +683,17 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
         serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
         for data_del_estudiante in serializer_estudiantes.data:
+
+            #traemos la corte del estudiante
+            cohorte_data = cohorte_estudiante.objects.filter(
+                id_estudiante=data_del_estudiante['id']
+            ).select_related('id_cohorte').first()
+
+            # si el estudiante no tiene una cohorte asignada, se asigna un valor por defecto
+            cohorte_nombre = "Sin cohorte"
+            if cohorte_data and cohorte_data.id_cohorte:
+                cohorte_nombre = cohorte_data.id_cohorte.nombre
+            
             # Conteos (estos siempre aplican)
             count_seguimientos = seguimiento_individual.objects.filter(
                 id_estudiante=data_del_estudiante['id'],
@@ -742,6 +753,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
             datos = {
                 'id': data_del_estudiante['id'],
                 'cod_univalle': data_del_estudiante['cod_univalle'],
+                'cohorte': cohorte_nombre,
                 'cedula': data_del_estudiante['num_doc'],
                 'nombres': data_del_estudiante['nombre'],
                 'apellidos': data_del_estudiante['apellido'],
@@ -754,6 +766,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
             }
 
             list_total_datos.append(datos)
+
 
         return Response(list_total_datos, status=status.HTTP_200_OK)
 
