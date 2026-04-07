@@ -102,6 +102,16 @@ const Tabla_sin_Seguimientos = (props) => {
     {
       name: (
         <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Cohorte</h4>
+          <input onChange={handleFilter_cohorte} />
+        </Row>
+      ),
+      selector: (row) => row.cohorte, 
+      sortable: true,
+    },
+    {
+      name: (
+        <Row className="center_tabla_sin_seguimientos">
           <h4 className="texto_mas_pequeño">Nombres</h4>
           <input onChange={handleFilter_nombre} />
         </Row>
@@ -329,6 +339,18 @@ const Tabla_sin_Seguimientos = (props) => {
     setRecords(updatedData);
     setNoResults(newData.length === 0);
   }
+
+  function handleFilter_cohorte(event) {
+    const newData = state.la_info_de_la_tabla.filter((row) =>
+      row.cohorte.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    const updatedData =
+      newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
+  }
+
+
 
   /**
    * Filtra la tabla por el nombre ingresado.
