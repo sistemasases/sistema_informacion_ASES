@@ -25,6 +25,7 @@ import SelectorSemestres from "../../components/componentes_generales/acordeon_s
 import SelectorTratamiento from "../../components/componentes_generales/acordeon_tratamiento_datos.jsx";
 import SelectorTratamientoTemporal from "../../components/componentes_generales/acordeon_tratamiento_datos_temporal.jsx";
 import SelectorUsuariosDuplicados from "../../components/componentes_generales/acordeon_usuarios_duplicados.jsx";
+import SelectorMonitoriasAcademicas from "../../components/componentes_generales/acordeon_monitorias_academicas.jsx";
 
 const Gestion_usuarios_duplicados = () => {
   // Desencriptar los permisos del usuario desde el sessionStorage
@@ -55,6 +56,7 @@ const Gestion_usuarios_duplicados = () => {
             <SelectorSemestres />               {/* CONECTADO */}
             <SelectorTratamiento />             {/* CONECTADO */}
             <SelectorTratamientoTemporal />      {/* CONECTADO */}
+            <SelectorMonitoriasAcademicas />       {/* CONECTADO */}
           </Row>
           <Row></Row>
         </Col>
