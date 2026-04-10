@@ -102,6 +102,16 @@ const Tabla_sin_Seguimientos = (props) => {
     {
       name: (
         <Row className="center_tabla_sin_seguimientos">
+          <h4 className="texto_mas_pequeño">Cohorte</h4>
+          <input onChange={handleFilter_cohorte} />
+        </Row>
+      ),
+      selector: (row) => row.cohorte, 
+      sortable: true,
+    },
+    {
+      name: (
+        <Row className="center_tabla_sin_seguimientos">
           <h4 className="texto_mas_pequeño">Nombres</h4>
           <input onChange={handleFilter_nombre} />
         </Row>
@@ -201,6 +211,18 @@ const Tabla_sin_Seguimientos = (props) => {
       value: (row) => row.nombres,
     },
     {
+      column: "Codigo univalle",
+      type: String,
+      value: (row) => row.cod_univalle,
+    },
+
+    { 
+      column: "Cohorte", 
+      type: String, 
+      value: (row) => row.cohorte 
+    },
+
+    {
       column: "Apellidos",
       type: String,
       value: (row) => row.apellidos,
@@ -241,7 +263,8 @@ const Tabla_sin_Seguimientos = (props) => {
   var csv_headers = [
     { label: "ID", key: "id" },
     { label: "Cedula", key: "cedula" },
-    { label: "Codigo uunivalle", key: "cod_univalle"},
+    { label: "Codigo univalle", key: "cod_univalle"},
+    { label: "Cohorte", key: "cohorte" },
     { label: "Nombres", key: "nombres" },
     { label: "Apellidos", key: "apellidos" },
     { label: "Cantidad de fichas", key: "cantidad_de_fichas" },
@@ -254,6 +277,7 @@ const Tabla_sin_Seguimientos = (props) => {
 
   // Schema para el excel
   const imprimir_excel = (data) => {
+    
     let new_data_excel = [];
     for (let i = 0; i < data.length; i++) {
       let new_data = [];
@@ -261,6 +285,7 @@ const Tabla_sin_Seguimientos = (props) => {
         id: data[i].id,
         cedula: data[i].cedula,
         cod_univalle: data[i].cod_univalle,
+        cohorte: data[i].cohorte,
         nombres: data[i].nombres,
         apellidos: data[i].apellidos,
         cantidad_de_fichas: data[i].cantidad_de_fichas,
@@ -314,6 +339,18 @@ const Tabla_sin_Seguimientos = (props) => {
     setRecords(updatedData);
     setNoResults(newData.length === 0);
   }
+
+  function handleFilter_cohorte(event) {
+    const newData = state.la_info_de_la_tabla.filter((row) =>
+      row.cohorte.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    const updatedData =
+      newData.length > 0 ? newData : state.la_info_de_la_tabla;
+    setRecords(updatedData);
+    setNoResults(newData.length === 0);
+  }
+
+
 
   /**
    * Filtra la tabla por el nombre ingresado.
