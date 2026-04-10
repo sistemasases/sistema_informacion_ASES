@@ -13,6 +13,7 @@ from django.db import transaction
 from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso, firma_tratamiento_datos
 from modulo_formularios_externos.models import firma_tratamiento_datos_temp
 from modulo_programa.models import programa, programa_estudiante, facultad
+from modulo_academico.models import monitoria_academica
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
 from django.shortcuts import get_object_or_404
@@ -1378,5 +1379,138 @@ class panel_admin_firma_temporal_viewset(viewsets.ViewSet):
             ]
 
             return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar las monitorias académicas.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_monitorias_academicas',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_monitorias_academicas(self, request):
+        """
+        Listar todas las monitorias académicas.
+        """
+        try:
+            # Selecciona solo a los qué tengan "estado" == true (ACTIVO)
+            monitorias = monitoria_academica.objects.filter(estado=True).select_related('id_monitor', 'id_sede','id_semestre').values(
+                'id', 'id_monitor__id', 'id_monitor__first_name', 'id_monitor__last_name', 'id_monitor__email',
+                'id_sede__id', 'id_sede__nombre',
+                'id_semestre__id', 'id_semestre__nombre',
+                'estado', 'materia'
+            )
+
+            data = [
+                {
+                    "id": m["id"],
+                    "id_monitor": m["id_monitor__id"],
+                    "nombre_monitor": m["id_monitor__first_name"] + ' ' + m["id_monitor__last_name"],
+                    "correo_monitor": m["id_monitor__email"],
+                    "id_sede": m["id_sede__id"],
+                    "nombre_sede": m["id_sede__nombre"],
+                    "id_semestre": m["id_semestre__id"],
+                    "nombre_semestre": m["id_semestre__nombre"],
+                    "estado": "INACTIVO" if m["estado"] == False else "ACTIVO",
+                    "materia": m["materia"]
+                }
+                for m in monitorias
+            ]
+
+            return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='listar_monitores_academicos', 
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_monitores_academicos(self, request):
+        """
+        Listar todos los monitores académicos.
+        """
+        try:
+            monitores = usuario_rol.objects.filter(
+                id_rol=15,  # ID del rol de monitor académico
+                estado="ACTIVO",
+            ).values('id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name')
+        
+            data = [
+                {
+                    "id_usuario": m["id_usuario"],
+                    "username_monitor": m["id_usuario__username"],
+                    "nombre_monitor": m["id_usuario__first_name"] + ' ' + m["id_usuario__last_name"],
+                }
+                for m in monitores
+            ]
+            
+            return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='desactivar_monitorias',
+            permission_classes=[IsAuthenticated]
+            )
+    def desactivar_monitorias(self, request):
+        """
+        Desactivar una monitoria académica.
+        Recibes conjunto de IDs de monitorias a desactivar:
+        {
+            "ids": [123, 456, 789]
+        }   
+        """
+        try:
+            ids_monitorias = request.data['id_monitorias']
+            # print(ids_monitorias)
+            # print(request.data)
+            monitorias = monitoria_academica.objects.filter(id__in=ids_monitorias)
+            monitorias.update(estado=False)
+            return Response({"mensaje": "Monitorias desactivadas exitosamente"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+    @action(detail=False, methods=['post'], url_path='crear_monitoria_academica',
+            permission_classes=[IsAuthenticated]
+            )
+    def crear_monitoria_academica(self, request):
+        """
+        Crear una nueva monitoria académica.
+        Recibes:
+        {
+            "id_monitor": 123,
+            "id_sede": 1,
+            "id_semestre": 1,
+            "materias": ["Matemáticas", "Física"],
+            "estado": true
+        }
+        """
+        # print(request.data) 
+        try:
+            # Verificar que el monitor existe y tiene el rol de monitor académico
+            monitor = usuario_rol.objects.filter(
+                id_usuario=request.data['id_monitor'],
+                id_rol=15,  # ID del rol de monitor académico
+                estado="ACTIVO"
+            ).first()
+            # print(monitor)
+            if not monitor:
+                return Response({"error": "Monitor académico no encontrado o no activo"}, status=status.HTTP_404_NOT_FOUND)
+            
+            if not request.data['materias'] or request.data['sede'] is None:
+                return Response({"error": "Las materias y la sede son requeridas"}, status=status.HTTP_400_BAD_REQUEST)
+            for materia in request.data['materias']:
+                new_monitoria = monitoria_academica.objects.create(
+                    id_monitor_id=request.data['id_monitor'],
+                    id_sede_id=request.data['sede'],
+                    id_semestre_id=request.data['semestre_actual'],
+                    materia=materia,
+                    estado=True
+                )
+                
+                new_monitoria.save()
+                
+            return Response({"mensaje": "Monitoria académica creada exitosamente"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
