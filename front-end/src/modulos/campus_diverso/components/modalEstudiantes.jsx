@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Container, Row, Col } from "react-bootstrap";
+import { Modal, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import ModalSeguimientos from "./modalSeguimientos";
 import Select from "react-select";
 import axios from "axios";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -11,6 +12,90 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
+
+const INITIAL_CREATE_STATE = {
+  nombre_identitario: "",
+  nombre_orientacion_sexual: "",
+  nombre_y_apellido: "",
+  email: "",
+  pertenencia_grupo_poblacional: [],
+  relacion_persona_de_confianza: "",
+  tipo_documento: [],
+  sexo_asignado: [],
+  numero_documento: "",
+  estrato_socioeconomico: "",
+  ciudad_nacimiento: "",
+  fecha_nacimiento: "",
+  departamento_nacimiento: "",
+  corregimiento_nacimiento: "",
+  municipio_nacimiento: "",
+  municipio_residencia: "",
+  corregimiento_residencia: "",
+  pais_nacimiento: "",
+  ciudad_residencia: "",
+  zona_residencia: [],
+  direccion_residencia: "",
+  barrio_residencia: "",
+  comuna_barrio: "",
+  telefono: "",
+  estado_civil: [],
+  identidad_etnico_racial: [],
+  nombre_persona_de_confianza: "",
+  telefono_persona_de_confianza: "",
+  expresiones_de_genero: [],
+  recibir_orientacion_cambio_en_documento: false,
+  cambio_nombre_sexo_documento: "",
+  pronombres: [],
+  orientaciones_sexuales: [],
+  respuestas_cambio_documento: [],
+  identidades_de_genero: [],
+  autorizacion_manejo_de_datos: false,
+  firma_consentimiento_informado: false,
+  firma_terapia_hormonal: false,
+  documento_digital_y_archivo: false,
+  apgar_familiar: 0,
+  ecomapa: false,
+  arbol_familiar: false,
+  apgar_pregunta1: [],
+  apgar_pregunta2: [],
+  apgar_pregunta3: [],
+  apgar_pregunta4: [],
+  apgar_pregunta5: [],
+  apgar_pregunta6: [],
+  apgar_pregunta7: [],
+  sedes: [],
+  programas: [],
+  codigo_estudiante: "",
+  semestre_academico: "",
+  pertenencia_univalle: true,
+  estamentos: [],
+  dedicacion_externa: "",
+  tiene_eps: true,
+  nombre_eps: "",
+  regimen_eps: [],
+  tipo_entidad_acompanamiento_recibido: "",
+  calificacion_acompanamiento_recibido: "",
+  motivo_calificacion_acompanamiento: "",
+  actividades_especificas_tiempo_libre: "",
+  observacion_general_fuente_de_ingresos: "",
+  calificacion_relacion_familiar: "",
+  observacion_general_redes_de_apoyo: "",
+  observacion_general_factores_de_riesgo: "",
+  creencia_religiosa: "",
+  decision_encuentro_inicial: [],
+  observacion_horario: "",
+  origen_descubrimiento_campus_diverso: "",
+  comentarios_o_sugerencias_de_usuario: "",
+  observacion_general_actividades_especificas_tiempo_libre: "",
+  observacion_general_relacion_convivencia_vivienda: "",
+  profesionales_que_brindaron_atencion: "",
+  redes_apoyo: [],
+  Ocupaciones_actules: "",
+  factores_riesgos: [],
+  encuentro_dias_horas: [],
+  acompanamiento_que_recibio: "",
+  fuentes_ingresos: [],
+};
 
 const ModalEstudiantes = ({
   isModalOpen,
@@ -62,6 +147,8 @@ const ModalEstudiantes = ({
   apgarpregunta6Options,
   apgarpregunta7Options,
   sexoAsignadoOptions,
+  isEmptyModal = false,
+  onCreateSuccess,
 }) => {
   const titles = [
     "Datos Básicos",
@@ -74,6 +161,16 @@ const ModalEstudiantes = ({
     "Seguimientos",
   ];
   const [isSeguimientoModalOpen, setSeguimientoModalOpen] = useState(false);
+  const [createStep, setCreateStep] = useState(0);
+  const [createState, setCreateState] = useState(INITIAL_CREATE_STATE);
+  const [createError, setCreateError] = useState("");
+  const [createSuccess, setCreateSuccess] = useState("");
+  const [isCreatingSubmitting, setIsCreatingSubmitting] = useState(false);
+  const [createRecaptchaToken, setCreateRecaptchaToken] = useState("");
+  const maxLengthBasicInput = 50;
+  const maxLengthTextAreas = 150;
+  const maxLengthUniqueDigit = 1;
+  const maxLengthNumber = 20;
 
   // Estados para los modales
   const [showFirstModal, setShowFirstModal] = useState(false);
@@ -109,6 +206,885 @@ const ModalEstudiantes = ({
   const closeSeguimientoModal = () => {
     setSeguimientoModalOpen(false);
   };
+
+  useEffect(() => {
+    if (isEmptyModal && isModalOpen) {
+      setCreateStep(0);
+      setCreateState(INITIAL_CREATE_STATE);
+      setCreateError("");
+      setCreateSuccess("");
+      setIsCreatingSubmitting(false);
+      setCreateRecaptchaToken("");
+    }
+  }, [isEmptyModal, isModalOpen]);
+
+  const handleCreateChange = (event) => {
+    const { name, value } = event.target;
+    if (value.length <= maxLengthBasicInput) {
+      setCreateState((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleCreateChangeTextField = (event) => {
+    const { name, value } = event.target;
+    if (value.length <= maxLengthTextAreas) {
+      setCreateState((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleCreateChangeUniqueDigit = (event) => {
+    const { name, value } = event.target;
+    if (/^\d*$/.test(value) && value.length <= maxLengthUniqueDigit) {
+      setCreateState((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleCreateChangeNumber = (event) => {
+    const { name, value } = event.target;
+    if (
+      name === "calificacion_acompanamiento_recibido" ||
+      name === "calificacion_relacion_familiar"
+    ) {
+      if ((value === "" || /^[1-5]$/.test(value)) && value.length <= 1) {
+        setCreateState((prevState) => ({
+          ...prevState,
+          [name]: value,
+        }));
+      }
+      return;
+    }
+
+    if (/^\d*$/.test(value) && value.length <= maxLengthNumber) {
+      setCreateState((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleCreateCheckboxChange = (event) => {
+    const { name, value, checked } = event.target;
+    if (name === "pertenencia_univalle" || name === "tiene_eps") {
+      const booleanValue = JSON.parse(value);
+      setCreateState((prevState) => ({
+        ...prevState,
+        [name]: booleanValue,
+      }));
+      return;
+    }
+
+    setCreateState((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+  };
+
+  const handleCreateSelectChange = (selectedOptions, actionMeta) => {
+    const { name } = actionMeta;
+    const values = selectedOptions
+      ? selectedOptions.map((option) => option.label)
+      : [];
+    setCreateState((prevState) => ({
+      ...prevState,
+      [name]: values,
+    }));
+  };
+
+  const handleCreateSelectNoMultiChange = (selectedOption, actionMeta) => {
+    const { name } = actionMeta;
+    setCreateState((prevState) => ({
+      ...prevState,
+      [name]: selectedOption ? [selectedOption.label] : [],
+    }));
+  };
+
+  const handleCreateSelectChange2 = (selectedOptions, actionMeta) => {
+    const { name } = actionMeta;
+    const labels = selectedOptions
+      ? selectedOptions.map((option) => option.label)
+      : [];
+    setCreateState((prevState) => ({
+      ...prevState,
+      [name]: labels,
+    }));
+  };
+
+  const handleCreateSelectChange3 = (selectedOption, fieldName) => {
+    setCreateState((prevState) => ({
+      ...prevState,
+      [fieldName]: selectedOption ? [selectedOption.value] : null,
+    }));
+  };
+
+  const handleCreateArrayFieldChange = (fieldName, index, field, value) => {
+    const updatedArray = [...(createState[fieldName] || [])];
+    if (!updatedArray[index]) {
+      updatedArray[index] = { dia: "", hora: "" };
+    }
+    updatedArray[index][field] = value;
+
+    setCreateState((prevState) => ({
+      ...prevState,
+      [fieldName]: updatedArray,
+    }));
+  };
+
+  const handleCreateAddItem = (fieldName, newItem = "") => {
+    setCreateState((prevState) => ({
+      ...prevState,
+      [fieldName]: [...(prevState[fieldName] || []), newItem],
+    }));
+  };
+
+  const handleCreateDeleteItem = (fieldName, index) => {
+    const updatedArray = [...(createState[fieldName] || [])];
+    updatedArray.splice(index, 1);
+
+    setCreateState((prevState) => ({
+      ...prevState,
+      [fieldName]: updatedArray,
+    }));
+  };
+
+  const handleCreateArrayChange = (fieldName, index, value) => {
+    const updatedArray = [...(createState[fieldName] || [])];
+    updatedArray[index] = value;
+    setCreateState((prevState) => ({
+      ...prevState,
+      [fieldName]: updatedArray,
+    }));
+  };
+
+  const parseApiError = (prefix, error) => {
+    if (!error.response) {
+      return `${prefix}. Por favor, inténtalo de nuevo.`;
+    }
+
+    const { status, data } = error.response;
+    let message = `${prefix}.`;
+
+    if (status === 400 && data?.numero_documento) {
+      return "El usuario ya ha enviado el formulario. Por favor, verifique los datos.";
+    }
+
+    if (data && typeof data === "object") {
+      message += "\n\nDetalles del error:\n";
+      Object.keys(data).forEach((field) => {
+        const fieldValue = Array.isArray(data[field])
+          ? data[field][0]
+          : data[field];
+        message += `- ${field}: ${fieldValue}\n`;
+      });
+    }
+
+    return message;
+  };
+
+  const handleCreateClickEnviar = async () => {
+    if (!createRecaptchaToken) {
+      setCreateError("Por favor completa el reCAPTCHA.");
+      setCreateSuccess("");
+      return;
+    }
+
+    const requiredFields = [
+      "numero_documento",
+      "email",
+      "identidades_de_genero",
+      "orientaciones_sexuales",
+      "expresiones_de_genero",
+      "identidad_etnico_racial",
+      "estado_civil",
+      "Ocupaciones_actules",
+      "calificacion_relacion_familiar",
+      "creencia_religiosa",
+      "origen_descubrimiento_campus_diverso",
+    ];
+
+    let listFields = [
+      "estamentos",
+      "identidades_de_genero",
+      "orientaciones_sexuales",
+      "expresiones_de_genero",
+      "identidad_etnico_racial",
+      "estado_civil",
+      "redes_apoyo",
+      "decision_encuentro_inicial",
+      "factores_riesgos",
+      "fuentes_ingresos",
+      "sexo_asignado",
+    ];
+
+    if (createState.pertenencia_univalle === false) {
+      listFields = listFields.filter((field) => field !== "estamentos");
+    }
+
+    if (createState.estamentos?.includes("Estudiante de posgrado")) {
+      requiredFields.push(
+        "codigo_estudiante",
+        "semestre_academico",
+        "pertenencia_univalle"
+      );
+      listFields.push("programas", "sedes");
+    }
+
+    const invalidFields = [
+      ...requiredFields.filter((field) => !createState[field]),
+      ...listFields.filter(
+        (field) =>
+          !createState[field] ||
+          (Array.isArray(createState[field]) && createState[field].length === 0)
+      ),
+    ];
+
+    const fieldNames = {
+      estamentos: "Estamentos",
+      semestre_academico: "Semestre académico",
+      numero_documento: "Número de documento",
+      pertenencia_univalle: "Pertenencia a Univalle",
+      identidades_de_genero: "Identidades de género",
+      orientaciones_sexuales: "Orientaciones sexuales",
+      expresiones_de_genero: "Expresiones de género",
+      identidad_etnico_racial: "Identidad étnico-racial",
+      estado_civil: "Estado civil",
+      email: "Email",
+      Ocupaciones_actules: "Ocupación actual",
+      redes_apoyo: "Redes de apoyo",
+      calificacion_relacion_familiar: "Relación familiar",
+      decision_encuentro_inicial: "Profesional para cita",
+      creencia_religiosa: "Creencia religiosa",
+      origen_descubrimiento_campus_diverso: "Cómo descubriste Campus Diverso",
+      factores_riesgos: "Factores de riesgo",
+      fuentes_ingresos: "Fuentes de ingreso",
+      sexo_asignado: "Sexo asignado al nacer",
+      programas: "Programas",
+      sedes: "Sedes",
+      codigo_estudiante: "Código de estudiante",
+    };
+
+    if (invalidFields.length > 0) {
+      const formattedInvalidFields = invalidFields.map(
+        (field) => fieldNames[field] || field
+      );
+      setCreateError(
+        `Los siguientes campos son obligatorios y están vacíos: ${formattedInvalidFields.join(
+          ", "
+        )}`
+      );
+      setCreateSuccess("");
+      return;
+    }
+
+    setIsCreatingSubmitting(true);
+    setCreateError("");
+    setCreateSuccess("");
+
+    const removeEmptyFields = (data) =>
+      Object.fromEntries(
+        Object.entries(data).filter(
+          ([, value]) => value !== "" && value !== null && value !== undefined
+        )
+      );
+
+    const personaData = removeEmptyFields({
+      nombre_identitario: createState.nombre_identitario,
+      nombre_y_apellido: createState.nombre_y_apellido,
+      email: createState.email,
+      municipio_nacimiento: createState.municipio_nacimiento,
+      corregimiento_nacimiento: createState.corregimiento_nacimiento,
+      pertenencia_grupo_poblacional: createState.pertenencia_grupo_poblacional.map(
+        (id) => {
+          const option = razasOptions.find((o) => o.value === id);
+          return option ? option.label : id;
+        }
+      ),
+      relacion_persona_de_confianza: createState.relacion_persona_de_confianza,
+      apellido: createState.apellido,
+      tipo_documento: createState.tipo_documento,
+      numero_documento: createState.numero_documento,
+      estrato_socioeconomico: createState.estrato_socioeconomico,
+      ciudad_nacimiento: createState.ciudad_nacimiento,
+      fecha_nacimiento: createState.fecha_nacimiento,
+      departamento_nacimiento: createState.departamento_nacimiento,
+      pais_nacimiento: createState.pais_nacimiento,
+      ciudad_residencia: createState.ciudad_residencia,
+      zona_residencia: createState.zona_residencia,
+      direccion_residencia: createState.direccion_residencia,
+      barrio_residencia: createState.barrio_residencia,
+      comuna_barrio: createState.comuna_barrio,
+      telefono: createState.telefono,
+      estado_civil: createState.estado_civil,
+      identidad_etnico_racial: createState.identidad_etnico_racial,
+      nombre_persona_de_confianza: createState.nombre_persona_de_confianza,
+      telefono_persona_de_confianza: createState.telefono_persona_de_confianza,
+      sexo_asignado: createState.sexo_asignado,
+      recaptchaToken: createRecaptchaToken,
+    });
+
+    const diversidadData = removeEmptyFields({
+      recibir_orientacion_cambio_en_documento:
+        createState.recibir_orientacion_cambio_en_documento,
+      cambio_nombre_sexo_documento: createState.cambio_nombre_sexo_documento,
+      expresiones_de_genero: createState.expresiones_de_genero,
+      pronombres: createState.pronombres,
+      respuestas_cambio_documento: createState.respuestas_cambio_documento,
+      orientaciones_sexuales: createState.orientaciones_sexuales,
+      identidades_de_genero: createState.identidades_de_genero,
+    });
+
+    const informacionGeneralData = removeEmptyFields({
+      dedicacion_externa: createState.dedicacion_externa,
+      factores_riesgos: createState.factores_riesgos,
+      observacion_general_factores_de_riesgo:
+        createState.observacion_general_factores_de_riesgo,
+      observacion_general_fuente_de_ingresos:
+        createState.observacion_general_fuente_de_ingresos,
+      tiene_eps: createState.tiene_eps,
+      nombre_eps: createState.nombre_eps,
+      regimen_eps: createState.regimen_eps,
+      tipo_entidad_acompanamiento_recibido:
+        createState.tipo_entidad_acompanamiento_recibido,
+      calificacion_acompanamiento_recibido:
+        createState.calificacion_acompanamiento_recibido,
+      motivo_calificacion_acompanamiento:
+        createState.motivo_calificacion_acompanamiento,
+      actividades_especificas_tiempo_libre:
+        createState.actividades_especificas_tiempo_libre,
+      observacion_general_actividades_especificas_tiempo_libre:
+        createState.observacion_general_actividades_especificas_tiempo_libre,
+      observacion_general_relacion_convivencia_vivienda:
+        createState.observacion_general_relacion_convivencia_vivienda,
+      calificacion_relacion_familiar: createState.calificacion_relacion_familiar,
+      observacion_general_redes_de_apoyo:
+        createState.observacion_general_redes_de_apoyo,
+      creencia_religiosa: createState.creencia_religiosa,
+      decision_encuentro_inicial: createState.decision_encuentro_inicial,
+      observacion_horario: createState.observacion_horario,
+      origen_descubrimiento_campus_diverso:
+        createState.origen_descubrimiento_campus_diverso,
+      comentarios_o_sugerencias_de_usuario:
+        createState.comentarios_o_sugerencias_de_usuario,
+      redes_apoyo: createState.redes_apoyo,
+      encuentro_dias_horas: createState.encuentro_dias_horas,
+      fuentes_ingresos: createState.fuentes_ingresos,
+      acompanamiento_que_recibio: createState.acompanamiento_que_recibio,
+      Ocupaciones_actules: createState.Ocupaciones_actules,
+      profesionales_que_brindaron_atencion:
+        createState.profesionales_que_brindaron_atencion,
+    });
+
+    const informacionAcademicaData = removeEmptyFields({
+      sedes: createState.sedes,
+      programas: createState.programas,
+      codigo_estudiante: createState.codigo_estudiante,
+      semestre_academico: createState.semestre_academico,
+      pertenencia_univalle: createState.pertenencia_univalle,
+      estamentos: createState.estamentos,
+    });
+
+    const documentosData = removeEmptyFields({
+      autorizacion_manejo_de_datos: createState.autorizacion_manejo_de_datos,
+      firma_consentimiento_informado: createState.firma_consentimiento_informado,
+      firma_terapia_hormonal: createState.firma_terapia_hormonal,
+      documento_digital_y_archivo: createState.documento_digital_y_archivo,
+      apgar_familiar: createState.apgar_familiar,
+      ecomapa: createState.ecomapa,
+      arbol_familiar: createState.arbol_familiar,
+      apgar_pregunta1: createState.apgar_pregunta1,
+      apgar_pregunta2: createState.apgar_pregunta2,
+      apgar_pregunta3: createState.apgar_pregunta3,
+      apgar_pregunta4: createState.apgar_pregunta4,
+      apgar_pregunta5: createState.apgar_pregunta5,
+      apgar_pregunta6: createState.apgar_pregunta6,
+      apgar_pregunta7: createState.apgar_pregunta7,
+    });
+
+    try {
+      const personaResponse = await axios.post(
+        `${process.env.REACT_APP_API_URL}/persona/persona/`,
+        personaData
+      );
+      const personaId = personaResponse.data.numero_documento;
+
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/diversidad-sexual/diversidad-sexual/`,
+        {
+          ...diversidadData,
+          id_persona: personaId,
+        }
+      );
+
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/informacion-general/informacion-general/`,
+        {
+          ...informacionGeneralData,
+          id_persona: personaId,
+        }
+      );
+
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/informacion-academica/informacion-academica/`,
+        {
+          ...informacionAcademicaData,
+          id_persona: personaId,
+        }
+      );
+
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/documentos-autorizacion/documentos-autorizacion/`,
+        {
+          ...documentosData,
+          id_persona: personaId,
+        }
+      );
+
+      setCreateSuccess("El formulario se envió con éxito.");
+      setCreateError("");
+      setCreateState(INITIAL_CREATE_STATE);
+      setCreateStep(0);
+      setCreateRecaptchaToken("");
+      if (onCreateSuccess) {
+        onCreateSuccess();
+      }
+    } catch (error) {
+      if (!error.response) {
+        setCreateError(
+          "Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo."
+        );
+        setCreateSuccess("");
+        return;
+      }
+
+      const url = error.config?.url || "";
+      if (url.includes("/persona/persona/")) {
+        setCreateError(
+          parseApiError(
+            "Hubo un error al enviar el formulario en los campos de datos básicos",
+            error
+          )
+        );
+      } else if (url.includes("/diversidad-sexual/diversidad-sexual/")) {
+        setCreateError(
+          parseApiError(
+            "Hubo un error al enviar el formulario en los campos de diversidad sexual",
+            error
+          )
+        );
+      } else if (url.includes("/informacion-general/informacion-general/")) {
+        setCreateError(
+          parseApiError(
+            "Hubo un error al enviar el formulario en los campos de información general",
+            error
+          )
+        );
+      } else if (url.includes("/informacion-academica/informacion-academica/")) {
+        setCreateError(
+          parseApiError(
+            "Hubo un error al enviar el formulario en los campos de información académica",
+            error
+          )
+        );
+      } else {
+        setCreateError(
+          parseApiError(
+            "Hubo un error al enviar el formulario en los campos de documentos autorización",
+            error
+          )
+        );
+      }
+      setCreateSuccess("");
+    } finally {
+      setIsCreatingSubmitting(false);
+    }
+  };
+
+  if (isEmptyModal) {
+    const titles = [
+      "Información Académica",
+      "Datos Básicos",
+      "Información de Diversidad Sexual",
+      "Información General",
+      "Documentos Autorización",
+    ];
+
+    return (
+      <Modal
+        className="registro-estudiante-form-modal-consulta"
+        show={isModalOpen}
+        onHide={closeModal}
+        size="lg"
+      >
+        <Modal.Header className="custom-modal-header d-flex justify-content-between align-items-start">
+          <Modal.Title className="h3">{titles[createStep]}</Modal.Title>
+          <Button
+            className="btn-action boton-cerrar ms-auto"
+            onClick={closeModal}
+            disabled={isCreatingSubmitting}
+          >
+            <CloseIcon /> Cerrar
+          </Button>
+        </Modal.Header>
+        <Modal.Body>
+          {createError && (
+            <Alert variant="danger" style={{ whiteSpace: "pre-line" }}>
+              {createError}
+            </Alert>
+          )}
+          {createSuccess && <Alert variant="success">{createSuccess}</Alert>}
+
+          <Container>
+            <Row>
+              {/* Paso 0: Información Académica */}
+              {createStep === 0 && (
+                <div className="div-scroll" style={{ width: "100%" }}>
+                  <Row>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div className="custom-div-check-documentos">
+                        <div className="custom-checkbox-label">¿Pertenece a la Universidad del Valle?<span className="simbolo-obligatorio"> *</span></div>
+                        <label className="custom-radio">
+                          <input type="radio" name="pertenencia_univalle" value={true} checked={createState.pertenencia_univalle === true} onChange={handleCreateCheckboxChange} />
+                          Sí
+                        </label>
+                        <label className="custom-radio">
+                          <input type="radio" name="pertenencia_univalle" value={false} checked={createState.pertenencia_univalle === false} onChange={handleCreateCheckboxChange} />
+                          No
+                        </label>
+                      </div>
+                      <div>
+                        <label className="custom-div">Estamentos{createState.pertenencia_univalle !== false && <span className="simbolo-obligatorio"> *</span>}</label>
+                        <Select className="create-select" name="estamentos" placeholder="Seleccione estamentos" options={estamentoOptions || []} value={estamentoOptions?.find((o) => o.label === createState.estamentos?.[0]) || null} onChange={handleCreateSelectNoMultiChange} isDisabled={createState.pertenencia_univalle === false} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Sede{createState.pertenencia_univalle !== false && <span className="simbolo-obligatorio"> *</span>}</label>
+                        <Select className="create-select" name="sedes" placeholder="Seleccione sede" options={sedeOptions || []} value={sedeOptions?.find((o) => o.label === createState.sedes?.[0]) || null} onChange={handleCreateSelectNoMultiChange} isDisabled={createState.pertenencia_univalle === false} />
+                      </div>
+                    </Col>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div>
+                        <label className="custom-div">Programa{createState.pertenencia_univalle !== false && <span className="simbolo-obligatorio"> *</span>}</label>
+                        <Select className="create-select" name="programas" placeholder="Seleccione programa" options={programaOptions || []} value={programaOptions?.find((o) => o.label === createState.programas?.[0]) || null} onChange={handleCreateSelectNoMultiChange} isDisabled={createState.pertenencia_univalle === false} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Código de estudiante</label>
+                        <input className="input-updated" type="text" name="codigo_estudiante" placeholder="Código" value={createState.codigo_estudiante} onChange={handleCreateChangeNumber} maxLength="9" disabled={createState.pertenencia_univalle === false} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Semestre</label>
+                        <input className="input-updated" type="text" name="semestre_academico" placeholder="Semestre" value={createState.semestre_academico} onChange={handleCreateChangeNumber} maxLength="2" disabled={createState.pertenencia_univalle === false} />
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+
+              {/* Paso 1: Datos Básicos */}
+              {createStep === 1 && (
+                <div className="div-scroll" style={{ width: "100%" }}>
+                  <Row>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div>
+                        <label className="custom-div">Nombre y apellido</label>
+                        <input className="input-updated" type="text" name="nombre_y_apellido" placeholder="Nombre y apellido" value={createState.nombre_y_apellido} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Nombre identitario</label>
+                        <input className="input-updated" type="text" name="nombre_identitario" placeholder="Nombre identitario" value={createState.nombre_identitario} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Pronombres</label>
+                        <Select className="create-select" name="pronombres" placeholder="Pronombres" options={pronombresOptions || []} value={pronombresOptions?.find((o) => o.label === createState.pronombres?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Tipo de documento</label>
+                        <Select className="create-select" name="tipo_documento" placeholder="Tipo de documento" options={tipoDocumentoOptions || []} value={tipoDocumentoOptions?.find((o) => o.label === createState.tipo_documento?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Número de documento<span className="simbolo-obligatorio"> *</span></label>
+                        <input className="input-updated" type="number" name="numero_documento" placeholder="Número de documento" value={createState.numero_documento} onChange={handleCreateChangeNumber} maxLength={maxLengthNumber} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Email<span className="simbolo-obligatorio"> *</span></label>
+                        <input className="input-updated" type="email" name="email" placeholder="email@ejemplo.com" value={createState.email} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      
+                      <div>
+                        <label className="custom-div">Teléfono</label>
+                        <input className="input-updated" type="text" name="telefono" placeholder="Número telefónico" value={createState.telefono} onChange={handleCreateChangeNumber} maxLength={maxLengthNumber} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Estado civil<span className="simbolo-obligatorio"> *</span></label>
+                        <Select className="create-select" name="estado_civil" placeholder="Estado civil" options={estadocivilOptions || []} value={estadocivilOptions?.find((o) => o.label === createState.estado_civil?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>     
+                      <div>
+                        <label className="custom-div">Creencia religiosa<span className="simbolo-obligatorio"> *</span></label>
+                        <input className="input-updated" type="text" name="creencia_religiosa" placeholder="Creencia religiosa" value={createState.creencia_religiosa} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Identidad étnico-racial<span className="simbolo-obligatorio"> *</span></label>
+                        <Select className="create-select" name="identidad_etnico_racial" placeholder="Identidad étnico-racial" options={identidadEtnicoRacialOptions || []} value={identidadEtnicoRacialOptions?.find((o) => o.label === createState.identidad_etnico_racial?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>      
+                      <div>
+                        <label className="custom-div">Pertenencia grupo poblacional</label>
+                        <Select
+                          isMulti
+                          className="create-select"
+                          name="pertenencia_grupo_poblacional"
+                          placeholder="Seleccione grupo poblacional"
+                          options={razasOptions || []}
+                          value={(createState.pertenencia_grupo_poblacional || []).map((label) => ({
+                            label,
+                            value: razasOptions?.find((o) => o.label === label)?.value,
+                          }))}
+                          onChange={handleCreateSelectChange}
+                        />
+                      </div>     
+                    </Col>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div>
+                        <label className="custom-div">Fecha de nacimiento</label>
+                        <input className="input-updated" type="date" name="fecha_nacimiento" value={createState.fecha_nacimiento || ""} onChange={handleCreateChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">País de nacimiento</label>
+                        <input className="input-updated" type="text" name="pais_nacimiento" placeholder="País" value={createState.pais_nacimiento} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Departamento de nacimiento</label>
+                        <input className="input-updated" type="text" name="departamento_nacimiento" placeholder="Departamento" value={createState.departamento_nacimiento} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Ciudad de nacimiento</label>
+                        <input className="input-updated" type="text" name="ciudad_nacimiento" placeholder="Ciudad" value={createState.ciudad_nacimiento} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Corregimiento de nacimiento</label>
+                        <input className="input-updated" type="text" name="corregimiento_nacimiento" placeholder="Corregimiento" value={createState.corregimiento_nacimiento} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      
+                      <div>
+                        <label className="custom-div">Zona de residencia</label>
+                        <Select className="create-select" name="zona_residencia" placeholder="Zona de residencia" options={zonaResidencialOptions || []} value={zonaResidencialOptions?.find((o) => o.label === createState.zona_residencia?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Ciudad de residencia</label>
+                        <input className="input-updated" type="text" name="ciudad_residencia" placeholder="Ciudad" value={createState.ciudad_residencia} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Dirección de residencia</label>
+                        <input className="input-updated" type="text" name="direccion_residencia" placeholder="Dirección" value={createState.direccion_residencia} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Barrio de residencia</label>
+                        <input className="input-updated" type="text" name="barrio_residencia" placeholder="Barrio" value={createState.barrio_residencia} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Estrato socioeconómico</label>
+                        <input className="input-updated" type="text" name="estrato_socioeconomico" placeholder="Estrato" value={createState.estrato_socioeconomico} onChange={handleCreateChangeUniqueDigit} maxLength={maxLengthUniqueDigit} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Nombre de persona de confianza</label>
+                        <input className="input-updated" type="text" name="nombre_persona_de_confianza" placeholder="Nombre" value={createState.nombre_persona_de_confianza} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Relación con la persona de confianza</label>
+                        <input className="input-updated" type="text" name="relacion_persona_de_confianza" placeholder="Relación" value={createState.relacion_persona_de_confianza} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Número de persona de confianza</label>
+                        <input className="input-updated" type="text" name="telefono_persona_de_confianza" placeholder="Número" value={createState.telefono_persona_de_confianza} onChange={handleCreateChangeNumber} maxLength={maxLengthNumber} />
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+
+              {/* Paso 2: Diversidad Sexual */}
+              {createStep === 2 && (
+                <div className="div-scroll" style={{ width: "100%" }}>
+                  <Row>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div>
+                        <label className="custom-div">Sexo asignado al nacer<span className="simbolo-obligatorio"> *</span></label>
+                        <Select className="create-select" name="sexo_asignado" placeholder="Sexo asignado al nacer" options={sexoAsignadoOptions || []} value={sexoAsignadoOptions?.find((o) => o.label === createState.sexo_asignado?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Identidad de género<span className="simbolo-obligatorio"> *</span></label>
+                        <Select className="create-select" name="identidades_de_genero" placeholder="Identidad de género" options={identidadesGeneroOptions || []} value={identidadesGeneroOptions?.find((o) => o.label === createState.identidades_de_genero?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Expresión de género<span className="simbolo-obligatorio"> *</span></label>
+                        <Select className="create-select" name="expresiones_de_genero" placeholder="Expresión de género" options={expresionesOptions || []} value={expresionesOptions?.find((o) => o.label === createState.expresiones_de_genero?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                    </Col>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div>
+                        <label className="custom-div">Orientación sexual<span className="simbolo-obligatorio"> *</span></label>
+                        <Select className="create-select" name="orientaciones_sexuales" placeholder="Orientación sexual" options={orientacionOptions || []} value={orientacionOptions?.find((o) => o.label === createState.orientaciones_sexuales?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">¿Cambio en documento?</label>
+                        <Select className="create-select" name="respuestas_cambio_documento" placeholder="Respuesta" options={documentoOptions || []} value={documentoOptions?.find((o) => o.label === createState.respuestas_cambio_documento?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div className="custom-div-check">
+                        <label className="custom-checkbox">
+                          <input type="checkbox" checked={createState.recibir_orientacion_cambio_en_documento} name="recibir_orientacion_cambio_en_documento" onChange={handleCreateCheckboxChange} />
+                          <span className="checkmark"></span>
+                        </label>
+                        <label className="custom-label">¿Deseas recibir orientación para cambio en documento?</label>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+
+              {/* Paso 3: Información General */}
+              {createStep === 3 && (
+                <div className="div-scroll" style={{ width: "100%" }}>
+                  <Row>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div className="custom-div-check-documentos">
+                        <div className="custom-checkbox-label">¿Tiene EPS?</div>
+                        <label className="custom-radio">
+                          <input type="radio" name="tiene_eps" value={true} checked={createState.tiene_eps === true} onChange={handleCreateCheckboxChange} />
+                          Sí
+                        </label>
+                        <label className="custom-radio">
+                          <input type="radio" name="tiene_eps" value={false} checked={createState.tiene_eps === false} onChange={handleCreateCheckboxChange} />
+                          No
+                        </label>
+                      </div>
+                      {createState.tiene_eps ? (
+                        <div>
+                          <label className="custom-div">Nombre de la EPS</label>
+                          <input className="input-updated" type="text" name="nombre_eps" placeholder="EPS" value={createState.nombre_eps} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                        </div>
+                      ) : (
+                        <div>
+                          <label className="custom-div">¿Por qué no tiene EPS?</label>
+                          <input className="input-updated" type="text" name="nombre_eps" placeholder="Motivo" value={createState.nombre_eps} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                        </div>
+                      )}
+                      <div>
+                        <label className="custom-div">Régimen EPS</label>
+                        <Select className="create-select" name="regimen_eps" placeholder="Régimen" options={regimenEpsOptions || []} value={regimenEpsOptions?.find((o) => o.label === createState.regimen_eps?.[0]) || null} onChange={handleCreateSelectNoMultiChange} isDisabled={!createState.tiene_eps} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Ocupación<span className="simbolo-obligatorio"> *</span></label>
+                        <input className="input-updated" type="text" name="Ocupaciones_actules" placeholder="Ocupación" value={createState.Ocupaciones_actules} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>                      
+                      <div>
+                        <label className="custom-div">Fuentes de ingreso<span className="simbolo-obligatorio"> *</span></label>
+                        <Select isMulti className="create-select" name="fuentes_ingresos" placeholder="Fuentes de ingreso" options={fuentesOptions || []} value={(createState.fuentes_ingresos || []).map((label) => ({ label, value: fuentesOptions?.find((o) => o.label === label)?.value }))} onChange={handleCreateSelectChange2} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Factores de riesgo<span className="simbolo-obligatorio"> *</span></label>
+                        <Select isMulti className="create-select" name="factores_riesgos" placeholder="Factores de riesgo" options={factoresOptions || []} value={(createState.factores_riesgos || []).map((label) => ({ label, value: factoresOptions?.find((o) => o.label === label)?.value }))} onChange={handleCreateSelectChange2} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Actividad específica en tiempo libre</label>
+                        <input className="input-updated" type="text" name="actividades_especificas_tiempo_libre" placeholder="Actividad" value={createState.actividades_especificas_tiempo_libre} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                    </Col>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div>
+                        <label className="custom-div">Redes de apoyo<span className="simbolo-obligatorio"> *</span></label>
+                        <Select isMulti className="create-select" name="redes_apoyo" placeholder="Redes de apoyo" options={redesOptions || []} value={(createState.redes_apoyo || []).map((label) => ({ label, value: redesOptions?.find((o) => o.label === label)?.value }))} onChange={handleCreateSelectChange2} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Calificación relación familiar<span className="simbolo-obligatorio"> *</span></label>
+                        <input className="input-updated" type="text" name="calificacion_relacion_familiar" placeholder="Calificación (1-5)" value={createState.calificacion_relacion_familiar} onChange={handleCreateChange} maxLength={1} />
+                      </div>
+                      <div>
+                        <label className="custom-div">¿Cómo descubriste Campus Diverso?<span className="simbolo-obligatorio"> *</span></label>
+                        <input className="input-updated" type="text" name="origen_descubrimiento_campus_diverso" placeholder="Origen" value={createState.origen_descubrimiento_campus_diverso} onChange={handleCreateChange} maxLength={maxLengthBasicInput} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Decisión encuentro inicial<span className="simbolo-obligatorio"> *</span></label>
+                        <Select className="create-select" name="decision_encuentro_inicial" placeholder="Decisión" options={decisionEncuentroInicialOptions || []} value={decisionEncuentroInicialOptions?.find((o) => o.label === createState.decision_encuentro_inicial?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+
+              {/* Paso 4: Documentos Autorización */}
+              {createStep === 4 && (
+                <div className="div-scroll" style={{ width: "100%" }}>
+                  <Row>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div>
+                        <label className="custom-div">Apgar Pregunta 1</label>
+                        <Select className="create-select" name="apgar_pregunta1" placeholder="Respuesta" options={apgarpregunta1Options || []} value={apgarpregunta1Options?.find((o) => o.label === createState.apgar_pregunta1?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Apgar Pregunta 2</label>
+                        <Select className="create-select" name="apgar_pregunta2" placeholder="Respuesta" options={apgarpregunta2Options || []} value={apgarpregunta2Options?.find((o) => o.label === createState.apgar_pregunta2?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Apgar Pregunta 3</label>
+                        <Select className="create-select" name="apgar_pregunta3" placeholder="Respuesta" options={apgarpregunta3Options || []} value={apgarpregunta3Options?.find((o) => o.label === createState.apgar_pregunta3?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                    </Col>
+                    <Col className="form-column" xs={"10"} md={"6"}>
+                      <div>
+                        <label className="custom-div">Apgar Pregunta 4</label>
+                        <Select className="create-select" name="apgar_pregunta4" placeholder="Respuesta" options={apgarpregunta4Options || []} value={apgarpregunta4Options?.find((o) => o.label === createState.apgar_pregunta4?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Apgar Pregunta 5</label>
+                        <Select className="create-select" name="apgar_pregunta5" placeholder="Respuesta" options={apgarpregunta5Options || []} value={apgarpregunta5Options?.find((o) => o.label === createState.apgar_pregunta5?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Apgar Pregunta 6</label>
+                        <Select className="create-select" name="apgar_pregunta6" placeholder="Respuesta" options={apgarpregunta6Options || []} value={apgarpregunta6Options?.find((o) => o.label === createState.apgar_pregunta6?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                      <div>
+                        <label className="custom-div">Apgar Pregunta 7</label>
+                        <Select className="create-select" name="apgar_pregunta7" placeholder="Respuesta" options={apgarpregunta7Options || []} value={apgarpregunta7Options?.find((o) => o.label === createState.apgar_pregunta7?.[0]) || null} onChange={handleCreateSelectNoMultiChange} />
+                      </div>
+                    </Col>
+                  </Row>
+
+                  {/* Captcha en el último paso */}
+                  <Row className="mt-4 justify-content-center">
+                    <Col xs="12" className="d-flex justify-content-center">
+                      <HCaptcha sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY} onVerify={(token) => setCreateRecaptchaToken(token)} languageOverride="es" />
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </Row>
+          </Container>
+
+          {/* Botones de navegación */}
+          <div className="buttons-container mt-3 d-flex gap-2">
+            <Button className="btn-action btn-nav" onClick={() => setCreateStep(Math.max(createStep - 1, 0))} disabled={createStep === 0 || isCreatingSubmitting}>
+              <ArrowBackIcon /> Atrás
+            </Button>
+
+            <Button className="btn-action btn-nav" onClick={() => setCreateStep(Math.min(createStep + 1, titles.length - 1))} disabled={createStep === titles.length - 1 || isCreatingSubmitting}>
+              <ArrowForwardIcon /> Siguiente
+            </Button>
+
+            {createStep === titles.length - 1 && (
+              <Button className="btn-action btn-guardar" onClick={handleCreateClickEnviar} disabled={isCreatingSubmitting || !createRecaptchaToken}>
+                <CheckIcon /> {isCreatingSubmitting ? "Guardando..." : "Guardar"}
+              </Button>
+            )}
+          </div>
+        </Modal.Body>
+      </Modal>
+    );
+  }
 
   return (
     <>
