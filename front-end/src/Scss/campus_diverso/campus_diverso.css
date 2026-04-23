@@ -629,6 +629,13 @@
   transform: translateY(1px);
 }
 
+.btn-guardar:disabled {
+  background-color: #9fd7b5;
+  color: #e9f6ee;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
 .btn-cancelar {
   background-color: #0d6efd;
   color: white;

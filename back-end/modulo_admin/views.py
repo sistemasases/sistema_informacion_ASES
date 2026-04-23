@@ -696,8 +696,91 @@ class panel_admin_roles_viewset(viewsets.ViewSet):
             return Response(roles, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'], url_path='crear_rol', 
+            permission_classes=[IsAuthenticated],
+            )
+    def crear_rol(self, request):
+        """
+        Crear un nuevo rol.
+        Recibes:
+        {
+            "nombre": "Rol de Prueba",
+            "descripcion": "Este es un rol de prueba",
+            "permisos": ["Permiso de Prueba", "Otro Permiso"]
+        }
+        
+        """
+        
+        try:
+            new_rol = rol.objects.create(
+                nombre=request.data['nombre'],
+                descripcion=request.data['descripcion']
+            )
+            new_rol.save()
+            if 'permisos' in request.data:
+                permisos_nombres = request.data['permisos']
+                permisos_objs = permiso.objects.filter(nombre__in=permisos_nombres)
+                for permiso_obj in permisos_objs:
+                    rol_permiso.objects.create(
+                        id_rol=new_rol,
+                        id_permiso=permiso_obj
+                    )
+                    
+            return Response({"mensaje": "Rol creado exitosamente"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['post'], url_path='actualizar_rol', 
+            permission_classes=[IsAuthenticated],
+            )
+    def actualizar_rol(self, request):
+        """
+        Actualizar un rol existente.
+        Recibes:
+        {
+            "id": 1,
+            "nombre": "Rol de Prueba Actualizado",
+            "descripcion": "Este es un rol de prueba actualizado",
+            "permisos": ["Permiso de Prueba", "Otro Permiso"]
+        }
+        
+        """
+        try:
+            # print("Datos recibidos para actualizar rol:", request.data)
+            rol_obj = rol.objects.get(id=request.data['id'])
+            # print("pasa")
+            rol_obj.nombre = request.data['nombre']
+            rol_obj.descripcion = request.data['descripcion']
+            rol_obj.save()
 
+            # Actualizar permisos
+            if 'permisos' in request.data:
+                permisos_nombres = request.data['permisos']
+                # print("Nombres de permisos recibidos:", request.data)
+                permisos_objs = permiso.objects.filter(nombre__in=permisos_nombres)
+                # print("Permisos a asignar:", permisos_objs)
+                
+                # Eliminar permisos actuales del rol
+                rol_permiso.objects.filter(id_rol=rol_obj).delete()
+                # print("Permisos actuales eliminados para el rol:", rol_obj.nombre)
+                
+                # Asignar nuevos permisos al rol
+                for permiso_obj in permisos_objs:
+                    rol_permiso.objects.create(
+                        id_rol=rol_obj,
+                        id_permiso=permiso_obj
+                    )
+                    
+                    # print(f"Permiso '{permiso_obj.nombre}' asignado al rol '{rol_obj.nombre}'")
+
+            return Response({"mensaje": "Rol actualizado exitosamente"}, status=status.HTTP_200_OK)
+        except rol.DoesNotExist:
+            return Response({"error": "Rol no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
 class panel_admin_permisos_viewset(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'], url_path='listar_permisos', permission_classes=[IsAuthenticated])
@@ -709,6 +792,30 @@ class panel_admin_permisos_viewset(viewsets.ViewSet):
         try:
             permisos = permiso.objects.all().values('id', 'nombre', 'descripcion')
             return Response(list(permisos), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='crear_permiso',
+            permission_classes=[IsAuthenticated],
+            )
+    def crear_permiso(self, request):
+        """
+        Crear un nuevo permiso.
+        Recibes:
+        {
+            "nombre": "Permiso de Prueba",
+            "descripcion": "Este es un permiso de prueba",
+        }
+        
+        """
+        
+        try:
+            new_permiso = permiso.objects.create(
+                nombre=request.data['nombre'],
+                descripcion=request.data['descripcion']
+            )
+            new_permiso.save()
+            return Response({"mensaje": "Permiso creado exitosamente"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -830,7 +937,7 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
         }
         """
         try:
-            print(request.data)
+            # print(request.data)
             new_cohorte = cohorte.objects.create(
                 id_number=request.data['id_number'],
                 nombre=request.data['nombre'],
@@ -1208,6 +1315,35 @@ class panel_admin_programas_viewset(viewsets.ViewSet):
 
         return Response({"mensaje": "Programa actualizado correctamente"}, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['post'], url_path='crear_programa',
+            permission_classes=[IsAuthenticated],
+            )
+    def crear_programa(self, request):
+        """
+        Crear un nuevo programa académico.
+        Recibes:
+        {
+            "codigo_snies": "12345",
+            "codigo_univalle": "P001",
+            "nombre": "Programa de Prueba",
+            "jornada": "Diurna",
+            "id_facultad": 1,
+            "id_sede": 1
+        }
+        """
+        try:
+            new_programa = programa.objects.create(
+                codigo_snies=request.data['codigo_snies'],
+                codigo_univalle=request.data['codigo_univalle'],
+                nombre=request.data['nombre'],
+                jornada=request.data['jornada'],
+                id_facultad_id=request.data['id_facultad'],
+                id_sede_id=request.data['id_sede']
+            )
+            new_programa.save()
+            return Response({"mensaje": "Programa creado exitosamente"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class panel_admin_semestres_viewset(viewsets.ViewSet):
     """
