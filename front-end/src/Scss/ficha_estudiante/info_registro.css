@@ -17,6 +17,13 @@
     border-radius: 25px;
     font-weight: bold;
 }
+.boton_nuevo_registro:disabled{
+    background: rgb(150, 150, 150);
+    border-color: rgb(150, 150, 150);
+    color: white;
+    opacity: 1;
+    cursor: not-allowed;
+}
 .boton_nuevo_registro_pequeño{
     height: 30px;
     width: 100%;

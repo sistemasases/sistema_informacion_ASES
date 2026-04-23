@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Select from "react-select";
 import { Row, Col } from "styled-bootstrap-grid";
 import { Button } from "react-bootstrap";
@@ -23,6 +23,7 @@ import {
   desencriptarInt,
   encriptarInt,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+import { useRef } from "react";
 
 import Asiste_academico from "../../service/ficha_estudiante_consulta_academico.js";
 
@@ -108,12 +109,20 @@ const Info_basica = (props) => {
   const handleModalIn = () => setShowIn(true);
   const handleCloseIn = () => setShowIn(false);
 
-  const datos_option_user = [];
+  const datos_option_user = useMemo(() => {
+    return (props.data_user || []).map((user, i) => ({
+      value: user.id,
+      label: `${user.cod_univalle} ${user.nombre} ${user.apellido}`,
+      id: i,
+    }));
+  }, [props.data_user]);
+  //console.log("opciones:", datos_option_user);
+  
   const [isLoading, setIsLoading] = useState(true);
 
   const userRole = desencriptar(sessionStorage.getItem("rol"));
 
-  var bandera_option_user = true;
+  const bandera_option_user = useRef(true);
   const [state, set_state] = useState({
     actualizar: 0,
     total_datos_estudiante_seleccionado: [],
@@ -167,9 +176,9 @@ const Info_basica = (props) => {
         total_datos_estudiante_seleccionado: state.total_datos_estudiantes,
       });
     }
-  }, [state.total_datos_estudiantes]);
+  }, [state.total_datos_estudiantes]);  
 
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const { id } = useParams();
 
@@ -180,11 +189,14 @@ const Info_basica = (props) => {
     });
   }
 
-  useEffect(() => {
-    handle_users();
-  }, [props.data_user]);
-
   const [url_estudiante, setUrl] = useState("");
+
+  useEffect(() => {
+    // Evita ejecutar hasta tener listado y un id de estudiante valido
+    if (!props.data_user?.length) return;
+    if (!url_estudiante || url_estudiante === "sin_seleccion") return;
+    handle_users();
+  }, [props.data_user, url_estudiante]);
 
   useEffect(() => {
     // console.log("TRY # N");
@@ -222,116 +234,90 @@ const Info_basica = (props) => {
   const [estudiante_no_lista, setEstudiante_no_lista] = useState(false);
   // var estudiante_no_lista = false;
   const handle_users = (e) => {
-    // Getting the files from the input
-    if (bandera_option_user === true) {
-      for (var i = 0; i < props.data_user["length"]; i++) {
-        const dato = {
-          value: props.data_user[i]["id"],
-          label:
-            props.data_user[i]["cod_univalle"] +
-            " " +
-            props.data_user[i]["nombre"] +
-            " " +
-            props.data_user[i]["apellido"],
-          id: i,
-        };
-        datos_option_user.push(dato);
-        //alert(dato.value+' '+url_estudiante+' '+state.ya_selecciono_automatico)
+    if (bandera_option_user.current !== true) return;
+    if (!props.data_user?.length) return;
+    if (!url_estudiante || url_estudiante === "sin_seleccion") return;
 
-        //este if lo pongo para que abra academico de una
+    const existeEnLista = props.data_user.some(
+      (estudiante) => String(estudiante.id) === String(url_estudiante)
+    );
+    setEstudiante_no_lista(!existeEnLista);
 
-        if (url_estudiante == dato.value && state.ya_selecciono_automatico) {
-          setSelectedOption(dato);
-          const paramsget = {
-            id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
-          };
-          const url_axios =
-            `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
-            dato.value +
-            "/datos_ficha_estudiante/";
-          axios({
-            // Endpoint to send files
-            url: url_axios,
-            params: paramsget,
-            method: "GET",
-            headers: config2,
-          })
-            .then((respuesta) => {
-              set_state({
-                ...state,
-                total_datos_estudiantes: respuesta.data,
-                tab_abierto: 3,
-                ya_selecciono_automatico: false,
-              });
-            })
+    const paramsget = {
+      id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
+    };
 
-            .catch((err) => {
-              // console.log("no tomo el dato");
-            });
-        }
-        if (
-          props.data_user.some((estudiante) => estudiante.id === url_estudiante)
-        ) {
-          setEstudiante_no_lista(false);
-          // console.log("NO EXISTE EN LA LISTA");
-        } else {
-          // break;
-          // estudiante_no_lista = true;
-          setEstudiante_no_lista(true);
-        }
-      }
-
-      if (estudiante_no_lista == false) {
-        // ENTRA AQUÍ CUÁNDO EN ESTUDIANTE NO ESTÁ EN LA LISTA PRE CARGADA DE ESTUDIANTES
-
-        // console.log("ERAZO");
-
-        const paramsget = {
-          id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
-        };
+    if (existeEnLista && state.ya_selecciono_automatico) {
+      const datoSeleccionado = datos_option_user.find(
+        (dato) => String(dato.value) === String(url_estudiante)
+      );
+      if (datoSeleccionado) {
+        setSelectedOption(datoSeleccionado);
         const url_axios =
           `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
-          url_estudiante +
+          datoSeleccionado.value +
           "/datos_ficha_estudiante/";
         axios({
-          // Endpoint to send files
           url: url_axios,
           params: paramsget,
           method: "GET",
           headers: config2,
         })
           .then((respuesta) => {
-            set_state({
-              ...state,
+            set_state(prev => ({
+              ...prev,
               total_datos_estudiantes: respuesta.data,
               tab_abierto: 3,
               ya_selecciono_automatico: false,
-            });
-
-            const dato = {
-              value: respuesta.data["id"],
-              label:
-                respuesta.data["cod_univalle"] +
-                " " +
-                respuesta.data["nombre"] +
-                " " +
-                respuesta.data["apellido"],
-              id: props.data_user["length"] + 1,
-            };
-            datos_option_user.push(dato);
-            setSelectedOption(dato);
+            }));
           })
-
           .catch((err) => {
             // console.log("no tomo el dato");
           });
       }
-
-      bandera_option_user = false;
     }
+
+    if (!existeEnLista) {
+      const url_axios =
+        `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
+        url_estudiante +
+        "/datos_ficha_estudiante/";
+      axios({
+        url: url_axios,
+        params: paramsget,
+        method: "GET",
+        headers: config2,
+      })
+        .then((respuesta) => {
+          set_state(prev => ({
+            ...prev,
+            total_datos_estudiantes: respuesta.data,
+            tab_abierto: 3,
+            ya_selecciono_automatico: false,
+          }));
+
+          const dato = {
+            value: respuesta.data["id"],
+            label:
+              respuesta.data["cod_univalle"] +
+              " " +
+              respuesta.data["nombre"] +
+              " " +
+              respuesta.data["apellido"],
+            id: props.data_user["length"] + 1,
+          };
+          setSelectedOption(dato);
+        })
+        .catch((err) => {
+          // console.log("no tomo el dato");
+        });
+    }
+
+    bandera_option_user.current = false;
   };
 
   const handle_option_user = (e) => {
+    //console.log("seleccionaste:", e);
     const paramsget = {
       id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
     };
@@ -449,7 +435,7 @@ const Info_basica = (props) => {
                 <Select
                   className="bold_select"
                   options={datos_option_user}
-                  onMenuOpen={handle_users}
+                  // onMenuOpen={handle_users}
                   onChange={handle_option_user}
                   value={selectedOption}
                 />
@@ -850,7 +836,7 @@ const Info_basica = (props) => {
             <Select
               className="bold_select_pequeño"
               options={datos_option_user}
-              onMenuOpen={handle_users}
+              // onMenuOpen={handle_users}
               onChange={handle_option_user}
               value={selectedOption}
             />
