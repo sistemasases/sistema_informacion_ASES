@@ -194,12 +194,53 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
     serializer_class = firma_tratamiento_datos_serializer
 
     def create(self, request):
-        # print(request.data)
         serializer = firma_tratamiento_datos_serializer(data=request.data)
-        print(request.data)
+
+
         if serializer.is_valid():
             documento = serializer.data["documento"]
             if estudiante.objects.filter(num_doc=documento).exists():
+
+
+                # ya sabemos que el estudiante existe, ahora verificamos si tiene firma temporal y esta intentando firmar de nuevo
+                firmaTemporal = firma_tratamiento_datos_temp.objects.filter(documento=documento).exists()
+                if firmaTemporal:
+
+                    # si ya tiene firma temporal hacemos la migracion directamente 
+
+                    with transaction.atomic():
+
+                        firma_temp = firma_tratamiento_datos_temp.objects.filter(documento=documento).first()
+                        fechaFirma = firma_temp.fecha_firma.strftime("%Y-%m-%d")
+                        estudiante_obj = estudiante.objects.filter(num_doc=firma_temp.documento, firma_existe=False).first()
+
+                        if not estudiante_obj:
+                            return Response(
+                                {"error": "El estudiante ya tiene firma registrada"},
+                                status=status.HTTP_400_BAD_REQUEST
+                            )
+                        
+                        # migramos la firma
+                        migrar_firma = firma_tratamiento_datos.objects.create(
+                            id_estudiante=estudiante_obj,
+                            fecha_firma=firma_temp.fecha_firma,
+                            tipo_id_estudiante=firma_temp.tipo_id_estudiante,
+                            nombre_firma=firma_temp.nombre_firma,
+                            correo_firma=firma_temp.correo_firma,
+                            autoriza_tratamiento_datos=firma_temp.autoriza_tratamiento_datos,
+                            autoriza_tratamiento_imagen=firma_temp.autoriza_tratamiento_imagen
+                        )
+
+                        # actualizamos la bandera frima_existe
+                        estudiante_obj.firma_existe = True
+
+                        estudiante_obj.save()
+
+                        firma_temp.delete()
+             
+                    return Response({'Respuesta': f'El estudiante {migrar_firma.nombre_firma} ya ha firmado en la fecha {fechaFirma}'}, status=status.HTTP_400_BAD_REQUEST)
+
+                    
 
                 # si el estudiante existe traemos todos los estudiantes con ese documento, pueden haber varios registros
                 # del mismo estudinate por que se puedes haber matriculado en varios programas
@@ -218,7 +259,7 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
                                 fechaFirma = firma_creada.fecha_firma.strftime("%Y-%m-%d")
                                 nombreFirma = firma_creada.id_estudiante.nombre + " " + firma_creada.id_estudiante.apellido
 
-                                return Response({'Respuesta': f'El estudiante {nombreFirma} ya ha firmado en la fecha {fechaFirma}'}, status=status.HTTP_400_BAD_REQUEST)
+                                return Response({'Respuesta': f'El estudiante {nombreFirma} ya ha firmado en la fecha {fechaFirma}'}, status=status.HTTP_200_OK)
                             Firma = firma_tratamiento_datos.objects.create(
                                 id_estudiante=estudiante_firma,
                                 fecha_firma=serializer.data["fecha_firma"],
@@ -233,6 +274,11 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
                                 )
                             )
                             firma_creada = True
+
+                            # como ya se creo una firma eliminamos la temporal si existe
+                            if firmaTemporal:
+                                firmaTemporal.delete()
+
                         except Exception as e:
                             print(f"Error al crear la firma: {str(e)}")
                             return Response({'Respuesta': 'Error al crear la firma'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -257,6 +303,7 @@ class firma_tratamiento_datos_view(viewsets.GenericViewSet):
                             )
                         )
                         firma_creada = True  # Actualizamos la bandera
+                        
                 # Si al final del for no se creó ninguna firma, mostramos la alerta
                 if firma_creada == False:
                     return Response({'Respuesta': 'Este estudiante ya ha firmado'}, status=status.HTTP_400_BAD_REQUEST)
@@ -298,28 +345,33 @@ class firma_temp_viewsets(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'], url_path='pasarFirmasTemporales', permission_classes=[IsAuthenticated])
     def pasarFirmasTemporales(self, request):
-        """
-        este endpoint pasa las firmas temporales al modelo firma_tratamiento_datos, lo que hara es obtener todas las
-        firmas temporales e ira una por una mirando si existe un estudiante con el mismo domento que NO tenga firma
-        en el sistema, si lo encuentra creara la firma en el modelo firma_tratamiento_datos y actualizara el campo firma_existe del estudiante a True
-        """
-        
-        # obtenesmos todos los registros temporales de firmas
+
         firmas_temporales = firma_tratamiento_datos_temp.objects.all()
         contador_firmas_creadas = 0
         firmas_no_creadas = 0
+
         try:
             
-            # usamos una transaccion para asegurar la integridad de los datos
+            documentos = [f.documento for f in firmas_temporales]
+
+            
+            estudiantes = estudiante.objects.filter(
+                num_doc__in=documentos,
+                firma_existe=False
+            )
+      
+            estudiantes_dict = {e.num_doc: e for e in estudiantes}
+
             with transaction.atomic():
 
                 for firma_temp in firmas_temporales:
                     documento = firma_temp.documento
-                    estudiante_obj = estudiante.objects.filter(num_doc=documento, firma_existe=False).first()
 
+                    
+                    estudiante_obj = estudiantes_dict.get(documento)
 
-                    if estudiante_obj != None:
-                        # si existe el estudiante y no tiene firma, creamos la firma
+                    if estudiante_obj is not None:
+
                         firma = firma_tratamiento_datos.objects.create(
                             id_estudiante=estudiante_obj,
                             fecha_firma=firma_temp.fecha_firma,
@@ -330,29 +382,25 @@ class firma_temp_viewsets(viewsets.GenericViewSet):
                             autoriza_tratamiento_imagen=firma_temp.autoriza_tratamiento_imagen
                         )
 
-                        # actualizamos la bandera
                         estudiante_obj.firma_existe = True
                         estudiante_obj.save()
-                        contador_firmas_creadas += 1
 
-                        # eliminamos el rejistro temporal una vez creada la firma
+                        contador_firmas_creadas += 1
                         firma_temp.delete()
-                    
+
                     else:
                         firmas_no_creadas += 1
-            
-            # guardamos los resultados para mandarlos en la respuesta
+
             resultados = {
-                            'firmas_creadas': contador_firmas_creadas,
-                            'firmas_omitidas': firmas_no_creadas,
-                            'mensaje': 'Proceso completado correctamente'
-                            }
-                
+                'firmas_creadas': contador_firmas_creadas,
+                'firmas_omitidas': firmas_no_creadas,
+                'mensaje': 'Proceso completado correctamente'
+            }
+
             return Response(resultados, status=status.HTTP_200_OK)
-                
-                
+
         except Exception as e:
-            return Response({'Respuesta': f'Error al procesar las firmas temporales: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-                    
-
-
+            return Response(
+                {'Respuesta': f'Error al procesar las firmas temporales: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
