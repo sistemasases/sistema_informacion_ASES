@@ -161,7 +161,27 @@ const SelectorMonitoriasAcademicas = () => {
         await Read_monitorias_academicas.listar_monitorias_academicas();
       // // console.log(response);
       if (response && Array.isArray(response)) {
-        setState({ ...state, data: response });
+        // Agrupar por id_monitor para mostrar solo una vez por usuario
+        const groupedByMonitor = response.reduce((acc, monitoria) => {
+          if (!acc[monitoria.id_monitor]) {
+            acc[monitoria.id_monitor] = {
+              ...monitoria,
+              materias: [monitoria.materia],
+              ids_monitorias: [monitoria.id],
+            };
+          } else {
+            acc[monitoria.id_monitor].materias.push(monitoria.materia);
+            acc[monitoria.id_monitor].ids_monitorias.push(monitoria.id);
+          }
+          return acc;
+        }, {});
+        const uniqueMonitors = Object.values(groupedByMonitor).map(
+          (monitor) => ({
+            ...monitor,
+            materia: monitor.materias.join(", "),
+          }),
+        );
+        setState({ ...state, data: uniqueMonitors, all_data_monitorias: response });
       }
     } catch (error) {
       console.error("Error al consultar usuarios con roles:", error);
@@ -215,7 +235,7 @@ const SelectorMonitoriasAcademicas = () => {
     setSelectedMonitoria(monitoria);
     setShowEditModal(true);
     console.log("Monitor:", monitoria);
-    const monitorias_monitor = state.data.filter(
+    const monitorias_monitor = state.all_data_monitorias.filter(
       (m) => m.id_monitor === monitoria.id_monitor,
     );
     setState((prevState) => ({
@@ -394,10 +414,10 @@ const SelectorMonitoriasAcademicas = () => {
   // Aquí se implementara la función para desactivar TODAS
   // las monitorias académicas del monitor seleccionado desde el modal
 
-  const handleDeactivateAllMonitorias = () => {
+  const handleDeactivateSelectedMonitorias = () => {
     Swal.fire({
       title: "¿Estás seguro?",
-      text: "Esta acción desactivará todas las monitorias académicas. ¿Deseas continuar?",
+      text: "Esta acción desactivará las monitorias académicas seleccionadas. ¿Deseas continuar?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, desactivar",
@@ -406,25 +426,22 @@ const SelectorMonitoriasAcademicas = () => {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        // console.log("Desactivando monitorias académicas...");
-        // console.log(state.data_monitorias_monitor);
-        // Llamado al service para desactivar monitorias académicas
+        const idsToDeactivate = selectedRows.flatMap(
+          (row) => row.ids_monitorias,
+        );
         Deactivate_monitorias_academicas.desactivar_monitorias({
-          id_monitorias: state.data_monitorias_monitor,
+          id_monitorias: idsToDeactivate,
         }).then((response) => {
           if (response && response.status === 200) {
             Swal.fire({
               title: "Desactivado",
-              text: "Las monitorias académicas han sido desactivadas.",
+              text: "Las monitorias académicas seleccionadas han sido desactivadas.",
               icon: "success",
               timer: 1500,
               showConfirmButton: false,
             });
-            setShowEditModal(false);
             consultaAllUser();
-            setTimeout(() => {
-              window.location.reload();
-            }, 1500);
+            setSelectedRows([]);
           } else {
             Swal.fire({
               title: "Error",
@@ -532,16 +549,10 @@ const SelectorMonitoriasAcademicas = () => {
               <Col>
                 <Button
                   variant="danger"
-                  disabled={
-                    state?.data?.length === 0
-                      ? true
-                      : selectedRows.length === state.data.length
-                        ? false
-                        : true
-                  }
-                  onClick={() => handleDeactivateAllMonitorias()}
+                  disabled={selectedRows.length === 0}
+                  onClick={() => handleDeactivateSelectedMonitorias()}
                 >
-                  Desactivar todas las Monitorias Académicas
+                  Desactivar monitorias académicas seleccionadas
                 </Button>
               </Col>
             </Row>
@@ -597,7 +608,7 @@ const SelectorMonitoriasAcademicas = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {state.data
+                  {state.all_data_monitorias
                     .filter(
                       (m) => m.id_monitor === selectedMonitoria?.id_monitor,
                     )
@@ -641,7 +652,7 @@ const SelectorMonitoriasAcademicas = () => {
               <Col sm={4}>
                 <Button
                   variant="warning"
-                  onClick={() => handleDeactivateAllMonitorias()}
+                  onClick={() => handleDeactivateSelectedMonitorias()}
                 >
                   Desactivar Monitorias
                 </Button>

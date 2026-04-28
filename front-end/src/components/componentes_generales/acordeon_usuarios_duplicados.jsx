@@ -57,6 +57,10 @@ const SelectorUsuarios = () => {
     });
   };
 
+  const handleSelectedRowsChange = ({ allSelected, selectedCount, selectedRows }) => {
+    setSelectedRows(selectedRows);
+  };
+
   const handleDelete = () => {
     // console.log(selectedRows);
     if (selectedRows.length === 0) {
@@ -135,11 +139,6 @@ const SelectorUsuarios = () => {
     consultaAllUser();
   }, []);
 
-  const isRowSelected = useCallback(
-    (row) => selectedRows.some((r) => r.id === row.id),
-    [selectedRows],
-  );
-
   return (
     // TABLA DE USUARIOS
     <Container>
@@ -165,8 +164,7 @@ const SelectorUsuarios = () => {
                 noDataComponent="Cargando Información."
                 pagination
                 selectableRows
-                selectableRowSelected={isRowSelected}
-                onRowClicked={handleRowClick}
+                onSelectedRowsChange={handleSelectedRowsChange}
                 striped
                 pointerOnHover
                 highlightOnHover

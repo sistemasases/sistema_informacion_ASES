@@ -1,0 +1,88 @@
+[
+  {
+    "id": "1",
+    "path": "/",
+    "name": "sistemas",
+    "icon": "bi-pc-display-horizontal",
+    "childrens": [
+      {
+        "path": "/descarga_fichas",
+        "name": "Descarga de fichas",
+        "icon": "bi bi-file-earmark-arrow-down"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "path": "/ficha_estudiante/sin_seleccion",
+    "name": "socieducativo",
+    "icon": "bi-journal-bookmark-fill",
+    "childrens": [
+      {
+        "id": 1,
+        "path": "/sin_seguimientos",
+        "name": "Conteo de seguimientos",
+        "icon": "bi bi-file-earmark-ruled-fill"
+      },
+      {
+        "id": 2,
+        "path": "/ficha_estudiante/sin_seleccion",
+        "name": "Ficha de estudiantes",
+        "icon": "bi bi-file-earmark-person-fill"
+      },
+      {
+        "id": 3,
+        "path": "/ficha_monitors",
+        "name": "Ficha de monitores",
+        "icon": "bi bi-file-earmark-person"
+      },
+      {
+        "id": 4,
+        "path": "/asignaciones",
+        "name": "gestión de asignaciones",
+        "icon": "bi-diagram-3-fill"
+      },
+      {
+        "id": 7,
+        "path": "/desercion",
+        "name": "Reporte de deserción",
+        "icon": "bi bi-clipboard-x-fill"
+      },
+      {
+        "id": 8,
+        "path": "/reporte",
+        "name": "Reporte general",
+        "icon": "bi bi-file-ruled-fill"
+      },
+      {
+        "id": 10,
+        "path": "/reporte_seguimientos",
+        "name": "Consulta de seguimientos",
+        "icon": "bi bi-search"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "path": "/",
+    "name": "academico",
+    "icon": "bi-mortarboard-fill",
+    "childrens": [
+      {
+        "path": "/academico",
+        "name": "Calificador",
+        "icon": "bi bi-calculator-fill"
+      },
+      {
+        "path": "/academico_asistencia",
+        "name": "Control de asistencia",
+        "icon": "bi bi-card-checklist"
+      },
+      {
+        "path": "/academico_listado_asistencia",
+        "name": "Listado de asistencia",
+        "icon": "bi bi-card-list"
+      }
+    ]
+  }
+]
