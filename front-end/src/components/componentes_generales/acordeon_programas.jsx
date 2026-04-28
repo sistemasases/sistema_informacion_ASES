@@ -169,11 +169,15 @@ const SelectorProgramas = () => {
 
   const handleCreateChange = (e) => {
     const { name, value } = e.target;
+    let processedValue = value;
+    if (name === "nombre") {
+      processedValue = value.toUpperCase();
+    }
     setState((prevData) => ({
       ...prevData,
       data_nuevo_programa: {
         ...prevData.data_nuevo_programa,
-        [name]: value,
+        [name]: processedValue,
       },
     }));
   };
@@ -264,9 +268,13 @@ const SelectorProgramas = () => {
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
+    let processedValue = value;
+    if (name === "nombre") {
+      processedValue = value.toUpperCase();
+    }
     setSelectedPrograma((prevPrograma) => ({
       ...prevPrograma,
-      [name]: value,
+      [name]: processedValue,
     }));
   };
 
@@ -373,13 +381,16 @@ const SelectorProgramas = () => {
             </Form.Group>
             <Form.Group controlId="createJornada">
               <Form.Label>Jornada</Form.Label>
-              <Form.Control
-                type="text"
+              <Form.Select
                 name="jornada"
-                placeholder="Ingrese la jornada del programa"
                 value={state.data_nuevo_programa.jornada}
                 onChange={handleCreateChange}
-              />
+              >
+                <option value="">Seleccionar Jornada</option>
+                <option value="DIURNA">DIURNA</option>
+                <option value="NOCTURNA">NOCTURNA</option>
+                <option value="VESPERTINA">VESPERTINA</option>
+              </Form.Select>
             </Form.Group>
             <Form.Group controlId="createSede">
               <Form.Label>Sede</Form.Label>
@@ -459,12 +470,16 @@ const SelectorProgramas = () => {
             </Form.Group>
             <Form.Group controlId="editJornada">
               <Form.Label>Jornada</Form.Label>
-              <Form.Control
-                type="text"
+              <Form.Select
                 name="jornada"
                 value={selectedPrograma?.jornada || ""}
                 onChange={handleEditChange}
-              />
+              >
+                <option value="">Seleccionar Jornada</option>
+                <option value="DIURNA">DIURNA</option>
+                <option value="NOCTURNA">NOCTURNA</option>
+                <option value="VESPERTINA">VESPERTINA</option>
+              </Form.Select>
             </Form.Group>
             <Form.Group controlId="editSede">
               <Form.Label>Sede</Form.Label>
