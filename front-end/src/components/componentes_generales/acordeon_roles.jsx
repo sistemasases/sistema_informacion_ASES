@@ -120,6 +120,22 @@ const SelectorRoles = () => {
     }
   };
 
+  const getPermisoOptionValue = (permiso) => `${permiso.nombre}__${permiso.id}`;
+  const getPermisoNameFromOptionValue = (optionValue) =>
+    optionValue.includes("__") ? optionValue.split("__")[0] : optionValue;
+  const getSelectedPermisosFromRol = (rol) => {
+    if (!rol?.permisos?.length || !statePermisos.data_permisos) return [];
+    return rol.permisos
+      .map((nombre) =>
+        statePermisos.data_permisos.find((p) => p.nombre === nombre),
+      )
+      .filter(Boolean)
+      .map(getPermisoOptionValue);
+  };
+
+  const normalizePermisosToNames = (permisos = []) =>
+    permisos.map(getPermisoNameFromOptionValue);
+
   const handleEdit = (rol) => {
     setState((prevState) => ({
       ...prevState,
@@ -128,11 +144,11 @@ const SelectorRoles = () => {
         id: rol.id,
         nombre: rol.nombre,
         descripcion: rol.descripcion,
-        permisos: rol.permiso || [],
+        permisos: rol.permisos || [],
       },
     }));
     // consultaAllPermisos();
-    reiniciarSelectedPermisos();
+    setSelectedPermisos(getSelectedPermisosFromRol(rol));
     setSelectedRol(rol);
     setShowEditModal(true);
   };
@@ -140,7 +156,7 @@ const SelectorRoles = () => {
   const handleSaveEdit = async () => {
     const updatedData = {
       ...state.data_update_rol,
-      permisos: selectedPermisos,
+      permisos: normalizePermisosToNames(selectedPermisos),
     };
 
     try {
@@ -195,7 +211,11 @@ const SelectorRoles = () => {
     }
 
     try {
-      await Create_roles.crear_rol(nuevoRol)
+      const createData = {
+        ...nuevoRol,
+        permisos: normalizePermisosToNames(nuevoRol.permisos),
+      };
+      await Create_roles.crear_rol(createData)
         .then((response) => {
           if (response.status === 201) {
             Swal.fire({
@@ -227,6 +247,31 @@ const SelectorRoles = () => {
 
   const reiniciarSelectedPermisos = () => {
     setSelectedPermisos([]);
+  };
+
+  const handleToggleNewPermiso = (permiso) => {
+    setState((prevState) => {
+      const currentPermisos = prevState.data_nuevo_rol.permisos || [];
+      const nextPermisos = currentPermisos.includes(permiso)
+        ? currentPermisos.filter((item) => item !== permiso)
+        : [...currentPermisos, permiso];
+
+      return {
+        ...prevState,
+        data_nuevo_rol: {
+          ...prevState.data_nuevo_rol,
+          permisos: nextPermisos,
+        },
+      };
+    });
+  };
+
+  const handleToggleSelectedPermiso = (permiso) => {
+    setSelectedPermisos((prevPermisos) =>
+      prevPermisos.includes(permiso)
+        ? prevPermisos.filter((item) => item !== permiso)
+        : [...prevPermisos, permiso],
+    );
   };
 
   const reiniciarDataNuevoRol = () => {
@@ -339,6 +384,7 @@ const SelectorRoles = () => {
                   name="permisos"
                   style={{ height: "16rem" }}
                   multiple
+                  value={state.data_nuevo_rol.permisos || []}
                   onChange={(e) => {
                     const selectedOptions = Array.from(
                       e.target.selectedOptions,
@@ -353,11 +399,21 @@ const SelectorRoles = () => {
                     }));
                   }}
                 >
-                  {statePermisos?.data_permisos?.map((permiso) => (
-                    <option key={permiso.id} value={permiso.nombre}>
-                      {permiso.nombre}
-                    </option>
-                  ))}
+                  {statePermisos?.data_permisos?.map((permiso) => {
+                    const optionValue = getPermisoOptionValue(permiso);
+                    return (
+                      <option
+                        key={permiso.id}
+                        value={optionValue}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          handleToggleNewPermiso(optionValue);
+                        }}
+                      >
+                        {`${permiso.nombre} (${permiso.id})`}
+                      </option>
+                    );
+                  })}
                 </Form.Select>
                 <Form.Text className="text-muted">
                   Mantén presionada la tecla Ctrl (Cmd en Mac) para seleccionar
@@ -462,7 +518,7 @@ const SelectorRoles = () => {
                   name="permisos"
                   style={{ height: "16rem" }}
                   multiple
-                  defaultValue={selectedRol?.permisos || []}
+                  value={selectedPermisos}
                   onChange={(e) => {
                     const selectedOptions = Array.from(
                       e.target.selectedOptions,
@@ -471,11 +527,21 @@ const SelectorRoles = () => {
                     setSelectedPermisos(selectedOptions);
                   }}
                 >
-                  {statePermisos?.data_permisos?.map((permiso) => (
-                    <option key={permiso.id} value={permiso.nombre}>
-                      {permiso.nombre}
-                    </option>
-                  ))}
+                  {statePermisos?.data_permisos?.map((permiso) => {
+                    const optionValue = getPermisoOptionValue(permiso);
+                    return (
+                      <option
+                        key={permiso.id}
+                        value={optionValue}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          handleToggleSelectedPermiso(optionValue);
+                        }}
+                      >
+                        {`${permiso.nombre} (${permiso.id})`}
+                      </option>
+                    );
+                  })}
                 </Form.Select>
                 <Form.Text className="text-muted">
                   Mantén presionada la tecla Ctrl (Cmd en Mac) para seleccionar
