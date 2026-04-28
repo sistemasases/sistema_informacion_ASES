@@ -692,7 +692,7 @@ class info_estudiantes_sin_seguimientos_viewsets(viewsets.ModelViewSet):
             # si el estudiante no tiene una cohorte asignada, se asigna un valor por defecto
             cohorte_nombre = "Sin cohorte"
             if cohorte_data and cohorte_data.id_cohorte:
-                cohorte_nombre = cohorte_data.id_cohorte.nombre
+                cohorte_nombre = cohorte_data.id_cohorte.id_number
             
             # Conteos (estos siempre aplican)
             count_seguimientos = seguimiento_individual.objects.filter(
