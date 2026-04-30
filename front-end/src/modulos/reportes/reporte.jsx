@@ -299,9 +299,7 @@ const Reporte = () => {
     var key =
       item.value === "programa_academico"
         ? "csv_programa_academico"
-        : item.value === "registro_academico"
-          ? "csv_registro_academico"
-          : item.value;
+        : item.value;
     csv_headers.push({ label: label, key: key });
   };
 
@@ -337,17 +335,6 @@ const Reporte = () => {
               (programa) =>
                 `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`,
             )
-            .join(" | ");
-        },
-      });
-    } else if (item.name === "Registro Académico") {
-      schema.push({
-        column: item.name,
-        type: tipo,
-        value: (student) => {
-          if (!Array.isArray(student.registro_academico)) return "Sin datos";
-          return student.registro_academico
-            .map((registro_acad) => registro_acad.estado)
             .join(" | ");
         },
       });
@@ -459,19 +446,13 @@ const Reporte = () => {
     {
       name: "Registro Académico",
       value: "registro_academico",
-      selector: (row) => {
-        // Verifica si row.registro_academico existe y es un array antes de usar .map()
-        if (!Array.isArray(row.registro_academico)) return "Sin datos";
-
-        return row.registro_academico
-          .map((registro_acad) => registro_acad.estado)
-          .join(" | ");
-      },
+      selector: (row) => (row.es_academico == true ? "ACTIVO" : "INACTIVO"),
       sortable: true,
       isCheck: false,
       wrap: true,
     },
   ];
+
   // Filtro por programa y sede
   const filtros_Academico = [
     // {
@@ -681,30 +662,13 @@ const Reporte = () => {
     }
     // BÚSQUEDA INDIVIDUAL POR FILTRO: REGISTRO
     if (e.target.name === "Registro Académico") {
-      const data_filtered = filtered.filter(
-        (row) =>
-          Array.isArray(row.registro_academico) &&
-          row.registro_academico.some((registro_acad) =>
-            registro_acad.estado
-              .toLowerCase()
-              .includes(e.target.value.toLowerCase()),
-          ),
+      const data_filtered = filtered.filter((row) =>
+        row.es_academico.toLowerCase().includes(e.target.value.toLowerCase()),
       );
-
       const filtered_data =
         data_filtered.length > 0 ? data_filtered : empty_stuff;
       setFiltered(filtered_data);
     }
-    // BÚSQUEDA INDIVIDUAL POR FILTRO: ACADÉMICO
-    // if (e.target.name === "Código programa académico") {
-    // //   const data_filtered = filtered.filter((row) =>
-    // //     row.id_programa.toString().includes(e.target.value.toLowerCase())
-    // //   );
-    // //   const filtered_data =
-    // //     data_filtered.length > 0 ? data_filtered : empty_stuff;
-    // //   setFiltered(filtered_data);
-    // }
-
     // BÚSQUEDA INDIVIDUAL POR FILTRO: NOMBRE ACADEMICO
     if (e.target.name === "Programa académico") {
       const filtro = e.target.value.toLowerCase(); // Convertimos a minúsculas para hacer la búsqueda insensible a mayúsculas.
@@ -1800,10 +1764,6 @@ const Reporte = () => {
                 `${programa.id_programa}, ${programa.programa_academico}, ${programa.sede}`,
             )
             .join(" | ") // Usamos `|` en lugar de `,` para separar mejor los programas
-        : "Sin datos",
-    csv_registro_academico:
-      Array.isArray(row.registro_academico) && row.registro_academico.length > 0
-        ? row.registro_academico.map((item) => item.estado).join(" | ")
         : "Sin datos",
   }));
 

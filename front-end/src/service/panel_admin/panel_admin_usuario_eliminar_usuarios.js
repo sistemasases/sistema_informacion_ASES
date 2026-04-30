@@ -4,7 +4,7 @@
  * @description Service para eliminar un usuario existente mediante el panel del administrador.
  * @author @iMrStevenS2
  * @contact steven.bernal@correounivalle.edu.co
- * @date 29 de Abril del 2025
+ * @date 27 de marzo del 2026
  */
 
 import axios from "axios";
@@ -25,14 +25,27 @@ const eliminar_usuario = async (data) => {
       if (response.status === 200) {
         Swal.fire({
           title: "Operación exitosa",
-          text: response.data.mensaje,
+          html: `
+            <p><b>Eliminados:</b> ${response.data.eliminados
+              .map((u) => `ID: ${u.id} - ${u.username}`)
+              .join("<br>")}</p>
+
+            <p><b>No eliminados:</b> ${response.data.bloqueados
+              .map((u) => `ID: ${u.id} - ${u.username}`)
+              .join("<br>")}</p>
+
+          <p> Total eliminados:${response.data.total_eliminados}</p>
+          <p> Total bloqueados:${response.data.total_bloqueados}</p>
+          `,
           icon: "success",
-          timer: 2500,
-          showConfirmButton: false,
+          //   timer: 2500,
+          showConfirmButton: true,
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#3085d6",
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
       } else if (response.status === 400) {
         Swal.fire({
           title: "Error",
