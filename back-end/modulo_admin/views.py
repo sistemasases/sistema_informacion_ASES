@@ -1636,11 +1636,21 @@ class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
             
             if not request.data['materias'] or request.data['sede'] is None:
                 return Response({"error": "Las materias y la sede son requeridas"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            try:
+                sede_obj = sede.objects.get(id=request.data['sede'])
+                semestre_sede = semestre.objects.filter(id_sede_id=sede_obj.id).first()
+                if not semestre_sede:
+                    return Response({"error": "El semestre no pertenece a la sede indicada"}, status=status.HTTP_400_BAD_REQUEST)
+                
+            except sede.DoesNotExist:
+                return Response({"error": "Sede no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+            
             for materia in request.data['materias']:
                 new_monitoria = monitoria_academica.objects.create(
                     id_monitor_id=request.data['id_monitor'],
                     id_sede_id=request.data['sede'],
-                    id_semestre_id=request.data['semestre_actual'],
+                    id_semestre_id=semestre_sede.id,
                     materia=materia,
                     estado=True
                 )

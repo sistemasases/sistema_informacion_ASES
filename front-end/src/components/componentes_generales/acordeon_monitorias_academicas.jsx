@@ -71,9 +71,6 @@ const SelectorMonitoriasAcademicas = () => {
       nombre_monitor: null,
       materias: [],
       sede: null,
-      semestre_actual: desencriptarInt(
-        sessionStorage.getItem("id_semestre_actual"),
-      ),
     },
     data_sedes: [],
   });
@@ -154,9 +151,6 @@ const SelectorMonitoriasAcademicas = () => {
 
   const consultaAllUser = async () => {
     try {
-      const semestre = desencriptarInt(
-        sessionStorage.getItem("id_semestre_actual"),
-      );
       const response =
         await Read_monitorias_academicas.listar_monitorias_academicas();
       // // console.log(response);
@@ -181,7 +175,11 @@ const SelectorMonitoriasAcademicas = () => {
             materia: monitor.materias.join(", "),
           }),
         );
-        setState({ ...state, data: uniqueMonitors, all_data_monitorias: response });
+        setState({
+          ...state,
+          data: uniqueMonitors,
+          all_data_monitorias: response,
+        });
       }
     } catch (error) {
       console.error("Error al consultar usuarios con roles:", error);
@@ -190,9 +188,6 @@ const SelectorMonitoriasAcademicas = () => {
 
   const consultaMonitoresAcademicos = async () => {
     try {
-      const semestre = desencriptarInt(
-        sessionStorage.getItem("id_semestre_actual"),
-      );
       const response =
         await Read_monitores_academicos.listar_monitores_academicos();
       // console.log(response);
@@ -260,9 +255,6 @@ const SelectorMonitoriasAcademicas = () => {
         nombre_monitor: null,
         materias: [],
         sede: null,
-        semestre_actual: desencriptarInt(
-          sessionStorage.getItem("id_semestre_actual"),
-        ),
       },
       data_materias: [
         { id: 1, nombre_materia: "MATEMÁTICA FUNDAMENTAL" },
