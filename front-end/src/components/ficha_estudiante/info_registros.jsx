@@ -40,8 +40,17 @@ const Info_registros = (props) => {
     data_user: [],
   });
   const opciones = [];
+  const hasEstudiante = Boolean(props.id_estudiante);
 
   useEffect(() => {
+    if (!hasEstudiante) {
+      set_state((prev) => ({
+        ...prev,
+        data_user: [],
+      }));
+      return;
+    }
+
     let formData = new FormData();
     formData.append("id_estudiante", props.id_estudiante);
     // console.log(props.id_estudiante);
@@ -66,7 +75,7 @@ const Info_registros = (props) => {
       .catch((err) => {
         // console.log("estos son los primeros datos :" + state.data_user);
       });
-  }, [props.id_estudiante]);
+  }, [props.id_estudiante, hasEstudiante]);
 
   useEffect(() => {
     Semestre_por_sede.semestre_por_sede(
@@ -135,6 +144,7 @@ const Info_registros = (props) => {
   };
 
   const actualizar_seguimientos_semestres = (e) => {
+    if (!hasEstudiante) return;
     // console.log(e);
     // console.log("HOALAAAA");
     let formData = new FormData();
@@ -206,7 +216,12 @@ const Info_registros = (props) => {
             userRole === "practicante" ||
             userRole === "monitor") && (
             <Row className="generar_nuevo_reporte">
-              <Button className="boton_nuevo_registro" onClick={handleModal}>
+              <Button
+                className="boton_nuevo_registro"
+                onClick={handleModal}
+                disabled={!hasEstudiante}
+                title={!hasEstudiante ? "Seleccione un estudiante" : ""}
+              >
                 NUEVO SEGUIMIENTO
               </Button>
             </Row>
@@ -229,6 +244,7 @@ const Info_registros = (props) => {
                     onMenuOpen={handle_semestre}
                     placeholder="Cambie de semestre"
                     onChange={actualizar_seguimientos_semestres}
+                    isDisabled={!hasEstudiante}
                   ></Select>
                 </Col>
               </Row>

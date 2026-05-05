@@ -23,6 +23,7 @@ import Menu9 from "./menus/profesor.json";
 import Menu10 from "./menus/discapacidad.json";
 import Menu11 from "./menus/academico_check.json";
 import Menu12 from "./menus/campus_diverso.json";
+import Menu13 from "./menus/profesional.json";
 import SidebarItem from "./sidebarItem";
 import Footer from "./footer";
 import Sidebar_item_closed from "./sidebar_item_closed";
@@ -66,8 +67,9 @@ const SideBar = (props) => {
       desencriptar(sessionStorage.rol) === "super_ases"
         ? Menu
         : desencriptar(sessionStorage.rol) === "socioeducativo_reg" ||
-          desencriptar(sessionStorage.rol) === "profesional" ||
-          desencriptar(sessionStorage.rol) === "socioeducativo"
+          desencriptar(sessionStorage.rol) === "profesional" ?
+          Menu13
+        :desencriptar(sessionStorage.rol) === "socioeducativo"
         ? Menu2
         : desencriptar(sessionStorage.rol) === "dir_academico"
         ? Menu3

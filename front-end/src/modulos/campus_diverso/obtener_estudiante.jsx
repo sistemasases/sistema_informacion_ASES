@@ -5,6 +5,7 @@ import ModalEstudiantes from "./components/modalEstudiantes";
 import axios from "axios";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TextField } from "@mui/material";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -33,6 +34,7 @@ const ObtenerEstudiante = () => {
   const [endDate, setEndDate] = useState(null); // Fecha de fi
   const [selectedPrograma, setSelectedPrograma] = useState("");
   const [selectedRevision, setSelectedRevision] = useState("");
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   //Desencripta el token para la API
   const config = {
@@ -46,15 +48,17 @@ const ObtenerEstudiante = () => {
     Authorization: "Bearer " + decryptTokenFromSessionStorage(),
   };
 
-  useEffect(() => {
+  const fetchUsers = () => {
     fetch(`${process.env.REACT_APP_API_URL}/persona/persona/`, { headers })
       .then((response) => response.json())
       .then((data) => {
-        /* console.log(data); // Verifica cómo llega la respuesta */
         setUsers(data);
       })
-
       .catch((error) => console.error("Error al obtener usuarios:", error));
+  };
+
+  useEffect(() => {
+    fetchUsers();
   }, []);
 
   const openModal = (user) => {
@@ -149,6 +153,19 @@ const ObtenerEstudiante = () => {
     setDocumentosInfo(null);
     setSeguimientosInfo(null);
     setAcademcioInfo(null);
+  };
+
+  const openCreateModal = () => {
+    setCreateModalOpen(true);
+  };
+
+  const closeCreateModal = () => {
+    setCreateModalOpen(false);
+  };
+
+  const handleCreateSuccess = () => {
+    fetchUsers();
+    closeCreateModal();
   };
 
   const filteredUsers = users.filter((user) => {
@@ -989,6 +1006,19 @@ const ObtenerEstudiante = () => {
               </Button>
             )}
           </Col>
+          <Col
+            xs="auto"
+            className="d-flex align-items-end mb-2 mb-md-0 ms-auto"
+          >
+            <Button
+              className="btn-action btn-follow"
+              onClick={openCreateModal}
+              style={{ height: "50px" }}
+            >
+              <PersonAddAlt1Icon style={{ marginRight: "6px" }} />
+              Agregar persona
+            </Button>
+          </Col>
         </Row>
         <Row className="align-items-center">
           <Col xs={12} md={4} lg={4} className="mb-2 mb-md-0">
@@ -1129,6 +1159,39 @@ const ObtenerEstudiante = () => {
           apgarpregunta6Options={apgarpregunta6Options}
           apgarpregunta7Options={apgarpregunta7Options}
           sexoAsignadoOptions={sexoAsignadoOptions}
+        />
+
+        <ModalEstudiantes
+          isModalOpen={isCreateModalOpen}
+          closeModal={closeCreateModal}
+          isEmptyModal={true}
+          razasOptions={razasOptions}
+          pronombresOptions={pronombresOptions}
+          expresionesOptions={expresionesOptions}
+          orientacionOptions={orientacionOptions}
+          identidadesGeneroOptions={identidadesGeneroOptions}
+          documentoOptions={documentoOptions}
+          estamentoOptions={estamentoOptions}
+          factoresOptions={factoresOptions}
+          fuentesOptions={fuentesOptions}
+          redesOptions={redesOptions}
+          tipoDocumentoOptions={tipoDocumentoOptions}
+          sedeOptions={sedeOptions}
+          programaOptions={programaOptions}
+          regimenEpsOptions={regimenEpsOptions}
+          decisionEncuentroInicialOptions={decisionEncuentroInicialOptions}
+          estadocivilOptions={estadocivilOptions}
+          zonaResidencialOptions={zonaResidencialOptions}
+          identidadEtnicoRacialOptions={identidadEtnicoRacialOptions}
+          apgarpregunta1Options={apgarpregunta1Options}
+          apgarpregunta2Options={apgarpregunta2Options}
+          apgarpregunta3Options={apgarpregunta3Options}
+          apgarpregunta4Options={apgarpregunta4Options}
+          apgarpregunta5Options={apgarpregunta5Options}
+          apgarpregunta6Options={apgarpregunta6Options}
+          apgarpregunta7Options={apgarpregunta7Options}
+          sexoAsignadoOptions={sexoAsignadoOptions}
+          onCreateSuccess={handleCreateSuccess}
         />
       </Container>
     </>

@@ -594,385 +594,48 @@ const Seguimiento_individual_edit_v3 = (props) => {
 
   // Manejo de los checkbox de riesgo
   const handleForm = (e) => {
-    //console.log(e.target.checked)
-    if (e.target.name === "riesgo_individual_bajo") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_individual"]: 0,
-        });
-        setState({
-          ...state,
-          riesgo_individual_bajo: true,
-          riesgo_individual_medio: false,
-          riesgo_individual_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_individual"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_individual_bajo: false,
-          riesgo_individual_medio: false,
-          riesgo_individual_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_individual_medio") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_individual"]: 1,
-        });
-        setState({
-          ...state,
-          riesgo_individual_bajo: false,
-          riesgo_individual_medio: true,
-          riesgo_individual_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_individual"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_individual_bajo: false,
-          riesgo_individual_medio: false,
-          riesgo_individual_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_individual_alto") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_individual"]: 2,
-        });
-        setState({
-          ...state,
-          riesgo_individual_bajo: false,
-          riesgo_individual_medio: false,
-          riesgo_individual_alto: true,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_individual"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_individual_bajo: false,
-          riesgo_individual_medio: false,
-          riesgo_individual_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_familiar_bajo") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_familiar"]: 0,
-        });
-        setState({
-          ...state,
-          riesgo_familiar_bajo: true,
-          riesgo_familiar_medio: false,
-          riesgo_familiar_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_familiar"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_familiar_bajo: false,
-          riesgo_familiar_medio: false,
-          riesgo_familiar_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_familiar_medio") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_familiar"]: 1,
-        });
-        setState({
-          ...state,
-          riesgo_familiar_bajo: false,
-          riesgo_familiar_medio: true,
-          riesgo_familiar_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_familiar"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_familiar_bajo: false,
-          riesgo_familiar_medio: false,
-          riesgo_familiar_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_familiar_alto") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_familiar"]: 2,
-        });
-        setState({
-          ...state,
-          riesgo_familiar_bajo: false,
-          riesgo_familiar_medio: false,
-          riesgo_familiar_alto: true,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_familiar"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_familiar_bajo: false,
-          riesgo_familiar_medio: false,
-          riesgo_familiar_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_academico_bajo") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_academico"]: 0,
-        });
-        setState({
-          ...state,
-          riesgo_academico_bajo: true,
-          riesgo_academico_medio: false,
-          riesgo_academico_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_academico"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_academico_bajo: false,
-          riesgo_academico_medio: false,
-          riesgo_academico_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_academico_medio") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_academico"]: 1,
-        });
-        setState({
-          ...state,
-          riesgo_academico_bajo: false,
-          riesgo_academico_medio: true,
-          riesgo_academico_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_academico"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_academico_bajo: false,
-          riesgo_academico_medio: false,
-          riesgo_academico_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_academico_alto") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_academico"]: 2,
-        });
-        setState({
-          ...state,
-          riesgo_academico_bajo: false,
-          riesgo_academico_medio: false,
-          riesgo_academico_alto: true,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_academico"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_academico_bajo: false,
-          riesgo_academico_medio: false,
-          riesgo_academico_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_economico_bajo") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_economico"]: 0,
-        });
-        setState({
-          ...state,
-          riesgo_economico_bajo: true,
-          riesgo_economico_medio: false,
-          riesgo_economico_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_economico"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_economico_bajo: false,
-          riesgo_economico_medio: false,
-          riesgo_economico_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_economico_medio") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_economico"]: 1,
-        });
-        setState({
-          ...state,
-          riesgo_economico_bajo: false,
-          riesgo_economico_medio: true,
-          riesgo_economico_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_economico"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_economico_bajo: false,
-          riesgo_economico_medio: false,
-          riesgo_economico_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_economico_alto") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_economico"]: 2,
-        });
-        setState({
-          ...state,
-          riesgo_economico_bajo: false,
-          riesgo_economico_medio: false,
-          riesgo_economico_alto: true,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_economico"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_economico_bajo: false,
-          riesgo_economico_medio: false,
-          riesgo_economico_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_vida_universitaria_ciudad_bajo") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_vida_universitaria_ciudad"]: 0,
-        });
-        setState({
-          ...state,
-          riesgo_vida_universitaria_ciudad_bajo: true,
-          riesgo_vida_universitaria_ciudad_medio: false,
-          riesgo_vida_universitaria_ciudad_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_vida_universitaria_ciudad"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_vida_universitaria_ciudad_bajo: false,
-          riesgo_vida_universitaria_ciudad_medio: false,
-          riesgo_vida_universitaria_ciudad_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_vida_universitaria_ciudad_medio") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_vida_universitaria_ciudad"]: 1,
-        });
-        setState({
-          ...state,
-          riesgo_vida_universitaria_ciudad_bajo: false,
-          riesgo_vida_universitaria_ciudad_medio: true,
-          riesgo_vida_universitaria_ciudad_alto: false,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_vida_universitaria_ciudad"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_vida_universitaria_ciudad_bajo: false,
-          riesgo_vida_universitaria_ciudad_medio: false,
-          riesgo_vida_universitaria_ciudad_alto: false,
-        });
-      }
-    } else if (e.target.name === "riesgo_vida_universitaria_ciudad_alto") {
-      if (e.target.checked === true) {
-        set_form({
-          ...form,
-          ["riesgo_vida_universitaria_ciudad"]: 2,
-        });
-        setState({
-          ...state,
-          riesgo_vida_universitaria_ciudad_bajo: false,
-          riesgo_vida_universitaria_ciudad_medio: false,
-          riesgo_vida_universitaria_ciudad_alto: true,
-        });
-      } else {
-        set_form({
-          ...form,
-          ["riesgo_vida_universitaria_ciudad"]: null,
-        });
-        setState({
-          ...state,
-          riesgo_vida_universitaria_ciudad_bajo: false,
-          riesgo_vida_universitaria_ciudad_medio: false,
-          riesgo_vida_universitaria_ciudad_alto: false,
-        });
-      }
-    } else {
-      // Ejecutar los bloqueos (devuelven true si se bloquea)
-      const bloqueado =
-        limitarSeleccionIndividual(e, state) ||
-        limitarSeleccionFamiliar(e, state) ||
-        limitarSeleccionAcademico(e, state) ||
-        limitarSeleccionEconomico(e, state) ||
-        limitarSeleccionVida(e, state);
-
-      if (bloqueado) return;
-
-      // Actualización normal del estado:
-      set_form({
-        ...form,
-        [e.target.name]:
-          e.target.type === "checkbox" ? e.target.checked : e.target.value,
-      });
+    const { name, checked, type, value } = e.target;
+  
+    const match = name.match(/^riesgo_(.+)_(bajo|medio|alto)$/);
+  
+    if (match) {
+      const tipo = match[1]; // individual, familiar, etc.
+      const nivel = match[2]; // bajo, medio, alto
+  
+      const niveles = { bajo: 0, medio: 1, alto: 2 };
+  
+      // actualizar form
+      set_form(prev => ({
+        ...prev,
+        [`riesgo_${tipo}`]: checked ? niveles[nivel] : null,
+      }));
+  
+      // actualizar checkboxes
+      setState(prev => ({
+        ...prev,
+        [`riesgo_${tipo}_bajo`]: checked && nivel === "bajo",
+        [`riesgo_${tipo}_medio`]: checked && nivel === "medio",
+        [`riesgo_${tipo}_alto`]: checked && nivel === "alto",
+      }));
+  
+      return;
     }
+  
+    // lógica de bloqueo
+    const bloqueado =
+      limitarSeleccionIndividual(e, state) ||
+      limitarSeleccionFamiliar(e, state) ||
+      limitarSeleccionAcademico(e, state) ||
+      limitarSeleccionEconomico(e, state) ||
+      limitarSeleccionVida(e, state);
+  
+    if (bloqueado) return;
+  
+    // 🔹 actualización normal
+    set_form(prev => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const userRole = desencriptar(sessionStorage.getItem("rol"));
@@ -1000,64 +663,28 @@ const Seguimiento_individual_edit_v3 = (props) => {
       ...prevState,
       [prop]: value,
     }));
-  };
+  };  
 
   useEffect(() => {
-    actualizar_riesgo(
-      "riesgo_individual_bajo",
-      props.item.riesgo_individual === 0
-    );
-    actualizar_riesgo(
-      "riesgo_individual_medio",
-      props.item.riesgo_individual === 1
-    );
-    actualizar_riesgo(
-      "riesgo_individual_alto",
-      props.item.riesgo_individual === 2
-    );
-    actualizar_riesgo("riesgo_familiar_bajo", props.item.riesgo_familiar === 0);
-    actualizar_riesgo(
-      "riesgo_familiar_medio",
-      props.item.riesgo_familiar === 1
-    );
-    actualizar_riesgo("riesgo_familiar_alto", props.item.riesgo_familiar === 2);
-    actualizar_riesgo(
-      "riesgo_academico_bajo",
-      props.item.riesgo_academico === 0
-    );
-    actualizar_riesgo(
-      "riesgo_academico_medio",
-      props.item.riesgo_academico === 1
-    );
-    actualizar_riesgo(
-      "riesgo_academico_alto",
-      props.item.riesgo_academico === 2
-    );
-    actualizar_riesgo(
-      "riesgo_economico_bajo",
-      props.item.riesgo_economico === 0
-    );
-    actualizar_riesgo(
-      "riesgo_economico_medio",
-      props.item.riesgo_economico === 1
-    );
-    actualizar_riesgo(
-      "riesgo_economico_alto",
-      props.item.riesgo_economico === 2
-    );
-    actualizar_riesgo(
-      "riesgo_vida_universitaria_ciudad_bajo",
-      props.item.riesgo_vida_universitaria_ciudad === 0
-    );
-    actualizar_riesgo(
-      "riesgo_vida_universitaria_ciudad_medio",
-      props.item.riesgo_vida_universitaria_ciudad === 1
-    );
-    actualizar_riesgo(
-      "riesgo_vida_universitaria_ciudad_alto",
-      props.item.riesgo_vida_universitaria_ciudad === 2
-    );
-  }, []);
+    if (!props.item || Object.keys(props.item).length === 0) return;
+  
+    //console.log("Inicializando riesgos", props.item);
+  
+    const riesgos = [
+      "individual",
+      "familiar",
+      "academico",
+      "economico",
+      "vida_universitaria_ciudad"
+    ];
+  
+    riesgos.forEach(tipo => {
+      actualizar_riesgo(`riesgo_${tipo}_bajo`, props.item[`riesgo_${tipo}`] === 0);
+      actualizar_riesgo(`riesgo_${tipo}_medio`, props.item[`riesgo_${tipo}`] === 1);
+      actualizar_riesgo(`riesgo_${tipo}_alto`, props.item[`riesgo_${tipo}`] === 2);
+    });
+  
+  }, [props.item]);
 
   /**
    * Función para enviar las observaciones del seguimiento.
@@ -1071,7 +698,7 @@ const Seguimiento_individual_edit_v3 = (props) => {
       if (res) {
         //   recargarPagina();
         //   props.handleClose();
-        console.log("Observaciones enviadas");
+        //console.log("Observaciones enviadas");
         alert("Observaciones enviadas");
         setShowModalMail(false);
       } else {

@@ -13,12 +13,13 @@ from django.db import transaction
 from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso, firma_tratamiento_datos
 from modulo_formularios_externos.models import firma_tratamiento_datos_temp
 from modulo_programa.models import programa, programa_estudiante, facultad
+from modulo_academico.models import monitoria_academica
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
 from django.shortcuts import get_object_or_404
 
 
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Count, F, Window
 from rest_framework.response import Response
 from rest_framework import status
 from modulo_geografico.models import municipio
@@ -391,67 +392,86 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     """
-    Elimina un usuario existente y activo en el sistema.
+    Elimina un usuario existente y activo en el sistema. (Usado únicamente para usuarios duplicados)
     """
     @action(detail=False, methods=['post'], url_path='eliminar_usuario', permission_classes=[IsAuthenticated])
     def eliminar_usuario(self, request, pk=None):
-        """
-        Elimina un usuario existente en el sistema.
-        """
-        """
-        {
-            "usuario": "123456789",
-        }
-        """
-        # WIP
-        try:
-            semestres_activos = semestre.objects.filter(semestre_actual=True).values_list('id', flat=True)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            asignaciones_usuario = asignacion.objects.filter(
-                id_usuario__username=request.data['usuario'])
-            if asignaciones_usuario.exists():
-                if asignaciones_usuario.filter(id_semestre__in=semestres_activos).exists():
-                    return Response({"error": "No se puede eliminar el usuario porque tiene asignaciones activas en el semestre actual."}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    id_user = asignaciones_usuario['id_usuario']
-                    
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
         try:
-            usuarios_data = request.data  # Lista de diccionarios con clave "usuario"
-
-            if not isinstance(usuarios_data, list) or not usuarios_data:
+            ids = request.data.get('ids', [])
+            # print("DATA:", request.data)
+            # print("IDS:", ids)
+            if not isinstance(ids, list) or not ids:
                 return Response(
-                    {"error": "Debes proporcionar una lista de usuarios válida."},
+                    {"error": "Debes enviar una lista de IDs válida."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            mensajes = []
-
             with transaction.atomic():
-                for item in usuarios_data:
-                    username = item.get("usuario")
-                    if not username:
-                        mensajes.append(
-                            {"usuario": None, "error": "Falta el campo 'usuario'"})
-                        continue
+                usuarios = User.objects.annotate(
+                    total_asignaciones=Count(
+                        'id_creador_seguimiento', distinct=True)
+                ).filter(id__in=ids).distinct()
 
-                    try:
-                        user = User.objects.get(username=username)
-                        user.delete()
-                        mensajes.append(
-                            {"usuario": username, "mensaje": "Eliminado exitosamente"})
+                eliminados = []
+                bloqueados = []
 
-                    except User.DoesNotExist:
-                        mensajes.append(
-                            {"usuario": username, "error": "Usuario no encontrado"})
+                for user in usuarios:
+                    if user.total_asignaciones > 0:
+                        bloqueados.append({
+                            "id": user.id,
+                            "username": user.username,
+                            "total_asignaciones": user.total_asignaciones,
+                            "error": "Tiene asignaciones, no se puede eliminar"
+                        })
+                    else:
+                        eliminados.append({
+                            "id": user.id,
+                            "username": user.username
+                        })
 
-            return Response(mensajes, status=status.HTTP_200_OK)
+                # eliminar solo los que sí se pueden
+                ids_eliminar = [u["id"] for u in eliminados]
+
+                User.objects.filter(id__in=ids_eliminar).delete()
+
+            return Response({
+                "eliminados": eliminados,
+                "bloqueados": bloqueados,
+                "total_eliminados": len(eliminados),
+                "total_bloqueados": len(bloqueados)
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    """
+    Listar usuarios duplicados por nombre y apellido, junto con la cantidad de seguimientos que tienen cada uno.
+    """
+    @action(detail=False, methods=['post'], url_path='listar_usuarios_duplicados',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_usuarios_duplicados(self, request, pk=None):
+        try:
+            usuarios = User.objects.annotate(
+                duplicados=Window(
+                    expression=Count('id'),
+                    partition_by=[F('first_name'), F('last_name')]
+                ),
+                total_asignaciones=Count(
+                    'id_creador_seguimiento', distinct=True)
+            ).filter(
+                duplicados__gt=1
+            ).values(
+                'id',
+                'username',
+                'first_name',
+                'last_name',
+                'email',
+                'total_asignaciones'
+            ).order_by('first_name', 'last_name')
+
+            return Response(list(usuarios), status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -676,8 +696,91 @@ class panel_admin_roles_viewset(viewsets.ViewSet):
             return Response(roles, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'], url_path='crear_rol', 
+            permission_classes=[IsAuthenticated],
+            )
+    def crear_rol(self, request):
+        """
+        Crear un nuevo rol.
+        Recibes:
+        {
+            "nombre": "Rol de Prueba",
+            "descripcion": "Este es un rol de prueba",
+            "permisos": ["Permiso de Prueba", "Otro Permiso"]
+        }
+        
+        """
+        
+        try:
+            new_rol = rol.objects.create(
+                nombre=request.data['nombre'],
+                descripcion=request.data['descripcion']
+            )
+            new_rol.save()
+            if 'permisos' in request.data:
+                permisos_nombres = request.data['permisos']
+                permisos_objs = permiso.objects.filter(nombre__in=permisos_nombres)
+                for permiso_obj in permisos_objs:
+                    rol_permiso.objects.create(
+                        id_rol=new_rol,
+                        id_permiso=permiso_obj
+                    )
+                    
+            return Response({"mensaje": "Rol creado exitosamente"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['post'], url_path='actualizar_rol', 
+            permission_classes=[IsAuthenticated],
+            )
+    def actualizar_rol(self, request):
+        """
+        Actualizar un rol existente.
+        Recibes:
+        {
+            "id": 1,
+            "nombre": "Rol de Prueba Actualizado",
+            "descripcion": "Este es un rol de prueba actualizado",
+            "permisos": ["Permiso de Prueba", "Otro Permiso"]
+        }
+        
+        """
+        try:
+            # print("Datos recibidos para actualizar rol:", request.data)
+            rol_obj = rol.objects.get(id=request.data['id'])
+            # print("pasa")
+            rol_obj.nombre = request.data['nombre']
+            rol_obj.descripcion = request.data['descripcion']
+            rol_obj.save()
 
+            # Actualizar permisos
+            if 'permisos' in request.data:
+                permisos_nombres = request.data['permisos']
+                # print("Nombres de permisos recibidos:", request.data)
+                permisos_objs = permiso.objects.filter(nombre__in=permisos_nombres)
+                # print("Permisos a asignar:", permisos_objs)
+                
+                # Eliminar permisos actuales del rol
+                rol_permiso.objects.filter(id_rol=rol_obj).delete()
+                # print("Permisos actuales eliminados para el rol:", rol_obj.nombre)
+                
+                # Asignar nuevos permisos al rol
+                for permiso_obj in permisos_objs:
+                    rol_permiso.objects.create(
+                        id_rol=rol_obj,
+                        id_permiso=permiso_obj
+                    )
+                    
+                    # print(f"Permiso '{permiso_obj.nombre}' asignado al rol '{rol_obj.nombre}'")
+
+            return Response({"mensaje": "Rol actualizado exitosamente"}, status=status.HTTP_200_OK)
+        except rol.DoesNotExist:
+            return Response({"error": "Rol no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
 class panel_admin_permisos_viewset(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'], url_path='listar_permisos', permission_classes=[IsAuthenticated])
@@ -689,6 +792,30 @@ class panel_admin_permisos_viewset(viewsets.ViewSet):
         try:
             permisos = permiso.objects.all().values('id', 'nombre', 'descripcion')
             return Response(list(permisos), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='crear_permiso',
+            permission_classes=[IsAuthenticated],
+            )
+    def crear_permiso(self, request):
+        """
+        Crear un nuevo permiso.
+        Recibes:
+        {
+            "nombre": "Permiso de Prueba",
+            "descripcion": "Este es un permiso de prueba",
+        }
+        
+        """
+        
+        try:
+            new_permiso = permiso.objects.create(
+                nombre=request.data['nombre'],
+                descripcion=request.data['descripcion']
+            )
+            new_permiso.save()
+            return Response({"mensaje": "Permiso creado exitosamente"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -810,7 +937,7 @@ class panel_admin_cohortes_viewset(viewsets.ViewSet):
         }
         """
         try:
-            print(request.data)
+            # print(request.data)
             new_cohorte = cohorte.objects.create(
                 id_number=request.data['id_number'],
                 nombre=request.data['nombre'],
@@ -1188,6 +1315,35 @@ class panel_admin_programas_viewset(viewsets.ViewSet):
 
         return Response({"mensaje": "Programa actualizado correctamente"}, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['post'], url_path='crear_programa',
+            permission_classes=[IsAuthenticated],
+            )
+    def crear_programa(self, request):
+        """
+        Crear un nuevo programa académico.
+        Recibes:
+        {
+            "codigo_snies": "12345",
+            "codigo_univalle": "P001",
+            "nombre": "Programa de Prueba",
+            "jornada": "Diurna",
+            "id_facultad": 1,
+            "id_sede": 1
+        }
+        """
+        try:
+            new_programa = programa.objects.create(
+                codigo_snies=request.data['codigo_snies'],
+                codigo_univalle=request.data['codigo_univalle'],
+                nombre=request.data['nombre'],
+                jornada=request.data['jornada'],
+                id_facultad_id=request.data['id_facultad'],
+                id_sede_id=request.data['id_sede']
+            )
+            new_programa.save()
+            return Response({"mensaje": "Programa creado exitosamente"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class panel_admin_semestres_viewset(viewsets.ViewSet):
     """
@@ -1359,5 +1515,138 @@ class panel_admin_firma_temporal_viewset(viewsets.ViewSet):
             ]
 
             return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
+    """
+    ViewSet para gestionar las monitorias académicas.
+    """
+
+    @action(detail=False, methods=['post'], url_path='listar_monitorias_academicas',
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_monitorias_academicas(self, request):
+        """
+        Listar todas las monitorias académicas.
+        """
+        try:
+            # Selecciona solo a los qué tengan "estado" == true (ACTIVO)
+            monitorias = monitoria_academica.objects.filter(estado=True).select_related('id_monitor', 'id_sede','id_semestre').values(
+                'id', 'id_monitor__id', 'id_monitor__first_name', 'id_monitor__last_name', 'id_monitor__email',
+                'id_sede__id', 'id_sede__nombre',
+                'id_semestre__id', 'id_semestre__nombre',
+                'estado', 'materia'
+            )
+
+            data = [
+                {
+                    "id": m["id"],
+                    "id_monitor": m["id_monitor__id"],
+                    "nombre_monitor": m["id_monitor__first_name"] + ' ' + m["id_monitor__last_name"],
+                    "correo_monitor": m["id_monitor__email"],
+                    "id_sede": m["id_sede__id"],
+                    "nombre_sede": m["id_sede__nombre"],
+                    "id_semestre": m["id_semestre__id"],
+                    "nombre_semestre": m["id_semestre__nombre"],
+                    "estado": "INACTIVO" if m["estado"] == False else "ACTIVO",
+                    "materia": m["materia"]
+                }
+                for m in monitorias
+            ]
+
+            return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='listar_monitores_academicos', 
+            permission_classes=[IsAuthenticated]
+            )
+    def listar_monitores_academicos(self, request):
+        """
+        Listar todos los monitores académicos.
+        """
+        try:
+            monitores = usuario_rol.objects.filter(
+                id_rol=15,  # ID del rol de monitor académico
+                estado="ACTIVO",
+            ).values('id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name')
+        
+            data = [
+                {
+                    "id_usuario": m["id_usuario"],
+                    "username_monitor": m["id_usuario__username"],
+                    "nombre_monitor": m["id_usuario__first_name"] + ' ' + m["id_usuario__last_name"],
+                }
+                for m in monitores
+            ]
+            
+            return Response(list(data), status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='desactivar_monitorias',
+            permission_classes=[IsAuthenticated]
+            )
+    def desactivar_monitorias(self, request):
+        """
+        Desactivar una monitoria académica.
+        Recibes conjunto de IDs de monitorias a desactivar:
+        {
+            "ids": [123, 456, 789]
+        }   
+        """
+        try:
+            ids_monitorias = request.data['id_monitorias']
+            # print(ids_monitorias)
+            # print(request.data)
+            monitorias = monitoria_academica.objects.filter(id__in=ids_monitorias)
+            monitorias.update(estado=False)
+            return Response({"mensaje": "Monitorias desactivadas exitosamente"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+    @action(detail=False, methods=['post'], url_path='crear_monitoria_academica',
+            permission_classes=[IsAuthenticated]
+            )
+    def crear_monitoria_academica(self, request):
+        """
+        Crear una nueva monitoria académica.
+        Recibes:
+        {
+            "id_monitor": 123,
+            "id_sede": 1,
+            "id_semestre": 1,
+            "materias": ["Matemáticas", "Física"],
+            "estado": true
+        }
+        """
+        # print(request.data) 
+        try:
+            # Verificar que el monitor existe y tiene el rol de monitor académico
+            monitor = usuario_rol.objects.filter(
+                id_usuario=request.data['id_monitor'],
+                id_rol=15,  # ID del rol de monitor académico
+                estado="ACTIVO"
+            ).first()
+            # print(monitor)
+            if not monitor:
+                return Response({"error": "Monitor académico no encontrado o no activo"}, status=status.HTTP_404_NOT_FOUND)
+            
+            if not request.data['materias'] or request.data['sede'] is None:
+                return Response({"error": "Las materias y la sede son requeridas"}, status=status.HTTP_400_BAD_REQUEST)
+            for materia in request.data['materias']:
+                new_monitoria = monitoria_academica.objects.create(
+                    id_monitor_id=request.data['id_monitor'],
+                    id_sede_id=request.data['sede'],
+                    id_semestre_id=request.data['semestre_actual'],
+                    materia=materia,
+                    estado=True
+                )
+                
+                new_monitoria.save()
+                
+            return Response({"mensaje": "Monitoria académica creada exitosamente"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
