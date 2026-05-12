@@ -16,6 +16,12 @@
                 "path":"/reporte",
                 "name":"Reporte general",
                 "icon":"bi bi-file-ruled-fill"
+            },
+            {
+                "id":13,
+                "path":"/registro_horas",
+                "name":"Registro de horas trabajadas",
+                "icon":"bi bi-clock"
             }
         ]
     }
