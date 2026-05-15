@@ -9,6 +9,9 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
 from django.db import transaction
+from django.db.models import Count, F, Window
+from django.db.models.functions import Trim, Upper
+
 
 from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso, firma_tratamiento_datos
 from modulo_formularios_externos.models import firma_tratamiento_datos_temp
@@ -19,7 +22,7 @@ from modulo_asignacion.models import asignacion
 from django.shortcuts import get_object_or_404
 
 
-from django.db.models import Prefetch, Count, F, Window
+from django.db.models import Prefetch, Count, F, Window, Q
 from rest_framework.response import Response
 from rest_framework import status
 from modulo_geografico.models import municipio
@@ -338,52 +341,43 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         Listar todos los usuarios.
         """
         try:
-            # Obtener los semestres actuales y sus sedes
-            data_semestres = semestre.objects.filter(
-                semestre_actual=True
-            ).select_related("id_sede").values("id", "id_sede__nombre")
-
-            # Mapeo de id_semestre -> nombre de sede
-            sede_por_semestre = {
-                item["id"]: item["id_sede__nombre"] for item in data_semestres}
-
-            # Extraer los IDs de los semestres actuales
+            # Obtener semestres actuales con sus sedes
+            semestres = semestre.objects.filter(semestre_actual=True).select_related('id_sede')
+            # Mapeo id_semestre -> nombre sede
+            sede_por_semestre = {s.id: s.id_sede.nombre for s in semestres}
             ids_semestres = list(sede_por_semestre.keys())
 
-            # Roles activos asociados a esos semestres
+            # Traer sólo los campos necesarios de los roles activos (evita instanciar modelos completos)
             roles_activos = usuario_rol.objects.filter(
-                estado="ACTIVO",
+                estado='ACTIVO',
                 id_semestre__in=ids_semestres
-            ).select_related("id_rol", "id_semestre")
+            ).values('id_usuario_id', 'id_rol__nombre', 'id_semestre')
 
-            # Diccionario con los roles y sede por usuario
+            # Construir mapa usuario -> rol y sede usando los valores obtenidos
             roles_por_usuario = {
-                ur.id_usuario_id: {
-                    "rol": ur.id_rol.nombre,
-                    "sede": sede_por_semestre.get(ur.id_semestre_id, "SIN SEDE")
+                r['id_usuario_id']: {
+                    'rol': r['id_rol__nombre'],
+                    'sede': sede_por_semestre.get(r['id_semestre'], 'SIN SEDE')
                 }
-                for ur in roles_activos
+                for r in roles_activos
             }
 
-            # Usuarios del sistema
-            users = User.objects.all().only(
-                "id", "first_name", "last_name", "email", "username", "is_active"
-            )
+            # Traer usuarios como diccionarios (más liviano que instancias completas)
+            users = User.objects.all().values('id', 'first_name', 'last_name', 'email', 'username', 'is_active')
 
             # Construir la lista final
             user_list = []
             for user in users:
-                datos_usuario = roles_por_usuario.get(
-                    user.id, {"rol": "SIN ROL", "sede": "SIN SEDE"})
+                datos_usuario = roles_por_usuario.get(user['id'], {'rol': 'SIN ROL', 'sede': 'SIN SEDE'})
                 user_list.append({
-                    "id": user.id,
-                    "nombre": user.first_name,
-                    "apellido": user.last_name,
-                    "correo": user.email,
-                    "usuario": user.username,
-                    "estado": user.is_active,
-                    "rol": datos_usuario["rol"],
-                    "sede": datos_usuario["sede"],
+                    'id': user['id'],
+                    'nombre': user['first_name'],
+                    'apellido': user['last_name'],
+                    'correo': user['email'],
+                    'usuario': user['username'],
+                    'estado': user['is_active'],
+                    'rol': datos_usuario['rol'],
+                    'sede': datos_usuario['sede'],
                 })
 
             return Response(user_list, status=status.HTTP_200_OK)
@@ -453,28 +447,62 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             )
     def listar_usuarios_duplicados(self, request, pk=None):
         try:
-            usuarios = User.objects.annotate(
-                duplicados=Window(
-                    expression=Count('id'),
-                    partition_by=[F('first_name'), F('last_name')]
-                ),
-                total_asignaciones=Count(
-                    'id_creador_seguimiento', distinct=True)
-            ).filter(
-                duplicados__gt=1
-            ).values(
-                'id',
-                'username',
-                'first_name',
-                'last_name',
-                'email',
-                'total_asignaciones'
-            ).order_by('first_name', 'last_name')
+            # Primero obtener las claves (nombre+apellido normalizados) que están duplicadas
+            dup_pairs_qs = User.objects.annotate(
+                first_name_clean=Upper(Trim('first_name')),
+                last_name_clean=Upper(Trim('last_name'))
+            ).values('first_name_clean', 'last_name_clean')
 
-            return Response(list(usuarios), status=status.HTTP_200_OK)
+            dup_pairs = dup_pairs_qs.annotate(duplicados=Count('id')).filter(duplicados__gt=1)
+
+            # Si no hay duplicados, retornamos rápido
+            if not dup_pairs.exists():
+                return Response([], status=status.HTTP_200_OK)
+
+            # Construir mapa {(fn, ln): count}
+            dup_map = { (d['first_name_clean'], d['last_name_clean']): d['duplicados'] for d in dup_pairs }
+
+            # Obtener usuarios que coinciden con alguna de las parejas duplicadas, usando las mismas normalizaciones
+            usuarios_qs = User.objects.annotate(
+                first_name_clean=Upper(Trim('first_name')),
+                last_name_clean=Upper(Trim('last_name'))
+            ).filter(
+                is_active=False
+            )
+
+            # Filtrar por las parejas: mejor construir un OR explícito para evitar consultas complejas
+            q_pairs = Q()
+            for fn, ln in dup_map.keys():
+                q_pairs |= Q(first_name_clean=fn, last_name_clean=ln)
+
+            usuarios_qs = usuarios_qs.filter(q_pairs).annotate(
+                total_asignaciones=Count('id_creador_seguimiento', distinct=True)
+            ).values(
+                'id', 'username', 'first_name', 'last_name', 'email', 'is_active', 'first_name_clean', 'last_name_clean', 'total_asignaciones'
+            ).order_by('first_name_clean', 'last_name_clean')
+
+            # Añadir el conteo de duplicados obtenido previamente
+            result = []
+            for u in usuarios_qs:
+                dup_count = dup_map.get((u['first_name_clean'], u['last_name_clean']), 1)
+                result.append({
+                    'id': u['id'],
+                    'username': u['username'],
+                    'first_name': u['first_name'],
+                    'last_name': u['last_name'],
+                    'email': u['email'],
+                    'is_active': u['is_active'],
+                    'duplicados': dup_count,
+                    'total_asignaciones': u['total_asignaciones']
+                })
+
+            return Response(result, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class panel_admin_estudiante_viewset(viewsets.ViewSet):

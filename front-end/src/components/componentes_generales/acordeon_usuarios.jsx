@@ -10,6 +10,7 @@ import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
 import { desencriptarInt } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import { FaEdit } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 // Services
 import all_rols from "../../service/all_rols";
@@ -154,9 +155,70 @@ const SelectorUsuarios = () => {
     }));
   };
 
-  const handleCreateUser = () => {
-    Create_user.crear_usuario(newUser);
-    setShowCreateModal(false);
+  const handleCreateUser = async () => {
+    const email = newUser.user_email?.trim();
+    if (!email) {
+      Swal.fire({
+        title: "Correo inválido",
+        text: "Por favor ingrese un correo electrónico válido.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+
+    const semestre_actual = desencriptarInt(
+      sessionStorage.getItem("id_semestre_actual"),
+    );
+
+    let existingUsers = state.data_user_rol;
+    if (!existingUsers || existingUsers.length === 0) {
+      const response = await Read_user.listar_usuarios({ semestre: semestre_actual });
+      if (Array.isArray(response)) {
+        existingUsers = response;
+      }
+    }
+
+    const existingUser = existingUsers?.find(
+      (user) => user.correo?.trim().toLowerCase() === email.toLowerCase(),
+    );
+
+    if (existingUser) {
+      const result = await Swal.fire({
+        title: "El correo ya existe",
+        html: `ID: <strong>${existingUser.id}</strong><br/>Usuario: <strong>${existingUser.usuario}</strong><br/>Nombre: <strong>${existingUser.nombre} ${existingUser.apellido}</strong>`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Enviar",
+        cancelButtonText: "Cancelar",
+        reverseButtons: true,
+      });
+
+      if (!result.isConfirmed) {
+        setShowCreateModal(false);
+        setNewUser({
+          user_username: "",
+          user_first_name: "",
+          user_last_name: "",
+          user_email: "",
+          user_password: "",
+        });
+        return;
+      }
+    }
+
+    const created = await Create_user.crear_usuario(newUser);
+    if (created) {
+      consultaAllUserRol();
+      setNewUser({
+        user_username: "",
+        user_first_name: "",
+        user_last_name: "",
+        user_email: "",
+        user_password: "",
+      });
+      setShowCreateModal(false);
+    }
   };
 
   const handleDeactivate = () => {
