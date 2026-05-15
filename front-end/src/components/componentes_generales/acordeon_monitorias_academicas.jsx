@@ -95,6 +95,13 @@ const SelectorMonitoriasAcademicas = () => {
       grow: 0.1,
     },
     {
+      name: "USUARIO",
+      selector: (row) => row.id_monitor,
+      sortable: true,
+      wrap: true,
+      grow: 0.1,
+    },
+    {
       name: "NOMBRE MONITOR",
       selector: (row) => row.nombre_monitor,
       sortable: true,
