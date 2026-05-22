@@ -9,7 +9,6 @@ import { desencriptar } from '../../../modulos/utilidades_seguridad/utilidades_s
 
 const Desplegable_item = ({item, updateDataUserSocioedu}) => {
 
-
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -24,8 +23,11 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
     const itemFecha = new Date(item.fecha);
 
     const userRole = desencriptar(sessionStorage.getItem('rol'));
+    const isMonitorOrPracticante = userRole === 'monitor' || userRole === 'practicante';
+    const isIndividualSeguimiento = Boolean(item.hora_inicio);
+    // Sólo ocultar si el seguimiento es individual Y fue creado por un profesional (id_rol_creador === 3)
+    const hideIndividualForRole = isMonitorOrPracticante && isIndividualSeguimiento && item.id_rol_creador === 3;
 
-    
       const enviar_datos = (e) => {
         // Actualiza state.data_user_socioedu con los nuevos datos
                 updateDataUserSocioedu(e);
@@ -48,62 +50,63 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
             <Row>
 
                 <Col className="col_reportes" >
-                { item.revisado_profesional === true ?
-                (
-                    <Row className={
-                        item.id_rol_creador === 3
-                        ? "col_reportes_hover_profesional_block" :
-                        "col_reportes_hover_block"
-                    }>
+                { !hideIndividualForRole && (
+                    item.revisado_profesional === true ?
+                    (
+                        <Row className={
+                            item.id_rol_creador === 3
+                            ? "col_reportes_hover_profesional_block" :
+                            "col_reportes_hover_block"
+                        }>
 
-                    {
-                        item.hora_inicio ?
-                        (
-                        <Col onClick={handleShow}>
-                            Seguimiento individual : {item.fecha} 
-                            { item.revisado_practicante === true ? 
-                            <b>✔</b>: <b></b>}
-                        </Col>
-                        )
-                        :
-                        (
-                        <Col onClick={handleShow2}>
-                            Inasistencia : {item.fecha}
-                            { item.revisado_practicante === true ? 
-                            <b>✔</b>: <b></b>}
-                        </Col>
-                        )
-                    }
-                    </Row>
-                ):
-                (
-                    <Row className={
-                        item.id_rol_creador === 3
-                        ? "col_reportes_profesional"
-                        : "col_reportes_hover"
-                    }>
+                        {
+                            item.hora_inicio ?
+                            (
+                            <Col onClick={handleShow}>
+                                Seguimiento individual : {item.fecha} 
+                                { item.revisado_practicante === true ? 
+                                <b>✔</b>: <b></b>}
+                            </Col>
+                            )
+                            :
+                            (
+                            <Col onClick={handleShow2}>
+                                Inasistencia : {item.fecha}
+                                { item.revisado_practicante === true ? 
+                                <b>✔</b>: <b></b>}
+                            </Col>
+                            )
+                        }
+                        </Row>
+                    ):
+                    (
+                        <Row className={
+                            item.id_rol_creador === 3
+                            ? "col_reportes_profesional"
+                            : "col_reportes_hover"
+                        }>
 
-                    {
-                        item.hora_inicio ?
-                        (
-                        <Col onClick={handleShow}>
-                            Seguimiento individual : {item.fecha} 
-                            { item.revisado_practicante === true ? 
-                            <b>✔</b>: <b></b>}
-                        </Col>
-                        )
-                        :
-                        (
-                        <Col onClick={handleShow2}>
-                            Inasistencia : {item.fecha}
-                            { item.revisado_practicante === true ? 
-                            <b>✔</b>: <b></b>}
-                        </Col>
-                        )
-                    }
-                    </Row>
-                )
-                }
+                        {
+                            item.hora_inicio ?
+                            (
+                            <Col onClick={handleShow}>
+                                Seguimiento individual : {item.fecha} 
+                                { item.revisado_practicante === true ? 
+                                <b>✔</b>: <b></b>}
+                            </Col>
+                            )
+                            :
+                            (
+                            <Col onClick={handleShow2}>
+                                Inasistencia : {item.fecha}
+                                { item.revisado_practicante === true ? 
+                                <b>✔</b>: <b></b>}
+                            </Col>
+                            )
+                        }
+                        </Row>
+                    )
+                )}
                 </Col>
                 
                {itemFecha < fechaReferencia ? (
