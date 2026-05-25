@@ -1,10 +1,15 @@
-from django.shortcuts import render
 from rest_framework import viewsets, status
-from rest_framework.response import Response
-from .serializers import RegistroHorasSerializer
 from rest_framework.decorators import action
-from .models import RegistroHoras
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from .models import RegistroHoras
+from .serializers import RegistroHorasSerializer
+from modulo_usuario_rol.models import usuario_rol
+from modulo_instancia.models import semestre
+from django.db.models import Sum
+from django.shortcuts import get_object_or_404
+
+
 
 class registros_horas_viewset(viewsets.GenericViewSet):
     """Viewset para el modelo de RegistroHoras"""
@@ -20,17 +25,110 @@ class registros_horas_viewset(viewsets.GenericViewSet):
     def crear_registro(self, request):
         serializer = self.get_serializer(data=request.data)
 
-        data = None
-
         if serializer.is_valid():
-            data = serializer.data
-        
+            trabajador = serializer.validated_data.get('trabajador')
+
+            # Buscar el rol activo del trabajador
+            rol_usuario = usuario_rol.objects.filter(
+                id_usuario=trabajador,
+                estado="ACTIVO"
+            ).first()
+
+            if rol_usuario is None:
+                return Response(
+                    {"error": "El trabajador no tiene un rol activo asignado."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            serializer.save(rol=rol_usuario)
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
 
-        #return Response(
-        #    serializer.errors,
-        #    status=status.HTTP_400_BAD_REQUEST
-        #)
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # endpoint para obtener todos los regostros de trabajador, por el id 
+    @action(detail=False, methods=['post'], url_path='by_trabajador')
+    def get_by_id(self, request):
+        trabajador = request.data.get('trabajador')
+        semestre_id = request.data.get('semestre')
+
+        semestre_actual = semestre.objects.get(id=semestre_id)
+        fecha_inicio = semestre_actual.fecha_inicio
+
+        registros_filtrados = RegistroHoras.objects.select_related(
+            'rol',
+            'rol__id_rol'
+        ).filter(
+            trabajador=trabajador,
+            fecha__gt=fecha_inicio
+        )
+
+        serializer = self.get_serializer(registros_filtrados, many=True)        
+        total_horas = registros_filtrados.aggregate(
+            total=Sum('horas_trabajadas')
+        )['total'] or 0
+
+        return Response({
+            "registros": serializer.data,
+            "total_horas": float(total_horas)
+        }, status=status.HTTP_200_OK)
+    
+
+    
+    @action(
+        detail=True,  
+        methods=['patch'],
+        url_path='actualizar_registro'
+    )
+    def actualizar_registro(self, request, pk=None):
+        """Actualiza parcialmente un registro de horas por su ID"""
+        registro = get_object_or_404(RegistroHoras, pk=pk)
+
+        
+
+        serializer = self.get_serializer(registro, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            # Si cambia el trabajador, recalcular el rol activo
+            trabajador = serializer.validated_data.get('trabajador', registro.trabajador)
+
+            rol_usuario = usuario_rol.objects.filter(
+                id_usuario=trabajador,
+                estado="ACTIVO"
+            ).first()
+
+            if rol_usuario is None:
+                return Response(
+                    {"error": "El trabajador no tiene un rol activo asignado."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            serializer.save(rol=rol_usuario)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    @action(
+        detail=True,
+        methods=['delete'],
+        url_path='eliminar_registro'
+    )
+    def eliminar_registro(self, request, pk=None):
+        """Elimina un registro de horas por su ID"""
+        registro = get_object_or_404(RegistroHoras, pk=pk)
+
+        # Verificar que el registro pertenece al trabajador autenticado (opcional pero recomendado)
+        # if registro.trabajador != request.user:
+        #     return Response({"error": "No tienes permiso para eliminar este registro."}, status=status.HTTP_403_FORBIDDEN)
+
+        registro.delete()
+        return Response(
+            {"message": "Registro eliminado correctamente."},
+            status=status.HTTP_200_OK
+        )

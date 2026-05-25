@@ -22,7 +22,14 @@
                 "path":"/registro_horas",
                 "name":"Registro de horas trabajadas",
                 "icon":"bi bi-clock"
+            },
+            {
+                "id":14,
+                "path":"/hoja_monitor",
+                "name":"Resumen de horas trabajadas",
+                "icon":"bi bi-clipboard-data"
             }
+
         ]
     }
 ]
