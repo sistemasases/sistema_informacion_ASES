@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual";
 import Seguimiento_individual_v2 from "../seguimiento_forms/form_seguimiento_individual_v2";
 import Seguimiento_individual_v3 from "../seguimiento_forms/form_seguimiento_individual_v3";
+import Seguimiento_individual_v3_1 from "../seguimiento_forms/form_seguimiento_individual_v3_1"; 
 import { useEffect } from "react";
 import axios from "axios";
 import Selector from "../../components/ficha_estudiante/selector";
@@ -404,7 +405,7 @@ const Info_basica = (props) => {
   // Renderizado del componente para visualizar seguimientos
   return (
     <Row className="row_prueba">
-      <Seguimiento_individual_v3
+      <Seguimiento_individual_v3_1
         estudiante_seleccionado={state.seleccionado}
         recarga_ficha_estudiante={true}
         show={show}

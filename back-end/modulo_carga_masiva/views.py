@@ -66,6 +66,8 @@ class Validador_carga(APIView):
                 return carga_fichas2(file)
             elif(tipo == "FichaV3"):
                 return carga_fichas3(file)
+            elif(tipo == "FichaV3_1"):
+                return carga_fichas3_1(file)    
             elif(tipo == "ActualizarFichas"):
                 return actualizar_fichas(file)
             elif(tipo == "Inasistencia"):
@@ -1347,9 +1349,12 @@ def carga_fichas2(file):
         )
     
 def to_bool_or_none(value):
-    # Si es NaN o vacío --> mantener None (sin cambios)
+    # NaN -> None
     if pd.isna(value):
         return None
+    # Si ya es booleano
+    if isinstance(value, bool):
+        return value
     valor_str = str(value).strip().lower()
     if valor_str == "":
         return None
@@ -1598,7 +1603,253 @@ def carga_fichas3(file):
             status=status.HTTP_400_BAD_REQUEST
         )
         
+def carga_fichas3_1(file):
+    list_dict_result = []
+    list_fichas = []
+    datos = pd.read_csv(file,header=0)
+    # print(datos.head())
+    # print(datos.shape)
+    # print(datos.columns)
+    
+    """
+    Nuevas Funciones Auxiliares para convertir a booleano, entero o texto, considerando casos de NaN o valores no estándar.
+    Con este enfoque, se asegura que los datos se procesen de manera consistente, evitando errores de conversión y 
+    manteniendo la integridad de la información al cargar las fichas desde el archivo CSV.
+    
+    Adicionalmente, facilita la actualización de futura de versiones de la carga de seguimientos.
+    """
+    def texto(valor):
+        return "" if pd.isna(valor) else str(valor)
 
+    def entero(valor, default=-1):
+        return default if pd.isna(valor) else int(valor)
+
+    def booleano(valor):
+        if pd.isna(valor):
+            return False
+
+        if isinstance(valor, bool):
+            return valor
+
+        return str(valor).strip().lower() in (
+            'true',
+            '1',
+            'si',
+            'sí',
+            'yes'
+        )
+    
+    try:
+        for _, fila in datos.iterrows():
+            # print(fila['fecha'])
+            if User.objects.filter(id=fila['id_creador']).exists():
+                consulta_creador = User.objects.get(id=fila['id_creador'])
+                if estudiante.objects.filter(id=fila['id_estudiante']).exists():
+                    consulta_estudiante = estudiante.objects.get(
+                        id=fila['id_estudiante']
+                    )
+                    fecha = datetime.strptime(str(fila['fecha']), '%Y-%m-%d')
+                    hora_inicio = pd.to_datetime(
+                        fila['hora_inicio']
+                    ).time()
+
+                    hora_fin = pd.to_datetime(
+                        fila['hora_finalización']
+                    ).time()
+
+                    if seguimiento_individual.objects.filter(
+                        fecha=fecha,
+                        hora_inicio=hora_inicio,
+                        hora_finalización=hora_fin,
+                        id_creador=consulta_creador,
+                        id_estudiante=consulta_estudiante
+                    ).exists():
+
+                        dict_result = {
+                            'dato': fila['fecha'],
+                            'mensaje': 'Ya existe esta ficha.'
+                        }
+                        list_dict_result.append(dict_result)
+
+                        continue
+
+                    try:
+
+                        # Aquí construyes Seguimiento_individual
+                        Seguimiento_individual = seguimiento_individual(
+                            lugar=str(fila['lugar']),
+                            fecha=fecha,
+                            hora_inicio=hora_inicio,
+                            hora_finalización=hora_fin,
+
+                            objetivos=texto(fila['objetivos']),
+                            objetivos2=texto(fila['objetivos2']),
+                            objetivos3=texto(fila['objetivos3']),
+
+                            # Individual
+                            individual=texto(fila['individual']),
+                            riesgo_individual=entero(fila['riesgo_individual']),
+                            autoconocimiento=booleano(fila['autoconocimiento']),
+                            autonomia=booleano(fila['autonomia']),
+                            proyecto_de_vida=booleano(fila['proyecto_de_vida']),
+                            historia_de_vida=booleano(fila['historia_de_vida']),
+                            salud=booleano(fila['salud']),
+                            relación_eriótico_afectivas=booleano(fila['relación_eriótico_afectivas']),
+                            identificación=booleano(fila['identificación']),
+                            aspectos_motivacionales=booleano(fila['aspectos_motivacionales']),
+                            diversidad_sexual=booleano(fila['diversidad_sexual']),
+                            red_de_apoyo=booleano(fila['red_de_apoyo']),
+                            rasgos_de_personalidad=booleano(fila['rasgos_de_personalidad']),
+
+                            # Familiar
+                            familiar=texto(fila['familiar']),
+                            riesgo_familiar=entero(fila['riesgo_familiar']),
+                            dinamica_familiar=booleano(fila['dinamica_familiar']),
+                            relaciones_familiares=booleano(fila['relaciones_familiares']),
+                            red_de_apoyo_familiar=booleano(fila['red_de_apoyo_familiar']),
+                            rol_del_estudiante_en_la_familia=booleano(fila['rol_del_estudiante_en_la_familia']),
+
+                            # Académico
+                            academico=texto(fila['academico']),
+                            riesgo_academico=entero(fila['riesgo_academico']),
+                            desempeño_académico=booleano(fila['desempeño_académico']),
+                            elección_vocacional=booleano(fila['elección_vocacional']),
+                            autogestion_academica=booleano(fila['autogestion_academica']),
+                            manejo_del_tiempo=booleano(fila['manejo_del_tiempo']),
+
+                            # Económico
+                            economico=texto(fila['economico']),
+                            riesgo_economico=entero(fila['riesgo_economico']),
+                            apoyos_económicos_institucionales=booleano(fila['apoyos_económicos_institucionales']),
+                            manejo_finanzas=booleano(fila['manejo_finanzas']),
+                            apoyo_económico_familiar=booleano(fila['apoyo_económico_familiar']),
+                            situación_laboral_ocupacional=booleano(fila['situación_laboral_ocupacional']),
+
+                            # Vida universitaria
+                            vida_universitaria_ciudad=texto(fila['vida_universitaria_ciudad']),
+                            riesgo_vida_universitaria_ciudad=entero(fila['riesgo_vida_universitaria_ciudad']),
+                            motivación_compañamiento=booleano(fila['motivación_compañamiento']),
+                            referencia_geográfica=booleano(fila['referencia_geográfica']),
+                            adaptación_ciudad_Universidad=booleano(fila['adaptación_ciudad_Universidad']),
+                            oferta_servicios=booleano(fila['oferta_servicios']),
+                            movilidad_y_transporte=booleano(fila['movilidad_y_transporte']),
+                            integracion_a_la_cultura_universitaria=booleano(fila['integracion_a_la_cultura_universitaria']),
+                            vinculación_grupos_actividades_extracurriculares=booleano(fila['vinculación_grupos_actividades_extracurriculares']),
+                            uso_de_los_servicios_universitarios=booleano(fila['uso_de_los_servicios_universitarios']),
+                            vivienda=booleano(fila['vivienda']),
+
+                            # Acciones monitor
+                            apoyo_académico=booleano(fila['apoyo_académico']),
+                            taller_par_par=booleano(fila['taller_par_par']),
+                            reconocimiento_ciudad_U=booleano(fila['reconocimiento_ciudad_U']),
+                            rem_profesional_SE=booleano(fila['rem_profesional_SE']),
+                            rem_racticante_SE=booleano(fila['rem_racticante_SE']),
+                            rem_actividades_grupales=booleano(fila['rem_actividades_grupales']),
+                            rem_monitorías_académicas=booleano(fila['rem_monitorías_académicas']),
+                            rem_proyectos_Universidad=booleano(fila['rem_proyectos_Universidad']),
+                            rem_servicio_salud=booleano(fila['rem_servicio_salud']),
+                            rem_registro_académico=booleano(fila['rem_registro_académico']),
+                            rem_matrícula_financiera=booleano(fila['rem_matrícula_financiera']),
+                            rem_desarrollo_humano_promoción_SE=booleano(fila['rem_desarrollo_humano_promoción_SE']),
+                            rem_directores_programa=booleano(fila['rem_directores_programa']),
+                            rem_grupos_universidad=booleano(fila['rem_grupos_universidad']),
+                            rem_externa=booleano(fila['rem_externa']),
+                            rem_OITEL=booleano(fila['rem_OITEL']),
+                            rem_rep_estudiantiles=booleano(fila['rem_rep_estudiantiles']),
+                            escucha_activa=booleano(fila['escucha_activa']),
+                            Ninguna_acción_realizada=booleano(fila['Ninguna_acción_realizada']),
+
+                            # Acciones estudiante
+                            asist_actividades_grupales=to_bool_or_none(fila['asist_actividades_grupales']),
+                            asist_monitoria_aca=to_bool_or_none(fila['asist_monitoria_aca']),
+                            asist_matricula_financiera=to_bool_or_none(fila['asist_matricula_financiera']),
+                            asist_desa_humano=to_bool_or_none(fila['asist_desa_humano']),
+                            asist_proyect_uni=to_bool_or_none(fila['asist_proyect_uni']),
+                            asist_dir_programa=to_bool_or_none(fila['asist_dir_programa']),
+                            asist_prof_se=to_bool_or_none(fila['asist_prof_se']),
+                            asist_servi_salud=to_bool_or_none(fila['asist_servi_salud']),
+                            asist_grupo_uni=to_bool_or_none(fila['asist_grupo_uni']),
+                            asist_practicante_se=to_bool_or_none(fila['asist_practicante_se']),
+                            asist_regis_academico=to_bool_or_none(fila['asist_regis_academico']),
+                            asist_rem_externa=to_bool_or_none(fila['asist_rem_externa']),
+
+                            observaciones=texto(fila['observaciones']),
+                            revisado_profesional=booleano(fila['revisado_profesional']),
+                            revisado_practicante=booleano(fila['revisado_practicante']),
+                            primer_acercamiento=booleano(fila['primer_acercamiento']),
+                            cierre=booleano(fila['cierre']),
+
+                            id_creador=consulta_creador,
+                            id_modificador=None,
+                            id_estudiante=consulta_estudiante,
+                        )
+                        list_fichas.append(Seguimiento_individual)
+                        dict_result = {
+                            'dato': fila['fecha'],
+                            'mensaje': (
+                                f'Se cargó correctamente la ficha del estudiante '
+                                f'con id: {fila["id_estudiante"]}.'
+                            )
+                        }
+                        list_dict_result.append(dict_result)
+
+                    except Exception as e:
+                        dict_result = {
+                            'dato': fila['fecha'],
+                            'mensaje': (
+                                f'Error al cargar la ficha del estudiante '
+                                f'con id: {fila["id_estudiante"]}.'
+                            ),
+                            'error': str(e)
+                        }
+                        list_dict_result.append(dict_result)
+                else:
+                    dict_result = {
+                        'dato': fila['fecha'],
+                        'mensaje': (
+                            f'El estudiante con id '
+                            f'{fila["id_estudiante"]} no existe.'
+                        )
+                    }
+                    list_dict_result.append(dict_result)
+            else:
+                dict_result = {
+                    'dato': fila['fecha'],
+                    'mensaje': (
+                        f'El usuario creador con id '
+                        f'{fila["id_creador"]} no existe.'
+                    )
+                }
+
+                list_dict_result.append(dict_result)
+                    
+    except Exception as e:
+        error_detail = str(e)
+        return Response(
+            {
+                "error": "Ocurrió un error al procesar los datos.",
+                "detail": error_detail
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    try:
+        with transaction.atomic():
+            seguimiento_individual.objects.bulk_create(list_fichas)
+        return Response(
+            list_dict_result,
+            status=status.HTTP_201_CREATED
+        )
+    except Exception as e:
+        error_detail = str(e)
+        return Response(
+            {
+                "error": "Ocurrió un error al intentar crear los seguimientos.",
+                "detail": error_detail
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+        
+        
 def actualizar_fichas(file):
 
     

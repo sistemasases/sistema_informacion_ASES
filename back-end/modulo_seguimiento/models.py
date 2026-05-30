@@ -71,7 +71,10 @@ class seguimiento_individual (models.Model):
     rem_directores_programa = models.BooleanField(default=False)
     rem_grupos_universidad = models.BooleanField(default=False)
     rem_externa = models.BooleanField(default=False)
-    Ninguna_acción_realizada = models.BooleanField(default=False)
+    rem_OITEL = models.BooleanField(default=False)
+    rem_rep_estudiantiles = models.BooleanField(default=False)
+    escucha_activa = models.BooleanField(default=False)
+    Ninguna_acción_realizada = models.BooleanField(default=False) #Aunque se deja de usar, el campo no debe ser borrado para no afectar la integridad de los datos de las fichas anteriores a la versión 3.1
 
     asist_actividades_grupales=models.BooleanField(default=None, null=True)
     asist_monitoria_aca=models.BooleanField(default=None, null=True)
