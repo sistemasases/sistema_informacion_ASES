@@ -17,6 +17,8 @@ class UsuarioRolSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+
 class RegistroHorasSerializer(serializers.ModelSerializer):
     rol = UsuarioRolSerializer(read_only=True)
     horas_trabajadas = serializers.DecimalField(

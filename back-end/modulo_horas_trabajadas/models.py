@@ -19,7 +19,7 @@ class RegistroHoras(models.Model):
         max_digits=4,
         decimal_places=1,
         verbose_name="Horas trabajadas",
-        editable=False,  # No se edita manualmente, se calcula solo
+        editable=False,
     )
     rol = models.ForeignKey(usuario_rol, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

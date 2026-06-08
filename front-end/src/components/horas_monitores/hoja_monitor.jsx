@@ -39,8 +39,8 @@ const HojaMonitor = () => {
   const [showDetail, setShowDetail] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedRegistro, setSelectedRegistro] = useState(null);
-  const [loadingEdit, setLoadingEdit] = useState(false);   // ← nuevo
-  const [loadingDelete, setLoadingDelete] = useState(false); // ← nuevo
+  const [loadingEdit, setLoadingEdit] = useState(false);   
+  const [loadingDelete, setLoadingDelete] = useState(false); 
   const [formData, setFormData] = useState({
     fecha: "",
     hora_inicio: "06:00:00",
@@ -52,6 +52,8 @@ const HojaMonitor = () => {
   const apellido = desencriptar(sessionStorage.getItem("last_name")) || "";
 
   useEffect(() => {
+
+    
     const getData = async () => {
       const data = await obtener_registros_por_trabajador();
       if (data) {

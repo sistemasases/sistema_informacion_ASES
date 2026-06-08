@@ -6,8 +6,10 @@ from .models import RegistroHoras
 from .serializers import RegistroHorasSerializer
 from modulo_usuario_rol.models import usuario_rol
 from modulo_instancia.models import semestre
+from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+from collections import defaultdict
 
 
 
@@ -132,3 +134,70 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             {"message": "Registro eliminado correctamente."},
             status=status.HTTP_200_OK
         )
+    
+
+    @action(
+        detail=True,
+        methods=['get'],
+        url_path='get_info_profesional'
+    )
+    def obtener_registros_profesional(self, request, pk=None):
+        try:
+            registros_nivel1 = RegistroHoras.objects.select_related(
+                'trabajador', 'rol'
+            ).filter(
+                rol__id_jefe=request.user
+            ).order_by('trabajador')
+
+            ids_practicantes = registros_nivel1.values_list(
+                'trabajador', flat=True
+            ).distinct()
+
+            # parte 2: registros donde el jefe es alguno de los practicantes (monitores)
+            registros_nivel2 = RegistroHoras.objects.select_related(
+                'trabajador', 'rol'
+            ).filter(
+                rol__id_jefe__in=ids_practicantes
+            ).order_by('trabajador')
+
+            # unir ambos querysets
+            todos_registros = registros_nivel1 | registros_nivel2
+
+            if not todos_registros.exists():
+                return Response(
+                    {"message": "No se encontraron registros."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # agrupar por trabajador
+            trabajadores_ids = todos_registros.values_list(
+                'trabajador', flat=True
+            ).distinct()
+
+            subordinados_info = []
+
+            for trabajador_id in trabajadores_ids:
+                registros_trabajador = todos_registros.filter(trabajador=trabajador_id)
+                serializer = self.get_serializer(registros_trabajador, many=True)
+                total_horas = registros_trabajador.aggregate(
+                    total=Sum('horas_trabajadas')
+                )['total'] or 0
+
+                user = User.objects.filter(id=trabajador_id).first()
+                nombre_completo = f"{user.first_name} {user.last_name}".strip() if user else str(trabajador_id)
+
+                subordinados_info.append({
+                    "trabajador_id": trabajador_id,
+                    "nombre": nombre_completo,
+                    "registros": serializer.data,
+                    "horasTotal": float(total_horas)
+                })
+
+            print(subordinados_info)
+            return Response(subordinados_info, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
