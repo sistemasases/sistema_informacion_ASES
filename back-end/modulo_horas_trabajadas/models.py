@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from datetime import datetime, date
 from modulo_usuario_rol.models import usuario_rol
+from modulo_instancia.models import semestre 
 
 
 class RegistroHoras(models.Model):
@@ -44,3 +45,45 @@ class RegistroHoras(models.Model):
         verbose_name = "Registro de horas"
         verbose_name_plural = "Registros de horas"
         ordering = ["-fecha", "hora_inicio"]
+
+
+
+class TemporadaTrabajo(models.Model):
+    trabajador = models.ForeignKey(User, on_delete=models.CASCADE, related_name="temporadas_trabajo")
+    semestre = models.ForeignKey(semestre, on_delete=models.CASCADE, related_name="temporadas_trabajo")
+    horas_semanales = models.PositiveSmallIntegerField(verbose_name="Horas semanales",default=20)
+    fecha_inicio = models.DateField(
+        verbose_name="Fecha de inicio del trabajador en el semestre"
+    )
+    fecha_fin = models.DateField(
+        verbose_name="Fecha de fin del trabajador en el semestre",
+        null=True,
+        blank=True,
+        help_text="Si está vacío, se usa la fecha de fin del semestre"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Temporada de trabajo"
+        verbose_name_plural = "Temporadas de trabajo"
+        unique_together = [("trabajador", "semestre")]
+
+    def clean(self):
+        if self.fecha_inicio and self.semestre_id:
+            if self.fecha_inicio < self.semestre.fecha_inicio.date():
+                raise ValidationError(
+                    "La fecha de inicio no puede ser anterior al inicio del semestre."
+                )
+
+        if self.fecha_fin and self.semestre_id:
+            if self.fecha_fin > self.semestre.fecha_fin.date():
+                raise ValidationError(
+                    "La fecha de fin no puede superar la fecha de fin del semestre."
+                )
+
+        if self.fecha_inicio and self.fecha_fin:
+            if self.fecha_fin <= self.fecha_inicio:
+                raise ValidationError(
+                    "La fecha de fin debe ser mayor a la fecha de inicio."
+                )

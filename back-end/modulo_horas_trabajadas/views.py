@@ -2,8 +2,8 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import RegistroHoras
-from .serializers import RegistroHorasSerializer
+from .models import RegistroHoras, TemporadaTrabajo
+from .serializers import RegistroHorasSerializer, TemporadaTrabajoSerializer
 from modulo_usuario_rol.models import usuario_rol
 from modulo_instancia.models import semestre
 from django.contrib.auth.models import User
@@ -185,10 +185,26 @@ class registros_horas_viewset(viewsets.GenericViewSet):
 
                 user = User.objects.filter(id=trabajador_id).first()
                 nombre_completo = f"{user.first_name} {user.last_name}".strip() if user else str(trabajador_id)
+                
+                temporada = TemporadaTrabajo.objects.select_related('semestre').filter(
+                    trabajador_id=trabajador_id,
+                    semestre__semestre_actual=True
+                ).first()
+
+                temporada_data = None
+                if temporada:
+                    temporada_data = {
+                        "id": temporada.id,
+                        "fecha_inicio": temporada.fecha_inicio,
+                        "fecha_fin": temporada.get_fecha_fin_efectiva(),
+                        "horas_semanales": temporada.horas_semanales,
+                        "semestre": temporada.semestre.nombre,
+                    }
 
                 subordinados_info.append({
                     "trabajador_id": trabajador_id,
                     "nombre": nombre_completo,
+                    "temporada": temporada_data,
                     "registros": serializer.data,
                     "horasTotal": float(total_horas)
                 })
@@ -201,3 +217,9 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class temporada_trabajo_viewset(viewsets.GenericViewSet):
+    queryset = TemporadaTrabajo.objects.all()
+    serializer_class = TemporadaTrabajoSerializer
+    permission_classes = [IsAuthenticated]

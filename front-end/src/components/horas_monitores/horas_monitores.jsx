@@ -12,6 +12,13 @@ const HorasMonitores = () => {
   const [diasFestivos, setDiasFestivos] = useState(0);
   const [busqueda, setBusqueda] = useState("");
   const [seleccionado, setSeleccionado] = useState(null);
+  const [modalTemporada, setModalTemporada] = useState(false);
+  const [modoModal, setModoModal] = useState("crear");
+  const [formTemporada, setFormTemporada] = useState({
+    fecha_inicio: "",
+    fecha_fin: "",
+    horas_semanales: 20,
+  });
 
   useEffect(() => {
     const getData = async () => {
@@ -29,6 +36,31 @@ const HorasMonitores = () => {
     getFestivos();
   }, []);
 
+
+  const formatFecha = (fecha) => {
+    if (!fecha) return "Fin de semestre";
+    const [y, m, d] = fecha.split("-");
+    return `${d}/${m}/${y}`;
+  };
+
+  
+
+  const abrirModalCrear = () => {
+    setFormTemporada({ fecha_inicio: "", fecha_fin: "", horas_semanales: 20 });
+    setModoModal("crear");
+    setModalTemporada(true);
+  };
+
+  const abrirModalEditar = () => {
+    const t = seleccionado?.temporada;
+    setFormTemporada({
+      fecha_inicio: t?.fecha_inicio || "",
+      fecha_fin: t?.fecha_fin || "",
+      horas_semanales: t?.horas_semanales || 20,
+    });
+    setModoModal("editar");
+    setModalTemporada(true);
+  };
 
   const cambiar_ruta = (e) => {
     sessionStorage.setItem("path", encriptar(e));
@@ -48,6 +80,37 @@ const HorasMonitores = () => {
   const horasProgramadas = seleccionado
     ? seleccionado.horasTotal.toFixed(1)
     : "—";
+
+  const agruparPorSemana = (registros) => {
+    const semanas = {};
+    registros.forEach((r) => {
+      const fecha = new Date(r.fecha + "T00:00:00");
+      const diaSemana = fecha.getDay();
+      const diffLunes = (diaSemana === 0 ? -6 : 1 - diaSemana);
+      const lunes = new Date(fecha);
+      lunes.setDate(fecha.getDate() + diffLunes);
+      const clave = lunes.toISOString().split("T")[0];
+
+      if (!semanas[clave]) semanas[clave] = 0;
+      semanas[clave] += parseFloat(r.horas_trabajadas);
+    });
+
+    return Object.entries(semanas)
+      .sort(([a], [b]) => new Date(a) - new Date(b))
+      .map(([lunes, total]) => {
+        const fechaLunes = new Date(lunes + "T00:00:00");
+        const fechaDomingo = new Date(fechaLunes);
+        fechaDomingo.setDate(fechaLunes.getDate() + 6);
+
+        const fmt = (d) =>
+          `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+
+        return {
+          rango: `${fmt(fechaLunes)} – ${fmt(fechaDomingo)}`,
+          total,
+        };
+      });
+  };
 
   return (
     <div>
@@ -145,6 +208,95 @@ const HorasMonitores = () => {
 
         {/* ── COLUMNA DERECHA ── */}
         <Col>
+          
+          {/* ── BLOQUE TEMPORADA ── */}
+          {seleccionado && (
+            <div style={{
+              background: "#fff",
+              borderRadius: "0.8rem",
+              border: "1px solid #e0e0e0",
+              padding: "0.9rem",
+              margin: "0 0 1rem 0",
+              margin: "0 1.5rem 1rem 1.5rem",  
+              width: "80%", 
+            }}>
+              {/* Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+                <span style={{ fontWeight: 800, fontSize: "13px" }}>Temporada de trabajo</span>
+                {seleccionado.temporada
+                  ? <span style={{ background: "#e6f9f0", color: "#1a7a4a", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Activa</span>
+                  : <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
+                }
+              </div>
+
+              {/* Campos */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "0.6rem" }}>
+                {[
+                  { label: "Fecha inicio", valor: seleccionado.temporada ? formatFecha(seleccionado.temporada.fecha_inicio) : "N/D" },
+                  { label: "Fecha fin",    valor: seleccionado.temporada ? formatFecha(seleccionado.temporada.fecha_fin)    : "N/D" },
+                  { label: "Hrs/semana",  valor: seleccionado.temporada ? `${seleccionado.temporada.horas_semanales} hrs`  : "N/D" },
+                  { label: "Semestre",    valor: seleccionado.temporada ? seleccionado.temporada.semestre                  : "N/D" },
+                ].map(({ label, valor }) => (
+                  <div key={label} style={{ background: "#f5f5f5", borderRadius: "0.5rem", padding: "0.5rem 0.7rem" }}>
+                    <div style={{ fontSize: "10px", color: "#888", marginBottom: "2px" }}>{label}</div>
+                    <div style={{ fontSize: "13px", fontWeight: 700, color: valor === "N/D" ? "#bbb" : "#333" }}>{valor}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Botón */}
+              {seleccionado.temporada
+                ? <button onClick={abrirModalEditar} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
+                    Modificar temporada
+                  </button>
+                : <button onClick={abrirModalCrear} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
+                    Agregar temporada
+                  </button>
+              }
+            </div>
+          )}
+
+          {/* ── MODAL TEMPORADA ── */}
+          {modalTemporada && (
+            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ background: "#fff", borderRadius: "1rem", padding: "1.5rem", width: "360px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                  <span style={{ fontWeight: 800, fontSize: "15px" }}>
+                    {modoModal === "crear" ? "Agregar temporada" : "Modificar temporada"}
+                  </span>
+                  <button onClick={() => setModalTemporada(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px" }}>✕</button>
+                </div>
+
+                {[
+                  { label: "Fecha inicio *", key: "fecha_inicio", type: "date" },
+                  { label: "Fecha fin (opcional)", key: "fecha_fin", type: "date" },
+                  { label: "Horas semanales *", key: "horas_semanales", type: "number" },
+                ].map(({ label, key, type }) => (
+                  <div key={key} style={{ marginBottom: "0.8rem" }}>
+                    <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>{label}</label>
+                    <input
+                      type={type}
+                      min={type === "number" ? 1 : undefined}
+                      max={type === "number" ? 40 : undefined}
+                      value={formTemporada[key]}
+                      onChange={(e) => setFormTemporada(prev => ({ ...prev, [key]: e.target.value }))}
+                      style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "14px" }}
+                    />
+                  </div>
+                ))}
+
+                <div style={{ display: "flex", gap: "8px", marginTop: "1rem" }}>
+                  <button onClick={() => setModalTemporada(false)} style={{ flex: 1, padding: "0.6rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#f5f5f5", cursor: "pointer", fontWeight: 700 }}>
+                    Cancelar
+                  </button>
+                  <button onClick={() => { /* aquí llamas tu servicio */ setModalTemporada(false); }} style={{ flex: 1, padding: "0.6rem", borderRadius: "0.5rem", border: "none", background: "#cc0000", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
+                    Guardar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="box_hours">
             <Row className="red_tittle">
               <Col>Precio Hora:</Col>
@@ -185,7 +337,7 @@ const HorasMonitores = () => {
 
             {/* Tabla de registros del seleccionado */}
             <Row className="bottom_content">
-              <Col>Fecha</Col>
+              <Col>Semana</Col>
               <Col>Horas</Col>
             </Row>
 
@@ -197,13 +349,13 @@ const HorasMonitores = () => {
                   Selecciona un trabajador para ver sus registros.
                 </div>
               ) : (
-                seleccionado.registros.map((r) => (
-                  <Row key={r.id} className="bottom_content_inside">
+                agruparPorSemana(seleccionado.registros).map(({ rango, total }) => (
+                  <Row key={rango} className="bottom_content_inside">
                     <Col className="col_bottom_content_inside_left">
-                      {r.fecha.split("-").reverse().join("/")}
+                      {rango}
                     </Col>
                     <Col className="col_bottom_content_inside_right">
-                      {parseFloat(r.horas_trabajadas).toFixed(1)} HRS
+                      {total.toFixed(1)} HRS
                     </Col>
                   </Row>
                 ))

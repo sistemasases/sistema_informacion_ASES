@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import RegistroHoras
+from .models import RegistroHoras, TemporadaTrabajo
 from modulo_usuario_rol.models import rol, usuario_rol
 
 
@@ -99,3 +99,8 @@ class RegistroHorasSerializer(serializers.ModelSerializer):
             )
         return value
         
+    
+class TemporadaTrabajoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TemporadaTrabajo
+        fields = '__all__'
