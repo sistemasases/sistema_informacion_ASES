@@ -7,6 +7,7 @@ import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_indivi
 import Inasistencia from "../seguimiento_forms/form_inasistencia";
 import Seguimiento_individual_v2 from "../seguimiento_forms/form_seguimiento_individual_v2";
 import Seguimiento_individual_v3 from "../seguimiento_forms/form_seguimiento_individual_v3";
+import Seguimiento_individual_v3_1 from "../seguimiento_forms/form_seguimiento_individual_v3_1";
 import All_semestres from "../../service/all_semestres.js";
 import Semestre_por_sede from "../../service/semestres_por_sede.js";
 import { useEffect } from "react";
@@ -184,7 +185,16 @@ const Info_registros = (props) => {
         handleModalIn={handleModalIn}
         size="lg"
       /> */}
-      <Seguimiento_individual_v3
+      {/* <Seguimiento_individual_v3
+        estudiante_seleccionado={props.id_estudiante}
+        recarga_ficha_estudiante={true}
+        show={show}
+        onHide={handleClose}
+        handleClose={handleClose}
+        handleModalIn={handleModalIn}
+        size="lg"
+      /> */}
+      <Seguimiento_individual_v3_1
         estudiante_seleccionado={props.id_estudiante}
         recarga_ficha_estudiante={true}
         show={show}
@@ -193,6 +203,7 @@ const Info_registros = (props) => {
         handleModalIn={handleModalIn}
         size="lg"
       />
+
       <Inasistencia
         estudiante_seleccionado={props.id_estudiante}
         recarga_ficha_estudiante={true}

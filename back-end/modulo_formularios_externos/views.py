@@ -362,6 +362,13 @@ class firma_temp_viewsets(viewsets.GenericViewSet):
       
             estudiantes_dict = {e.num_doc: e for e in estudiantes}
 
+            documentos_con_firma = set(
+                estudiante.objects.filter(
+                    num_doc__in=documentos,
+                    firma_existe=True
+                ).values_list('num_doc', flat=True)
+            )
+
             with transaction.atomic():
 
                 for firma_temp in firmas_temporales:
@@ -388,6 +395,10 @@ class firma_temp_viewsets(viewsets.GenericViewSet):
                         contador_firmas_creadas += 1
                         firma_temp.delete()
 
+                    elif documento in documentos_con_firma:
+                        firma_temp.delete()
+                        contador_firmas_creadas += 1
+
                     else:
                         firmas_no_creadas += 1
 
@@ -404,3 +415,26 @@ class firma_temp_viewsets(viewsets.GenericViewSet):
                 {'Respuesta': f'Error al procesar las firmas temporales: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+
+    @action(detail=False, methods=['delete'], url_path='eliminar_firmas_seleccionadas', permission_classes=[IsAuthenticated])
+    def eliminarFirmastemporales(self, request):
+        values = request.data.get('values')
+        
+        if not values:
+            return Response({'error': 'No se enviaron documentos a eliminar'}, status=status.HTTP_400_BAD_REQUEST)
+
+        #traemos las firmas que tengas los documentos de values
+        firmas = firma_tratamiento_datos_temp.objects.filter(documento__in = values)
+
+        cantidad_firmas = firmas.count()
+
+        # eliminamos las firmas en cuestion
+        if firmas:
+            firmas.delete()
+        else:
+            return Response({'firmas_eliminadas': 0,
+                         'mensaje': "Error del servidor al momento de eliminar las firmas."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR )
+
+        return Response({'firmas_eliminadas': cantidad_firmas,
+                         'mensaje': "Firmas temporales eliminadas correctamente"}, status=status.HTTP_200_OK )

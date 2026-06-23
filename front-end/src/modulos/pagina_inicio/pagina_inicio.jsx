@@ -501,7 +501,7 @@ const Pagina_inicio = () => {
           </Col>
           <Col xs={"12"} md={"5"} className="botones-container">
             <Link
-              to={`https://sistemasases.github.io/rutasdeatencion/`}
+              to={`https://rutas-atencion-ases.vercel.app/`}
               target="_blank"
             >
               <img src={boton1} className="boton" alt="/"></img>

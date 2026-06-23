@@ -103,7 +103,13 @@ const Update_seguimiento = async (formData) => {
       rem_directores_programa: formData.rem_directores_programa,
       rem_grupos_universidad: formData.rem_grupos_universidad,
       rem_externa: formData.rem_externa,
-      Ninguna_acción_realizada: formData.Ninguna_acción_realizada,
+      // nuevos en v3.1
+      rem_OITEL: formData.rem_OITEL,
+      rem_rep_estudiantiles: formData.rem_rep_estudiantiles,
+      escucha_activa: formData.escucha_activa,
+      // Dejamos de Usar Ninguna_acción_realizada
+      Ninguna_acción_realizada: false,
+      // fin nuevos en v3.1
       asist_actividades_grupales: formData.asist_actividades_grupales,
       asist_monitoria_aca: formData.asist_monitoria_aca,
       asist_matricula_financiera: formData.asist_matricula_financiera,

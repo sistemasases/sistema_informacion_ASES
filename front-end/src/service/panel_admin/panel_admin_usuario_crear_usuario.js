@@ -24,45 +24,39 @@ const crear_usuario = async (data) => {
   const url_axios = `${process.env.REACT_APP_API_URL}/admin_ases/panel_admin_usuario/crear_usuario/`;
 
   try {
-    axios.post(url_axios, data, { headers: config }).then((response) => {
-      if (response.status === 201) {
-        // Registro creado exitosamente
-        // alert(response.data.mensaje);
-        Swal.fire({
-          title: "Creación exitosa",
-          text: response.data.mensaje,
-          icon: "success",
-          timer: 2500,
-          showConfirmButton: false,
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-        return true;
-      } else if (response.status === 400) {
-        // Error en la solicitud
-        Swal.fire({
-          title: "Error",
-          text: response.data.mensaje,
-          icon: "error",
-          timer: 2500,
-          showConfirmButton: false,
-        });
-        return false;
-      }
+    const response = await axios.post(url_axios, data, { headers: config });
 
-      // return true;
-    });
-  } catch (error) {
-    console.error("Error al crear el usuario:", error);
+    if (response.status === 201) {
+      Swal.fire({
+        title: "Creación exitosa",
+        text: response.data.mensaje,
+        icon: "success",
+        timer: 2500,
+        showConfirmButton: false,
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      return true;
+    }
+
     Swal.fire({
       title: "Error",
-      text: "No se pudo crear el usuario. Por favor, inténtelo de nuevo más tarde.",
+      text: response.data.mensaje || "No se pudo crear el usuario.",
       icon: "error",
       timer: 2500,
       showConfirmButton: false,
     });
-    // Manejo de errores específicos
+    return false;
+  } catch (error) {
+    console.error("Error al crear el usuario:", error);
+    Swal.fire({
+      title: "Error",
+      text: error.response?.data?.mensaje || "No se pudo crear el usuario. Por favor, inténtelo de nuevo más tarde.",
+      icon: "error",
+      timer: 2500,
+      showConfirmButton: false,
+    });
     return false;
   }
 };
