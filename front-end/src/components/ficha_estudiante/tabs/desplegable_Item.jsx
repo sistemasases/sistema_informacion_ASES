@@ -19,7 +19,7 @@ const Desplegable_item = ({item, updateDataUserSocioedu}) => {
     const handleShow2 = () => setShow2(true);
     const fechaReferencia = new Date('2024-07-10'); // Fecha desde que corre la versión 2 de la ficha
     const fechaReferenciaV3 = new Date('2025-08-15'); // Fecha desde que corre la versión 3 de la ficha
-    const fechaReferenciaV3_1 = new Date('2026-06-04'); // Fecha desde que corre la versión 3.1 de la ficha
+    const fechaReferenciaV3_1 = new Date('2026-07-30'); // Fecha desde que corre la versión 3.1 de la ficha
 
     // Convierte la fecha de item a un objeto Date si es necesario
     const itemFecha = new Date(item.fecha);
