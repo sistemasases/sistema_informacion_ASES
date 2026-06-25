@@ -9,6 +9,9 @@ nbproject/*
 sonar-project.properties
 
 # General
+.pytest_cache/
+**/__pycache__/
+*.pyc
 *.pyc
 *.pyo
 *.pyd
