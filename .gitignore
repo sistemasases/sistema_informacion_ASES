@@ -39,6 +39,10 @@ front-end/.env
 front-end/build/
 back-end/staticfiles
 
+# Tests
+back-end/tests/__pycache__/
+front-end/htmlcov/
+tests/e2e/
 # Personal Docker
 Dockerfile
 docker-compose.yml
