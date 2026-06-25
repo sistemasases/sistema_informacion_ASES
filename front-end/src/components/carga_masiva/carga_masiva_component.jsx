@@ -40,6 +40,9 @@ const Carga_masiva_component = () => {
   // Estado para controlar la visibilidad del modal de estado de carga
   const [show, setShow] = useState(false);
 
+  const fechaReferencia = new Date("2026-07-30"); // Fecha desde que corre la versión 3.1 de la ficha
+  const fechaActual = new Date(); // Fecha actual
+
   // Columnas para la tabla de mensajes de carga
   const columnas = [
     {
@@ -132,12 +135,16 @@ const Carga_masiva_component = () => {
             <option value="Matricula">Matricula</option>
             {/* <option value="Ficha">Ficha de seguimiento</option>
             <option value="FichaV2">Ficha de seguimiento V2</option> */}
-            {/* <option value="FichaV3">Ficha de seguimiento V3</option> */}
-            <option value="FichaV3_1">Ficha de seguimiento V3.1</option>
+            {/* Mostar dinámicamente la versión de cada ficha según la fecha designada */}
+            {fechaActual >= fechaReferencia ? (
+              <option value="FichaV3_1">Ficha de seguimiento V3.1</option>
+            ) : (
+              <option value="FichaV3">Ficha de seguimiento V3</option>
+            )}
             <option value="ActualizarFichas"> Actualizacion de fichas </option>
             <option value="Inasistencia">Inasistencia</option>
             <option value="Dir_programa">Director de programa</option>
-                  {/* <option value="Vcd_academico">Vicedecano</option> */}
+            {/* <option value="Vcd_academico">Vicedecano</option> */}
             <option value="Cambio_contrasena">Contraseña</option>
             <option value="Eliminar_matricula">Eliminar matricula</option>
             <option value="Firma_datos">Firma Tratamiento de Datos</option>
