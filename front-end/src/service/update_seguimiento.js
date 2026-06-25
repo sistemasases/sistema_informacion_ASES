@@ -12,7 +12,6 @@ import axios from "axios";
 
 const Update_seguimiento = async (formData) => {
   // Variable con la respuesta si la consulta fue exitosa
-  console.log(formData);
   var respuesta = false;
   try {
     // Constante que va en el header con información del token para el axios
@@ -47,10 +46,10 @@ const Update_seguimiento = async (formData) => {
       aspectos_motivacionales: formData.aspectos_motivacionales,
       diversidad_sexual: formData.diversidad_sexual,
       red_de_apoyo: formData.red_de_apoyo,
-      rasgos_de_personalidad: false,
+      rasgos_de_personalidad: formData.rasgos_de_personalidad, // Se deja de Usar
       familiar: formData.familiar,
       riesgo_familiar: formData.riesgo_familiar,
-      dinamica_familiar: false,
+      dinamica_familiar: formData.dinamica_familiar, // Se deja de Usar
       //   nuevos en v3
       relaciones_familiares: formData.relaciones_familiares,
       red_de_apoyo_familiar: formData.red_de_apoyo_familiar,
@@ -64,7 +63,7 @@ const Update_seguimiento = async (formData) => {
       elección_vocacional: formData.elección_vocacional,
       autogestion_academica: formData.autogestion_academica,
       // fin V3
-      manejo_del_tiempo: false,
+      manejo_del_tiempo: formData.manejo_del_tiempo, // Se deja de Usar
       economico: formData.economico,
       riesgo_economico: formData.riesgo_economico,
       apoyos_económicos_institucionales:
@@ -86,7 +85,7 @@ const Update_seguimiento = async (formData) => {
       uso_de_los_servicios_universitarios:
         formData.uso_de_los_servicios_universitarios,
       vivienda: formData.vivienda,
-      oferta_servicios: false,
+      oferta_servicios: formData.oferta_servicios, // Se deja de Usar
       apoyo_académico: formData.apoyo_académico,
       taller_par_par: formData.taller_par_par,
       reconocimiento_ciudad_U: formData.reconocimiento_ciudad_U,
@@ -108,7 +107,7 @@ const Update_seguimiento = async (formData) => {
       rem_rep_estudiantiles: formData.rem_rep_estudiantiles,
       escucha_activa: formData.escucha_activa,
       // Dejamos de Usar Ninguna_acción_realizada
-      Ninguna_acción_realizada: false,
+      Ninguna_acción_realizada: formData.Ninguna_acción_realizada, // Se deja de Usar
       // fin nuevos en v3.1
       asist_actividades_grupales: formData.asist_actividades_grupales,
       asist_monitoria_aca: formData.asist_monitoria_aca,
