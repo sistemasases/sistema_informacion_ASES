@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import jsPDF from "jspdf";
 import ModalSeguimientos from "./modalSeguimientos";
 import Select from "react-select";
 import axios from "axios";
@@ -175,6 +176,12 @@ const ModalEstudiantes = ({
   // Estados para los modales
   const [showFirstModal, setShowFirstModal] = useState(false);
   const [showSecondModal, setShowSecondModal] = useState(false);
+  const [selectedSeguimientoYear, setSelectedSeguimientoYear] = useState("");
+
+  const seguimientoYearOptions = [
+    { label: "2025", value: "2025" },
+    { label: "2026", value: "2026" },
+  ];
 
   // Funciones para manejar los modales
   const handleOpenFirstModal = () => setShowFirstModal(true);
@@ -205,6 +212,122 @@ const ModalEstudiantes = ({
 
   const closeSeguimientoModal = () => {
     setSeguimientoModalOpen(false);
+  };
+
+  const filteredSeguimientos = selectedSeguimientoYear
+    ? (seguimientosInfo || []).filter((seguimiento) => {
+        const fecha = seguimiento?.fecha ? new Date(seguimiento.fecha) : null;
+        return (
+          fecha && fecha.getFullYear().toString() === selectedSeguimientoYear.value
+        );
+      })
+    : seguimientosInfo || [];
+
+  const exportSeguimientosPDF = () => {
+    if (!selectedUser || !filteredSeguimientos) return;
+
+    const doc = new jsPDF();
+    const margin = 20;
+    let y = 20;
+
+    // Encabezado
+    doc.setFillColor(227, 6, 19); // Rojo institucional
+    doc.rect(0, 0, 210, 10, "F");
+    y += 15;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(227, 6, 19);
+    doc.text("Reporte de Seguimientos Académicos - Campus Diverso", margin, y);
+    y += 12;
+
+    // Datos del estudiante
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+    doc.setFont("helvetica", "bold");
+    doc.text("Estudiante:", margin, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(selectedUser.nombre_y_apellido || "N/A", margin + 25, y);
+    y += 6;
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Identificación:", margin, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(selectedUser.numero_documento || "N/A", margin + 28, y);
+    y += 6;
+
+    if (selectedSeguimientoYear) {
+      doc.setFont("helvetica", "bold");
+      doc.text("Año Filtro:", margin, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(selectedSeguimientoYear.label, margin + 22, y);
+      y += 6;
+    }
+    
+    // Línea divisoria
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, y, 210 - margin, y);
+    y += 10;
+
+    // Listado de seguimientos
+    const sortedSeguimientos = [...filteredSeguimientos].sort(
+      (a, b) => new Date(b.fecha) - new Date(a.fecha)
+    );
+
+    if (sortedSeguimientos.length === 0) {
+      doc.setFont("helvetica", "italic");
+      doc.text("No se encontraron registros de seguimientos.", margin, y);
+    } else {
+      sortedSeguimientos.forEach((seg, index) => {
+        // Verificar salto de página
+        if (y > 250) {
+          doc.addPage();
+          y = 20;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(227, 6, 19);
+        doc.text(`Seguimiento #${sortedSeguimientos.length - index} - Fecha: ${seg.fecha || "S/F"}`, margin, y);
+        y += 6;
+
+        // Observación (ajuste de texto automático multi-línea)
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(50, 50, 50);
+        doc.text("Observación:", margin, y);
+        
+        doc.setFont("helvetica", "normal");
+        const obsLines = doc.splitTextToSize(seg.observacion || "Sin observación.", 170);
+        doc.text(obsLines, margin, y + 5);
+        y += 5 + (obsLines.length * 5) + 2;
+
+        // Profesionales
+        if (seg.profesional && seg.profesional.length > 0) {
+          if (y > 260) {
+            doc.addPage();
+            y = 20;
+          }
+          doc.setFont("helvetica", "bold");
+          doc.text("Profesionales:", margin, y);
+          y += 5;
+          
+          doc.setFont("helvetica", "normal");
+          seg.profesional.forEach((prof) => {
+            doc.text(`• ${prof.nombre_profesional} (${prof.cargo_profesional})`, margin + 5, y);
+            y += 5;
+          });
+        }
+        
+        y += 5;
+        // Separador sutil entre registros
+        doc.setDrawColor(230, 230, 230);
+        doc.line(margin, y, 210 - margin, y);
+        y += 10;
+      });
+    }
+
+    const safeName = (selectedUser.nombre_y_apellido || "estudiante").replace(/\s+/g, "_");
+    doc.save(`seguimientos_${safeName}.pdf`);
   };
 
   useEffect(() => {
@@ -2664,10 +2787,43 @@ const ModalEstudiantes = ({
 
               {currentPage === 7 && seguimientosInfo && (
                 <div className="div-scroll">
+                  <Row className="mb-3">
+                    <Col xs={12} md={4} className="mb-2 mb-md-0">
+                      <label className="form-label">
+                        Filtrar seguimientos por año
+                      </label>
+                      <Select
+                        classNamePrefix="Select"
+                        value={selectedSeguimientoYear}
+                        onChange={(selectedOption) =>
+                          setSelectedSeguimientoYear(selectedOption)
+                        }
+                        options={seguimientoYearOptions}
+                        placeholder="Selecciona un año"
+                        isClearable
+                        styles={{
+                          menu: (provided) => ({
+                            ...provided,
+                            zIndex: 1000,
+                          }),
+                        }}
+                      />
+                    </Col>
+                    <Col xs={12} md={4} className="d-flex align-items-end">
+                      <Button
+                        onClick={exportSeguimientosPDF}
+                        variant="danger"
+                        disabled={!filteredSeguimientos || filteredSeguimientos.length === 0}
+                        style={{ height: '38px' }}
+                      >
+                        Exportar PDF
+                      </Button>
+                    </Col>
+                  </Row>
                   <Row>
                     <ul className="ul-style">
-                      {seguimientosInfo && seguimientosInfo.length > 0 ? (
-                        [...seguimientosInfo]
+                      {filteredSeguimientos && filteredSeguimientos.length > 0 ? (
+                        [...filteredSeguimientos]
                           .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                           .map((seguimiento, id_persona) => (
                             <li className="li-style" key={id_persona}>
