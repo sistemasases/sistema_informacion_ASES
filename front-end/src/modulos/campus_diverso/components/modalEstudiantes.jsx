@@ -244,17 +244,48 @@ const ModalEstudiantes = ({
     // Datos del estudiante
     doc.setFontSize(11);
     doc.setTextColor(50, 50, 50);
-    doc.setFont("helvetica", "bold");
-    doc.text("Estudiante:", margin, y);
-    doc.setFont("helvetica", "normal");
-    doc.text(selectedUser.nombre_y_apellido || "N/A", margin + 25, y);
-    y += 6;
+    
+    if (selectedUser.nombre_identitario) {
+      doc.setFont("helvetica", "bold");
+      doc.text("Nombre Identitario:", margin, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(selectedUser.nombre_identitario, margin + 38, y);
+      y += 6;
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Nombre Legal:", margin, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(selectedUser.nombre_y_apellido || "N/A", margin + 28, y);
+      y += 6;
+    } else {
+      doc.setFont("helvetica", "bold");
+      doc.text("Estudiante:", margin, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(selectedUser.nombre_y_apellido || "N/A", margin + 25, y);
+      y += 6;
+    }
 
     doc.setFont("helvetica", "bold");
     doc.text("Identificación:", margin, y);
     doc.setFont("helvetica", "normal");
     doc.text(selectedUser.numero_documento || "N/A", margin + 28, y);
     y += 6;
+
+    if (selectedUser.email) {
+      doc.setFont("helvetica", "bold");
+      doc.text("Email:", margin, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(selectedUser.email, margin + 15, y);
+      y += 6;
+    }
+
+    if (selectedUser.telefono) {
+      doc.setFont("helvetica", "bold");
+      doc.text("Teléfono:", margin, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(selectedUser.telefono, margin + 20, y);
+      y += 6;
+    }
 
     if (selectedSeguimientoYear) {
       doc.setFont("helvetica", "bold");
