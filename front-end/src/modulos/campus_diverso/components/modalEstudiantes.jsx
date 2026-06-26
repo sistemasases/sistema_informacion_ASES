@@ -326,7 +326,9 @@ const ModalEstudiantes = ({
       });
     }
 
-    const safeName = (selectedUser.nombre_y_apellido || "estudiante").replace(/\s+/g, "_");
+    const nombre = selectedUser.nombre_identitario || selectedUser.nombre_y_apellido || "estudiante";
+    const documento = selectedUser.numero_documento || "";
+    const safeName = `${nombre}${documento ? `_${documento}` : ""}`.replace(/\s+/g, "_");
     doc.save(`seguimientos_${safeName}.pdf`);
   };
 
