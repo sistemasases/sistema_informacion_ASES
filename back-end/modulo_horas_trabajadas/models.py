@@ -52,6 +52,9 @@ class TemporadaTrabajo(models.Model):
     trabajador = models.ForeignKey(User, on_delete=models.CASCADE, related_name="temporadas_trabajo")
     semestre = models.ForeignKey(semestre, on_delete=models.CASCADE, related_name="temporadas_trabajo")
     horas_semanales = models.PositiveSmallIntegerField(verbose_name="Horas semanales",default=20)
+    horas_total_contratadas = models.DecimalField(verbose_name = "Toras totales contatadas en semestre", max_digits=6, decimal_places=2, null=True, blank=True)
+    total_festivos_temporada = models.SmallIntegerField(verbose_name = "numero de festivos en temporada", null = True, blank = True)
+    is_default = models.BooleanField(default=True, blank=True, null=True)
     fecha_inicio = models.DateField(
         verbose_name="Fecha de inicio del trabajador en el semestre"
     )
@@ -61,6 +64,9 @@ class TemporadaTrabajo(models.Model):
         blank=True,
         help_text="Si está vacío, se usa la fecha de fin del semestre"
     )
+    precio_hora = models.PositiveIntegerField(verbose_name = "Precio hora", null=True, blank=True)
+
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

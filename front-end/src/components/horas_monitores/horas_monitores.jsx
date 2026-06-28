@@ -2,9 +2,13 @@ import { useState, useEffect } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import "../../Scss/horas_monitores/horas_monitores.css";
 import Scrollbars from "react-custom-scrollbars-2";
-import { encriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
+import { encriptar, desencriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 import obtener_registros_profesional from "../../service/registro_horas_trbajadas/get_all_profesional";
 import obtener_festivos_colombia from "../../service/registro_horas_trbajadas/dias_festivos";
+import crear_temporada_trabajo from "../../service/registro_horas_trbajadas/registro_temporada";
+
+
+const PRECIO_HORA = 10000;
 
 
 const HorasMonitores = () => {
@@ -14,27 +18,71 @@ const HorasMonitores = () => {
   const [seleccionado, setSeleccionado] = useState(null);
   const [modalTemporada, setModalTemporada] = useState(false);
   const [modoModal, setModoModal] = useState("crear");
+  const [cargandoTemporada, setCargandoTemporada] = useState(false);
   const [formTemporada, setFormTemporada] = useState({
     fecha_inicio: "",
     fecha_fin: "",
     horas_semanales: 20,
+    horas_total_contratadas: "",
   });
+
+  const semestre_id = desencriptar(sessionStorage.getItem("id_semestre_actual"));
 
   useEffect(() => {
     const getData = async () => {
-      const data = await obtener_registros_profesional();
+      // 1. primero los festivos
+      const resultadoFestivos = await obtener_festivos_colombia();
+      const cantidadFestivos = resultadoFestivos ? resultadoFestivos.cantidad : 0;
+      setDiasFestivos(cantidadFestivos);
+
+      // 2. luego los registros, ya con el valor real
+      const data = await obtener_registros_profesional({ semestre_id, diasFestivos: cantidadFestivos });
       if (data) setSubordinados(data);
     };
+
     getData();
   }, []);
 
-  useEffect(() => {
-    const getFestivos = async () => {
-      const resultado = await obtener_festivos_colombia();
-      if (resultado) setDiasFestivos(resultado.cantidad);
+
+  const handleGuardarTemporada = async () => {
+    if (!formTemporada.fecha_inicio || !formTemporada.horas_semanales) return;
+
+    const payload = {
+      semestre: semestre_id,
+      trabajador: seleccionado.trabajador_id,
+      fecha_inicio: formTemporada.fecha_inicio,
+      fecha_fin: formTemporada.fecha_fin || null,
+      horas_semanales: formTemporada.horas_semanales,
+      total_festivos_temporada: diasFestivos,
+      precio_hora: PRECIO_HORA,
     };
-    getFestivos();
-  }, []);
+
+    setCargandoTemporada(true);
+    const resultado = await crear_temporada_trabajo(payload);
+    setCargandoTemporada(false);
+
+    if (resultado) {
+      setModalTemporada(false);
+
+      const temporadaActualizada = {
+        id: resultado.id,
+        fecha_inicio: resultado.fecha_inicio,
+        fecha_fin: resultado.fecha_fin,
+        horas_semanales: resultado.horas_semanales,
+        horas_total_contratadas: resultado.horas_total_contratadas,
+        semestre: resultado.semestre,
+      };
+
+      const subordinadosActualizados = subordinados.map((s) =>
+        s.trabajador_id === seleccionado.trabajador_id
+          ? { ...s, temporada: temporadaActualizada }
+          : s
+      );
+
+      setSubordinados(subordinadosActualizados);
+      setSeleccionado((prev) => ({ ...prev, temporada: temporadaActualizada }));
+    }
+  };
 
 
   const formatFecha = (fecha) => {
@@ -42,8 +90,6 @@ const HorasMonitores = () => {
     const [y, m, d] = fecha.split("-");
     return `${d}/${m}/${y}`;
   };
-
-  
 
   const abrirModalCrear = () => {
     setFormTemporada({ fecha_inicio: "", fecha_fin: "", horas_semanales: 20 });
@@ -57,6 +103,7 @@ const HorasMonitores = () => {
       fecha_inicio: t?.fecha_inicio || "",
       fecha_fin: t?.fecha_fin || "",
       horas_semanales: t?.horas_semanales || 20,
+      horas_total_contratadas: t?.horas_total_contratadas || "",
     });
     setModoModal("editar");
     setModalTemporada(true);
@@ -67,7 +114,6 @@ const HorasMonitores = () => {
     window.location.reload();
   };
 
-  // Filtrar por nombre (trabajador_id por ahora, cuando tengas el nombre lo reemplazas)
   const subordinadosFiltrados = subordinados.filter((s) => {
     const query = busqueda.toLowerCase();
     return (
@@ -76,10 +122,18 @@ const HorasMonitores = () => {
     );
   });
 
-  // Panel derecho: datos del seleccionado
-  const horasProgramadas = seleccionado
-    ? seleccionado.horasTotal.toFixed(1)
-    : "—";
+  // ── valores del panel derecho ──────────────────────────────
+  const horasContratadas = seleccionado?.temporada?.horas_total_contratadas
+    ? parseFloat(seleccionado.temporada.horas_total_contratadas)
+    : null;
+
+  const horasSemanales = seleccionado?.temporada?.horas_semanales ?? null;
+
+  const horasProgramadas = seleccionado ? seleccionado.horasTotal : null;
+
+  const horasDeuda = horasContratadas !== null && horasProgramadas !== null
+    ? (horasContratadas - horasProgramadas).toFixed(1)
+    : null;
 
   const agruparPorSemana = (registros) => {
     const semanas = {};
@@ -157,7 +211,6 @@ const HorasMonitores = () => {
                 </div>
               ) : (
                 subordinadosFiltrados.map((s) => {
-                  const rol = s.registros[0]?.rol?.id_rol?.nombre || "—";
                   const esSeleccionado = seleccionado?.trabajador_id === s.trabajador_id;
 
                   return (
@@ -167,7 +220,6 @@ const HorasMonitores = () => {
                       style={esSeleccionado ? { border: "2px solid #ff0000", backgroundColor: "#fff0f0" } : {}}
                       onClick={() => setSeleccionado(s)}
                     >
-                      {/* Nombre/ID y rol */}
                       <Col className="col_monitor_item_info">
                         <div style={{ fontSize: "14px", fontWeight: 800 }}>
                           {s.nombre}
@@ -180,12 +232,8 @@ const HorasMonitores = () => {
                         </div>
                       </Col>
 
-                      {/* Debe — sin funcionalidad por ahora */}
-                      <Col className="col_monitor_middle_item">
-                        DEBE: —
-                      </Col>
+                      
 
-                      {/* Botón hoja monitor */}
                       <Col className="col_monitor_right_item">
                         <Button
                           className="col_button_item"
@@ -208,7 +256,7 @@ const HorasMonitores = () => {
 
         {/* ── COLUMNA DERECHA ── */}
         <Col>
-          
+
           {/* ── BLOQUE TEMPORADA ── */}
           {seleccionado && (
             <div style={{
@@ -216,20 +264,24 @@ const HorasMonitores = () => {
               borderRadius: "0.8rem",
               border: "1px solid #e0e0e0",
               padding: "0.9rem",
-              margin: "0 0 1rem 0",
-              margin: "0 1.5rem 1rem 1.5rem",  
-              width: "80%", 
+              margin: "0 1.5rem 1rem 1.5rem",
+              width: "80%",
             }}>
-              {/* Header */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
                 <span style={{ fontWeight: 800, fontSize: "13px" }}>Temporada de trabajo</span>
-                {seleccionado.temporada
-                  ? <span style={{ background: "#e6f9f0", color: "#1a7a4a", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Activa</span>
-                  : <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
-                }
+                <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
+                  {seleccionado.temporada
+                    ? <span style={{ background: "#e6f9f0", color: "#1a7a4a", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Activa</span>
+                    : <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
+                  }
+                  {seleccionado.temporada?.is_default && (
+                    <span style={{ background: "#fff3e0", color: "#e65100", fontSize: "10px", padding: "2px 8px", borderRadius: "6px", fontWeight: 700 }}>
+                      ⚠ Datos por defecto, favor actualizar
+                    </span>
+                  )}
+                </div>
               </div>
 
-              {/* Campos */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "0.6rem" }}>
                 {[
                   { label: "Fecha inicio", valor: seleccionado.temporada ? formatFecha(seleccionado.temporada.fecha_inicio) : "N/D" },
@@ -244,7 +296,6 @@ const HorasMonitores = () => {
                 ))}
               </div>
 
-              {/* Botón */}
               {seleccionado.temporada
                 ? <button onClick={abrirModalEditar} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
                     Modificar temporada
@@ -271,13 +322,18 @@ const HorasMonitores = () => {
                   { label: "Fecha inicio *", key: "fecha_inicio", type: "date" },
                   { label: "Fecha fin (opcional)", key: "fecha_fin", type: "date" },
                   { label: "Horas semanales *", key: "horas_semanales", type: "number" },
+                  ...(modoModal === "editar"
+                    ? [{ label: "Horas total contratadas", key: "horas_total_contratadas", type: "number" }]
+                    : []
+                  ),
                 ].map(({ label, key, type }) => (
                   <div key={key} style={{ marginBottom: "0.8rem" }}>
                     <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>{label}</label>
                     <input
                       type={type}
                       min={type === "number" ? 1 : undefined}
-                      max={type === "number" ? 40 : undefined}
+                      max={key === "horas_semanales" ? 40 : undefined}
+                      step={key === "horas_total_contratadas" ? "0.1" : undefined}
                       value={formTemporada[key]}
                       onChange={(e) => setFormTemporada(prev => ({ ...prev, [key]: e.target.value }))}
                       style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "14px" }}
@@ -289,8 +345,21 @@ const HorasMonitores = () => {
                   <button onClick={() => setModalTemporada(false)} style={{ flex: 1, padding: "0.6rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#f5f5f5", cursor: "pointer", fontWeight: 700 }}>
                     Cancelar
                   </button>
-                  <button onClick={() => { /* aquí llamas tu servicio */ setModalTemporada(false); }} style={{ flex: 1, padding: "0.6rem", borderRadius: "0.5rem", border: "none", background: "#cc0000", color: "#fff", cursor: "pointer", fontWeight: 700 }}>
-                    Guardar
+                  <button
+                    onClick={handleGuardarTemporada}
+                    disabled={cargandoTemporada}
+                    style={{
+                      flex: 1,
+                      padding: "0.6rem",
+                      borderRadius: "0.5rem",
+                      border: "none",
+                      background: cargandoTemporada ? "#aaa" : "#cc0000",
+                      color: "#fff",
+                      cursor: cargandoTemporada ? "not-allowed" : "pointer",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {cargandoTemporada ? "Guardando..." : "Guardar"}
                   </button>
                 </div>
               </div>
@@ -309,29 +378,34 @@ const HorasMonitores = () => {
 
             <Row>
               <Col className="middle_content">Horas Contratadas</Col>
-              <Col className="middle_content_right" style={{ textAlign: "center", fontSize: "10px", padding: "0.8rem 0.3rem" }}>
-                N/D
+              <Col className="middle_content_right" style={{ textAlign: "center" }}>
+                {horasContratadas !== null ? horasContratadas.toFixed(1) : "N/D"}
               </Col>
             </Row>
             <Row>
               <Col className="middle_content">Horas Semanales</Col>
-              <Col className="middle_content_right" style={{ textAlign: "center", fontSize: "10px", padding: "0.8rem 0.3rem" }}>
-                N/D
+              <Col className="middle_content_right" style={{ textAlign: "center" }}>
+                {horasSemanales !== null ? horasSemanales : "N/D"}
               </Col>
             </Row>
             <Row>
               <Col className="middle_content">Horas Programadas</Col>
               <Col className="middle_content_right" style={{ textAlign: "center" }}>
-                {horasProgramadas}
+                {horasProgramadas !== null ? horasProgramadas.toFixed(1) : "—"}
               </Col>
             </Row>
             <Row>
               <Col className="middle_content">Horas en deuda</Col>
               <Col
                 className="middle_content_right"
-                style={{ textAlign: "center", backgroundColor: "red", borderColor: "red", color: "white", fontSize: "10px", padding: "0.8rem 0.3rem" }}
+                style={{
+                  textAlign: "center",
+                  backgroundColor: "red",
+                  borderColor: "red",
+                  color: "white",
+                }}
               >
-                N/D
+                {horasDeuda !== null ? `${horasDeuda} HRS` : "N/D"}
               </Col>
             </Row>
 

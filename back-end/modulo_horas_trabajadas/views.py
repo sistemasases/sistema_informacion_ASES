@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from collections import defaultdict
+import datetime
+
 
 
 
@@ -125,9 +127,6 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         """Elimina un registro de horas por su ID"""
         registro = get_object_or_404(RegistroHoras, pk=pk)
 
-        # Verificar que el registro pertenece al trabajador autenticado (opcional pero recomendado)
-        # if registro.trabajador != request.user:
-        #     return Response({"error": "No tienes permiso para eliminar este registro."}, status=status.HTTP_403_FORBIDDEN)
 
         registro.delete()
         return Response(
@@ -142,6 +141,10 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         url_path='get_info_profesional'
     )
     def obtener_registros_profesional(self, request, pk=None):
+
+        semestre_id = request.query_params.get('semestre', None)
+        num_festivos = int(request.query_params.get('dias_festivos', 0) or 0)
+
         try:
             registros_nivel1 = RegistroHoras.objects.select_related(
                 'trabajador', 'rol'
@@ -153,14 +156,12 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                 'trabajador', flat=True
             ).distinct()
 
-            # parte 2: registros donde el jefe es alguno de los practicantes (monitores)
             registros_nivel2 = RegistroHoras.objects.select_related(
                 'trabajador', 'rol'
             ).filter(
                 rol__id_jefe__in=ids_practicantes
             ).order_by('trabajador')
 
-            # unir ambos querysets
             todos_registros = registros_nivel1 | registros_nivel2
 
             if not todos_registros.exists():
@@ -169,11 +170,76 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-            # agrupar por trabajador
-            trabajadores_ids = todos_registros.values_list(
-                'trabajador', flat=True
-            ).distinct()
+            trabajadores_ids = list(
+                todos_registros.values_list('trabajador', flat=True).distinct()
+            )
 
+            # ── semestre ──────────────────────────────────────────────
+            if semestre_id:
+                semestre_obj = get_object_or_404(semestre, id=semestre_id)
+            else:
+                semestre_obj = semestre.objects.filter(semestre_actual=True).first()
+
+            if not semestre_obj:
+                return Response(
+                    {"error": "No hay semestre activo."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            fecha_inicio = semestre_obj.fecha_inicio.date()
+            fecha_fin    = semestre_obj.fecha_fin.date()
+
+            # ── calcular horas_total_contratadas por defecto ──────────
+            dias_habiles = sum(
+                1 for i in range((fecha_fin - fecha_inicio).days)
+                if (fecha_inicio + datetime.timedelta(days=i)).weekday() < 5
+            )
+            dias_habiles -= num_festivos
+            semanas_reales = dias_habiles / 5
+            horas_total_default = round(semanas_reales * 20, 1)  # 20 horas semanales por defecto
+
+            # ── bulk_create de temporadas faltantes ───────────────────
+            ids_con_temporada = set(
+                TemporadaTrabajo.objects.filter(
+                    trabajador_id__in=trabajadores_ids,
+                    semestre=semestre_obj
+                ).values_list('trabajador_id', flat=True)
+            )
+
+            ids_sin_temporada = [id for id in trabajadores_ids if id not in ids_con_temporada]
+
+            if ids_sin_temporada:
+                TemporadaTrabajo.objects.bulk_create([
+                    TemporadaTrabajo(
+                        trabajador_id=trabajador_id,
+                        semestre=semestre_obj,
+                        horas_semanales=20,
+                        horas_total_contratadas=horas_total_default,
+                        total_festivos_temporada=num_festivos,
+                        fecha_inicio=fecha_inicio,
+                        fecha_fin=fecha_fin,
+                        precio_hora=10000,
+                        is_default=True,
+                    )
+                    for trabajador_id in ids_sin_temporada
+                ])
+
+            # ── traer TODAS las temporadas en una sola query ──────────
+            temporadas_map = {
+                t.trabajador_id: t
+                for t in TemporadaTrabajo.objects.select_related('semestre').filter(
+                    trabajador_id__in=trabajadores_ids,
+                    semestre=semestre_obj
+                )
+            }
+
+            # ── traer TODOS los usuarios en una sola query ────────────
+            usuarios_map = {
+                u.id: u
+                for u in User.objects.filter(id__in=trabajadores_ids)
+            }
+
+            # ── loop sin queries adicionales ──────────────────────────
             subordinados_info = []
 
             for trabajador_id in trabajadores_ids:
@@ -183,23 +249,21 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     total=Sum('horas_trabajadas')
                 )['total'] or 0
 
-                user = User.objects.filter(id=trabajador_id).first()
+                user = usuarios_map.get(trabajador_id)
                 nombre_completo = f"{user.first_name} {user.last_name}".strip() if user else str(trabajador_id)
-                
-                temporada = TemporadaTrabajo.objects.select_related('semestre').filter(
-                    trabajador_id=trabajador_id,
-                    semestre__semestre_actual=True
-                ).first()
 
-                temporada_data = None
-                if temporada:
-                    temporada_data = {
-                        "id": temporada.id,
-                        "fecha_inicio": temporada.fecha_inicio,
-                        "fecha_fin": temporada.get_fecha_fin_efectiva(),
-                        "horas_semanales": temporada.horas_semanales,
-                        "semestre": temporada.semestre.nombre,
-                    }
+                temporada = temporadas_map.get(trabajador_id)
+                temporada_data = {
+                    "id": temporada.id,
+                    "fecha_inicio": temporada.fecha_inicio,
+                    "fecha_fin": temporada.fecha_fin,
+                    "horas_semanales": temporada.horas_semanales,
+                    "horas_total_contratadas": temporada.horas_total_contratadas,
+                    "total_festivos_temporada": temporada.total_festivos_temporada,
+                    "precio_hora": temporada.precio_hora,
+                    "is_default": temporada.is_default,
+                    "semestre": semestre_obj.nombre,
+                } if temporada else None
 
                 subordinados_info.append({
                     "trabajador_id": trabajador_id,
@@ -209,7 +273,6 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     "horasTotal": float(total_horas)
                 })
 
-            print(subordinados_info)
             return Response(subordinados_info, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -223,3 +286,38 @@ class temporada_trabajo_viewset(viewsets.GenericViewSet):
     queryset = TemporadaTrabajo.objects.all()
     serializer_class = TemporadaTrabajoSerializer
     permission_classes = [IsAuthenticated]
+
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='crear_temporada'
+    )
+    def crear_temporada(self, request):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            trabajador = serializer.validated_data.get('trabajador')
+            semestre_obj = serializer.validated_data.get('semestre')
+
+            # Validar que no exista ya una temporada para ese trabajador y semestre
+            ya_existe = TemporadaTrabajo.objects.filter(
+                trabajador=trabajador,
+                semestre=semestre_obj
+            ).exists()
+
+            if ya_existe:
+                return Response(
+                    {"error": "Ya existe una temporada de trabajo para este trabajador en el semestre indicado."},
+                    status=status.HTTP_409_CONFLICT
+                )
+
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
