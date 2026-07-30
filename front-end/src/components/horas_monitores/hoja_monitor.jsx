@@ -41,6 +41,7 @@ const HojaMonitor = () => {
   const [selectedRegistro, setSelectedRegistro] = useState(null);
   const [loadingEdit, setLoadingEdit] = useState(false);   
   const [loadingDelete, setLoadingDelete] = useState(false); 
+  const [IsProfesional, setIsProfesional] = useState(false);
   const [formData, setFormData] = useState({
     fecha: "",
     hora_inicio: "06:00:00",
@@ -48,20 +49,26 @@ const HojaMonitor = () => {
     descripcion: "",
   });
 
-  const nombre = desencriptar(sessionStorage.getItem("first_name")) || "";
-  const apellido = desencriptar(sessionStorage.getItem("last_name")) || "";
+
+  const [nombreTrabajador, setNombreTrabajador] = useState("");
+  
 
   useEffect(() => {
 
     
     const getData = async () => {
       const data = await obtener_registros_por_trabajador();
-      if (data) {
-        setRegistros(data.registros);
-        setTotalHoras(data.total_horas);
+      if (data.registros) {
+        setRegistros(data.registros.registros);
+        setTotalHoras(data.registros.total_horas);
+        setIsProfesional(data.usuario_profesional);
+        setNombreTrabajador(data.registros.nombre_trabajador)
+        
       }
     };
     getData();
+
+    
   }, []);
 
   useEffect(() => {
@@ -163,7 +170,7 @@ const HojaMonitor = () => {
 
       <Row className="hm-body-row g-3">
         <Col xs={12} lg={8}>
-          <div className="hm-name-badge">{nombre} {apellido}</div>
+          <div className="hm-name-badge">{nombreTrabajador} </div>
           <div className="hm-table-wrap">
             <div className="hm-table-header">
               <span>Fecha y hora</span>
@@ -191,8 +198,12 @@ const HojaMonitor = () => {
                     </div>
                     <div className="hm-actions">
                       <button className="hm-btn-icon hm-btn-detail" onClick={() => openDetail(r.id)}>Ver</button>
-                      <button className="hm-btn-icon" onClick={() => openEdit(r.id)}>Editar</button>
-                      <button className="hm-btn-icon hm-btn-danger" onClick={() => openDelete(r.id)}>Eliminar</button>
+                      {!IsProfesional && (
+                        <>
+                          <button className="hm-btn-icon" onClick={() => openEdit(r.id)}>Editar</button>
+                          <button className="hm-btn-icon hm-btn-danger" onClick={() => openDelete(r.id)}>Eliminar</button>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}

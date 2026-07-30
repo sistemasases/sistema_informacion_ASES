@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import RegistroHoras, TemporadaTrabajo
 from modulo_usuario_rol.models import rol, usuario_rol
+from datetime import timedelta
+
 
 
 class RolSerializer(serializers.ModelSerializer):
@@ -99,37 +101,66 @@ class RegistroHorasSerializer(serializers.ModelSerializer):
             )
         return value
         
-    
+        
 class TemporadaTrabajoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemporadaTrabajo
-        fields = '__all__'
-        read_only_fields = ['horas_total_contratadas', 'created_at', 'updated_at']
+        fields = "__all__"
+        read_only_fields = [
+            "horas_total_contratadas",
+            "created_at",
+            "updated_at"
+        ]
 
     def validate(self, data):
-        fecha_inicio = data.get('fecha_inicio')
-        fecha_fin = data.get('fecha_fin')
-        horas_semanales = data.get('horas_semanales', 20)
-        festivos = data.get('total_festivos_temporada', 0) or 0
-        semestre_obj = data.get('semestre')
+        instance = self.instance
 
-        # Usar fecha_fin del semestre si no viene del front
-        if not fecha_fin and semestre_obj:
+        # Si el dato llegó en la petición lo usamos.
+        # Si no llegó y estamos actualizando, usamos el valor actual del objeto.
+        fecha_inicio = data.get(
+            "fecha_inicio",
+            instance.fecha_inicio if instance else None
+        )
+
+        fecha_fin = data.get(
+            "fecha_fin",
+            instance.fecha_fin if instance else None
+        )
+
+        semestre_obj = data.get(
+            "semestre",
+            instance.semestre if instance else None
+        )
+
+        horas_semanales = data.get(
+            "horas_semanales",
+            instance.horas_semanales if instance else 20
+        )
+
+        festivos = data.get(
+            "total_festivos_temporada",
+            instance.total_festivos_temporada if instance else 0
+        ) or 0
+
+        # Si fecha_fin sigue siendo None, usar la fecha del semestre
+        if fecha_fin is None and semestre_obj:
             fecha_fin = semestre_obj.fecha_fin.date()
 
         if fecha_inicio and fecha_fin:
-            # Contar días hábiles (sin sábados ni domingos)
+
             dias_habiles = sum(
-                1 for i in range((fecha_fin - fecha_inicio).days)
-                if (fecha_inicio + __import__('datetime').timedelta(days=i)).weekday() < 5
+                1
+                for i in range((fecha_fin - fecha_inicio).days)
+                if (fecha_inicio + timedelta(days=i)).weekday() < 5
             )
 
-            # Restar festivos
             dias_habiles -= festivos
 
-            # Calcular semanas y horas (puede ser decimal)
             semanas = dias_habiles / 5
-            # esto esta temporal mientras se decide que se va a hacer 
-            data['horas_total_contratadas'] = round(semanas * horas_semanales, 1)
+
+            data["horas_total_contratadas"] = round(
+                semanas * horas_semanales,
+                1
+            )
 
         return data

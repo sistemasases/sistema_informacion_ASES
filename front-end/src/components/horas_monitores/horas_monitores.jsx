@@ -5,8 +5,8 @@ import Scrollbars from "react-custom-scrollbars-2";
 import { encriptar, desencriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
 import obtener_registros_profesional from "../../service/registro_horas_trbajadas/get_all_profesional";
 import obtener_festivos_colombia from "../../service/registro_horas_trbajadas/dias_festivos";
-import crear_temporada_trabajo from "../../service/registro_horas_trbajadas/registro_temporada";
-
+import actualizar_temporada_trabajo from "../../service/registro_horas_trbajadas/actualizar_temporada";
+import obtener_semestre_actual from "../../service/registro_horas_trbajadas/get_semestre_actual";
 
 const PRECIO_HORA = 10000;
 
@@ -17,7 +17,6 @@ const HorasMonitores = () => {
   const [busqueda, setBusqueda] = useState("");
   const [seleccionado, setSeleccionado] = useState(null);
   const [modalTemporada, setModalTemporada] = useState(false);
-  const [modoModal, setModoModal] = useState("crear");
   const [cargandoTemporada, setCargandoTemporada] = useState(false);
   const [formTemporada, setFormTemporada] = useState({
     fecha_inicio: "",
@@ -27,15 +26,25 @@ const HorasMonitores = () => {
   });
 
   const semestre_id = desencriptar(sessionStorage.getItem("id_semestre_actual"));
+  const sede_id = desencriptar(sessionStorage.getItem("sede_id"));
+
+
 
   useEffect(() => {
     const getData = async () => {
-      // 1. primero los festivos
-      const resultadoFestivos = await obtener_festivos_colombia();
+
+      const semestreActual = await obtener_semestre_actual(sede_id);
+      if (!semestreActual || !semestreActual.fecha_inicio) return;
+
+
+      const resultadoFestivos = await obtener_festivos_colombia(
+        semestreActual.fecha_inicio,
+        semestreActual.fecha_fin
+      );
       const cantidadFestivos = resultadoFestivos ? resultadoFestivos.cantidad : 0;
       setDiasFestivos(cantidadFestivos);
 
-      // 2. luego los registros, ya con el valor real
+
       const data = await obtener_registros_profesional({ semestre_id, diasFestivos: cantidadFestivos });
       if (data) setSubordinados(data);
     };
@@ -45,20 +54,27 @@ const HorasMonitores = () => {
 
 
   const handleGuardarTemporada = async () => {
-    if (!formTemporada.fecha_inicio || !formTemporada.horas_semanales) return;
+    if (!formTemporada.fecha_inicio || !formTemporada.fecha_fin || !formTemporada.horas_semanales) return;
 
-    const payload = {
-      semestre: semestre_id,
-      trabajador: seleccionado.trabajador_id,
-      fecha_inicio: formTemporada.fecha_inicio,
-      fecha_fin: formTemporada.fecha_fin || null,
-      horas_semanales: formTemporada.horas_semanales,
-      total_festivos_temporada: diasFestivos,
-      precio_hora: PRECIO_HORA,
-    };
+    const idTemporada = seleccionado?.temporada?.id;
+    if (!idTemporada) return;
 
     setCargandoTemporada(true);
-    const resultado = await crear_temporada_trabajo(payload);
+
+    // recalcular festivos con el nuevo rango de fechas de la temporada
+    const resultadoFestivos = await obtener_festivos_colombia(
+      formTemporada.fecha_inicio,
+      formTemporada.fecha_fin
+    );
+    const nuevosFestivos = resultadoFestivos ? resultadoFestivos.cantidad : 0;
+
+    const resultado = await actualizar_temporada_trabajo(idTemporada, {
+      fecha_inicio: formTemporada.fecha_inicio,
+      fecha_fin: formTemporada.fecha_fin,
+      horas_semanales: formTemporada.horas_semanales,
+      total_festivos_temporada: nuevosFestivos,
+    });
+
     setCargandoTemporada(false);
 
     if (resultado) {
@@ -91,12 +107,6 @@ const HorasMonitores = () => {
     return `${d}/${m}/${y}`;
   };
 
-  const abrirModalCrear = () => {
-    setFormTemporada({ fecha_inicio: "", fecha_fin: "", horas_semanales: 20 });
-    setModoModal("crear");
-    setModalTemporada(true);
-  };
-
   const abrirModalEditar = () => {
     const t = seleccionado?.temporada;
     setFormTemporada({
@@ -105,7 +115,6 @@ const HorasMonitores = () => {
       horas_semanales: t?.horas_semanales || 20,
       horas_total_contratadas: t?.horas_total_contratadas || "",
     });
-    setModoModal("editar");
     setModalTemporada(true);
   };
 
@@ -232,7 +241,7 @@ const HorasMonitores = () => {
                         </div>
                       </Col>
 
-                      
+
 
                       <Col className="col_monitor_right_item">
                         <Button
@@ -296,14 +305,11 @@ const HorasMonitores = () => {
                 ))}
               </div>
 
-              {seleccionado.temporada
-                ? <button onClick={abrirModalEditar} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
-                    Modificar temporada
-                  </button>
-                : <button onClick={abrirModalCrear} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
-                    Agregar temporada
-                  </button>
-              }
+              {seleccionado.temporada && (
+                <button onClick={abrirModalEditar} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
+                  Modificar temporada
+                </button>
+              )}
             </div>
           )}
 
@@ -313,19 +319,15 @@ const HorasMonitores = () => {
               <div style={{ background: "#fff", borderRadius: "1rem", padding: "1.5rem", width: "360px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
                   <span style={{ fontWeight: 800, fontSize: "15px" }}>
-                    {modoModal === "crear" ? "Agregar temporada" : "Modificar temporada"}
+                    Modificar temporada
                   </span>
                   <button onClick={() => setModalTemporada(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px" }}>✕</button>
                 </div>
 
                 {[
                   { label: "Fecha inicio *", key: "fecha_inicio", type: "date" },
-                  { label: "Fecha fin (opcional)", key: "fecha_fin", type: "date" },
+                  { label: "Fecha fin *", key: "fecha_fin", type: "date" },
                   { label: "Horas semanales *", key: "horas_semanales", type: "number" },
-                  ...(modoModal === "editar"
-                    ? [{ label: "Horas total contratadas", key: "horas_total_contratadas", type: "number" }]
-                    : []
-                  ),
                 ].map(({ label, key, type }) => (
                   <div key={key} style={{ marginBottom: "0.8rem" }}>
                     <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>{label}</label>

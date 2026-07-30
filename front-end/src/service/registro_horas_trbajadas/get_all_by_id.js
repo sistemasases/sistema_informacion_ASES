@@ -35,7 +35,10 @@ const obtener_registros_por_trabajador = async () => {
   try {
     const response = await axios.post(url_axios, payload, { headers: config });
     if (response.status === 200) {
-      return response.data;
+      return {
+        registros: response.data,
+        usuario_profesional: Boolean(tieneId),
+      };
     }
   } catch (error) {
     console.error("Error al obtener registros del trabajador:", error);

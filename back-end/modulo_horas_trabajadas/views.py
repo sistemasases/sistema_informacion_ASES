@@ -3,7 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import RegistroHoras, TemporadaTrabajo
+from django.contrib.auth.models import User
 from .serializers import RegistroHorasSerializer, TemporadaTrabajoSerializer
+from django.core.exceptions import ValidationError as DjangoValidationError
 from modulo_usuario_rol.models import usuario_rol
 from modulo_instancia.models import semestre
 from django.contrib.auth.models import User
@@ -11,6 +13,8 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from collections import defaultdict
 import datetime
+from datetime import date, timedelta
+from decimal import Decimal, ROUND_HALF_UP
 
 
 
@@ -58,8 +62,20 @@ class registros_horas_viewset(viewsets.GenericViewSet):
     # endpoint para obtener todos los regostros de trabajador, por el id 
     @action(detail=False, methods=['post'], url_path='by_trabajador')
     def get_by_id(self, request):
-        trabajador = request.data.get('trabajador')
+        trabajador_id = request.data.get('trabajador')
         semestre_id = request.data.get('semestre')
+
+        trabajador_registro = get_object_or_404(User, pk=trabajador_id)
+        
+        print("=========")
+        print("trabajador_id: " + str(trabajador_id))
+        print("=========")
+        print("trabajador_id: " + str(trabajador_registro))
+
+        nombre_trabajador = trabajador_registro.first_name 
+        apellido_trabajador = trabajador_registro.last_name
+
+        nombre_completo = nombre_trabajador + " " + apellido_trabajador
 
         semestre_actual = semestre.objects.get(id=semestre_id)
         fecha_inicio = semestre_actual.fecha_inicio
@@ -68,7 +84,7 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             'rol',
             'rol__id_rol'
         ).filter(
-            trabajador=trabajador,
+            trabajador=trabajador_id,
             fecha__gt=fecha_inicio
         )
 
@@ -77,8 +93,11 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             total=Sum('horas_trabajadas')
         )['total'] or 0
 
+        print(nombre_completo)
+
         return Response({
             "registros": serializer.data,
+            "nombre_trabajador": nombre_completo,
             "total_horas": float(total_horas)
         }, status=status.HTTP_200_OK)
     
@@ -321,3 +340,95 @@ class temporada_trabajo_viewset(viewsets.GenericViewSet):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+
+
+    @action(
+        detail=True,
+        methods=["patch"],
+        url_path="actualizar_temporada"
+    )
+    def actualizar_temporada(self, request, pk=None):
+
+        try:
+            temporada = self.get_object()
+
+            # Actualizar únicamente los campos permitidos
+
+            if "fecha_inicio" in request.data:
+                temporada.fecha_inicio = date.fromisoformat(
+                    request.data["fecha_inicio"]
+                )
+
+            if "fecha_fin" in request.data:
+                temporada.fecha_fin = date.fromisoformat(
+                    request.data["fecha_fin"]
+                )
+
+            if "horas_semanales" in request.data:
+                temporada.horas_semanales = int(
+                    request.data["horas_semanales"]
+                )
+
+            if "total_festivos_temporada" in request.data:
+                temporada.total_festivos_temporada = int(
+                    request.data["total_festivos_temporada"]
+                )
+
+            # Recalcular horas contratadas
+            dias_habiles = sum(
+                1
+                for i in range((temporada.fecha_fin - temporada.fecha_inicio).days)
+                if (temporada.fecha_inicio + timedelta(days=i)).weekday() < 5
+            )
+
+            dias_habiles -= temporada.total_festivos_temporada or 0
+
+            semanas = dias_habiles / 5
+
+            horas_calculadas = Decimal(
+                str(semanas * temporada.horas_semanales)
+            ).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+            temporada.horas_total_contratadas = horas_calculadas
+
+            # Ejecuta el clean() del modelo
+
+            temporada.is_default = False
+
+            temporada.full_clean()
+
+            temporada.save()
+
+            return Response(
+                TemporadaTrabajoSerializer(temporada).data,
+                status=status.HTTP_200_OK
+            )
+
+        except ValueError:
+            return Response(
+                {
+                    "error": "Las fechas deben tener el formato YYYY-MM-DD."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except DjangoValidationError as e:
+            if hasattr(e, "message_dict"):
+                return Response(
+                    e.message_dict,
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            return Response(
+                {"error": e.messages},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "error": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
