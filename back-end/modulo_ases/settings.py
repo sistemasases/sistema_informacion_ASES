@@ -103,20 +103,16 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'modulo_ases.urls'
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000"
-]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000"
-]
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    "DJANGO_CORS_ALLOWED_ORIGINS", ""
+).split(",")
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "http://localhost:8000"
-]
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    "DJANGO_CSRF_TRUSTED_ORIGINS", ""
+).split(",")
+
+CORS_ORIGIN_WHITELIST = CORS_ALLOWED_ORIGINS
 
 
 TEMPLATES = [
@@ -157,6 +153,7 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
          'rest_framework_simplejwt.authentication.JWTAuthentication',
+         'rest_framework.authentication.TokenAuthentication',
      )
 }
 

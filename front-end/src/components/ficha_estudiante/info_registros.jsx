@@ -5,8 +5,8 @@ import { Row, Col } from "styled-bootstrap-grid";
 
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual";
 import Inasistencia from "../seguimiento_forms/form_inasistencia";
-import Seguimiento_individual_v2 from "../seguimiento_forms/form_seguimiento_individual_v2";
 import Seguimiento_individual_v3 from "../seguimiento_forms/form_seguimiento_individual_v3";
+import Seguimiento_individual_v3_1 from "../seguimiento_forms/form_seguimiento_individual_v3_1";
 import All_semestres from "../../service/all_semestres.js";
 import Semestre_por_sede from "../../service/semestres_por_sede.js";
 import { useEffect } from "react";
@@ -42,6 +42,9 @@ const Info_registros = (props) => {
   const opciones = [];
   const hasEstudiante = Boolean(props.id_estudiante);
 
+  const fechaReferenciaV3_1 = new Date("2026-07-30"); // Fecha desde que corre la versión 3.1 de la ficha
+  const fechaActual = new Date();
+
   useEffect(() => {
     if (!hasEstudiante) {
       set_state((prev) => ({
@@ -56,7 +59,7 @@ const Info_registros = (props) => {
     // console.log(props.id_estudiante);
     formData.append(
       "id_semestre",
-      desencriptarInt(sessionStorage.getItem("id_semestre_actual"))
+      desencriptarInt(sessionStorage.getItem("id_semestre_actual")),
     );
 
     axios({
@@ -79,7 +82,7 @@ const Info_registros = (props) => {
 
   useEffect(() => {
     Semestre_por_sede.semestre_por_sede(
-      desencriptarInt(sessionStorage.getItem("sede_id"))
+      desencriptarInt(sessionStorage.getItem("sede_id")),
     ).then((res) => {
       // console.log(res);
       set_semestres({
@@ -175,24 +178,28 @@ const Info_registros = (props) => {
   // Renderizado del componente para Crear Nuevo Seguimiento
   return (
     <Row className="container_info_registro">
-      {/* <Seguimiento_individual_v2
-        estudiante_seleccionado={props.id_estudiante}
-        recarga_ficha_estudiante={true}
-        show={show}
-        onHide={handleClose}
-        handleClose={handleClose}
-        handleModalIn={handleModalIn}
-        size="lg"
-      /> */}
-      <Seguimiento_individual_v3
-        estudiante_seleccionado={props.id_estudiante}
-        recarga_ficha_estudiante={true}
-        show={show}
-        onHide={handleClose}
-        handleClose={handleClose}
-        handleModalIn={handleModalIn}
-        size="lg"
-      />
+      {fechaActual >= fechaReferenciaV3_1 ? (
+        <Seguimiento_individual_v3_1
+          estudiante_seleccionado={props.id_estudiante}
+          recarga_ficha_estudiante={true}
+          show={show}
+          onHide={handleClose}
+          handleClose={handleClose}
+          handleModalIn={handleModalIn}
+          size="lg"
+        />
+      ) : (
+        <Seguimiento_individual_v3
+          estudiante_seleccionado={props.id_estudiante}
+          recarga_ficha_estudiante={true}
+          show={show}
+          onHide={handleClose}
+          handleClose={handleClose}
+          handleModalIn={handleModalIn}
+          size="lg"
+        />
+      )}
+
       <Inasistencia
         estudiante_seleccionado={props.id_estudiante}
         recarga_ficha_estudiante={true}

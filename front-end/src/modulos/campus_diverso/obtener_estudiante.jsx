@@ -34,6 +34,7 @@ const ObtenerEstudiante = () => {
   const [endDate, setEndDate] = useState(null); // Fecha de fi
   const [selectedPrograma, setSelectedPrograma] = useState("");
   const [selectedRevision, setSelectedRevision] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   //Desencripta el token para la API
@@ -185,7 +186,7 @@ const ObtenerEstudiante = () => {
             .toLowerCase()
             .includes(searchText.toLowerCase()));
 
-    const matchesPrograma = selectedPrograma
+      const matchesPrograma = selectedPrograma
       ? selectedPrograma.value === "otro"
         ? !user.informacion_academica?.programas ||
           user.informacion_academica.programas.length === 0 ||
@@ -210,6 +211,9 @@ const ObtenerEstudiante = () => {
         endDate &&
         userDate.isBetween(startDate, endDate, null, "[]")); // Incluye ambas fechas
 
+    const userYear = userDate.isValid() ? userDate.year().toString() : "";
+    const matchesYear = !selectedYear || userYear === selectedYear.value;
+
     // Se devuelve el usuario si coincide con el texto de búsqueda y el rango de fechas
 
     const matchesRevisionStatus =
@@ -222,6 +226,7 @@ const ObtenerEstudiante = () => {
       matchesSearchText &&
       matchesPrograma &&
       matchesDateRange &&
+      matchesYear &&
       matchesRevisionStatus
     );
   });
@@ -570,6 +575,11 @@ const ObtenerEstudiante = () => {
     //{ label: "Todos", value: "todos" },
     { label: "Revisados", value: "revisados" },
     { label: "No revisados", value: "no_revisados" },
+  ];
+
+  const yearOptions = [
+    { label: "2025", value: "2025" },
+    { label: "2026", value: "2026" },
   ];
 
   // Handle del multi-select
@@ -990,6 +1000,23 @@ const ObtenerEstudiante = () => {
                 />
               </div>
             </LocalizationProvider>
+          </Col>
+          <Col xs={12} md={3} className="mb-2 mb-md-0">
+            <label className="form-label">Filtrar por año</label>
+            <Select
+              classNamePrefix="Select"
+              value={selectedYear}
+              onChange={(selectedOption) => setSelectedYear(selectedOption)}
+              options={yearOptions}
+              placeholder="Selecciona un año"
+              isClearable
+              styles={{
+                menu: (provided) => ({
+                  ...provided,
+                  zIndex: 1000,
+                }),
+              }}
+            />
           </Col>
           <Col xs="auto" className="d-flex align-items-end mb-2 mb-md-0">
             {(startDate || endDate) && (

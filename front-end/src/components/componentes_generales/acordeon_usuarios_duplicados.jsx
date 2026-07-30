@@ -6,8 +6,7 @@
  * @date 27 de marzo del 2026
  */
 
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { Container, Button, Accordion, Modal, Form } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
@@ -29,6 +28,7 @@ const SelectorUsuarios = () => {
   });
 
   const [selectedRows, setSelectedRows] = useState([]);
+  const [toggleCleared, setToggleCleared] = useState(false);
 
   const consultaAllUser = async () => {
     try {
@@ -57,11 +57,15 @@ const SelectorUsuarios = () => {
     });
   };
 
-  const handleSelectedRowsChange = ({ allSelected, selectedCount, selectedRows }) => {
+  const handleSelectedRowsChange = ({
+    allSelected,
+    selectedCount,
+    selectedRows,
+  }) => {
     setSelectedRows(selectedRows);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     // console.log(selectedRows);
     if (selectedRows.length === 0) {
       alert("Por favor, seleccione al menos un usuario para eliminar.");
@@ -84,9 +88,63 @@ const SelectorUsuarios = () => {
       });
       return;
     }
+
     const ids = selectedRows.map((row) => row.id);
-    Delete_user.eliminar_usuario({ ids });
-    setSelectedRows([]);
+
+    try {
+      const response = await Delete_user.eliminar_usuario({ ids });
+
+      if (response && response.status === 200) {
+        Swal.fire({
+          title: "Operación exitosa",
+          html: `
+            <p><b>Eliminados:</b> ${response.data.eliminados
+              .map((u) => `ID: ${u.id} - ${u.username}`)
+              .join("<br>")}</p>
+
+            <p><b>No eliminados:</b> ${response.data.bloqueados
+              .map((u) => `ID: ${u.id} - ${u.username}`)
+              .join("<br>")}</p>
+
+            <p> Total eliminados: ${response.data.total_eliminados}</p>
+            <p> Total bloqueados: ${response.data.total_bloqueados}</p>
+          `,
+          icon: "success",
+          showConfirmButton: true,
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#3085d6",
+        });
+
+        consultaAllUser();
+        setSelectedRows([]);
+        setToggleCleared((prev) => !prev);
+      } else if (response && response.status === 400) {
+        Swal.fire({
+          title: "Error",
+          text: response.data?.mensaje || "No se pudo eliminar el usuario.",
+          icon: "error",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Ocurrió un error al eliminar los usuarios. Intente nuevamente.",
+          icon: "error",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error en la operación:", error);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo completar la operación. Verifique su conexión o intente más tarde.",
+        icon: "error",
+        timer: 2500,
+        showConfirmButton: false,
+      });
+    }
   };
 
   // Definición de las columnas de la tabla
@@ -164,6 +222,7 @@ const SelectorUsuarios = () => {
                 noDataComponent="Cargando Información."
                 pagination
                 selectableRows
+                clearSelectedRows={toggleCleared}
                 onSelectedRowsChange={handleSelectedRowsChange}
                 striped
                 pointerOnHover

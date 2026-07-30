@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_individual";
 import Seguimiento_individual_v2 from "../seguimiento_forms/form_seguimiento_individual_v2";
 import Seguimiento_individual_v3 from "../seguimiento_forms/form_seguimiento_individual_v3";
+import Seguimiento_individual_v3_1 from "../seguimiento_forms/form_seguimiento_individual_v3_1";
 import { useEffect } from "react";
 import axios from "axios";
 import Selector from "../../components/ficha_estudiante/selector";
@@ -42,6 +43,9 @@ const Info_basica = (props) => {
   const [loading, setLoading2] = useState(false);
   const [fechas, setFechas] = useState([]);
   const [riesgos, setRiesgos] = useState({});
+
+  const fechaReferenciaV3_1 = new Date("2026-07-30"); // Fecha desde que corre la versión 3.1 de la ficha
+  const fechaActual = new Date();
 
   const traer_graficos = () => {
     setLoading2(true);
@@ -117,7 +121,7 @@ const Info_basica = (props) => {
     }));
   }, [props.data_user]);
   //console.log("opciones:", datos_option_user);
-  
+
   const [isLoading, setIsLoading] = useState(true);
 
   const userRole = desencriptar(sessionStorage.getItem("rol"));
@@ -176,7 +180,7 @@ const Info_basica = (props) => {
         total_datos_estudiante_seleccionado: state.total_datos_estudiantes,
       });
     }
-  }, [state.total_datos_estudiantes]);  
+  }, [state.total_datos_estudiantes]);
 
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -217,7 +221,7 @@ const Info_basica = (props) => {
           state.data_user[index]["id"] +
           "/datos_ficha_estudiante/",
         config,
-        { paramsget }
+        { paramsget },
       );
       // console.log(response.data);
       state.total_datos_estudiantes.push(response.data);
@@ -239,7 +243,7 @@ const Info_basica = (props) => {
     if (!url_estudiante || url_estudiante === "sin_seleccion") return;
 
     const existeEnLista = props.data_user.some(
-      (estudiante) => String(estudiante.id) === String(url_estudiante)
+      (estudiante) => String(estudiante.id) === String(url_estudiante),
     );
     setEstudiante_no_lista(!existeEnLista);
 
@@ -249,7 +253,7 @@ const Info_basica = (props) => {
 
     if (existeEnLista && state.ya_selecciono_automatico) {
       const datoSeleccionado = datos_option_user.find(
-        (dato) => String(dato.value) === String(url_estudiante)
+        (dato) => String(dato.value) === String(url_estudiante),
       );
       if (datoSeleccionado) {
         setSelectedOption(datoSeleccionado);
@@ -264,7 +268,7 @@ const Info_basica = (props) => {
           headers: config2,
         })
           .then((respuesta) => {
-            set_state(prev => ({
+            set_state((prev) => ({
               ...prev,
               total_datos_estudiantes: respuesta.data,
               tab_abierto: 3,
@@ -289,7 +293,7 @@ const Info_basica = (props) => {
         headers: config2,
       })
         .then((respuesta) => {
-          set_state(prev => ({
+          set_state((prev) => ({
             ...prev,
             total_datos_estudiantes: respuesta.data,
             tab_abierto: 3,
@@ -324,7 +328,7 @@ const Info_basica = (props) => {
     const id_estudiante_encriptada = encriptarInt(e.value);
     sessionStorage.setItem(
       "id_estudiante_seleccionado",
-      id_estudiante_encriptada
+      id_estudiante_encriptada,
     );
     const url_axios =
       `${process.env.REACT_APP_API_URL}/usuario_rol/estudiante/` +
@@ -383,10 +387,10 @@ const Info_basica = (props) => {
       {
         id_estudiante: state.total_datos_estudiante_seleccionado.id,
         semestre_actual: desencriptar(
-          sessionStorage.getItem("semestre_actual")
+          sessionStorage.getItem("semestre_actual"),
         ),
         id_sede: desencriptarInt(sessionStorage.getItem("sede_id")),
-      }
+      },
     );
     set_state({
       ...state,
@@ -404,15 +408,28 @@ const Info_basica = (props) => {
   // Renderizado del componente para visualizar seguimientos
   return (
     <Row className="row_prueba">
-      <Seguimiento_individual_v3
-        estudiante_seleccionado={state.seleccionado}
-        recarga_ficha_estudiante={true}
-        show={show}
-        onHide={handleClose}
-        handleClose={handleClose}
-        handleModalIn={handleModalIn}
-        size="lg"
-      />
+      {fechaActual >= fechaReferenciaV3_1 ? (
+        <Seguimiento_individual_v3_1
+          estudiante_seleccionado={state.seleccionado}
+          recarga_ficha_estudiante={true}
+          show={show}
+          onHide={handleClose}
+          handleClose={handleClose}
+          handleModalIn={handleModalIn}
+          size="lg"
+        />
+      ) : (
+        <Seguimiento_individual_v3
+          estudiante_seleccionado={state.seleccionado}
+          recarga_ficha_estudiante={true}
+          show={show}
+          onHide={handleClose}
+          handleClose={handleClose}
+          handleModalIn={handleModalIn}
+          size="lg"
+        />
+      )}
+
       <Inasistencia
         estudiante_seleccionado={state.seleccionado}
         recarga_ficha_estudiante={true}
@@ -670,7 +687,7 @@ const Info_basica = (props) => {
                                         <div key={index}>
                                           {monitoria.nombre}
                                         </div>
-                                      )
+                                      ),
                                     )
                                   : "N/A"}
                               </Col>
@@ -718,13 +735,15 @@ const Info_basica = (props) => {
                                     "FIRMA INEXISTENTE"
                                     ? { color: "red" }
                                     : state.total_datos_estudiante_seleccionado
-                                        .firma_tratamiento_datos ==
-                                      "NO AUTORIZA"
-                                    ? { color: "orange" }
-                                    : state.total_datos_estudiante_seleccionado
-                                        .firma_tratamiento_datos == "AUTORIZA"
-                                    ? { color: " #41ae1b" }
-                                    : { color: " #AAB5A6" }
+                                          .firma_tratamiento_datos ==
+                                        "NO AUTORIZA"
+                                      ? { color: "orange" }
+                                      : state
+                                            .total_datos_estudiante_seleccionado
+                                            .firma_tratamiento_datos ==
+                                          "AUTORIZA"
+                                        ? { color: " #41ae1b" }
+                                        : { color: " #AAB5A6" }
                                 }
                                 title={
                                   state.total_datos_estudiante_seleccionado
@@ -734,13 +753,15 @@ const Info_basica = (props) => {
                                     "FIRMA INEXISTENTE"
                                     ? "Tratamiento de datos sin firmar"
                                     : state.total_datos_estudiante_seleccionado
-                                        .firma_tratamiento_datos ===
-                                      "NO AUTORIZA"
-                                    ? "Tratamiento de datos firmado, sin autorizar"
-                                    : state.total_datos_estudiante_seleccionado
-                                        .firma_tratamiento_datos === "AUTORIZA"
-                                    ? "Tratamiento de datos autorizado"
-                                    : "Estado del tratamiento de datos"
+                                          .firma_tratamiento_datos ===
+                                        "NO AUTORIZA"
+                                      ? "Tratamiento de datos firmado, sin autorizar"
+                                      : state
+                                            .total_datos_estudiante_seleccionado
+                                            .firma_tratamiento_datos ===
+                                          "AUTORIZA"
+                                        ? "Tratamiento de datos autorizado"
+                                        : "Estado del tratamiento de datos"
                                 }
                               ></i>
                             </a>
