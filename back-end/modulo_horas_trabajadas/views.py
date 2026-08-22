@@ -212,33 +212,25 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         num_festivos = int(request.query_params.get('dias_festivos', 0) or 0)
 
         try:
-            registros_nivel1 = RegistroHoras.objects.select_related(
-                'trabajador', 'rol'
-            ).filter(
-                rol__id_jefe=request.user
-            ).order_by('trabajador')
-
-            ids_practicantes = registros_nivel1.values_list(
-                'trabajador', flat=True
-            ).distinct()
-
-            registros_nivel2 = RegistroHoras.objects.select_related(
-                'trabajador', 'rol'
-            ).filter(
-                rol__id_jefe__in=ids_practicantes
-            ).order_by('trabajador')
-
-            todos_registros = registros_nivel1 | registros_nivel2
-
-            if not todos_registros.exists():
-                return Response(
-                    {"message": "No se encontraron registros."},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-
-            trabajadores_ids = list(
-                todos_registros.values_list('trabajador', flat=True).distinct()
+            # ── subordinados via usuario_rol (incluye los sin horas) ──
+            ids_nivel1 = list(
+                usuario_rol.objects.filter(
+                    id_jefe=request.user,
+                    estado="ACTIVO"
+                ).values_list('id_usuario_id', flat=True)
             )
+
+            if not ids_nivel1:
+                return Response([], status=status.HTTP_200_OK)
+
+            ids_nivel2 = list(
+                usuario_rol.objects.filter(
+                    id_jefe__in=ids_nivel1,
+                    estado="ACTIVO"
+                ).values_list('id_usuario_id', flat=True)
+            )
+
+            trabajadores_ids = list(set(ids_nivel1 + ids_nivel2))
 
             # ── semestre ──────────────────────────────────────────────
             if semestre_id:
@@ -262,7 +254,7 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             )
             dias_habiles -= num_festivos
             semanas_reales = dias_habiles / 5
-            horas_total_default = round(semanas_reales * 20, 1)  # 20 horas semanales por defecto
+            horas_total_default = round(semanas_reales * 20, 1)
 
             # ── bulk_create de temporadas faltantes ───────────────────
             ids_con_temporada = set(
@@ -305,15 +297,23 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                 for u in User.objects.filter(id__in=trabajadores_ids)
             }
 
-            # ── loop sin queries adicionales ──────────────────────────
+            # ── traer TODOS los registros en una sola query y agrupar en memoria ──
+            registros_por_trabajador = defaultdict(list)
+            horas_por_trabajador = defaultdict(float)
+            for r in RegistroHoras.objects.select_related('rol', 'rol__id_rol').filter(
+                trabajador__in=trabajadores_ids,
+                fecha__gte=fecha_inicio
+            ):
+                registros_por_trabajador[r.trabajador_id].append(r)
+                horas_por_trabajador[r.trabajador_id] += float(r.horas_trabajadas)
+
+            # ── armar respuesta ───────────────────────────────────────
             subordinados_info = []
 
             for trabajador_id in trabajadores_ids:
-                registros_trabajador = todos_registros.filter(trabajador=trabajador_id)
-                serializer = self.get_serializer(registros_trabajador, many=True)
-                total_horas = registros_trabajador.aggregate(
-                    total=Sum('horas_trabajadas')
-                )['total'] or 0
+                regs = registros_por_trabajador.get(trabajador_id, [])
+                serializer = self.get_serializer(regs, many=True)
+                total_horas = horas_por_trabajador.get(trabajador_id, 0.0)
 
                 user = usuarios_map.get(trabajador_id)
                 nombre_completo = f"{user.first_name} {user.last_name}".strip() if user else str(trabajador_id)
@@ -336,7 +336,7 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     "nombre": nombre_completo,
                     "temporada": temporada_data,
                     "registros": serializer.data,
-                    "horasTotal": float(total_horas)
+                    "horasTotal": total_horas
                 })
 
             return Response(subordinados_info, status=status.HTTP_200_OK)

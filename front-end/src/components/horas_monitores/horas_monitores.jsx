@@ -17,6 +17,7 @@ const HorasMonitores = () => {
   const [busqueda, setBusqueda] = useState("");
   const [seleccionado, setSeleccionado] = useState(null);
   const [modalTemporada, setModalTemporada] = useState(false);
+  const [cargando, setCargando] = useState(true);
   const [cargandoTemporada, setCargandoTemporada] = useState(false);
   const [formTemporada, setFormTemporada] = useState({
     fecha_inicio: "",
@@ -32,10 +33,13 @@ const HorasMonitores = () => {
 
   useEffect(() => {
     const getData = async () => {
+      setCargando(true);
 
       const semestreActual = await obtener_semestre_actual(sede_id);
-      if (!semestreActual || !semestreActual.fecha_inicio) return;
-
+      if (!semestreActual || !semestreActual.fecha_inicio) {
+        setCargando(false);
+        return;
+      }
 
       const resultadoFestivos = await obtener_festivos_colombia(
         semestreActual.fecha_inicio,
@@ -44,9 +48,10 @@ const HorasMonitores = () => {
       const cantidadFestivos = resultadoFestivos ? resultadoFestivos.cantidad : 0;
       setDiasFestivos(cantidadFestivos);
 
-
       const data = await obtener_registros_profesional({ semestre_id, diasFestivos: cantidadFestivos });
       if (data) setSubordinados(data);
+
+      setCargando(false);
     };
 
     getData();
@@ -216,9 +221,15 @@ const HorasMonitores = () => {
               renderTrackVertical={(props) => <div {...props} className="track-vertical-left" />}
               renderView={(props) => <div {...props} className="view-content-left" />}
             >
-              {subordinadosFiltrados.length === 0 ? (
+              {cargando ? (
                 <div style={{ padding: "2rem", textAlign: "center", color: "#aaa", fontSize: "13px" }}>
-                  No se encontraron resultados.
+                  Cargando subordinados...
+                </div>
+              ) : subordinadosFiltrados.length === 0 ? (
+                <div style={{ padding: "2rem", textAlign: "center", color: "#aaa", fontSize: "13px" }}>
+                  {subordinados.length === 0
+                    ? "No se encontraron subordinados."
+                    : "No se encontraron resultados."}
                 </div>
               ) : (
                 subordinadosFiltrados.map((s) => {
