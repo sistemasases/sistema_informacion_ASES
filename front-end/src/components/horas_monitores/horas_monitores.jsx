@@ -86,6 +86,8 @@ const HorasMonitores = () => {
         fecha_fin: resultado.fecha_fin,
         horas_semanales: resultado.horas_semanales,
         horas_total_contratadas: resultado.horas_total_contratadas,
+        total_festivos_temporada: resultado.total_festivos_temporada,
+        is_default: resultado.is_default,
         semestre: resultado.semestre,
       };
 
@@ -375,7 +377,9 @@ const HorasMonitores = () => {
             </Row>
             <Row className="red_tittle">
               <Col>Días Festivos:</Col>
-              <Col style={{ textAlign: "right" }}>{diasFestivos}</Col>
+              <Col style={{ textAlign: "right" }}>
+                {seleccionado?.temporada?.total_festivos_temporada ?? diasFestivos}
+              </Col>
             </Row>
 
             <Row>
