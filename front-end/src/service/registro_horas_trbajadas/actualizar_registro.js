@@ -46,9 +46,19 @@ const actualizar_registro = async (id, payload) => {
   } catch (error) {
     console.error("Error al actualizar el registro:", error);
 
-    const msg =
-      error.response?.data?.error ||
-      "No se pudo actualizar el registro. Intenta de nuevo.";
+    const data = error.response?.data;
+    let msg = "No se pudo actualizar el registro. Intenta de nuevo.";
+
+    if (data) {
+      if (data.error) {
+        // Error de vista: { error: "mensaje" }
+        msg = data.error;
+      } else {
+        // Errores del serializer: { campo: ["mensaje", ...], ... }
+        const mensajes = Object.values(data).flat();
+        if (mensajes.length > 0) msg = mensajes.join(" ");
+      }
+    }
 
     Swal.fire({
       title: "Error",

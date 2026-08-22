@@ -140,6 +140,30 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         serializer = self.get_serializer(registro, data=request.data, partial=True)
 
         if serializer.is_valid():
+            # Validar que la fecha (nueva o existente) esté dentro del semestre activo
+            fecha = serializer.validated_data.get('fecha', registro.fecha)
+
+            semestre_obj = semestre.objects.filter(semestre_actual=True).first()
+            if semestre_obj is None:
+                return Response(
+                    {"error": "No hay un semestre activo configurado."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            fecha_inicio = semestre_obj.fecha_inicio.date()
+            fecha_fin = semestre_obj.fecha_fin.date()
+
+            if not (fecha_inicio <= fecha <= fecha_fin):
+                return Response(
+                    {
+                        "error": (
+                            f"La fecha {fecha} está fuera del rango del semestre actual "
+                            f"({fecha_inicio} - {fecha_fin})."
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             # Si cambia el trabajador, recalcular el rol activo
             trabajador = serializer.validated_data.get('trabajador', registro.trabajador)
 

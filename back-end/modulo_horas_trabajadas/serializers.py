@@ -57,10 +57,11 @@ class RegistroHorasSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
-        hora_inicio = data.get("hora_inicio")
-        hora_fin = data.get("hora_fin")
-        trabajador = data.get("trabajador")
-        fecha = data.get("fecha")
+        instance = self.instance
+        hora_inicio = data.get("hora_inicio", instance.hora_inicio if instance else None)
+        hora_fin    = data.get("hora_fin",    instance.hora_fin    if instance else None)
+        trabajador  = data.get("trabajador",  instance.trabajador  if instance else None)
+        fecha       = data.get("fecha",       instance.fecha       if instance else None)
 
         if hora_inicio and hora_fin:
             if hora_fin <= hora_inicio:
@@ -78,16 +79,17 @@ class RegistroHorasSerializer(serializers.ModelSerializer):
                 )
 
         if trabajador and fecha and hora_inicio and hora_fin:
-            cruce = RegistroHoras.objects.filter(
+            qs = RegistroHoras.objects.filter(
                 trabajador=trabajador,
                 fecha=fecha,
-            ).filter(
-                # Cubre todos los casos de solapamiento posibles
                 hora_inicio__lt=hora_fin,
                 hora_fin__gt=hora_inicio,
-            ).exists()
+            )
+            # Al editar, excluir el propio registro para evitar falsos positivos
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
 
-            if cruce:
+            if qs.exists():
                 raise serializers.ValidationError(
                     {"hora_inicio": f"Ya tienes un registro que se cruza con el horario {hora_inicio} - {hora_fin} en esta fecha."}
                 )
