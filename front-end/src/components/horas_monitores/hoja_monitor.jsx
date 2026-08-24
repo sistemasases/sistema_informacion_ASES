@@ -6,10 +6,8 @@ import { desencriptar } from "../../modulos/utilidades_seguridad/utilidades_segu
 import obtener_registros_por_trabajador from "../../service/registro_horas_trbajadas/get_all_by_id";
 import actualizar_registro from "../../service/registro_horas_trbajadas/actualizar_registro";
 import eliminar_registro from "../../service/registro_horas_trbajadas/eliminar_registro";
-import obtener_festivos_colombia from "../../service/registro_horas_trbajadas/dias_festivos";
 import "../../Scss/horas_monitores/hoja_monitor.css";
 
-const HORAS_A_CUMPLIR = 344;
 const REGISTROS_POR_PAGINA = 10;
 
 const generarOpciones = () => {
@@ -32,15 +30,15 @@ const fmtHora = (h) => (h ? h.slice(0, 5) : "");
 const HojaMonitor = () => {
   const [registros, setRegistros] = useState([]);
   const [totalHoras, setTotalHoras] = useState(0);
-  const [diasFestivos, setDiasFestivos] = useState(0);
+  const [temporada, setTemporada] = useState(null);
   const [paginaActual, setPaginaActual] = useState(1);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedRegistro, setSelectedRegistro] = useState(null);
-  const [loadingEdit, setLoadingEdit] = useState(false);   
-  const [loadingDelete, setLoadingDelete] = useState(false); 
+  const [loadingEdit, setLoadingEdit] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [IsProfesional, setIsProfesional] = useState(false);
   const [formData, setFormData] = useState({
     fecha: "",
@@ -49,34 +47,20 @@ const HojaMonitor = () => {
     descripcion: "",
   });
 
-
   const [nombreTrabajador, setNombreTrabajador] = useState("");
-  
 
   useEffect(() => {
-
-    
     const getData = async () => {
       const data = await obtener_registros_por_trabajador();
       if (data.registros) {
         setRegistros(data.registros.registros);
         setTotalHoras(data.registros.total_horas);
         setIsProfesional(data.usuario_profesional);
-        setNombreTrabajador(data.registros.nombre_trabajador)
-        
+        setNombreTrabajador(data.registros.nombre_trabajador);
+        setTemporada(data.registros.temporada ?? null);
       }
     };
     getData();
-
-    
-  }, []);
-
-  useEffect(() => {
-    const getFestivos = async () => {
-      const resultado = await obtener_festivos_colombia();
-      if (resultado) setDiasFestivos(resultado.cantidad);
-    };
-    getFestivos();
   }, []);
 
   const totalPaginas = Math.ceil(registros.length / REGISTROS_POR_PAGINA);
@@ -85,7 +69,13 @@ const HojaMonitor = () => {
     paginaActual * REGISTROS_POR_PAGINA
   );
 
-  const horasDeuda = Math.max(0, HORAS_A_CUMPLIR - totalHoras).toFixed(1);
+  const horasContratadas = temporada?.horas_total_contratadas
+    ? parseFloat(temporada.horas_total_contratadas)
+    : null;
+
+  const horasDeuda = horasContratadas !== null
+    ? Math.max(0, horasContratadas - totalHoras).toFixed(1)
+    : null;
 
   const openDetail = (id) => {
     const r = registros.find((x) => x.id === id);
@@ -161,7 +151,6 @@ const HojaMonitor = () => {
 
   return (
     <div className="hm-page">
-      {/* ── sin cambios en el JSX del render ── */}
       <div className="hm-header-row">
         <h2 className="hm-title">Hoja del Monitor</h2>
         <h2 className="hm-title">Horas</h2>
@@ -222,17 +211,65 @@ const HojaMonitor = () => {
         </Col>
 
         <Col xs={12} lg={4}>
+          {/* ── TARJETA TEMPORADA (solo lectura) ── */}
+          <div className="hm-right-card" style={{ marginBottom: "1rem", padding: "0.9rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+              <span style={{ fontWeight: 800, fontSize: "13px" }}>Temporada de trabajo</span>
+              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "flex-end" }}>
+                {temporada
+                  ? <span style={{ background: "#e6f9f0", color: "#1a7a4a", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Activa</span>
+                  : <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
+                }
+                {temporada?.is_default && (
+                  <span style={{ background: "#fff3e0", color: "#e65100", fontSize: "10px", padding: "2px 8px", borderRadius: "6px", fontWeight: 700 }}>
+                    ⚠ Datos por defecto
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+              {[
+                { label: "Fecha inicio", valor: temporada ? fmtFecha(temporada.fecha_inicio) : "N/D" },
+                { label: "Fecha fin",    valor: temporada ? fmtFecha(temporada.fecha_fin ?? "") : "N/D" },
+                { label: "Hrs/semana",  valor: temporada ? `${temporada.horas_semanales} hrs` : "N/D" },
+                { label: "Semestre",    valor: temporada ? temporada.semestre : "N/D" },
+              ].map(({ label, valor }) => (
+                <div key={label} style={{ background: "#f5f5f5", borderRadius: "0.5rem", padding: "0.5rem 0.7rem" }}>
+                  <div style={{ fontSize: "10px", color: "#888", marginBottom: "2px" }}>{label}</div>
+                  <div style={{ fontSize: "13px", fontWeight: 700, color: valor === "N/D" ? "#bbb" : "#333" }}>{valor}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── TARJETA MÉTRICAS ── */}
           <div className="hm-right-card">
-            <div className="hm-right-row hm-red"><span>Precio hora</span><span>$10,000</span></div>
-            <div className="hm-right-row hm-red"><span>Días festivos</span>  <span>{diasFestivos}</span></div>
-            <div className="hm-metric"><span className="hm-metric-label">Horas a cumplir</span><span className="hm-metric-value">{HORAS_A_CUMPLIR}</span></div>
-            <div className="hm-metric"><span className="hm-metric-label">Horas realizadas</span><span className="hm-metric-value hm-metric-highlight">{totalHoras.toFixed(1)}</span></div>
-            <div className="hm-metric"><span className="hm-metric-label">Horas en deuda</span><span className="hm-metric-value">{horasDeuda}</span></div>
+            <div className="hm-right-row hm-red">
+              <span>Precio hora</span>
+              <span>${(temporada?.precio_hora ?? 10000).toLocaleString("es-CO")}</span>
+            </div>
+            <div className="hm-right-row hm-red">
+              <span>Días festivos</span>
+              <span>{temporada?.total_festivos_temporada ?? "—"}</span>
+            </div>
+            <div className="hm-metric">
+              <span className="hm-metric-label">Horas a cumplir</span>
+              <span className="hm-metric-value">{horasContratadas !== null ? horasContratadas.toFixed(1) : "—"}</span>
+            </div>
+            <div className="hm-metric">
+              <span className="hm-metric-label">Horas realizadas</span>
+              <span className="hm-metric-value hm-metric-highlight">{totalHoras.toFixed(1)}</span>
+            </div>
+            <div className="hm-metric">
+              <span className="hm-metric-label">Horas en deuda</span>
+              <span className="hm-metric-value">{horasDeuda !== null ? horasDeuda : "—"}</span>
+            </div>
           </div>
         </Col>
       </Row>
 
-      {/* MODAL DETALLE — sin cambios */}
+      {/* MODAL DETALLE */}
       <Modal show={showDetail} onHide={() => setShowDetail(false)} centered>
         <Modal.Header closeButton className="hm-modal-header">
           <Modal.Title className="hm-modal-title">Detalle del registro</Modal.Title>
@@ -253,7 +290,7 @@ const HojaMonitor = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* MODAL EDITAR — solo el botón Guardar tiene loading */}
+      {/* MODAL EDITAR */}
       <Modal show={showEdit} onHide={() => !loadingEdit && setShowEdit(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title style={{ fontSize: "16px", fontWeight: 500 }}>Actualizar registro</Modal.Title>
@@ -294,7 +331,7 @@ const HojaMonitor = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* MODAL ELIMINAR — solo el botón Eliminar tiene loading */}
+      {/* MODAL ELIMINAR */}
       <Modal show={showDelete} onHide={() => !loadingDelete && setShowDelete(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title style={{ fontSize: "16px", fontWeight: 500 }}>Eliminar registro</Modal.Title>

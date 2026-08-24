@@ -111,17 +111,37 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             fecha__gt=fecha_inicio
         )
 
-        serializer = self.get_serializer(registros_filtrados, many=True)        
+        serializer = self.get_serializer(registros_filtrados, many=True)
         total_horas = registros_filtrados.aggregate(
             total=Sum('horas_trabajadas')
         )['total'] or 0
 
         print(nombre_completo)
 
+        temporada_obj = TemporadaTrabajo.objects.filter(
+            trabajador_id=trabajador_id,
+            semestre=semestre_actual
+        ).first()
+
+        temporada_data = None
+        if temporada_obj:
+            temporada_data = {
+                "id": temporada_obj.id,
+                "fecha_inicio": str(temporada_obj.fecha_inicio),
+                "fecha_fin": str(temporada_obj.fecha_fin) if temporada_obj.fecha_fin else None,
+                "horas_semanales": temporada_obj.horas_semanales,
+                "horas_total_contratadas": str(temporada_obj.horas_total_contratadas),
+                "total_festivos_temporada": temporada_obj.total_festivos_temporada,
+                "precio_hora": temporada_obj.precio_hora,
+                "is_default": temporada_obj.is_default,
+                "semestre": semestre_actual.nombre,
+            }
+
         return Response({
             "registros": serializer.data,
             "nombre_trabajador": nombre_completo,
-            "total_horas": float(total_horas)
+            "total_horas": float(total_horas),
+            "temporada": temporada_data,
         }, status=status.HTTP_200_OK)
     
 
