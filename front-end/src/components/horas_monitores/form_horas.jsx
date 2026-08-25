@@ -279,8 +279,7 @@ const RegistroHorasForm = () => {
               <p className="rhf-guide-section-title">Fecha del registro</p>
               <p className="rhf-guide-section-text">
                 Selecciona el <strong>día exacto</strong> en el que trabajaste.
-                Puedes tener múltiples registros en una misma semana, uno por
-                cada día que hayas laborado.
+                Puedes tener múltiples registros en una misma semana o dia (no pueden haber dos registros en una misma franja horaria).
               </p>
             </div>
 
@@ -296,6 +295,15 @@ const RegistroHorasForm = () => {
             </div>
 
             <div className="rhf-guide-section rhf-guide-section--red">
+              <p className="rhf-guide-section-title">Descripción</p>
+              <p className="rhf-guide-section-text">
+                El campo de descripción es opcional. Úsalo para dejar una nota
+                sobre las actividades realizadas o cualquier observación
+                relevante del día.
+              </p>
+            </div>
+
+            <div className="rhf-guide-section">
               <p className="rhf-guide-section-title">Historial de registros</p>
               <p className="rhf-guide-section-text">
                 Este formulario es solo para agregar nuevos registros. Para
@@ -304,14 +312,7 @@ const RegistroHorasForm = () => {
               </p>
             </div>
 
-            <div className="rhf-guide-section">
-              <p className="rhf-guide-section-title">Descripción</p>
-              <p className="rhf-guide-section-text">
-                El campo de descripción es opcional. Úsalo para dejar una nota
-                sobre las actividades realizadas o cualquier observación
-                relevante del día.
-              </p>
-            </div>
+            
           </div>
         </Col>
       </Row>

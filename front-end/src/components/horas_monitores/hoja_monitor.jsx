@@ -105,7 +105,8 @@ const HojaMonitor = () => {
   // ── actualizar ────────────────────────────────────────────────────────────
   const saveEdit = async () => {
     setLoadingEdit(true);
-    const resultado = await actualizar_registro(selectedId, formData);
+    const id_semestre = desencriptar(sessionStorage.getItem("id_semestre_actual"));
+    const resultado = await actualizar_registro(selectedId, { ...formData, semestre: id_semestre });
     setLoadingEdit(false);
 
     if (!resultado) return; // el service ya muestra el Swal de error

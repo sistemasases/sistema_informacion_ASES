@@ -1,5 +1,6 @@
 import axios from "axios";
 import { decryptTokenFromSessionStorage, desencriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
+
 import Swal from "sweetalert2";
 
 const crear_registro_horas = async (data) => {
@@ -9,12 +10,16 @@ const crear_registro_horas = async (data) => {
 
   const url_axios = `${process.env.REACT_APP_API_URL}/horas_trabajadas/registrar_horas/crear_registro/`;
 
-  // Sacar el id_usuario del sessionStorage desencriptándolo
+  // Sacar el id_usuario y el semestre del sessionStorage desencriptándolos
   const encryptedIdUsuario = sessionStorage.getItem("id_usuario");
   const id_usuario = desencriptar(encryptedIdUsuario);
 
+  const encryptedSemestre = sessionStorage.getItem("id_semestre_actual");
+  const id_semestre = desencriptar(encryptedSemestre);
+
   const payload = {
     trabajador: id_usuario,
+    semestre: id_semestre,
     fecha: data.fecha,
     hora_inicio: data.hora_inicio,
     hora_fin: data.hora_fin,

@@ -37,11 +37,17 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             trabajador = serializer.validated_data.get('trabajador')
             fecha = serializer.validated_data.get('fecha')
 
-            # Validar que la fecha esté dentro del rango del semestre actual
-            semestre_obj = semestre.objects.filter(semestre_actual=True).first()
+            # Validar que la fecha esté dentro del rango del semestre enviado por el frontend
+            semestre_id = request.data.get('semestre')
+            if not semestre_id:
+                return Response(
+                    {"error": "Se requiere el ID del semestre."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            semestre_obj = semestre.objects.filter(id=semestre_id).first()
             if semestre_obj is None:
                 return Response(
-                    {"error": "No hay un semestre activo configurado."},
+                    {"error": "El semestre indicado no existe."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -89,12 +95,6 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         semestre_id = request.data.get('semestre')
 
         trabajador_registro = get_object_or_404(User, pk=trabajador_id)
-        
-        print("=========")
-        print("trabajador_id: " + str(trabajador_id))
-        print("=========")
-        print("trabajador_id: " + str(trabajador_registro))
-
         nombre_trabajador = trabajador_registro.first_name 
         apellido_trabajador = trabajador_registro.last_name
 
@@ -160,13 +160,19 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         serializer = self.get_serializer(registro, data=request.data, partial=True)
 
         if serializer.is_valid():
-            # Validar que la fecha (nueva o existente) esté dentro del semestre activo
+            # Validar que la fecha (nueva o existente) esté dentro del semestre enviado por el frontend
             fecha = serializer.validated_data.get('fecha', registro.fecha)
 
-            semestre_obj = semestre.objects.filter(semestre_actual=True).first()
+            semestre_id = request.data.get('semestre')
+            if not semestre_id:
+                return Response(
+                    {"error": "Se requiere el ID del semestre."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            semestre_obj = semestre.objects.filter(id=semestre_id).first()
             if semestre_obj is None:
                 return Response(
-                    {"error": "No hay un semestre activo configurado."},
+                    {"error": "El semestre indicado no existe."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -253,16 +259,12 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             trabajadores_ids = list(set(ids_nivel1 + ids_nivel2))
 
             # ── semestre ──────────────────────────────────────────────
-            if semestre_id:
-                semestre_obj = get_object_or_404(semestre, id=semestre_id)
-            else:
-                semestre_obj = semestre.objects.filter(semestre_actual=True).first()
-
-            if not semestre_obj:
+            if not semestre_id:
                 return Response(
-                    {"error": "No hay semestre activo."},
-                    status=status.HTTP_404_NOT_FOUND
+                    {"error": "Se requiere el ID del semestre."},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
+            semestre_obj = get_object_or_404(semestre, id=semestre_id)
 
             fecha_inicio = semestre_obj.fecha_inicio.date()
             fecha_fin    = semestre_obj.fecha_fin.date()
