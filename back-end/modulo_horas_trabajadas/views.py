@@ -100,8 +100,8 @@ class registros_horas_viewset(viewsets.GenericViewSet):
 
         nombre_completo = nombre_trabajador + " " + apellido_trabajador
 
-        semestre_actual = semestre.objects.get(id=semestre_id)
-        fecha_inicio = semestre_actual.fecha_inicio
+        semestre_actual = get_object_or_404(semestre, id=semestre_id)
+        fecha_inicio = semestre_actual.fecha_inicio.date()
 
         registros_filtrados = RegistroHoras.objects.select_related(
             'rol',
@@ -115,8 +115,6 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         total_horas = registros_filtrados.aggregate(
             total=Sum('horas_trabajadas')
         )['total'] or 0
-
-        print(nombre_completo)
 
         temporada_obj = TemporadaTrabajo.objects.filter(
             trabajador_id=trabajador_id,
