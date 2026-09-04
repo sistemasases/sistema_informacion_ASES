@@ -47,6 +47,7 @@ const HojaMonitor = () => {
     descripcion: "",
   });
 
+  const [horasActuales, setHorasActuales] = useState(0);
   const [nombreTrabajador, setNombreTrabajador] = useState("");
 
   useEffect(() => {
@@ -55,6 +56,7 @@ const HojaMonitor = () => {
       if (data.registros) {
         setRegistros(data.registros.registros);
         setTotalHoras(data.registros.total_horas);
+        setHorasActuales(data.registros.horas_actuales ?? 0);
         setIsProfesional(data.usuario_profesional);
         setNombreTrabajador(data.registros.nombre_trabajador);
         setTemporada(data.registros.temporada ?? null);
@@ -261,6 +263,10 @@ const HojaMonitor = () => {
             <div className="hm-metric">
               <span className="hm-metric-label">Horas realizadas</span>
               <span className="hm-metric-value hm-metric-highlight">{totalHoras.toFixed(1)}</span>
+            </div>
+            <div className="hm-metric">
+              <span className="hm-metric-label">Horas actuales</span>
+              <span className="hm-metric-value">{horasActuales.toFixed(1)}</span>
             </div>
             <div className="hm-metric">
               <span className="hm-metric-label">Horas en deuda</span>

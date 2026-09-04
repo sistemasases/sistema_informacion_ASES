@@ -140,10 +140,17 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             fecha__gt=fecha_inicio
         )
 
-        serializer = self.get_serializer(registros_filtrados, many=True)
-        total_horas = registros_filtrados.aggregate(
-            total=Sum('horas_trabajadas')
-        )['total'] or 0
+        registros_list = list(registros_filtrados)
+        serializer = self.get_serializer(registros_list, many=True)
+
+        total_horas = sum(float(r.horas_trabajadas) for r in registros_list)
+
+        ahora = datetime.datetime.now()
+        horas_actuales = sum(
+            float(r.horas_trabajadas)
+            for r in registros_list
+            if datetime.datetime.combine(r.fecha, r.hora_fin) <= ahora
+        )
 
         temporada_obj = TemporadaTrabajo.objects.filter(
             trabajador_id=trabajador_id,
@@ -167,7 +174,8 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         return Response({
             "registros": serializer.data,
             "nombre_trabajador": nombre_completo,
-            "total_horas": float(total_horas),
+            "total_horas": total_horas,
+            "horas_actuales": horas_actuales,
             "temporada": temporada_data,
         }, status=status.HTTP_200_OK)
 
@@ -377,12 +385,16 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             # ── traer TODOS los registros en una sola query y agrupar en memoria ──
             registros_por_trabajador = defaultdict(list)
             horas_por_trabajador = defaultdict(float)
+            horas_actuales_por_trabajador = defaultdict(float)
+            ahora = datetime.datetime.now()
             for r in RegistroHoras.objects.select_related('rol', 'rol__id_rol').filter(
                 trabajador__in=trabajadores_ids,
                 fecha__gte=fecha_inicio
             ):
                 registros_por_trabajador[r.trabajador_id].append(r)
                 horas_por_trabajador[r.trabajador_id] += float(r.horas_trabajadas)
+                if datetime.datetime.combine(r.fecha, r.hora_fin) <= ahora:
+                    horas_actuales_por_trabajador[r.trabajador_id] += float(r.horas_trabajadas)
 
             # ── armar respuesta ───────────────────────────────────────
             subordinados_info = []
@@ -413,7 +425,8 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     "nombre": nombre_completo,
                     "temporada": temporada_data,
                     "registros": serializer.data,
-                    "horasTotal": total_horas
+                    "horasTotal": total_horas,
+                    "horasActuales": horas_actuales_por_trabajador.get(trabajador_id, 0.0),
                 })
 
             return Response(subordinados_info, status=status.HTTP_200_OK)
