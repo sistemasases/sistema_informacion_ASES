@@ -19,6 +19,7 @@ from modulo_programa.models import programa, programa_estudiante, facultad
 from modulo_academico.models import monitoria_academica
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
+from modulo_academico.models import monitoria_academica #para la sede
 from django.shortcuts import get_object_or_404
 
 
@@ -380,11 +381,13 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     'sede': datos_usuario['sede'],
                 })
 
+
+            
             return Response(user_list, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+        
     """
     Elimina un usuario existente y activo en el sistema. (Usado únicamente para usuarios duplicados)
     """
@@ -1190,9 +1193,38 @@ class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
         monitores = usuario_rol.objects.filter(
             id_rol__id=5,  # ID del rol de monitor
             estado="ACTIVO",
-        ).values('id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name', 'id_usuario__email')
+        ).values('id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name',
+        'id_usuario__email', 'id_semestre__id_sede__nombre', 'id_jefe', 'id_semestre')
 
+        sedes_por_monitor = {m['id_usuario']: m['id_semestre__id_sede__nombre'] or 'SIN SEDE' for m in monitores}
         ids_monitores = [m['id_usuario'] for m in monitores]
+
+        # Obtener jefes directos de los monitores
+        ids_jefes = list({m['id_jefe'] for m in monitores if m.get('id_jefe')})
+
+        # Consultar los practicantes y profesionales directos
+        jefes = usuario_rol.objects.filter(
+            id_usuario__in=ids_jefes,
+            estado="ACTIVO",
+        ).values('id_usuario', 'id_semestre', 'id_rol__id', 'id_jefe', 'id_jefe__first_name',
+            'id_jefe__last_name',
+            'id_usuario__first_name',
+            'id_usuario__last_name')
+        
+        prof_por_practicante = {}
+
+        for j in jefes:
+            nombre_prof = ""
+            if j.get('id_jefe__first_name') or j.get('id_jefe__last_name'):
+                # Su jefe (profesional) asignado
+                nombre_prof = f"{j.get('id_jefe__first_name') or ''} {j.get('id_jefe__last_name') or ''}".strip()
+            elif j.get('id_rol__id') == 3:
+                # Es directamente el profesional
+                nombre_prof = f"{j.get('id_usuario__first_name') or ''} {j.get('id_usuario__last_name') or ''}".strip()
+            #se guarda en el diccionario (tanto por clave compuesta con semestre como por id_usuario)
+            if nombre_prof:
+                prof_por_practicante[(j['id_usuario'], j['id_semestre'])] = nombre_prof
+                prof_por_practicante[j['id_usuario']] = nombre_prof
 
         asignaciones_data = asignacion.objects.filter(
             id_usuario__in=ids_monitores
@@ -1205,11 +1237,20 @@ class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
 
         lista_asignaciones_monitor = []
         for m in monitores:
+            id_jefe = m.get('id_jefe')
+            profesional_a_cargo = "SIN ASIGNAR"
+            if id_jefe:
+                profesional_a_cargo = prof_por_practicante.get(
+                    (id_jefe, m.get('id_semestre')),
+                    prof_por_practicante.get(id_jefe, "SIN ASIGNAR")
+                )
             lista_asignaciones_monitor.append({
                 "id_monitor": m['id_usuario'],
                 "usuario_monitor": m['id_usuario__username'],
                 "nombre_monitor": m['id_usuario__first_name'] + ' ' + m['id_usuario__last_name'],
                 "correo_monitor": m['id_usuario__email'],
+                "sede_monitor": sedes_por_monitor.get(m['id_usuario'], None),
+                "profesional_a_cargo": profesional_a_cargo,
                 "asignaciones": [
                     {
                         "id": a['id'],
@@ -1224,7 +1265,6 @@ class panel_admin_asignaciones_monitores_viewset(viewsets.ViewSet):
                     } for a in asignaciones_data if a['id_usuario_id'] == m['id_usuario']
                 ]
             })
-
         return Response(lista_asignaciones_monitor, status=status.HTTP_200_OK)
         # return Response({"mensaje": "Listar asignaciones de monitores a estudiantes"}, status=status.HTTP_200_OK)
 
