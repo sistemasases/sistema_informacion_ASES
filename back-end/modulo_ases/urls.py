@@ -45,7 +45,7 @@ urlpatterns = [
     path('seguimiento/', include('modulo_seguimiento.routers')),
     path('usuario_rol/', include('modulo_usuario_rol.routers')),
     path('usuario_rol_firma/', include('modulo_usuario_rol.urls')),
-    path('usuario_rol_firma/', include('modulo_usuario_rol.urls')),
+    path('horas_trabajadas/', include('modulo_horas_trabajadas.routers')),
     path('wizard/', include('modulo_instancia.routers')),
     
     # path('forms/', include('modulo_formularios_externos.routers')),
