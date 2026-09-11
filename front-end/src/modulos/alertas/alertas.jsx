@@ -20,6 +20,7 @@ import myGif from "../reportes/loading_data.gif";
 import writeXlsxFile from "write-excel-file";
 import { CSVLink } from "react-csv";
 import axios from "axios";
+import { FaExclamationCircle, FaBell } from "react-icons/fa";
 
 // variable con las columnas a usar dentro de las notificaciones
 var columns = [
@@ -70,8 +71,8 @@ var columns = [
       {
         when: (row) => row.firma_tratamiento_datos == "SIN FIRMAR",
         style: {
-          backgroundColor: "red",
-          color: "white",
+          backgroundColor: "#F5CCC6",
+          color: "#640704ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -80,9 +81,9 @@ var columns = [
       {
         when: (row) => row.firma_tratamiento_datos == "NO AUTORIZA",
         style: {
-          backgroundColor: "orange",
+          backgroundColor: "#ADB0B5",
           // color: "#552CC4",
-          color: "white",
+          color: "black",
           "&:hover": {
             cursor: "pointer",
           },
@@ -91,8 +92,8 @@ var columns = [
       {
         when: (row) => row.firma_tratamiento_datos == "AUTORIZA",
         style: {
-          backgroundColor: "#4BF619",
-          color: "white",
+          backgroundColor: "#DAEAD0",
+          color: "black",
           "&:hover": {
             cursor: "pointer",
           },
@@ -109,10 +110,20 @@ var columns = [
     width: "190px",
     conditionalCellStyles: [
       {
+        when: (row) => row.encuesta_admitido == "DILIGENCIADO",
+        style: {
+          backgroundColor: "#D4ECF0",
+          color: "black",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
         when: (row) => row.encuesta_admitido == "SIN DILIGENCIAR",
         style: {
-          backgroundColor: "red",
-          color: "white",
+          backgroundColor: "#AFB1B6",
+          color: "black",
           "&:hover": {
             cursor: "pointer",
           },
@@ -131,8 +142,28 @@ var columns = [
       {
         when: (row) => row.fecha_seguimiento == "FICHA FALTANTE",
         style: {
-          backgroundColor: "red",
-          color: "white",
+          backgroundColor: "#C1A5E4",
+          color: "#44136bff",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.fecha_seguimiento == "SEGUIMIENTO RECIENTE",
+        style: {
+          backgroundColor: "#BCE3AE",
+          color: "black",
+          "&:hover": {
+            cursor: "pointer",
+          },
+        },
+      },
+      {
+        when: (row) => row.fecha_seguimiento == "INASISTENCIA",
+        style: {
+          backgroundColor: "#779AB8",
+          color: "black",
           "&:hover": {
             cursor: "pointer",
           },
@@ -143,6 +174,27 @@ var columns = [
   {
     name: "Riesgo individual",
     selector: (row) => row.riesgo_individual,
+    cell: (row) => {
+      if (row.riesgo_individual === "ALTO") {
+        return (
+          <span>
+            <FaBell style={{ marginRight: "8px" }} />
+            ALTO
+          </span>
+        );
+      }
+
+      if (row.riesgo_individual === "MEDIO") {
+        return (
+          <span>
+            <FaExclamationCircle style={{ marginRight: "8px" }} />
+            MEDIO
+          </span>
+        );
+      }
+
+      return row.riesgo_individual;
+    },
     value: "riesgo_individual",
     sortable: true,
     isCheck: false,
@@ -151,7 +203,7 @@ var columns = [
       {
         when: (row) => row.riesgo_individual == "ALTO",
         style: {
-          backgroundColor: "red",
+          backgroundColor: "#d88237ff",
           color: "white",
           "&:hover": {
             cursor: "pointer",
@@ -161,8 +213,8 @@ var columns = [
       {
         when: (row) => row.riesgo_individual == "MEDIO",
         style: {
-          backgroundColor: "yellow",
-          color: "#552CC4",
+          backgroundColor: "#FFF2CC",
+          color: "#6e5604ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -171,8 +223,8 @@ var columns = [
       {
         when: (row) => row.riesgo_individual == "BAJO",
         style: {
-          backgroundColor: "#4BF619",
-          color: "white",
+          backgroundColor: "#D9EAD3",
+          color: "#127203ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -183,6 +235,27 @@ var columns = [
   {
     name: "Riesgo familiar",
     selector: (row) => row.riesgo_familiar,
+    cell: (row) => {
+      if (row.riesgo_familiar === "ALTO") {
+        return (
+          <span>
+            <FaBell style={{ marginRight: "8px" }} />
+            ALTO
+          </span>
+        );
+      }
+
+      if (row.riesgo_familiar === "MEDIO") {
+        return (
+          <span>
+            <FaExclamationCircle style={{ marginRight: "8px" }} />
+            MEDIO
+          </span>
+        );
+      }
+
+      return row.riesgo_familiar;
+    },
     value: "riesgo_familiar",
     sortable: true,
     isCheck: false,
@@ -191,7 +264,7 @@ var columns = [
       {
         when: (row) => row.riesgo_familiar == "ALTO",
         style: {
-          backgroundColor: "red",
+          backgroundColor: "#d88237ff",
           color: "white",
           "&:hover": {
             cursor: "pointer",
@@ -201,8 +274,8 @@ var columns = [
       {
         when: (row) => row.riesgo_familiar == "MEDIO",
         style: {
-          backgroundColor: "yellow",
-          color: "#552CC4",
+          backgroundColor: "#FFF2CC",
+          color: "#6e5604ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -211,8 +284,8 @@ var columns = [
       {
         when: (row) => row.riesgo_familiar == "BAJO",
         style: {
-          backgroundColor: "#4BF619",
-          color: "white",
+          backgroundColor: "#D9EAD3",
+          color: "#127203ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -223,6 +296,27 @@ var columns = [
   {
     name: "Riesgo académico",
     selector: (row) => row.riesgo_academico,
+    cell: (row) => {
+      if (row.riesgo_academico === "ALTO") {
+        return (
+          <span>
+            <FaBell style={{ marginRight: "8px" }} />
+            ALTO
+          </span>
+        );
+      }
+
+      if (row.riesgo_academico === "MEDIO") {
+        return (
+          <span>
+            <FaExclamationCircle style={{ marginRight: "8px" }} />
+            MEDIO
+          </span>
+        );
+      }
+
+      return row.riesgo_academico;
+    },
     value: "riesgo_academico",
     sortable: true,
     isCheck: false,
@@ -231,7 +325,7 @@ var columns = [
       {
         when: (row) => row.riesgo_academico == "ALTO",
         style: {
-          backgroundColor: "red",
+          backgroundColor: "#d88237ff",
           color: "white",
           "&:hover": {
             cursor: "pointer",
@@ -241,8 +335,8 @@ var columns = [
       {
         when: (row) => row.riesgo_academico == "MEDIO",
         style: {
-          backgroundColor: "yellow",
-          color: "#552CC4",
+          backgroundColor: "#FFF2CC",
+          color: "#6e5604ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -251,8 +345,8 @@ var columns = [
       {
         when: (row) => row.riesgo_academico == "BAJO",
         style: {
-          backgroundColor: "#4BF619",
-          color: "white",
+          backgroundColor: "#D9EAD3",
+          color: "#127203ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -263,6 +357,27 @@ var columns = [
   {
     name: "Riesgo económico",
     selector: (row) => row.riesgo_economico,
+    cell: (row) => {
+      if (row.riesgo_economico === "ALTO") {
+        return (
+          <span>
+            <FaBell style={{ marginRight: "8px" }} />
+            ALTO
+          </span>
+        );
+      }
+
+      if (row.riesgo_economico === "MEDIO") {
+        return (
+          <span>
+            <FaExclamationCircle style={{ marginRight: "8px" }} />
+            MEDIO
+          </span>
+        );
+      }
+
+      return row.riesgo_economico;
+    },
     value: "riesgo_economico",
     sortable: true,
     isCheck: false,
@@ -271,7 +386,7 @@ var columns = [
       {
         when: (row) => row.riesgo_economico == "ALTO",
         style: {
-          backgroundColor: "red",
+          backgroundColor: "#d88237ff",
           color: "white",
           "&:hover": {
             cursor: "pointer",
@@ -281,8 +396,8 @@ var columns = [
       {
         when: (row) => row.riesgo_economico == "MEDIO",
         style: {
-          backgroundColor: "yellow",
-          color: "#552CC4",
+          backgroundColor: "#FFF2CC",
+          color: "#6e5604ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -291,8 +406,8 @@ var columns = [
       {
         when: (row) => row.riesgo_economico == "BAJO",
         style: {
-          backgroundColor: "#4BF619",
-          color: "white",
+          backgroundColor: "#D9EAD3",
+          color: "#127203ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -303,6 +418,27 @@ var columns = [
   {
     name: "Riesgo vida universitaria",
     selector: (row) => row.riesgo_vida_universitaria_ciudad,
+    cell: (row) => {
+      if (row.riesgo_vida_universitaria_ciudad === "ALTO") {
+        return (
+          <span>
+            <FaBell style={{ marginRight: "8px" }} />
+            ALTO
+          </span>
+        );
+      }
+
+      if (row.riesgo_vida_universitaria_ciudad === "MEDIO") {
+        return (
+          <span>
+            <FaExclamationCircle style={{ marginRight: "8px" }} />
+            MEDIO
+          </span>
+        );
+      }
+
+      return row.riesgo_vida_universitaria_ciudad;
+    },
     value: "riesgo_vida_universitaria_ciudad",
     sortable: true,
     isCheck: false,
@@ -311,7 +447,7 @@ var columns = [
       {
         when: (row) => row.riesgo_vida_universitaria_ciudad == "ALTO",
         style: {
-          backgroundColor: "red",
+          backgroundColor: "#d88237ff",
           color: "white",
           "&:hover": {
             cursor: "pointer",
@@ -321,8 +457,8 @@ var columns = [
       {
         when: (row) => row.riesgo_vida_universitaria_ciudad == "MEDIO",
         style: {
-          backgroundColor: "yellow",
-          color: "#552CC4",
+          backgroundColor: "#FFF2CC",
+          color: "#6e5604ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -331,8 +467,8 @@ var columns = [
       {
         when: (row) => row.riesgo_vida_universitaria_ciudad == "BAJO",
         style: {
-          backgroundColor: "#4BF619",
-          color: "white",
+          backgroundColor: "#D9EAD3",
+          color: "#127203ff",
           "&:hover": {
             cursor: "pointer",
           },
@@ -410,8 +546,8 @@ const Alertas = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/alertas/estudiantes_info/` +
-            id_usuario.toString() +
-            "/",
+          id_usuario.toString() +
+          "/",
           { params: { usuario_rol: rol, sede: sede } }
         );
         set_state({
@@ -441,8 +577,8 @@ const Alertas = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/alertas/estudiante_datos_alertas/` +
-            id_usuario.toString() +
-            "/",
+          id_usuario.toString() +
+          "/",
           { params: { usuario_rol: rol, sede: sede } }
         );
         set_state({
