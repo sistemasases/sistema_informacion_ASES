@@ -73,20 +73,20 @@ class info_estudiante_viewsets(viewsets.ModelViewSet):
                 list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
-        elif data_usuario_rol == "super_ases":
+        # elif data_usuario_rol == "super_ases":
 
-            serializer_estudiante = estudiante_serializer(
-                estudiante.objects.all(), many=True)
-            return Response(serializer_estudiante.data)
+        #     serializer_estudiante = estudiante_serializer(
+        #         estudiante.objects.all(), many=True)
+        #     return Response(serializer_estudiante.data)
 
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "super_ases" or data_usuario_rol == "sistemas":
 
             list_id_programas = programa.objects.filter(
                 id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(
                 id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
+                id__in=list_id_estudiantes, estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
@@ -173,7 +173,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             return "SIN FIRMAR" ## Rojo
         else:
             return "SIN FIRMAR" ## Rojo
-            
+
 
     def get_encuesta_admitido(self, encuesta):
         if encuesta == None:
@@ -221,17 +221,17 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
 
-        elif data_usuario_rol == "super_ases":
-            serializer_estudiantes = estudiante_serializer(
-                estudiante.objects.all(), many=True)
+        # elif data_usuario_rol == "super_ases":
+        #     serializer_estudiantes = estudiante_serializer(
+        #         estudiante.objects.all(), many=True)
 
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "super_ases" or data_usuario_rol == "sistemas":
             list_id_programas = programa.objects.filter(
                 id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(
                 id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
+                id__in=list_id_estudiantes, estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
 
@@ -397,7 +397,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     'riesgo_economico': 'SIN REGISTRAR',
                     'riesgo_vida_universitaria_ciudad': 'SIN REGISTRAR',
                     'fecha_seguimiento': 'FICHA FALTANTE',
-                    'encuesta_admitido': self.get_encuesta_admitido(str(False)),    
+                    'encuesta_admitido': self.get_encuesta_admitido(str(False)),
                     'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                 }
             data = dict(i, **riesgo)
