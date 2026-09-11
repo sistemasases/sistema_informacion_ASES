@@ -78,7 +78,7 @@ const SelectorAsignaciones = () => {
 
   const handleCloseEditModal = () => setShowEditModal(false);
 
-  const handleSaveEdit = async () => {};
+  const handleSaveEdit = async () => { };
 
   const semestreActual = desencriptarInt(
     sessionStorage.getItem("id_semestre_actual")
@@ -109,6 +109,20 @@ const SelectorAsignaciones = () => {
     {
       name: "CORREO",
       selector: (row) => row.correo_monitor,
+      sortable: true,
+      wrap: true,
+      grow: 0.9,
+    },
+    {
+      name: "SEDE",
+      selector: (row) => row.sede_monitor,
+      sortable: true,
+      wrap: true,
+      grow: 0.9,
+    },
+    {
+      name: "PROFESIONAL A CARGO",
+      selector: (row) => row.profesional_a_cargo,
       sortable: true,
       wrap: true,
       grow: 0.9,
