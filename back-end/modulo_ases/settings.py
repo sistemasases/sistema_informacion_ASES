@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'modulo_discapacidad',
     'modulo_interapp',
     'modulo_formularios_externos',
+    'modulo_horas_trabajadas',
     "corsheaders",
     'rest_framework',
     'rest_framework.authtoken',

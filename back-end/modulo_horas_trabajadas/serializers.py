@@ -1,0 +1,168 @@
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from .models import RegistroHoras, TemporadaTrabajo
+from modulo_usuario_rol.models import rol, usuario_rol
+from datetime import timedelta
+
+
+
+class RolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = rol
+        fields = '__all__'
+
+class UsuarioRolSerializer(serializers.ModelSerializer):
+    id_rol = RolSerializer(read_only=True)  
+    
+    class Meta:
+        model = usuario_rol
+        fields = '__all__'
+
+
+
+
+class RegistroHorasSerializer(serializers.ModelSerializer):
+    rol = UsuarioRolSerializer(read_only=True)
+    horas_trabajadas = serializers.DecimalField(
+        max_digits=4, decimal_places=1, read_only=True
+    )
+
+    class Meta:
+        model = RegistroHoras
+        fields = '__all__'
+        read_only_fields = ['horas_trabajadas', 'rol']  
+
+    def validate_trabajador(self, value):
+        user = User.objects.filter(id=value.id, is_active=True).first()
+        if user is None:
+            raise serializers.ValidationError(
+                "No se encontró ningún usuario con ese id."
+            )
+        return value
+
+    def validate_hora_inicio(self, value):
+        from datetime import time
+        if not (time(6, 0) <= value <= time(22, 0)):
+            raise serializers.ValidationError(
+                "La hora de inicio debe estar entre las 06:00 y las 22:00."
+            )
+        return value
+
+    def validate_hora_fin(self, value):
+        from datetime import time
+        if not (time(6, 0) <= value <= time(22, 0)):
+            raise serializers.ValidationError(
+                "La hora de fin debe estar entre las 06:00 y las 22:00."
+            )
+        return value
+
+    def validate(self, data):
+        instance = self.instance
+        hora_inicio = data.get("hora_inicio", instance.hora_inicio if instance else None)
+        hora_fin    = data.get("hora_fin",    instance.hora_fin    if instance else None)
+        trabajador  = data.get("trabajador",  instance.trabajador  if instance else None)
+        fecha       = data.get("fecha",       instance.fecha       if instance else None)
+
+        if hora_inicio and hora_fin:
+            if hora_fin <= hora_inicio:
+                raise serializers.ValidationError(
+                    {"hora_fin": "La hora de fin debe ser mayor a la hora de inicio."}
+                )
+
+            from datetime import datetime, date
+            inicio = datetime.combine(date.today(), hora_inicio)
+            fin = datetime.combine(date.today(), hora_fin)
+            minutos = (fin - inicio).seconds // 60
+            if minutos % 15 != 0:
+                raise serializers.ValidationError(
+                    {"hora_fin": "El rango debe ser en intervalos de 15 minutos."}
+                )
+
+        if trabajador and fecha and hora_inicio and hora_fin:
+            qs = RegistroHoras.objects.filter(
+                trabajador=trabajador,
+                fecha=fecha,
+                hora_inicio__lt=hora_fin,
+                hora_fin__gt=hora_inicio,
+            )
+            # Al editar, excluir el propio registro para evitar falsos positivos
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                raise serializers.ValidationError(
+                    {"hora_inicio": f"Ya tienes un registro que se cruza con el horario {hora_inicio} - {hora_fin} en esta fecha."}
+                )
+
+        return data
+
+    def validate_descripcion(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError(
+                "La descripción es obligatoria."
+            )
+        return value
+        
+        
+class TemporadaTrabajoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TemporadaTrabajo
+        fields = "__all__"
+        read_only_fields = [
+            "horas_total_contratadas",
+            "created_at",
+            "updated_at"
+        ]
+
+    def validate(self, data):
+        instance = self.instance
+
+        # Si el dato llegó en la petición lo usamos.
+        # Si no llegó y estamos actualizando, usamos el valor actual del objeto.
+        fecha_inicio = data.get(
+            "fecha_inicio",
+            instance.fecha_inicio if instance else None
+        )
+
+        fecha_fin = data.get(
+            "fecha_fin",
+            instance.fecha_fin if instance else None
+        )
+
+        semestre_obj = data.get(
+            "semestre",
+            instance.semestre if instance else None
+        )
+
+        horas_semanales = data.get(
+            "horas_semanales",
+            instance.horas_semanales if instance else 20
+        )
+
+        festivos = data.get(
+            "total_festivos_temporada",
+            instance.total_festivos_temporada if instance else 0
+        ) or 0
+
+        # Si fecha_fin sigue siendo None, usar la fecha del semestre
+        if fecha_fin is None and semestre_obj:
+            fecha_fin = semestre_obj.fecha_fin.date()
+
+        if fecha_inicio and fecha_fin:
+
+            dias_habiles = sum(
+                1
+                for i in range((fecha_fin - fecha_inicio).days)
+                if (fecha_inicio + timedelta(days=i)).weekday() < 5
+            )
+
+            dias_habiles -= festivos
+
+            semanas = dias_habiles / 5
+
+            data["horas_total_contratadas"] = round(
+                semanas * horas_semanales,
+                1
+            )
+
+        return data

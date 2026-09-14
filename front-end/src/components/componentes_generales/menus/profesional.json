@@ -59,6 +59,11 @@
         "path": "/reporte_seguimientos",
         "name": "Consulta de seguimientos",
         "icon": "bi bi-search"
+      },
+      {
+        "path":"/horas_monitores",
+        "name":"Horas de monitores",
+        "icon":"bi bi-clock-fill"
       }
     ]
   },
