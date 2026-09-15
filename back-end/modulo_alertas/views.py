@@ -225,6 +225,16 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
         #     serializer_estudiantes = estudiante_serializer(
         #         estudiante.objects.all(), many=True)
 
+        elif data_usuario_rol == "traer_todos_estudiantes":
+            list_id_programas = programa.objects.filter(
+                id_sede=data_sede).values('id')
+            list_id_estudiantes = programa_estudiante.objects.filter(
+                id_programa__in=list_id_programas).values('id_estudiante')
+            list_estudiantes = estudiante.objects.filter(
+                id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(
+                list_estudiantes, many=True)
+
         elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "super_ases" or data_usuario_rol == "sistemas":
             list_id_programas = programa.objects.filter(
                 id_sede=data_sede).values('id')

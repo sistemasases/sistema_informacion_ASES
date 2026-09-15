@@ -12,6 +12,7 @@ import {
   desencriptarInt,
   decryptTokenFromSessionStorage,
   encriptar,
+  encriptarInt,
 } from "../utilidades_seguridad/utilidades_seguridad.jsx";
 import { Container, Col, Row, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
@@ -21,6 +22,8 @@ import writeXlsxFile from "write-excel-file";
 import { CSVLink } from "react-csv";
 import axios from "axios";
 import { FaExclamationCircle, FaBell } from "react-icons/fa";
+import All_sede_service from "../../service/all_sede";
+import Select from "react-select";
 
 // variable con las columnas a usar dentro de las notificaciones
 var columns = [
@@ -483,6 +486,14 @@ var columns = [
  * @return {HTML} Visualización de las alertas.
  */
 const Alertas = () => {
+  //Rol de usuario actual
+  const userRole = desencriptar(sessionStorage.getItem("rol"));
+  //opciones del select
+  const opciones = [];
+  //lista de sedes
+  const [stateSedes, setSedes] = useState({ sedes: [] });
+  //estado para deshabilitar botón y select durante peticiones
+  const [isDisabled, setIsDisabled] = useState(false);
   // variable para setear las columnas
   var new_columns = [];
   // variable para guardar los estudiantes
@@ -531,6 +542,126 @@ const Alertas = () => {
       isCheck: false,
     },
   ];
+
+  useEffect(() => {
+    sessionStorage.getItem("selectedSede")
+      ? sessionStorage.removeItem("selectedSede")
+      : sessionStorage.setItem("selectedSede", "");
+  }, []);
+
+  // Cargar sedes desde la API
+  useEffect(() => {
+    All_sede_service.all_sede()
+      .then((res) => {
+        if (res && Array.isArray(res)) {
+          setSedes({
+            ...stateSedes,
+            sedes: res,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener datos de las sedes:", error);
+      });
+  }, []);
+
+  // Mapear las sedes al formato requerido por react-select
+  const handle_sedes = () => {
+    for (let i = 0; i < opciones.length; i++) {
+      opciones.splice(i);
+    }
+
+    for (var i = 0; i < stateSedes.sedes["length"]; i++) {
+      const dato = {
+        value: stateSedes.sedes[i]["nombre"],
+        label: stateSedes.sedes[i]["nombre"],
+        id: stateSedes.sedes[i]["id"],
+      };
+      opciones.push(dato);
+    }
+  };
+
+  // Manejador al seleccionar una sede en el Select
+  const handleShow = (e) => {
+    let rol = desencriptar(sessionStorage.getItem("rol"));
+    sessionStorage.setItem("selectedSede", encriptarInt(e.id));
+    let sede = desencriptar(sessionStorage.getItem("selectedSede"))
+      ? desencriptarInt(sessionStorage.getItem("selectedSede"))
+      : desencriptarInt(sessionStorage.getItem("sede_id"));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+    const traer_estudiantes_selector = async () => {
+      // Mostrar gif de carga y deshabilitar controles
+      const loadingGif = document.getElementsByName("loading_data")[0];
+      if (loadingGif) loadingGif.style.visibility = "visible";
+      setIsDisabled(true);
+
+      const botonElement = document.getElementsByName("bring_them_on")[0];
+      if (botonElement) botonElement.setAttribute("disabled", "true");
+
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/alertas/estudiante_datos_alertas/` +
+          id_usuario.toString() +
+          "/",
+          { params: { usuario_rol: rol, sede: sede } }
+        );
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        setFiltered(response.data);
+      } catch (error) {
+        console.error("Error al cargar estudiantes por sede:", error);
+      } finally {
+        if (loadingGif) loadingGif.style.visibility = "hidden";
+        if (botonElement) botonElement.removeAttribute("disabled");
+        setIsDisabled(false);
+      }
+    };
+    traer_estudiantes_selector();
+  };
+
+  // Botón Traer todos
+  const traer_todos = () => {
+    const loadingGif = document.getElementsByName("loading_data")[0];
+    if (loadingGif) loadingGif.style.visibility = "visible";
+
+    const botonElement = document.getElementsByName("bring_them_on")[0];
+    if (botonElement) botonElement.setAttribute("disabled", "true");
+    setIsDisabled(true);
+
+    let rolTodo = encriptar("traer_todos_estudiantes");
+    let sede = sessionStorage.getItem("selectedSede")
+      ? desencriptarInt(sessionStorage.getItem("selectedSede"))
+      : desencriptarInt(sessionStorage.getItem("sede_id"));
+    let id_usuario = desencriptarInt(sessionStorage.getItem("id_usuario"));
+
+    const traer_todos_estudiantes_boton = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/alertas/estudiante_datos_alertas/` +
+          id_usuario.toString() +
+          "/",
+          { params: { usuario_rol: desencriptar(rolTodo), sede: sede } }
+        );
+        set_state({
+          ...state,
+          estudiante: response.data,
+        });
+        setFiltered(response.data);
+      } catch (error) {
+        console.error("Error al traer todos los estudiantes:", error);
+      } finally {
+        if (loadingGif) loadingGif.style.visibility = "hidden";
+        if (botonElement) botonElement.removeAttribute("disabled");
+        setIsDisabled(false);
+      }
+    };
+    traer_todos_estudiantes_boton();
+  };
+
+
 
   //Conexion con el back para extraer todas los estudiantes
   useEffect(() => {
@@ -935,6 +1066,42 @@ const Alertas = () => {
             <div>
               <h1>Sistema de Alertas</h1>
             </div>
+            {/* Barra de traer todos y selector de sedes*/}
+            {(userRole === "super_ases" ||
+              userRole === "socioeducativo" ||
+              userRole === "socioeducativo_reg" ||
+              userRole === "dir_investigacion" ||
+              userRole === "sistemas") && (
+                <div>
+                  <hr />
+                  <Row className="mb-3">
+                    <Col sm={2}>
+                      <Button
+                        name="bring_them_on"
+                        title="Traer todos los estudiantes puede tomar más tiempo del esperado. Por favor, sea paciente."
+                        onClick={() => traer_todos()}
+                        disabled={isDisabled}
+                      >
+                        Traer todos
+                      </Button>
+                    </Col>
+                    <Col title="Traer todos los estudiantes puede tomar más tiempo del esperado. Por favor, sea paciente.">
+                      <Select
+                        name="sede_alertas"
+                        options={opciones}
+                        onMenuOpen={handle_sedes}
+                        onChange={(e) => handleShow(e)}
+                        isDisabled={isDisabled}
+                        placeholder="Seleccione una sede"
+                        menuPortalTarget={document.body}
+                        menuPosition="fixed"
+                      />
+                    </Col>
+                  </Row>
+                  <hr />
+                </div>
+              )}
+
             {/* Columna Filtros de Contacto */}
 
             {/* Tabla */}
