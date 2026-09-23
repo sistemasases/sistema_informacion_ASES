@@ -152,7 +152,7 @@ class TemporadaTrabajoSerializer(serializers.ModelSerializer):
 
             dias_habiles = sum(
                 1
-                for i in range((fecha_fin - fecha_inicio).days)
+                for i in range((fecha_fin - fecha_inicio).days + 1)
                 if (fecha_inicio + timedelta(days=i)).weekday() < 5
             )
 

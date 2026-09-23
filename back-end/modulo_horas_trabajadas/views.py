@@ -334,7 +334,7 @@ class registros_horas_viewset(viewsets.GenericViewSet):
 
             # ── calcular horas_total_contratadas por defecto ──────────
             dias_habiles = sum(
-                1 for i in range((fecha_fin - fecha_inicio).days)
+                1 for i in range((fecha_fin - fecha_inicio).days + 1)
                 if (fecha_inicio + datetime.timedelta(days=i)).weekday() < 5
             )
             dias_habiles -= num_festivos
@@ -531,7 +531,7 @@ class temporada_trabajo_viewset(viewsets.GenericViewSet):
 
             dias_habiles = sum(
                 1
-                for i in range((temporada.fecha_fin - temporada.fecha_inicio).days)
+                for i in range((temporada.fecha_fin - temporada.fecha_inicio).days + 1)
                 if (temporada.fecha_inicio + timedelta(days=i)).weekday() < 5
             )
             dias_habiles -= temporada.total_festivos_temporada or 0
