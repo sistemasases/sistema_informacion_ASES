@@ -1,3 +1,4 @@
+from django.utils.text import normalize_newlines
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
@@ -73,20 +74,20 @@ class info_estudiante_viewsets(viewsets.ModelViewSet):
                 list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
 
-        elif data_usuario_rol == "super_ases":
+        # elif data_usuario_rol == "super_ases":
 
-            serializer_estudiante = estudiante_serializer(
-                estudiante.objects.all(), many=True)
-            return Response(serializer_estudiante.data)
+        #     serializer_estudiante = estudiante_serializer(
+        #         estudiante.objects.all(), many=True)
+        #     return Response(serializer_estudiante.data)
 
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico":
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "dir_academico" or data_usuario_rol == "super_ases" or data_usuario_rol == "sistemas":
 
             list_id_programas = programa.objects.filter(
                 id_sede=data_sede).values('id')
             list_id_estudiantes = programa_estudiante.objects.filter(
                 id_programa__in=list_id_programas).values('id_estudiante')
             list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
+                id__in=list_id_estudiantes, estudiante_elegible=True)
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
             return Response(serializer_estudiantes.data)
@@ -173,7 +174,7 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             return "SIN FIRMAR" ## Rojo
         else:
             return "SIN FIRMAR" ## Rojo
-            
+
 
     def get_encuesta_admitido(self, encuesta):
         if encuesta == None:
@@ -186,8 +187,9 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
     def retrieve(self, request, pk):
         data_usuario_rol = request.GET.get('usuario_rol')
         data_sede = request.GET.get('sede')
-        var_semestre = get_object_or_404(
-            semestre, semestre_actual=True, id_sede=data_sede)
+        var_semestre = None
+        if data_usuario_rol in ["monitor", "practicante", "profesional"]:
+            var_semestre = get_object_or_404(semestre, semestre_actual=True, id_sede=data_sede)
         list_conteo = list()
         list_estudiantes = list()
 
@@ -221,24 +223,65 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
             serializer_estudiantes = estudiante_serializer(
                 list_estudiantes, many=True)
 
-        elif data_usuario_rol == "super_ases":
-            serializer_estudiantes = estudiante_serializer(
-                estudiante.objects.all(), many=True)
+        # elif data_usuario_rol == "super_ases":
+        #     serializer_estudiantes = estudiante_serializer(
+        #         estudiante.objects.all(), many=True)
 
-        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo":
-            list_id_programas = programa.objects.filter(
-                id_sede=data_sede).values('id')
-            list_id_estudiantes = programa_estudiante.objects.filter(
-                id_programa__in=list_id_programas).values('id_estudiante')
-            list_estudiantes = estudiante.objects.filter(
-                id__in=list_id_estudiantes)
-            serializer_estudiantes = estudiante_serializer(
-                list_estudiantes, many=True)
+        elif data_usuario_rol == "traer_todos_estudiantes":
+            if data_sede == "TODAS" or not data_sede:
+                list_estudiantes = estudiante.objects.all()
+            else:
+                list_id_programas = programa.objects.filter(
+                    id_sede=data_sede).values('id')
+                list_id_estudiantes = programa_estudiante.objects.filter(
+                    id_programa__in=list_id_programas).values('id_estudiante')
+                list_estudiantes = estudiante.objects.filter(
+                    id__in=list_id_estudiantes)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
+
+        elif data_usuario_rol == "socioeducativo_reg" or data_usuario_rol == "socioeducativo" or data_usuario_rol == "dir_investigacion" or data_usuario_rol == "super_ases" or data_usuario_rol == "sistemas":
+            if data_sede == "TODAS" or not data_sede:
+                list_estudiantes = estudiante.objects.filter(estudiante_elegible=True)
+            else:
+                list_id_programas = programa.objects.filter(
+                    id_sede=data_sede).values('id')
+                list_id_estudiantes = programa_estudiante.objects.filter(
+                    id_programa__in=list_id_programas).values('id_estudiante')
+                list_estudiantes = estudiante.objects.filter(
+                    id__in=list_id_estudiantes, estudiante_elegible=True)
+            serializer_estudiantes = estudiante_serializer(list_estudiantes, many=True)
 
         elif data_usuario_rol == None:
             return Response("Comunicate con el administrador para que te asigne un rol", status=status.HTTP_400_BAD_REQUEST)
 
         estudiantes_ids = [data['id'] for data in serializer_estudiantes.data]
+        # Obtener la sede de cada estudiante a través de su programa
+        programas_estudiantes = programa_estudiante.objects.filter(
+            id_estudiante__in=estudiantes_ids
+        ).select_related('id_programa__id_sede').order_by('-traker', '-id').values('id_estudiante', 'id_programa__id_sede__nombre', 'traker')
+
+        sedes_por_estudiante = {}
+        for pe in programas_estudiantes:
+            e_id = pe['id_estudiante']
+            nombre_sede = pe.get('id_programa__id_sede__nombre')
+            es_traker = pe.get('traker')
+            if nombre_sede:
+                if e_id not in sedes_por_estudiante:
+                    sedes_por_estudiante[e_id] = []
+                if es_traker:
+                    if nombre_sede not in sedes_por_estudiante[e_id]:
+                        sedes_por_estudiante[e_id].append(nombre_sede)
+                else:
+                    if len(sedes_por_estudiante[e_id]) == 0:
+                        sedes_por_estudiante[e_id].append(nombre_sede)
+
+        # Nombre de sede auxiliar por si se seleccionó una sede específica
+        nombre_sede_seleccionada = None
+        if data_sede and data_sede != "TODAS":
+            sede_obj = sede.objects.filter(id=data_sede).first()
+            if sede_obj:
+                nombre_sede_seleccionada = sede_obj.nombre
+
         # Obtener los datos relacionados con el último seguimiento de una vez
         seguimientos_recientes = riesgo_individual.objects.filter(id_estudiante__in=estudiantes_ids).values(
             'id_estudiante', 'riesgo_individual', 'riesgo_familiar', 'riesgo_academico', 'riesgo_economico', 'riesgo_vida_universitaria_ciudad', 'fecha')
@@ -397,14 +440,27 @@ class info_estudiante_alertas_viewsets(viewsets.ModelViewSet):
                     'riesgo_economico': 'SIN REGISTRAR',
                     'riesgo_vida_universitaria_ciudad': 'SIN REGISTRAR',
                     'fecha_seguimiento': 'FICHA FALTANTE',
-                    'encuesta_admitido': self.get_encuesta_admitido(str(False)),    
+                    'encuesta_admitido': self.get_encuesta_admitido(str(False)),
                     'firma_tratamiento_datos': self.get_firma_tratamiento(new_firma_tratamiento, i['id']),
                 }
             data = dict(i, **riesgo)
-
+            #asignar la sede del estudiante
+            if data_sede and data_sede != "TODAS":
+                data['sede'] = nombre_sede_seleccionada or "SIN SEDE"
+                list_conteo.append(data)
+            else:
+                lista_sedes = sedes_por_estudiante.get(estudiante_id, [])
+                if not lista_sedes:
+                    data_fila = dict(data)
+                    data_fila['sede'] = "SIN SEDE"
+                    list_conteo.append(data_fila)
+                else:
+                    for s_nombre in lista_sedes:
+                        data_fila = dict(data)
+                        data_fila['sede'] = s_nombre
+                        list_conteo.append(data_fila)
             # # # # print(cont_riesgos)
             # # # # print(cont_riesgos)
-            list_conteo.append(data)
         # # # # # print(list_conteo)
         # # # # print(list_conteo)
         # cont_riesgos = self.get_counter_riesgo(list_conteo)
