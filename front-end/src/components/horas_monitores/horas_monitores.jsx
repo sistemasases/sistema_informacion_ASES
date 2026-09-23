@@ -212,11 +212,10 @@ const HorasMonitores = () => {
 
   const horasSemanales = seleccionado?.temporada?.horas_semanales ?? null;
 
-  const horasProgramadas = seleccionado ? seleccionado.horasTotal : null;
   const horasActuales = seleccionado ? (seleccionado.horasActuales ?? null) : null;
 
-  const horasDeuda = horasContratadas !== null && horasProgramadas !== null
-    ? (horasContratadas - horasProgramadas).toFixed(1)
+  const horasDeuda = horasContratadas !== null && horasActuales !== null
+    ? (horasContratadas - horasActuales).toFixed(1)
     : null;
 
   const horasEsperadas = seleccionado
@@ -479,12 +478,6 @@ const HorasMonitores = () => {
               <Col className="middle_content">Horas Semanales</Col>
               <Col className="middle_content_right" style={{ textAlign: "center" }}>
                 {horasSemanales !== null ? horasSemanales : "N/D"}
-              </Col>
-            </Row>
-            <Row>
-              <Col className="middle_content">Horas Programadas</Col>
-              <Col className="middle_content_right" style={{ textAlign: "center" }}>
-                {horasProgramadas !== null ? horasProgramadas.toFixed(1) : "—"}
               </Col>
             </Row>
             <Row>

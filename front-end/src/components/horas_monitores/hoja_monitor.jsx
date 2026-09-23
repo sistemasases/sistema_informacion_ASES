@@ -305,7 +305,7 @@ const HojaMonitor = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label className="hm-form-label">Fecha</Form.Label>
-            <Form.Control type="date" value={formData.fecha} onChange={(e) => setFormData({ ...formData, fecha: e.target.value })} />
+            <Form.Control type="date" value={formData.fecha} max={new Date().toISOString().split("T")[0]} onChange={(e) => setFormData({ ...formData, fecha: e.target.value })} />
           </Form.Group>
           <Row>
             <Col>

@@ -40,6 +40,8 @@ const formatearFecha = (fechaStr) => {
 };
 
 
+const hoy = new Date().toISOString().split("T")[0];
+
 const RegistroHorasForm = () => {
   const [form, setForm] = useState({
     fecha: "",
@@ -63,6 +65,8 @@ const RegistroHorasForm = () => {
 
     if (!form.fecha) {
       nuevosErrores.fecha = "Selecciona una fecha.";
+    } else if (form.fecha > hoy) {
+      nuevosErrores.fecha = "No puedes registrar horas para fechas futuras.";
     }
 
     if (!form.hora_inicio) {
@@ -151,6 +155,7 @@ const RegistroHorasForm = () => {
                 type="date"
                 name="fecha"
                 value={form.fecha}
+                max={hoy}
                 onChange={handleChange}
                 className={`rhf-input ${errors.fecha ? "rhf-input--error" : ""} ${
                   form.fecha ? "rhf-input--valid" : ""

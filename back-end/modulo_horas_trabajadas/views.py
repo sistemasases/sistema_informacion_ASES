@@ -86,6 +86,12 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            if fecha > date.today():
+                return Response(
+                    {"error": "No se pueden registrar horas para fechas futuras."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             rol_usuario = usuario_rol.objects.filter(
                 id_usuario=trabajador,
                 estado="ACTIVO"
@@ -231,6 +237,12 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                             f"({fecha_inicio} - {fecha_fin})."
                         )
                     },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            if fecha > date.today():
+                return Response(
+                    {"error": "No se pueden registrar horas para fechas futuras."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -425,7 +437,6 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     "nombre": nombre_completo,
                     "temporada": temporada_data,
                     "registros": serializer.data,
-                    "horasTotal": total_horas,
                     "horasActuales": horas_actuales_por_trabajador.get(trabajador_id, 0.0),
                 })
 
