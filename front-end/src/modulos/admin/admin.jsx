@@ -19,13 +19,14 @@ import SelectorSedes from "../../components/componentes_generales/acordeon_sedes
 import SelectorCohortes from "../../components/componentes_generales/acordeon_cohortes.jsx";
 import SelectorFacultad from "../../components/componentes_generales/acordeon_facultades.jsx";
 import SelectorAsignaciones from "../../components/componentes_generales/acordeon_asignaciones.jsx";
-import SelectorAsignacionesMonitores from "../../components/componentes_generales/acordeon_asignaciones_monitores.jsx"; 
-import SelectorProgramas from "../../components/componentes_generales/acordeon_programas.jsx"; 
+import SelectorAsignacionesMonitores from "../../components/componentes_generales/acordeon_asignaciones_monitores.jsx";
+import SelectorProgramas from "../../components/componentes_generales/acordeon_programas.jsx";
 import SelectorSemestres from "../../components/componentes_generales/acordeon_semestres.jsx";
 import SelectorTratamiento from "../../components/componentes_generales/acordeon_tratamiento_datos.jsx";
 import SelectorTratamientoTemporal from "../../components/componentes_generales/acordeon_tratamiento_datos_temporal.jsx";
 import SelectorUsuariosDuplicados from "../../components/componentes_generales/acordeon_usuarios_duplicados.jsx";
 import SelectorMonitoriasAcademicas from "../../components/componentes_generales/acordeon_monitorias_academicas.jsx";
+import SelectorHorariosMonitorias from "../../components/componentes_generales/acordeon_horarios_monitorias.jsx";
 
 const Gestion_usuarios_duplicados = () => {
   // Desencriptar los permisos del usuario desde el sessionStorage
@@ -57,6 +58,7 @@ const Gestion_usuarios_duplicados = () => {
             <SelectorTratamiento />             {/* CONECTADO */}
             <SelectorTratamientoTemporal />      {/* CONECTADO */}
             <SelectorMonitoriasAcademicas />       {/* CONECTADO */}
+            <SelectorHorariosMonitorias />       {/* CONECTADO */}
           </Row>
           <Row></Row>
         </Col>
