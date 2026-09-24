@@ -16,7 +16,7 @@ from django.db.models.functions import Trim, Upper
 from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso, firma_tratamiento_datos
 from modulo_formularios_externos.models import firma_tratamiento_datos_temp
 from modulo_programa.models import programa, programa_estudiante, facultad
-from modulo_academico.models import monitoria_academica
+from modulo_academico.models import monitoria_academica, horario_monitoria
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
 from modulo_academico.models import monitoria_academica #para la sede
@@ -1726,5 +1726,61 @@ class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
                 new_monitoria.save()
                 
             return Response({"mensaje": "Monitoria académica creada exitosamente"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
+
+    @action(detail=False, methods=['post'], url_path='listar_horarios', permission_classes=[IsAuthenticated])
+    def listar_horarios(self, request):
+        """
+        Listar todos los horarios de monitorías registrados.
+        """
+        try:
+            horarios = horario_monitoria.objects.select_related('id_monitor', 'id_sede').all()
+            data = [
+                {
+                    "id": h.id,
+                    "id_monitor": h.id_monitor.id,
+                    "nombre_monitor": f"{h.id_monitor.first_name} {h.id_monitor.last_name}",
+                    "id_sede": h.id_sede.id,
+                    "nombre_sede": h.id_sede.nombre,
+                    "materia": h.materia,
+                    "dia_semana": h.dia_semana,
+                    "hora_inicio": h.hora_inicio.strftime("%H:%M"),
+                    "hora_fin": h.hora_fin.strftime("%H:%M"),
+                    "lugar": h.lugar,
+                    "is_active": h.estado,
+                }
+                for h in horarios
+            ]
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='crear_horario', permission_classes=[IsAuthenticated])
+    def crear_horario(self, request):
+        """
+        Crear un nuevo horario de monitoría.
+        """
+        try:
+            data = request.data
+            # Validar que los campos obligatorios vengan en la petición
+            campos_requeridos = ['id_monitor', 'id_sede', 'materia', 'dia_semana', 'hora_inicio', 'hora_fin', 'lugar']
+            for campo in campos_requeridos:
+                if not data.get(campo):
+                    return Response({"error": f"El campo {campo} es obligatorio"}, status=status.HTTP_400_BAD_REQUEST)
+
+            nuevo_horario = horario_monitoria.objects.create(
+                id_monitor_id=data['id_monitor'],
+                id_sede_id=data['id_sede'],
+                materia=data['materia'],
+                dia_semana=data['dia_semana'],
+                hora_inicio=data['hora_inicio'],
+                hora_fin=data['hora_fin'],
+                lugar=data['lugar'],
+                estado=data.get('is_active', True)
+            )
+            return Response({"mensaje": "Horario creado exitosamente", "id": nuevo_horario.id}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

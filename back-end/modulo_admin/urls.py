@@ -18,6 +18,8 @@ router.register(r'panel_admin_semestres', views.panel_admin_semestres_viewset, b
 router.register(r'panel_admin_tratamiento_datos', views.panel_admin_firma_tratamiento_viewset, basename='panel_admin_tratamiento_datos')
 router.register(r'panel_admin_tratamiento_datos_temporal', views.panel_admin_firma_temporal_viewset, basename='panel_admin_tratamiento_datos_temporal')
 router.register(r'panel_admin_monitorias_academicas', views.panel_admin_monitorias_academicas_viewset, basename='panel_admin_monitorias_academicas')
+router.register(r'panel_admin_horarios_monitorias', views.panel_admin_horarios_monitorias_viewset, basename='panel_admin_horarios_monitorias')
+
 
 
 urlpatterns = [

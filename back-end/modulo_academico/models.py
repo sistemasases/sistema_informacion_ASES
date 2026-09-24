@@ -63,4 +63,19 @@ class monitoria_academica(models.Model):
     class Meta:
         db_table = "monitoria_academica"
 
+class horario_monitoria(models.Model):
+    id_monitor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='horarios_monitor')
+    id_sede = models.ForeignKey(sede, on_delete=models.CASCADE, related_name='horarios_sede')
+    materia = models.CharField(max_length=150)
+    dia_semana = models.CharField(max_length=20)
+    hora_inicio = models.TimeField()
+    hora_fin = models.TimeField()
+    lugar = models.CharField(max_length=255)  # Enlace Meet o Salón
+    estado = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "horario_monitoria"
+
+    def __str__(self):
+        return f"{self.materia} - {self.id_monitor.first_name} ({self.dia_semana})"
 
