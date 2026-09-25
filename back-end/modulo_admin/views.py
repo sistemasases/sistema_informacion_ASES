@@ -1632,19 +1632,41 @@ class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
             )
     def listar_monitores_academicos(self, request):
         """
-        Listar todos los monitores académicos.
+        Listar monitores académicos, opcionalmente filtrados por sede.
         """
         try:
-            monitores = usuario_rol.objects.filter(
-                id_rol=15,  # ID del rol de monitor académico
-                estado="ACTIVO",
-            ).values('id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name')
+            id_sede = request.data.get('id_sede')
+            
+            # Filtro base: rol 15 (monitor académico) y estado ACTIVO
+            filtros = {
+                'id_rol': 15,
+                'estado': "ACTIVO",
+            }
+            
+            # Si se envía id_sede, filtrar por la sede asociada
+            if id_sede:
+                from django.db.models import Q
+                
+                # Monitores que tengan monitorías académicas en esa sede
+                ids_monitores_en_sede = monitoria_academica.objects.filter(
+                    id_sede=id_sede, estado=True
+                ).values_list('id_monitor_id', flat=True)
+
+                monitores = usuario_rol.objects.filter(**filtros).filter(
+                    Q(id_semestre__id_sede=id_sede) | Q(id_usuario__in=ids_monitores_en_sede)
+                ).distinct().values(
+                    'id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name'
+                )
+            else:
+                monitores = usuario_rol.objects.filter(**filtros).values(
+                    'id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name'
+                )
         
             data = [
                 {
                     "id_usuario": m["id_usuario"],
                     "username_monitor": m["id_usuario__username"],
-                    "nombre_monitor": m["id_usuario__first_name"] + ' ' + m["id_usuario__last_name"],
+                    "nombre_monitor": f"{m['id_usuario__first_name']} {m['id_usuario__last_name']}".strip(),
                 }
                 for m in monitores
             ]
@@ -1652,6 +1674,7 @@ class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
             return Response(list(data), status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         
     @action(detail=False, methods=['post'], url_path='desactivar_monitorias',
             permission_classes=[IsAuthenticated]

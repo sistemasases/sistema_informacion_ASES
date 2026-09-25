@@ -13,6 +13,10 @@ import {
     Row,
     Col,
 } from "react-bootstrap";
+import Read_sedes from "../../service/panel_admin/panel_admin_sedes_listar_sedes.js";
+import Read_monitores from "../../service/panel_admin/panel_admin_monitorias_academicas_listar_monitores_academicos.js";
+import Read_horarios from "../../service/panel_admin/panel_admin_horarios_listar.js";
+import Create_horario from "../../service/panel_admin/panel_admin_horarios_crear.js";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
 import { FaEdit } from "react-icons/fa";
@@ -22,6 +26,8 @@ const SelectorHorariosMonitorias = () => {
     // Estado para la lista de horarios
     const [state, setState] = useState({
         data_horarios: [],
+        data_sedes: [],
+        data_monitores: [],
     });
 
     // Estados para modales y selección
@@ -31,51 +37,38 @@ const SelectorHorariosMonitorias = () => {
 
     // Estado para el formulario de nuevo horario
     const [newHorario, setNewHorario] = useState({
-        materia_monitor: "",
-        dia_semana: "Lunes",
+        id_monitor: "",
+        id_sede: "",
+        materia: "",
+        dia_semana: "",
         hora_inicio: "",
         hora_fin: "",
         lugar: "",
         is_active: true,
     });
 
-    // Función para consultar los horarios (inicialmente datos de prueba o llamada al servicio)
-    const consultaAllHorarios = async () => {
+    // Función para consultar los horarios
+    const cargarDatosIniciales = async () => {
         try {
-            // TODO: Conectar con el servicio backend cuando esté disponible:
-            // const response = await Read_horarios.listar_horarios({});
-            // setState({ data_horarios: response });
+            // 1. Obtener horarios registrados
+            const horarios = await Read_horarios.listar_horarios({});
+            // 2. Obtener sedes de la BD
+            const sedes = await Read_sedes.listar_sedes({});
 
-            // Datos de ejemplo para pruebas en el front:
-            setState({
-                data_horarios: [
-                    {
-                        id: 1,
-                        materia_monitor: "Cálculo I - Juan Pérez",
-                        dia_semana: "Lunes",
-                        hora_inicio: "08:00",
-                        hora_fin: "10:00",
-                        lugar: "Salón 104 - Edif. 320",
-                        is_active: true,
-                    },
-                    {
-                        id: 2,
-                        materia_monitor: "Física Fundamental - María López",
-                        dia_semana: "Miércoles",
-                        hora_inicio: "14:00",
-                        hora_fin: "16:00",
-                        lugar: "Virtual (Google Meet)",
-                        is_active: true,
-                    },
-                ],
-            });
+            setState((prev) => ({
+                ...prev,
+                data_horarios: Array.isArray(horarios) ? horarios : [],
+                data_sedes: Array.isArray(sedes) ? sedes : [],
+                data_monitores: [], // Se poblará cuando el usuario elija una sede
+            }));
         } catch (error) {
-            console.error("Error al consultar horarios de monitorías:", error);
+            console.error("Error al cargar datos:", error);
         }
     };
 
+
     useEffect(() => {
-        consultaAllHorarios();
+        cargarDatosIniciales();
     }, []);
 
     // Controladores de Edición
@@ -104,7 +97,7 @@ const SelectorHorariosMonitorias = () => {
                 confirmButtonColor: "#3085d6",
             });
             setShowEditModal(false);
-            consultaAllHorarios();
+            cargarDatosIniciales();
         } catch (error) {
             console.error("Error al actualizar horario:", error);
         }
@@ -114,18 +107,48 @@ const SelectorHorariosMonitorias = () => {
     const handleShowCreateModal = () => setShowCreateModal(true);
     const handleCloseCreateModal = () => setShowCreateModal(false);
 
-    const handleCreateChange = (e) => {
+    const handleCreateChange = async (e) => {
         const { name, value, type, checked } = e.target;
+        const valorFinal = type === "checkbox" ? checked : value;
+
         setNewHorario((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            [name]: valorFinal,
         }));
+
+        // Si cambió la sede, cargar los monitores de esa sede
+        if (name === "id_sede") {
+            setNewHorario((prev) => ({
+                ...prev,
+                id_sede: valorFinal,
+                id_monitor: "", // Limpiar el monitor previamente seleccionado
+            }));
+
+            if (valorFinal) {
+                // Consultar monitores de la sede seleccionada
+                const monitores = await Read_monitores.listar_monitores_academicos({ id_sede: valorFinal });
+                setState((prev) => ({
+                    ...prev,
+                    data_monitores: Array.isArray(monitores) ? monitores : [],
+                }));
+            } else {
+                // Si deseleccionó la sede, vaciar la lista de monitores
+                setState((prev) => ({
+                    ...prev,
+                    data_monitores: [],
+                }));
+            }
+        }
     };
 
+
     const handleCreateHorario = async () => {
-        // Validación de campos obligatorios con SweetAlert2 (igual a cohortes)
         if (
-            !newHorario.materia_monitor.trim() ||
+            !newHorario.id_monitor ||
+            !newHorario.id_sede ||
+            !newHorario.materia.trim() ||
+            !newHorario.dia_semana ||
+            newHorario.dia_semana === "seleccionar" ||
             !newHorario.hora_inicio ||
             !newHorario.hora_fin ||
             !newHorario.lugar.trim()
@@ -140,8 +163,8 @@ const SelectorHorariosMonitorias = () => {
             return;
         }
 
-        try {
-            // TODO: Create_horario.crear_horario(newHorario);
+        const response = await Create_horario.crear_horario(newHorario);
+        if (response && (response.status === 200 || response.status === 201)) {
             Swal.fire({
                 title: "Creado",
                 text: "Horario de monitoría creado con éxito.",
@@ -149,10 +172,11 @@ const SelectorHorariosMonitorias = () => {
                 confirmButtonColor: "#3085d6",
             });
 
-            // Resetear el formulario
             setNewHorario({
-                materia_monitor: "",
-                dia_semana: "Lunes",
+                id_monitor: "",
+                id_sede: "",
+                materia: "",
+                dia_semana: "",
                 hora_inicio: "",
                 hora_fin: "",
                 lugar: "",
@@ -160,20 +184,31 @@ const SelectorHorariosMonitorias = () => {
             });
 
             setShowCreateModal(false);
-            consultaAllHorarios();
-        } catch (error) {
-            console.error("Error al crear el horario:", error);
+            cargarDatosIniciales();
         }
     };
+
 
     // Definición de columnas para DataTable
     const columnas = [
         { name: "ID", selector: (row) => row.id, sortable: true, grow: 0.2 },
         {
-            name: "MONITOR / MATERIA",
-            selector: (row) => row.materia_monitor,
+            name: "MATERIA",
+            selector: (row) => row.materia,
             sortable: true,
-            grow: 0.8,
+            grow: 0.6,
+        },
+        {
+            name: "MONITOR",
+            selector: (row) => row.nombre_monitor,
+            sortable: true,
+            grow: 0.6,
+        },
+        {
+            name: "SEDE",
+            selector: (row) => row.nombre_sede,
+            sortable: true,
+            grow: 0.4,
         },
         {
             name: "DÍA",
@@ -194,7 +229,7 @@ const SelectorHorariosMonitorias = () => {
             grow: 0.4,
         },
         {
-            name: "LUGAR / MODALIDAD",
+            name: "LUGAR",
             selector: (row) => row.lugar,
             sortable: true,
             grow: 0.6,
@@ -220,7 +255,7 @@ const SelectorHorariosMonitorias = () => {
         <Container>
             <Accordion>
                 <Accordion.Item eventKey="horarios_monitorias">
-                    <Accordion.Header onClick={consultaAllHorarios}>
+                    <Accordion.Header onClick={cargarDatosIniciales}>
                         Horarios de Monitorías Académicas
                     </Accordion.Header>
                     <Accordion.Body>
@@ -264,7 +299,7 @@ const SelectorHorariosMonitorias = () => {
                                 value={newHorario.dia_semana}
                                 onChange={handleCreateChange}
                             >
-                                <option value="seleccionar">Seleccione un día</option>
+                                <option value="">Seleccione un día... </option>
                                 <option value="Lunes">Lunes</option>
                                 <option value="Martes">Martes</option>
                                 <option value="Miércoles">Miércoles</option>
@@ -310,21 +345,47 @@ const SelectorHorariosMonitorias = () => {
                                 maxLength={100}
                             />
                         </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="createSede">
+                            <Form.Label>Sede</Form.Label>
+                            <Form.Select
+                                name="id_sede"
+                                value={newHorario.id_sede}
+                                onChange={handleCreateChange}
+                            >
+                                <option value="">Seleccione una sede...</option>
+                                {state.data_sedes.map((s) => (
+                                    <option key={s.id} value={s.id}>
+                                        {s.nombre}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </Form.Group>
+
                         <Form.Group className="mb-3" controlId="createMonitor">
                             <Form.Label>Monitor</Form.Label>
                             <Form.Select
-                                name="monitor"
-                                value={newHorario.monitor}
+                                name="id_monitor"
+                                value={newHorario.id_monitor}
                                 onChange={handleCreateChange}
-                                maxLength={100}
+                                disabled={!newHorario.id_sede}
                             >
-                                <option value="Oscar">Oscar</option>
-                                <option value="Fer">Fer</option>
-                                <option value="Nicole">Nicole</option>
-                                <option value="Pablo">Pablo</option>
-                                <option value="Carlitos">Carlitos</option>
+                                {!newHorario.id_sede ? (
+                                    <option value="">Primero seleccione una sede...</option>
+                                ) : state.data_monitores.length === 0 ? (
+                                    <option value="">No hay monitores registrados en esta sede</option>
+                                ) : (
+                                    <option value="">Seleccione un monitor...</option>
+                                )}
+
+                                {state.data_monitores.map((m) => (
+                                    <option key={m.id_usuario} value={m.id_usuario}>
+                                        {m.nombre_monitor}
+                                    </option>
+                                ))}
                             </Form.Select>
                         </Form.Group>
+
 
                         <Form.Group className="mb-3" controlId="createLugar">
                             <Form.Label>Enlace a reunión de meet</Form.Label>
@@ -336,21 +397,6 @@ const SelectorHorariosMonitorias = () => {
                                 onChange={handleCreateChange}
                                 maxLength={150}
                             />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3" controlId="createSede">
-                            <Form.Label>Sede</Form.Label>
-                            <Form.Select
-                                name="sede"
-                                value={newHorario.sede}
-                                onChange={handleCreateChange}
-                            >
-                                <option value="Cali">Cali</option>
-                                <option value="Palmira">Palmira</option>
-                                <option value="Yumbo">Yumbo</option>
-                                <option value="Buga">Buga</option>
-                                <option value="otra">Otra</option>
-                            </Form.Select>
                         </Form.Group>
 
                         <Form.Group controlId="createIsActive">
