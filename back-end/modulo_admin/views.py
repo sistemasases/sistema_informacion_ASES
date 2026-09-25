@@ -1772,7 +1772,8 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
                     "dia_semana": h.dia_semana,
                     "hora_inicio": h.hora_inicio.strftime("%H:%M"),
                     "hora_fin": h.hora_fin.strftime("%H:%M"),
-                    "lugar": h.lugar,
+                    "enlace": h.enlace,
+                    "salon": h.salon,
                     "is_active": h.estado,
                 }
                 for h in horarios
@@ -1788,11 +1789,41 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
         """
         try:
             data = request.data
-            # Validar que los campos obligatorios vengan en la petición
-            campos_requeridos = ['id_monitor', 'id_sede', 'materia', 'dia_semana', 'hora_inicio', 'hora_fin', 'lugar']
+
+            # Validar campos generales obligatorios
+            campos_requeridos = [
+                'id_monitor',
+                'id_sede',
+                'materia',
+                'dia_semana',
+                'hora_inicio',
+                'hora_fin',
+                'modalidad'
+            ]
+
             for campo in campos_requeridos:
                 if not data.get(campo):
-                    return Response({"error": f"El campo {campo} es obligatorio"}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"error": f"El campo {campo} es obligatorio"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+            modalidad = data.get('modalidad')
+            enlace = data.get('enlace', '').strip()
+            salon = data.get('salon', '').strip()
+
+            # Validar según la modalidad
+            if modalidad == 'Virtual' and not enlace:
+                return Response(
+                    {"error": "El enlace de Meet es obligatorio para la modalidad virtual"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            if modalidad == 'Presencial' and not salon:
+                return Response(
+                    {"error": "El nombre del salón es obligatorio para la modalidad presencial"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
             nuevo_horario = horario_monitoria.objects.create(
                 id_monitor_id=data['id_monitor'],
@@ -1801,9 +1832,21 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
                 dia_semana=data['dia_semana'],
                 hora_inicio=data['hora_inicio'],
                 hora_fin=data['hora_fin'],
-                lugar=data['lugar'],
+                modalidad=modalidad,
+                enlace=enlace if enlace else None,
+                salon=salon if salon else None,
                 estado=data.get('is_active', True)
             )
-            return Response({"mensaje": "Horario creado exitosamente", "id": nuevo_horario.id}, status=status.HTTP_201_CREATED)
+
+            return Response(
+                {
+                    "mensaje": "Horario creado exitosamente",
+                    "id": nuevo_horario.id
+                },
+                status=status.HTTP_201_CREATED
+            )
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+        )

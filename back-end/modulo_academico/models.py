@@ -70,7 +70,9 @@ class horario_monitoria(models.Model):
     dia_semana = models.CharField(max_length=20)
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
-    lugar = models.CharField(max_length=255)  # Enlace Meet o Salón
+    modalidad = models.CharField(max_length=20)
+    enlace = models.CharField(max_length=255, blank=True, null=True)  # Enlace Meet
+    salon = models.CharField(max_length=255, blank=True, null=True)  # Salón
     estado = models.BooleanField(default=True)
 
     class Meta:

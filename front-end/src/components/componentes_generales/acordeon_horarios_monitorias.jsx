@@ -43,7 +43,9 @@ const SelectorHorariosMonitorias = () => {
         dia_semana: "",
         hora_inicio: "",
         hora_fin: "",
-        lugar: "",
+        modalidad: "",
+        salon: "",
+        enlace: "",
         is_active: true,
     });
 
@@ -126,7 +128,9 @@ const SelectorHorariosMonitorias = () => {
 
             if (valorFinal) {
                 // Consultar monitores de la sede seleccionada
-                const monitores = await Read_monitores.listar_monitores_academicos({ id_sede: valorFinal });
+                const rawMonitores = await Read_monitores.listar_monitores_academicos(valorFinal === "dpto matematicas" ? {} : { id_sede: valorFinal });
+                const monitores = valorFinal === "dpto matematicas"
+                    ? rawMonitores.filter(m => m.nombre_monitor && m.nombre_monitor.toLowerCase().includes("departamento de matematicas")) : rawMonitores;
                 setState((prev) => ({
                     ...prev,
                     data_monitores: Array.isArray(monitores) ? monitores : [],
@@ -143,7 +147,7 @@ const SelectorHorariosMonitorias = () => {
 
 
     const handleCreateHorario = async () => {
-        if (
+        const camposBasicosIncompletos =
             !newHorario.id_monitor ||
             !newHorario.id_sede ||
             !newHorario.materia.trim() ||
@@ -151,8 +155,13 @@ const SelectorHorariosMonitorias = () => {
             newHorario.dia_semana === "seleccionar" ||
             !newHorario.hora_inicio ||
             !newHorario.hora_fin ||
-            !newHorario.lugar.trim()
-        ) {
+            !newHorario.modalidad;
+
+        const modalidadInvalida =
+            (newHorario.modalidad === "Virtual" && !newHorario.enlace.trim()) ||
+            (newHorario.modalidad === "Presencial" && !newHorario.salon.trim());
+
+        if (camposBasicosIncompletos || modalidadInvalida) {
             Swal.fire({
                 title: "Mensaje de alerta",
                 text: "Por favor, verifica que todos los campos obligatorios estén llenos antes de enviar.",
@@ -164,6 +173,7 @@ const SelectorHorariosMonitorias = () => {
         }
 
         const response = await Create_horario.crear_horario(newHorario);
+
         if (response && (response.status === 200 || response.status === 201)) {
             Swal.fire({
                 title: "Creado",
@@ -179,7 +189,9 @@ const SelectorHorariosMonitorias = () => {
                 dia_semana: "",
                 hora_inicio: "",
                 hora_fin: "",
-                lugar: "",
+                enlace: "",
+                modalidad: "",
+                salon: "",
                 is_active: true,
             });
 
@@ -229,8 +241,14 @@ const SelectorHorariosMonitorias = () => {
             grow: 0.4,
         },
         {
-            name: "LUGAR",
-            selector: (row) => row.lugar,
+            name: "ENLACE",
+            selector: (row) => row.enlace,
+            sortable: true,
+            grow: 0.6,
+        },
+        {
+            name: "SALON",
+            selector: (row) => row.salon,
             sortable: true,
             grow: 0.6,
         },
@@ -293,7 +311,10 @@ const SelectorHorariosMonitorias = () => {
                 <Modal.Body>
                     <Form>
                         <Form.Group className="mb-3" controlId="createDiaSemana">
-                            <Form.Label>Día de la Semana</Form.Label>
+                            <Form.Label>
+                                Día de la Semana
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
                             <Form.Select
                                 name="dia_semana"
                                 value={newHorario.dia_semana}
@@ -309,11 +330,16 @@ const SelectorHorariosMonitorias = () => {
 
                         </Form.Group>
 
-                        <Form.Label>Franja Horaria</Form.Label>
+                        <Form.Label>
+                            Franja Horaria
+                        </Form.Label>
                         <Row className="mb-3">
                             <Col md={6}>
                                 <Form.Group controlId="createHoraInicio">
-                                    <Form.Label>Hora Inicio</Form.Label>
+                                    <Form.Label>
+                                        Hora Inicio
+                                        <span className="text-danger"> *</span>
+                                    </Form.Label>
                                     <Form.Control
                                         type="time"
                                         name="hora_inicio"
@@ -324,7 +350,10 @@ const SelectorHorariosMonitorias = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="createHoraFin">
-                                    <Form.Label>Hora Fin</Form.Label>
+                                    <Form.Label>
+                                        Hora Fin
+                                        <span className="text-danger"> *</span>
+                                    </Form.Label>
                                     <Form.Control
                                         type="time"
                                         name="hora_fin"
@@ -335,7 +364,10 @@ const SelectorHorariosMonitorias = () => {
                             </Col>
                         </Row>
                         <Form.Group className="mb-3" controlId="createMateria">
-                            <Form.Label>Nombre de la materia</Form.Label>
+                            <Form.Label>
+                                Nombre de la materia
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="Ej. Matemática Fundamental"
@@ -347,23 +379,34 @@ const SelectorHorariosMonitorias = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="createSede">
-                            <Form.Label>Sede</Form.Label>
+                            <Form.Label>
+                                Sede
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
                             <Form.Select
                                 name="id_sede"
                                 value={newHorario.id_sede}
                                 onChange={handleCreateChange}
                             >
                                 <option value="">Seleccione una sede...</option>
-                                {state.data_sedes.map((s) => (
-                                    <option key={s.id} value={s.id}>
-                                        {s.nombre}
-                                    </option>
-                                ))}
+                                <option value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
+                                {/* Excluir las sedes discapacidad y campus diverso */}
+                                {state.data_sedes
+                                    .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre))
+                                    .map(s => (
+                                        <option key={s.id} value={s.id}>
+                                            {s.nombre}
+                                        </option>
+                                    ))}
                             </Form.Select>
+
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="createMonitor">
-                            <Form.Label>Monitor</Form.Label>
+                            <Form.Label>
+                                Monitor
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
                             <Form.Select
                                 name="id_monitor"
                                 value={newHorario.id_monitor}
@@ -386,16 +429,55 @@ const SelectorHorariosMonitorias = () => {
                             </Form.Select>
                         </Form.Group>
 
+                        <Form.Group className="mb-3" controlId="createModalidad">
+                            <Form.Label>
+                                Modalidad
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
+                            <Form.Select
+                                name="modalidad"
+                                value={newHorario.modalidad}
+                                onChange={handleCreateChange}
+                            >
+                                <option value="">Seleccione una modalidad...</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="Virtual">Virtual</option>
+                            </Form.Select>
+                        </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="createLugar">
-                            <Form.Label>Enlace a reunión de meet</Form.Label>
+                        <Form.Group className="mb-3" controlId="createenlace">
+                            <Form.Label>
+                                Enlace a reunión de meet
+                                {newHorario.modalidad === "Virtual" && (
+                                    <span className="text-danger"> *</span>
+                                )}
+                            </Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="Ej. https://meet.google.com/xyz-abc-def"
-                                name="lugar"
-                                value={newHorario.lugar}
+                                name="enlace"
+                                value={newHorario.enlace}
                                 onChange={handleCreateChange}
                                 maxLength={150}
+                                required={newHorario.modalidad === "Virtual"}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="createSalon">
+                            <Form.Label>
+                                Nombre del salón
+                                {newHorario.modalidad === "Presencial" && (
+                                    <span className="text-danger"> *</span>
+                                )}
+                            </Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Ej. Salon 101"
+                                name="salon"
+                                value={newHorario.salon}
+                                onChange={handleCreateChange}
+                                maxLength={150}
+                                required={newHorario.modalidad === "Presencial"}
                             />
                         </Form.Group>
 
@@ -478,12 +560,12 @@ const SelectorHorariosMonitorias = () => {
                             </Col>
                         </Row>
 
-                        <Form.Group className="mb-3" controlId="editLugar">
-                            <Form.Label>Lugar / Modalidad</Form.Label>
+                        <Form.Group className="mb-3" controlId="editenlace">
+                            <Form.Label>enlace / Modalidad</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="lugar"
-                                value={selectedHorario?.lugar || ""}
+                                name="enlace"
+                                value={selectedHorario?.enlace || ""}
                                 onChange={handleEditChange}
                             />
                         </Form.Group>
