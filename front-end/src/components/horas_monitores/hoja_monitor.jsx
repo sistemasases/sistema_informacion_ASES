@@ -4,11 +4,53 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { desencriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import obtener_registros_por_trabajador from "../../service/registro_horas_trbajadas/get_all_by_id";
+import obtener_festivos_colombia from "../../service/registro_horas_trbajadas/dias_festivos";
 import actualizar_registro from "../../service/registro_horas_trbajadas/actualizar_registro";
 import eliminar_registro from "../../service/registro_horas_trbajadas/eliminar_registro";
 import "../../Scss/horas_monitores/hoja_monitor.css";
 
 const REGISTROS_POR_PAGINA = 10;
+const PRECIO_HORA = 8578;
+
+const calcularHorasEsperadas = (temporada, festivosLaborables) => {
+  if (!temporada || !temporada.fecha_inicio) return null;
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  const ayer = new Date(hoy);
+  ayer.setDate(hoy.getDate() - 1);
+
+  const inicio = new Date(temporada.fecha_inicio + "T00:00:00");
+
+  if (inicio > ayer) return 0;
+
+  let corte = ayer;
+  if (temporada.fecha_fin) {
+    const fechaFin = new Date(temporada.fecha_fin + "T00:00:00");
+    if (fechaFin < ayer) corte = fechaFin;
+  }
+
+  if (corte < inicio) return 0;
+
+  let diasHabiles = 0;
+  const cursor = new Date(inicio);
+  while (cursor <= corte) {
+    const dow = cursor.getDay();
+    if (dow >= 1 && dow <= 5) diasHabiles++;
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  const festivosEnRango = festivosLaborables.filter((f) => {
+    const d = new Date(f.date + "T00:00:00");
+    return d >= inicio && d <= corte;
+  });
+
+  const diasHabilesNetos = Math.max(0, diasHabiles - festivosEnRango.length);
+  const horasPorDia = (temporada.horas_semanales ?? 20) / 5;
+
+  return parseFloat((diasHabilesNetos * horasPorDia).toFixed(1));
+};
 
 const generarOpciones = () => {
   const opts = [];
@@ -48,18 +90,32 @@ const HojaMonitor = () => {
   });
 
   const [horasActuales, setHorasActuales] = useState(0);
+  const [festivosLaborables, setFestivosLaborables] = useState([]);
   const [nombreTrabajador, setNombreTrabajador] = useState("");
 
   useEffect(() => {
     const getData = async () => {
       const data = await obtener_registros_por_trabajador();
       if (data.registros) {
+        const temp = data.registros.temporada ?? null;
         setRegistros(data.registros.registros);
         setTotalHoras(data.registros.total_horas);
         setHorasActuales(data.registros.horas_actuales ?? 0);
         setIsProfesional(data.usuario_profesional);
         setNombreTrabajador(data.registros.nombre_trabajador);
-        setTemporada(data.registros.temporada ?? null);
+        setTemporada(temp);
+
+        if (temp?.fecha_inicio) {
+          const fechaFin = temp.fecha_fin || new Date().toISOString().split("T")[0];
+          const resultadoFestivos = await obtener_festivos_colombia(temp.fecha_inicio, fechaFin);
+          if (resultadoFestivos) {
+            const soloLaborables = resultadoFestivos.festivos.filter((f) => {
+              const dow = new Date(f.date + "T00:00:00").getDay();
+              return dow >= 1 && dow <= 5;
+            });
+            setFestivosLaborables(soloLaborables);
+          }
+        }
       }
     };
     getData();
@@ -77,6 +133,19 @@ const HojaMonitor = () => {
 
   const horasDeuda = horasContratadas !== null
     ? Math.max(0, horasContratadas - totalHoras).toFixed(1)
+    : null;
+
+  const hoy0 = new Date();
+  hoy0.setHours(0, 0, 0, 0);
+  const ayer0 = new Date(hoy0);
+  ayer0.setDate(hoy0.getDate() - 1);
+  const festivosPasados = festivosLaborables.filter((f) =>
+    new Date(f.date + "T00:00:00") <= ayer0
+  ).length;
+
+  const horasEsperadas = calcularHorasEsperadas(temporada, festivosLaborables);
+  const balance = horasEsperadas !== null
+    ? parseFloat((totalHoras - horasEsperadas).toFixed(1))
     : null;
 
   const openDetail = (id) => {
@@ -250,11 +319,11 @@ const HojaMonitor = () => {
           <div className="hm-right-card">
             <div className="hm-right-row hm-red">
               <span>Precio hora</span>
-              <span>${(temporada?.precio_hora ?? 10000).toLocaleString("es-CO")}</span>
+              <span>${PRECIO_HORA.toLocaleString("es-CO")}</span>
             </div>
             <div className="hm-right-row hm-red">
               <span>Días festivos</span>
-              <span>{temporada?.total_festivos_temporada ?? "—"}</span>
+              <span>{festivosPasados}</span>
             </div>
             <div className="hm-metric">
               <span className="hm-metric-label">Horas a cumplir</span>
@@ -265,11 +334,23 @@ const HojaMonitor = () => {
               <span className="hm-metric-value hm-metric-highlight">{totalHoras.toFixed(1)}</span>
             </div>
             <div className="hm-metric">
-              <span className="hm-metric-label">Horas actuales</span>
-              <span className="hm-metric-value">{horasActuales.toFixed(1)}</span>
+              <span className="hm-metric-label">Horas esperadas hasta hoy</span>
+              <span className="hm-metric-value">{horasEsperadas !== null ? horasEsperadas.toFixed(1) : "—"}</span>
             </div>
             <div className="hm-metric">
-              <span className="hm-metric-label">Horas en deuda</span>
+              <span className="hm-metric-label">Balance</span>
+              <span
+                className="hm-metric-value"
+                style={{
+                  backgroundColor: balance === null ? undefined : balance < 0 ? "#ffcccc" : "#ccf0d8",
+                  color: balance === null ? undefined : balance < 0 ? "#cc0000" : "#1a7a4a",
+                }}
+              >
+                {balance !== null ? `${balance > 0 ? "+" : ""}${balance.toFixed(1)}` : "—"}
+              </span>
+            </div>
+            <div className="hm-metric">
+              <span className="hm-metric-label">Horas para finalizar</span>
               <span className="hm-metric-value">{horasDeuda !== null ? horasDeuda : "—"}</span>
             </div>
           </div>

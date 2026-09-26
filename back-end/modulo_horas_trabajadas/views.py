@@ -373,7 +373,7 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                         total_festivos_temporada=num_festivos,
                         fecha_inicio=fecha_inicio,
                         fecha_fin=fecha_fin,
-                        precio_hora=10000,
+                        precio_hora=8578, # este valor se debe de actualizar si se cambia el valor de el precio de las horas en el semestre
                         is_default=True,
                     )
                     for trabajador_id in ids_sin_temporada

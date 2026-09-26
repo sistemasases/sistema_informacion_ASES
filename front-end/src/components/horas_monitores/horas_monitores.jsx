@@ -8,7 +8,7 @@ import obtener_festivos_colombia from "../../service/registro_horas_trbajadas/di
 import actualizar_temporada_trabajo from "../../service/registro_horas_trbajadas/actualizar_temporada";
 import obtener_semestre_actual from "../../service/registro_horas_trbajadas/get_semestre_actual";
 
-const PRECIO_HORA = 10000;
+const PRECIO_HORA = 8578;
 
 
 /**
@@ -206,6 +206,15 @@ const HorasMonitores = () => {
   });
 
   // ── valores del panel derecho ──────────────────────────────
+  const hoy0 = new Date();
+  hoy0.setHours(0, 0, 0, 0);
+  const ayer0 = new Date(hoy0);
+  ayer0.setDate(hoy0.getDate() - 1);
+  const festivosPasados = festivosLaborables.filter((f) => {
+    const d = new Date(f.date + "T00:00:00");
+    return d <= ayer0;
+  }).length;
+
   const horasContratadas = seleccionado?.temporada?.horas_total_contratadas
     ? parseFloat(seleccionado.temporada.horas_total_contratadas)
     : null;
@@ -459,12 +468,12 @@ const HorasMonitores = () => {
           <div className="box_hours">
             <Row className="red_tittle">
               <Col>Precio Hora:</Col>
-              <Col style={{ textAlign: "right" }}>$ 10,000.00</Col>
+              <Col style={{ textAlign: "right" }}>$ {PRECIO_HORA.toLocaleString("es-CO")}</Col>
             </Row>
             <Row className="red_tittle">
-              <Col>Días Festivos:</Col>
+              <Col>Días Festivos hasta hoy:</Col>
               <Col style={{ textAlign: "right" }}>
-                {seleccionado?.temporada?.total_festivos_temporada ?? diasFestivos}
+                {festivosPasados}
               </Col>
             </Row>
 
@@ -481,7 +490,7 @@ const HorasMonitores = () => {
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Horas Actuales</Col>
+              <Col className="middle_content">Horas realizadas</Col>
               <Col className="middle_content_right" style={{ textAlign: "center" }}>
                 {horasActuales !== null ? horasActuales.toFixed(1) : "—"}
               </Col>
@@ -498,18 +507,18 @@ const HorasMonitores = () => {
                 className="middle_content_right"
                 style={{
                   textAlign: "center",
-                  backgroundColor: balance !== null && balance < 0 ? "#FFA500" : undefined,
-                  borderColor: balance !== null && balance < 0 ? "#FFA500" : undefined,
-                  color: balance !== null && balance < 0 ? "white" : undefined,
+                  backgroundColor: balance === null ? undefined : balance < 0 ? "#ffcccc" : "#ccf0d8",
+                  borderColor: balance === null ? undefined : balance < 0 ? "#ffaaaa" : "#aae0c0",
+                  color: balance === null ? undefined : balance < 0 ? "#cc0000" : "#1a7a4a",
                 }}
               >
                 {balance !== null
-                  ? `${balance > 0 ? "+" : ""}${balance.toFixed(1)} HRS`
+                  ? `${balance > 0 ? "+" : ""}${balance.toFixed(1)}`
                   : "—"}
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Horas en deuda</Col>
+              <Col className="middle_content">Horas para finalizar</Col>
               <Col
                 className="middle_content_right"
                 style={{
@@ -519,7 +528,7 @@ const HorasMonitores = () => {
                   color: "white",
                 }}
               >
-                {horasDeuda !== null ? `${horasDeuda} HRS` : "N/D"}
+                {horasDeuda !== null ? horasDeuda : "N/D"}
               </Col>
             </Row>
 
