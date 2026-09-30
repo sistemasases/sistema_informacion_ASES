@@ -210,9 +210,13 @@ const HorasMonitores = () => {
   hoy0.setHours(0, 0, 0, 0);
   const ayer0 = new Date(hoy0);
   ayer0.setDate(hoy0.getDate() - 1);
+  const fechaInicioFestivos = seleccionado?.temporada?.fecha_inicio
+    ? new Date(seleccionado.temporada.fecha_inicio + "T00:00:00")
+    : null;
+
   const festivosPasados = festivosLaborables.filter((f) => {
     const d = new Date(f.date + "T00:00:00");
-    return d <= ayer0;
+    return d <= ayer0 && (fechaInicioFestivos === null || d >= fechaInicioFestivos);
   }).length;
 
   const horasContratadas = seleccionado?.temporada?.horas_total_contratadas
