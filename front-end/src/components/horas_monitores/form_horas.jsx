@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import "../../Scss/horas_monitores/registro_horas.css";
 import RegistroHorasService from "../../service/registro_horas_trbajadas/registro_horas_service";
+import obtener_registros_por_trabajador from "../../service/registro_horas_trbajadas/get_all_by_id";
 
 
 
@@ -52,6 +53,17 @@ const RegistroHorasForm = () => {
 
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [temporada, setTemporada] = useState(null);
+
+  useEffect(() => {
+    const cargarTemporada = async () => {
+      const data = await obtener_registros_por_trabajador();
+      if (data?.registros?.temporada) {
+        setTemporada(data.registros.temporada);
+      }
+    };
+    cargarTemporada();
+  }, []);
 
   const horasCalculadas = calcularHoras(form.hora_inicio, form.hora_fin);
 
@@ -67,6 +79,10 @@ const RegistroHorasForm = () => {
       nuevosErrores.fecha = "Selecciona una fecha.";
     } else if (form.fecha > hoy) {
       nuevosErrores.fecha = "No puedes registrar horas para fechas futuras.";
+    } else if (temporada?.fecha_inicio && form.fecha < temporada.fecha_inicio) {
+      nuevosErrores.fecha = `La fecha no puede ser anterior al inicio de tu temporada (${temporada.fecha_inicio.split("-").reverse().join("/")}).`;
+    } else if (temporada?.fecha_fin && form.fecha > temporada.fecha_fin) {
+      nuevosErrores.fecha = `La fecha no puede ser posterior al fin de tu temporada (${temporada.fecha_fin.split("-").reverse().join("/")}).`;
     }
 
     if (!form.hora_inicio) {
@@ -155,6 +171,7 @@ const RegistroHorasForm = () => {
                 type="date"
                 name="fecha"
                 value={form.fecha}
+                min={temporada?.fecha_inicio}
                 max={hoy}
                 onChange={handleChange}
                 className={`rhf-input ${errors.fecha ? "rhf-input--error" : ""} ${

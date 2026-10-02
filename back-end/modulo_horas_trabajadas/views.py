@@ -92,6 +92,33 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            temporada_obj = TemporadaTrabajo.objects.filter(
+                trabajador=trabajador,
+                semestre=semestre_obj
+            ).first()
+
+            if temporada_obj:
+                if fecha < temporada_obj.fecha_inicio:
+                    return Response(
+                        {
+                            "error": (
+                                f"La fecha {fecha} es anterior al inicio de tu temporada de trabajo "
+                                f"({temporada_obj.fecha_inicio})."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                if temporada_obj.fecha_fin and fecha > temporada_obj.fecha_fin:
+                    return Response(
+                        {
+                            "error": (
+                                f"La fecha {fecha} es posterior al fin de tu temporada de trabajo "
+                                f"({temporada_obj.fecha_fin})."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
             rol_usuario = usuario_rol.objects.filter(
                 id_usuario=trabajador,
                 estado="ACTIVO"
@@ -247,6 +274,33 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                 )
 
             trabajador = serializer.validated_data.get('trabajador', registro.trabajador)
+
+            temporada_obj = TemporadaTrabajo.objects.filter(
+                trabajador=trabajador,
+                semestre=semestre_obj
+            ).first()
+
+            if temporada_obj:
+                if fecha < temporada_obj.fecha_inicio:
+                    return Response(
+                        {
+                            "error": (
+                                f"La fecha {fecha} es anterior al inicio de la temporada de trabajo "
+                                f"({temporada_obj.fecha_inicio})."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                if temporada_obj.fecha_fin and fecha > temporada_obj.fecha_fin:
+                    return Response(
+                        {
+                            "error": (
+                                f"La fecha {fecha} es posterior al fin de la temporada de trabajo "
+                                f"({temporada_obj.fecha_fin})."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
 
             rol_usuario = usuario_rol.objects.filter(
                 id_usuario=trabajador,
