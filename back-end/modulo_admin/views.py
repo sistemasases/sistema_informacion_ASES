@@ -1771,6 +1771,7 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
                     "materia": h.materia,
                     "dia_semana": h.dia_semana,
                     "hora_inicio": h.hora_inicio.strftime("%H:%M"),
+                    "modalidad": h.modalidad,
                     "hora_fin": h.hora_fin.strftime("%H:%M"),
                     "enlace": h.enlace,
                     "salon": h.salon,
@@ -1850,3 +1851,47 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
         )
+    
+    @action(detail=False, methods=['post'], url_path='actualizar_horario', permission_classes=[IsAuthenticated])
+    def actualizar_horario(self, request):
+        """
+        Actualizar un horario de monitoría existente.
+        """
+        try:
+            data = request.data
+            horario_id = data.get('id')
+            if not horario_id:
+                return Response({"error": "El ID del horario es requerido"}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                horario = horario_monitoria.objects.get(id=horario_id)
+            except horario_monitoria.DoesNotExist:
+                return Response({"error": "Horario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+            modalidad = data.get('modalidad', horario.modalidad)
+            enlace = data.get('enlace', '').strip() if data.get('enlace') else None
+            salon = data.get('salon', '').strip() if data.get('salon') else None
+
+            # Validar según modalidad
+            if modalidad == 'Virtual' and not enlace:
+                return Response({"error": "El enlace de Meet es obligatorio para modalidad virtual"}, status=status.HTTP_400_BAD_REQUEST)
+            if modalidad == 'Presencial' and not salon:
+                return Response({"error": "El salón es obligatorio para modalidad presencial"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Actualizar campos
+            horario.id_monitor_id = data.get('id_monitor', horario.id_monitor_id)
+            horario.id_sede_id = data.get('id_sede', horario.id_sede_id)
+            horario.materia = data.get('materia', horario.materia)
+            horario.dia_semana = data.get('dia_semana', horario.dia_semana)
+            horario.hora_inicio = data.get('hora_inicio', horario.hora_inicio)
+            horario.hora_fin = data.get('hora_fin', horario.hora_fin)
+            horario.modalidad = modalidad
+            horario.enlace = enlace if modalidad == 'Virtual' else None
+            horario.salon = salon if modalidad == 'Presencial' else None
+            horario.estado = data.get('is_active', horario.estado)
+
+            horario.save()
+
+            return Response({"mensaje": "Horario actualizado exitosamente"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

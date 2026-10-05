@@ -12,14 +12,16 @@ import {
     Form,
     Row,
     Col,
+    InputGroup,
 } from "react-bootstrap";
 import Read_sedes from "../../service/panel_admin/panel_admin_sedes_listar_sedes.js";
 import Read_monitores from "../../service/panel_admin/panel_admin_monitorias_academicas_listar_monitores_academicos.js";
 import Read_horarios from "../../service/panel_admin/panel_admin_horarios_listar.js";
 import Create_horario from "../../service/panel_admin/panel_admin_horarios_crear.js";
+import Update_horario from "../../service/panel_admin/panel_admin_horarios_actualizar.js";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaPencilAlt, FaLink, FaRegBuilding } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const SelectorHorariosMonitorias = () => {
@@ -27,7 +29,8 @@ const SelectorHorariosMonitorias = () => {
     const [state, setState] = useState({
         data_horarios: [],
         data_sedes: [],
-        data_monitores: [],
+        data_monitores: [], //creación
+        data_monitores_edit: [], //edición
     });
 
     // Estados para modales y selección
@@ -52,9 +55,9 @@ const SelectorHorariosMonitorias = () => {
     // Función para consultar los horarios
     const cargarDatosIniciales = async () => {
         try {
-            // 1. Obtener horarios registrados
+            //Obtener horarios registrados
             const horarios = await Read_horarios.listar_horarios({});
-            // 2. Obtener sedes de la BD
+            //Obtener sedes de la BD
             const sedes = await Read_sedes.listar_sedes({});
 
             setState((prev) => ({
@@ -74,24 +77,101 @@ const SelectorHorariosMonitorias = () => {
     }, []);
 
     // Controladores de Edición
-    const handleEdit = (horario) => {
-        setSelectedHorario(horario);
+    const handleEdit = async (horario) => {
+        setSelectedHorario({
+            ...horario,
+            modalidad: horario.modalidad || (horario.enlace ? "Virtual" : "Presencial"),
+        });
+
+        // Cargar los monitores correspondientes a la sede del horario que se va a editar
+        if (horario.id_sede) {
+            const rawMonitores = await Read_monitores.listar_monitores_academicos(
+                horario.id_sede === "dpto matematicas" ? {} : { id_sede: horario.id_sede }
+            );
+            const monitores = horario.id_sede === "dpto matematicas"
+                ? rawMonitores.filter(m => m.nombre_monitor && m.nombre_monitor.toLowerCase().includes("departamento de matematicas"))
+                : rawMonitores;
+
+            setState((prev) => ({
+                ...prev,
+                data_monitores_edit: Array.isArray(monitores) ? monitores : [],
+            }));
+        } else {
+            setState((prev) => ({ ...prev, data_monitores_edit: [] }));
+        }
+
         setShowEditModal(true);
     };
 
+
     const handleCloseEditModal = () => setShowEditModal(false);
 
-    const handleEditChange = (e) => {
+    const handleEditChange = async (e) => {
         const { name, value, type, checked } = e.target;
+        const valorFinal = type === "checkbox" ? checked : value;
+
         setSelectedHorario((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            [name]: valorFinal,
         }));
+
+        // Si cambia la sede en edición, recargar monitores de esa nueva sede
+        if (name === "id_sede") {
+            setSelectedHorario((prev) => ({
+                ...prev,
+                id_sede: valorFinal,
+                id_monitor: "", // Limpiar monitor anterior
+            }));
+
+            if (valorFinal) {
+                const rawMonitores = await Read_monitores.listar_monitores_academicos(
+                    valorFinal === "dpto matematicas" ? {} : { id_sede: valorFinal }
+                );
+                const monitores = valorFinal === "dpto matematicas"
+                    ? rawMonitores.filter(m => m.nombre_monitor && m.nombre_monitor.toLowerCase().includes("departamento de matematicas"))
+                    : rawMonitores;
+
+                setState((prev) => ({
+                    ...prev,
+                    data_monitores_edit: Array.isArray(monitores) ? monitores : [],
+                }));
+            } else {
+                setState((prev) => ({
+                    ...prev,
+                    data_monitores_edit: [],
+                }));
+            }
+        }
     };
 
+
     const handleSaveEdit = async () => {
-        try {
-            // TODO: Update_horario.actualizar_horario(selectedHorario);
+        const camposIncompletos =
+            !selectedHorario.id_monitor ||
+            !selectedHorario.id_sede ||
+            !selectedHorario.materia?.trim() ||
+            !selectedHorario.dia_semana ||
+            !selectedHorario.hora_inicio ||
+            !selectedHorario.hora_fin ||
+            !selectedHorario.modalidad;
+
+        const modalidadInvalida =
+            (selectedHorario.modalidad === "Virtual" && !selectedHorario.enlace?.trim()) ||
+            (selectedHorario.modalidad === "Presencial" && !selectedHorario.salon?.trim());
+
+        if (camposIncompletos || modalidadInvalida) {
+            Swal.fire({
+                title: "Mensaje de alerta",
+                text: "Por favor, verifica que todos los campos obligatorios estén llenos antes de guardar.",
+                icon: "warning",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Aceptar",
+            });
+            return;
+        }
+
+        const response = await Update_horario.actualizar_horario(selectedHorario);
+        if (response && (response.status === 200 || response.status === 201)) {
             Swal.fire({
                 title: "Éxito",
                 text: "Horario actualizado correctamente",
@@ -100,10 +180,9 @@ const SelectorHorariosMonitorias = () => {
             });
             setShowEditModal(false);
             cargarDatosIniciales();
-        } catch (error) {
-            console.error("Error al actualizar horario:", error);
         }
     };
+
 
     // Controladores de Creación
     const handleShowCreateModal = () => setShowCreateModal(true);
@@ -232,7 +311,7 @@ const SelectorHorariosMonitorias = () => {
             name: "HORA INICIO",
             selector: (row) => row.hora_inicio,
             sortable: true,
-            grow: 0.4,
+            grow: 0.5,
         },
         {
             name: "HORA FIN",
@@ -262,7 +341,7 @@ const SelectorHorariosMonitorias = () => {
             name: "EDITAR",
             cell: (row) => (
                 <Button variant="warning" size="sm" onClick={() => handleEdit(row)}>
-                    <FaEdit />
+                    <FaPencilAlt />
                 </Button>
             ),
             grow: 0.3,
@@ -390,7 +469,7 @@ const SelectorHorariosMonitorias = () => {
                             >
                                 <option value="">Seleccione una sede...</option>
                                 <option value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
-                                {/* Excluir las sedes discapacidad y campus diverso */}
+                                {/* Excluir las "sedes" discapacidad y campus diverso */}
                                 {state.data_sedes
                                     .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre))
                                     .map(s => (
@@ -452,15 +531,20 @@ const SelectorHorariosMonitorias = () => {
                                     <span className="text-danger"> *</span>
                                 )}
                             </Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Ej. https://meet.google.com/xyz-abc-def"
-                                name="enlace"
-                                value={newHorario.enlace}
-                                onChange={handleCreateChange}
-                                maxLength={150}
-                                required={newHorario.modalidad === "Virtual"}
-                            />
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text id="basic-addon1">
+                                    <FaLink />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="https://meet.google.com/xyz-abc-def"
+                                    name="enlace"
+                                    value={newHorario.enlace}
+                                    onChange={handleCreateChange}
+                                    maxLength={150}
+                                    required={newHorario.modalidad === "Virtual"}
+                                />
+                            </InputGroup>
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="createSalon">
@@ -470,15 +554,20 @@ const SelectorHorariosMonitorias = () => {
                                     <span className="text-danger"> *</span>
                                 )}
                             </Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Ej. Salon 101"
-                                name="salon"
-                                value={newHorario.salon}
-                                onChange={handleCreateChange}
-                                maxLength={150}
-                                required={newHorario.modalidad === "Presencial"}
-                            />
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text id="basic-addon1">
+                                    <FaRegBuilding />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Salon 101"
+                                    name="salon"
+                                    value={newHorario.salon}
+                                    onChange={handleCreateChange}
+                                    maxLength={150}
+                                    required={newHorario.modalidad === "Presencial"}
+                                />
+                            </InputGroup>
                         </Form.Group>
 
                         <Form.Group controlId="createIsActive">
@@ -505,40 +594,37 @@ const SelectorHorariosMonitorias = () => {
             {/* Modal para Editar Horario */}
             <Modal show={showEditModal} onHide={handleCloseEditModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Editar Horario</Modal.Title>
+                    <Modal.Title>Editar Horario de Monitoría</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3" controlId="editMateriaMonitor">
-                            <Form.Label>Monitor / Materia</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="materia_monitor"
-                                value={selectedHorario?.materia_monitor || ""}
-                                onChange={handleEditChange}
-                            />
-                        </Form.Group>
-
                         <Form.Group className="mb-3" controlId="editDiaSemana">
-                            <Form.Label>Día de la Semana</Form.Label>
+                            <Form.Label>
+                                Día de la Semana
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
                             <Form.Select
                                 name="dia_semana"
-                                value={selectedHorario?.dia_semana || "Lunes"}
+                                value={selectedHorario?.dia_semana || ""}
                                 onChange={handleEditChange}
                             >
+                                <option value="">Seleccione un día... </option>
                                 <option value="Lunes">Lunes</option>
                                 <option value="Martes">Martes</option>
                                 <option value="Miércoles">Miércoles</option>
                                 <option value="Jueves">Jueves</option>
                                 <option value="Viernes">Viernes</option>
-                                <option value="Sábado">Sábado</option>
                             </Form.Select>
                         </Form.Group>
 
+                        <Form.Label>Franja Horaria</Form.Label>
                         <Row className="mb-3">
                             <Col md={6}>
                                 <Form.Group controlId="editHoraInicio">
-                                    <Form.Label>Hora Inicio</Form.Label>
+                                    <Form.Label>
+                                        Hora Inicio
+                                        <span className="text-danger"> *</span>
+                                    </Form.Label>
                                     <Form.Control
                                         type="time"
                                         name="hora_inicio"
@@ -549,7 +635,10 @@ const SelectorHorariosMonitorias = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="editHoraFin">
-                                    <Form.Label>Hora Fin</Form.Label>
+                                    <Form.Label>
+                                        Hora Fin
+                                        <span className="text-danger"> *</span>
+                                    </Form.Label>
                                     <Form.Control
                                         type="time"
                                         name="hora_fin"
@@ -560,14 +649,131 @@ const SelectorHorariosMonitorias = () => {
                             </Col>
                         </Row>
 
-                        <Form.Group className="mb-3" controlId="editenlace">
-                            <Form.Label>enlace / Modalidad</Form.Label>
+                        <Form.Group className="mb-3" controlId="editMateria">
+                            <Form.Label>
+                                Nombre de la materia
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
                             <Form.Control
                                 type="text"
-                                name="enlace"
-                                value={selectedHorario?.enlace || ""}
+                                placeholder="Ej. Matemática Fundamental"
+                                name="materia"
+                                value={selectedHorario?.materia || ""}
                                 onChange={handleEditChange}
+                                maxLength={100}
                             />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="editSede">
+                            <Form.Label>
+                                Sede
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
+                            <Form.Select
+                                name="id_sede"
+                                value={selectedHorario?.id_sede || ""}
+                                onChange={handleEditChange}
+                            >
+                                <option value="">Seleccione una sede...</option>
+                                <option value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
+                                {state.data_sedes
+                                    .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre))
+                                    .map(s => (
+                                        <option key={s.id} value={s.id}>
+                                            {s.nombre}
+                                        </option>
+                                    ))}
+                            </Form.Select>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="editMonitor">
+                            <Form.Label>
+                                Monitor
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
+                            <Form.Select
+                                name="id_monitor"
+                                value={selectedHorario?.id_monitor || ""}
+                                onChange={handleEditChange}
+                                disabled={!selectedHorario?.id_sede}
+                            >
+                                {!selectedHorario?.id_sede ? (
+                                    <option value="">Primero seleccione una sede...</option>
+                                ) : state.data_monitores_edit.length === 0 ? (
+                                    <option value="">No hay monitores registrados en esta sede</option>
+                                ) : (
+                                    <option value="">Seleccione un monitor...</option>
+                                )}
+
+                                {state.data_monitores_edit.map((m) => (
+                                    <option key={m.id_usuario} value={m.id_usuario}>
+                                        {m.nombre_monitor}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="editModalidad">
+                            <Form.Label>
+                                Modalidad
+                                <span className="text-danger"> *</span>
+                            </Form.Label>
+                            <Form.Select
+                                name="modalidad"
+                                value={selectedHorario?.modalidad || ""}
+                                onChange={handleEditChange}
+                            >
+                                <option value="">Seleccione una modalidad...</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="Virtual">Virtual</option>
+                            </Form.Select>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="editEnlace">
+                            <Form.Label>
+                                Enlace a reunión de meet
+                                {selectedHorario?.modalidad === "Virtual" && (
+                                    <span className="text-danger"> *</span>
+                                )}
+                            </Form.Label>
+
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text id="basic-addon1">
+                                    <FaLink />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="https://meet.google.com/xyz-abc-def"
+                                    name="enlace"
+                                    value={selectedHorario?.enlace || ""}
+                                    onChange={handleEditChange}
+                                    maxLength={150}
+                                    required={selectedHorario?.modalidad === "Virtual"}
+                                />
+                            </InputGroup>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="editSalon">
+                            <Form.Label>
+                                Nombre del salón
+                                {selectedHorario?.modalidad === "Presencial" && (
+                                    <span className="text-danger"> *</span>
+                                )}
+                            </Form.Label>
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text id="basic-addon1">
+                                    <FaRegBuilding />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Salon 101"
+                                    name="salon"
+                                    value={selectedHorario?.salon || ""}
+                                    onChange={handleEditChange}
+                                    maxLength={150}
+                                    required={selectedHorario?.modalidad === "Presencial"}
+                                />
+                            </InputGroup>
                         </Form.Group>
 
                         <Form.Group controlId="editIsActive">
