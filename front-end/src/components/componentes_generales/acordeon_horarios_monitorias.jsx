@@ -78,17 +78,21 @@ const SelectorHorariosMonitorias = () => {
 
     // Controladores de Edición
     const handleEdit = async (horario) => {
+        const esDpto =
+            horario.nombre_monitor?.toLowerCase().includes("departamento de matematicas");
+        const idSedeEfectiva = esDpto ? "dpto matematicas" : horario.id_sede;
         setSelectedHorario({
             ...horario,
+            id_sede: idSedeEfectiva,
             modalidad: horario.modalidad || (horario.enlace ? "Virtual" : "Presencial"),
         });
 
         // Cargar los monitores correspondientes a la sede del horario que se va a editar
-        if (horario.id_sede) {
+        if (idSedeEfectiva) {
             const rawMonitores = await Read_monitores.listar_monitores_academicos(
-                horario.id_sede === "dpto matematicas" ? {} : { id_sede: horario.id_sede }
+                idSedeEfectiva === "dpto matematicas" ? {} : { id_sede: idSedeEfectiva }
             );
-            const monitores = horario.id_sede === "dpto matematicas"
+            const monitores = idSedeEfectiva === "dpto matematicas"
                 ? rawMonitores.filter(m => m.nombre_monitor && m.nombre_monitor.toLowerCase().includes("departamento de matematicas"))
                 : rawMonitores;
 
@@ -144,7 +148,6 @@ const SelectorHorariosMonitorias = () => {
         }
     };
 
-
     const handleSaveEdit = async () => {
         const camposIncompletos =
             !selectedHorario.id_monitor ||
@@ -163,6 +166,17 @@ const SelectorHorariosMonitorias = () => {
             Swal.fire({
                 title: "Mensaje de alerta",
                 text: "Por favor, verifica que todos los campos obligatorios estén llenos antes de guardar.",
+                icon: "warning",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Aceptar",
+            });
+            return;
+        }
+        //validar cruce de horario
+        if (selectedHorario.hora_inicio >= selectedHorario.hora_fin) {
+            Swal.fire({
+                title: "Horario inválido",
+                text: "La hora de inicio debe ser menor que la hora de fin.",
                 icon: "warning",
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Aceptar",
@@ -250,6 +264,17 @@ const SelectorHorariosMonitorias = () => {
             });
             return;
         }
+        // Validar cruce de horarios
+        if (newHorario.hora_inicio >= newHorario.hora_fin) {
+            Swal.fire({
+                title: "Horario inválido",
+                text: "La hora de inicio debe ser menor que la hora de fin.",
+                icon: "warning",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Aceptar",
+            });
+            return;
+        }
 
         const response = await Create_horario.crear_horario(newHorario);
 
@@ -282,69 +307,91 @@ const SelectorHorariosMonitorias = () => {
 
     // Definición de columnas para DataTable
     const columnas = [
-        { name: "ID", selector: (row) => row.id, sortable: true, grow: 0.2 },
+        { name: "ID", selector: (row) => row.id, sortable: true, grow: 0.1, wrap: true },
         {
             name: "MATERIA",
             selector: (row) => row.materia,
             sortable: true,
-            grow: 0.6,
+            grow: 1.2,
+            wrap: true,
         },
         {
             name: "MONITOR",
             selector: (row) => row.nombre_monitor,
             sortable: true,
-            grow: 0.6,
+            grow: 1.2,
+            wrap: true,
         },
         {
             name: "SEDE",
-            selector: (row) => row.nombre_sede,
+            selector: (row) => {
+                const esDpto = row.nombre_monitor
+                    ?.toLowerCase()
+                    .includes("departamento de matematicas");
+
+                return esDpto
+                    ? "DEPARTAMENTO DE MATEMATICAS"
+                    : row.nombre_sede;
+            },
             sortable: true,
-            grow: 0.4,
+            grow: 1.2,
+            wrap: true,
         },
         {
             name: "DÍA",
             selector: (row) => row.dia_semana,
             sortable: true,
-            grow: 0.4,
+            grow: 0.7,
+            wrap: true,
         },
         {
             name: "HORA INICIO",
             selector: (row) => row.hora_inicio,
             sortable: true,
-            grow: 0.5,
+            grow: 0.9,
+            wrap: true,
         },
         {
             name: "HORA FIN",
             selector: (row) => row.hora_fin,
             sortable: true,
-            grow: 0.4,
+            grow: 0.9,
+            wrap: true,
         },
         {
             name: "ENLACE",
             selector: (row) => row.enlace,
             sortable: true,
-            grow: 0.6,
+            grow: 1.2,
+            wrap: true,
         },
         {
             name: "SALON",
             selector: (row) => row.salon,
             sortable: true,
-            grow: 0.6,
+            grow: 0.8,
+            wrap: true,
         },
         {
             name: "ACTIVO",
             selector: (row) => (row.is_active ? "Sí" : "No"),
             sortable: true,
-            grow: 0.3,
+            grow: 0.7,
+            center: true,
         },
         {
             name: "EDITAR",
             cell: (row) => (
-                <Button variant="warning" size="sm" onClick={() => handleEdit(row)}>
+                <Button
+                    variant="warning"
+                    size="sm"
+                    onClick={() => handleEdit(row)}
+                >
                     <FaPencilAlt />
                 </Button>
             ),
-            grow: 0.3,
+            grow: 0.7,
+            center: true,
         },
     ];
 
@@ -356,20 +403,23 @@ const SelectorHorariosMonitorias = () => {
                         Horarios de Monitorías Académicas
                     </Accordion.Header>
                     <Accordion.Body>
-                        <DataTableExtensions
-                            columns={columnas}
-                            data={state.data_horarios}
-                            export={false}
-                            print={false}
-                            filterPlaceholder="Buscar horario..."
-                        >
-                            <DataTable
-                                title="Horarios de Monitorías Académicas"
-                                noDataComponent="No hay horarios registrados."
-                                pagination
-                                striped
-                            />
-                        </DataTableExtensions>
+                        <div style={{ width: '100%', overflowX: 'auto' }}>
+                            <DataTableExtensions
+                                columns={columnas}
+                                data={state.data_horarios}
+                                export={false}
+                                print={false}
+                                filterPlaceholder="Buscar horario..."
+                            >
+                                <DataTable
+                                    title="Horarios de Monitorías Académicas"
+                                    noDataComponent="No hay horarios registrados."
+                                    pagination
+                                    striped
+                                    responsive
+                                />
+                            </DataTableExtensions>
+                        </div>
 
                         <Row className="mt-3">
                             <Col>
@@ -468,7 +518,7 @@ const SelectorHorariosMonitorias = () => {
                                 onChange={handleCreateChange}
                             >
                                 <option value="">Seleccione una sede...</option>
-                                <option value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
+                                <option key="dpto_matematicas" value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
                                 {/* Excluir las "sedes" discapacidad y campus diverso */}
                                 {state.data_sedes
                                     .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre))

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
 from django.db import transaction
-from django.db.models import Count, F, Window
+from django.db.models import Count, F, Window, Q
 from django.db.models.functions import Trim, Upper
 
 
@@ -1826,9 +1826,41 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            # Validar que la hora de inicio sea menor que la hora de fin
+            if data['hora_inicio'] >= data['hora_fin']:
+                return Response(
+                    {"error": "La hora de inicio debe ser menor que la hora de fin"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Validar cruce de horarios del mismo monitor
+            horario_cruzado = horario_monitoria.objects.filter(
+                id_monitor_id=data['id_monitor'],
+                dia_semana=data['dia_semana'],
+                estado=True,
+                hora_inicio__lt=data['hora_fin'],
+                hora_fin__gt=data['hora_inicio']
+            ).exists()
+
+            if horario_cruzado:
+                return Response(
+                    {
+                        "error": "El monitor ya tiene un horario asignado que se cruza con la franja horaria seleccionada"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            id_sede_input = data['id_sede']
+            if str(id_sede_input).strip() == 'dpto matematicas':
+                # Obtener una sede válida por defecto (por ej. Cali o la primera existente)
+                sede_defecto = sede.objects.first()
+                id_sede_val = sede_defecto.id if sede_defecto else 1
+            else:
+                id_sede_val = id_sede_input
+
             nuevo_horario = horario_monitoria.objects.create(
                 id_monitor_id=data['id_monitor'],
-                id_sede_id=data['id_sede'],
+                id_sede_id=id_sede_val,
                 materia=data['materia'],
                 dia_semana=data['dia_semana'],
                 hora_inicio=data['hora_inicio'],
@@ -1872,12 +1904,35 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
             enlace = data.get('enlace', '').strip() if data.get('enlace') else None
             salon = data.get('salon', '').strip() if data.get('salon') else None
 
+            id_sede_input = data.get('id_sede', horario.id_sede_id)
+            if str(id_sede_input).strip() == 'dpto matematicas':
+                id_sede_val = horario.id_sede_id or (sede.objects.first().id if sede.objects.exists() else 1)
+            else:
+                id_sede_val = id_sede_input
+            horario.id_sede_id = id_sede_val
+
             # Validar según modalidad
             if modalidad == 'Virtual' and not enlace:
                 return Response({"error": "El enlace de Meet es obligatorio para modalidad virtual"}, status=status.HTTP_400_BAD_REQUEST)
             if modalidad == 'Presencial' and not salon:
                 return Response({"error": "El salón es obligatorio para modalidad presencial"}, status=status.HTTP_400_BAD_REQUEST)
 
+            #Validar rango de horas
+            if data.get('hora_inicio') >= data.get('hora_fin'):
+                return Response({"error": "La hora de inicio debe ser menor que la hora de fin"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Validar cruce de horarios del mismo monitor
+            horario_cruzado = horario_monitoria.objects.filter(
+                id_monitor_id=data.get('id_monitor', horario.id_monitor_id),
+                dia_semana=data.get('dia_semana', horario.dia_semana),
+                estado=True,
+                hora_inicio__lt=data.get('hora_fin', horario.hora_fin),
+                hora_fin__gt=data.get('hora_inicio', horario.hora_inicio)
+            ).exclude(id=horario_id).exists()
+
+            if data.get('is_active', horario.estado) and horario_cruzado:
+                return Response({"error": "El monitor ya tiene un horario asignado que se cruza con la franja horaria seleccionada"}, status=status.HTTP_400_BAD_REQUEST)
+            
             # Actualizar campos
             horario.id_monitor_id = data.get('id_monitor', horario.id_monitor_id)
             horario.id_sede_id = data.get('id_sede', horario.id_sede_id)
