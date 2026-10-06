@@ -6,6 +6,7 @@ import FormularioAutorizacion from "./components/formularios_externos/formulario
 import FormularioAsistenica from "./components/formularios_externos/formulario_asistencia.jsx";
 import FormularioPrimerIngreso from "./components/formularios_externos/formulario_primer_ingreso.jsx";
 import Registro_estudiante from "./modulos/campus_diverso/registro_estudiante.jsx";
+import VistaHorariosMonitorias from "./components/formularios_externos/vista_horarios_monitorias.jsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -22,13 +23,15 @@ root.render(
     "/U2FsdGVkX18g1g+ca30m/FtEBzWwjus8rabYkRwWvI/8iwRBY7myQCC55mq/VtU7" ? (
     <FormularioPrimerIngreso />
   ) : window.location.pathname ===
-  "/campus-formulario" ? (
-  <Registro_estudiante />
-)
-  
-  : (
-    <Login />
+    "/campus-formulario" ? (
+    <Registro_estudiante />
+  ) : window.location.pathname === "/horarios-monitorias" ? (
+    <VistaHorariosMonitorias />
   )
+
+    : (
+      <Login />
+    )
   // <Login />
   //     </React.StrictMode>
 );

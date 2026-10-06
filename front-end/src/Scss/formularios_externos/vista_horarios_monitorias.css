@@ -1,0 +1,103 @@
+.vh-container-fluid {
+    background-color: #f8fafc;
+    min-height: 100vh;
+    font-family: inherit;
+}
+
+.vh-title {
+    color: #1e3a8a;
+    font-size: 1.8rem;
+}
+
+/* Tarjeta informativa ¿Cómo ingresar? */
+.vh-info-card {
+    background-color: #eff6ff !important;
+    border-radius: 12px;
+    border: 1px solid #bfdbfe !important;
+}
+
+.vh-step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.vh-steps-list li span {
+    font-size: 0.9rem;
+    color: #334155;
+}
+
+/* Tablero y columnas */
+.vh-main-card {
+    border-radius: 14px;
+    background-color: #ffffff;
+    border-color: #e2e8f0 !important;
+}
+
+.vh-col-day {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 10px;
+    min-width: 200px;
+}
+
+.vh-day-header {
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #475569;
+}
+
+/* Tarjeta de cada horario individual */
+.vh-horario-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vh-horario-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.vh-hora-rango {
+    color: #1e3a8a;
+    font-size: 0.95rem;
+}
+
+.vh-materia-title {
+    color: #1e293b;
+    font-size: 0.9rem;
+    line-height: 1.25;
+}
+
+.vh-monitor-info {
+    font-size: 0.82rem;
+}
+
+.vh-btn-ingresar {
+    background-color: #0d6efd;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.vh-btn-ingresar:hover {
+    background-color: #0b5ed7;
+}
+
+.vh-empty-slot {
+    font-size: 0.85rem;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+}
