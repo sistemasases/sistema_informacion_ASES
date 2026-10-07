@@ -118,6 +118,16 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                         },
                         status=status.HTTP_400_BAD_REQUEST
                     )
+                if temporada_obj.is_default:
+                    return Response(
+                        {
+                            "error": (
+                                "Tu temporada de trabajo no ha sido configurada por tu profesional. "
+                                "No puedes registrar horas hasta que sea actualizada."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
 
             rol_usuario = usuario_rol.objects.filter(
                 id_usuario=trabajador,
