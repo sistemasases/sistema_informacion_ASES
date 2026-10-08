@@ -380,13 +380,15 @@ const HorasMonitores = () => {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
                 <span style={{ fontWeight: 800, fontSize: "13px" }}>Temporada de trabajo</span>
                 <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
-                  {seleccionado.temporada
-                    ? <span style={{ background: "#e6f9f0", color: "#1a7a4a", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Activa</span>
-                    : <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
-                  }
+                  {!seleccionado.temporada && (
+                    <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
+                  )}
+                  {seleccionado.temporada && !seleccionado.temporada.is_default && (
+                    <span style={{ background: "#e6f9f0", color: "#1a7a4a", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Activa</span>
+                  )}
                   {seleccionado.temporada?.is_default && (
                     <span style={{ background: "#fff3e0", color: "#e65100", fontSize: "10px", padding: "2px 8px", borderRadius: "6px", fontWeight: 700 }}>
-                      ⚠ Datos por defecto, favor actualizar
+                      ⚠ Datos por defecto, favor actualizar o confirmar la temporada
                     </span>
                   )}
                 </div>
