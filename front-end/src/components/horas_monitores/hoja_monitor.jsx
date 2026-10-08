@@ -288,13 +288,15 @@ const HojaMonitor = () => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
               <span style={{ fontWeight: 800, fontSize: "13px" }}>Temporada de trabajo</span>
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "flex-end" }}>
-                {temporada
-                  ? <span style={{ background: "#e6f9f0", color: "#1a7a4a", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Activa</span>
-                  : <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
-                }
+                {!temporada && (
+                  <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
+                )}
+                {temporada && !temporada.is_default && (
+                  <span style={{ background: "#e6f9f0", color: "#1a7a4a", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Activa</span>
+                )}
                 {temporada?.is_default && (
                   <span style={{ background: "#fff3e0", color: "#e65100", fontSize: "10px", padding: "2px 8px", borderRadius: "6px", fontWeight: 700 }}>
-                    ⚠ Datos por defecto
+                    ⚠ Datos por defecto, favor actualizar o confirmar la temporada
                   </span>
                 )}
               </div>
@@ -386,7 +388,7 @@ const HojaMonitor = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label className="hm-form-label">Fecha</Form.Label>
-            <Form.Control type="date" value={formData.fecha} max={new Date().toISOString().split("T")[0]} onChange={(e) => setFormData({ ...formData, fecha: e.target.value })} />
+            <Form.Control type="date" value={formData.fecha} min={temporada?.fecha_inicio} max={new Date().toISOString().split("T")[0]} onChange={(e) => setFormData({ ...formData, fecha: e.target.value })} />
           </Form.Group>
           <Row>
             <Col>

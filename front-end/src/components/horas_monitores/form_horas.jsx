@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap";
+import { encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 import "../../Scss/horas_monitores/registro_horas.css";
 import RegistroHorasService from "../../service/registro_horas_trbajadas/registro_horas_service";
-
-
+import obtener_registros_por_trabajador from "../../service/registro_horas_trbajadas/get_all_by_id";
 
 // esta funcion se encarga de generar los rangos de horas validos
 const generarOpcionesTiempo = () => {
@@ -20,7 +20,6 @@ const generarOpcionesTiempo = () => {
 };
 
 const OPCIONES_TIEMPO = generarOpcionesTiempo();
-
 
 // esta funcion calcula las horas basandose en la seleccion de rangos de el usuario
 const calcularHoras = (inicio, fin) => {
@@ -39,7 +38,6 @@ const formatearFecha = (fechaStr) => {
   return `${day}/${month}/${year}`;
 };
 
-
 const hoy = new Date().toISOString().split("T")[0];
 
 const RegistroHorasForm = () => {
@@ -52,6 +50,24 @@ const RegistroHorasForm = () => {
 
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [temporada, setTemporada] = useState(null);
+  const [loadingTemporada, setLoadingTemporada] = useState(true);
+
+  const cambiar_ruta = (e) => {
+    sessionStorage.setItem("path", encriptar(e));
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    const cargarTemporada = async () => {
+      const data = await obtener_registros_por_trabajador();
+      if (data?.registros?.temporada) {
+        setTemporada(data.registros.temporada);
+      }
+      setLoadingTemporada(false);
+    };
+    cargarTemporada();
+  }, []);
 
   const horasCalculadas = calcularHoras(form.hora_inicio, form.hora_fin);
 
@@ -67,6 +83,10 @@ const RegistroHorasForm = () => {
       nuevosErrores.fecha = "Selecciona una fecha.";
     } else if (form.fecha > hoy) {
       nuevosErrores.fecha = "No puedes registrar horas para fechas futuras.";
+    } else if (temporada?.fecha_inicio && form.fecha < temporada.fecha_inicio) {
+      nuevosErrores.fecha = `La fecha no puede ser anterior al inicio de tu temporada (${temporada.fecha_inicio.split("-").reverse().join("/")}).`;
+    } else if (temporada?.fecha_fin && form.fecha > temporada.fecha_fin) {
+      nuevosErrores.fecha = `La fecha no puede ser posterior al fin de tu temporada (${temporada.fecha_fin.split("-").reverse().join("/")}).`;
     }
 
     if (!form.hora_inicio) {
@@ -130,6 +150,8 @@ const RegistroHorasForm = () => {
     setSubmitStatus(null);
   };
 
+  const bloqueado = !loadingTemporada && temporada?.is_default === true;
+
   return (
     <div className="rhf-wrapper">
       <Row>
@@ -148,127 +170,149 @@ const RegistroHorasForm = () => {
               <span>Datos del Registro</span>
             </div>
 
-            {/* Fecha */}
-            <div className="rhf-field-group">
-              <label className="rhf-label">Fecha</label>
-              <input
-                type="date"
-                name="fecha"
-                value={form.fecha}
-                max={hoy}
-                onChange={handleChange}
-                className={`rhf-input ${errors.fecha ? "rhf-input--error" : ""} ${
-                  form.fecha ? "rhf-input--valid" : ""
-                }`}
-              />
-              {errors.fecha && (
-                <span className="rhf-error-msg">{errors.fecha}</span>
-              )}
-              {form.fecha && (
-                <span className="rhf-success-msg">
-                  ✓ {formatearFecha(form.fecha)}
-                </span>
-              )}
-            </div>
-
-            {/* Hora inicio y fin en la misma fila */}
-            <div className="rhf-field-group">
-              <label className="rhf-label">Rango de Horas</label>
-              <div className="rhf-time-row">
-
-                {/* Hora inicio */}
-                <div className="rhf-time-col">
-                  <label className="rhf-label-hint">Inicio</label>
-                  <select
-                    name="hora_inicio"
-                    value={form.hora_inicio}
+            {loadingTemporada ? (
+              <p style={{ color: "#888", fontSize: "0.9rem", padding: "1rem 0" }}>
+                Cargando información de tu temporada...
+              </p>
+            ) : bloqueado ? (
+              <div style={{
+                display: "flex", flexDirection: "column", gap: "0.75rem",
+                padding: "1.5rem 0.5rem", textAlign: "center"
+              }}>
+                <p style={{ fontWeight: 700, color: "#D42B2B", fontSize: "1rem", margin: 0 }}>
+                  Registro no disponible
+                </p>
+                <p style={{ color: "#555", fontSize: "0.9rem", margin: 0 }}>
+                  Tu temporada de trabajo aún no ha sido configurada por tu profesional.
+                  No puedes registrar horas hasta que tu profesional actualice tu información.
+                </p>
+              </div>
+            ) : (
+              <>
+                {/* Fecha */}
+                <div className="rhf-field-group">
+                  <label className="rhf-label">Fecha</label>
+                  <input
+                    type="date"
+                    name="fecha"
+                    value={form.fecha}
+                    min={temporada?.fecha_inicio}
+                    max={hoy}
                     onChange={handleChange}
-                    className={`rhf-select ${errors.hora_inicio ? "rhf-input--error" : ""} ${
-                      form.hora_inicio ? "rhf-input--valid" : ""
+                    className={`rhf-input ${errors.fecha ? "rhf-input--error" : ""} ${
+                      form.fecha ? "rhf-input--valid" : ""
                     }`}
-                  >
-                    <option value="">--:--</option>
-                    {OPCIONES_TIEMPO.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                  {errors.hora_inicio && (
-                    <span className="rhf-error-msg">{errors.hora_inicio}</span>
+                  />
+                  {errors.fecha && (
+                    <span className="rhf-error-msg">{errors.fecha}</span>
+                  )}
+                  {form.fecha && (
+                    <span className="rhf-success-msg">
+                      ✓ {formatearFecha(form.fecha)}
+                    </span>
                   )}
                 </div>
 
-                {/* Separador */}
-                <span className="rhf-time-separator">→</span>
+                {/* Hora inicio y fin en la misma fila */}
+                <div className="rhf-field-group">
+                  <label className="rhf-label">Rango de Horas</label>
+                  <div className="rhf-time-row">
 
-                {/* Hora fin */}
-                <div className="rhf-time-col">
-                  <label className="rhf-label-hint">Fin</label>
-                  <select
-                    name="hora_fin"
-                    value={form.hora_fin}
+                    {/* Hora inicio */}
+                    <div className="rhf-time-col">
+                      <label className="rhf-label-hint">Inicio</label>
+                      <select
+                        name="hora_inicio"
+                        value={form.hora_inicio}
+                        onChange={handleChange}
+                        className={`rhf-select ${errors.hora_inicio ? "rhf-input--error" : ""} ${
+                          form.hora_inicio ? "rhf-input--valid" : ""
+                        }`}
+                      >
+                        <option value="">--:--</option>
+                        {OPCIONES_TIEMPO.map((t) => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      {errors.hora_inicio && (
+                        <span className="rhf-error-msg">{errors.hora_inicio}</span>
+                      )}
+                    </div>
+
+                    {/* Separador */}
+                    <span className="rhf-time-separator">→</span>
+
+                    {/* Hora fin */}
+                    <div className="rhf-time-col">
+                      <label className="rhf-label-hint">Fin</label>
+                      <select
+                        name="hora_fin"
+                        value={form.hora_fin}
+                        onChange={handleChange}
+                        className={`rhf-select ${errors.hora_fin ? "rhf-input--error" : ""} ${
+                          form.hora_fin ? "rhf-input--valid" : ""
+                        }`}
+                      >
+                        <option value="">--:--</option>
+                        {opcionesHoraFin.map((t) => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      {errors.hora_fin && (
+                        <span className="rhf-error-msg">{errors.hora_fin}</span>
+                      )}
+                    </div>
+
+                    {/* Horas calculadas */}
+                    {horasCalculadas && (
+                      <div className="rhf-time-result">
+                        <span className="rhf-time-result-value">{horasCalculadas}</span>
+                        <span className="rhf-time-result-label">HRS</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Descripcion */}
+                <div className="rhf-field-group">
+                  <label className="rhf-label">
+                    Descripción
+                    <span className="rhf-label-hint"> (Obligatorio)</span>
+                  </label>
+                  <textarea
+                    name="descripcion"
+                    value={form.descripcion}
                     onChange={handleChange}
-                    className={`rhf-select ${errors.hora_fin ? "rhf-input--error" : ""} ${
-                      form.hora_fin ? "rhf-input--valid" : ""
-                    }`}
-                  >
-                    <option value="">--:--</option>
-                    {opcionesHoraFin.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                  {errors.hora_fin && (
-                    <span className="rhf-error-msg">{errors.hora_fin}</span>
+                    placeholder="Descripción de las actividades realizadas..."
+                    rows={4}
+                    className="rhf-textarea"
+                  />
+                  {errors.descripcion && (
+                    <span className="rhf-error-msg">{errors.descripcion}</span>
                   )}
                 </div>
 
-                {/* Horas calculadas */}
-                {horasCalculadas && (
-                  <div className="rhf-time-result">
-                    <span className="rhf-time-result-value">{horasCalculadas}</span>
-                    <span className="rhf-time-result-label">HRS</span>
+                {/* Acciones */}
+                <div className="rhf-actions">
+                  <Button className="rhf-btn-secondary" onClick={handleReset}>
+                    LIMPIAR
+                  </Button>
+                  <Button className="rhf-btn-primary" onClick={handleSubmit}>
+                    REGISTRAR HORAS
+                  </Button>
+                </div>
+
+                {submitStatus === "success" && (
+                  <div className="rhf-toast rhf-toast--success">
+                    ✓ Registro guardado exitosamente.
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* Descripcion */}
-            <div className="rhf-field-group">
-              <label className="rhf-label">
-                Descripción
-                <span className="rhf-label-hint"> (Obligatorio)</span>
-              </label>
-              <textarea
-                name="descripcion"
-                value={form.descripcion}
-                onChange={handleChange}
-                placeholder="Agrega una nota o descripción sobre las horas de este día..."
-                rows={4}
-                className="rhf-textarea"
-              />
-              {errors.descripcion && (
-                <span className="rhf-error-msg">{errors.descripcion}</span>
-              )}
-            </div>
-
-            {/* Acciones */}
-            <div className="rhf-actions">
-              <Button className="rhf-btn-secondary" onClick={handleReset}>
-                LIMPIAR
-              </Button>
-              <Button className="rhf-btn-primary" onClick={handleSubmit}>
-                REGISTRAR HORAS
-              </Button>
-            </div>
-
-            {submitStatus === "success" && (
-              <div className="rhf-toast rhf-toast--success">
-                ✓ Registro guardado exitosamente.
-              </div>
-            )}
-            {submitStatus === "error" && (
-              <div className="rhf-toast rhf-toast--error">
-                ✗ Error al guardar el registro. Intenta de nuevo.
-              </div>
+                {submitStatus === "error" && (
+                  <div className="rhf-toast rhf-toast--error">
+                    ✗ Error al guardar el registro. Intenta de nuevo.
+                  </div>
+                )}
+              </>
             )}
           </div>
         </Col>
@@ -302,22 +346,33 @@ const RegistroHorasForm = () => {
             <div className="rhf-guide-section rhf-guide-section--red">
               <p className="rhf-guide-section-title">Descripción</p>
               <p className="rhf-guide-section-text">
-                El campo de descripción es opcional. Úsalo para dejar una nota
-                sobre las actividades realizadas o cualquier observación
-                relevante del día.
+                En este campo vas a describir de manera precisa las actividades realizadas durante el encuentro con el estudiante.
               </p>
             </div>
 
             <div className="rhf-guide-section">
               <p className="rhf-guide-section-title">Historial de registros</p>
               <p className="rhf-guide-section-text">
-                Este formulario es solo para agregar nuevos registros. Para
-                consultar o modificar tus registros anteriores dirígete a la vista de{" "}
-                <strong>Hoja de resumen</strong>.
+                Este formulario es solo para agregar nuevos registros. Para consultar o
+                modificar tus registros anteriores dirígete a la vista de{" "}
+                <a
+                  href="#!"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    cambiar_ruta("/hoja_monitor");
+                  }}
+                  style={{
+                    textDecoration: "underline",
+                    color: "#D60909",
+                    fontWeight: "bold",
+                    cursor: "pointer"
+                  }}
+                >
+                  Hoja de resumen
+                </a>.
               </p>
             </div>
 
-            
           </div>
         </Col>
       </Row>
