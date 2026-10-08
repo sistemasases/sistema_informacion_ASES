@@ -353,7 +353,7 @@ const HorasMonitores = () => {
                             cambiar_ruta(`/hoja_monitor/${s.trabajador_id}`);
                           }}
                         >
-                          Hoja trabajador
+                          Hoja monitor
                         </Button>
                       </Col>
                     </Row>
@@ -378,7 +378,7 @@ const HorasMonitores = () => {
               width: "80%",
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
-                <span style={{ fontWeight: 800, fontSize: "13px" }}>Temporada de trabajo</span>
+                <span style={{ fontWeight: 800, fontSize: "13px" }}>Periodo de vinculación</span>
                 <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
                   {!seleccionado.temporada && (
                     <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
@@ -410,7 +410,7 @@ const HorasMonitores = () => {
 
               {seleccionado.temporada && (
                 <button onClick={abrirModalEditar} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
-                  Modificar temporada
+                  Modificar periodo de vinculación
                 </button>
               )}
             </div>
@@ -422,7 +422,7 @@ const HorasMonitores = () => {
               <div style={{ background: "#fff", borderRadius: "1rem", padding: "1.5rem", width: "360px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
                   <span style={{ fontWeight: 800, fontSize: "15px" }}>
-                    Modificar temporada
+                    Modificar periodo de vinculación
                   </span>
                   <button onClick={() => setModalTemporada(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px" }}>✕</button>
                 </div>
@@ -473,7 +473,7 @@ const HorasMonitores = () => {
 
           <div className="box_hours">
             <Row className="red_tittle">
-              <Col>Precio Hora:</Col>
+              <Col>Valor Hora:</Col>
               <Col style={{ textAlign: "right" }}>$ {PRECIO_HORA.toLocaleString("es-CO")}</Col>
             </Row>
             <Row className="red_tittle">
@@ -484,7 +484,7 @@ const HorasMonitores = () => {
             </Row>
 
             <Row>
-              <Col className="middle_content">Horas Contratadas</Col>
+              <Col className="middle_content">Total horas monitoría</Col>
               <Col className="middle_content_right" style={{ textAlign: "center" }}>
                 {horasContratadas !== null ? horasContratadas.toFixed(1) : "N/D"}
               </Col>
@@ -496,7 +496,7 @@ const HorasMonitores = () => {
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Horas realizadas</Col>
+              <Col className="middle_content">Horas cumplidas</Col>
               <Col className="middle_content_right" style={{ textAlign: "center" }}>
                 {horasActuales !== null ? horasActuales.toFixed(1) : "—"}
               </Col>
@@ -508,7 +508,7 @@ const HorasMonitores = () => {
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Balance</Col>
+              <Col className="middle_content">Horas pendientes por cumplir</Col>
               <Col
                 className="middle_content_right"
                 style={{
@@ -524,7 +524,7 @@ const HorasMonitores = () => {
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Horas para finalizar</Col>
+              <Col className="middle_content">Horas faltantes a cumplir en el periodo</Col>
               <Col
                 className="middle_content_right"
                 style={{
