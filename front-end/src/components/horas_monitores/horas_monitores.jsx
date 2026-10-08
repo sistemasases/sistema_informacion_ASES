@@ -254,7 +254,7 @@ const HorasMonitores = () => {
     });
 
     return Object.entries(semanas)
-      .sort(([a], [b]) => new Date(a) - new Date(b))
+      .sort(([a], [b]) => new Date(b) - new Date(a))
       .map(([lunes, total]) => {
         const fechaLunes = new Date(lunes + "T00:00:00");
         const fechaDomingo = new Date(fechaLunes);
