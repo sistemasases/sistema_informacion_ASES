@@ -50,6 +50,14 @@ const VistaHorariosMonitorias = () => {
         return h.nombre_monitor?.toLowerCase().includes("departamento de matematicas");
     };
 
+    //Función auxiliar para darle formato al nombre del monitor
+    const formatearNombreMonitor = (nombre) => {
+        if (!nombre) return "";
+        return nombre
+            .toLowerCase()
+            .replace(/\b\p{L}/gu, (letra) => letra.toUpperCase());
+    };
+
     // Filtrado por sede
     const horariosFiltrados = horarios.filter((h) => {
         if (sedeSeleccionada === "Todas") return true;
@@ -76,13 +84,13 @@ const VistaHorariosMonitorias = () => {
                 {/* Encabezado y Tarjeta de Instrucciones */}
                 <Row className="mb-4 align-items-start">
                     <Col lg={8} md={7}>
-                        <h2 className="vh-title fw-bold">Horarios de Monitorías Académicas</h2>
-                        <p className="text-muted mb-3">
+                        <h2 className="vh-title">Horarios de Monitorías Académicas</h2>
+                        <p className=" mb-3">
                             Consulta los horarios y enlaces de las monitorías académicas disponibles.
                         </p>
 
                         <div style={{ maxWidth: "260px" }}>
-                            <Form.Label className="fw-semibold text-secondary mb-1">Sede</Form.Label>
+                            <Form.Label className="fw-bold mb-1">Sede</Form.Label>
                             <Form.Select
                                 className="vh-select shadow-sm"
                                 value={sedeSeleccionada}
@@ -106,20 +114,24 @@ const VistaHorariosMonitorias = () => {
                         <Card className="vh-info-card shadow-sm border-0">
                             <Card.Body className="p-3">
                                 <div className="d-flex align-items-center mb-2 text-primary fw-bold">
-                                    <FaInfoCircle className="fs-5 me-2" />
-                                    <span className="fs-6">¿Cómo ingresar?</span>
+                                    <FaInfoCircle className="vh-info-icon fs-5 me-2" />
+                                    <span className="fs-6" style={{ color: "#1b48aa" }}>¿Cómo ingresar?</span>
                                 </div>
                                 <ul className="list-unstyled mb-0 vh-steps-list">
                                     <li className="d-flex align-items-center mb-2">
                                         <span className="vh-step-number text-white">1</span>
-                                        <span>Busca tu asignatura.</span>
+                                        <span>Selecciona tu sede.</span>
                                     </li>
                                     <li className="d-flex align-items-center mb-2">
                                         <span className="vh-step-number text-white">2</span>
+                                        <span>Busca tu asignatura.</span>
+                                    </li>
+                                    <li className="d-flex align-items-center mb-2">
+                                        <span className="vh-step-number text-white">3</span>
                                         <span>Revisa el horario.</span>
                                     </li>
                                     <li className="d-flex align-items-center">
-                                        <span className="vh-step-number text-white">3</span>
+                                        <span className="vh-step-number text-white">4</span>
                                         <span>Presiona &quot;Ingresar a monitoría&quot;.</span>
                                     </li>
                                 </ul>
@@ -137,55 +149,57 @@ const VistaHorariosMonitorias = () => {
                         {cargando ? (
                             <div className="text-center py-5 text-muted">Cargando horarios...</div>
                         ) : (
-                            <Row className="g-3">
+                            <Row className="g-3 aling-items-stretch vh-kanban-row">
                                 {DIAS_SEMANA.map((dia) => {
                                     const itemsDelDia = agruparPorDia(dia);
                                     return (
                                         <Col key={dia} xs={12} sm={6} md={4} lg={true} className="vh-col-day">
-                                            <div className="vh-day-header text-uppercase fw-bold text-muted mb-2">
-                                                {dia}
-                                            </div>
+                                            <div className="vh-kanban-col">
+                                                <div className="vh-day-header text-uppercase fw-bold mb-2">
+                                                    {dia}
+                                                </div>
 
-                                            <div className="vh-day-column d-flex flex-column gap-3">
-                                                {itemsDelDia.length === 0 ? (
-                                                    <div className="vh-empty-slot text-muted text-center py-4">
-                                                        Sin monitorías
-                                                    </div>
-                                                ) : (
-                                                    itemsDelDia.map((item) => (
-                                                        <div key={item.id} className="vh-horario-card p-3 shadow-sm">
-                                                            <div className="vh-hora-rango fw-bold">
-                                                                {formatearHora12h(item.hora_inicio)} – {formatearHora12h(item.hora_fin)}
-                                                            </div>
-                                                            <div className="vh-materia-title text-uppercase fw-semibold my-1">
-                                                                {item.materia}
-                                                            </div>
-                                                            <div className="vh-monitor-info d-flex align-items-center text-muted mb-2">
-                                                                <FaRegUser className="me-1" />
-                                                                <span>
-                                                                    Monitor: {item.nombre_monitor}
-                                                                </span>
-                                                            </div>
-
-                                                            {item.enlace ? (
-                                                                <Button
-                                                                    variant="primary"
-                                                                    size="sm"
-                                                                    className="w-100 vh-btn-ingresar d-flex align-items-center justify-content-center"
-                                                                    href={item.enlace.startsWith("http") ? item.enlace : `https://${item.enlace}`}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                >
-                                                                    <FaExternalLinkAlt className="me-2" /> Ingresar a monitoría
-                                                                </Button>
-                                                            ) : (
-                                                                <Button variant="secondary" size="sm" className="w-100" disabled>
-                                                                    Presencial (Salón {item.salon || "Asignado"})
-                                                                </Button>
-                                                            )}
+                                                <div className="vh-day-column d-flex flex-column gap-3">
+                                                    {itemsDelDia.length === 0 ? (
+                                                        <div className="vh-empty-slot text-muted text-center py-4">
+                                                            Sin monitorías
                                                         </div>
-                                                    ))
-                                                )}
+                                                    ) : (
+                                                        itemsDelDia.map((item) => (
+                                                            <div key={item.id} className="vh-horario-card p-3 shadow-sm">
+                                                                <div className="vh-hora-rango fw-bold">
+                                                                    {formatearHora12h(item.hora_inicio)} – {formatearHora12h(item.hora_fin)}
+                                                                </div>
+                                                                <div className="vh-materia-title text-uppercase fw-semibold my-1">
+                                                                    {item.materia}
+                                                                </div>
+                                                                <div className="vh-monitor-info d-flex align-items-center text-muted mb-2">
+                                                                    <FaRegUser className="me-1" />
+                                                                    <span>
+                                                                        Monitor: {formatearNombreMonitor(item.nombre_monitor)}
+                                                                    </span>
+                                                                </div>
+
+                                                                {item.enlace ? (
+                                                                    <Button
+                                                                        variant="primary"
+                                                                        size="sm"
+                                                                        className="w-100 vh-btn-ingresar d-flex align-items-center justify-content-center"
+                                                                        href={item.enlace.startsWith("http") ? item.enlace : `https://${item.enlace}`}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                    >
+                                                                        <FaExternalLinkAlt className="me-2" /> Ingresar a monitoría
+                                                                    </Button>
+                                                                ) : (
+                                                                    <Button variant="secondary" size="sm" className="w-100 vh-btn-presencial" disabled>
+                                                                        Presencial (Salón {item.salon || "Asignado"})
+                                                                    </Button>
+                                                                )}
+                                                            </div>
+                                                        ))
+                                                    )}
+                                                </div>
                                             </div>
                                         </Col>
                                     );

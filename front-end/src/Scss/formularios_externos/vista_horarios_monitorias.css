@@ -2,11 +2,13 @@
     background-color: #f8fafc;
     min-height: 100vh;
     font-family: inherit;
+    padding-top: 90px !important;
 }
 
 .vh-title {
-    color: #1e3a8a;
+    color: #232d36;
     font-size: 1.8rem;
+    font-weight: bold;
 }
 
 /* Tarjeta informativa ¿Cómo ingresar? */
@@ -14,6 +16,10 @@
     background-color: #eff6ff !important;
     border-radius: 12px;
     border: 1px solid #bfdbfe !important;
+}
+
+.vh-info-icon {
+    color: #1b48aa !important;
 }
 
 .vh-step-number {
@@ -43,24 +49,45 @@
     border-color: #e2e8f0 !important;
 }
 
-.vh-col-day {
-    background-color: #f8fafc;
-    border-radius: 8px;
+.vh-kanban-row {
+    --bs-gutter-x: 20px;
+    --bs-gutter-y: 20px;
+}
+
+.vh-kanban-col {
+    height: 100%;
     padding: 10px;
-    min-width: 200px;
+    background-color: #eff6fc;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+}
+
+.vh-col-day {
+    border-radius: 12px;
+    padding: 8px;
+    background-clip: padding-box;
+    min-width: 0;
 }
 
 .vh-day-header {
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    color: #475569;
+    padding: 12px 10px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #fff;
+    border: 1px solid #d5d9df;
+    border-radius: 8px;
+    /*color: #475569;*/
+}
+
+.vh-day-column {
+    gap: 12px;
 }
 
 /* Tarjeta de cada horario individual */
 .vh-horario-card {
     background-color: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -84,6 +111,12 @@
     font-size: 0.82rem;
 }
 
+.vh-btn-presencial {
+    background-color: #eb1e00 !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
 .vh-btn-ingresar {
     background-color: #0d6efd;
     border-radius: 6px;
@@ -100,4 +133,14 @@
     background-color: #f1f5f9;
     border-radius: 8px;
     border: 1px dashed #cbd5e1;
+    padding: 24px 10px !important;
+}
+
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    z-index: 1050;
 }
