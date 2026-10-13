@@ -66,6 +66,8 @@ const calcularHorasEsperadas = (temporada, festivosLaborables) => {
 
 
 const HorasMonitores = () => {
+  const esPracticante = desencriptar(sessionStorage.getItem("rol")) === "practicante";
+
   const [subordinados, setSubordinados] = useState([]);
   const [diasFestivos, setDiasFestivos] = useState(0);
   const [festivosLaborables, setFestivosLaborables] = useState([]);
@@ -408,7 +410,7 @@ const HorasMonitores = () => {
                 ))}
               </div>
 
-              {seleccionado.temporada && (
+              {seleccionado.temporada && !esPracticante && (
                 <button onClick={abrirModalEditar} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
                   Modificar temporada
                 </button>

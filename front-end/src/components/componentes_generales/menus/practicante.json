@@ -35,6 +35,12 @@
                 "path":"/hoja_monitor",
                 "name":"Resumen de horas trabajadas",
                 "icon":"bi bi-clipboard-data"
+            },
+            {
+                "id":15,
+                "path":"/horas_monitores",
+                "name":"Horas de mis monitores",
+                "icon":"bi bi-clock-fill"
             }
         ]
     }

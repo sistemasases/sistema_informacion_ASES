@@ -377,6 +377,20 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         num_festivos = int(request.query_params.get('dias_festivos', 0) or 0)
 
         try:
+            # ── validar que el usuario tenga rol profesional o practicante ──
+            rol_activo = usuario_rol.objects.filter(
+                id_usuario=request.user,
+                estado="ACTIVO"
+            ).select_related('id_rol').first()
+
+            if not rol_activo or rol_activo.id_rol.nombre not in ["profesional", "practicante"]:
+                return Response(
+                    {"error": "No tiene permisos para acceder a esta vista."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            es_practicante = rol_activo.id_rol.nombre == "practicante"
+
             # ── subordinados via usuario_rol (incluye los sin horas) ──
             ids_nivel1 = list(
                 usuario_rol.objects.filter(
@@ -388,14 +402,16 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             if not ids_nivel1:
                 return Response([], status=status.HTTP_200_OK)
 
-            ids_nivel2 = list(
-                usuario_rol.objects.filter(
-                    id_jefe__in=ids_nivel1,
-                    estado="ACTIVO"
-                ).values_list('id_usuario_id', flat=True)
-            )
-
-            trabajadores_ids = list(set(ids_nivel1 + ids_nivel2))
+            if es_practicante:
+                trabajadores_ids = ids_nivel1
+            else:
+                ids_nivel2 = list(
+                    usuario_rol.objects.filter(
+                        id_jefe__in=ids_nivel1,
+                        estado="ACTIVO"
+                    ).values_list('id_usuario_id', flat=True)
+                )
+                trabajadores_ids = list(set(ids_nivel1 + ids_nivel2))
 
             # ── semestre ──────────────────────────────────────────────
             if not semestre_id:
