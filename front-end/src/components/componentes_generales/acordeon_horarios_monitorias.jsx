@@ -21,7 +21,7 @@ import Create_horario from "../../service/panel_admin/panel_admin_horarios_crear
 import Update_horario from "../../service/panel_admin/panel_admin_horarios_actualizar.js";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
-import { FaEdit, FaPencilAlt, FaLink, FaRegBuilding } from "react-icons/fa";
+import { FaPencilAlt, FaLink, FaRegBuilding } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const SelectorHorariosMonitorias = () => {
@@ -62,7 +62,16 @@ const SelectorHorariosMonitorias = () => {
 
             setState((prev) => ({
                 ...prev,
-                data_horarios: Array.isArray(horarios) ? horarios : [],
+                data_horarios: Array.isArray(horarios)
+                    ? [...horarios].sort((a, b) => {
+                        //Primero los horarios activos
+                        if (b.is_active !== a.is_active) {
+                            return Number(b.is_active) - Number(a.is_active)
+                        }
+                        //Mas antiguo a mas reciente
+                        return Number(a.id) - Number(b.id)
+                    })
+                    : [],
                 data_sedes: Array.isArray(sedes) ? sedes : [],
                 data_monitores: [], // Se poblará cuando el usuario elija una sede
             }));
@@ -76,29 +85,52 @@ const SelectorHorariosMonitorias = () => {
         cargarDatosIniciales();
     }, []);
 
+    //Función para obtener monitores, "dpto matematicas" obtiene los de cali
+    const obtener_monitores = async (sedeSeleccionada) => {
+        if (!sedeSeleccionada) return [];
+
+        let id_sede_consulta = sedeSeleccionada;
+
+        //si es dpto matematicas, buscar el Id de la sede cali
+        if (sedeSeleccionada === "dpto matematicas") {
+            const sedeCali = state.data_sedes.find(
+                (s) => s.nombre && s.nombre.toLowerCase().includes("cali")
+            );
+            id_sede_consulta = sedeCali ? sedeCali.id : null;
+        }
+
+        if (!id_sede_consulta) return [];
+
+        //Consultar los monitores de las sedes correspondientes 
+        const monitores = await Read_monitores.listar_monitores_academicos({ id_sede: id_sede_consulta });
+
+        return Array.isArray(monitores) ? monitores : [];
+    };
+
     // Controladores de Edición
     const handleEdit = async (horario) => {
+        // Detectar si la sede es Departamento de Matemáticas
         const esDpto =
+            horario.nombre_sede?.toLowerCase().includes("matematicas") ||
             horario.nombre_monitor?.toLowerCase().includes("departamento de matematicas");
+
         const idSedeEfectiva = esDpto ? "dpto matematicas" : horario.id_sede;
+
         setSelectedHorario({
             ...horario,
             id_sede: idSedeEfectiva,
-            modalidad: horario.modalidad || (horario.enlace ? "Virtual" : "Presencial"),
+            // Si viene sin modalidad o nula, detectar si tiene ambos para marcarla como Híbrida
+            modalidad: horario.modalidad || (horario.enlace && horario.salon ? "Híbrida" : horario.enlace ? "Virtual" : "Presencial"),
+            enlace: horario.enlace || "",
+            salon: horario.salon || "",
         });
 
-        // Cargar los monitores correspondientes a la sede del horario que se va a editar
-        if (idSedeEfectiva) {
-            const rawMonitores = await Read_monitores.listar_monitores_academicos(
-                idSedeEfectiva === "dpto matematicas" ? {} : { id_sede: idSedeEfectiva }
-            );
-            const monitores = idSedeEfectiva === "dpto matematicas"
-                ? rawMonitores.filter(m => m.nombre_monitor && m.nombre_monitor.toLowerCase().includes("departamento de matematicas"))
-                : rawMonitores;
 
+        if (idSedeEfectiva) {
+            const monitores = await obtener_monitores(idSedeEfectiva);
             setState((prev) => ({
                 ...prev,
-                data_monitores_edit: Array.isArray(monitores) ? monitores : [],
+                data_monitores_edit: monitores,
             }));
         } else {
             setState((prev) => ({ ...prev, data_monitores_edit: [] }));
@@ -106,6 +138,7 @@ const SelectorHorariosMonitorias = () => {
 
         setShowEditModal(true);
     };
+
 
 
     const handleCloseEditModal = () => setShowEditModal(false);
@@ -128,16 +161,10 @@ const SelectorHorariosMonitorias = () => {
             }));
 
             if (valorFinal) {
-                const rawMonitores = await Read_monitores.listar_monitores_academicos(
-                    valorFinal === "dpto matematicas" ? {} : { id_sede: valorFinal }
-                );
-                const monitores = valorFinal === "dpto matematicas"
-                    ? rawMonitores.filter(m => m.nombre_monitor && m.nombre_monitor.toLowerCase().includes("departamento de matematicas"))
-                    : rawMonitores;
-
+                const monitores = await obtener_monitores(valorFinal)
                 setState((prev) => ({
                     ...prev,
-                    data_monitores_edit: Array.isArray(monitores) ? monitores : [],
+                    data_monitores_edit: monitores,
                 }));
             } else {
                 setState((prev) => ({
@@ -160,7 +187,9 @@ const SelectorHorariosMonitorias = () => {
 
         const modalidadInvalida =
             (selectedHorario.modalidad === "Virtual" && !selectedHorario.enlace?.trim()) ||
-            (selectedHorario.modalidad === "Presencial" && !selectedHorario.salon?.trim());
+            (selectedHorario.modalidad === "Presencial" && !selectedHorario.salon?.trim()) ||
+            (selectedHorario.modalidad === "Híbrida" && (!selectedHorario.enlace?.trim() || !selectedHorario.salon?.trim()));
+
 
         if (camposIncompletos || modalidadInvalida) {
             Swal.fire({
@@ -184,7 +213,18 @@ const SelectorHorariosMonitorias = () => {
             return;
         }
 
+        // Si la sede seleccionada es dpto matematicas, obtener el ID de la sede Cali
+        // const idSedeCali = state.data_sedes.find(
+        //     (s) => s.nombre && s.nombre.toLowerCase().includes("cali")
+        // )?.id;
+
+        // const horarioParaEnviar = {
+        //     ...selectedHorario,
+        //     id_sede: selectedHorario.id_sede === "dpto matematicas" ? idSedeCali : selectedHorario.id_sede,
+        // };
+
         const response = await Update_horario.actualizar_horario(selectedHorario);
+
         if (response && (response.status === 200 || response.status === 201)) {
             Swal.fire({
                 title: "Éxito",
@@ -221,12 +261,10 @@ const SelectorHorariosMonitorias = () => {
 
             if (valorFinal) {
                 // Consultar monitores de la sede seleccionada
-                const rawMonitores = await Read_monitores.listar_monitores_academicos(valorFinal === "dpto matematicas" ? {} : { id_sede: valorFinal });
-                const monitores = valorFinal === "dpto matematicas"
-                    ? rawMonitores.filter(m => m.nombre_monitor && m.nombre_monitor.toLowerCase().includes("departamento de matematicas")) : rawMonitores;
+                const monitores = await obtener_monitores(valorFinal)
                 setState((prev) => ({
                     ...prev,
-                    data_monitores: Array.isArray(monitores) ? monitores : [],
+                    data_monitores: monitores,
                 }));
             } else {
                 // Si deseleccionó la sede, vaciar la lista de monitores
@@ -275,6 +313,16 @@ const SelectorHorariosMonitorias = () => {
             });
             return;
         }
+
+        // Si la sede seleccionada es dpto matematicas, obtener el ID de la sede Cali
+        // const idSedeCali = state.data_sedes.find(
+        //     (s) => s.nombre && s.nombre.toLowerCase().includes("cali")
+        // )?.id;
+
+        // const horarioParaEnviar = {
+        //     ...newHorario,
+        //     id_sede: newHorario.id_sede === "dpto matematicas" ? idSedeCali : newHorario.id_sede,
+        // };
 
         const response = await Create_horario.crear_horario(newHorario);
 
@@ -325,9 +373,11 @@ const SelectorHorariosMonitorias = () => {
         {
             name: "SEDE",
             selector: (row) => {
-                const esDpto = row.nombre_monitor
-                    ?.toLowerCase()
-                    .includes("departamento de matematicas");
+                const esDpto =
+                    row.nombre_sede?.toLowerCase().includes("matematicas") ||
+                    row.nombre_monitor
+                        ?.toLowerCase()
+                        .includes("departamento de matematicas");
 
                 return esDpto
                     ? "DEPARTAMENTO DE MATEMATICAS"
@@ -356,6 +406,13 @@ const SelectorHorariosMonitorias = () => {
             selector: (row) => row.hora_fin,
             sortable: true,
             grow: 0.9,
+            wrap: true,
+        },
+        {
+            name: "MODALIDAD",
+            selector: (row) => row.modalidad,
+            sortable: true,
+            grow: 1.1,
             wrap: true,
         },
         {
@@ -519,9 +576,9 @@ const SelectorHorariosMonitorias = () => {
                             >
                                 <option value="">Seleccione una sede...</option>
                                 <option key="dpto_matematicas" value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
-                                {/* Excluir las "sedes" discapacidad y campus diverso */}
+                                {/* Excluir las "sedes" discapacidad, campus diverso y duplicados de matematicas */}
                                 {state.data_sedes
-                                    .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre))
+                                    .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre) && !s.nombre?.toLowerCase().includes("matematicas"))
                                     .map(s => (
                                         <option key={s.id} value={s.id}>
                                             {s.nombre}
@@ -571,13 +628,14 @@ const SelectorHorariosMonitorias = () => {
                                 <option value="">Seleccione una modalidad...</option>
                                 <option value="Presencial">Presencial</option>
                                 <option value="Virtual">Virtual</option>
+                                <option value="Híbrida">Híbrida</option>
                             </Form.Select>
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="createenlace">
                             <Form.Label>
                                 Enlace a reunión de meet
-                                {newHorario.modalidad === "Virtual" && (
+                                {(newHorario.modalidad === "Virtual" || newHorario.modalidad === "Híbrida") && (
                                     <span className="text-danger"> *</span>
                                 )}
                             </Form.Label>
@@ -592,7 +650,7 @@ const SelectorHorariosMonitorias = () => {
                                     value={newHorario.enlace}
                                     onChange={handleCreateChange}
                                     maxLength={150}
-                                    required={newHorario.modalidad === "Virtual"}
+                                    required={newHorario.modalidad === "Virtual" || newHorario.modalidad === "Híbrida"}
                                 />
                             </InputGroup>
                         </Form.Group>
@@ -600,7 +658,7 @@ const SelectorHorariosMonitorias = () => {
                         <Form.Group className="mb-3" controlId="createSalon">
                             <Form.Label>
                                 Nombre del salón
-                                {newHorario.modalidad === "Presencial" && (
+                                {(newHorario.modalidad === "Presencial" || newHorario.modalidad === "Híbrida") && (
                                     <span className="text-danger"> *</span>
                                 )}
                             </Form.Label>
@@ -615,7 +673,7 @@ const SelectorHorariosMonitorias = () => {
                                     value={newHorario.salon}
                                     onChange={handleCreateChange}
                                     maxLength={150}
-                                    required={newHorario.modalidad === "Presencial"}
+                                    required={newHorario.modalidad === "Presencial" || newHorario.modalidad === "Híbrida"}
                                 />
                             </InputGroup>
                         </Form.Group>
@@ -727,7 +785,7 @@ const SelectorHorariosMonitorias = () => {
                                 <option value="">Seleccione una sede...</option>
                                 <option value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
                                 {state.data_sedes
-                                    .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre))
+                                    .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre) && !s.nombre?.toLowerCase().includes("matematicas"))
                                     .map(s => (
                                         <option key={s.id} value={s.id}>
                                             {s.nombre}
@@ -776,13 +834,14 @@ const SelectorHorariosMonitorias = () => {
                                 <option value="">Seleccione una modalidad...</option>
                                 <option value="Presencial">Presencial</option>
                                 <option value="Virtual">Virtual</option>
+                                <option value="Híbrida">Híbrida</option>
                             </Form.Select>
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="editEnlace">
                             <Form.Label>
                                 Enlace a reunión de meet
-                                {selectedHorario?.modalidad === "Virtual" && (
+                                {(selectedHorario?.modalidad === "Virtual" || selectedHorario?.modalidad === "Híbrida") && (
                                     <span className="text-danger"> *</span>
                                 )}
                             </Form.Label>
@@ -798,7 +857,7 @@ const SelectorHorariosMonitorias = () => {
                                     value={selectedHorario?.enlace || ""}
                                     onChange={handleEditChange}
                                     maxLength={150}
-                                    required={selectedHorario?.modalidad === "Virtual"}
+                                    required={selectedHorario?.modalidad === "Virtual" || selectedHorario?.modalidad === "Híbrida"}
                                 />
                             </InputGroup>
                         </Form.Group>
@@ -806,7 +865,7 @@ const SelectorHorariosMonitorias = () => {
                         <Form.Group className="mb-3" controlId="editSalon">
                             <Form.Label>
                                 Nombre del salón
-                                {selectedHorario?.modalidad === "Presencial" && (
+                                {(selectedHorario?.modalidad === "Presencial" || selectedHorario?.modalidad === "Híbrida") && (
                                     <span className="text-danger"> *</span>
                                 )}
                             </Form.Label>
@@ -821,7 +880,7 @@ const SelectorHorariosMonitorias = () => {
                                     value={selectedHorario?.salon || ""}
                                     onChange={handleEditChange}
                                     maxLength={150}
-                                    required={selectedHorario?.modalidad === "Presencial"}
+                                    required={selectedHorario?.modalidad === "Presencial" || selectedHorario?.modalidad === "Híbrida"}
                                 />
                             </InputGroup>
                         </Form.Group>

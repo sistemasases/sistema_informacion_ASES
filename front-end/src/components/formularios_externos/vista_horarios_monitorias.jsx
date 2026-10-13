@@ -31,26 +31,72 @@ const VistaHorariosMonitorias = () => {
     const [sedeSeleccionada, setSedeSeleccionada] = useState("Todas");
     const [cargando, setCargando] = useState(true);
 
-    useEffect(() => {
-        const cargarDatos = async () => {
-            setCargando(true);
+    // Función para consultar los horarios y sedes
+    const cargarDatos = async (mostrarCargando = false) => {
+        if (mostrarCargando) setCargando(true);
+        try {
             const [dataHorarios, dataSedes] = await Promise.all([
                 HorariosService.listar_horarios_publicos(),
                 HorariosService.listar_sedes_publicas(),
             ]);
             setHorarios(Array.isArray(dataHorarios) ? dataHorarios : []);
             setSedes(Array.isArray(dataSedes) ? dataSedes : []);
-            setCargando(false);
-        };
-        cargarDatos();
-    }, []);
-
-    //Función auxilicar para saber si el horario es del dpto de matematicas
-    const esDptoMatematicas = (h) => {
-        return h.nombre_monitor?.toLowerCase().includes("departamento de matematicas");
+        } catch (error) {
+            console.error("Error al actualizar horarios:", error);
+        } finally {
+            if (mostrarCargando) setCargando(false);
+        }
     };
 
-    //Función auxiliar para darle formato al nombre del monitor
+    useEffect(() => {
+        // Carga inicial (muestra "Cargando horarios...")
+        cargarDatos(true);
+
+        // 1. Polling: Actualización automática cada 30 segundos
+        const INTERVALO_MS = 30000; // 30 segundos 
+        const intervaloId = setInterval(() => {
+            cargarDatos(false);
+        }, INTERVALO_MS);
+
+        // 2. Actualización inmediata al volver a la pestaña
+        const alVolverATab = () => {
+            if (document.visibilityState === "visible") {
+                cargarDatos(false);
+            }
+        };
+        document.addEventListener("visibilitychange", alVolverATab);
+
+        // Limpieza al salir de la vista (evita fugas de memoria)
+        return () => {
+            clearInterval(intervaloId);
+            document.removeEventListener("visibilitychange", alVolverATab);
+        };
+    }, []);
+
+
+    // Función auxiliar para saber si el horario es del dpto de matematicas
+    const esDptoMatematicas = (h) => {
+        const nombreSede = h.nombre_sede?.toLowerCase() || "";
+        const nombreMonitor = h.nombre_monitor?.toLowerCase() || "";
+        const esPorNombre =
+            nombreSede.includes("matematicas") ||
+            nombreMonitor.includes("departamento de matematicas");
+
+        const sedeDptoId = sedes.find((s) => s.nombre?.toLowerCase().includes("matematicas"))?.id;
+        const esPorId = sedeDptoId && String(h.id_sede) === String(sedeDptoId);
+
+        return Boolean(esPorNombre || esPorId);
+    };
+
+    // Función auxiliar para obtener el nombre visible de la sede
+    // const obtenerNombreSede = (h) => {
+    //     if (esDptoMatematicas(h)) {
+    //         return "DEPARTAMENTO DE MATEMATICAS";
+    //     }
+    //     return h.nombre_sede || "";
+    // };
+
+    // Función auxiliar para darle formato al nombre del monitor
     const formatearNombreMonitor = (nombre) => {
         if (!nombre) return "";
         return nombre
@@ -99,7 +145,7 @@ const VistaHorariosMonitorias = () => {
                                 <option value="Todas">Todas</option>
                                 <option key="dpto_matematicas" value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
                                 {sedes
-                                    .filter((s) => !["DISCAPACIDAD", "Campus Diverso"].includes(s.nombre))
+                                    .filter((s) => !["DISCAPACIDAD", "Campus Diverso"].includes(s.nombre) && !s.nombre?.toLowerCase().includes("matematicas"))
                                     .map((s) => (
                                         <option key={s.id} value={s.id}>
                                             {s.nombre}
@@ -173,25 +219,53 @@ const VistaHorariosMonitorias = () => {
                                                                 <div className="vh-materia-title text-uppercase fw-semibold my-1">
                                                                     {item.materia}
                                                                 </div>
-                                                                <div className="vh-monitor-info d-flex align-items-center text-muted mb-2">
+                                                                <div className="vh-monitor-info d-flex align-items-center text-muted mb-1">
                                                                     <FaRegUser className="me-1" />
                                                                     <span>
                                                                         Monitor: {formatearNombreMonitor(item.nombre_monitor)}
                                                                     </span>
                                                                 </div>
-
-                                                                {item.enlace ? (
+                                                                {/* <div className="vh-sede-info d-flex align-items-center text-muted mb-2" style={{ fontSize: "0.82rem" }}>
+                                                                    <FaRegBuilding className="me-1" />
+                                                                    <span>
+                                                                        Sede: {obtenerNombreSede(item)}
+                                                                    </span>
+                                                                </div> */}
+                                                                {/* Modalidad Híbrida: muestra salón y botón de ingreso */}
+                                                                {item.modalidad === "Híbrida" || (!item.modalidad && item.enlace && item.salon) ? (
+                                                                    <div className="d-flex flex-column gap-2">
+                                                                        <div
+                                                                            className="d-flex align-items-center justify-content-between p-1 px-2 rounded"
+                                                                            style={{ backgroundColor: "#f1f5f9", fontSize: "0.82rem" }}
+                                                                        >
+                                                                            <span className="text-muted fw-semibold">Salón:</span>
+                                                                            <span className="fw-bold text-dark">{item.salon || "Asignado"}</span>
+                                                                        </div>
+                                                                        <Button
+                                                                            variant="primary"
+                                                                            size="sm"
+                                                                            className="w-100 vh-btn-ingresar d-flex align-items-center justify-content-center"
+                                                                            href={item.enlace?.startsWith("http") ? item.enlace : `https://${item.enlace}`}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                        >
+                                                                            <FaExternalLinkAlt className="me-2" /> Ingresar a monitoría
+                                                                        </Button>
+                                                                    </div>
+                                                                ) : item.modalidad === "Virtual" || (!item.modalidad && item.enlace) ? (
+                                                                    /* Modalidad Virtual: solo botón de ingreso */
                                                                     <Button
                                                                         variant="primary"
                                                                         size="sm"
                                                                         className="w-100 vh-btn-ingresar d-flex align-items-center justify-content-center"
-                                                                        href={item.enlace.startsWith("http") ? item.enlace : `https://${item.enlace}`}
+                                                                        href={item.enlace?.startsWith("http") ? item.enlace : `https://${item.enlace}`}
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
                                                                     >
                                                                         <FaExternalLinkAlt className="me-2" /> Ingresar a monitoría
                                                                     </Button>
                                                                 ) : (
+                                                                    /* Modalidad Presencial: solo salón */
                                                                     <Button variant="secondary" size="sm" className="w-100 vh-btn-presencial" disabled>
                                                                         Presencial (Salón {item.salon || "Asignado"})
                                                                     </Button>
