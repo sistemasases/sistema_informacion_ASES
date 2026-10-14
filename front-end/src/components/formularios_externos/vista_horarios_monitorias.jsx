@@ -234,13 +234,9 @@ const VistaHorariosMonitorias = () => {
                                                                 {/* Modalidad Híbrida: muestra salón y botón de ingreso */}
                                                                 {item.modalidad === "Híbrida" || (!item.modalidad && item.enlace && item.salon) ? (
                                                                     <div className="d-flex flex-column gap-2">
-                                                                        <div
-                                                                            className="d-flex align-items-center justify-content-between p-1 px-2 rounded"
-                                                                            style={{ backgroundColor: "#f1f5f9", fontSize: "0.82rem" }}
-                                                                        >
-                                                                            <span className="text-muted fw-semibold">Salón:</span>
-                                                                            <span className="fw-bold text-dark">{item.salon || "Asignado"}</span>
-                                                                        </div>
+                                                                        <Button variant="secondary" size="sm" className="w-100 vh-btn-presencial" disabled>
+                                                                            Presencial (Salón {item.salon || "Asignado"})
+                                                                        </Button>
                                                                         <Button
                                                                             variant="primary"
                                                                             size="sm"
