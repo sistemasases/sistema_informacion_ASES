@@ -6,8 +6,14 @@
 }
 
 .vh-title {
-    color: #232d36;
+    color: #000025;
     font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.vh-title-2 {
+    color: #000025;
+    /* font-size: 1.5rem; */
     font-weight: bold;
 }
 
@@ -28,11 +34,11 @@
     justify-content: center;
     width: 22px;
     height: 22px;
-    background-color: #2563eb;
+    background-color: #0d6efd;
     color: white;
     border-radius: 50%;
     font-size: 12px;
-    font-weight: bold;
+    /* font-weight: bold; */
     margin-right: 10px;
     flex-shrink: 0;
 }
@@ -76,6 +82,7 @@
     background-color: #fff;
     border: 1px solid #d5d9df;
     border-radius: 8px;
+    color: #000025;
     /*color: #475569;*/
 }
 
@@ -97,7 +104,7 @@
 }
 
 .vh-hora-rango {
-    color: #1e3a8a;
+    color: #000025;
     font-size: 0.95rem;
 }
 
@@ -136,7 +143,7 @@
     padding: 24px 10px !important;
 }
 
-.nav {
+.encabezado-ases {
     position: fixed;
     top: 0;
     left: 0;

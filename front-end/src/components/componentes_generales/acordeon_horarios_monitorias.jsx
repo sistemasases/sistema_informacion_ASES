@@ -92,9 +92,14 @@ const SelectorHorariosMonitorias = () => {
         let id_sede_consulta = sedeSeleccionada;
 
         //si es dpto matematicas, buscar el Id de la sede cali
-        if (sedeSeleccionada === "dpto matematicas") {
+        //Cualquier campus Cali consultar monitores sede Cali
+        if (sedeSeleccionada === "dpto matematicas" || sedeSeleccionada === "cali - melendez" || sedeSeleccionada === "cali - san fernando") {
             const sedeCali = state.data_sedes.find(
-                (s) => s.nombre && s.nombre.toLowerCase().includes("cali")
+                (s) =>
+                    s.nombre &&
+                    s.nombre.toLowerCase().includes("cali") &&
+                    !s.nombre.toLowerCase().includes("fernando") &&
+                    !s.nombre.toLowerCase().includes("melendez")
             );
             id_sede_consulta = sedeCali ? sedeCali.id : null;
         }
@@ -108,23 +113,55 @@ const SelectorHorariosMonitorias = () => {
     };
 
     // Controladores de Edición
-    const handleEdit = async (horario) => {
-        // Detectar si la sede es Departamento de Matemáticas
-        const esDpto =
-            horario.nombre_sede?.toLowerCase().includes("matematicas") ||
-            horario.nombre_monitor?.toLowerCase().includes("departamento de matematicas");
+    // const handleEdit = async (horario) => {
+    //     // Detectar si la sede es Departamento de Matemáticas
+    //     const esDpto =
+    //         horario.nombre_sede?.toLowerCase().includes("matematicas") ||
+    //         horario.nombre_monitor?.toLowerCase().includes("departamento de matematicas");
 
-        const idSedeEfectiva = esDpto ? "dpto matematicas" : horario.id_sede;
+    //     const idSedeEfectiva = esDpto ? "dpto matematicas" : horario.id_sede;
+
+    //     setSelectedHorario({
+    //         ...horario,
+    //         id_sede: idSedeEfectiva,
+    //         // Si viene sin modalidad o nula, detectar si tiene ambos para marcarla como Híbrida
+    //         modalidad: horario.modalidad || (horario.enlace && horario.salon ? "Híbrida" : horario.enlace ? "Virtual" : "Presencial"),
+    //         enlace: horario.enlace || "",
+    //         salon: horario.salon || "",
+    //     });
+
+
+    //     if (idSedeEfectiva) {
+    //         const monitores = await obtener_monitores(idSedeEfectiva);
+    //         setState((prev) => ({
+    //             ...prev,
+    //             data_monitores_edit: monitores,
+    //         }));
+    //     } else {
+    //         setState((prev) => ({ ...prev, data_monitores_edit: [] }));
+    //     }
+
+    //     setShowEditModal(true);
+    // };
+    const handleEdit = async (horario) => {
+        const nombreSede = horario.nombre_sede?.toLowerCase() || "";
+        let idSedeEfectiva = horario.id_sede;
+
+        if (nombreSede.includes("matematicas") || horario.nombre_monitor?.toLowerCase().includes("departamento de matematicas")) {
+            idSedeEfectiva = "dpto matematicas";
+        } else if (nombreSede.includes("melendez")) {
+            idSedeEfectiva = "cali - melendez";
+        } else if (nombreSede.includes("fernando")) {
+            idSedeEfectiva = "cali - san fernando";
+        }
 
         setSelectedHorario({
             ...horario,
             id_sede: idSedeEfectiva,
-            // Si viene sin modalidad o nula, detectar si tiene ambos para marcarla como Híbrida
             modalidad: horario.modalidad || (horario.enlace && horario.salon ? "Híbrida" : horario.enlace ? "Virtual" : "Presencial"),
             enlace: horario.enlace || "",
             salon: horario.salon || "",
         });
-
 
         if (idSedeEfectiva) {
             const monitores = await obtener_monitores(idSedeEfectiva);
@@ -132,10 +169,7 @@ const SelectorHorariosMonitorias = () => {
                 ...prev,
                 data_monitores_edit: monitores,
             }));
-        } else {
-            setState((prev) => ({ ...prev, data_monitores_edit: [] }));
         }
-
         setShowEditModal(true);
     };
 
@@ -222,6 +256,7 @@ const SelectorHorariosMonitorias = () => {
         //     ...selectedHorario,
         //     id_sede: selectedHorario.id_sede === "dpto matematicas" ? idSedeCali : selectedHorario.id_sede,
         // };
+
 
         const response = await Update_horario.actualizar_horario(selectedHorario);
 
@@ -576,9 +611,20 @@ const SelectorHorariosMonitorias = () => {
                             >
                                 <option value="">Seleccione una sede...</option>
                                 <option key="dpto_matematicas" value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
+                                <option value="cali - melendez">CALI - MELENDEZ</option>
+                                <option value="cali - san fernando">CALI - SAN FERNANDO</option>
                                 {/* Excluir las "sedes" discapacidad, campus diverso y duplicados de matematicas */}
                                 {state.data_sedes
-                                    .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre) && !s.nombre?.toLowerCase().includes("matematicas"))
+                                    .filter(s => {
+                                        const nom = s.nombre?.toLowerCase() || "";
+                                        return (
+                                            !['DISCAPACIDAD', 'Campus Diverso'].includes(nom) &&
+                                            !nom.includes("matematicas") &&
+                                            !nom.includes("melendez") &&
+                                            !nom.includes("san fernando") &&
+                                            nom !== "cali"
+                                        );
+                                    })
                                     .map(s => (
                                         <option key={s.id} value={s.id}>
                                             {s.nombre}
@@ -784,9 +830,20 @@ const SelectorHorariosMonitorias = () => {
                             >
                                 <option value="">Seleccione una sede...</option>
                                 <option value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
+                                <option value="cali - melendez">CALI - MELENDEZ</option>
+                                <option value="cali - san fernando">CALI - SAN FERNANDO</option>
                                 {state.data_sedes
-                                    .filter(s => !['DISCAPACIDAD', 'Campus Diverso'].includes(s.nombre) && !s.nombre?.toLowerCase().includes("matematicas"))
-                                    .map(s => (
+                                    .filter((s) => {
+                                        const nom = s.nombre?.toLowerCase() || "";
+                                        return (
+                                            !['discapacidad', 'campus diverso'].includes(nom) &&
+                                            !nom.includes("matematicas") &&
+                                            !nom.includes("melendez") &&
+                                            !nom.includes("fernando") &&
+                                            nom !== "cali"
+                                        );
+                                    })
+                                    .map((s) => (
                                         <option key={s.id} value={s.id}>
                                             {s.nombre}
                                         </option>

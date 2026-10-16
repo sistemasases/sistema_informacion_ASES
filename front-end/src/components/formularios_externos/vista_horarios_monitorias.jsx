@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form, Card, Button } from "react-bootstrap";
-import { FaInfoCircle, FaExternalLinkAlt, FaRegUser } from "react-icons/fa";
+import { FaInfoCircle, FaExternalLinkAlt, FaRegUser, FaRegBuilding } from "react-icons/fa";
 import HorariosService from "../../service/formularios_externos_horarios_monitorias.js";
 import "../../Scss/formularios_externos/vista_horarios_monitorias.css";
 import LogoAses from "../componentes_generales/LOGO BLANCORecurso 1.png";
@@ -89,12 +89,12 @@ const VistaHorariosMonitorias = () => {
     };
 
     // Función auxiliar para obtener el nombre visible de la sede
-    // const obtenerNombreSede = (h) => {
-    //     if (esDptoMatematicas(h)) {
-    //         return "DEPARTAMENTO DE MATEMATICAS";
-    //     }
-    //     return h.nombre_sede || "";
-    // };
+    const obtenerNombreSede = (h) => {
+        if (esDptoMatematicas(h)) {
+            return "DEPARTAMENTO DE MATEMATICAS";
+        }
+        return h.nombre_sede || "";
+    };
 
     // Función auxiliar para darle formato al nombre del monitor
     const formatearNombreMonitor = (nombre) => {
@@ -105,11 +105,29 @@ const VistaHorariosMonitorias = () => {
     };
 
     // Filtrado por sede
+    // const horariosFiltrados = horarios.filter((h) => {
+    //     if (sedeSeleccionada === "Todas") return true;
+    //     if (sedeSeleccionada === "dpto matematicas") return esDptoMatematicas(h);
+    //     return String(h.id_sede) === String(sedeSeleccionada) && !esDptoMatematicas(h);
+    // });
     const horariosFiltrados = horarios.filter((h) => {
         if (sedeSeleccionada === "Todas") return true;
-        if (sedeSeleccionada === "dpto matematicas") return esDptoMatematicas(h);
+
+        const nombreSede = h.nombre_sede?.toLowerCase() || "";
+
+        if (sedeSeleccionada === "dpto matematicas") {
+            return esDptoMatematicas(h);
+        }
+        if (sedeSeleccionada === "cali - melendez") {
+            return nombreSede.includes("melendez");
+        }
+        if (sedeSeleccionada === "cali - san fernando") {
+            return nombreSede.includes("fernando");
+        }
+
         return String(h.id_sede) === String(sedeSeleccionada) && !esDptoMatematicas(h);
     });
+
 
     // Agrupar y ordenar por día
     const agruparPorDia = (dia) => {
@@ -121,7 +139,7 @@ const VistaHorariosMonitorias = () => {
     return (
         <>
             {/* Franja roja superior */}
-            <div className="nav d-flex align-items-center justify-content-between px-4">
+            <div className="nav encabezado-ases d-flex align-items-center justify-content-between px-4">
                 <div className="d-flex align-items-center gap-3">
                     <img src={LogoAses} alt="Logo ASES" className="logo" style={{ cursor: "pointer" }} />
                 </div>
@@ -136,7 +154,7 @@ const VistaHorariosMonitorias = () => {
                         </p>
 
                         <div style={{ maxWidth: "260px" }}>
-                            <Form.Label className="fw-bold mb-1">Sede</Form.Label>
+                            <Form.Label className="fw-bold mb-1" style={{ color: "#000025" }}>Sede</Form.Label>
                             <Form.Select
                                 className="vh-select shadow-sm"
                                 value={sedeSeleccionada}
@@ -144,8 +162,19 @@ const VistaHorariosMonitorias = () => {
                             >
                                 <option value="Todas">Todas</option>
                                 <option key="dpto_matematicas" value="dpto matematicas">DEPARTAMENTO DE MATEMATICAS</option>
+                                <option key="cali - melendez" value="cali - melendez">CALI - MELENDEZ</option>
+                                <option key="cali - san fernando" value="cali - san fernando">CALI - SAN FERNANDO</option>
                                 {sedes
-                                    .filter((s) => !["DISCAPACIDAD", "Campus Diverso"].includes(s.nombre) && !s.nombre?.toLowerCase().includes("matematicas"))
+                                    .filter((s) => {
+                                        const nom = s.nombre?.toLowerCase() || "";
+                                        return (
+                                            !["discapacidad", "campus diverso"].includes(nom) &&
+                                            !nom.includes("matematicas") &&
+                                            !nom.includes("melendez") &&
+                                            !nom.includes("fernando") &&
+                                            nom !== "cali"
+                                        );
+                                    })
                                     .map((s) => (
                                         <option key={s.id} value={s.id}>
                                             {s.nombre}
@@ -161,7 +190,7 @@ const VistaHorariosMonitorias = () => {
                             <Card.Body className="p-3">
                                 <div className="d-flex align-items-center mb-2 text-primary fw-bold">
                                     <FaInfoCircle className="vh-info-icon fs-5 me-2" />
-                                    <span className="fs-6" style={{ color: "#1b48aa" }}>¿Cómo ingresar?</span>
+                                    <span className="fs-6" style={{ color: "#0d2353ff" }}>¿Cómo ingresar?</span>
                                 </div>
                                 <ul className="list-unstyled mb-0 vh-steps-list">
                                     <li className="d-flex align-items-center mb-2">
@@ -189,7 +218,7 @@ const VistaHorariosMonitorias = () => {
                 {/* Tablero Semanal */}
                 <Card className="vh-main-card shadow-sm border">
                     <Card.Header className="bg-white border-bottom py-3">
-                        <h5 className="mb-0 fw-bold text-dark">Horario semanal</h5>
+                        <h5 className="vh-title-2 mb-0 fw-bold">Horario semanal</h5>
                     </Card.Header>
                     <Card.Body className="p-3">
                         {cargando ? (
@@ -219,18 +248,21 @@ const VistaHorariosMonitorias = () => {
                                                                 <div className="vh-materia-title text-uppercase fw-semibold my-1">
                                                                     {item.materia}
                                                                 </div>
-                                                                <div className="vh-monitor-info d-flex align-items-center text-muted mb-1">
+                                                                <div className="vh-monitor-info d-flex align-items-center  mb-1">
                                                                     <FaRegUser className="me-1" />
                                                                     <span>
                                                                         Monitor: {formatearNombreMonitor(item.nombre_monitor)}
                                                                     </span>
                                                                 </div>
-                                                                {/* <div className="vh-sede-info d-flex align-items-center text-muted mb-2" style={{ fontSize: "0.82rem" }}>
-                                                                    <FaRegBuilding className="me-1" />
-                                                                    <span>
-                                                                        Sede: {obtenerNombreSede(item)}
-                                                                    </span>
-                                                                </div> */}
+                                                                {/* Mostrar sede en la tarjeta de horarios */}
+                                                                {sedeSeleccionada === "Todas" && (
+                                                                    <div className="vh-sede-info d-flex align-items-center mb-2" style={{ fontSize: "0.82rem" }}>
+                                                                        <FaRegBuilding className="me-1" />
+                                                                        <span>
+                                                                            Sede: {obtenerNombreSede(item)}
+                                                                        </span>
+                                                                    </div>
+                                                                )}
                                                                 {/* Modalidad Híbrida: muestra salón y botón de ingreso */}
                                                                 {item.modalidad === "Híbrida" || (!item.modalidad && item.enlace && item.salon) ? (
                                                                     <div className="d-flex flex-column gap-2">

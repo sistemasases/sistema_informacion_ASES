@@ -1856,19 +1856,39 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
+            
+            # Mapeo de sedes especiales de Cali
+            id_sede_input = str(data.get('id_sede', '')).strip().lower()
+            sedes_especiales = {
+                'dpto matematicas': 'DEPARTAMENTO DE MATEMATICAS',
+                'cali - melendez': 'CALI - MELENDEZ',
+                'cali - san fernando': 'CALI - SAN FERNANDO',
+            }
 
-            id_sede_input = data.get('id_sede')
-            if str(id_sede_input).strip().lower() == 'dpto matematicas':
+            if id_sede_input in sedes_especiales:
                 sede_cali = sede.objects.filter(nombre__icontains='cali').first()
                 mun_id = sede_cali.id_municipio_id if sede_cali else 1
-                # Obtiene o crea automáticamente la sede con el nombre exacto
-                sede_dpto, _ = sede.objects.get_or_create(
-                    nombre='DEPARTAMENTO DE MATEMATICAS',
+                sede_obj, _ = sede.objects.get_or_create(
+                    nombre=sedes_especiales[id_sede_input],
                     defaults={'codigo_univalle': 0, 'id_municipio_id': mun_id}
                 )
-                id_sede_val = sede_dpto.id
+                id_sede_val = sede_obj.id
             else:
-                id_sede_val = id_sede_input
+                id_sede_val = data.get('id_sede')
+
+
+            # id_sede_input = data.get('id_sede')
+            # if str(id_sede_input).strip().lower() == 'dpto matematicas':
+            #     sede_cali = sede.objects.filter(nombre__icontains='cali').first()
+            #     mun_id = sede_cali.id_municipio_id if sede_cali else 1
+            #     # Obtiene o crea automáticamente la sede con el nombre exacto
+            #     sede_dpto, _ = sede.objects.get_or_create(
+            #         nombre='DEPARTAMENTO DE MATEMATICAS',
+            #         defaults={'codigo_univalle': 0, 'id_municipio_id': mun_id}
+            #     )
+            #     id_sede_val = sede_dpto.id
+            # else:
+            #     id_sede_val = id_sede_input
 
 
 
@@ -1918,15 +1938,40 @@ class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
             enlace = data.get('enlace', '').strip() if data.get('enlace') else None
             salon = data.get('salon', '').strip() if data.get('salon') else None
 
-            id_sede_input = data.get('id_sede', horario.id_sede_id)
-            if str(id_sede_input).strip().lower() == 'dpto matematicas':
-                sede_cali = sede.objects.filter(nombre__icontains='cali').first()
+            # id_sede_input = data.get('id_sede', horario.id_sede_id)
+            # if str(id_sede_input).strip().lower() == 'dpto matematicas':
+            #     sede_cali = sede.objects.filter(nombre__icontains='cali').first()
+            #     mun_id = sede_cali.id_municipio_id if sede_cali else 1
+            #     sede_dpto, _ = sede.objects.get_or_create(
+            #         nombre='DEPARTAMENTO DE MATEMATICAS',
+            #         defaults={'codigo_univalle': 0, 'id_municipio_id': mun_id}
+            #     )
+            #     id_sede_val = sede_dpto.id
+            # else:
+            #     id_sede_val = id_sede_input
+
+            # horario.id_sede_id = id_sede_val
+
+            id_sede_input = str(data.get('id_sede', horario.id_sede_id)).strip().lower()
+
+            sedes_especiales = {
+                'dpto matematicas': 'DEPARTAMENTO DE MATEMATICAS',
+                'cali - melendez': 'CALI - MELENDEZ',
+                'cali - san fernando': 'CALI - SAN FERNANDO',
+            }
+
+            if id_sede_input in sedes_especiales:
+                sede_cali = sede.objects.filter(nombre__iexact='CALI').first()
                 mun_id = sede_cali.id_municipio_id if sede_cali else 1
-                sede_dpto, _ = sede.objects.get_or_create(
-                    nombre='DEPARTAMENTO DE MATEMATICAS',
-                    defaults={'codigo_univalle': 0, 'id_municipio_id': mun_id}
+
+                sede_obj, _ = sede.objects.get_or_create(
+                    nombre=sedes_especiales[id_sede_input],
+                    defaults={
+                        'codigo_univalle': 0,
+                        'id_municipio_id': mun_id,
+                    }
                 )
-                id_sede_val = sede_dpto.id
+                id_sede_val = sede_obj.id
             else:
                 id_sede_val = id_sede_input
 
