@@ -149,12 +149,12 @@ const VistaHorariosMonitorias = () => {
                 <Row className="mb-4 align-items-start">
                     <Col lg={8} md={7}>
                         <h2 className="vh-title">Horarios de Monitorías Académicas</h2>
-                        <p className=" mb-3">
+                        <p className=" mb-3" style={{ color: "#153959" }}>
                             Consulta los horarios y enlaces de las monitorías académicas disponibles.
                         </p>
 
                         <div style={{ maxWidth: "260px" }}>
-                            <Form.Label className="fw-bold mb-1" style={{ color: "#000025" }}>Sede</Form.Label>
+                            <Form.Label className="fw-bold mb-1" style={{ color: "#153959" }}>Sede</Form.Label>
                             <Form.Select
                                 className="vh-select shadow-sm"
                                 value={sedeSeleccionada}
@@ -195,19 +195,19 @@ const VistaHorariosMonitorias = () => {
                                 <ul className="list-unstyled mb-0 vh-steps-list">
                                     <li className="d-flex align-items-center mb-2">
                                         <span className="vh-step-number text-white">1</span>
-                                        <span>Selecciona tu sede.</span>
+                                        <span style={{ color: "#153959" }}>Selecciona tu sede.</span>
                                     </li>
                                     <li className="d-flex align-items-center mb-2">
                                         <span className="vh-step-number text-white">2</span>
-                                        <span>Busca tu asignatura.</span>
+                                        <span style={{ color: "#153959" }}>Busca tu asignatura.</span>
                                     </li>
                                     <li className="d-flex align-items-center mb-2">
                                         <span className="vh-step-number text-white">3</span>
-                                        <span>Revisa el horario.</span>
+                                        <span style={{ color: "#153959" }}>Revisa el horario.</span>
                                     </li>
                                     <li className="d-flex align-items-center">
                                         <span className="vh-step-number text-white">4</span>
-                                        <span>Presiona &quot;Ingresar a monitoría&quot;.</span>
+                                        <span style={{ color: "#153959" }}>Presiona &quot;Ingresar a monitoría&quot;.</span>
                                     </li>
                                 </ul>
                             </Card.Body>

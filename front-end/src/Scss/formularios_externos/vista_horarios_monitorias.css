@@ -6,13 +6,13 @@
 }
 
 .vh-title {
-    color: #000025;
+    color: #153959;
     font-size: 1.8rem;
     font-weight: bold;
 }
 
 .vh-title-2 {
-    color: #000025;
+    color: #153959;
     /* font-size: 1.5rem; */
     font-weight: bold;
 }
@@ -82,7 +82,7 @@
     background-color: #fff;
     border: 1px solid #d5d9df;
     border-radius: 8px;
-    color: #000025;
+    color: #153959;
     /*color: #475569;*/
 }
 
@@ -104,18 +104,24 @@
 }
 
 .vh-hora-rango {
-    color: #000025;
+    color: #153959;
     font-size: 0.95rem;
 }
 
 .vh-materia-title {
-    color: #1e293b;
+    color: #153959;
     font-size: 0.9rem;
     line-height: 1.25;
 }
 
 .vh-monitor-info {
     font-size: 0.82rem;
+    color: #153959;
+}
+
+.vh-sede-info {
+    font-size: 0.82rem;
+    color: #153959;
 }
 
 .vh-btn-presencial {
