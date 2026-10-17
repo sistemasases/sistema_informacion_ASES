@@ -9,14 +9,14 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
 from django.db import transaction
-from django.db.models import Count, F, Window
+from django.db.models import Count, F, Window, Q
 from django.db.models.functions import Trim, Upper
 
 
 from modulo_usuario_rol.models import usuario_rol, rol, cohorte_estudiante, estudiante, permiso, rol_permiso, firma_tratamiento_datos
 from modulo_formularios_externos.models import firma_tratamiento_datos_temp
 from modulo_programa.models import programa, programa_estudiante, facultad
-from modulo_academico.models import monitoria_academica
+from modulo_academico.models import monitoria_academica, horario_monitoria
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
 from modulo_academico.models import monitoria_academica #para la sede
@@ -1632,19 +1632,41 @@ class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
             )
     def listar_monitores_academicos(self, request):
         """
-        Listar todos los monitores académicos.
+        Listar monitores académicos, opcionalmente filtrados por sede.
         """
         try:
-            monitores = usuario_rol.objects.filter(
-                id_rol=15,  # ID del rol de monitor académico
-                estado="ACTIVO",
-            ).values('id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name')
+            id_sede = request.data.get('id_sede')
+            
+            # Filtro base: rol 15 (monitor académico) y estado ACTIVO
+            filtros = {
+                'id_rol': 15,
+                'estado': "ACTIVO",
+            }
+            
+            # Si se envía id_sede, filtrar por la sede asociada
+            if id_sede:
+                from django.db.models import Q
+                
+                # Monitores que tengan monitorías académicas en esa sede
+                ids_monitores_en_sede = monitoria_academica.objects.filter(
+                    id_sede=id_sede, estado=True
+                ).values_list('id_monitor_id', flat=True)
+
+                monitores = usuario_rol.objects.filter(**filtros).filter(
+                    Q(id_semestre__id_sede=id_sede) | Q(id_usuario__in=ids_monitores_en_sede)
+                ).distinct().values(
+                    'id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name'
+                )
+            else:
+                monitores = usuario_rol.objects.filter(**filtros).values(
+                    'id_usuario', 'id_usuario__username', 'id_usuario__first_name', 'id_usuario__last_name'
+                )
         
             data = [
                 {
                     "id_usuario": m["id_usuario"],
                     "username_monitor": m["id_usuario__username"],
-                    "nombre_monitor": m["id_usuario__first_name"] + ' ' + m["id_usuario__last_name"],
+                    "nombre_monitor": f"{m['id_usuario__first_name']} {m['id_usuario__last_name']}".strip(),
                 }
                 for m in monitores
             ]
@@ -1652,6 +1674,7 @@ class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
             return Response(list(data), status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         
     @action(detail=False, methods=['post'], url_path='desactivar_monitorias',
             permission_classes=[IsAuthenticated]
@@ -1726,5 +1749,273 @@ class panel_admin_monitorias_academicas_viewset(viewsets.ViewSet):
                 new_monitoria.save()
                 
             return Response({"mensaje": "Monitoria académica creada exitosamente"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class panel_admin_horarios_monitorias_viewset(viewsets.ViewSet):
+
+    @action(detail=False, methods=['post'], url_path='listar_horarios', permission_classes=[IsAuthenticated])
+    def listar_horarios(self, request):
+        """
+        Listar todos los horarios de monitorías registrados.
+        """
+        try:
+            horarios = horario_monitoria.objects.select_related('id_monitor', 'id_sede').all()
+            data = [
+                {
+                    "id": h.id,
+                    "id_monitor": h.id_monitor.id,
+                    "nombre_monitor": f"{h.id_monitor.first_name} {h.id_monitor.last_name}",
+                    "id_sede": h.id_sede.id,
+                    "nombre_sede": h.id_sede.nombre,
+                    "materia": h.materia,
+                    "dia_semana": h.dia_semana,
+                    "hora_inicio": h.hora_inicio.strftime("%H:%M"),
+                    "modalidad": h.modalidad,
+                    "hora_fin": h.hora_fin.strftime("%H:%M"),
+                    "enlace": h.enlace,
+                    "salon": h.salon,
+                    "is_active": h.estado,
+                }
+                for h in horarios
+            ]
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='crear_horario', permission_classes=[IsAuthenticated])
+    def crear_horario(self, request):
+        """
+        Crear un nuevo horario de monitoría.
+        """
+        try:
+            data = request.data
+
+            # Validar campos generales obligatorios
+            campos_requeridos = [
+                'id_monitor',
+                'id_sede',
+                'materia',
+                'dia_semana',
+                'hora_inicio',
+                'hora_fin',
+                'modalidad'
+            ]
+
+            for campo in campos_requeridos:
+                if not data.get(campo):
+                    return Response(
+                        {"error": f"El campo {campo} es obligatorio"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+            modalidad = data.get('modalidad')
+            enlace = data.get('enlace', '').strip()
+            salon = data.get('salon', '').strip()
+
+            # Validar según la modalidad
+            if modalidad == 'Virtual' and not enlace:
+                return Response(
+                    {"error": "El enlace de Meet es obligatorio para la modalidad virtual"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            if modalidad == 'Presencial' and not salon:
+                return Response(
+                    {"error": "El nombre del salón es obligatorio para la modalidad presencial"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Validar que sea hibrido
+            if modalidad in ['Híbrida', 'Hibrida'] and (not enlace or not salon):
+                return Response(
+                    {"error": "El salón y el enlace son obligatorios para la modalidad híbrida"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Validar que la hora de inicio sea menor que la hora de fin
+            if data['hora_inicio'] >= data['hora_fin']:
+                return Response(
+                    {"error": "La hora de inicio debe ser menor que la hora de fin"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Validar cruce de horarios del mismo monitor
+            horario_cruzado = horario_monitoria.objects.filter(
+                id_monitor_id=data['id_monitor'],
+                dia_semana=data['dia_semana'],
+                estado=True,
+                hora_inicio__lt=data['hora_fin'],
+                hora_fin__gt=data['hora_inicio']
+            ).exists()
+
+            if horario_cruzado:
+                return Response(
+                    {
+                        "error": "El monitor ya tiene un horario asignado que se cruza con la franja horaria seleccionada"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Mapeo de sedes especiales de Cali
+            id_sede_input = str(data.get('id_sede', '')).strip().lower()
+            sedes_especiales = {
+                'dpto matematicas': 'DEPARTAMENTO DE MATEMATICAS',
+                'cali - melendez': 'CALI - MELENDEZ',
+                'cali - san fernando': 'CALI - SAN FERNANDO',
+            }
+
+            if id_sede_input in sedes_especiales:
+                sede_cali = sede.objects.filter(nombre__icontains='cali').first()
+                mun_id = sede_cali.id_municipio_id if sede_cali else 1
+                sede_obj, _ = sede.objects.get_or_create(
+                    nombre=sedes_especiales[id_sede_input],
+                    defaults={'codigo_univalle': 0, 'id_municipio_id': mun_id}
+                )
+                id_sede_val = sede_obj.id
+            else:
+                id_sede_val = data.get('id_sede')
+
+
+            # id_sede_input = data.get('id_sede')
+            # if str(id_sede_input).strip().lower() == 'dpto matematicas':
+            #     sede_cali = sede.objects.filter(nombre__icontains='cali').first()
+            #     mun_id = sede_cali.id_municipio_id if sede_cali else 1
+            #     # Obtiene o crea automáticamente la sede con el nombre exacto
+            #     sede_dpto, _ = sede.objects.get_or_create(
+            #         nombre='DEPARTAMENTO DE MATEMATICAS',
+            #         defaults={'codigo_univalle': 0, 'id_municipio_id': mun_id}
+            #     )
+            #     id_sede_val = sede_dpto.id
+            # else:
+            #     id_sede_val = id_sede_input
+
+
+
+            nuevo_horario = horario_monitoria.objects.create(
+                id_monitor_id=data['id_monitor'],
+                id_sede_id=id_sede_val,
+                materia=data['materia'],
+                dia_semana=data['dia_semana'],
+                hora_inicio=data['hora_inicio'],
+                hora_fin=data['hora_fin'],
+                modalidad=modalidad,
+                enlace=enlace if enlace else None,
+                salon=salon if salon else None,
+                estado=data.get('is_active', True)
+            )
+
+            return Response(
+                {
+                    "mensaje": "Horario creado exitosamente",
+                    "id": nuevo_horario.id
+                },
+                status=status.HTTP_201_CREATED
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    @action(detail=False, methods=['post'], url_path='actualizar_horario', permission_classes=[IsAuthenticated])
+    def actualizar_horario(self, request):
+        """
+        Actualizar un horario de monitoría existente.
+        """
+        try:
+            data = request.data
+            horario_id = data.get('id')
+            if not horario_id:
+                return Response({"error": "El ID del horario es requerido"}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                horario = horario_monitoria.objects.get(id=horario_id)
+            except horario_monitoria.DoesNotExist:
+                return Response({"error": "Horario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+            modalidad = data.get('modalidad', horario.modalidad)
+            enlace = data.get('enlace', '').strip() if data.get('enlace') else None
+            salon = data.get('salon', '').strip() if data.get('salon') else None
+
+            # id_sede_input = data.get('id_sede', horario.id_sede_id)
+            # if str(id_sede_input).strip().lower() == 'dpto matematicas':
+            #     sede_cali = sede.objects.filter(nombre__icontains='cali').first()
+            #     mun_id = sede_cali.id_municipio_id if sede_cali else 1
+            #     sede_dpto, _ = sede.objects.get_or_create(
+            #         nombre='DEPARTAMENTO DE MATEMATICAS',
+            #         defaults={'codigo_univalle': 0, 'id_municipio_id': mun_id}
+            #     )
+            #     id_sede_val = sede_dpto.id
+            # else:
+            #     id_sede_val = id_sede_input
+
+            # horario.id_sede_id = id_sede_val
+
+            id_sede_input = str(data.get('id_sede', horario.id_sede_id)).strip().lower()
+
+            sedes_especiales = {
+                'dpto matematicas': 'DEPARTAMENTO DE MATEMATICAS',
+                'cali - melendez': 'CALI - MELENDEZ',
+                'cali - san fernando': 'CALI - SAN FERNANDO',
+            }
+
+            if id_sede_input in sedes_especiales:
+                sede_cali = sede.objects.filter(nombre__iexact='CALI').first()
+                mun_id = sede_cali.id_municipio_id if sede_cali else 1
+
+                sede_obj, _ = sede.objects.get_or_create(
+                    nombre=sedes_especiales[id_sede_input],
+                    defaults={
+                        'codigo_univalle': 0,
+                        'id_municipio_id': mun_id,
+                    }
+                )
+                id_sede_val = sede_obj.id
+            else:
+                id_sede_val = id_sede_input
+
+            horario.id_sede_id = id_sede_val
+
+
+            # Validar según modalidad
+            if modalidad == 'Virtual' and not enlace:
+                return Response({"error": "El enlace de Meet es obligatorio para modalidad virtual"}, status=status.HTTP_400_BAD_REQUEST)
+            if modalidad == 'Presencial' and not salon:
+                return Response({"error": "El salón es obligatorio para modalidad presencial"}, status=status.HTTP_400_BAD_REQUEST)
+            if modalidad in ['Hibrido', 'Híbrida'] and (not enlace or not salon):
+                return Response({"error": "El enlace y el salón son obligatorios para modalidad híbrida"}, status=status.HTTP_400_BAD_REQUEST)
+
+            #Validar rango de horas
+            if data.get('hora_inicio') >= data.get('hora_fin'):
+                return Response({"error": "La hora de inicio debe ser menor que la hora de fin"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Validar cruce de horarios del mismo monitor
+            horario_cruzado = horario_monitoria.objects.filter(
+                id_monitor_id=data.get('id_monitor', horario.id_monitor_id),
+                dia_semana=data.get('dia_semana', horario.dia_semana),
+                estado=True,
+                hora_inicio__lt=data.get('hora_fin', horario.hora_fin),
+                hora_fin__gt=data.get('hora_inicio', horario.hora_inicio)
+            ).exclude(id=horario_id).exists()
+
+            if data.get('is_active', horario.estado) and horario_cruzado:
+                return Response({"error": "El monitor ya tiene un horario asignado que se cruza con la franja horaria seleccionada"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Actualizar campos
+            horario.id_monitor_id = data.get('id_monitor', horario.id_monitor_id)
+            #horario.id_sede_id = data.get('id_sede', horario.id_sede_id)
+            horario.materia = data.get('materia', horario.materia)
+            horario.dia_semana = data.get('dia_semana', horario.dia_semana)
+            horario.hora_inicio = data.get('hora_inicio', horario.hora_inicio)
+            horario.hora_fin = data.get('hora_fin', horario.hora_fin)
+            horario.modalidad = modalidad
+            horario.enlace = enlace 
+            horario.salon = salon 
+            horario.estado = data.get('is_active', horario.estado)
+
+            horario.save()
+
+            return Response({"mensaje": "Horario actualizado exitosamente"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

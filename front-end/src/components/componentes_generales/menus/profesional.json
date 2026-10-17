@@ -61,9 +61,9 @@
         "icon": "bi bi-search"
       },
       {
-        "path":"/horas_monitores",
-        "name":"Horas de monitores",
-        "icon":"bi bi-clock-fill"
+        "path": "/horas_monitores",
+        "name": "Horas de monitores",
+        "icon": "bi bi-clock-fill"
       }
     ]
   },
@@ -87,6 +87,11 @@
         "path": "/academico_listado_asistencia",
         "name": "Listado de asistencia",
         "icon": "bi bi-card-list"
+      },
+      {
+        "path": "/horarios-monitorias",
+        "name": "Horarios de monitorias",
+        "icon": "bi bi-calendar3"
       }
     ]
   }

@@ -1,14 +1,19 @@
 [
     {
-        "id":"3",
-        "path":"/",
-        "name":"academico",
-        "icon":"bi-mortarboard-fill",
-        "childrens":[
+        "id": "3",
+        "path": "/",
+        "name": "academico",
+        "icon": "bi-mortarboard-fill",
+        "childrens": [
             {
-                "path":"/academico",
-                "name":"Calificador",
-                "icon":"bi bi-calculator-fill"
+                "path": "/academico",
+                "name": "Calificador",
+                "icon": "bi bi-calculator-fill"
+            },
+            {
+                "path": "/horarios-monitorias",
+                "name": "Horarios de monitorias",
+                "icon": "bi bi-calendar3"
             }
         ]
     }
