@@ -42,6 +42,7 @@ const obtener_festivos_colombia = async (fecha_inicio, fecha_fin) => {
       return fechaFestivo >= inicio && fechaFestivo <= fin;
     });
 
+    console.log("festivos:", festivosEnRango)
     return {
       cantidad: festivosEnRango.length,
       festivos: festivosEnRango,

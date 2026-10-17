@@ -86,6 +86,49 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            if fecha > date.today():
+                return Response(
+                    {"error": "No se pueden registrar horas para fechas futuras."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            temporada_obj = TemporadaTrabajo.objects.filter(
+                trabajador=trabajador,
+                semestre=semestre_obj
+            ).first()
+
+            if temporada_obj:
+                if fecha < temporada_obj.fecha_inicio:
+                    return Response(
+                        {
+                            "error": (
+                                f"La fecha {fecha} es anterior al inicio de tu temporada de trabajo "
+                                f"({temporada_obj.fecha_inicio})."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                if temporada_obj.fecha_fin and fecha > temporada_obj.fecha_fin:
+                    return Response(
+                        {
+                            "error": (
+                                f"La fecha {fecha} es posterior al fin de tu temporada de trabajo "
+                                f"({temporada_obj.fecha_fin})."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                if temporada_obj.is_default:
+                    return Response(
+                        {
+                            "error": (
+                                "Tu temporada de trabajo no ha sido configurada por tu profesional. "
+                                "No puedes registrar horas hasta que sea actualizada."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
             rol_usuario = usuario_rol.objects.filter(
                 id_usuario=trabajador,
                 estado="ACTIVO"
@@ -234,7 +277,40 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            if fecha > date.today():
+                return Response(
+                    {"error": "No se pueden registrar horas para fechas futuras."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             trabajador = serializer.validated_data.get('trabajador', registro.trabajador)
+
+            temporada_obj = TemporadaTrabajo.objects.filter(
+                trabajador=trabajador,
+                semestre=semestre_obj
+            ).first()
+
+            if temporada_obj:
+                if fecha < temporada_obj.fecha_inicio:
+                    return Response(
+                        {
+                            "error": (
+                                f"La fecha {fecha} es anterior al inicio de la temporada de trabajo "
+                                f"({temporada_obj.fecha_inicio})."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                if temporada_obj.fecha_fin and fecha > temporada_obj.fecha_fin:
+                    return Response(
+                        {
+                            "error": (
+                                f"La fecha {fecha} es posterior al fin de la temporada de trabajo "
+                                f"({temporada_obj.fecha_fin})."
+                            )
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
 
             rol_usuario = usuario_rol.objects.filter(
                 id_usuario=trabajador,
@@ -334,7 +410,7 @@ class registros_horas_viewset(viewsets.GenericViewSet):
 
             # ── calcular horas_total_contratadas por defecto ──────────
             dias_habiles = sum(
-                1 for i in range((fecha_fin - fecha_inicio).days)
+                1 for i in range((fecha_fin - fecha_inicio).days + 1)
                 if (fecha_inicio + datetime.timedelta(days=i)).weekday() < 5
             )
             dias_habiles -= num_festivos
@@ -361,7 +437,7 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                         total_festivos_temporada=num_festivos,
                         fecha_inicio=fecha_inicio,
                         fecha_fin=fecha_fin,
-                        precio_hora=10000,
+                        precio_hora=8578, # este valor se debe de actualizar si se cambia el valor de el precio de las horas en el semestre
                         is_default=True,
                     )
                     for trabajador_id in ids_sin_temporada
@@ -425,7 +501,6 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                     "nombre": nombre_completo,
                     "temporada": temporada_data,
                     "registros": serializer.data,
-                    "horasTotal": total_horas,
                     "horasActuales": horas_actuales_por_trabajador.get(trabajador_id, 0.0),
                 })
 
@@ -531,7 +606,7 @@ class temporada_trabajo_viewset(viewsets.GenericViewSet):
 
             dias_habiles = sum(
                 1
-                for i in range((temporada.fecha_fin - temporada.fecha_inicio).days)
+                for i in range((temporada.fecha_fin - temporada.fecha_inicio).days + 1)
                 if (temporada.fecha_inicio + timedelta(days=i)).weekday() < 5
             )
             dias_habiles -= temporada.total_festivos_temporada or 0
