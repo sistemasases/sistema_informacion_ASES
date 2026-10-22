@@ -20,6 +20,11 @@ from modulo_academico.models import monitoria_academica
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
 from modulo_academico.models import monitoria_academica #para la sede
+from modulo_correos.views import enviar_correo_activacion_usuario
+from modulo_correos.utils import reconstruir_contrasena
+
+import threading
+
 from django.shortcuts import get_object_or_404
 
 
@@ -169,6 +174,33 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     {"error": "Semestre actual no encontrado para alguna de las sedes."},
                     status=status.HTTP_404_NOT_FOUND
                 )
+            #comprobar si el usuario ya tenia rol y sede activo antes de la edición
+            usuario_rol_sede_anterior = usuario_rol.objects.filter(
+                id_usuario=user,
+                id_rol=rol_obj,
+                id_semestre=nuevo_semestre_obj,
+                estado="ACTIVO"
+            ).exists()
+            
+            
+            # Envio de correo tras asignar sede y rol:
+            if (rol_nombre and rol_nombre != "SIN ROL" \
+                and sede_nombre and sede_nombre != "SIN SEDE" \
+                and not usuario_rol_sede_anterior):
+                # 1. Reconstruir contraseña en texto plano
+                password_plano = reconstruir_contrasena(user.first_name, user.username, user.last_name)
+                
+                # 2. Opcional: sincronizar la contraseña en la BD si no se proporcionó una manual
+                if not request.data.get('user_password'):
+                    user.set_password(password_plano)
+                    user.save()
+
+                # 3. Disparar el correo en un hilo secundario
+                thread = threading.Thread(
+                    target=enviar_correo_activacion_usuario,
+                    args=(user, rol_nombre, sede_nombre, password_plano)
+                )
+                thread.start()
 
             # CASO 1: El usuario no cambió de sede
             if sede_nombre == old_sede_nombre:
@@ -243,7 +275,6 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     id_usuario=user
                 )
                 return Response({"mensaje": "Se ha asignado correctamente el rol al usuario seleccionado"}, status=status.HTTP_201_CREATED)
-
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
