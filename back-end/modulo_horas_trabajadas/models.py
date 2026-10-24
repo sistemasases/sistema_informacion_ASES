@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from datetime import datetime, date
+from decimal import Decimal, ROUND_HALF_UP
 from modulo_usuario_rol.models import usuario_rol
-from modulo_instancia.models import semestre 
+from modulo_instancia.models import semestre
 
 
 class RegistroHoras(models.Model):
@@ -93,3 +94,118 @@ class TemporadaTrabajo(models.Model):
                 raise ValidationError(
                     "La fecha de fin debe ser mayor a la fecha de inicio."
                 )
+
+    # ── Métodos de cálculo (sin columnas adicionales) ──────────────────────
+
+    def total_adiciones(self):
+        """Suma de horas de todas las novedades de tipo ADICION."""
+        from django.db.models import Sum
+        resultado = self.novedades.filter(tipo=NovedadHoras.ADICION).aggregate(
+            Sum('horas')
+        )['horas__sum']
+        return resultado if resultado is not None else Decimal('0')
+
+    def total_disminuciones(self):
+        """Suma de horas de todas las novedades de tipo DISMINUCION."""
+        from django.db.models import Sum
+        resultado = self.novedades.filter(tipo=NovedadHoras.DISMINUCION).aggregate(
+            Sum('horas')
+        )['horas__sum']
+        return resultado if resultado is not None else Decimal('0')
+
+    def total_horas_ajustadas(self):
+        """horas_total_contratadas + Σadiciones − Σdisminuciones."""
+        base = self.horas_total_contratadas or Decimal('0')
+        return base + self.total_adiciones() - self.total_disminuciones()
+
+    def calcular_horas_esperadas(self):
+        """
+        Horas que el monitor debería haber acumulado hasta ayer (o hasta
+        fecha_fin si la temporada ya terminó), usando fórmula proporcional:
+
+            horasEsperadas = (D_hoy_netos / D_periodo_netos) × total_ajustado
+
+        Los festivos se distribuyen proporcionalmente con total_festivos_temporada.
+        """
+        from datetime import timedelta
+
+        if not self.fecha_inicio or not self.horas_total_contratadas:
+            return Decimal('0')
+
+        hoy = date.today()
+        corte = hoy - timedelta(days=1)
+        fecha_fin = self.fecha_fin or hoy
+        corte = min(corte, fecha_fin)
+
+        if corte < self.fecha_inicio:
+            return Decimal('0')
+
+        def count_weekdays(start, end):
+            if end < start:
+                return 0
+            return sum(
+                1 for i in range((end - start).days + 1)
+                if (start + timedelta(days=i)).weekday() < 5
+            )
+
+        D_periodo = count_weekdays(self.fecha_inicio, fecha_fin)
+        festivos = int(self.total_festivos_temporada or 0)
+        D_periodo_netos = max(0, D_periodo - festivos)
+
+        if D_periodo_netos == 0:
+            return Decimal('0')
+
+        D_hoy = count_weekdays(self.fecha_inicio, corte)
+        festivos_hoy = round(festivos * D_hoy / D_periodo) if D_periodo > 0 else 0
+        D_hoy_netos = max(0, D_hoy - festivos_hoy)
+
+        total_ajustado = self.total_horas_ajustadas()
+        if total_ajustado <= 0:
+            return Decimal('0')
+
+        resultado = (
+            Decimal(str(D_hoy_netos)) / Decimal(str(D_periodo_netos))
+        ) * total_ajustado
+        return resultado.quantize(Decimal('0.1'), rounding=ROUND_HALF_UP)
+
+
+class NovedadHoras(models.Model):
+    """Registro de adiciones o disminuciones de horas al contrato de una temporada."""
+
+    ADICION = 'ADICION'
+    DISMINUCION = 'DISMINUCION'
+    TIPO_CHOICES = [
+        (ADICION, 'Adición'),
+        (DISMINUCION, 'Disminución'),
+    ]
+
+    temporada = models.ForeignKey(
+        TemporadaTrabajo,
+        on_delete=models.CASCADE,
+        related_name='novedades',
+        verbose_name="Temporada de trabajo",
+    )
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPO_CHOICES,
+        verbose_name="Tipo de novedad",
+    )
+    horas = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        verbose_name="Horas ajustadas",
+    )
+    observacion = models.TextField(
+        verbose_name="Observación",
+        blank=True,
+        null=True,
+    )
+    fecha_efectiva = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de registro",
+    )
+
+    class Meta:
+        ordering = ['fecha_efectiva']
+        verbose_name = "Novedad de horas"
+        verbose_name_plural = "Novedades de horas"

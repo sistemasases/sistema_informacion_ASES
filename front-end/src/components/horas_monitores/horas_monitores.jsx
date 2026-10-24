@@ -8,61 +8,6 @@ import obtener_festivos_colombia from "../../service/registro_horas_trbajadas/di
 import actualizar_temporada_trabajo from "../../service/registro_horas_trbajadas/actualizar_temporada";
 import obtener_semestre_actual from "../../service/registro_horas_trbajadas/get_semestre_actual";
 
-const PRECIO_HORA = 8578;
-
-
-/**
- * Calcula las horas que un trabajador debería haber completado desde el inicio
- * de su temporada hasta ayer (el día de hoy no cuenta porque aún no está completo).
- *
- * @param {object|null} temporada  - Objeto temporada del subordinado.
- * @param {Array}       festivosLaborables - Festivos colombianos que caen lun–vie,
- *                                           ya pre-filtrados al cargar la página.
- * @returns {number|null} Horas esperadas con 1 decimal, o null si no hay temporada.
- */
-const calcularHorasEsperadas = (temporada, festivosLaborables) => {
-  if (!temporada || !temporada.fecha_inicio) return null;
-
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
-
-  const ayer = new Date(hoy);
-  ayer.setDate(hoy.getDate() - 1);
-
-  const inicio = new Date(temporada.fecha_inicio + "T00:00:00");
-
-  // La temporada aún no ha empezado
-  if (inicio > ayer) return 0;
-
-  // El corte es ayer, salvo que la temporada ya terminó antes
-  let corte = ayer;
-  if (temporada.fecha_fin) {
-    const fechaFin = new Date(temporada.fecha_fin + "T00:00:00");
-    if (fechaFin < ayer) corte = fechaFin;
-  }
-
-  if (corte < inicio) return 0;
-
-  // Contar días hábiles (lun–vie) en [inicio, corte] inclusive
-  let diasHabiles = 0;
-  const cursor = new Date(inicio);
-  while (cursor <= corte) {
-    const dow = cursor.getDay();
-    if (dow >= 1 && dow <= 5) diasHabiles++;
-    cursor.setDate(cursor.getDate() + 1);
-  }
-
-  // Descontar festivos laborables que caigan dentro del rango
-  const festivosEnRango = festivosLaborables.filter((f) => {
-    const d = new Date(f.date + "T00:00:00");
-    return d >= inicio && d <= corte;
-  });
-
-  const diasHabilesNetos = Math.max(0, diasHabiles - festivosEnRango.length);
-  const horasPorDia = (temporada.horas_semanales ?? 20) / 5;
-
-  return parseFloat((diasHabilesNetos * horasPorDia).toFixed(1));
-};
 
 
 const HorasMonitores = () => {
@@ -76,11 +21,14 @@ const HorasMonitores = () => {
   const [modalTemporada, setModalTemporada] = useState(false);
   const [cargando, setCargando] = useState(true);
   const [cargandoTemporada, setCargandoTemporada] = useState(false);
+  const [errorNovedad, setErrorNovedad] = useState("");
   const [formTemporada, setFormTemporada] = useState({
     fecha_inicio: "",
     fecha_fin: "",
     horas_semanales: 20,
-    horas_total_contratadas: "",
+    tipo: "",
+    horas: "",
+    observacion: "",
   });
 
   const semestre_id = desencriptar(sessionStorage.getItem("id_semestre_actual"));
@@ -128,9 +76,23 @@ const HorasMonitores = () => {
     const idTemporada = seleccionado?.temporada?.id;
     if (!idTemporada) return;
 
+    // Validar campos de novedad
+    const tieneTipo  = formTemporada.tipo  !== "";
+    const tieneHoras = formTemporada.horas !== "";
+
+    if (tieneTipo !== tieneHoras) {
+      setErrorNovedad("Se requieren tipo y cantidad de horas juntos para registrar una novedad.");
+      return;
+    }
+    if (tieneHoras && parseFloat(formTemporada.horas) <= 0) {
+      setErrorNovedad("La cantidad de horas debe ser mayor a 0.");
+      return;
+    }
+    setErrorNovedad("");
+
     setCargandoTemporada(true);
 
-    // recalcular festivos con el nuevo rango de fechas de la temporada
+    // Recalcular festivos con el nuevo rango de fechas de la temporada
     const resultadoFestivos = await obtener_festivos_colombia(
       formTemporada.fecha_inicio,
       formTemporada.fecha_fin
@@ -147,6 +109,9 @@ const HorasMonitores = () => {
       fecha_fin: formTemporada.fecha_fin,
       horas_semanales: formTemporada.horas_semanales,
       total_festivos_temporada: nuevosFestivos,
+      tipo:        tieneTipo  ? formTemporada.tipo  : undefined,
+      horas:       tieneHoras ? formTemporada.horas : undefined,
+      observacion: formTemporada.observacion || undefined,
     });
 
     setCargandoTemporada(false);
@@ -163,16 +128,32 @@ const HorasMonitores = () => {
         total_festivos_temporada: resultado.total_festivos_temporada,
         is_default: resultado.is_default,
         semestre: resultado.semestre,
+        precio_hora: resultado.precio_hora,
+        novedades: resultado.novedades ?? [],
       };
 
       const subordinadosActualizados = subordinados.map((s) =>
         s.trabajador_id === seleccionado.trabajador_id
-          ? { ...s, temporada: temporadaActualizada }
+          ? {
+              ...s,
+              temporada: temporadaActualizada,
+              horasEsperadas: resultado.horasEsperadas ?? s.horasEsperadas,
+              totalHorasAjustadas: resultado.totalHorasAjustadas ?? s.totalHorasAjustadas,
+              totalAdiciones: resultado.totalAdiciones ?? s.totalAdiciones,
+              totalDisminuciones: resultado.totalDisminuciones ?? s.totalDisminuciones,
+            }
           : s
       );
 
       setSubordinados(subordinadosActualizados);
-      setSeleccionado((prev) => ({ ...prev, temporada: temporadaActualizada }));
+      setSeleccionado((prev) => ({
+        ...prev,
+        temporada: temporadaActualizada,
+        horasEsperadas: resultado.horasEsperadas ?? prev.horasEsperadas,
+        totalHorasAjustadas: resultado.totalHorasAjustadas ?? prev.totalHorasAjustadas,
+        totalAdiciones: resultado.totalAdiciones ?? prev.totalAdiciones,
+        totalDisminuciones: resultado.totalDisminuciones ?? prev.totalDisminuciones,
+      }));
     }
   };
 
@@ -189,8 +170,11 @@ const HorasMonitores = () => {
       fecha_inicio: t?.fecha_inicio || "",
       fecha_fin: t?.fecha_fin || "",
       horas_semanales: t?.horas_semanales || 20,
-      horas_total_contratadas: t?.horas_total_contratadas || "",
+      tipo: "",
+      horas: "",
+      observacion: "",
     });
+    setErrorNovedad("");
     setModalTemporada(true);
   };
 
@@ -221,20 +205,16 @@ const HorasMonitores = () => {
     return d <= ayer0 && (fechaInicioFestivos === null || d >= fechaInicioFestivos);
   }).length;
 
-  const horasContratadas = seleccionado?.temporada?.horas_total_contratadas
-    ? parseFloat(seleccionado.temporada.horas_total_contratadas)
-    : null;
+  const precioHora = seleccionado?.temporada?.precio_hora ?? 8578;
 
-  const horasSemanales = seleccionado?.temporada?.horas_semanales ?? null;
+  const totalHorasAjustadas = seleccionado?.totalHorasAjustadas ?? null;
+  const totalAdiciones      = seleccionado?.totalAdiciones      ?? null;
+  const totalDisminuciones  = seleccionado?.totalDisminuciones  ?? null;
+  const horasActuales       = seleccionado ? (seleccionado.horasActuales ?? null) : null;
+  const horasEsperadas      = seleccionado ? (seleccionado.horasEsperadas ?? null) : null;
 
-  const horasActuales = seleccionado ? (seleccionado.horasActuales ?? null) : null;
-
-  const horasDeuda = horasContratadas !== null && horasActuales !== null
-    ? (horasContratadas - horasActuales).toFixed(1)
-    : null;
-
-  const horasEsperadas = seleccionado
-    ? calcularHorasEsperadas(seleccionado.temporada, festivosLaborables)
+  const horasFaltantes = totalHorasAjustadas !== null && horasActuales !== null
+    ? parseFloat((totalHorasAjustadas - horasActuales).toFixed(1))
     : null;
 
   const balance = horasEsperadas !== null && horasActuales !== null
@@ -410,6 +390,37 @@ const HorasMonitores = () => {
                 ))}
               </div>
 
+              {seleccionado.temporada?.novedades?.length > 0 && (
+                <div style={{ marginBottom: "0.7rem" }}>
+                  <div style={{ fontSize: "11px", color: "#888", fontWeight: 600, marginBottom: "5px" }}>
+                    Historial de modificaciones
+                  </div>
+                  {seleccionado.temporada.novedades.map((n) => {
+                    const esAdicion = n.tipo === "ADICION";
+                    const dt = new Date(n.fecha_efectiva);
+                    const fechaStr = dt.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" });
+                    const horaStr = dt.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+                    return (
+                      <div key={n.id} style={{ marginBottom: "5px", padding: "6px 8px", background: esAdicion ? "#e6f9f0" : "#fff0f0", borderRadius: "6px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                          <span style={{ background: esAdicion ? "#1a7a4a" : "#cc0000", color: "#fff", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, whiteSpace: "nowrap" }}>
+                            {esAdicion ? "Adición" : "Disminución"}
+                          </span>
+                          <span style={{ fontSize: "12px", color: "#333" }}>
+                            {esAdicion ? "+" : "-"}{parseFloat(n.horas).toFixed(1)} horas · {fechaStr} · {horaStr}
+                          </span>
+                        </div>
+                        {n.observacion && (
+                          <div style={{ fontSize: "11px", color: "#666", marginTop: "3px", paddingLeft: "2px" }}>
+                            {n.observacion}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
               {seleccionado.temporada && !esPracticante && (
                 <button onClick={abrirModalEditar} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
                   Modificar temporada
@@ -421,32 +432,89 @@ const HorasMonitores = () => {
           {/* ── MODAL TEMPORADA ── */}
           {modalTemporada && (
             <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ background: "#fff", borderRadius: "1rem", padding: "1.5rem", width: "360px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
+              <div style={{ background: "#fff", borderRadius: "1rem", padding: "1.5rem", width: "400px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)", maxHeight: "90vh", overflowY: "auto" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                  <span style={{ fontWeight: 800, fontSize: "15px" }}>
-                    Modificar temporada
-                  </span>
+                  <span style={{ fontWeight: 800, fontSize: "15px" }}>Modificar temporada</span>
                   <button onClick={() => setModalTemporada(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px" }}>✕</button>
                 </div>
 
-                {[
-                  { label: "Fecha inicio *", key: "fecha_inicio", type: "date" },
-                  { label: "Fecha fin *", key: "fecha_fin", type: "date" },
-                  { label: "Horas semanales *", key: "horas_semanales", type: "number" },
-                ].map(({ label, key, type }) => (
-                  <div key={key} style={{ marginBottom: "0.8rem" }}>
-                    <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>{label}</label>
+                {/* Fila 1: Fecha inicio / Fecha fin */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: "0.8rem" }}>
+                  {[
+                    { label: "Fecha inicio *", key: "fecha_inicio" },
+                    { label: "Fecha fin *",    key: "fecha_fin" },
+                  ].map(({ label, key }) => (
+                    <div key={key}>
+                      <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>{label}</label>
+                      <input
+                        type="date"
+                        value={formTemporada[key]}
+                        onChange={(e) => setFormTemporada(prev => ({ ...prev, [key]: e.target.value }))}
+                        style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "14px" }}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Fila 2: Horas semanales (ancho completo) */}
+                <div style={{ marginBottom: "0.8rem" }}>
+                  <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Horas semanales *</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={40}
+                    value={formTemporada.horas_semanales}
+                    onChange={(e) => setFormTemporada(prev => ({ ...prev, horas_semanales: e.target.value }))}
+                    style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "14px" }}
+                  />
+                </div>
+
+                {/* Fila 3: Tipo de ajuste / Cantidad de horas */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: "0.8rem" }}>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Tipo de ajuste</label>
+                    <select
+                      value={formTemporada.tipo}
+                      onChange={(e) => setFormTemporada(prev => ({ ...prev, tipo: e.target.value }))}
+                      style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "14px" }}
+                    >
+                      <option value="">Sin novedad</option>
+                      <option value="ADICION">Adición</option>
+                      <option value="DISMINUCION">Disminución</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Cantidad de horas</label>
                     <input
-                      type={type}
-                      min={type === "number" ? 1 : undefined}
-                      max={key === "horas_semanales" ? 40 : undefined}
-                      step={key === "horas_total_contratadas" ? "0.1" : undefined}
-                      value={formTemporada[key]}
-                      onChange={(e) => setFormTemporada(prev => ({ ...prev, [key]: e.target.value }))}
+                      type="number"
+                      min={0.1}
+                      step={0.5}
+                      value={formTemporada.horas}
+                      onChange={(e) => setFormTemporada(prev => ({ ...prev, horas: e.target.value }))}
+                      placeholder="0"
                       style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "14px" }}
                     />
                   </div>
-                ))}
+                </div>
+
+                {/* Fila 4: Observación (visible solo si se eligió tipo) */}
+                {formTemporada.tipo !== "" && (
+                  <div style={{ marginBottom: "0.8rem" }}>
+                    <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Observación (opcional)</label>
+                    <textarea
+                      rows={2}
+                      value={formTemporada.observacion}
+                      onChange={(e) => setFormTemporada(prev => ({ ...prev, observacion: e.target.value }))}
+                      placeholder="Motivo del ajuste..."
+                      style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "13px", resize: "vertical" }}
+                    />
+                  </div>
+                )}
+
+                {/* Error de validación de novedad */}
+                {errorNovedad && (
+                  <div style={{ color: "#cc0000", fontSize: "12px", marginBottom: "0.8rem" }}>{errorNovedad}</div>
+                )}
 
                 <div style={{ display: "flex", gap: "8px", marginTop: "1rem" }}>
                   <button onClick={() => setModalTemporada(false)} style={{ flex: 1, padding: "0.6rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#f5f5f5", cursor: "pointer", fontWeight: 700 }}>
@@ -475,30 +543,48 @@ const HorasMonitores = () => {
 
           <div className="box_hours">
             <Row className="red_tittle">
-              <Col>Precio Hora:</Col>
-              <Col style={{ textAlign: "right" }}>$ {PRECIO_HORA.toLocaleString("es-CO")}</Col>
+              <Col>Valor Hora:</Col>
+              <Col style={{ textAlign: "right" }}>$ {precioHora.toLocaleString("es-CO")}</Col>
             </Row>
             <Row className="red_tittle">
               <Col>Días Festivos hasta hoy:</Col>
-              <Col style={{ textAlign: "right" }}>
-                {festivosPasados}
-              </Col>
+              <Col style={{ textAlign: "right" }}>{festivosPasados}</Col>
             </Row>
 
             <Row>
-              <Col className="middle_content">Horas Contratadas</Col>
+              <Col className="middle_content">Total horas monitoría</Col>
               <Col className="middle_content_right" style={{ textAlign: "center" }}>
-                {horasContratadas !== null ? horasContratadas.toFixed(1) : "N/D"}
+                {totalHorasAjustadas !== null ? totalHorasAjustadas.toFixed(1) : "N/D"}
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Horas Semanales</Col>
-              <Col className="middle_content_right" style={{ textAlign: "center" }}>
-                {horasSemanales !== null ? horasSemanales : "N/D"}
+              <Col className="middle_content">Total adición horas</Col>
+              <Col
+                className="middle_content_right"
+                style={{
+                  textAlign: "center",
+                  backgroundColor: totalAdiciones !== null && totalAdiciones > 0 ? "#ccf0d8" : undefined,
+                  color: totalAdiciones !== null && totalAdiciones > 0 ? "#1a7a4a" : undefined,
+                }}
+              >
+                {totalAdiciones !== null ? `+${totalAdiciones.toFixed(1)}` : "—"}
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Horas realizadas</Col>
+              <Col className="middle_content">Total disminución horas</Col>
+              <Col
+                className="middle_content_right"
+                style={{
+                  textAlign: "center",
+                  backgroundColor: totalDisminuciones !== null && totalDisminuciones > 0 ? "#ffcccc" : undefined,
+                  color: totalDisminuciones !== null && totalDisminuciones > 0 ? "#cc0000" : undefined,
+                }}
+              >
+                {totalDisminuciones !== null ? `-${totalDisminuciones.toFixed(1)}` : "—"}
+              </Col>
+            </Row>
+            <Row>
+              <Col className="middle_content">Horas cumplidas</Col>
               <Col className="middle_content_right" style={{ textAlign: "center" }}>
                 {horasActuales !== null ? horasActuales.toFixed(1) : "—"}
               </Col>
@@ -510,7 +596,7 @@ const HorasMonitores = () => {
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Balance</Col>
+              <Col className="middle_content">Horas pendientes por cumplir</Col>
               <Col
                 className="middle_content_right"
                 style={{
@@ -520,23 +606,13 @@ const HorasMonitores = () => {
                   color: balance === null ? undefined : balance < 0 ? "#cc0000" : "#1a7a4a",
                 }}
               >
-                {balance !== null
-                  ? `${balance > 0 ? "+" : ""}${balance.toFixed(1)}`
-                  : "—"}
+                {balance !== null ? `${balance > 0 ? "+" : ""}${balance.toFixed(1)}` : "—"}
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Horas para finalizar</Col>
-              <Col
-                className="middle_content_right"
-                style={{
-                  textAlign: "center",
-                  backgroundColor: "red",
-                  borderColor: "red",
-                  color: "white",
-                }}
-              >
-                {horasDeuda !== null ? horasDeuda : "N/D"}
+              <Col className="middle_content">Horas faltantes a cumplir</Col>
+              <Col className="middle_content_right" style={{ textAlign: "center" }}>
+                {horasFaltantes !== null ? horasFaltantes.toFixed(1) : "N/D"}
               </Col>
             </Row>
 

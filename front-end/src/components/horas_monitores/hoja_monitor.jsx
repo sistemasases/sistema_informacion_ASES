@@ -10,47 +10,6 @@ import eliminar_registro from "../../service/registro_horas_trbajadas/eliminar_r
 import "../../Scss/horas_monitores/hoja_monitor.css";
 
 const REGISTROS_POR_PAGINA = 10;
-const PRECIO_HORA = 8578;
-
-const calcularHorasEsperadas = (temporada, festivosLaborables) => {
-  if (!temporada || !temporada.fecha_inicio) return null;
-
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
-
-  const ayer = new Date(hoy);
-  ayer.setDate(hoy.getDate() - 1);
-
-  const inicio = new Date(temporada.fecha_inicio + "T00:00:00");
-
-  if (inicio > ayer) return 0;
-
-  let corte = ayer;
-  if (temporada.fecha_fin) {
-    const fechaFin = new Date(temporada.fecha_fin + "T00:00:00");
-    if (fechaFin < ayer) corte = fechaFin;
-  }
-
-  if (corte < inicio) return 0;
-
-  let diasHabiles = 0;
-  const cursor = new Date(inicio);
-  while (cursor <= corte) {
-    const dow = cursor.getDay();
-    if (dow >= 1 && dow <= 5) diasHabiles++;
-    cursor.setDate(cursor.getDate() + 1);
-  }
-
-  const festivosEnRango = festivosLaborables.filter((f) => {
-    const d = new Date(f.date + "T00:00:00");
-    return d >= inicio && d <= corte;
-  });
-
-  const diasHabilesNetos = Math.max(0, diasHabiles - festivosEnRango.length);
-  const horasPorDia = (temporada.horas_semanales ?? 20) / 5;
-
-  return parseFloat((diasHabilesNetos * horasPorDia).toFixed(1));
-};
 
 const generarOpciones = () => {
   const opts = [];
@@ -92,6 +51,10 @@ const HojaMonitor = () => {
   const [horasActuales, setHorasActuales] = useState(0);
   const [festivosLaborables, setFestivosLaborables] = useState([]);
   const [nombreTrabajador, setNombreTrabajador] = useState("");
+  const [horasEsperadasBackend, setHorasEsperadasBackend] = useState(null);
+  const [totalHorasAjustadas, setTotalHorasAjustadas] = useState(null);
+  const [totalAdiciones, setTotalAdiciones] = useState(null);
+  const [totalDisminuciones, setTotalDisminuciones] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -104,6 +67,10 @@ const HojaMonitor = () => {
         setIsProfesional(data.usuario_profesional);
         setNombreTrabajador(data.registros.nombre_trabajador);
         setTemporada(temp);
+        setHorasEsperadasBackend(data.registros.horasEsperadas ?? null);
+        setTotalHorasAjustadas(data.registros.totalHorasAjustadas ?? null);
+        setTotalAdiciones(data.registros.totalAdiciones ?? null);
+        setTotalDisminuciones(data.registros.totalDisminuciones ?? null);
 
         if (temp?.fecha_inicio) {
           const fechaFin = temp.fecha_fin || new Date().toISOString().split("T")[0];
@@ -127,13 +94,7 @@ const HojaMonitor = () => {
     paginaActual * REGISTROS_POR_PAGINA
   );
 
-  const horasContratadas = temporada?.horas_total_contratadas
-    ? parseFloat(temporada.horas_total_contratadas)
-    : null;
-
-  const horasDeuda = horasContratadas !== null
-    ? Math.max(0, horasContratadas - totalHoras).toFixed(1)
-    : null;
+  const precioHora = temporada?.precio_hora ?? 8578;
 
   const hoy0 = new Date();
   hoy0.setHours(0, 0, 0, 0);
@@ -143,9 +104,11 @@ const HojaMonitor = () => {
     new Date(f.date + "T00:00:00") <= ayer0
   ).length;
 
-  const horasEsperadas = calcularHorasEsperadas(temporada, festivosLaborables);
-  const balance = horasEsperadas !== null
-    ? parseFloat((totalHoras - horasEsperadas).toFixed(1))
+  const balance = horasEsperadasBackend !== null
+    ? parseFloat((horasActuales - horasEsperadasBackend).toFixed(1))
+    : null;
+  const horasFaltantes = totalHorasAjustadas !== null
+    ? Math.max(0, totalHorasAjustadas - horasActuales).toFixed(1)
     : null;
 
   const openDetail = (id) => {
@@ -315,32 +278,75 @@ const HojaMonitor = () => {
                 </div>
               ))}
             </div>
+
+            {temporada?.novedades?.length > 0 && (
+              <div style={{ marginTop: "0.8rem" }}>
+                <div style={{ fontSize: "11px", color: "#888", fontWeight: 600, marginBottom: "6px" }}>
+                  Historial de modificaciones
+                </div>
+                {temporada.novedades.map((n) => {
+                  const esAdicion = n.tipo === "ADICION";
+                  const dt = new Date(n.fecha_efectiva);
+                  const fechaStr = dt.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" });
+                  const horaStr = dt.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+                  return (
+                    <div key={n.id} style={{ marginBottom: "5px", padding: "6px 8px", background: esAdicion ? "#e6f9f0" : "#fff0f0", borderRadius: "6px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                        <span style={{ background: esAdicion ? "#1a7a4a" : "#cc0000", color: "#fff", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, whiteSpace: "nowrap" }}>
+                          {esAdicion ? "Adición" : "Disminución"}
+                        </span>
+                        <span style={{ fontSize: "12px", color: "#333" }}>
+                          {esAdicion ? "+" : "-"}{parseFloat(n.horas).toFixed(1)} horas · {fechaStr} · {horaStr}
+                        </span>
+                      </div>
+                      {n.observacion && (
+                        <div style={{ fontSize: "11px", color: "#666", marginTop: "3px", paddingLeft: "2px" }}>
+                          {n.observacion}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* ── TARJETA MÉTRICAS ── */}
           <div className="hm-right-card">
             <div className="hm-right-row hm-red">
-              <span>Precio hora</span>
-              <span>${PRECIO_HORA.toLocaleString("es-CO")}</span>
+              <span>Valor hora</span>
+              <span>${precioHora.toLocaleString("es-CO")}</span>
             </div>
             <div className="hm-right-row hm-red">
-              <span>Días festivos</span>
+              <span>Días festivos hasta hoy</span>
               <span>{festivosPasados}</span>
             </div>
             <div className="hm-metric">
-              <span className="hm-metric-label">Horas a cumplir</span>
-              <span className="hm-metric-value">{horasContratadas !== null ? horasContratadas.toFixed(1) : "—"}</span>
+              <span className="hm-metric-label">Total horas monitoría</span>
+              <span className="hm-metric-value">{totalHorasAjustadas !== null ? totalHorasAjustadas.toFixed(1) : "—"}</span>
             </div>
             <div className="hm-metric">
-              <span className="hm-metric-label">Horas realizadas</span>
-              <span className="hm-metric-value hm-metric-highlight">{totalHoras.toFixed(1)}</span>
+              <span className="hm-metric-label">Total adición horas</span>
+              <span className="hm-metric-value" style={{ color: totalAdiciones ? "#1a7a4a" : undefined }}>
+                {totalAdiciones !== null ? `+${totalAdiciones.toFixed(1)}` : "—"}
+              </span>
+            </div>
+            <div className="hm-metric">
+              <span className="hm-metric-label">Total disminución horas</span>
+              <span className="hm-metric-value" style={{ color: totalDisminuciones ? "#cc0000" : undefined }}>
+                {totalDisminuciones !== null ? `-${totalDisminuciones.toFixed(1)}` : "—"}
+              </span>
+            </div>
+            <div className="hm-metric">
+              <span className="hm-metric-label">Horas cumplidas</span>
+              <span className="hm-metric-value">{horasActuales.toFixed(1)}</span>
             </div>
             <div className="hm-metric">
               <span className="hm-metric-label">Horas esperadas hasta hoy</span>
-              <span className="hm-metric-value">{horasEsperadas !== null ? horasEsperadas.toFixed(1) : "—"}</span>
+              <span className="hm-metric-value">{horasEsperadasBackend !== null ? horasEsperadasBackend.toFixed(1) : "—"}</span>
             </div>
             <div className="hm-metric">
-              <span className="hm-metric-label">Balance</span>
+              <span className="hm-metric-label">Horas pendientes</span>
               <span
                 className="hm-metric-value"
                 style={{
@@ -348,12 +354,12 @@ const HojaMonitor = () => {
                   color: balance === null ? undefined : balance < 0 ? "#cc0000" : "#1a7a4a",
                 }}
               >
-                {balance !== null ? `${balance > 0 ? "+" : ""}${balance.toFixed(1)}` : "—"}
+                {balance !== null ? `${balance >= 0 ? "+" : ""}${balance.toFixed(1)}` : "—"}
               </span>
             </div>
             <div className="hm-metric">
-              <span className="hm-metric-label">Horas para finalizar</span>
-              <span className="hm-metric-value">{horasDeuda !== null ? horasDeuda : "—"}</span>
+              <span className="hm-metric-label">Horas faltantes al fin</span>
+              <span className="hm-metric-value">{horasFaltantes !== null ? horasFaltantes : "—"}</span>
             </div>
           </div>
         </Col>

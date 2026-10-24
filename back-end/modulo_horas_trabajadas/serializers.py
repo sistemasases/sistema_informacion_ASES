@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import RegistroHoras, TemporadaTrabajo
+from .models import RegistroHoras, TemporadaTrabajo, NovedadHoras
 from modulo_usuario_rol.models import rol, usuario_rol
 from datetime import timedelta
 
@@ -104,14 +104,30 @@ class RegistroHorasSerializer(serializers.ModelSerializer):
         return value
         
         
+class NovedadHorasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NovedadHoras
+        fields = ['id', 'tipo', 'horas', 'observacion', 'fecha_efectiva']
+        read_only_fields = ['fecha_efectiva']
+
+    def validate_horas(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "La cantidad de horas debe ser mayor a 0."
+            )
+        return value
+
+
 class TemporadaTrabajoSerializer(serializers.ModelSerializer):
+    novedades = NovedadHorasSerializer(many=True, read_only=True)
+
     class Meta:
         model = TemporadaTrabajo
         fields = "__all__"
         read_only_fields = [
             "horas_total_contratadas",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
 
     def validate(self, data):
