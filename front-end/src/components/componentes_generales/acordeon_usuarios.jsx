@@ -457,6 +457,7 @@ const SelectorUsuarios = () => {
                 name="user_first_name"
                 value={newUser.user_first_name}
                 onChange={handleCreateChange}
+                style={{ textTransform: "uppercase" }}
               />
             </Form.Group>
             <Form.Group controlId="createLastName">
@@ -466,6 +467,7 @@ const SelectorUsuarios = () => {
                 name="user_last_name"
                 value={newUser.user_last_name}
                 onChange={handleCreateChange}
+                style={{ textTransform: "uppercase" }}
               />
             </Form.Group>
             <Form.Group controlId="createEmail">
