@@ -174,19 +174,20 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     {"error": "Semestre actual no encontrado para alguna de las sedes."},
                     status=status.HTTP_404_NOT_FOUND
                 )
-            #comprobar si el usuario ya tenia rol y sede activo antes de la edición
-            usuario_rol_sede_anterior = usuario_rol.objects.filter(
+            
+            # Comprobar si el usuario YA tiene CUALQUIER rol activo en el sistema (ya tiene sede y rol)
+            usuario_ya_tenia_rol = usuario_rol.objects.filter(
                 id_usuario=user,
-                id_rol=rol_obj,
-                id_semestre=nuevo_semestre_obj,
                 estado="ACTIVO"
             ).exists()
             
-            
-            # Envio de correo tras asignar sede y rol:
-            if (rol_nombre and rol_nombre != "SIN ROL" \
-                and sede_nombre and sede_nombre != "SIN SEDE" \
-                and not usuario_rol_sede_anterior):
+            #Solo se envia el correo si NO tenía ningún rol (estaod = SIN ROL y SIN SEDE)
+            #y se le asigna rol y sede por primera vez:
+            if (
+                rol_nombre and rol_nombre != "SIN ROL"
+                and sede_nombre and sede_nombre != "SIN SEDE"
+                and not usuario_ya_tenia_rol
+            ):
                 # 1. Reconstruir contraseña en texto plano
                 password_plano = reconstruir_contrasena(user.first_name, user.username, user.last_name)
                 
@@ -201,6 +202,7 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     args=(user, rol_nombre, sede_nombre, password_plano)
                 )
                 thread.start()
+
 
             # CASO 1: El usuario no cambió de sede
             if sede_nombre == old_sede_nombre:
