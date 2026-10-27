@@ -141,7 +141,7 @@ const AcademicoListado = () => {
   };
 
   const resturarTable = () => {
-    setRecords(data);
+    setRecords([]);
     setDates({ initialDate: currentDate(), finalDate: currentDate() });
   };
   return (
