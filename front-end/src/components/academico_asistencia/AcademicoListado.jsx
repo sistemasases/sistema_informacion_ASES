@@ -18,7 +18,7 @@ import { currentDate } from "../../utils/basic_functions";
 const AcademicoListado = () => {
   // Variables de estado
   const [dates, setDates] = useState({
-    initialDate: "2024-09-01",
+    initialDate: currentDate(), //Mostrar fecha actual por defecto
     finalDate: currentDate(),
   });
   const [records, setRecords] = useState([]);
@@ -142,33 +142,54 @@ const AcademicoListado = () => {
 
   const resturarTable = () => {
     setRecords(data);
-    setDates({ initialDate: "2024-09-01", finalDate: currentDate() });
+    setDates({ initialDate: currentDate(), finalDate: currentDate() });
   };
   return (
     <>
       <div className="container_tabla">
-        <input
-          name="initialDate"
-          className="input_lenght"
-          type="date"
-          placeholder="Fecha inicio"
-          value={dates.initialDate}
-          onChange={handleDateChange}
-        />
-        <input
-          name="finalDate"
-          className="input_lenght"
-          type="date"
-          placeholder="Fecha fin"
-          value={dates.finalDate}
-          onChange={handleDateChange}
-        />
-        <button onClick={searchRange} className="btn btn-primary mx-3">
-          Buscar
-        </button>
-        <button onClick={resturarTable} className="btn btn-secondary">
-          Restaurar
-        </button>
+        {/* Contenedor en fila para los filtros y botones */}
+        <div className="d-flex align-items-end gap-3 my-3 flex-wrap">
+          {/* Grupo Fecha inicio */}
+          <div className="d-flex flex-column">
+            <label htmlFor="initialDate" className="form-label mb-1 ">
+              Fecha inicio
+            </label>
+            <input
+              id="initialDate"
+              name="initialDate"
+              className="form-control m-0"
+              style={{ width: "190px" }}
+              type="date"
+              value={dates.initialDate}
+              onChange={handleDateChange}
+            />
+          </div>
+
+          {/* Grupo Fecha fin */}
+          <div className="d-flex flex-column">
+            <label htmlFor="finalDate" className="form-label mb-1 ">
+              Fecha fin
+            </label>
+            <input
+              id="finalDate"
+              name="finalDate"
+              className="form-control m-0"
+              style={{ width: "190px" }}
+              type="date"
+              value={dates.finalDate}
+              onChange={handleDateChange}
+            />
+          </div>
+
+          {/* Botones */}
+          <button onClick={searchRange} className="btn btn-primary">
+            Buscar
+          </button>
+          <button onClick={resturarTable} className="btn btn-success">
+            Limpiar búsqueda
+          </button>
+        </div>
+
         <DataTable
           columns={columns}
           data={records}
@@ -176,6 +197,7 @@ const AcademicoListado = () => {
           paginationPerPage={8}
           fixedHeader
         />
+
         <div>
           <DownloadCSV
             data={download_data}
