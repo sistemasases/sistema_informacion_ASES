@@ -14,6 +14,7 @@ import DataTable from "react-data-table-component";
 import DownloadCSV from "./DownloadCSV";
 import { postData } from "../../service/academico_attendance_requests";
 import { currentDate } from "../../utils/basic_functions";
+import { FaBroom, FaSearch, FaFilter } from "react-icons/fa";
 
 const AcademicoListado = () => {
   // Variables de estado
@@ -23,6 +24,17 @@ const AcademicoListado = () => {
   });
   const [records, setRecords] = useState([]);
   const [data, setData] = useState([]);
+  //Estado para guardar los filtros aplicados
+  const [columnFilters, setColumnFilters] = useState({
+    codigo: "",
+    programa: "",
+    sede: "",
+    nombre_estudiante: "",
+    monitoria: "",
+    sede_monitoria: "",
+    nombre_monitor: "",
+    pertenece_ases: "",
+  });
 
   // Se ejecuta al cargar el componente para mostrar a los estudiantes
   // que asistieron desde 2024-09-01 hasta la fecha actual
@@ -45,54 +57,160 @@ const AcademicoListado = () => {
     getAttendance();
   }, []);
 
+
+  const renderHeaderWithFilter = (title, fieldKey) => (
+    <div
+      className="w-100 "
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "1px",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Título con altura uniforme */}
+      <div
+        style={{
+          height: "30px",
+          minHeight: "30px",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          textAlign: "center",
+          padding: "0 2px 2px 2px",
+          overflow: "hidden",
+        }}
+      >
+        <span
+          style={{
+            fontWeight: 600,
+            fontSize: "12px",
+            lineHeight: "14px",
+            color: "#212529",
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 2,
+            overflow: "hidden",
+            overflowWrap: "anywhere",
+          }}
+        >
+          {title}
+        </span>
+      </div>
+
+      {/* Buscador con tamaño uniforme */}
+      <div className="position-relative">
+        <FaSearch
+          size={10}
+          style={{
+            position: "absolute",
+            left: "8px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "#adb5bd",
+            pointerEvents: "none",
+          }}
+        />
+
+        <input
+          type="text"
+          placeholder="Buscar..."
+          value={columnFilters[fieldKey] || ""}
+          onChange={(e) =>
+            setColumnFilters((prev) => ({
+              ...prev,
+              [fieldKey]: e.target.value,
+            }))
+          }
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          style={{
+            width: "100%",
+            height: "28px",
+            boxSizing: "border-box",
+            padding: "2px 6px 2px 24px",
+            fontSize: "11px",
+            borderRadius: "6px",
+            border: "1px solid #dee2e6",
+            outline: "none",
+            backgroundColor: "#ffffff",
+            color: "#495057",
+          }}
+        />
+      </div>
+    </div>
+  );
+
   // Columnas de la tabla
   const columns = [
     {
-      name: "Codigo del estudiante",
+      name: renderHeaderWithFilter("Codigo del estudiante", "codigo"),
       selector: (row) => row.estudiante_data.cod_univalle,
       sortable: true,
     },
     {
-      name: "Programa",
+      name: renderHeaderWithFilter("Programa", "programa"),
       selector: (row) => row?.estudiante_data?.programas[0]?.cod_univalle,
       sortable: true,
     },
     {
-      name: "Sede",
+      name: renderHeaderWithFilter("Sede", "sede"),
       selector: (row) => row?.estudiante_data?.programas[0]?.sede,
       sortable: true,
     },
     {
-      name: "Nombre del estudiante",
+      name: renderHeaderWithFilter("Nombre del estudiante", "nombre_estudiante"),
       selector: (row) =>
         `${row.estudiante_data.nombre} ${row.estudiante_data.apellido}`,
       sortable: true,
       minWidth: "150px",
     },
     {
-      name: "Monitoría",
+      name: renderHeaderWithFilter("Monitoría", "monitoria"),
       selector: (row) => row.monitoria_data.materia,
       sortable: true,
     },
     {
-      name: "Sede Monitoría",
+      name: renderHeaderWithFilter("Sede Monitoría", "sede_monitoria"),
       selector: (row) => row.monitoria_data.nombre_sede,
       sortable: true,
     },
     {
-      name: "Nombre del monitor",
+      name: renderHeaderWithFilter("Nombre del monitor", "nombre_monitor"),
       selector: (row) =>
         `${row.monitoria_data.nombre_monitor} ${row.monitoria_data.apellido_monitor}`,
       sortable: true,
       minWidth: "150px",
     },
     {
-      name: "Pertenece a ASES",
+      name: renderHeaderWithFilter("Pertenece a ASES", "pertenece_ases"),
       selector: (row) =>
         row.estudiante_data.estudiante_elegible ? "Si" : "No",
       sortable: true,
     },
   ];
+
+  const filteredRecords = (Array.isArray(records) ? records : []).filter((row) => {
+    const codigo = (row?.estudiante_data?.cod_univalle || "").toString().toLowerCase();
+    const programa = (row?.estudiante_data?.programas?.[0]?.cod_univalle || "").toString().toLowerCase();
+    const sede = (row?.estudiante_data?.programas?.[0]?.sede || "").toString().toLowerCase();
+    const nombreEstudiante = `${row?.estudiante_data?.nombre || ""} ${row?.estudiante_data?.apellido || ""}`.toLowerCase();
+    const monitoria = (row?.monitoria_data?.materia || "").toString().toLowerCase();
+    const sedeMonitoria = (row?.monitoria_data?.nombre_sede || "").toString().toLowerCase();
+    const nombreMonitor = `${row?.monitoria_data?.nombre_monitor || ""} ${row?.monitoria_data?.apellido_monitor || ""}`.toLowerCase();
+    const perteneceAses = (row?.estudiante_data?.estudiante_elegible ? "si" : "no").toLowerCase();
+
+    return (
+      codigo.includes(columnFilters.codigo.toLowerCase().trim()) &&
+      programa.includes(columnFilters.programa.toLowerCase().trim()) &&
+      sede.includes(columnFilters.sede.toLowerCase().trim()) &&
+      nombreEstudiante.includes(columnFilters.nombre_estudiante.toLowerCase().trim()) &&
+      monitoria.includes(columnFilters.monitoria.toLowerCase().trim()) &&
+      sedeMonitoria.includes(columnFilters.sede_monitoria.toLowerCase().trim()) &&
+      nombreMonitor.includes(columnFilters.nombre_monitor.toLowerCase().trim()) &&
+      perteneceAses.includes(columnFilters.pertenece_ases.toLowerCase().trim())
+    );
+  });
 
   const download_data = records.map((record) => ({
     ...record,
@@ -134,16 +252,77 @@ const AcademicoListado = () => {
       fecha_ini: dates.initialDate,
       fecha_final: dates.finalDate,
     };
-    // Obtener los registros de asistencia en el rango de fechas seleccionado
-    const filteredRecords = await postData("fecha_asistencia/", dates_range);
-    // Actualizar los registros a mostrar en la tabla
-    setRecords(filteredRecords);
+    try {
+      const res = await postData("fecha_asistencia/", dates_range);
+
+      // Limpia los filtros de las columnas
+      setColumnFilters({
+        codigo: "",
+        programa: "",
+        sede: "",
+        nombre_estudiante: "",
+        monitoria: "",
+        sede_monitoria: "",
+        nombre_monitor: "",
+        pertenece_ases: "",
+      });
+      // Valida si la respuesta es una lista válida
+      if (Array.isArray(res)) {
+        setRecords(res);
+      } else {
+        setRecords([]);
+      }
+    } catch (error) {
+      console.error(error);
+      setRecords([]);
+    }
   };
 
   const resturarTable = () => {
     setRecords([]);
     setDates({ initialDate: currentDate(), finalDate: currentDate() });
+    setColumnFilters({
+      codigo: "",
+      programa: "",
+      sede: "",
+      nombre_estudiante: "",
+      monitoria: "",
+      sede_monitoria: "",
+      nombre_monitor: "",
+      pertenece_ases: "",
+    });
   };
+
+
+  const customStyles = {
+    headRow: {
+      style: {
+        backgroundColor: "#fcfcfd",
+        borderBottom: "1px solid #e9ecef",
+        minHeight: "75px",
+        alignItems: "stretch",
+      },
+    },
+    headCells: {
+      style: {
+        paddingLeft: "8px",
+        paddingRight: "8px",
+        paddingTop: "6px",
+        paddingBottom: "6px",
+        display: "flex",
+        alignItems: "center",
+        overflow: "hidden",
+      },
+    },
+    cells: {
+      style: {
+        paddingLeft: "8px",
+        paddingRight: "8px",
+        fontSize: "12.5px",
+      },
+    },
+  };
+
   return (
     <>
       <div className="container_tabla">
@@ -183,19 +362,23 @@ const AcademicoListado = () => {
 
           {/* Botones */}
           <button onClick={searchRange} className="btn btn-primary">
+            <FaSearch style={{ marginRight: "5px" }} />
             Buscar
           </button>
-          <button onClick={resturarTable} className="btn btn-success">
+          <button onClick={resturarTable} className="btn btn-secondary">
+            <FaBroom style={{ marginRight: "5px" }} />
             Limpiar búsqueda
           </button>
         </div>
 
         <DataTable
           columns={columns}
-          data={records}
+          data={filteredRecords}
           pagination
           paginationPerPage={8}
           fixedHeader
+          customStyles={customStyles}
+          persistTableHead
         />
 
         <div>
