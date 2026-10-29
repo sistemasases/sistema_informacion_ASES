@@ -15,7 +15,7 @@ import DownloadCSV from "./DownloadCSV";
 import { postData } from "../../service/academico_attendance_requests";
 import { currentDate } from "../../utils/basic_functions";
 import { FaBroom, FaSearch, FaFilter } from "react-icons/fa";
-
+import "../../Scss/academico/listado_asistencia.css";
 const AcademicoListado = () => {
   // Variables de estado
   const [dates, setDates] = useState({
@@ -59,83 +59,26 @@ const AcademicoListado = () => {
 
 
   const renderHeaderWithFilter = (title, fieldKey) => (
-    <div
-      className="w-100 "
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "1px",
-      }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {/* Título con altura uniforme */}
-      <div
-        style={{
-          height: "30px",
-          minHeight: "30px",
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          textAlign: "center",
-          padding: "0 2px 2px 2px",
-          overflow: "hidden",
-        }}
-      >
-        <span
-          style={{
-            fontWeight: 600,
-            fontSize: "12px",
-            lineHeight: "14px",
-            color: "#212529",
-            display: "-webkit-box",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 2,
-            overflow: "hidden",
-            overflowWrap: "anywhere",
-          }}
-        >
-          {title}
-        </span>
+    <div className="th-filter">
+      <div className="th-filter__title">
+        <span title={title}>{title}</span>
+        <FaFilter size={10} className="th-filter__icon" />
       </div>
 
-      {/* Buscador con tamaño uniforme */}
-      <div className="position-relative">
-        <FaSearch
-          size={10}
-          style={{
-            position: "absolute",
-            left: "8px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            color: "#adb5bd",
-            pointerEvents: "none",
-          }}
-        />
-
+      <div
+        className="th-filter__field"
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <FaSearch size={10} className="th-filter__search-icon" />
         <input
           type="text"
+          className="th-filter__input"
           placeholder="Buscar..."
           value={columnFilters[fieldKey] || ""}
           onChange={(e) =>
-            setColumnFilters((prev) => ({
-              ...prev,
-              [fieldKey]: e.target.value,
-            }))
+            setColumnFilters((prev) => ({ ...prev, [fieldKey]: e.target.value }))
           }
-          onClick={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-          style={{
-            width: "100%",
-            height: "28px",
-            boxSizing: "border-box",
-            padding: "2px 6px 2px 24px",
-            fontSize: "11px",
-            borderRadius: "6px",
-            border: "1px solid #dee2e6",
-            outline: "none",
-            backgroundColor: "#ffffff",
-            color: "#495057",
-          }}
         />
       </div>
     </div>
@@ -146,47 +89,49 @@ const AcademicoListado = () => {
     {
       name: renderHeaderWithFilter("Codigo del estudiante", "codigo"),
       selector: (row) => row.estudiante_data.cod_univalle,
-      sortable: true,
+      //sortable: true,
+
     },
     {
       name: renderHeaderWithFilter("Programa", "programa"),
       selector: (row) => row?.estudiante_data?.programas[0]?.cod_univalle,
-      sortable: true,
+      //sortable: true,
+
     },
     {
       name: renderHeaderWithFilter("Sede", "sede"),
       selector: (row) => row?.estudiante_data?.programas[0]?.sede,
-      sortable: true,
+      //sortable: true,
+
     },
     {
       name: renderHeaderWithFilter("Nombre del estudiante", "nombre_estudiante"),
       selector: (row) =>
         `${row.estudiante_data.nombre} ${row.estudiante_data.apellido}`,
-      sortable: true,
-      minWidth: "150px",
+      //sortable: true,
+
     },
     {
       name: renderHeaderWithFilter("Monitoría", "monitoria"),
       selector: (row) => row.monitoria_data.materia,
-      sortable: true,
+      //sortable: true,
     },
     {
       name: renderHeaderWithFilter("Sede Monitoría", "sede_monitoria"),
       selector: (row) => row.monitoria_data.nombre_sede,
-      sortable: true,
+      //sortable: true,
     },
     {
       name: renderHeaderWithFilter("Nombre del monitor", "nombre_monitor"),
       selector: (row) =>
         `${row.monitoria_data.nombre_monitor} ${row.monitoria_data.apellido_monitor}`,
-      sortable: true,
-      minWidth: "150px",
+      //sortable: true,
     },
     {
       name: renderHeaderWithFilter("Pertenece a ASES", "pertenece_ases"),
       selector: (row) =>
         row.estudiante_data.estudiante_elegible ? "Si" : "No",
-      sortable: true,
+      //sortable: true,
     },
   ];
 
@@ -295,30 +240,37 @@ const AcademicoListado = () => {
 
 
   const customStyles = {
+    table: { style: { backgroundColor: "transparent" } },
     headRow: {
       style: {
-        backgroundColor: "#fcfcfd",
+        backgroundColor: "#f8f9fb",
         borderBottom: "1px solid #e9ecef",
-        minHeight: "75px",
-        alignItems: "stretch",
       },
     },
     headCells: {
       style: {
-        paddingLeft: "8px",
-        paddingRight: "8px",
-        paddingTop: "6px",
-        paddingBottom: "6px",
-        display: "flex",
-        alignItems: "center",
-        overflow: "hidden",
+        borderRight: "1px solid #eef0f3",
+        "&:last-of-type": { borderRight: "none" },
+      },
+    },
+    rows: {
+      style: {
+        minHeight: "38px",
+        fontSize: "13px",
+        color: "#444b52",
+        backgroundColor: "#ffffff",
+      },
+      stripedStyle: {
+        backgroundColor: "#f6f7f9",
+        color: "#444b52",
       },
     },
     cells: {
       style: {
-        paddingLeft: "8px",
-        paddingRight: "8px",
-        fontSize: "12.5px",
+        padding: "0 10px",
+        fontSize: "13px",
+        borderRight: "1px solid #eef0f3",
+        "&:last-of-type": { borderRight: "none" },
       },
     },
   };
@@ -371,23 +323,28 @@ const AcademicoListado = () => {
           </button>
         </div>
 
-        <DataTable
-          columns={columns}
-          data={filteredRecords}
-          pagination
-          paginationPerPage={8}
-          fixedHeader
-          customStyles={customStyles}
-          persistTableHead
-        />
-
-        <div>
-          <DownloadCSV
-            data={download_data}
-            headers={headers}
-            filename={"asistencia.csv"}
-          />
+        <div className="card-box tabla-card">
+          <div className="tabla-container">
+            <DataTable
+              columns={columns}
+              data={filteredRecords}
+              pagination
+              paginationPerPage={8}
+              fixedHeader
+              striped
+              customStyles={customStyles}
+              persistTableHead
+            />
+            <div>
+              <DownloadCSV
+                data={download_data}
+                headers={headers}
+                filename={"asistencia.csv"}
+              />
+            </div>
+          </div>
         </div>
+
       </div>
     </>
   );

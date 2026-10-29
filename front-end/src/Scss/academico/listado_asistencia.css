@@ -1,0 +1,216 @@
+/* =====================================================
+   CONTENEDOR EXTERNO DE LA TABLA (nuevo)
+   ===================================================== */
+.container_tabla .tabla-container {
+    border: 1px solid #dfe3e8;
+    border-radius: 12px;
+    overflow: hidden;
+    /* recorta cabecera y filas a las esquinas redondeadas */
+    background: #fff;
+    margin-bottom: 32px;
+}
+
+/* Color de la cabecera, como en la foto */
+.container_tabla .rdt_TableHead,
+.container_tabla .rdt_TableHeadRow,
+.container_tabla .rdt_TableCol {
+    background-color: #f8f8fa !important;
+}
+
+.container_tabla .rdt_TableHeadRow {
+    border-bottom: 1px solid #e9ecef !important;
+}
+
+/* =====================================================
+   FILAS INTERCALADAS
+   ===================================================== */
+.container_tabla .rdt_TableBody .rdt_TableRow {
+    background-color: #ffffff;
+}
+
+.container_tabla .rdt_TableBody .rdt_TableRow:nth-of-type(even) {
+    background-color: #f6f7f9;
+}
+
+/* Hover (debe ir después para que gane sobre las filas alternas) */
+.container_tabla .rdt_TableBody .rdt_TableRow:hover {
+    background-color: #eef4ff;
+}
+
+/* =====================================================
+   1. Layout interno de la cabecera de la librería
+   ===================================================== */
+.container_tabla .rdt_TableHeadRow {
+    height: auto !important;
+    min-height: 0 !important;
+    align-items: flex-start !important;
+}
+
+.container_tabla .rdt_TableCol {
+    height: auto !important;
+    align-items: flex-start !important;
+    padding: 8px 10px !important;
+}
+
+/* Contenedor sortable: título + flecha de orden en fila */
+.container_tabla .rdt_TableCol_Sortable {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    cursor: pointer;
+}
+
+/* El bloque del nombre ocupa el espacio disponible */
+.container_tabla .rdt_TableCol_Sortable>div {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: auto !important;
+    overflow: visible !important;
+    white-space: normal !important;
+}
+
+/* Flecha de orden de la librería, a la derecha del título */
+.container_tabla .rdt_TableCol_Sortable>span {
+    order: 2;
+    flex: 0 0 auto;
+    margin: 2px 0 0 4px;
+    font-size: 14px;
+}
+
+/* Este bloque va después del flex y lo pisa (display: block) */
+.container_tabla .rdt_TableCol_Sortable,
+.container_tabla .rdt_TableCol_Sortable>div {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    white-space: normal !important;
+}
+
+
+/* =====================================================
+   2. Cabecera propia: título (hasta 2 líneas)
+   ===================================================== */
+.th-filter {
+    display: grid;
+    grid-template-rows: auto auto;
+    align-content: start;
+    row-gap: 10px;
+    /* espacio entre título y buscador (antes 4px) */
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.th-filter__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 5px;
+    padding: 0;
+}
+
+.container_tabla .th-filter__title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 36px;
+    /* 2 líneas: así todos los buscadores quedan alineados */
+}
+
+.th-filter__title span {
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 10px;
+    color: #212529;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Esta regla tiene mayor especificidad y es la que se aplica al título */
+.container_tabla .th-filter__title span {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    white-space: normal !important;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 400 !important;
+    line-height: 18px;
+    color: #212529;
+}
+
+.th-filter__icon {
+    flex-shrink: 0;
+    margin-left: 6px;
+    color: #6c757d;
+}
+
+
+/* =====================================================
+   3. Buscador por columna
+   ===================================================== */
+.th-filter__field {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.th-filter__search-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+    pointer-events: none;
+}
+
+.th-filter__input {
+    display: block;
+    box-sizing: border-box;
+    width: 100% !important;
+    height: 26px !important;
+    margin: 0 !important;
+    padding: 2px 6px 2px 24px !important;
+    font-size: 11px;
+    line-height: 1.2;
+    color: #495057;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    outline: none;
+}
+
+/* Borde sutil (pisa el border de arriba) */
+.th-filter__input {
+    border: 1px solid #eceef1 !important;
+    background: #fff;
+    box-shadow: none !important;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.th-filter__input::placeholder {
+    color: #b3b7c0;
+}
+
+.th-filter__input:focus {
+    border-color: #c9d6f2 !important;
+    box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.08) !important;
+}
