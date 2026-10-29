@@ -10,6 +10,36 @@
     margin-bottom: 32px;
 }
 
+.tabla-container .mx-auto {
+    margin: 0 !important;
+    width: auto !important;
+}
+
+/* =====================================================
+   CONTENEDOR REDONDEADO DE LAS FECHAS
+   ===================================================== */
+.container_tabla .fechas-container {
+    padding: 10px 14px;
+    background: #fff;
+    border: 1px solid #e5e8ee;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Inputs de fecha: texto más pequeño y esquinas menos redondeadas */
+.container_tabla .fechas-container .form-control {
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #dfe3e8;
+}
+
+/* Contenedor con esquinas más suaves */
+.container_tabla .fechas-container {
+    border-radius: 8px;
+}
+
+
 /* Color de la cabecera, como en la foto */
 .container_tabla .rdt_TableHead,
 .container_tabla .rdt_TableHeadRow,
@@ -29,7 +59,7 @@
 }
 
 .container_tabla .rdt_TableBody .rdt_TableRow:nth-of-type(even) {
-    background-color: #f6f7f9;
+    background-color: #f3f6f7;
 }
 
 /* Hover (debe ir después para que gane sobre las filas alternas) */
@@ -133,7 +163,7 @@
     font-size: 12px;
     font-weight: 600;
     line-height: 10px;
-    color: #212529;
+    color: #0e1c33;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -151,9 +181,9 @@
     margin: 0;
     padding: 0;
     font-size: 14px;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     line-height: 18px;
-    color: #212529;
+    color: #0e1c33 !important;
 }
 
 .th-filter__icon {

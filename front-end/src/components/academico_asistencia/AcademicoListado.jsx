@@ -12,9 +12,10 @@ import { useEffect, useState } from "react";
 import swal from "sweetalert";
 import DataTable from "react-data-table-component";
 import DownloadCSV from "./DownloadCSV";
+import writeXlsxFile from "write-excel-file"
 import { postData } from "../../service/academico_attendance_requests";
 import { currentDate } from "../../utils/basic_functions";
-import { FaBroom, FaSearch, FaFilter } from "react-icons/fa";
+import { FaBroom, FaSearch, FaFilter, FaFileExcel, FaFileCsv } from "react-icons/fa";
 import "../../Scss/academico/listado_asistencia.css";
 const AcademicoListado = () => {
   // Variables de estado
@@ -176,6 +177,95 @@ const AcademicoListado = () => {
     { label: "Fecha", key: "fecha" },
   ];
 
+  // Esquema de columnas para el archivo Excel
+  const schema_asistencia = [
+    {
+      column: "Código del Estudiante",
+      type: String,
+      value: (row) =>
+        row?.estudiante_data?.cod_univalle != null
+          ? String(row.estudiante_data.cod_univalle)
+          : "",
+    },
+    {
+      column: "Programa",
+      type: String,
+      value: (row) =>
+        row?.estudiante_data?.programas?.[0]?.cod_univalle != null
+          ? String(row.estudiante_data.programas[0].cod_univalle)
+          : "",
+    },
+    {
+      column: "Sede",
+      type: String,
+      value: (row) =>
+        row?.estudiante_data?.programas?.[0]?.sede != null
+          ? String(row.estudiante_data.programas[0].sede)
+          : "",
+    },
+    {
+      column: "Nombre del Estudiante",
+      type: String,
+      value: (row) =>
+        `${row?.estudiante_data?.nombre || ""} ${row?.estudiante_data?.apellido || ""}`.trim(),
+    },
+    {
+      column: "Monitoría",
+      type: String,
+      value: (row) =>
+        row?.monitoria_data?.materia != null
+          ? String(row.monitoria_data.materia)
+          : "",
+    },
+    {
+      column: "Sede Monitoría",
+      type: String,
+      value: (row) =>
+        row?.monitoria_data?.nombre_sede != null
+          ? String(row.monitoria_data.nombre_sede)
+          : "",
+    },
+    {
+      column: "Nombre del Monitor",
+      type: String,
+      value: (row) =>
+        `${row?.monitoria_data?.nombre_monitor || ""} ${row?.monitoria_data?.apellido_monitor || ""}`.trim(),
+    },
+    {
+      column: "Pertenece a ASES",
+      type: String,
+      value: (row) => (row?.estudiante_data?.estudiante_elegible ? "Sí" : "No"),
+    },
+    {
+      column: "Fecha",
+      type: String,
+      value: (row) => (row?.fecha != null ? String(row.fecha) : ""),
+    },
+  ];
+
+  const descargarExcel = async () => {
+    if (!filteredRecords || filteredRecords.length === 0) {
+      swal("Atención", "No hay datos en la tabla para descargar", "warning");
+      return;
+    }
+
+    try {
+      const nombreArchivo =
+        dates.initialDate && dates.finalDate
+          ? `Listado_Asistencia_${dates.initialDate}_a_${dates.finalDate}.xlsx`
+          : "Listado_Asistencia.xlsx";
+
+      await writeXlsxFile(filteredRecords, {
+        schema: schema_asistencia,
+        fileName: nombreArchivo,
+      });
+    } catch (error) {
+      console.error("Error al exportar a Excel:", error);
+      swal("Error", "Ocurrió un error al generar el archivo Excel", "error");
+    }
+  };
+
+
   const handleDateChange = (e) =>
     setDates({ ...dates, [e.target.name]: e.target.value });
 
@@ -278,8 +368,7 @@ const AcademicoListado = () => {
   return (
     <>
       <div className="container_tabla">
-        {/* Contenedor en fila para los filtros y botones */}
-        <div className="d-flex align-items-end gap-3 my-3 flex-wrap">
+        <div className="fechas-container d-flex align-items-end gap-3 my-3 flex-wrap">
           {/* Grupo Fecha inicio */}
           <div className="d-flex flex-column">
             <label htmlFor="initialDate" className="form-label mb-1 ">
@@ -323,6 +412,7 @@ const AcademicoListado = () => {
           </button>
         </div>
 
+
         <div className="card-box tabla-card">
           <div className="tabla-container">
             <DataTable
@@ -335,7 +425,11 @@ const AcademicoListado = () => {
               customStyles={customStyles}
               persistTableHead
             />
-            <div>
+            <div className="d-flex justify-content-center align-items-center gap-2 my-3">
+              <button onClick={descargarExcel} className="btn btn-success mb-3">
+                {/* <FaFileExcel style={{ marginRight: "5px" }} /> */}
+                Descargar Excel
+              </button>
               <DownloadCSV
                 data={download_data}
                 headers={headers}
