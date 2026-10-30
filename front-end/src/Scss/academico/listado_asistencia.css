@@ -1,6 +1,18 @@
 /* =====================================================
    CONTENEDOR EXTERNO DE LA TABLA (nuevo)
    ===================================================== */
+.container_tabla {
+    width: 90%;
+    /*porcentaje para la tabla*/
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container_tabla h2 {
+    font-weight: 600;
+    color: #153959
+}
+
 .container_tabla .tabla-container {
     border: 1px solid #dfe3e8;
     border-radius: 12px;

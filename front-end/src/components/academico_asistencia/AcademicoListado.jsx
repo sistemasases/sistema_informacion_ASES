@@ -88,19 +88,23 @@ const AcademicoListado = () => {
   // Columnas de la tabla
   const columns = [
     {
+      name: renderHeaderWithFilter("Fecha de la monitoria", "fecha"),
+      selector: (row) => row.fecha
+    },
+    {
       name: renderHeaderWithFilter("Codigo del estudiante", "codigo"),
       selector: (row) => row.estudiante_data.cod_univalle,
       //sortable: true,
 
     },
     {
-      name: renderHeaderWithFilter("Programa", "programa"),
+      name: renderHeaderWithFilter("Programa del estudiante", "programa"),
       selector: (row) => row?.estudiante_data?.programas[0]?.cod_univalle,
       //sortable: true,
 
     },
     {
-      name: renderHeaderWithFilter("Sede", "sede"),
+      name: renderHeaderWithFilter("Sede del estudiante", "sede"),
       selector: (row) => row?.estudiante_data?.programas[0]?.sede,
       //sortable: true,
 
@@ -113,12 +117,12 @@ const AcademicoListado = () => {
 
     },
     {
-      name: renderHeaderWithFilter("Monitoría", "monitoria"),
+      name: renderHeaderWithFilter("Nombre de monitoría", "monitoria"),
       selector: (row) => row.monitoria_data.materia,
       //sortable: true,
     },
     {
-      name: renderHeaderWithFilter("Sede Monitoría", "sede_monitoria"),
+      name: renderHeaderWithFilter("Sede de monitoría", "sede_monitoria"),
       selector: (row) => row.monitoria_data.nombre_sede,
       //sortable: true,
     },
@@ -368,6 +372,9 @@ const AcademicoListado = () => {
   return (
     <>
       <div className="container_tabla">
+        <div className="mt-1 fw-semibold">
+          <h2>Listado de asistencia</h2>
+        </div>
         <div className="fechas-container d-flex align-items-end gap-3 my-3 flex-wrap">
           {/* Grupo Fecha inicio */}
           <div className="d-flex flex-column">
