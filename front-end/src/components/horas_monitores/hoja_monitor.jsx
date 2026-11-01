@@ -249,7 +249,7 @@ const HojaMonitor = () => {
           {/* ── TARJETA TEMPORADA (solo lectura) ── */}
           <div className="hm-right-card" style={{ marginBottom: "1rem", padding: "0.9rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
-              <span style={{ fontWeight: 800, fontSize: "13px" }}>Temporada de trabajo</span>
+              <span style={{ fontWeight: 800, fontSize: "13px" }}>Periodo de vinculación</span>
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "flex-end" }}>
                 {!temporada && (
                   <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
@@ -346,7 +346,7 @@ const HojaMonitor = () => {
               <span className="hm-metric-value">{horasEsperadasBackend !== null ? horasEsperadasBackend.toFixed(1) : "—"}</span>
             </div>
             <div className="hm-metric">
-              <span className="hm-metric-label">Horas pendientes</span>
+              <span className="hm-metric-label">Horas pendientes por cumplir</span>
               <span
                 className="hm-metric-value"
                 style={{
@@ -358,7 +358,7 @@ const HojaMonitor = () => {
               </span>
             </div>
             <div className="hm-metric">
-              <span className="hm-metric-label">Horas faltantes al fin</span>
+              <span className="hm-metric-label">Horas faltantes a cumplir en el periodo</span>
               <span className="hm-metric-value">{horasFaltantes !== null ? horasFaltantes : "—"}</span>
             </div>
           </div>

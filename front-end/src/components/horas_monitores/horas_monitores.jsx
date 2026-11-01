@@ -335,7 +335,7 @@ const HorasMonitores = () => {
                             cambiar_ruta(`/hoja_monitor/${s.trabajador_id}`);
                           }}
                         >
-                          Hoja trabajador
+                          Hoja monitor
                         </Button>
                       </Col>
                     </Row>
@@ -360,7 +360,7 @@ const HorasMonitores = () => {
               width: "80%",
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
-                <span style={{ fontWeight: 800, fontSize: "13px" }}>Temporada de trabajo</span>
+                <span style={{ fontWeight: 800, fontSize: "13px" }}>Periodo de vinculación</span>
                 <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
                   {!seleccionado.temporada && (
                     <span style={{ background: "#fff8e1", color: "#b8860b", fontSize: "11px", padding: "2px 10px", borderRadius: "6px" }}>Sin registro</span>
@@ -423,7 +423,7 @@ const HorasMonitores = () => {
 
               {seleccionado.temporada && !esPracticante && (
                 <button onClick={abrirModalEditar} style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#fff", cursor: "pointer", fontSize: "13px", fontWeight: 700 }}>
-                  Modificar temporada
+                  Modificar periodo de vinculación
                 </button>
               )}
             </div>
@@ -434,7 +434,7 @@ const HorasMonitores = () => {
             <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <div style={{ background: "#fff", borderRadius: "1rem", padding: "1.5rem", width: "400px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)", maxHeight: "90vh", overflowY: "auto" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                  <span style={{ fontWeight: 800, fontSize: "15px" }}>Modificar temporada</span>
+                  <span style={{ fontWeight: 800, fontSize: "15px" }}>Modificar periodo de vinculación</span>
                   <button onClick={() => setModalTemporada(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px" }}>✕</button>
                 </div>
 
@@ -610,7 +610,7 @@ const HorasMonitores = () => {
               </Col>
             </Row>
             <Row>
-              <Col className="middle_content">Horas faltantes a cumplir</Col>
+              <Col className="middle_content">Horas faltantes a cumplir en el periodo</Col>
               <Col className="middle_content_right" style={{ textAlign: "center" }}>
                 {horasFaltantes !== null ? horasFaltantes.toFixed(1) : "N/D"}
               </Col>

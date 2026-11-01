@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap";
+import { encriptar } from '../../modulos/utilidades_seguridad/utilidades_seguridad';
 import "../../Scss/horas_monitores/registro_horas.css";
 import RegistroHorasService from "../../service/registro_horas_trbajadas/registro_horas_service";
 import obtener_registros_por_trabajador from "../../service/registro_horas_trbajadas/get_all_by_id";
-
-
 
 // esta funcion se encarga de generar los rangos de horas validos
 const generarOpcionesTiempo = () => {
@@ -21,7 +20,6 @@ const generarOpcionesTiempo = () => {
 };
 
 const OPCIONES_TIEMPO = generarOpcionesTiempo();
-
 
 // esta funcion calcula las horas basandose en la seleccion de rangos de el usuario
 const calcularHoras = (inicio, fin) => {
@@ -40,7 +38,6 @@ const formatearFecha = (fechaStr) => {
   return `${day}/${month}/${year}`;
 };
 
-
 const hoy = new Date().toISOString().split("T")[0];
 
 const RegistroHorasForm = () => {
@@ -55,6 +52,11 @@ const RegistroHorasForm = () => {
   const [submitStatus, setSubmitStatus] = useState(null);
   const [temporada, setTemporada] = useState(null);
   const [loadingTemporada, setLoadingTemporada] = useState(true);
+
+  const cambiar_ruta = (e) => {
+    sessionStorage.setItem("path", encriptar(e));
+    window.location.reload();
+  };
 
   useEffect(() => {
     const cargarTemporada = async () => {
@@ -281,7 +283,7 @@ const RegistroHorasForm = () => {
                     name="descripcion"
                     value={form.descripcion}
                     onChange={handleChange}
-                    placeholder="Agrega una nota o descripción sobre las horas de este día..."
+                    placeholder="Descripción de las actividades realizadas..."
                     rows={4}
                     className="rhf-textarea"
                   />
@@ -344,22 +346,33 @@ const RegistroHorasForm = () => {
             <div className="rhf-guide-section rhf-guide-section--red">
               <p className="rhf-guide-section-title">Descripción</p>
               <p className="rhf-guide-section-text">
-                El campo de descripción es opcional. Úsalo para dejar una nota
-                sobre las actividades realizadas o cualquier observación
-                relevante del día.
+                En este campo vas a describir de manera precisa las actividades realizadas durante el encuentro con el estudiante.
               </p>
             </div>
 
             <div className="rhf-guide-section">
               <p className="rhf-guide-section-title">Historial de registros</p>
               <p className="rhf-guide-section-text">
-                Este formulario es solo para agregar nuevos registros. Para
-                consultar o modificar tus registros anteriores dirígete a la vista de{" "}
-                <strong>Hoja de resumen</strong>.
+                Este formulario es solo para agregar nuevos registros. Para consultar o
+                modificar tus registros anteriores dirígete a la vista de{" "}
+                <a
+                  href="#!"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    cambiar_ruta("/hoja_monitor");
+                  }}
+                  style={{
+                    textDecoration: "underline",
+                    color: "#D60909",
+                    fontWeight: "bold",
+                    cursor: "pointer"
+                  }}
+                >
+                  Hoja de resumen
+                </a>.
               </p>
             </div>
 
-            
           </div>
         </Col>
       </Row>
