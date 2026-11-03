@@ -123,7 +123,30 @@ const SelectorUsuarios = () => {
     });
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = (user) => {
+    setSelectedUser({
+      ...user,
+      rol: user.rol === "SIN ROL" ? "" : (user.rol || ""),
+      sede: user.sede === "SIN SEDE" ? "" : (user.sede || ""),
+    });
+    setShowEditModal(true);
+
+    if (!selectedUser?.rol || selectedUser.rol === "SIN ROL") {
+      Swal.fire({
+        title: "Rol requerido",
+        text: "Por favor seleccione un rol válido.",
+        icon: "warning",
+      });
+      return;
+    }
+    if (!selectedUser?.sede || selectedUser.sede === "SIN SEDE") {
+      Swal.fire({
+        title: "Sede requerida",
+        text: "Por favor seleccione una sede válida.",
+        icon: "warning",
+      });
+      return;
+    }
     // console.log(selectedUser);
     const semestre_actual = desencriptarInt(
       sessionStorage.getItem("id_semestre_actual"),
@@ -250,10 +273,10 @@ const SelectorUsuarios = () => {
       wrap: true,
       grow: 0.5,
     },
-    { name: "NOMBRES", selector: (row) => row.nombre, sortable: true },
+    { name: "NOMBRES", selector: (row) => row.nombre?.toUpperCase(), sortable: true },
     {
       name: "APELLIDOS",
-      selector: (row) => row.apellido,
+      selector: (row) => row.apellido?.toUpperCase(),
       sortable: true,
       wrap: true,
     },
@@ -387,7 +410,7 @@ const SelectorUsuarios = () => {
                 value={selectedUser?.rol || ""}
                 onChange={handleEditChange}
               >
-                <option value="">Seleccionar Rol</option>
+                <option value="" hidden>Seleccionar Rol</option>
                 {roles.map((role) => (
                   <option key={role.id} value={role.nombre}>
                     {role.nombre}
@@ -402,7 +425,7 @@ const SelectorUsuarios = () => {
                 value={selectedUser?.sede || ""}
                 onChange={handleEditChange}
               >
-                <option value="">Seleccione una Sede</option>
+                <option value="" hidden>Seleccione una Sede</option>
                 {sede.data_sedes.map((sede) => (
                   <option
                     key={sede.id}
