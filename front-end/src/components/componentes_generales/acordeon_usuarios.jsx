@@ -31,6 +31,7 @@ const SelectorUsuarios = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [initialUser, setInitialUser] = useState(null);
   const [newUser, setNewUser] = useState({
     user_username: "",
     user_first_name: "",
@@ -86,8 +87,29 @@ const SelectorUsuarios = () => {
   const handleRowSelected = ({ selectedRows }) => setSelectedRows(selectedRows);
 
   const handleEdit = (user) => {
-    setSelectedUser(user);
+    const formattedUser = {
+      ...user,
+      rol: user.rol === "SIN ROL" ? "" : (user.rol || ""),
+      sede: user.sede === "SIN SEDE" ? "" : (user.sede || ""),
+      user_password: "", // Contraseña inicia vacía
+    };
+    setSelectedUser(formattedUser);
+    setInitialUser(formattedUser);
     setShowEditModal(true);
+  };
+
+  // Función para identificar si hubo cambios en algún campo
+  const hasChanges = () => {
+    if (!selectedUser || !initialUser) return false;
+    return (
+      (selectedUser.nombre || "") !== (initialUser.nombre || "") ||
+      (selectedUser.apellido || "") !== (initialUser.apellido || "") ||
+      (selectedUser.correo || "") !== (initialUser.correo || "") ||
+      (selectedUser.usuario || "") !== (initialUser.usuario || "") ||
+      (selectedUser.rol || "") !== (initialUser.rol || "") ||
+      (selectedUser.sede || "") !== (initialUser.sede || "") ||
+      Boolean(selectedUser.user_password && selectedUser.user_password.trim() !== "")
+    );
   };
 
   const handleCloseEditModal = () => setShowEditModal(false);
@@ -131,18 +153,32 @@ const SelectorUsuarios = () => {
     });
     setShowEditModal(true);
 
-    if (!selectedUser?.rol || selectedUser.rol === "SIN ROL") {
+    //Identificar si se hicieron cambios
+    if (!hasChanges()) {
       Swal.fire({
-        title: "Rol requerido",
-        text: "Por favor seleccione un rol válido.",
+        title: "Sin cambios",
+        text: "No se han detectado modificaciones en los datos del usuario.",
+        icon: "info",
+      });
+      return;
+    }
+
+    const tieneRol = Boolean(selectedUser?.rol && selectedUser.rol !== "SIN ROL");
+    const tieneSede = Boolean(selectedUser?.sede && selectedUser.sede !== "SIN SEDE");
+    // Si seleccionó rol, la sede pasa a ser obligatoria
+    if (tieneRol && !tieneSede) {
+      Swal.fire({
+        title: "Sede requerida",
+        text: "Al seleccionar un rol, es obligatorio seleccionar una sede.",
         icon: "warning",
       });
       return;
     }
-    if (!selectedUser?.sede || selectedUser.sede === "SIN SEDE") {
+    // (Opcional) Si seleccionó sede pero olvidó el rol
+    if (!tieneRol && tieneSede) {
       Swal.fire({
-        title: "Sede requerida",
-        text: "Por favor seleccione una sede válida.",
+        title: "Rol requerido",
+        text: "Por favor seleccione también un rol para la sede indicada.",
         icon: "warning",
       });
       return;
@@ -419,20 +455,22 @@ const SelectorUsuarios = () => {
               </Form.Control>
             </Form.Group>
             <Form.Group controlId="editSede">
-              <Form.Label>Sede</Form.Label>
+              <Form.Label>
+                Sede {Boolean(selectedUser?.rol && selectedUser.rol !== "SIN ROL") && <span className="text-danger">*</span>}
+              </Form.Label>
               <Form.Select
                 name="sede"
                 value={selectedUser?.sede || ""}
                 onChange={handleEditChange}
+                disabled={!selectedUser?.rol || selectedUser.rol === "SIN ROL"}
               >
-                <option value="" hidden>Seleccione una Sede</option>
+                <option value="" hidden>
+                  {!selectedUser?.rol || selectedUser.rol === "SIN ROL"
+                    ? "Primero seleccione un rol"
+                    : "Seleccione una Sede"}
+                </option>
                 {sede.data_sedes.map((sede) => (
-                  <option
-                    key={sede.id}
-                    id={sede.id}
-                    name={sede.sede}
-                    value={sede.nombre}
-                  >
+                  <option key={sede.id} id={sede.id} name={sede.sede} value={sede.nombre}>
                     {sede.nombre}
                   </option>
                 ))}
@@ -453,7 +491,7 @@ const SelectorUsuarios = () => {
           <Button variant="secondary" onClick={handleCloseEditModal}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleSaveEdit}>
+          <Button variant="primary" onClick={handleSaveEdit} disabled={!hasChanges()}>
             Guardar Cambios
           </Button>
         </Modal.Footer>

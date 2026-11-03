@@ -98,12 +98,16 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
             user.last_name = request.data['apellido']
             user.email = request.data['correo']
             # user.is_active = request.data['estado']
-            user.is_active = True
+            #user.is_active = True
+            #Solo activar si se asigna rol y sede validos
+            rol_nombre = request.data.get('rol')
+            sede_nombre = request.data.get('sede')
+            if rol_nombre and rol_nombre != "SIN ROL" and sede_nombre and sede_nombre != "SIN SEDE":
+                user.is_active = True
+            # Si no tiene rol y sede, no se activa (conserva user.is_active)
             # Obtiene la contraseña si se proporciona
             password = request.data.get('user_password', None)
             if password:
-                # Verifica si se ha proporcionado una nueva contraseña y
-                # actualiza la contraseña
                 user.set_password(request.data['user_password'])
             user.save()
             # return Response({"mensaje": " actualizado exitosamente"})
