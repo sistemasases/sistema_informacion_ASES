@@ -357,6 +357,7 @@ const SelectorUsuarios = () => {
                 name="nombre"
                 value={selectedUser?.nombre || ""}
                 onChange={handleEditChange}
+                style={{ textTransform: "uppercase" }}
               />
             </Form.Group>
             <Form.Group controlId="editLastName">
@@ -366,6 +367,7 @@ const SelectorUsuarios = () => {
                 name="apellido"
                 value={selectedUser?.apellido || ""}
                 onChange={handleEditChange}
+                style={{ textTransform: "uppercase" }}
               />
             </Form.Group>
             <Form.Group controlId="editEmail">
