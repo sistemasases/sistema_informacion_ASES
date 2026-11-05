@@ -60,11 +60,11 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                 last_login=None,
                 is_superuser=False,
                 username=request.data['user_username'],
-                first_name=request.data['user_first_name'],
-                last_name=request.data['user_last_name'],
+                first_name=str(request.data.get('user_first_name', '')).strip().upper(),
+                last_name=str(request.data.get('user_last_name', '')).strip().upper(),
                 email=request.data['user_email'],
                 is_staff=False,
-                is_active=True,
+                is_active=False,
                 date_joined=timezone.now()
             )
             new_user.save()
@@ -94,8 +94,8 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         try:
             user = User.objects.get(id=request.data['id'])
             user.username = request.data['usuario']
-            user.first_name = request.data['nombre']
-            user.last_name = request.data['apellido']
+            user.first_name = str(request.data.get('nombre', '')).strip().upper()
+            user.last_name = str(request.data.get('apellido', '')).strip().upper()
             user.email = request.data['correo']
             # user.is_active = request.data['estado']
             #user.is_active = True
