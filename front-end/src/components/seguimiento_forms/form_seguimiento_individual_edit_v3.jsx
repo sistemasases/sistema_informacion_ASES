@@ -162,6 +162,15 @@ const Seguimiento_individual_edit_v3 = (props) => {
 
   const verificador_datos_basicos = () => {
     if (!!form.fecha) {
+      if (
+        (props.fecha_inicio_semestre && form.fecha < props.fecha_inicio_semestre) ||
+        (props.fecha_fin_semestre && form.fecha > props.fecha_fin_semestre)
+      ) {
+        window.confirm(
+          `La fecha del seguimiento debe estar dentro del rango del semestre actual (${props.fecha_inicio_semestre} a ${props.fecha_fin_semestre}).`
+        );
+        return false;
+      }
       if (!!form.lugar) {
         if (!!form.hora_inicio) {
           if (!!form.hora_finalización) {
@@ -595,21 +604,40 @@ const Seguimiento_individual_edit_v3 = (props) => {
   // Manejo de los checkbox de riesgo
   const handleForm = (e) => {
     const { name, checked, type, value } = e.target;
-  
+
     const match = name.match(/^riesgo_(.+)_(bajo|medio|alto)$/);
-  
+
+    if (name === "fecha" && value) {
+      if (props.fecha_inicio_semestre && value < props.fecha_inicio_semestre) {
+        window.confirm(
+          `La fecha no puede ser anterior al inicio del semestre actual (${props.fecha_inicio_semestre}).`
+        );
+        e.target.value = props.item.fecha || "";
+        set_form((prev) => ({ ...prev, fecha: props.item.fecha }));
+        return;
+      }
+      if (props.fecha_fin_semestre && value > props.fecha_fin_semestre) {
+        window.confirm(
+          `La fecha no puede ser posterior al fin del semestre actual (${props.fecha_fin_semestre}).`
+        );
+        e.target.value = props.item.fecha || "";
+        set_form((prev) => ({ ...prev, fecha: props.item.fecha }));
+        return;
+      }
+    }
+
     if (match) {
       const tipo = match[1]; // individual, familiar, etc.
       const nivel = match[2]; // bajo, medio, alto
-  
+
       const niveles = { bajo: 0, medio: 1, alto: 2 };
-  
+
       // actualizar form
       set_form(prev => ({
         ...prev,
         [`riesgo_${tipo}`]: checked ? niveles[nivel] : null,
       }));
-  
+
       // actualizar checkboxes
       setState(prev => ({
         ...prev,
@@ -617,10 +645,10 @@ const Seguimiento_individual_edit_v3 = (props) => {
         [`riesgo_${tipo}_medio`]: checked && nivel === "medio",
         [`riesgo_${tipo}_alto`]: checked && nivel === "alto",
       }));
-  
+
       return;
     }
-  
+
     // lógica de bloqueo
     const bloqueado =
       limitarSeleccionIndividual(e, state) ||
@@ -628,9 +656,9 @@ const Seguimiento_individual_edit_v3 = (props) => {
       limitarSeleccionAcademico(e, state) ||
       limitarSeleccionEconomico(e, state) ||
       limitarSeleccionVida(e, state);
-  
+
     if (bloqueado) return;
-  
+
     // 🔹 actualización normal
     set_form(prev => ({
       ...prev,
@@ -663,13 +691,13 @@ const Seguimiento_individual_edit_v3 = (props) => {
       ...prevState,
       [prop]: value,
     }));
-  };  
+  };
 
   useEffect(() => {
     if (!props.item || Object.keys(props.item).length === 0) return;
-  
+
     //console.log("Inicializando riesgos", props.item);
-  
+
     const riesgos = [
       "individual",
       "familiar",
@@ -677,13 +705,13 @@ const Seguimiento_individual_edit_v3 = (props) => {
       "economico",
       "vida_universitaria_ciudad"
     ];
-  
+
     riesgos.forEach(tipo => {
       actualizar_riesgo(`riesgo_${tipo}_bajo`, props.item[`riesgo_${tipo}`] === 0);
       actualizar_riesgo(`riesgo_${tipo}_medio`, props.item[`riesgo_${tipo}`] === 1);
       actualizar_riesgo(`riesgo_${tipo}_alto`, props.item[`riesgo_${tipo}`] === 2);
     });
-  
+
   }, [props.item]);
 
   /**
@@ -729,7 +757,8 @@ const Seguimiento_individual_edit_v3 = (props) => {
                 defaultValue={props.item.fecha}
                 name="fecha"
                 onChange={handleForm}
-                min="2025-08-15"
+                min={props.fecha_inicio_semestre}
+                max={props.fecha_fin_semestre}
               />
             </Row>
           </Col>
@@ -2534,8 +2563,8 @@ const Seguimiento_individual_edit_v3 = (props) => {
           <Button variant="link">Descargar CSV</Button>
         </CSVLink>
         {userRole === "super_ases" ||
-        userRole === "profesional" ||
-        userRole === "practicante" ? (
+          userRole === "profesional" ||
+          userRole === "practicante" ? (
           <>
             <Button variant="secondary" onClick={handleShowMail}>
               Envíar observaciones
