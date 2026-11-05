@@ -125,6 +125,15 @@ const Seguimiento_individual_v3_1 = (props) => {
 
   const verificador_datos_basicos = () => {
     if (!!state.fecha) {
+      if (
+        (props.fecha_inicio_semestre && state.fecha < props.fecha_inicio_semestre) ||
+        (props.fecha_fin_semestre && state.fecha > props.fecha_fin_semestre)
+      ) {
+        window.confirm(
+          `La fecha del seguimiento debe estar dentro del rango del semestre actual (${props.fecha_inicio_semestre} a ${props.fecha_fin_semestre}).`
+        );
+        return false;
+      }
       if (!!state.lugar) {
         if (!!state.hora_inicio) {
           if (!!state.hora_finalización) {
@@ -669,6 +678,26 @@ const Seguimiento_individual_v3_1 = (props) => {
 
     const match = name.match(/^riesgo_(.+)_(bajo|medio|alto)$/);
 
+    // Validación si se modifica la fecha
+    if (name === "fecha" && value) {
+      if (props.fecha_inicio_semestre && value < props.fecha_inicio_semestre) {
+        window.confirm(
+          `La fecha no puede ser anterior al inicio del semestre actual (${props.fecha_inicio_semestre}).`
+        );
+        e.target.value = "";
+        set_state((prev) => ({ ...prev, fecha: null }));
+        return;
+      }
+      if (props.fecha_fin_semestre && value > props.fecha_fin_semestre) {
+        window.confirm(
+          `La fecha no puede ser posterior al fin del semestre actual (${props.fecha_fin_semestre}).`
+        );
+        e.target.value = "";
+        set_state((prev) => ({ ...prev, fecha: null }));
+        return;
+      }
+    }
+
     if (match) {
       const tipo = match[1]; // individual, familiar, etc.
       const nivel = match[2]; // bajo, medio, alto
@@ -731,8 +760,10 @@ const Seguimiento_individual_v3_1 = (props) => {
               <Form.Control
                 type="date"
                 name="fecha"
+                value={state.fecha || ""}
                 onChange={handleForm}
-                min="2026-06-01"
+                min={props.fecha_inicio_semestre}
+                max={props.fecha_fin_semestre}
               />
             </Row>
           </Col>

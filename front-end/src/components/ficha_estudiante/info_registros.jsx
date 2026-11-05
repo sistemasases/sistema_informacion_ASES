@@ -145,6 +145,23 @@ const Info_registros = (props) => {
       color: "black", // Cambia el color del texto seleccionado
     }),
   };
+  //Identificar el semestre actual y sus fechas
+  // Obtener el ID del semestre actual desde el sessionStorage
+  const idSemestreActual = desencriptarInt(sessionStorage.getItem("id_semestre_actual"));
+
+  // Encontrar el objeto del semestre actual dentro de los semestres cargados
+  const semestreActual = semestres.data_semestre?.find(
+    (s) => s.id === idSemestreActual || s.semestre_actual === true
+  );
+
+  // Formatear a YYYY-MM-DD (necesario para input type="date")
+  const fechaInicioSemestre = semestreActual?.fecha_inicio
+    ? semestreActual.fecha_inicio.toString().substring(0, 10)
+    : "";
+
+  const fechaFinSemestre = semestreActual?.fecha_fin
+    ? semestreActual.fecha_fin.toString().substring(0, 10)
+    : "";
 
   const actualizar_seguimientos_semestres = (e) => {
     if (!hasEstudiante) return;
@@ -187,6 +204,8 @@ const Info_registros = (props) => {
           handleClose={handleClose}
           handleModalIn={handleModalIn}
           size="lg"
+          fecha_inicio_semestre={fechaInicioSemestre}
+          fecha_fin_semestre={fechaFinSemestre}
         />
       ) : (
         <Seguimiento_individual_v3
@@ -197,6 +216,8 @@ const Info_registros = (props) => {
           handleClose={handleClose}
           handleModalIn={handleModalIn}
           size="lg"
+          fecha_inicio_semestre={fechaInicioSemestre}
+          fecha_fin_semestre={fechaFinSemestre}
         />
       )}
 
@@ -209,7 +230,7 @@ const Info_registros = (props) => {
         handleModal={handleModal}
         size="lg"
       />
-      {}
+      { }
       <div class="d-none d-lg-block col-1">
         <Col></Col>
       </div>
@@ -222,17 +243,17 @@ const Info_registros = (props) => {
             userRole === "profesional" ||
             userRole === "practicante" ||
             userRole === "monitor") && (
-            <Row className="generar_nuevo_reporte">
-              <Button
-                className="boton_nuevo_registro"
-                onClick={handleModal}
-                disabled={!hasEstudiante}
-                title={!hasEstudiante ? "Seleccione un estudiante" : ""}
-              >
-                NUEVO SEGUIMIENTO
-              </Button>
-            </Row>
-          )}
+              <Row className="generar_nuevo_reporte">
+                <Button
+                  className="boton_nuevo_registro"
+                  onClick={handleModal}
+                  disabled={!hasEstudiante}
+                  title={!hasEstudiante ? "Seleccione un estudiante" : ""}
+                >
+                  NUEVO SEGUIMIENTO
+                </Button>
+              </Row>
+            )}
 
           <Row className="riesgos">
             <Col>
@@ -561,58 +582,58 @@ const Info_registros = (props) => {
 
                   {state.data_user["riesgo_vida_universitaria_ciudad"] ===
                     0 && (
-                    <Row className="row_riesgo">
-                      <Col xs={"2"} sm={"2"} className="z_index_2">
-                        <label className="borde_riesgos_bajo">
-                          <label className="button_tipo_riesgo_bajo_2">B</label>
-                        </label>
-                      </Col>
-                      <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                        <label className="button_tipo_riesgo_bajo_texto">
-                          VIDA UNIVERSITARIA
-                        </label>
-                      </Col>
-                    </Row>
-                  )}
+                      <Row className="row_riesgo">
+                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                          <label className="borde_riesgos_bajo">
+                            <label className="button_tipo_riesgo_bajo_2">B</label>
+                          </label>
+                        </Col>
+                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                          <label className="button_tipo_riesgo_bajo_texto">
+                            VIDA UNIVERSITARIA
+                          </label>
+                        </Col>
+                      </Row>
+                    )}
 
                   {state.data_user["riesgo_vida_universitaria_ciudad"] ===
                     1 && (
-                    <Row className="row_riesgo">
-                      <Col xs={"2"} sm={"2"} className="z_index_2">
-                        <label className="borde_riesgos_medio">
-                          <label className="button_tipo_riesgo_medio_2">
-                            M
+                      <Row className="row_riesgo">
+                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                          <label className="borde_riesgos_medio">
+                            <label className="button_tipo_riesgo_medio_2">
+                              M
+                            </label>
                           </label>
-                        </label>
-                      </Col>
-                      <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                        <label className="button_tipo_riesgo_medio_texto">
-                          VIDA UNIVERSITARIA
-                        </label>
-                      </Col>
-                    </Row>
-                  )}
+                        </Col>
+                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                          <label className="button_tipo_riesgo_medio_texto">
+                            VIDA UNIVERSITARIA
+                          </label>
+                        </Col>
+                      </Row>
+                    )}
 
                   {state.data_user["riesgo_vida_universitaria_ciudad"] ===
                     2 && (
-                    <Row className="row_riesgo">
-                      <Col xs={"2"} sm={"2"} className="z_index_2">
-                        <label className="borde_riesgos_alto">
-                          <label className="button_tipo_riesgo_alto_2">A</label>
-                        </label>
-                      </Col>
-                      <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
-                        <label className="button_tipo_riesgo_alto_texto">
-                          VIDA UNIVERSITARIA
-                        </label>
-                      </Col>
-                    </Row>
-                  )}
+                      <Row className="row_riesgo">
+                        <Col xs={"2"} sm={"2"} className="z_index_2">
+                          <label className="borde_riesgos_alto">
+                            <label className="button_tipo_riesgo_alto_2">A</label>
+                          </label>
+                        </Col>
+                        <Col xs={"10"} sm={"10"} className="center_tipos_riesgos">
+                          <label className="button_tipo_riesgo_alto_texto">
+                            VIDA UNIVERSITARIA
+                          </label>
+                        </Col>
+                      </Row>
+                    )}
 
                   {state.data_user["riesgo_vida_universitaria_ciudad"] !== 0 &&
                     state.data_user["riesgo_vida_universitaria_ciudad"] !== 1 &&
                     state.data_user["riesgo_vida_universitaria_ciudad"] !==
-                      2 && (
+                    2 && (
                       <Row className="row_riesgo">
                         <Col xs={"2"} sm={"2"} className="z_index_2">
                           <label className="borde_riesgos_ninguno">
