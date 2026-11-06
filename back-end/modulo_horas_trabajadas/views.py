@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import RegistroHoras, TemporadaTrabajo, NovedadHoras
 from django.contrib.auth.models import User
-from .serializers import RegistroHorasSerializer, TemporadaTrabajoSerializer
+from .serializers import RegistroHorasSerializer, TemporadaTrabajoSerializer, NovedadHorasSerializer
 from django.core.exceptions import ValidationError as DjangoValidationError
 from modulo_usuario_rol.models import usuario_rol
 from modulo_instancia.models import semestre
@@ -766,3 +766,138 @@ class temporada_trabajo_viewset(viewsets.GenericViewSet):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class novedad_horas_viewset(viewsets.GenericViewSet):
+    """Viewset para gestionar las novedades de horas de una temporada.
+
+    Endpoints:
+        DELETE /novedades_horas/<pk>/eliminar_novedad/ - Eliminar una novedad.
+    """
+
+    queryset = NovedadHoras.objects.all()
+    serializer_class = NovedadHorasSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=True, methods=['delete'], url_path='eliminar_novedad')
+    def eliminar_novedad(self, request, pk=None):
+        """Elimina una NovedadHoras y retorna la temporada recalculada.
+
+        Valida que eliminar una adición no deje el total ajustado en negativo.
+
+        Args:
+            pk (int): ID de la NovedadHoras a eliminar.
+
+        Returns:
+            Response: 200 con la temporada actualizada incluyendo métricas calculadas.
+                400 si la eliminación dejaría el total ajustado en negativo.
+                404 si la novedad no existe.
+        """
+        novedad = get_object_or_404(NovedadHoras, pk=pk)
+        temporada = novedad.temporada
+
+        if novedad.tipo == NovedadHoras.ADICION:
+            nuevo_total = temporada.total_horas_ajustadas() - novedad.horas
+            if nuevo_total < 0:
+                return Response(
+                    {
+                        "error": (
+                            f"No es posible eliminar esta adición: el total ajustado "
+                            f"quedaría en {nuevo_total} hrs."
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        novedad.delete()
+        temporada.refresh_from_db()
+        temporada_data = TemporadaTrabajoSerializer(temporada).data
+
+        return Response({
+            **temporada_data,
+            "horasEsperadas":      float(temporada.calcular_horas_esperadas()),
+            "totalHorasAjustadas": float(temporada.total_horas_ajustadas()),
+            "totalAdiciones":      float(temporada.total_adiciones()),
+            "totalDisminuciones":  float(temporada.total_disminuciones()),
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['patch'], url_path='actualizar_novedad')
+    def actualizar_novedad(self, request, pk=None):
+        """Actualiza los campos tipo, horas y observacion de una NovedadHoras.
+
+        Valida que el cambio no deje el total ajustado de la temporada en negativo.
+        La fecha_efectiva (auto_now_add) no es modificable.
+
+        Args:
+            pk (int): ID de la NovedadHoras a actualizar.
+
+        Returns:
+            Response: 200 con la temporada actualizada incluyendo métricas calculadas.
+                400 si los datos son inválidos o el cambio dejaría el total en negativo.
+                404 si la novedad no existe.
+        """
+        novedad = get_object_or_404(NovedadHoras, pk=pk)
+        temporada = novedad.temporada
+
+        new_tipo  = request.data.get('tipo',  novedad.tipo)
+        raw_horas = request.data.get('horas', novedad.horas)
+        new_obs   = request.data.get('observacion', novedad.observacion)
+
+        if new_tipo not in (NovedadHoras.ADICION, NovedadHoras.DISMINUCION):
+            return Response(
+                {"error": "El tipo de novedad debe ser ADICION o DISMINUCION."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            new_horas = Decimal(str(raw_horas))
+        except Exception:
+            return Response(
+                {"error": "El valor de horas no es válido."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_horas <= 0:
+            return Response(
+                {"error": "La cantidad de horas debe ser mayor a 0."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Calcular total hipotético quitando la contribución vieja y añadiendo la nueva
+        total_sin_novedad = temporada.total_horas_ajustadas()
+        if novedad.tipo == NovedadHoras.ADICION:
+            total_sin_novedad -= novedad.horas
+        else:
+            total_sin_novedad += novedad.horas
+
+        if new_tipo == NovedadHoras.ADICION:
+            nuevo_total = total_sin_novedad + new_horas
+        else:
+            nuevo_total = total_sin_novedad - new_horas
+
+        if nuevo_total < 0:
+            return Response(
+                {
+                    "error": (
+                        f"Este cambio dejaría el total ajustado en {nuevo_total} hrs, "
+                        f"lo cual no es válido."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        novedad.tipo        = new_tipo
+        novedad.horas       = new_horas
+        novedad.observacion = new_obs or None
+        novedad.save()
+
+        temporada.refresh_from_db()
+        temporada_data = TemporadaTrabajoSerializer(temporada).data
+
+        return Response({
+            **temporada_data,
+            "horasEsperadas":      float(temporada.calcular_horas_esperadas()),
+            "totalHorasAjustadas": float(temporada.total_horas_ajustadas()),
+            "totalAdiciones":      float(temporada.total_adiciones()),
+            "totalDisminuciones":  float(temporada.total_disminuciones()),
+        }, status=status.HTTP_200_OK)

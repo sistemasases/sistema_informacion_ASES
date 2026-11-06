@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Swal from "sweetalert2";
 import { desencriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 import obtener_registros_por_trabajador from "../../service/registro_horas_trbajadas/get_all_by_id";
 import obtener_festivos_colombia from "../../service/registro_horas_trbajadas/dias_festivos";
 import actualizar_registro from "../../service/registro_horas_trbajadas/actualizar_registro";
 import eliminar_registro from "../../service/registro_horas_trbajadas/eliminar_registro";
+import eliminar_novedad from "../../service/registro_horas_trbajadas/eliminar_novedad";
+import actualizar_novedad from "../../service/registro_horas_trbajadas/actualizar_novedad";
 import "../../Scss/horas_monitores/hoja_monitor.css";
 
 const REGISTROS_POR_PAGINA = 10;
@@ -47,6 +50,10 @@ const HojaMonitor = () => {
     hora_fin: "06:00:00",
     descripcion: "",
   });
+
+  const [showEditNovedad, setShowEditNovedad]       = useState(false);
+  const [selectedNovedad, setSelectedNovedad]       = useState({ id: null, tipo: "", horas: "", observacion: "" });
+  const [loadingEditNovedad, setLoadingEditNovedad] = useState(false);
 
   const [horasActuales, setHorasActuales] = useState(0);
   const [festivosLaborables, setFestivosLaborables] = useState([]);
@@ -110,6 +117,53 @@ const HojaMonitor = () => {
   const horasFaltantes = totalHorasAjustadas !== null
     ? Math.max(0, totalHorasAjustadas - horasActuales).toFixed(1)
     : null;
+
+  const handleEliminarNovedad = async (idNovedad) => {
+    const confirmacion = await Swal.fire({
+      title: "¿Eliminar novedad?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#cc0000",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (!confirmacion.isConfirmed) return;
+
+    const resultado = await eliminar_novedad(idNovedad);
+    if (!resultado) return;
+
+    setTemporada({ ...resultado, novedades: resultado.novedades ?? [] });
+    setHorasEsperadasBackend(resultado.horasEsperadas ?? null);
+    setTotalHorasAjustadas(resultado.totalHorasAjustadas ?? null);
+    setTotalAdiciones(resultado.totalAdiciones ?? null);
+    setTotalDisminuciones(resultado.totalDisminuciones ?? null);
+  };
+
+  const openEditNovedad = (n) => {
+    setSelectedNovedad({ id: n.id, tipo: n.tipo, horas: parseFloat(n.horas).toFixed(1), observacion: n.observacion || "" });
+    setShowEditNovedad(true);
+  };
+
+  const saveEditNovedad = async () => {
+    if (!selectedNovedad.tipo || !selectedNovedad.horas || parseFloat(selectedNovedad.horas) <= 0) return;
+    setLoadingEditNovedad(true);
+    const resultado = await actualizar_novedad(selectedNovedad.id, {
+      tipo: selectedNovedad.tipo,
+      horas: selectedNovedad.horas,
+      observacion: selectedNovedad.observacion || undefined,
+    });
+    setLoadingEditNovedad(false);
+    if (!resultado) return;
+
+    setShowEditNovedad(false);
+    setTemporada({ ...resultado, novedades: resultado.novedades ?? [] });
+    setHorasEsperadasBackend(resultado.horasEsperadas ?? null);
+    setTotalHorasAjustadas(resultado.totalHorasAjustadas ?? null);
+    setTotalAdiciones(resultado.totalAdiciones ?? null);
+    setTotalDisminuciones(resultado.totalDisminuciones ?? null);
+  };
 
   const openDetail = (id) => {
     const r = registros.find((x) => x.id === id);
@@ -291,13 +345,27 @@ const HojaMonitor = () => {
                   const horaStr = dt.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
                   return (
                     <div key={n.id} style={{ marginBottom: "5px", padding: "6px 8px", background: esAdicion ? "#e6f9f0" : "#fff0f0", borderRadius: "6px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                        <span style={{ background: esAdicion ? "#1a7a4a" : "#cc0000", color: "#fff", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, whiteSpace: "nowrap" }}>
-                          {esAdicion ? "Adición" : "Disminución"}
-                        </span>
-                        <span style={{ fontSize: "12px", color: "#333" }}>
-                          {esAdicion ? "+" : "-"}{parseFloat(n.horas).toFixed(1)} horas · {fechaStr} · {horaStr}
-                        </span>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                          <span style={{ background: esAdicion ? "#1a7a4a" : "#cc0000", color: "#fff", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, whiteSpace: "nowrap" }}>
+                            {esAdicion ? "Adición" : "Disminución"}
+                          </span>
+                          <span style={{ fontSize: "12px", color: "#333" }}>
+                            {esAdicion ? "+" : "-"}{parseFloat(n.horas).toFixed(1)} horas · {fechaStr} · {horaStr}
+                          </span>
+                        </div>
+                        {IsProfesional && (
+                          <div style={{ display: "flex", gap: "4px", flexShrink: 0 }}>
+                            <button
+                              onClick={() => openEditNovedad(n)}
+                              style={{ fontSize: "11px", padding: "2px 8px", borderRadius: "4px", background: "#f0f0f0", color: "#333", border: "1px solid #ccc", cursor: "pointer", fontWeight: 700 }}
+                            >Editar</button>
+                            <button
+                              onClick={() => handleEliminarNovedad(n.id)}
+                              style={{ fontSize: "11px", padding: "2px 8px", borderRadius: "4px", background: "#cc0000", color: "#fff", border: "none", cursor: "pointer", fontWeight: 700 }}
+                            >Eliminar</button>
+                          </div>
+                        )}
                       </div>
                       {n.observacion && (
                         <div style={{ fontSize: "11px", color: "#666", marginTop: "3px", paddingLeft: "2px" }}>
@@ -441,6 +509,41 @@ const HojaMonitor = () => {
           <Button variant="secondary" size="sm" onClick={() => setShowDelete(false)} disabled={loadingDelete}>Cancelar</Button>
           <Button variant="danger" size="sm" onClick={confirmDelete} disabled={loadingDelete}>
             {loadingDelete ? "Eliminando..." : "Eliminar"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      {/* MODAL EDITAR NOVEDAD */}
+      <Modal show={showEditNovedad} onHide={() => !loadingEditNovedad && setShowEditNovedad(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ fontSize: "16px", fontWeight: 500 }}>Editar novedad</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className="mb-3">
+            <Col>
+              <Form.Group>
+                <Form.Label className="hm-form-label">Tipo *</Form.Label>
+                <Form.Select value={selectedNovedad.tipo} onChange={(e) => setSelectedNovedad(prev => ({ ...prev, tipo: e.target.value }))}>
+                  <option value="ADICION">Adición</option>
+                  <option value="DISMINUCION">Disminución</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label className="hm-form-label">Horas *</Form.Label>
+                <Form.Control type="number" min={0.1} step={0.5} value={selectedNovedad.horas} onChange={(e) => setSelectedNovedad(prev => ({ ...prev, horas: e.target.value }))} />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Form.Group>
+            <Form.Label className="hm-form-label">Observación (opcional)</Form.Label>
+            <Form.Control as="textarea" rows={2} placeholder="Motivo..." value={selectedNovedad.observacion} onChange={(e) => setSelectedNovedad(prev => ({ ...prev, observacion: e.target.value }))} />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" size="sm" onClick={() => setShowEditNovedad(false)} disabled={loadingEditNovedad}>Cancelar</Button>
+          <Button size="sm" style={{ background: "#D42B2B", border: "none" }} onClick={saveEditNovedad} disabled={loadingEditNovedad}>
+            {loadingEditNovedad ? "Guardando..." : "Guardar cambios"}
           </Button>
         </Modal.Footer>
       </Modal>

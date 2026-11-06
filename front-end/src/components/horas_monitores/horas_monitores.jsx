@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import { Button, Col, Row } from "react-bootstrap";
 import "../../Scss/horas_monitores/horas_monitores.css";
 import Scrollbars from "react-custom-scrollbars-2";
@@ -6,6 +7,8 @@ import { encriptar, desencriptar } from "../../modulos/utilidades_seguridad/util
 import obtener_registros_profesional from "../../service/registro_horas_trbajadas/get_all_profesional";
 import obtener_festivos_colombia from "../../service/registro_horas_trbajadas/dias_festivos";
 import actualizar_temporada_trabajo from "../../service/registro_horas_trbajadas/actualizar_temporada";
+import eliminar_novedad from "../../service/registro_horas_trbajadas/eliminar_novedad";
+import actualizar_novedad from "../../service/registro_horas_trbajadas/actualizar_novedad";
 import obtener_semestre_actual from "../../service/registro_horas_trbajadas/get_semestre_actual";
 
 
@@ -22,6 +25,10 @@ const HorasMonitores = () => {
   const [cargando, setCargando] = useState(true);
   const [cargandoTemporada, setCargandoTemporada] = useState(false);
   const [errorNovedad, setErrorNovedad] = useState("");
+  const [modalEditarNovedad, setModalEditarNovedad] = useState(false);
+  const [novedadEditando, setNovedadEditando]       = useState({ id: null, tipo: "", horas: "", observacion: "" });
+  const [errorEditarNovedad, setErrorEditarNovedad] = useState("");
+  const [cargandoNovedad, setCargandoNovedad]       = useState(false);
   const [formTemporada, setFormTemporada] = useState({
     fecha_inicio: "",
     fecha_fin: "",
@@ -157,6 +164,115 @@ const HorasMonitores = () => {
     }
   };
 
+
+  const handleEliminarNovedad = async (idNovedad) => {
+    const confirmacion = await Swal.fire({
+      title: "¿Eliminar novedad?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#cc0000",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (!confirmacion.isConfirmed) return;
+
+    const resultado = await eliminar_novedad(idNovedad);
+    if (!resultado) return;
+
+    const temporadaActualizada = {
+      id: resultado.id,
+      fecha_inicio: resultado.fecha_inicio,
+      fecha_fin: resultado.fecha_fin,
+      horas_semanales: resultado.horas_semanales,
+      horas_total_contratadas: resultado.horas_total_contratadas,
+      total_festivos_temporada: resultado.total_festivos_temporada,
+      is_default: resultado.is_default,
+      semestre: resultado.semestre,
+      precio_hora: resultado.precio_hora,
+      novedades: resultado.novedades ?? [],
+    };
+
+    setSubordinados((prev) => prev.map((s) =>
+      s.trabajador_id === seleccionado.trabajador_id
+        ? {
+            ...s,
+            temporada: temporadaActualizada,
+            horasEsperadas:      resultado.horasEsperadas      ?? s.horasEsperadas,
+            totalHorasAjustadas: resultado.totalHorasAjustadas ?? s.totalHorasAjustadas,
+            totalAdiciones:      resultado.totalAdiciones      ?? s.totalAdiciones,
+            totalDisminuciones:  resultado.totalDisminuciones  ?? s.totalDisminuciones,
+          }
+        : s
+    ));
+    setSeleccionado((prev) => ({
+      ...prev,
+      temporada: temporadaActualizada,
+      horasEsperadas:      resultado.horasEsperadas      ?? prev.horasEsperadas,
+      totalHorasAjustadas: resultado.totalHorasAjustadas ?? prev.totalHorasAjustadas,
+      totalAdiciones:      resultado.totalAdiciones      ?? prev.totalAdiciones,
+      totalDisminuciones:  resultado.totalDisminuciones  ?? prev.totalDisminuciones,
+    }));
+  };
+
+  const handleAbrirEditarNovedad = (n) => {
+    setNovedadEditando({ id: n.id, tipo: n.tipo, horas: parseFloat(n.horas).toFixed(1), observacion: n.observacion || "" });
+    setErrorEditarNovedad("");
+    setModalEditarNovedad(true);
+  };
+
+  const handleGuardarNovedad = async () => {
+    if (!novedadEditando.tipo || !novedadEditando.horas || parseFloat(novedadEditando.horas) <= 0) {
+      setErrorEditarNovedad("Tipo y cantidad de horas son obligatorios y deben ser mayores a 0.");
+      return;
+    }
+    setErrorEditarNovedad("");
+    setCargandoNovedad(true);
+    const resultado = await actualizar_novedad(novedadEditando.id, {
+      tipo: novedadEditando.tipo,
+      horas: novedadEditando.horas,
+      observacion: novedadEditando.observacion || undefined,
+    });
+    setCargandoNovedad(false);
+    if (!resultado) return;
+
+    setModalEditarNovedad(false);
+
+    const temporadaActualizada = {
+      id: resultado.id,
+      fecha_inicio: resultado.fecha_inicio,
+      fecha_fin: resultado.fecha_fin,
+      horas_semanales: resultado.horas_semanales,
+      horas_total_contratadas: resultado.horas_total_contratadas,
+      total_festivos_temporada: resultado.total_festivos_temporada,
+      is_default: resultado.is_default,
+      semestre: resultado.semestre,
+      precio_hora: resultado.precio_hora,
+      novedades: resultado.novedades ?? [],
+    };
+
+    setSubordinados((prev) => prev.map((s) =>
+      s.trabajador_id === seleccionado.trabajador_id
+        ? {
+            ...s,
+            temporada: temporadaActualizada,
+            horasEsperadas:      resultado.horasEsperadas      ?? s.horasEsperadas,
+            totalHorasAjustadas: resultado.totalHorasAjustadas ?? s.totalHorasAjustadas,
+            totalAdiciones:      resultado.totalAdiciones      ?? s.totalAdiciones,
+            totalDisminuciones:  resultado.totalDisminuciones  ?? s.totalDisminuciones,
+          }
+        : s
+    ));
+    setSeleccionado((prev) => ({
+      ...prev,
+      temporada: temporadaActualizada,
+      horasEsperadas:      resultado.horasEsperadas      ?? prev.horasEsperadas,
+      totalHorasAjustadas: resultado.totalHorasAjustadas ?? prev.totalHorasAjustadas,
+      totalAdiciones:      resultado.totalAdiciones      ?? prev.totalAdiciones,
+      totalDisminuciones:  resultado.totalDisminuciones  ?? prev.totalDisminuciones,
+    }));
+  };
 
   const formatFecha = (fecha) => {
     if (!fecha) return "Fin de semestre";
@@ -402,13 +518,27 @@ const HorasMonitores = () => {
                     const horaStr = dt.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
                     return (
                       <div key={n.id} style={{ marginBottom: "5px", padding: "6px 8px", background: esAdicion ? "#e6f9f0" : "#fff0f0", borderRadius: "6px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                          <span style={{ background: esAdicion ? "#1a7a4a" : "#cc0000", color: "#fff", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, whiteSpace: "nowrap" }}>
-                            {esAdicion ? "Adición" : "Disminución"}
-                          </span>
-                          <span style={{ fontSize: "12px", color: "#333" }}>
-                            {esAdicion ? "+" : "-"}{parseFloat(n.horas).toFixed(1)} horas · {fechaStr} · {horaStr}
-                          </span>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                            <span style={{ background: esAdicion ? "#1a7a4a" : "#cc0000", color: "#fff", padding: "2px 8px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, whiteSpace: "nowrap" }}>
+                              {esAdicion ? "Adición" : "Disminución"}
+                            </span>
+                            <span style={{ fontSize: "12px", color: "#333" }}>
+                              {esAdicion ? "+" : "-"}{parseFloat(n.horas).toFixed(1)} horas · {fechaStr} · {horaStr}
+                            </span>
+                          </div>
+                          {!esPracticante && (
+                            <div style={{ display: "flex", gap: "4px", flexShrink: 0 }}>
+                              <button
+                                onClick={() => handleAbrirEditarNovedad(n)}
+                                style={{ fontSize: "11px", padding: "2px 8px", borderRadius: "4px", background: "#f0f0f0", color: "#333", border: "1px solid #ccc", cursor: "pointer", fontWeight: 700 }}
+                              >Editar</button>
+                              <button
+                                onClick={() => handleEliminarNovedad(n.id)}
+                                style={{ fontSize: "11px", padding: "2px 8px", borderRadius: "4px", background: "#cc0000", color: "#fff", border: "none", cursor: "pointer", fontWeight: 700 }}
+                              >Eliminar</button>
+                            </div>
+                          )}
                         </div>
                         {n.observacion && (
                           <div style={{ fontSize: "11px", color: "#666", marginTop: "3px", paddingLeft: "2px" }}>
@@ -535,6 +665,67 @@ const HorasMonitores = () => {
                     }}
                   >
                     {cargandoTemporada ? "Guardando..." : "Guardar"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── MODAL EDITAR NOVEDAD ── */}
+          {modalEditarNovedad && (
+            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ background: "#fff", borderRadius: "1rem", padding: "1.5rem", width: "360px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                  <span style={{ fontWeight: 800, fontSize: "15px" }}>Editar novedad</span>
+                  <button onClick={() => setModalEditarNovedad(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px" }}>✕</button>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: "0.8rem" }}>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Tipo *</label>
+                    <select
+                      value={novedadEditando.tipo}
+                      onChange={(e) => setNovedadEditando(prev => ({ ...prev, tipo: e.target.value }))}
+                      style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "14px" }}
+                    >
+                      <option value="ADICION">Adición</option>
+                      <option value="DISMINUCION">Disminución</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Horas *</label>
+                    <input
+                      type="number" min={0.1} step={0.5}
+                      value={novedadEditando.horas}
+                      onChange={(e) => setNovedadEditando(prev => ({ ...prev, horas: e.target.value }))}
+                      style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "14px" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: "0.8rem" }}>
+                  <label style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Observación (opcional)</label>
+                  <textarea
+                    rows={2} value={novedadEditando.observacion}
+                    onChange={(e) => setNovedadEditando(prev => ({ ...prev, observacion: e.target.value }))}
+                    placeholder="Motivo..."
+                    style={{ width: "100%", padding: "0.5rem", borderRadius: "0.5rem", border: "1px solid #ccc", boxSizing: "border-box", fontSize: "13px", resize: "vertical" }}
+                  />
+                </div>
+
+                {errorEditarNovedad && (
+                  <div style={{ color: "#cc0000", fontSize: "12px", marginBottom: "0.8rem" }}>{errorEditarNovedad}</div>
+                )}
+
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button onClick={() => setModalEditarNovedad(false)} style={{ flex: 1, padding: "0.6rem", borderRadius: "0.5rem", border: "1px solid #ccc", background: "#f5f5f5", cursor: "pointer", fontWeight: 700 }}>
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleGuardarNovedad} disabled={cargandoNovedad}
+                    style={{ flex: 1, padding: "0.6rem", borderRadius: "0.5rem", border: "none", background: cargandoNovedad ? "#aaa" : "#cc0000", color: "#fff", cursor: cargandoNovedad ? "not-allowed" : "pointer", fontWeight: 700 }}
+                  >
+                    {cargandoNovedad ? "Guardando..." : "Guardar"}
                   </button>
                 </div>
               </div>
