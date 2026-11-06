@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import RegistroHoras, TemporadaTrabajo, NovedadHoras
+from .models import RegistroHoras, TemporadaTrabajo, NovedadHoras, ComentarioRegistro
 from modulo_usuario_rol.models import rol, usuario_rol
 from datetime import timedelta
 
@@ -21,11 +21,24 @@ class UsuarioRolSerializer(serializers.ModelSerializer):
 
 
 
+class ComentarioRegistroSerializer(serializers.ModelSerializer):
+    nombre_autor = serializers.SerializerMethodField()
+
+    def get_nombre_autor(self, obj):
+        return f"{obj.autor.first_name} {obj.autor.last_name}".strip()
+
+    class Meta:
+        model = ComentarioRegistro
+        fields = ['id', 'nombre_autor', 'rol_autor', 'contenido', 'fecha_creacion']
+        read_only_fields = ['fecha_creacion']
+
+
 class RegistroHorasSerializer(serializers.ModelSerializer):
     rol = UsuarioRolSerializer(read_only=True)
     horas_trabajadas = serializers.DecimalField(
         max_digits=4, decimal_places=1, read_only=True
     )
+    comentarios = ComentarioRegistroSerializer(many=True, read_only=True)
 
     class Meta:
         model = RegistroHoras

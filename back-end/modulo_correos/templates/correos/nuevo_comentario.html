@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nuevo comentario en tu hoja de horas</title>
+  </head>
+  <body>
+    <h2 style="color: #cc0000">Nuevo comentario en tu registro de actividades</h2>
+    <p style="color: #000000">
+      Hola <label style="font-weight: 800">{{ nombre_monitor }}</label>, se ha registrado
+      un nuevo comentario en una de tus actividades en el Sistema de Información ASES.
+    </p>
+    <br />
+    <p style="color: #000000">
+      <label style="font-weight: 800">Actividad:</label> {{ descripcion_registro }}<br />
+      <label style="font-weight: 800">Comentario:</label> {{ contenido_comentario }}<br />
+      <label style="font-weight: 800">Realizado por:</label> {{ nombre_autor }} ({{ rol_autor }})<br />
+      <label style="font-weight: 800">Fecha:</label> {{ fecha_comentario }}
+    </p>
+    <br />
+    <p style="color: #000000">
+      Puedes consultar este comentario en tu hoja de horas dentro del sistema.
+    </p>
+  </body>
+</html>

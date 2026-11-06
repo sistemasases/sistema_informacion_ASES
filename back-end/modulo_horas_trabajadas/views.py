@@ -2,9 +2,9 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import RegistroHoras, TemporadaTrabajo, NovedadHoras
+from .models import RegistroHoras, TemporadaTrabajo, NovedadHoras, ComentarioRegistro
 from django.contrib.auth.models import User
-from .serializers import RegistroHorasSerializer, TemporadaTrabajoSerializer, NovedadHorasSerializer
+from .serializers import RegistroHorasSerializer, TemporadaTrabajoSerializer, NovedadHorasSerializer, ComentarioRegistroSerializer
 from django.core.exceptions import ValidationError as DjangoValidationError
 from modulo_usuario_rol.models import usuario_rol
 from modulo_instancia.models import semestre
@@ -14,6 +14,54 @@ from collections import defaultdict
 import datetime
 from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
+
+
+def _enviar_email_comentario(monitor_email, monitor_nombre, descripcion, contenido, nombre_autor, rol_autor, fecha):
+    """Envía notificación por correo al monitor cuando se registra un comentario.
+
+    Usa la misma integración Gmail API que el resto del sistema (token.json en modulo_correos).
+    Los fallos solo se registran en consola — no interrumpen la respuesta HTTP.
+    """
+    try:
+        import base64
+        import os
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        from django.template.loader import render_to_string
+        from google.auth.transport.requests import Request
+        from google.oauth2.credentials import Credentials
+        from googleapiclient.discovery import build
+
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        token_path = os.path.join(base_dir, '..', 'modulo_correos', 'token.json')
+
+        credentials = Credentials.from_authorized_user_file(
+            token_path, scopes=['https://www.googleapis.com/auth/gmail.send']
+        )
+        if credentials.expired and credentials.refresh_token:
+            credentials.refresh(Request())
+
+        service = build('gmail', 'v1', credentials=credentials)
+
+        body = render_to_string('correos/nuevo_comentario.html', {
+            'nombre_monitor':       monitor_nombre,
+            'descripcion_registro': descripcion,
+            'contenido_comentario': contenido,
+            'nombre_autor':         nombre_autor,
+            'rol_autor':            rol_autor,
+            'fecha_comentario':     fecha.strftime('%d/%m/%Y %H:%M') if fecha else '',
+        })
+
+        message = MIMEMultipart()
+        message['to']      = monitor_email
+        message['subject'] = "Nuevo comentario en tu hoja de horas – ASES"
+        message.attach(MIMEText(body, 'html'))
+
+        raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        service.users().messages().send(userId='me', body={'raw': raw}).execute()
+
+    except Exception as e:
+        print(f"[ERROR] No se pudo enviar correo de comentario: {e}")
 
 
 class registros_horas_viewset(viewsets.GenericViewSet):
@@ -194,6 +242,8 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         registros_qs = RegistroHoras.objects.select_related(
             'rol',
             'rol__id_rol'
+        ).prefetch_related(
+            'comentarios__autor'
         ).filter(
             trabajador=trabajador_id,
             fecha__gte=filtro_inicio,
@@ -374,6 +424,60 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             status=status.HTTP_200_OK
         )
 
+    @action(detail=True, methods=['post'], url_path='crear_comentario')
+    def crear_comentario(self, request, pk=None):
+        """Crea un comentario en un registro de horas y notifica al monitor por correo.
+
+        Solo profesionales y practicantes deben usar este endpoint.
+
+        Args:
+            pk (int): ID del RegistroHoras al que se adjunta el comentario.
+            request.data:
+                contenido (str): Texto del comentario (obligatorio).
+
+        Returns:
+            Response: 201 con la lista actualizada de comentarios para ese registro.
+                      400 si el contenido está vacío.
+                      404 si el registro no existe.
+        """
+        registro  = get_object_or_404(RegistroHoras, pk=pk)
+        contenido = request.data.get('contenido', '').strip()
+
+        if not contenido:
+            return Response(
+                {"error": "El comentario no puede estar vacío."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Determinar el rol del autor desde usuario_rol activo
+        ur = usuario_rol.objects.filter(id_usuario=request.user, estado="ACTIVO").order_by('-id').first()
+        rol_nombre = ur.id_rol.nombre.capitalize() if ur else "Usuario"
+
+        comentario = ComentarioRegistro.objects.create(
+            registro=registro,
+            autor=request.user,
+            rol_autor=rol_nombre,
+            contenido=contenido,
+        )
+
+        # Notificar al monitor por correo (fallo silencioso — no bloquea la respuesta)
+        _enviar_email_comentario(
+            monitor_email=registro.trabajador.email,
+            monitor_nombre=f"{registro.trabajador.first_name} {registro.trabajador.last_name}".strip(),
+            descripcion=registro.descripcion or "Sin descripción",
+            contenido=contenido,
+            nombre_autor=f"{request.user.first_name} {request.user.last_name}".strip(),
+            rol_autor=rol_nombre,
+            fecha=comentario.fecha_creacion,
+        )
+
+        # Devolver lista actualizada de comentarios para que el frontend actualice estado
+        comentarios = ComentarioRegistro.objects.filter(registro=registro).order_by('fecha_creacion')
+        return Response(
+            ComentarioRegistroSerializer(comentarios, many=True).data,
+            status=status.HTTP_201_CREATED
+        )
+
     @action(detail=True, methods=['get'], url_path='get_info_profesional')
     def obtener_registros_profesional(self, request, pk=None):
         """Retorna el resumen de horas de todos los subordinados directos e indirectos.
@@ -508,7 +612,9 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             # se aplica por trabajador en el loop siguiente.
             registros_por_trabajador = defaultdict(list)
             ahora = datetime.datetime.now()
-            for r in RegistroHoras.objects.select_related('rol', 'rol__id_rol').filter(
+            for r in RegistroHoras.objects.select_related('rol', 'rol__id_rol').prefetch_related(
+                'comentarios__autor'
+            ).filter(
                 trabajador__in=trabajadores_ids,
                 fecha__gte=fecha_inicio
             ):

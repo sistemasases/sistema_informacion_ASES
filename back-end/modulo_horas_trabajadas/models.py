@@ -209,3 +209,37 @@ class NovedadHoras(models.Model):
         ordering = ['fecha_efectiva']
         verbose_name = "Novedad de horas"
         verbose_name_plural = "Novedades de horas"
+
+
+class ComentarioRegistro(models.Model):
+    """Comentario que un profesional o practicante deja sobre una actividad de un monitor."""
+
+    registro = models.ForeignKey(
+        RegistroHoras,
+        on_delete=models.CASCADE,
+        related_name='comentarios',
+        verbose_name="Registro de horas",
+    )
+    autor = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comentarios_registros',
+        verbose_name="Autor del comentario",
+    )
+    rol_autor = models.CharField(
+        max_length=50,
+        verbose_name="Rol del autor",
+    )
+    contenido = models.TextField(verbose_name="Contenido del comentario")
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de creación",
+    )
+
+    class Meta:
+        ordering = ['fecha_creacion']
+        verbose_name = "Comentario de registro"
+        verbose_name_plural = "Comentarios de registros"
+
+    def __str__(self):
+        return f"Comentario de {self.autor} en registro {self.registro_id}"
