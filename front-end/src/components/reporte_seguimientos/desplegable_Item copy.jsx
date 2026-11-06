@@ -14,6 +14,7 @@ import Seguimiento_individual from "../seguimiento_forms/form_seguimiento_indivi
 import Seguimiento_inasistencia from "../seguimiento_forms/form_inasistencia_sin_boton";
 import Seguimiento_individual_edit_v2 from "../seguimiento_forms/form_seguimiento_individual_edit_v2";
 import Seguimiento_individual_edit_v3 from "../seguimiento_forms/form_seguimiento_individual_edit_v3";
+//import Seguimiento_individual_edit_v3_1 from "../seguimiento_forms/form_seguimiento_individual_edit_v3_1";
 import { desencriptar } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 /**
@@ -22,7 +23,7 @@ import { desencriptar } from "../../modulos/utilidades_seguridad/utilidades_segu
  * @param {Arreglo} updateDataUserSocioedu: Contiene los datos del usuario socioeducativo actualizados
  * @returns Se renderiza un componente que muestra los seguimientos de un usuario socioeducativo
  */
-const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
+const Desplegable_item = ({ item, updateDataUserSocioedu, fecha_inicio_semestre, fecha_fin_semestre, }) => {
   // Inicio de constantes usadas para controlar la apertura y cierre del desplegable
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -35,6 +36,7 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
   const userRole = desencriptar(sessionStorage.getItem("rol"));
   const fechaReferencia = new Date("2024-07-10"); // Fecha desde que corre la versión 2 de la ficha
   const fechaReferenciaV3 = new Date("2025-08-15"); // Fecha desde que corre la versión 3 de la ficha
+  //const fechaReferenciaV3_1 = new Date("2026-07-30")
 
   // Convierte la fecha de item a un objeto Date si es necesario
   const itemFecha = new Date(item.fecha);
@@ -52,8 +54,8 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
     return (
       <>
         {userRole === "vcd_academico" ||
-        userRole === "DIR_PROGRAMA" ||
-        userRole === "DIRECTOR_ACADEMICO" ? (
+          userRole === "DIR_PROGRAMA" ||
+          userRole === "DIRECTOR_ACADEMICO" ? (
           <></>
         ) : (
           <Row className="periodo_activo_o_no">
@@ -70,8 +72,8 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
     return (
       <>
         {userRole === "vcd_academico" ||
-        userRole === "DIR_PROGRAMA" ||
-        userRole === "DIRECTOR_ACADEMICO" ? (
+          userRole === "DIR_PROGRAMA" ||
+          userRole === "DIRECTOR_ACADEMICO" ? (
           <></>
         ) : (
           <Row>
@@ -164,6 +166,8 @@ const Desplegable_item = ({ item, updateDataUserSocioedu }) => {
                   handleClose={handleClose}
                   item={item}
                   size="lg"
+                  fecha_inicio_semestre={fecha_inicio_semestre}
+                  fecha_fin_semestre={fecha_fin_semestre}
                 />
               </>
             )}
