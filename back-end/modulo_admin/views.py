@@ -20,6 +20,11 @@ from modulo_academico.models import monitoria_academica, horario_monitoria
 from modulo_instancia.models import sede, cohorte, semestre
 from modulo_asignacion.models import asignacion
 from modulo_academico.models import monitoria_academica #para la sede
+from modulo_correos.views import enviar_correo_activacion_usuario
+from modulo_correos.utils import reconstruir_contrasena
+
+import threading
+
 from django.shortcuts import get_object_or_404
 
 
@@ -55,11 +60,11 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                 last_login=None,
                 is_superuser=False,
                 username=request.data['user_username'],
-                first_name=request.data['user_first_name'],
-                last_name=request.data['user_last_name'],
+                first_name=str(request.data.get('user_first_name', '')).strip().upper(),
+                last_name=str(request.data.get('user_last_name', '')).strip().upper(),
                 email=request.data['user_email'],
                 is_staff=False,
-                is_active=True,
+                is_active=False,
                 date_joined=timezone.now()
             )
             new_user.save()
@@ -89,16 +94,20 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
         try:
             user = User.objects.get(id=request.data['id'])
             user.username = request.data['usuario']
-            user.first_name = request.data['nombre']
-            user.last_name = request.data['apellido']
+            user.first_name = str(request.data.get('nombre', '')).strip().upper()
+            user.last_name = str(request.data.get('apellido', '')).strip().upper()
             user.email = request.data['correo']
             # user.is_active = request.data['estado']
-            user.is_active = True
+            #user.is_active = True
+            #Solo activar si se asigna rol y sede validos
+            rol_nombre = request.data.get('rol')
+            sede_nombre = request.data.get('sede')
+            if rol_nombre and rol_nombre != "SIN ROL" and sede_nombre and sede_nombre != "SIN SEDE":
+                user.is_active = True
+            # Si no tiene rol y sede, no se activa (conserva user.is_active)
             # Obtiene la contraseña si se proporciona
             password = request.data.get('user_password', None)
             if password:
-                # Verifica si se ha proporcionado una nueva contraseña y
-                # actualiza la contraseña
                 user.set_password(request.data['user_password'])
             user.save()
             # return Response({"mensaje": " actualizado exitosamente"})
@@ -169,6 +178,35 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     {"error": "Semestre actual no encontrado para alguna de las sedes."},
                     status=status.HTTP_404_NOT_FOUND
                 )
+            
+            # Comprobar si el usuario YA tiene CUALQUIER rol activo en el sistema (ya tiene sede y rol)
+            usuario_ya_tenia_rol = usuario_rol.objects.filter(
+                id_usuario=user,
+                estado="ACTIVO"
+            ).exists()
+            
+            #Solo se envia el correo si NO tenía ningún rol (estaod = SIN ROL y SIN SEDE)
+            #y se le asigna rol y sede por primera vez:
+            if (
+                rol_nombre and rol_nombre != "SIN ROL"
+                and sede_nombre and sede_nombre != "SIN SEDE"
+                and not usuario_ya_tenia_rol
+            ):
+                # 1. Reconstruir contraseña en texto plano
+                password_plano = reconstruir_contrasena(user.first_name, user.username, user.last_name)
+                
+                # 2. Opcional: sincronizar la contraseña en la BD si no se proporcionó una manual
+                if not request.data.get('user_password'):
+                    user.set_password(password_plano)
+                    user.save()
+
+                # 3. Disparar el correo en un hilo secundario
+                thread = threading.Thread(
+                    target=enviar_correo_activacion_usuario,
+                    args=(user, rol_nombre, sede_nombre, password_plano)
+                )
+                thread.start()
+
 
             # CASO 1: El usuario no cambió de sede
             if sede_nombre == old_sede_nombre:
@@ -243,7 +281,6 @@ class panel_admin_usuario_viewset(viewsets.ViewSet):
                     id_usuario=user
                 )
                 return Response({"mensaje": "Se ha asignado correctamente el rol al usuario seleccionado"}, status=status.HTTP_201_CREATED)
-
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
