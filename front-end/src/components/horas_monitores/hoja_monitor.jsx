@@ -10,6 +10,7 @@ import actualizar_registro from "../../service/registro_horas_trbajadas/actualiz
 import eliminar_registro from "../../service/registro_horas_trbajadas/eliminar_registro";
 import eliminar_novedad from "../../service/registro_horas_trbajadas/eliminar_novedad";
 import actualizar_novedad from "../../service/registro_horas_trbajadas/actualizar_novedad";
+import crear_comentario from "../../service/registro_horas_trbajadas/crear_comentario";
 import "../../Scss/horas_monitores/hoja_monitor.css";
 
 const REGISTROS_POR_PAGINA = 10;
@@ -54,6 +55,11 @@ const HojaMonitor = () => {
   const [showEditNovedad, setShowEditNovedad]       = useState(false);
   const [selectedNovedad, setSelectedNovedad]       = useState({ id: null, tipo: "", horas: "", observacion: "" });
   const [loadingEditNovedad, setLoadingEditNovedad] = useState(false);
+
+  const [showVerComentarios,  setShowVerComentarios]  = useState(false);
+  const [registroActivo, setRegistroActivo]           = useState(null);
+  const [nuevoComentario, setNuevoComentario]         = useState("");
+  const [loadingComentario, setLoadingComentario]     = useState(false);
 
   const [horasActuales, setHorasActuales] = useState(0);
   const [festivosLaborables, setFestivosLaborables] = useState([]);
@@ -165,6 +171,26 @@ const HojaMonitor = () => {
     setTotalDisminuciones(resultado.totalDisminuciones ?? null);
   };
 
+  const handleGuardarComentario = async () => {
+    if (!nuevoComentario.trim()) return;
+    setLoadingComentario(true);
+    const result = await crear_comentario(registroActivo.id, nuevoComentario.trim());
+    setLoadingComentario(false);
+    if (!result) return;
+
+    setRegistros((prev) =>
+      prev.map((r) => r.id === registroActivo.id ? { ...r, comentarios: result } : r)
+    );
+    setRegistroActivo((prev) => ({ ...prev, comentarios: result }));
+    setNuevoComentario("");
+  };
+
+  const openVerComentarios = (r) => {
+    setRegistroActivo({ id: r.id, descripcion: r.descripcion, comentarios: r.comentarios ?? [] });
+    setNuevoComentario("");
+    setShowVerComentarios(true);
+  };
+
   const openDetail = (id) => {
     const r = registros.find((x) => x.id === id);
     if (!r) return;
@@ -274,13 +300,19 @@ const HojaMonitor = () => {
                     <div className="hm-hours-col">
                       <span className="hm-hours-badge">{parseFloat(r.horas_trabajadas).toFixed(1)}</span>
                     </div>
-                    <div className="hm-actions">
+                    <div className="hm-actions" style={{ flexWrap: "wrap", rowGap: "4px" }}>
                       <button className="hm-btn-icon hm-btn-detail" onClick={() => openDetail(r.id)}>Ver</button>
                       {!IsProfesional && (
                         <>
                           <button className="hm-btn-icon" onClick={() => openEdit(r.id)}>Editar</button>
                           <button className="hm-btn-icon hm-btn-danger" onClick={() => openDelete(r.id)}>Eliminar</button>
                         </>
+                      )}
+                      {IsProfesional && (
+                        <button className="hm-btn-icon" onClick={() => openVerComentarios(r)}>Comentarios</button>
+                      )}
+                      {!IsProfesional && (r.comentarios?.length ?? 0) > 0 && (
+                        <button className="hm-btn-icon" onClick={() => openVerComentarios(r)}>Comentarios</button>
                       )}
                     </div>
                   </div>
@@ -512,6 +544,59 @@ const HojaMonitor = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* MODAL COMENTARIOS */}
+      <Modal show={showVerComentarios} onHide={() => !loadingComentario && setShowVerComentarios(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ fontSize: "16px", fontWeight: 500 }}>Comentarios</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {registroActivo?.descripcion && (
+            <p style={{ fontSize: "12px", color: "#666", marginBottom: "1rem" }}>
+              <strong>Actividad:</strong> {registroActivo.descripcion}
+            </p>
+          )}
+          {(registroActivo?.comentarios ?? []).length === 0 ? (
+            <p style={{ fontSize: "13px", color: "#aaa", textAlign: "center", padding: "0.5rem 0 1rem" }}>Sin comentarios aún.</p>
+          ) : (
+            (registroActivo?.comentarios ?? []).map((c) => {
+              const dt = new Date(c.fecha_creacion);
+              const fechaStr = dt.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" });
+              const horaStr  = dt.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+              return (
+                <div key={c.id} style={{ marginBottom: "0.8rem", padding: "0.6rem 0.8rem", background: "#f5f5f5", borderRadius: "6px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                    <span style={{ fontWeight: 700, fontSize: "13px" }}>{c.nombre_autor}</span>
+                    <span style={{ background: "#cc0000", color: "#fff", fontSize: "10px", padding: "1px 7px", borderRadius: "99px", fontWeight: 700 }}>{c.rol_autor}</span>
+                  </div>
+                  <div style={{ fontSize: "11px", color: "#888", marginBottom: "4px" }}>{fechaStr} · {horaStr}</div>
+                  <div style={{ fontSize: "13px", color: "#333" }}>{c.contenido}</div>
+                </div>
+              );
+            })
+          )}
+          {IsProfesional && (
+            <Form.Group style={{ marginTop: "1rem", borderTop: "1px solid #eee", paddingTop: "0.8rem" }}>
+              <Form.Label className="hm-form-label">Agregar comentario</Form.Label>
+              <Form.Control
+                as="textarea" rows={3}
+                placeholder="Escribe tu comentario..."
+                value={nuevoComentario}
+                onChange={(e) => setNuevoComentario(e.target.value)}
+                disabled={loadingComentario}
+              />
+            </Form.Group>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" size="sm" onClick={() => setShowVerComentarios(false)} disabled={loadingComentario}>Cerrar</Button>
+          {IsProfesional && (
+            <Button size="sm" style={{ background: "#D42B2B", border: "none" }} onClick={handleGuardarComentario} disabled={loadingComentario || !nuevoComentario.trim()}>
+              {loadingComentario ? "Guardando..." : "Guardar comentario"}
+            </Button>
+          )}
+        </Modal.Footer>
+      </Modal>
+
       {/* MODAL EDITAR NOVEDAD */}
       <Modal show={showEditNovedad} onHide={() => !loadingEditNovedad && setShowEditNovedad(false)} centered>
         <Modal.Header closeButton>
