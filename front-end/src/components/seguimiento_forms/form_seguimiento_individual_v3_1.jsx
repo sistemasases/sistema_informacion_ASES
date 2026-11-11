@@ -5,6 +5,7 @@ import Create_Seguimiento from "../../service/create_seguimiento";
 import { CSVLink } from "react-csv";
 import "../../Scss/seguimiento_forms/form_seguimiento_individual_v2.css";
 import {
+  desencriptar,
   desencriptarInt,
   encriptar,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
@@ -21,6 +22,9 @@ const Seguimiento_individual_v3_1 = (props) => {
     );
     window.location.reload();
   };
+
+  const userRole = desencriptar(sessionStorage.getItem("rol"));
+  const esMonitor = userRole === "monitor";
 
   const [state, set_state] = useState({
     fecha: null,
@@ -125,14 +129,16 @@ const Seguimiento_individual_v3_1 = (props) => {
 
   const verificador_datos_basicos = () => {
     if (!!state.fecha) {
-      if (
-        (props.fecha_inicio_semestre && state.fecha < props.fecha_inicio_semestre) ||
-        (props.fecha_fin_semestre && state.fecha > props.fecha_fin_semestre)
-      ) {
-        window.confirm(
-          `La fecha del seguimiento debe estar dentro del rango del semestre actual (${props.fecha_inicio_semestre} a ${props.fecha_fin_semestre}).`
-        );
-        return false;
+      if (esMonitor) {
+        if (
+          (props.fecha_inicio_semestre && state.fecha < props.fecha_inicio_semestre) ||
+          (props.fecha_fin_semestre && state.fecha > props.fecha_fin_semestre)
+        ) {
+          window.confirm(
+            `La fecha del seguimiento debe estar dentro del rango del semestre actual (${props.fecha_inicio_semestre} a ${props.fecha_fin_semestre}).`
+          );
+          return false;
+        }
       }
       if (!!state.lugar) {
         if (!!state.hora_inicio) {
@@ -679,7 +685,7 @@ const Seguimiento_individual_v3_1 = (props) => {
     const match = name.match(/^riesgo_(.+)_(bajo|medio|alto)$/);
 
     // Validación si se modifica la fecha
-    if (name === "fecha" && value) {
+    if (esMonitor && name === "fecha" && value) {
       if (props.fecha_inicio_semestre && value < props.fecha_inicio_semestre) {
         window.confirm(
           `La fecha no puede ser anterior al inicio del semestre actual (${props.fecha_inicio_semestre}).`
@@ -738,7 +744,7 @@ const Seguimiento_individual_v3_1 = (props) => {
     }));
   };
 
-  const userRole = sessionStorage.getItem("rol");
+  //const userRole = sessionStorage.getItem("rol");
 
   return (
     <Modal {...props} size="lg" backdrop="static">
@@ -762,8 +768,8 @@ const Seguimiento_individual_v3_1 = (props) => {
                 name="fecha"
                 value={state.fecha || ""}
                 onChange={handleForm}
-                min={props.fecha_inicio_semestre}
-                max={props.fecha_fin_semestre}
+                min={esMonitor ? props.fecha_inicio_semestre : undefined}
+                max={esMonitor ? props.fecha_fin_semestre : undefined}
               />
             </Row>
           </Col>
