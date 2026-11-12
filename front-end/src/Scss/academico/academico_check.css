@@ -1,6 +1,8 @@
 /* --- Vista Control de Asistencia --- */
 .asistencia-container {
-    max-width: 1400px;
+    /* max-width: 1400px; */
+    width: 90%;
+    height: 90%;
     margin: 0 auto;
     padding: 1.5rem 2rem;
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -105,7 +107,7 @@
 .asistencia-btn-buscar {
     height: 42px;
     background-color: #0066ff !important;
-    border-color: #0066ff !important;
+    border-color: rgba(0, 0, 0, 0.04) !important;
     color: #ffffff !important;
     border-radius: 8px !important;
     font-weight: 600;
@@ -114,7 +116,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 1px 2px rgba(0, 102, 255, 0.2);
+    /*box-shadow: 0 1px 2px rgba(0, 102, 255, 0.2);*/
 }
 
 .asistencia-btn-limpiar {
@@ -151,6 +153,23 @@
     margin-left: 4px;
 }
 
+/* Checkbox moderno idéntico a la imagen */
+.asistencia-checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid #cbd5e1;
+    cursor: pointer;
+    accent-color: #0066ff;
+    /* Color azul de la imagen */
+    transition: all 0.15s ease;
+    vertical-align: middle;
+}
+
+.asistencia-checkbox:hover {
+    border-color: #0066ff;
+}
+
 /* Barra inferior de acciones */
 .asistencia-bottom-card {
     background: #f8fafc;
@@ -160,7 +179,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 1rem;
 }
 
@@ -197,7 +216,7 @@
 
 .asistencia-btn-guardar {
     background-color: #059669 !important;
-    border-color: #059669 !important;
+    border-color: rgba(0, 0, 0, 0.04) !important;
     color: #ffffff !important;
     border-radius: 8px !important;
     font-weight: 600;
@@ -206,6 +225,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    margin-left: 70px !important;
 }
 
 .asistencia-btn-guardar:hover {
@@ -213,8 +233,8 @@
 }
 
 .asistencia-divider-vertical {
-    width: 1px;
-    height: 30px;
+    width: 1.5px;
+    height: 32px;
     background-color: #cbd5e1;
     margin: 0 0.5rem;
 }
@@ -231,7 +251,7 @@
     color: #16a34a !important;
     border-radius: 8px !important;
     font-weight: 600;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     padding: 0.45rem 1rem;
     display: inline-flex;
     align-items: center;
