@@ -16,7 +16,7 @@ from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 
 
-def _enviar_email_comentario(monitor_email, monitor_nombre, descripcion, contenido, nombre_autor, rol_autor, fecha):
+def _enviar_email_comentario(monitor_email, monitor_nombre, descripcion, fecha_actividad, contenido, nombre_autor, rol_autor, fecha):
     """Envía notificación por correo al monitor cuando se registra un comentario.
 
     Usa la misma integración Gmail API que el resto del sistema (token.json en modulo_correos).
@@ -46,6 +46,7 @@ def _enviar_email_comentario(monitor_email, monitor_nombre, descripcion, conteni
         body = render_to_string('correos/nuevo_comentario.html', {
             'nombre_monitor':       monitor_nombre,
             'descripcion_registro': descripcion,
+            'fecha_actividad':      fecha_actividad.strftime('%d/%m/%Y') if fecha_actividad else '',
             'contenido_comentario': contenido,
             'nombre_autor':         nombre_autor,
             'rol_autor':            rol_autor,
@@ -465,6 +466,7 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             monitor_email=registro.trabajador.email,
             monitor_nombre=f"{registro.trabajador.first_name} {registro.trabajador.last_name}".strip(),
             descripcion=registro.descripcion or "Sin descripción",
+            fecha_actividad=registro.fecha,
             contenido=contenido,
             nombre_autor=f"{request.user.first_name} {request.user.last_name}".strip(),
             rol_autor=rol_nombre,
@@ -474,8 +476,59 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         # Devolver lista actualizada de comentarios para que el frontend actualice estado
         comentarios = ComentarioRegistro.objects.filter(registro=registro).order_by('fecha_creacion')
         return Response(
-            ComentarioRegistroSerializer(comentarios, many=True).data,
+            ComentarioRegistroSerializer(comentarios, many=True, context={'request': request}).data,
             status=status.HTTP_201_CREATED
+        )
+
+    @action(detail=True, methods=['delete'], url_path='eliminar_comentario')
+    def eliminar_comentario(self, request, pk=None):
+        """Elimina un comentario de un registro de horas.
+
+        Permisos:
+            - Profesional: puede eliminar comentarios de Profesional o Practicante.
+            - Practicante: solo puede eliminar sus propios comentarios.
+            - Monitor: sin permiso.
+
+        Args:
+            pk (int): ID del RegistroHoras.
+            request.data:
+                comentario_id (int): ID del ComentarioRegistro a eliminar.
+
+        Returns:
+            Response: 200 con la lista actualizada de comentarios.
+                      403 si el usuario no tiene permiso.
+                      404 si el registro o comentario no existen.
+        """
+        registro      = get_object_or_404(RegistroHoras, pk=pk)
+        comentario_id = request.data.get('comentario_id')
+        comentario    = get_object_or_404(ComentarioRegistro, pk=comentario_id, registro=registro)
+
+        ur = usuario_rol.objects.filter(id_usuario=request.user, estado="ACTIVO").order_by('-id').first()
+        rol_nombre = ur.id_rol.nombre.lower() if ur else None
+
+        if rol_nombre == 'profesional':
+            if comentario.rol_autor.lower() not in ('profesional', 'practicante'):
+                return Response(
+                    {"error": "No tienes permiso para eliminar este comentario."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        elif rol_nombre == 'practicante':
+            if comentario.autor != request.user:
+                return Response(
+                    {"error": "Solo puedes eliminar tus propios comentarios."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        else:
+            return Response(
+                {"error": "No tienes permiso para eliminar comentarios."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        comentario.delete()
+        comentarios = ComentarioRegistro.objects.filter(registro=registro).order_by('fecha_creacion')
+        return Response(
+            ComentarioRegistroSerializer(comentarios, many=True, context={'request': request}).data,
+            status=status.HTTP_200_OK
         )
 
     @action(detail=True, methods=['get'], url_path='get_info_profesional')

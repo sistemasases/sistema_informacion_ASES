@@ -337,35 +337,77 @@ const HorasMonitores = () => {
     ? parseFloat((horasActuales - horasEsperadas).toFixed(1))
     : null;
 
-  const agruparPorSemana = (registros) => {
-    const semanas = {};
+  const agruparPorSemana = (registros, fechaInicioTemporada, fechaFinTemporada) => {
+    const fmt = (d) =>
+      `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+
+    // Acumular horas reales por clave de lunes
+    const horasPorSemana = {};
     registros.forEach((r) => {
       const fecha = new Date(r.fecha + "T00:00:00");
-      const diaSemana = fecha.getDay();
-      const diffLunes = (diaSemana === 0 ? -6 : 1 - diaSemana);
+      const dow = fecha.getDay();
       const lunes = new Date(fecha);
-      lunes.setDate(fecha.getDate() + diffLunes);
+      lunes.setDate(fecha.getDate() + (dow === 0 ? -6 : 1 - dow));
       const clave = lunes.toISOString().split("T")[0];
-
-      if (!semanas[clave]) semanas[clave] = 0;
-      semanas[clave] += parseFloat(r.horas_trabajadas);
+      horasPorSemana[clave] = (horasPorSemana[clave] || 0) + parseFloat(r.horas_trabajadas);
     });
 
-    return Object.entries(semanas)
-      .sort(([a], [b]) => new Date(b) - new Date(a))
-      .map(([lunes, total]) => {
-        const fechaLunes = new Date(lunes + "T00:00:00");
-        const fechaDomingo = new Date(fechaLunes);
-        fechaDomingo.setDate(fechaLunes.getDate() + 6);
+    // Sin fecha de inicio de temporada → comportamiento original (solo semanas con horas)
+    if (!fechaInicioTemporada) {
+      return Object.entries(horasPorSemana)
+        .sort(([a], [b]) => new Date(b) - new Date(a))
+        .map(([lunes, total]) => {
+          const fechaLunes = new Date(lunes + "T00:00:00");
+          const fechaDomingo = new Date(fechaLunes);
+          fechaDomingo.setDate(fechaLunes.getDate() + 6);
+          return { rango: `${fmt(fechaLunes)} – ${fmt(fechaDomingo)}`, total };
+        });
+    }
 
-        const fmt = (d) =>
-          `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
+    // Lunes de la semana que contiene fecha_inicio
+    const fechaInicio = new Date(fechaInicioTemporada + "T00:00:00");
+    const dowInicio = fechaInicio.getDay();
+    const startMonday = new Date(fechaInicio);
+    startMonday.setDate(fechaInicio.getDate() + (dowInicio === 0 ? -6 : 1 - dowInicio));
+    startMonday.setHours(0, 0, 0, 0);
 
-        return {
-          rango: `${fmt(fechaLunes)} – ${fmt(fechaDomingo)}`,
-          total,
-        };
+    // Último viernes laboral completado (si hoy es sáb/dom la semana actual cuenta)
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const daysToLastFriday = (hoy.getDay() + 2) % 7; // 0=dom,1=lun,...,6=sáb → distancia al viernes anterior
+    const lastFriday = new Date(hoy);
+    lastFriday.setDate(hoy.getDate() - daysToLastFriday);
+    // Lunes de la semana que contiene ese viernes
+    const cutoffMonday = new Date(lastFriday);
+    cutoffMonday.setDate(lastFriday.getDate() - 4);
+    cutoffMonday.setHours(0, 0, 0, 0);
+
+    // Limitar también por fecha_fin de la temporada si ya pasó
+    let endMonday = cutoffMonday;
+    if (fechaFinTemporada) {
+      const fechaFin = new Date(fechaFinTemporada + "T00:00:00");
+      const dowFin = fechaFin.getDay();
+      const finMonday = new Date(fechaFin);
+      finMonday.setDate(fechaFin.getDate() + (dowFin === 0 ? -6 : 1 - dowFin));
+      finMonday.setHours(0, 0, 0, 0);
+      if (finMonday < cutoffMonday) endMonday = finMonday;
+    }
+
+    // Generar todas las semanas de endMonday → startMonday (descendente)
+    const weeks = [];
+    const current = new Date(endMonday);
+    while (current >= startMonday) {
+      const clave = current.toISOString().split("T")[0];
+      const fechaDomingo = new Date(current);
+      fechaDomingo.setDate(current.getDate() + 6);
+      weeks.push({
+        rango: `${fmt(current)} – ${fmt(fechaDomingo)}`,
+        total: horasPorSemana[clave] || 0,
       });
+      current.setDate(current.getDate() - 7);
+    }
+
+    return weeks;
   };
 
   return (
@@ -821,7 +863,7 @@ const HorasMonitores = () => {
                   Selecciona un trabajador para ver sus registros.
                 </div>
               ) : (
-                agruparPorSemana(seleccionado.registros).map(({ rango, total }) => (
+                agruparPorSemana(seleccionado.registros, seleccionado.temporada?.fecha_inicio, seleccionado.temporada?.fecha_fin).map(({ rango, total }) => (
                   <Row key={rango} className="bottom_content_inside">
                     <Col className="col_bottom_content_inside_left">
                       {rango}

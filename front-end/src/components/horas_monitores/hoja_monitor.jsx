@@ -11,6 +11,9 @@ import eliminar_registro from "../../service/registro_horas_trbajadas/eliminar_r
 import eliminar_novedad from "../../service/registro_horas_trbajadas/eliminar_novedad";
 import actualizar_novedad from "../../service/registro_horas_trbajadas/actualizar_novedad";
 import crear_comentario from "../../service/registro_horas_trbajadas/crear_comentario";
+import eliminar_comentario from "../../service/registro_horas_trbajadas/eliminar_comentario";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import "../../Scss/horas_monitores/hoja_monitor.css";
 
 const REGISTROS_POR_PAGINA = 10;
@@ -191,6 +194,28 @@ const HojaMonitor = () => {
     setShowVerComentarios(true);
   };
 
+  const handleEliminarComentario = async (comentarioId) => {
+    const confirmacion = await Swal.fire({
+      title: "¿Eliminar comentario?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#cc0000",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (!confirmacion.isConfirmed) return;
+
+    const result = await eliminar_comentario(registroActivo.id, comentarioId);
+    if (!result) return;
+
+    setRegistros((prev) =>
+      prev.map((r) => r.id === registroActivo.id ? { ...r, comentarios: result } : r)
+    );
+    setRegistroActivo((prev) => ({ ...prev, comentarios: result }));
+  };
+
   const openDetail = (id) => {
     const r = registros.find((x) => x.id === id);
     if (!r) return;
@@ -309,10 +334,14 @@ const HojaMonitor = () => {
                         </>
                       )}
                       {IsProfesional && (
-                        <button className="hm-btn-icon" onClick={() => openVerComentarios(r)}>Comentarios</button>
+                        <button className="hm-btn-icon" title="Comentarios" style={{ padding: "4px 6px" }} onClick={() => openVerComentarios(r)}>
+                          <ChatBubbleOutlineIcon sx={{ fontSize: 15 }} />
+                        </button>
                       )}
                       {!IsProfesional && (r.comentarios?.length ?? 0) > 0 && (
-                        <button className="hm-btn-icon" onClick={() => openVerComentarios(r)}>Comentarios</button>
+                        <button className="hm-btn-icon" title="Ver comentarios" style={{ padding: "4px 6px" }} onClick={() => openVerComentarios(r)}>
+                          <ChatBubbleOutlineIcon sx={{ fontSize: 15 }} />
+                        </button>
                       )}
                     </div>
                   </div>
@@ -476,7 +505,7 @@ const HojaMonitor = () => {
               <div className="hm-detail-item"><span className="hm-detail-label">Fecha</span><span className="hm-detail-value">{fmtFecha(selectedRegistro.fecha)}</span></div>
               <div className="hm-detail-item"><span className="hm-detail-label">Hora inicio</span><span className="hm-detail-value">{fmtHora(selectedRegistro.hora_inicio)}</span></div>
               <div className="hm-detail-item"><span className="hm-detail-label">Hora fin</span><span className="hm-detail-value">{fmtHora(selectedRegistro.hora_fin)}</span></div>
-              <div className="hm-detail-item"><span className="hm-detail-label">Horas trabajadas</span><span className="hm-detail-value hm-detail-hours">{parseFloat(selectedRegistro.horas_trabajadas).toFixed(1)} hrs</span></div>
+              <div className="hm-detail-item"><span className="hm-detail-label">Horas hechas</span><span className="hm-detail-value hm-detail-hours">{parseFloat(selectedRegistro.horas_trabajadas).toFixed(1)} hrs</span></div>
               <div className="hm-detail-item hm-detail-full"><span className="hm-detail-label">Descripción</span><span className="hm-detail-desc">{selectedRegistro.descripcion || "—"}</span></div>
             </div>
           )}
@@ -562,11 +591,25 @@ const HojaMonitor = () => {
               const dt = new Date(c.fecha_creacion);
               const fechaStr = dt.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" });
               const horaStr  = dt.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+              const rolLower = c.rol_autor.toLowerCase();
+              const badgeColor = rolLower === 'profesional' ? '#1a7a4a' : rolLower === 'practicante' ? '#1976d2' : '#cc0000';
               return (
                 <div key={c.id} style={{ marginBottom: "0.8rem", padding: "0.6rem 0.8rem", background: "#f5f5f5", borderRadius: "6px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                    <span style={{ fontWeight: 700, fontSize: "13px" }}>{c.nombre_autor}</span>
-                    <span style={{ background: "#cc0000", color: "#fff", fontSize: "10px", padding: "1px 7px", borderRadius: "99px", fontWeight: 700 }}>{c.rol_autor}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span style={{ fontWeight: 700, fontSize: "13px" }}>{c.nombre_autor}</span>
+                      <span style={{ background: badgeColor, color: "#fff", fontSize: "10px", padding: "1px 7px", borderRadius: "99px", fontWeight: 700 }}>{c.rol_autor}</span>
+                    </div>
+                    {c.puede_eliminar && (
+                      <button
+                        onClick={() => handleEliminarComentario(c.id)}
+                        disabled={loadingComentario}
+                        title="Eliminar comentario"
+                        style={{ background: "none", border: "none", cursor: "pointer", color: "#cc0000", padding: "2px", display: "flex", alignItems: "center", lineHeight: 1 }}
+                      >
+                        <DeleteOutlineIcon sx={{ fontSize: 17 }} />
+                      </button>
+                    )}
                   </div>
                   <div style={{ fontSize: "11px", color: "#888", marginBottom: "4px" }}>{fechaStr} · {horaStr}</div>
                   <div style={{ fontSize: "13px", color: "#333" }}>{c.contenido}</div>

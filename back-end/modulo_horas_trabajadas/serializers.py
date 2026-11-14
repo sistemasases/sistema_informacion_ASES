@@ -22,14 +22,33 @@ class UsuarioRolSerializer(serializers.ModelSerializer):
 
 
 class ComentarioRegistroSerializer(serializers.ModelSerializer):
-    nombre_autor = serializers.SerializerMethodField()
+    nombre_autor  = serializers.SerializerMethodField()
+    autor_id      = serializers.IntegerField(source='autor.id', read_only=True)
+    puede_eliminar = serializers.SerializerMethodField()
 
     def get_nombre_autor(self, obj):
         return f"{obj.autor.first_name} {obj.autor.last_name}".strip()
 
+    def get_puede_eliminar(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            return False
+        # Cache role in context to avoid one DB query per comment
+        if '_rol_actual' not in self.context:
+            ur = usuario_rol.objects.filter(
+                id_usuario=request.user, estado="ACTIVO"
+            ).order_by('-id').first()
+            self.context['_rol_actual'] = ur.id_rol.nombre.lower() if ur else None
+        rol = self.context['_rol_actual']
+        if rol == 'profesional':
+            return obj.rol_autor.lower() in ('profesional', 'practicante')
+        if rol == 'practicante':
+            return obj.autor.id == request.user.id
+        return False
+
     class Meta:
         model = ComentarioRegistro
-        fields = ['id', 'nombre_autor', 'rol_autor', 'contenido', 'fecha_creacion']
+        fields = ['id', 'nombre_autor', 'autor_id', 'rol_autor', 'contenido', 'fecha_creacion', 'puede_eliminar']
         read_only_fields = ['fecha_creacion']
 
 
