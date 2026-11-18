@@ -2,9 +2,9 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import RegistroHoras, TemporadaTrabajo
+from .models import RegistroHoras, TemporadaTrabajo, NovedadHoras, ComentarioRegistro
 from django.contrib.auth.models import User
-from .serializers import RegistroHorasSerializer, TemporadaTrabajoSerializer
+from .serializers import RegistroHorasSerializer, TemporadaTrabajoSerializer, NovedadHorasSerializer, ComentarioRegistroSerializer
 from django.core.exceptions import ValidationError as DjangoValidationError
 from modulo_usuario_rol.models import usuario_rol
 from modulo_instancia.models import semestre
@@ -14,6 +14,55 @@ from collections import defaultdict
 import datetime
 from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
+
+
+def _enviar_email_comentario(monitor_email, monitor_nombre, descripcion, fecha_actividad, contenido, nombre_autor, rol_autor, fecha):
+    """Envía notificación por correo al monitor cuando se registra un comentario.
+
+    Usa la misma integración Gmail API que el resto del sistema (token.json en modulo_correos).
+    Los fallos solo se registran en consola — no interrumpen la respuesta HTTP.
+    """
+    try:
+        import base64
+        import os
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        from django.template.loader import render_to_string
+        from google.auth.transport.requests import Request
+        from google.oauth2.credentials import Credentials
+        from googleapiclient.discovery import build
+
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        token_path = os.path.join(base_dir, '..', 'modulo_correos', 'token.json')
+
+        credentials = Credentials.from_authorized_user_file(
+            token_path, scopes=['https://www.googleapis.com/auth/gmail.send']
+        )
+        if credentials.expired and credentials.refresh_token:
+            credentials.refresh(Request())
+
+        service = build('gmail', 'v1', credentials=credentials)
+
+        body = render_to_string('correos/nuevo_comentario.html', {
+            'nombre_monitor':       monitor_nombre,
+            'descripcion_registro': descripcion,
+            'fecha_actividad':      fecha_actividad.strftime('%d/%m/%Y') if fecha_actividad else '',
+            'contenido_comentario': contenido,
+            'nombre_autor':         nombre_autor,
+            'rol_autor':            rol_autor,
+            'fecha_comentario':     fecha.strftime('%d/%m/%Y %H:%M') if fecha else '',
+        })
+
+        message = MIMEMultipart()
+        message['to']      = monitor_email
+        message['subject'] = "Nuevo comentario en tu hoja de horas – ASES"
+        message.attach(MIMEText(body, 'html'))
+
+        raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        service.users().messages().send(userId='me', body={'raw': raw}).execute()
+
+    except Exception as e:
+        print(f"[ERROR] No se pudo enviar correo de comentario: {e}")
 
 
 class registros_horas_viewset(viewsets.GenericViewSet):
@@ -173,17 +222,37 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         )
 
         semestre_actual = get_object_or_404(semestre, id=semestre_id)
-        fecha_inicio = semestre_actual.fecha_inicio.date()
+        fecha_inicio_semestre = semestre_actual.fecha_inicio.date()
 
-        registros_filtrados = RegistroHoras.objects.select_related(
+        # ── Obtener temporada para filtrar por su rango ───────────────────
+        temporada_obj = TemporadaTrabajo.objects.prefetch_related(
+            'novedades'
+        ).filter(
+            trabajador_id=trabajador_id,
+            semestre=semestre_actual
+        ).first()
+
+        # Determinar rango de filtrado (temporada si existe, semestre como fallback)
+        if temporada_obj:
+            filtro_inicio = temporada_obj.fecha_inicio
+            filtro_fin = temporada_obj.fecha_fin
+        else:
+            filtro_inicio = fecha_inicio_semestre
+            filtro_fin = None
+
+        registros_qs = RegistroHoras.objects.select_related(
             'rol',
             'rol__id_rol'
+        ).prefetch_related(
+            'comentarios__autor'
         ).filter(
             trabajador=trabajador_id,
-            fecha__gt=fecha_inicio
+            fecha__gte=filtro_inicio,
         )
+        if filtro_fin:
+            registros_qs = registros_qs.filter(fecha__lte=filtro_fin)
 
-        registros_list = list(registros_filtrados)
+        registros_list = list(registros_qs)
         serializer = self.get_serializer(registros_list, many=True)
 
         total_horas = sum(float(r.horas_trabajadas) for r in registros_list)
@@ -195,13 +264,12 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             if datetime.datetime.combine(r.fecha, r.hora_fin) <= ahora
         )
 
-        temporada_obj = TemporadaTrabajo.objects.filter(
-            trabajador_id=trabajador_id,
-            semestre=semestre_actual
-        ).first()
-
         temporada_data = None
         if temporada_obj:
+            from .serializers import NovedadHorasSerializer
+            novedades_data = NovedadHorasSerializer(
+                temporada_obj.novedades.all(), many=True
+            ).data
             temporada_data = {
                 "id": temporada_obj.id,
                 "fecha_inicio": str(temporada_obj.fecha_inicio),
@@ -212,7 +280,13 @@ class registros_horas_viewset(viewsets.GenericViewSet):
                 "precio_hora": temporada_obj.precio_hora,
                 "is_default": temporada_obj.is_default,
                 "semestre": semestre_actual.nombre,
+                "novedades": novedades_data,
             }
+
+        horas_esperadas = float(temporada_obj.calcular_horas_esperadas()) if temporada_obj else None
+        total_horas_ajustadas = float(temporada_obj.total_horas_ajustadas()) if temporada_obj else None
+        total_adiciones = float(temporada_obj.total_adiciones()) if temporada_obj else None
+        total_disminuciones = float(temporada_obj.total_disminuciones()) if temporada_obj else None
 
         return Response({
             "registros": serializer.data,
@@ -220,6 +294,10 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             "total_horas": total_horas,
             "horas_actuales": horas_actuales,
             "temporada": temporada_data,
+            "horasEsperadas": horas_esperadas,
+            "totalHorasAjustadas": total_horas_ajustadas,
+            "totalAdiciones": total_adiciones,
+            "totalDisminuciones": total_disminuciones,
         }, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'], url_path='actualizar_registro')
@@ -347,6 +425,112 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             status=status.HTTP_200_OK
         )
 
+    @action(detail=True, methods=['post'], url_path='crear_comentario')
+    def crear_comentario(self, request, pk=None):
+        """Crea un comentario en un registro de horas y notifica al monitor por correo.
+
+        Solo profesionales y practicantes deben usar este endpoint.
+
+        Args:
+            pk (int): ID del RegistroHoras al que se adjunta el comentario.
+            request.data:
+                contenido (str): Texto del comentario (obligatorio).
+
+        Returns:
+            Response: 201 con la lista actualizada de comentarios para ese registro.
+                      400 si el contenido está vacío.
+                      404 si el registro no existe.
+        """
+        registro  = get_object_or_404(RegistroHoras, pk=pk)
+        contenido = request.data.get('contenido', '').strip()
+
+        if not contenido:
+            return Response(
+                {"error": "El comentario no puede estar vacío."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Determinar el rol del autor desde usuario_rol activo
+        ur = usuario_rol.objects.filter(id_usuario=request.user, estado="ACTIVO").order_by('-id').first()
+        rol_nombre = ur.id_rol.nombre.capitalize() if ur else "Usuario"
+
+        comentario = ComentarioRegistro.objects.create(
+            registro=registro,
+            autor=request.user,
+            rol_autor=rol_nombre,
+            contenido=contenido,
+        )
+
+        # Notificar al monitor por correo (fallo silencioso — no bloquea la respuesta)
+        _enviar_email_comentario(
+            monitor_email=registro.trabajador.email,
+            monitor_nombre=f"{registro.trabajador.first_name} {registro.trabajador.last_name}".strip(),
+            descripcion=registro.descripcion or "Sin descripción",
+            fecha_actividad=registro.fecha,
+            contenido=contenido,
+            nombre_autor=f"{request.user.first_name} {request.user.last_name}".strip(),
+            rol_autor=rol_nombre,
+            fecha=comentario.fecha_creacion,
+        )
+
+        # Devolver lista actualizada de comentarios para que el frontend actualice estado
+        comentarios = ComentarioRegistro.objects.filter(registro=registro).order_by('fecha_creacion')
+        return Response(
+            ComentarioRegistroSerializer(comentarios, many=True, context={'request': request}).data,
+            status=status.HTTP_201_CREATED
+        )
+
+    @action(detail=True, methods=['delete'], url_path='eliminar_comentario')
+    def eliminar_comentario(self, request, pk=None):
+        """Elimina un comentario de un registro de horas.
+
+        Permisos:
+            - Profesional: puede eliminar comentarios de Profesional o Practicante.
+            - Practicante: solo puede eliminar sus propios comentarios.
+            - Monitor: sin permiso.
+
+        Args:
+            pk (int): ID del RegistroHoras.
+            request.data:
+                comentario_id (int): ID del ComentarioRegistro a eliminar.
+
+        Returns:
+            Response: 200 con la lista actualizada de comentarios.
+                      403 si el usuario no tiene permiso.
+                      404 si el registro o comentario no existen.
+        """
+        registro      = get_object_or_404(RegistroHoras, pk=pk)
+        comentario_id = request.data.get('comentario_id')
+        comentario    = get_object_or_404(ComentarioRegistro, pk=comentario_id, registro=registro)
+
+        ur = usuario_rol.objects.filter(id_usuario=request.user, estado="ACTIVO").order_by('-id').first()
+        rol_nombre = ur.id_rol.nombre.lower() if ur else None
+
+        if rol_nombre == 'profesional':
+            if comentario.rol_autor.lower() not in ('profesional', 'practicante'):
+                return Response(
+                    {"error": "No tienes permiso para eliminar este comentario."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        elif rol_nombre == 'practicante':
+            if comentario.autor != request.user:
+                return Response(
+                    {"error": "Solo puedes eliminar tus propios comentarios."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        else:
+            return Response(
+                {"error": "No tienes permiso para eliminar comentarios."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        comentario.delete()
+        comentarios = ComentarioRegistro.objects.filter(registro=registro).order_by('fecha_creacion')
+        return Response(
+            ComentarioRegistroSerializer(comentarios, many=True, context={'request': request}).data,
+            status=status.HTTP_200_OK
+        )
+
     @action(detail=True, methods=['get'], url_path='get_info_profesional')
     def obtener_registros_profesional(self, request, pk=None):
         """Retorna el resumen de horas de todos los subordinados directos e indirectos.
@@ -377,6 +561,20 @@ class registros_horas_viewset(viewsets.GenericViewSet):
         num_festivos = int(request.query_params.get('dias_festivos', 0) or 0)
 
         try:
+            # ── validar que el usuario tenga rol profesional o practicante ──
+            rol_activo = usuario_rol.objects.filter(
+                id_usuario=request.user,
+                estado="ACTIVO"
+            ).select_related('id_rol').first()
+
+            if not rol_activo or rol_activo.id_rol.nombre not in ["profesional", "practicante"]:
+                return Response(
+                    {"error": "No tiene permisos para acceder a esta vista."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            es_practicante = rol_activo.id_rol.nombre == "practicante"
+
             # ── subordinados via usuario_rol (incluye los sin horas) ──
             ids_nivel1 = list(
                 usuario_rol.objects.filter(
@@ -388,14 +586,16 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             if not ids_nivel1:
                 return Response([], status=status.HTTP_200_OK)
 
-            ids_nivel2 = list(
-                usuario_rol.objects.filter(
-                    id_jefe__in=ids_nivel1,
-                    estado="ACTIVO"
-                ).values_list('id_usuario_id', flat=True)
-            )
-
-            trabajadores_ids = list(set(ids_nivel1 + ids_nivel2))
+            if es_practicante:
+                trabajadores_ids = ids_nivel1
+            else:
+                ids_nivel2 = list(
+                    usuario_rol.objects.filter(
+                        id_jefe__in=ids_nivel1,
+                        estado="ACTIVO"
+                    ).values_list('id_usuario_id', flat=True)
+                )
+                trabajadores_ids = list(set(ids_nivel1 + ids_nivel2))
 
             # ── semestre ──────────────────────────────────────────────
             if not semestre_id:
@@ -446,7 +646,9 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             # ── traer TODAS las temporadas en una sola query ──────────
             temporadas_map = {
                 t.trabajador_id: t
-                for t in TemporadaTrabajo.objects.select_related('semestre').filter(
+                for t in TemporadaTrabajo.objects.select_related('semestre').prefetch_related(
+                    'novedades'
+                ).filter(
                     trabajador_id__in=trabajadores_ids,
                     semestre=semestre_obj
                 )
@@ -459,49 +661,74 @@ class registros_horas_viewset(viewsets.GenericViewSet):
             }
 
             # ── traer TODOS los registros en una sola query y agrupar en memoria ──
+            # Se trae desde el inicio del semestre; el filtro por rango de temporada
+            # se aplica por trabajador en el loop siguiente.
             registros_por_trabajador = defaultdict(list)
-            horas_por_trabajador = defaultdict(float)
-            horas_actuales_por_trabajador = defaultdict(float)
             ahora = datetime.datetime.now()
-            for r in RegistroHoras.objects.select_related('rol', 'rol__id_rol').filter(
+            for r in RegistroHoras.objects.select_related('rol', 'rol__id_rol').prefetch_related(
+                'comentarios__autor'
+            ).filter(
                 trabajador__in=trabajadores_ids,
                 fecha__gte=fecha_inicio
             ):
                 registros_por_trabajador[r.trabajador_id].append(r)
-                horas_por_trabajador[r.trabajador_id] += float(r.horas_trabajadas)
-                if datetime.datetime.combine(r.fecha, r.hora_fin) <= ahora:
-                    horas_actuales_por_trabajador[r.trabajador_id] += float(r.horas_trabajadas)
 
             # ── armar respuesta ───────────────────────────────────────
+            from .serializers import NovedadHorasSerializer
             subordinados_info = []
 
             for trabajador_id in trabajadores_ids:
-                regs = registros_por_trabajador.get(trabajador_id, [])
+                todos_regs = registros_por_trabajador.get(trabajador_id, [])
+                temporada = temporadas_map.get(trabajador_id)
+
+                # Filtrar registros por rango de la temporada
+                if temporada:
+                    regs = [
+                        r for r in todos_regs
+                        if r.fecha >= temporada.fecha_inicio
+                        and (temporada.fecha_fin is None or r.fecha <= temporada.fecha_fin)
+                    ]
+                else:
+                    regs = todos_regs
+
                 serializer = self.get_serializer(regs, many=True)
-                total_horas = horas_por_trabajador.get(trabajador_id, 0.0)
+                total_horas = sum(float(r.horas_trabajadas) for r in regs)
+                horas_actuales = sum(
+                    float(r.horas_trabajadas) for r in regs
+                    if datetime.datetime.combine(r.fecha, r.hora_fin) <= ahora
+                )
 
                 user = usuarios_map.get(trabajador_id)
                 nombre_completo = f"{user.first_name} {user.last_name}".strip() if user else str(trabajador_id)
 
-                temporada = temporadas_map.get(trabajador_id)
-                temporada_data = {
-                    "id": temporada.id,
-                    "fecha_inicio": temporada.fecha_inicio,
-                    "fecha_fin": temporada.fecha_fin,
-                    "horas_semanales": temporada.horas_semanales,
-                    "horas_total_contratadas": temporada.horas_total_contratadas,
-                    "total_festivos_temporada": temporada.total_festivos_temporada,
-                    "precio_hora": temporada.precio_hora,
-                    "is_default": temporada.is_default,
-                    "semestre": semestre_obj.nombre,
-                } if temporada else None
+                temporada_data = None
+                if temporada:
+                    novedades_data = NovedadHorasSerializer(
+                        temporada.novedades.all(), many=True
+                    ).data
+                    temporada_data = {
+                        "id": temporada.id,
+                        "fecha_inicio": temporada.fecha_inicio,
+                        "fecha_fin": temporada.fecha_fin,
+                        "horas_semanales": temporada.horas_semanales,
+                        "horas_total_contratadas": temporada.horas_total_contratadas,
+                        "total_festivos_temporada": temporada.total_festivos_temporada,
+                        "precio_hora": temporada.precio_hora,
+                        "is_default": temporada.is_default,
+                        "semestre": semestre_obj.nombre,
+                        "novedades": novedades_data,
+                    }
 
                 subordinados_info.append({
                     "trabajador_id": trabajador_id,
                     "nombre": nombre_completo,
                     "temporada": temporada_data,
                     "registros": serializer.data,
-                    "horasActuales": horas_actuales_por_trabajador.get(trabajador_id, 0.0),
+                    "horasActuales": horas_actuales,
+                    "horasEsperadas": float(temporada.calcular_horas_esperadas()) if temporada else None,
+                    "totalHorasAjustadas": float(temporada.total_horas_ajustadas()) if temporada else None,
+                    "totalAdiciones": float(temporada.total_adiciones()) if temporada else None,
+                    "totalDisminuciones": float(temporada.total_disminuciones()) if temporada else None,
                 })
 
             return Response(subordinados_info, status=status.HTTP_200_OK)
@@ -620,10 +847,67 @@ class temporada_trabajo_viewset(viewsets.GenericViewSet):
             temporada.full_clean()
             temporada.save()
 
-            return Response(
-                TemporadaTrabajoSerializer(temporada).data,
-                status=status.HTTP_200_OK
-            )
+            # ── Crear novedad si llegan tipo y horas ──────────────────
+            tipo_novedad  = request.data.get("tipo", None)
+            horas_novedad = request.data.get("horas", None)
+            observacion   = request.data.get("observacion", "")
+
+            tiene_tipo  = tipo_novedad  not in (None, "")
+            tiene_horas = horas_novedad not in (None, "")
+
+            if tiene_tipo != tiene_horas:
+                return Response(
+                    {"error": "Se requieren tipo y horas juntos para registrar una novedad."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            if tiene_tipo and tiene_horas:
+                if tipo_novedad not in (NovedadHoras.ADICION, NovedadHoras.DISMINUCION):
+                    return Response(
+                        {"error": "El tipo de novedad debe ser ADICION o DISMINUCION."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                try:
+                    horas_novedad_decimal = Decimal(str(horas_novedad))
+                except Exception:
+                    return Response(
+                        {"error": "El valor de horas no es válido."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                if horas_novedad_decimal <= 0:
+                    return Response(
+                        {"error": "La cantidad de horas debe ser mayor a 0."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                if tipo_novedad == NovedadHoras.DISMINUCION:
+                    nuevo_total = temporada.total_horas_ajustadas() - horas_novedad_decimal
+                    if nuevo_total < 0:
+                        return Response(
+                            {
+                                "error": (
+                                    f"La disminución de {horas_novedad_decimal} h excede el total "
+                                    f"ajustado disponible ({temporada.total_horas_ajustadas()} h)."
+                                )
+                            },
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+                NovedadHoras.objects.create(
+                    temporada=temporada,
+                    tipo=tipo_novedad,
+                    horas=horas_novedad_decimal,
+                    observacion=observacion or None,
+                )
+
+            temporada.refresh_from_db()
+            temporada_data = TemporadaTrabajoSerializer(temporada).data
+
+            return Response({
+                **temporada_data,
+                "horasEsperadas": float(temporada.calcular_horas_esperadas()),
+                "totalHorasAjustadas": float(temporada.total_horas_ajustadas()),
+                "totalAdiciones": float(temporada.total_adiciones()),
+                "totalDisminuciones": float(temporada.total_disminuciones()),
+            }, status=status.HTTP_200_OK)
 
         except ValueError:
             return Response(
@@ -641,3 +925,138 @@ class temporada_trabajo_viewset(viewsets.GenericViewSet):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class novedad_horas_viewset(viewsets.GenericViewSet):
+    """Viewset para gestionar las novedades de horas de una temporada.
+
+    Endpoints:
+        DELETE /novedades_horas/<pk>/eliminar_novedad/ - Eliminar una novedad.
+    """
+
+    queryset = NovedadHoras.objects.all()
+    serializer_class = NovedadHorasSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=True, methods=['delete'], url_path='eliminar_novedad')
+    def eliminar_novedad(self, request, pk=None):
+        """Elimina una NovedadHoras y retorna la temporada recalculada.
+
+        Valida que eliminar una adición no deje el total ajustado en negativo.
+
+        Args:
+            pk (int): ID de la NovedadHoras a eliminar.
+
+        Returns:
+            Response: 200 con la temporada actualizada incluyendo métricas calculadas.
+                400 si la eliminación dejaría el total ajustado en negativo.
+                404 si la novedad no existe.
+        """
+        novedad = get_object_or_404(NovedadHoras, pk=pk)
+        temporada = novedad.temporada
+
+        if novedad.tipo == NovedadHoras.ADICION:
+            nuevo_total = temporada.total_horas_ajustadas() - novedad.horas
+            if nuevo_total < 0:
+                return Response(
+                    {
+                        "error": (
+                            f"No es posible eliminar esta adición: el total ajustado "
+                            f"quedaría en {nuevo_total} hrs."
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        novedad.delete()
+        temporada.refresh_from_db()
+        temporada_data = TemporadaTrabajoSerializer(temporada).data
+
+        return Response({
+            **temporada_data,
+            "horasEsperadas":      float(temporada.calcular_horas_esperadas()),
+            "totalHorasAjustadas": float(temporada.total_horas_ajustadas()),
+            "totalAdiciones":      float(temporada.total_adiciones()),
+            "totalDisminuciones":  float(temporada.total_disminuciones()),
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['patch'], url_path='actualizar_novedad')
+    def actualizar_novedad(self, request, pk=None):
+        """Actualiza los campos tipo, horas y observacion de una NovedadHoras.
+
+        Valida que el cambio no deje el total ajustado de la temporada en negativo.
+        La fecha_efectiva (auto_now_add) no es modificable.
+
+        Args:
+            pk (int): ID de la NovedadHoras a actualizar.
+
+        Returns:
+            Response: 200 con la temporada actualizada incluyendo métricas calculadas.
+                400 si los datos son inválidos o el cambio dejaría el total en negativo.
+                404 si la novedad no existe.
+        """
+        novedad = get_object_or_404(NovedadHoras, pk=pk)
+        temporada = novedad.temporada
+
+        new_tipo  = request.data.get('tipo',  novedad.tipo)
+        raw_horas = request.data.get('horas', novedad.horas)
+        new_obs   = request.data.get('observacion', novedad.observacion)
+
+        if new_tipo not in (NovedadHoras.ADICION, NovedadHoras.DISMINUCION):
+            return Response(
+                {"error": "El tipo de novedad debe ser ADICION o DISMINUCION."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            new_horas = Decimal(str(raw_horas))
+        except Exception:
+            return Response(
+                {"error": "El valor de horas no es válido."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_horas <= 0:
+            return Response(
+                {"error": "La cantidad de horas debe ser mayor a 0."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Calcular total hipotético quitando la contribución vieja y añadiendo la nueva
+        total_sin_novedad = temporada.total_horas_ajustadas()
+        if novedad.tipo == NovedadHoras.ADICION:
+            total_sin_novedad -= novedad.horas
+        else:
+            total_sin_novedad += novedad.horas
+
+        if new_tipo == NovedadHoras.ADICION:
+            nuevo_total = total_sin_novedad + new_horas
+        else:
+            nuevo_total = total_sin_novedad - new_horas
+
+        if nuevo_total < 0:
+            return Response(
+                {
+                    "error": (
+                        f"Este cambio dejaría el total ajustado en {nuevo_total} hrs, "
+                        f"lo cual no es válido."
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        novedad.tipo        = new_tipo
+        novedad.horas       = new_horas
+        novedad.observacion = new_obs or None
+        novedad.save()
+
+        temporada.refresh_from_db()
+        temporada_data = TemporadaTrabajoSerializer(temporada).data
+
+        return Response({
+            **temporada_data,
+            "horasEsperadas":      float(temporada.calcular_horas_esperadas()),
+            "totalHorasAjustadas": float(temporada.total_horas_ajustadas()),
+            "totalAdiciones":      float(temporada.total_adiciones()),
+            "totalDisminuciones":  float(temporada.total_disminuciones()),
+        }, status=status.HTTP_200_OK)

@@ -15,9 +15,10 @@ const actualizar_temporada_trabajo = async (idTemporada, data) => {
     fecha_fin: data.fecha_fin,
     horas_semanales: data.horas_semanales,
     total_festivos_temporada: data.total_festivos_temporada,
+    ...(data.tipo  ? { tipo:  data.tipo  } : {}),
+    ...(data.horas ? { horas: data.horas } : {}),
+    ...(data.observacion ? { observacion: data.observacion } : {}),
   };
-
-  console.log(payload);
 
   try {
 
@@ -28,6 +29,11 @@ const actualizar_temporada_trabajo = async (idTemporada, data) => {
     );
 
     if (response.status === 200) {
+      const novedades = response.data.novedades ?? [];
+      const ultimaNovedad = novedades[novedades.length - 1];
+      const novedadHtml = ultimaNovedad
+        ? `<p><strong>${ultimaNovedad.tipo === "ADICION" ? "Adición" : "Disminución"}:</strong> ${ultimaNovedad.horas} hrs registradas</p>`
+        : "";
 
       Swal.fire({
         title: "Temporada actualizada",
@@ -36,6 +42,7 @@ const actualizar_temporada_trabajo = async (idTemporada, data) => {
           <p><strong>Fin:</strong> ${response.data.fecha_fin.split("-").reverse().join("/")}</p>
           <p><strong>Horas semanales:</strong> ${response.data.horas_semanales} hrs</p>
           <p><strong>Horas totales contratadas:</strong> ${response.data.horas_total_contratadas} hrs</p>
+          ${novedadHtml}
         `,
         icon: "success",
         timer: 2500,

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import RegistroHoras, TemporadaTrabajo
+from .models import RegistroHoras, TemporadaTrabajo, NovedadHoras, ComentarioRegistro
 from modulo_usuario_rol.models import rol, usuario_rol
 from datetime import timedelta
 
@@ -21,11 +21,43 @@ class UsuarioRolSerializer(serializers.ModelSerializer):
 
 
 
+class ComentarioRegistroSerializer(serializers.ModelSerializer):
+    nombre_autor  = serializers.SerializerMethodField()
+    autor_id      = serializers.IntegerField(source='autor.id', read_only=True)
+    puede_eliminar = serializers.SerializerMethodField()
+
+    def get_nombre_autor(self, obj):
+        return f"{obj.autor.first_name} {obj.autor.last_name}".strip()
+
+    def get_puede_eliminar(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            return False
+        # Cache role in context to avoid one DB query per comment
+        if '_rol_actual' not in self.context:
+            ur = usuario_rol.objects.filter(
+                id_usuario=request.user, estado="ACTIVO"
+            ).order_by('-id').first()
+            self.context['_rol_actual'] = ur.id_rol.nombre.lower() if ur else None
+        rol = self.context['_rol_actual']
+        if rol == 'profesional':
+            return obj.rol_autor.lower() in ('profesional', 'practicante')
+        if rol == 'practicante':
+            return obj.autor.id == request.user.id
+        return False
+
+    class Meta:
+        model = ComentarioRegistro
+        fields = ['id', 'nombre_autor', 'autor_id', 'rol_autor', 'contenido', 'fecha_creacion', 'puede_eliminar']
+        read_only_fields = ['fecha_creacion']
+
+
 class RegistroHorasSerializer(serializers.ModelSerializer):
     rol = UsuarioRolSerializer(read_only=True)
     horas_trabajadas = serializers.DecimalField(
         max_digits=4, decimal_places=1, read_only=True
     )
+    comentarios = ComentarioRegistroSerializer(many=True, read_only=True)
 
     class Meta:
         model = RegistroHoras
@@ -104,14 +136,30 @@ class RegistroHorasSerializer(serializers.ModelSerializer):
         return value
         
         
+class NovedadHorasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NovedadHoras
+        fields = ['id', 'tipo', 'horas', 'observacion', 'fecha_efectiva']
+        read_only_fields = ['fecha_efectiva']
+
+    def validate_horas(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "La cantidad de horas debe ser mayor a 0."
+            )
+        return value
+
+
 class TemporadaTrabajoSerializer(serializers.ModelSerializer):
+    novedades = NovedadHorasSerializer(many=True, read_only=True)
+
     class Meta:
         model = TemporadaTrabajo
         fields = "__all__"
         read_only_fields = [
             "horas_total_contratadas",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
 
     def validate(self, data):
