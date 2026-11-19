@@ -37,8 +37,8 @@ const AcademicoCheck = () => {
 
     // Variables de estado
     const { user } = useAuthStore();
-    const [selectedDate, setSelectedDate] = useState();
-    const [selectedRangoDate, setSelectedRangoDate] = useState();
+    const [selectedDate, setSelectedDate] = useState(currentDate());
+    const [selectedRangoDate, setSelectedRangoDate] = useState(currentDate());
     const [estudent, setEstudent] = useState();
     const [records, setRecords] = useState([]);
     const [data, setData] = useState([]);
@@ -109,13 +109,32 @@ const AcademicoCheck = () => {
         }
     }
 
-    // Limpiar todos los filtros y restaurar tabla
-    const handleClearFilters = () => {
+    // Limpiar todos los filtros y traer la tabla completa sin filtros
+    const handleClearFilters = async () => {
         setEstudent("");
         setSelectedDate("");
         setSelectedRangoDate("");
-        setRecords(initialData);
-        setData(initialData);
+        setLoading(true);
+        try {
+            // Se envía fecha y fechaHasta en null para traer todos los datos sin filtro
+            const dataSinFiltro = {
+                rol: user.rol,
+                fecha: null,
+                fechaHasta: null,
+                estudiante: null,
+                id_user: user.id_usuario,
+                semestre: semestreActual
+            };
+            const res = await postData("lista_asistencia/", dataSinFiltro);
+            if (res) {
+                setData(res);
+                setRecords(res);
+            }
+        } catch (error) {
+            console.error("Error al obtener la tabla sin filtros:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Manejo de selección de filas
