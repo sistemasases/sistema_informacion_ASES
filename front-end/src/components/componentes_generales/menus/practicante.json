@@ -23,6 +23,24 @@
                 "path":"/reporte",
                 "name":"Reporte general",
                 "icon":"bi bi-file-ruled-fill"
+            },
+            {
+                "id":13,
+                "path":"/registro_horas",
+                "name":"Registro de horas trabajadas",
+                "icon":"bi bi-clock"
+            },
+            {
+                "id":14,
+                "path":"/hoja_monitor",
+                "name":"Resumen de horas trabajadas",
+                "icon":"bi bi-clipboard-data"
+            },
+            {
+                "id":15,
+                "path":"/horas_monitores",
+                "name":"Horas de mis monitores",
+                "icon":"bi bi-clock-fill"
             }
         ]
     }

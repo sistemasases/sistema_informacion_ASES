@@ -1,0 +1,159 @@
+.vh-container-fluid {
+    background-color: #f8fafc;
+    min-height: 100vh;
+    font-family: inherit;
+    padding-top: 90px !important;
+}
+
+.vh-title {
+    color: #153959;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.vh-title-2 {
+    color: #153959;
+    /* font-size: 1.5rem; */
+    font-weight: bold;
+}
+
+/* Tarjeta informativa ¿Cómo ingresar? */
+.vh-info-card {
+    background-color: #eff6ff !important;
+    border-radius: 12px;
+    border: 1px solid #bfdbfe !important;
+}
+
+.vh-info-icon {
+    color: #1b48aa !important;
+}
+
+.vh-step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    /* font-weight: bold; */
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.vh-steps-list li span {
+    font-size: 0.9rem;
+    color: #334155;
+}
+
+/* Tablero y columnas */
+.vh-main-card {
+    border-radius: 14px;
+    background-color: #ffffff;
+    border-color: #e2e8f0 !important;
+}
+
+.vh-kanban-row {
+    --bs-gutter-x: 20px;
+    --bs-gutter-y: 20px;
+}
+
+.vh-kanban-col {
+    height: 100%;
+    padding: 10px;
+    background-color: #eff6fc;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+}
+
+.vh-col-day {
+    border-radius: 12px;
+    padding: 8px;
+    background-clip: padding-box;
+    min-width: 0;
+}
+
+.vh-day-header {
+    padding: 12px 10px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #fff;
+    border: 1px solid #d5d9df;
+    border-radius: 8px;
+    color: #153959;
+    /*color: #475569;*/
+}
+
+.vh-day-column {
+    gap: 12px;
+}
+
+/* Tarjeta de cada horario individual */
+.vh-horario-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vh-horario-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.vh-hora-rango {
+    color: #153959;
+    font-size: 0.95rem;
+}
+
+.vh-materia-title {
+    color: #153959;
+    font-size: 0.9rem;
+    line-height: 1.25;
+}
+
+.vh-monitor-info {
+    font-size: 0.82rem;
+    color: #153959;
+}
+
+.vh-sede-info {
+    font-size: 0.82rem;
+    color: #153959;
+}
+
+.vh-btn-presencial {
+    background-color: #eb1e00 !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+.vh-btn-ingresar {
+    background-color: #0d6efd;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.vh-btn-ingresar:hover {
+    background-color: #0b5ed7;
+}
+
+.vh-empty-slot {
+    font-size: 0.85rem;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+    padding: 24px 10px !important;
+}
+
+.encabezado-ases {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    z-index: 1050;
+}

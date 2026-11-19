@@ -48,3 +48,8 @@ Dockerfile
 docker-compose.yml
 deploy.sh
 .github/workflows/docker-build.yml
+
+
+# claude 
+.claude/
+claude.md

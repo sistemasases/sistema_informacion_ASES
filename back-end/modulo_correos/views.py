@@ -66,6 +66,49 @@ environ.Env.read_env()
 
 # Create your views here.
 
+#Función auxiliar para envio de correos de activación de usuario
+def enviar_correo_activacion_usuario(user, rol_nombre, sede_nombre, password_plano):
+    """
+    Envía un correo al usuario notificando su rol, sede y credenciales.
+    """
+    try:
+        if not user.email:
+            return False
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        token_path = os.path.join(base_dir, 'token.json')
+        if not os.path.exists(token_path):
+            return False
+        credentials = Credentials.from_authorized_user_file(
+            token_path, scopes=['https://www.googleapis.com/auth/gmail.send']
+        )
+        if not credentials or not credentials.valid:
+            if credentials and credentials.expired and credentials.refresh_token:
+                credentials.refresh(Request())
+        service = build('gmail', 'v1', credentials=credentials)
+        # Renderizar la plantilla HTML
+        cuerpo_html = render_to_string(
+            'correos/activacion_usuario.html',
+            {
+                'nombre': f"{user.first_name} {user.last_name}".strip(),
+                'usuario': user.username,
+                'contrasena_generada': password_plano,  
+                'usuario_rol': rol_nombre,             
+                'sede': sede_nombre,
+                'correo_admin': 'sistemas.ases@correounivalle.edu.co'
+            }
+        )
+        message = MIMEMultipart()
+        message['to'] = user.email
+        message['subject'] = "Tu cuenta ha sido activada - Sistema ASES"
+        message.attach(MIMEText(cuerpo_html, 'html'))
+        raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        service.users().messages().send(userId="me", body={'raw': raw_message}).execute()
+        return True
+    except Exception as e:
+        print(f"Error al enviar correo de activación: {e}")
+        return False
+
+
 
 class enviar_correos_riesgos_viewset(ViewSet):
     # @action(methods=['post'], detail=False, url_name="enviar_correos_riesgos", url_path="enviar_correos_riesgos", )

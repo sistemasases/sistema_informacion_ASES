@@ -17,7 +17,11 @@ import { encriptar } from '../../modulos/utilidades_seguridad/utilidades_segurid
    * @description Cambia la vista según los links seleccionados
   */
 const cambiar_ruta = (e) => {
-  if (e){
+  if (e) {
+    if (e === "/horarios-monitorias") {
+      window.open(e, "_blank");
+      return;
+    }
     sessionStorage.setItem("path", encriptar(e));
     window.location.reload();
   } else {

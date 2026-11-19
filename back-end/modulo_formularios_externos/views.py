@@ -1,6 +1,6 @@
 from .models import *
 from .serializers import *
-from modulo_academico.models import monitoria_academica
+from modulo_academico.models import monitoria_academica, horario_monitoria
 from modulo_academico.serializers import monitoria_academica_serializer
 from modulo_instancia.models import sede
 from modulo_usuario_rol.models import cohorte_estudiante
@@ -438,3 +438,32 @@ class firma_temp_viewsets(viewsets.GenericViewSet):
 
         return Response({'firmas_eliminadas': cantidad_firmas,
                          'mensaje': "Firmas temporales eliminadas correctamente"}, status=status.HTTP_200_OK )
+
+class enviar_horarios_monitorias_viewsets(viewsets.GenericViewSet):
+    """
+    Viewset público para consultar los horarios de monitorías académicas activas.
+    """
+    def list(self, request):
+        try:
+            # Filtrar solo los horarios activos
+            horarios = horario_monitoria.objects.filter(estado=True).select_related('id_monitor', 'id_sede').all()
+            data = [
+                {
+                    "id": h.id,
+                    "id_monitor": h.id_monitor.id,
+                    "nombre_monitor": f"{h.id_monitor.first_name} {h.id_monitor.last_name}",
+                    "id_sede": h.id_sede.id,
+                    "nombre_sede": h.id_sede.nombre,
+                    "materia": h.materia,
+                    "dia_semana": h.dia_semana,
+                    "hora_inicio": h.hora_inicio.strftime("%H:%M"),
+                    "hora_fin": h.hora_fin.strftime("%H:%M"),
+                    "modalidad": h.modalidad,
+                    "enlace": h.enlace,
+                    "salon": h.salon,
+                }
+                for h in horarios
+            ]
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

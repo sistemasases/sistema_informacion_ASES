@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Tu cuenta ha sido activada - Sistema Ases</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; color: #333333; line-height: 1.6;">
+    <label style="color: #000000">Hola, </label>
+    <label style="color: #000000; font-weight: 700">{{ nombre }}</label>
+    <label style="color: #000000">:</label>
+    <br /><br />
+    <label style="color: #000000">
+        Te informamos que tu cuenta en el
+    </label>
+    <label style="color: #000000; font-weight: 700">Sistema ASES</label>
+    <label style="color: #000000">
+        ha sido activada exitosamente para la sede
+    </label>
+    <label style="color: #000000; font-weight: 700">{{ sede }}</label>
+    <label style="color: #000000">con el rol de</label>
+    <label style="color: #000000; font-weight: 700">{{ usuario_rol }}</label>
+    <label style="color: #000000">.</label>
+    <br /><br />
+
+    <label style="color: #000000">
+        A partir de este momento puedes ingresar a la plataforma y hacer uso
+        de las funcionalidades asignadas a tu perfil.
+    </label>
+    <br /><br />
+
+    <h3 style="color: #000000">Credenciales de Acceso:</h3>
+
+    <label style="color: #000000; font-weight: 700">
+        Usuario / Código:
+    </label>
+    <label style="color: #000000">{{ usuario }}</label>
+    <br />
+
+    <label style="color: #000000; font-weight: 700">
+        Contraseña:
+    </label>
+    <label style="color: #000000">{{ contrasena_generada }}</label>
+    <br /><br />
+
+    <label style="color: #000000; font-weight: 700">
+        ¿Cómo ingresar?
+    </label>
+    <br />
+
+    <label style="color: #000000">
+        Puedes acceder a la plataforma a través del siguiente enlace:
+    </label>
+    <br />
+
+    <a href="https://sistemaases.univalle.edu.co/" style="color: #0000EE">
+        https://sistemaases.univalle.edu.co/
+    </a>
+    <br /><br />
+
+    <h3 style="color: #000000">Recomendaciones de seguridad:</h3>
+
+    <ul style="color: #000000">
+        <li>
+            Trabajar el sistema <strong>siempre desde una ventana de incógnito</strong>.
+        </li>
+        <li>
+            <strong>Cambia tu clave</strong> al ingresar por primera vez.
+        </li>
+        <li>
+            Si tienes problemas para ingresar, comunícate al correo
+            <a href="mailto:sistemas.ases@correounivalle.edu.co" style="color: #0000EE">
+                sistemas.ases@correounivalle.edu.co
+            </a>.
+        </li>
+    </ul>
+
+    <br />
+
+    <label style="color: #000000">Atentamente,</label>
+    <br />
+    <label style="color: #000000; font-weight: 700">
+        Equipo de Soporte y Administración - Sistema ASES
+    </label>
+</body>
+
+</html>
