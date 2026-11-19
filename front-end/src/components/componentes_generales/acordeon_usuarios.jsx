@@ -68,11 +68,20 @@ const SelectorUsuarios = () => {
     }
   };
 
+  //Función modificada para sedes que no deberían estar en el selector
   const consultaAllSedes = async () => {
     try {
       const response = await Read_sedes.listar_sedes({});
       if (response && Array.isArray(response)) {
-        setSede((prevState) => ({ ...prevState, data_sedes: response }));
+        const sedesValidas = response.filter((s) => {
+          const nom = s.nombre?.toLowerCase() || "";
+          return (
+            !nom.includes("melendez") &&
+            !nom.includes("san fernando") &&
+            !nom.includes("matematicas")
+          );
+        });
+        setSede((prevState) => ({ ...prevState, data_sedes: sedesValidas }));
       }
     } catch (error) {
       console.error("Error al consultar sedes:", error);
