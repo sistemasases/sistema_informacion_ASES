@@ -5,6 +5,7 @@ import Create_Seguimiento from "../../service/create_seguimiento";
 import { CSVLink } from "react-csv";
 import "../../Scss/seguimiento_forms/form_seguimiento_individual_v2.css";
 import {
+  desencriptar,
   desencriptarInt,
   encriptar,
 } from "../../modulos/utilidades_seguridad/utilidades_seguridad";
@@ -21,6 +22,9 @@ const Seguimiento_individual_v3 = (props) => {
     );
     window.location.reload();
   };
+
+  const userRole = desencriptar(sessionStorage.getItem("rol"));
+  const esMonitor = userRole === "monitor";
 
   const [state, set_state] = useState({
     fecha: null,
@@ -119,6 +123,17 @@ const Seguimiento_individual_v3 = (props) => {
 
   const verificador_datos_basicos = () => {
     if (!!state.fecha) {
+      if (esMonitor) {
+        if (
+          (props.fecha_inicio_semestre && state.fecha < props.fecha_inicio_semestre) ||
+          (props.fecha_fin_semestre && state.fecha > props.fecha_fin_semestre)
+        ) {
+          window.confirm(
+            `La fecha del seguimiento debe estar dentro del rango del semestre actual (${props.fecha_inicio_semestre} a ${props.fecha_fin_semestre}).`
+          );
+          return false;
+        }
+      }
       if (!!state.lugar) {
         if (!!state.hora_inicio) {
           if (!!state.hora_finalización) {
@@ -650,21 +665,41 @@ const Seguimiento_individual_v3 = (props) => {
   // Manejo de los checkbox de riesgo
   const handleForm = (e) => {
     const { name, checked, type, value } = e.target;
-  
+
     const match = name.match(/^riesgo_(.+)_(bajo|medio|alto)$/);
-  
+
+    // Validación si se modifica la fecha
+    if (esMonitor && name === "fecha" && value) {
+      if (props.fecha_inicio_semestre && value < props.fecha_inicio_semestre) {
+        window.confirm(
+          `La fecha no puede ser anterior al inicio del semestre actual (${props.fecha_inicio_semestre}).`
+        );
+        e.target.value = "";
+        set_state((prev) => ({ ...prev, fecha: null }));
+        return;
+      }
+      if (props.fecha_fin_semestre && value > props.fecha_fin_semestre) {
+        window.confirm(
+          `La fecha no puede ser posterior al fin del semestre actual (${props.fecha_fin_semestre}).`
+        );
+        e.target.value = "";
+        set_state((prev) => ({ ...prev, fecha: null }));
+        return;
+      }
+    }
+
     if (match) {
       const tipo = match[1]; // individual, familiar, etc.
       const nivel = match[2]; // bajo, medio, alto
-  
+
       const niveles = { bajo: 0, medio: 1, alto: 2 };
-  
+
       // actualizar state (aquí guardas el número 0,1,2)
       set_state(prev => ({
         ...prev,
         [`riesgo_${tipo}`]: checked ? niveles[nivel] : null,
       }));
-  
+
       // actualizar form (checkboxes)
       set_form(prev => ({
         ...prev,
@@ -672,10 +707,10 @@ const Seguimiento_individual_v3 = (props) => {
         [`riesgo_${tipo}_medio`]: checked && nivel === "medio",
         [`riesgo_${tipo}_alto`]: checked && nivel === "alto",
       }));
-  
+
       return;
     }
-  
+
     // lógica de bloqueo
     const bloqueado =
       limitarSeleccionIndividual(e, state) ||
@@ -683,9 +718,9 @@ const Seguimiento_individual_v3 = (props) => {
       limitarSeleccionAcademico(e, state) ||
       limitarSeleccionEconomico(e, state) ||
       limitarSeleccionVida(e, state);
-  
+
     if (bloqueado) return;
-  
+
     // actualización normal
     set_state(prev => ({
       ...prev,
@@ -693,7 +728,7 @@ const Seguimiento_individual_v3 = (props) => {
     }));
   };
 
-  const userRole = sessionStorage.getItem("rol");
+  //const userRole = sessionStorage.getItem("rol");
 
   return (
     <Modal {...props} size="lg" backdrop="static">
@@ -715,8 +750,10 @@ const Seguimiento_individual_v3 = (props) => {
               <Form.Control
                 type="date"
                 name="fecha"
+                value={state.fecha || ""}
                 onChange={handleForm}
-                min="2025-08-15"
+                min={esMonitor ? props.fecha_inicio_semestre : undefined}
+                max={esMonitor ? props.fecha_fin_semestre : undefined}
               />
             </Row>
           </Col>

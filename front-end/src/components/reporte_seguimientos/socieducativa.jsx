@@ -12,6 +12,9 @@ import { Container, Row, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 import Desplegable_item from "./desplegable_Item copy";
+import { useEffect } from "react";
+import Semestre_por_sede from "../../service/semestres_por_sede.js";
+import { desencriptarInt } from "../../modulos/utilidades_seguridad/utilidades_seguridad.jsx";
 
 /**
  * Se encarga de renderizar los seguimientos de un estudiante
@@ -22,6 +25,30 @@ const Socieducativa = (props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
 
+  //obtener las fechas de inicio/fin semestre
+  const [fechaInicioSemestre, setFechaInicioSemestre] = useState("");
+  const [fechaFinSemestre, setFechaFinSemestre] = useState("");
+
+  useEffect(() => {
+    const sedeId = desencriptarInt(sessionStorage.getItem("sede_id"));
+    const idSemestreActual = desencriptarInt(sessionStorage.getItem("id_semestre_actual"));
+
+    Semestre_por_sede.semestre_por_sede(sedeId).then((res) => {
+      if (res && Array.isArray(res)) {
+        const semestreActual = res.find(
+          (s) => s.id === idSemestreActual || s.semestre_actual === true
+        );
+        if (semestreActual) {
+          setFechaInicioSemestre(
+            semestreActual.fecha_inicio ? semestreActual.fecha_inicio.toString().substring(0, 10) : ""
+          );
+          setFechaFinSemestre(
+            semestreActual.fecha_fin ? semestreActual.fecha_fin.toString().substring(0, 10) : ""
+          );
+        }
+      }
+    });
+  }, []);
   /**
    * Envia los datos del Usuario socieducativo y lo actualiza
    * @param {Arreglo} e: Contiene datos del usuario socioeducativo
@@ -52,6 +79,8 @@ const Socieducativa = (props) => {
                   key={index}
                   item={item}
                   updateDataUserSocioedu={enviar_datos}
+                  fecha_inicio_semestre={fechaInicioSemestre}
+                  fecha_fin_semestre={fechaFinSemestre}
                 />
               </Row>
             )}

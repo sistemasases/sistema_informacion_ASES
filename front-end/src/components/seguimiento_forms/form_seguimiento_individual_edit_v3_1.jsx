@@ -36,6 +36,9 @@ const Seguimiento_individual_edit_v3_1 = (props) => {
   const handleShowMail = () => setShowModalMail(true);
   const handleCloseMail = () => setShowModalMail(false);
 
+  const userRole = desencriptar(sessionStorage.getItem("rol"));
+  const esMonitor = userRole === "monitor";
+
   /**
    * Función para recargar la página.
    */
@@ -165,6 +168,18 @@ const Seguimiento_individual_edit_v3_1 = (props) => {
 
   const verificador_datos_basicos = () => {
     if (!!form.fecha) {
+      // Solo restringe si el usuario es monitor
+      if (esMonitor) {
+        if (
+          (props.fecha_inicio_semestre && form.fecha < props.fecha_inicio_semestre) ||
+          (props.fecha_fin_semestre && form.fecha > props.fecha_fin_semestre)
+        ) {
+          window.confirm(
+            `La fecha del seguimiento debe estar dentro del rango del semestre actual (${props.fecha_inicio_semestre} a ${props.fecha_fin_semestre}).`
+          );
+          return false;
+        }
+      }
       if (!!form.lugar) {
         if (!!form.hora_inicio) {
           if (!!form.hora_finalización) {
@@ -604,6 +619,25 @@ const Seguimiento_individual_edit_v3_1 = (props) => {
 
     const match = name.match(/^riesgo_(.+)_(bajo|medio|alto)$/);
 
+    if (esMonitor && name === "fecha" && value) {
+      if (props.fecha_inicio_semestre && value < props.fecha_inicio_semestre) {
+        window.confirm(
+          `La fecha no puede ser anterior al inicio del semestre actual (${props.fecha_inicio_semestre}).`
+        );
+        e.target.value = props.item.fecha || "";
+        set_form((prev) => ({ ...prev, fecha: props.item.fecha }));
+        return;
+      }
+      if (props.fecha_fin_semestre && value > props.fecha_fin_semestre) {
+        window.confirm(
+          `La fecha no puede ser posterior al fin del semestre actual (${props.fecha_fin_semestre}).`
+        );
+        e.target.value = props.item.fecha || "";
+        set_form((prev) => ({ ...prev, fecha: props.item.fecha }));
+        return;
+      }
+    }
+
     if (match) {
       const tipo = match[1]; // individual, familiar, etc.
       const nivel = match[2]; // bajo, medio, alto
@@ -644,7 +678,7 @@ const Seguimiento_individual_edit_v3_1 = (props) => {
     }));
   };
 
-  const userRole = desencriptar(sessionStorage.getItem("rol"));
+  //const userRole = desencriptar(sessionStorage.getItem("rol"));
 
   const [state, setState] = useState({
     riesgo_individual_bajo: false,
@@ -743,7 +777,8 @@ const Seguimiento_individual_edit_v3_1 = (props) => {
                 defaultValue={props.item.fecha}
                 name="fecha"
                 onChange={handleForm}
-                min="2026-06-01"
+                min={esMonitor ? props.fecha_inicio_semestre : undefined}
+                max={esMonitor ? props.fecha_fin_semestre : undefined}
               />
             </Row>
           </Col>
@@ -2577,8 +2612,8 @@ const Seguimiento_individual_edit_v3_1 = (props) => {
           <Button variant="link">Descargar CSV</Button>
         </CSVLink>
         {userRole === "super_ases" ||
-        userRole === "profesional" ||
-        userRole === "practicante" ? (
+          userRole === "profesional" ||
+          userRole === "practicante" ? (
           <>
             <Button variant="secondary" onClick={handleShowMail}>
               Envíar observaciones
