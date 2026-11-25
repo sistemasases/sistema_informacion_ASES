@@ -116,7 +116,7 @@ const Desplegable_item_academico = ({item}) => {
             {return(
                 <>{ userRole === 'vcd_academico' || userRole === 'DIR_PROGRAMA' || userRole === 'DIRECTOR_ACADEMICO' ? <></> :
                 <Row>
-                    Cargando...
+                    Sin datos académicos para este periodo.
                 </Row>
                 }</>
                 )
