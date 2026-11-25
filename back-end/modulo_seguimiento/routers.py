@@ -1,3 +1,4 @@
+from modulo_seguimiento.views import ExportarConsolidadoSeguimientosCSV
 from rest_framework.routers import DefaultRouter
 from modulo_seguimiento.views import *
 from django.urls import path
@@ -16,4 +17,5 @@ seguimientos_estudiante_viewsets
 urlpatterns = router.urls + [
     path('exportar/seguimientos/', ExportarSeguimientosCSV.as_view(), name='exportar_seguimientos_csv'),
     path('exportar/inasistencias/', ExportarInasistenciasCSV.as_view(), name='exportar_inasistencias_csv'),
+    path('exportar/consolidado/', ExportarConsolidadoSeguimientosCSV.as_view(), name='exportar_consolidado_seguimiento_csv'),
 ]

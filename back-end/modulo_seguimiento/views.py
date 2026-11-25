@@ -16,7 +16,24 @@ from modulo_formularios_externos.models import asistencia
 from modulo_academico.models import monitoria_academica
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.db.models import Q
+from django.db.models import (
+    Case,
+    CharField,
+    Count,
+    F,
+    IntegerField,
+    OuterRef,
+    Q,
+    Subquery,
+    Sum,
+    TextField,
+    Value,
+    When,
+)
+from django.db.models.functions import Coalesce, Concat
+from django.contrib.postgres.aggregates import StringAgg
+from modulo_seguimiento.utils.csv_utils import escape_quotes
+
 from operator import and_
 from functools import reduce
 from rest_framework.views import APIView
@@ -487,4 +504,271 @@ class ExportarInasistenciasCSV(ExportarCSVBaseView):
 
     def post(self, request):
         self.filtros = build_filtros(request.data)
-        return super().post(request)
+        return super().post(request) 
+
+#helpers para sumar valores booleanos (True = 1, False = 0)
+def _sum_bool(campo):
+    return Coalesce(
+        Sum(
+            Case(
+                When(**{campo: True}, then=1),
+                default=0,
+                output_field=IntegerField(),
+            )
+        ),
+        0,
+    )
+
+
+def _sum_riesgo(campo, nivel):
+    return Coalesce(
+        Sum(
+            Case(
+                When(**{campo: nivel}, then=1),
+                default=0,
+                output_field=IntegerField(),
+            )
+        ),
+        0,
+    )
+
+
+class ExportarConsolidadoSeguimientosCSV(APIView):
+    permission_classes = (IsAuthenticated,)
+    filename = "consolidado_seguimientos.csv"
+    minimo_acompanamientos = 2 #Regla definida por la consulta SQL
+
+    def _resolver_id_sede(self, valor_sede):
+        if not valor_sede:
+            return None
+        try:
+            return int(valor_sede)
+        except (ValueError, TypeError):
+            sede_obj = sede.objects.filter(nombre=valor_sede).first()
+            return sede_obj.id if sede_obj else -1
+
+    def post(self, request):
+        data = request.data or {}
+
+        estudiante_filtro = (data.get("estudiante") or "").strip() or None
+        fecha_desde = data.get("fecha_inicio") or None
+        fecha_hasta = data.get("fecha_fin") or None
+        programa_filtro = (data.get("programa") or "").strip() or None
+        id_sede_filtro = self._resolver_id_sede(data.get("sede"))
+        cohorte_filtro = (data.get("cohorte") or "").strip() or None
+        minimo_acompanamientos = max(1, int(self.minimo_acompanamientos))
+
+        # Subqueries para el programa activo más reciente (traker=True) por estudiante
+        prog_activo_base = programa_estudiante.objects.filter(
+            id_estudiante=OuterRef("id_estudiante"),
+            traker=True,
+        ).order_by("-id")
+
+        subq_cod_programa = Subquery(prog_activo_base.values("id_programa__codigo_univalle")[:1])
+        subq_nom_programa = Subquery(prog_activo_base.values("id_programa__nombre")[:1])
+        subq_facultad = Subquery(prog_activo_base.values("id_programa__id_facultad__nombre")[:1])
+        subq_id_sede = Subquery(prog_activo_base.values("id_programa__id_sede_id")[:1])
+        subq_sede_nombre = Subquery(prog_activo_base.values("id_programa__id_sede__nombre")[:1])
+
+        # Subquery para semestre según sede del programa activo y fecha del seguimiento
+        subq_semestre = Subquery(
+            semestre.objects.filter(
+                id_sede_id=OuterRef("id_sede_calc"),
+                fecha_inicio__date__lte=OuterRef("fecha"),
+                fecha_fin__date__gte=OuterRef("fecha"),
+            )
+            .order_by("-fecha_inicio")
+            .values("nombre")[:1]
+        )
+
+        # Subquery para cohortes concatenadas por estudiante (no filtrada para no ocultar otras cohortes)
+        subq_cohortes = Subquery(
+            cohorte_estudiante.objects.filter(
+                id_estudiante=OuterRef("id_estudiante")
+            )
+            .values("id_estudiante")
+            .annotate(
+                cohortes_str=StringAgg(
+                    "id_cohorte__id_number",
+                    delimiter=", ",
+                    distinct=True,
+                    ordering="id_cohorte__id_number",
+                )
+            )
+            .values("cohortes_str")[:1]
+        )
+
+        qs = seguimiento_individual.objects.select_related(
+            "id_estudiante",
+            "id_estudiante__id_cond_excepcion",
+        ).annotate(
+            codigo_programa=subq_cod_programa,
+            programa_academico=Coalesce(subq_nom_programa, Value("SIN PROGRAMA ACTIVO")),
+            facultad=Coalesce(subq_facultad, Value("SIN FACULTAD")),
+            id_sede_calc=subq_id_sede,
+            sede_nombre=Coalesce(subq_sede_nombre, Value("SIN SEDE")),
+            semestre_nombre=Coalesce(subq_semestre, Value("SIN SEMESTRE")),
+            cohorte_ases=Coalesce(subq_cohortes, Value("SIN COHORTE", output_field=TextField()), output_field=TextField(),),
+            nombre_completo=Concat(
+                "id_estudiante__nombre", Value(" "), "id_estudiante__apellido",
+                output_field=CharField(),
+            ),
+        )
+
+        # Filtros dinámicos únicamente sobre campos diligenciados
+        if estudiante_filtro:
+            qs = qs.filter(
+                Q(id_estudiante__cod_univalle__icontains=estudiante_filtro)
+                | Q(id_estudiante__num_doc__icontains=estudiante_filtro)
+                | Q(nombre_completo__icontains=estudiante_filtro)
+            )
+
+        if fecha_desde:
+            qs = qs.filter(fecha__gte=fecha_desde)
+
+        if fecha_hasta:
+            qs = qs.filter(fecha__lte=fecha_hasta)
+
+        if programa_filtro:
+            qs = qs.filter(
+                Q(codigo_programa__icontains=programa_filtro)
+                | Q(programa_academico__icontains=programa_filtro)
+            )
+
+        if id_sede_filtro is not None:
+            qs = qs.filter(id_sede_calc=id_sede_filtro)
+
+        if cohorte_filtro:
+            estudiantes_con_cohorte = cohorte_estudiante.objects.filter(
+                id_cohorte__id_number__icontains=cohorte_filtro
+            ).values("id_estudiante_id")
+            qs = qs.filter(id_estudiante_id__in=estudiantes_con_cohorte)
+
+        # Agrupación: 1 fila por estudiante y por semestre
+        consolidado_qs = (
+            qs.values(
+                "id_estudiante_id",
+                "id_estudiante__cod_univalle",
+                "id_estudiante__num_doc",
+                "id_estudiante__nombre",
+                "id_estudiante__apellido",
+                "cohorte_ases",
+                "facultad",
+                "codigo_programa",
+                "programa_academico",
+                "sede_nombre",
+                "semestre_nombre",
+                "id_estudiante__id_cond_excepcion_id",
+            )
+            .annotate(
+                total_acompanamientos=Count("id"),
+                # Riesgos por dimensión (2 = Alto, 1 = Medio, 0 = Bajo)
+                riesgo_individual_alto=_sum_riesgo("riesgo_individual", 2),
+                riesgo_individual_medio=_sum_riesgo("riesgo_individual", 1),
+                riesgo_individual_bajo=_sum_riesgo("riesgo_individual", 0),
+                riesgo_familiar_alto=_sum_riesgo("riesgo_familiar", 2),
+                riesgo_familiar_medio=_sum_riesgo("riesgo_familiar", 1),
+                riesgo_familiar_bajo=_sum_riesgo("riesgo_familiar", 0),
+                riesgo_academico_alto=_sum_riesgo("riesgo_academico", 2),
+                riesgo_academico_medio=_sum_riesgo("riesgo_academico", 1),
+                riesgo_academico_bajo=_sum_riesgo("riesgo_academico", 0),
+                riesgo_economico_alto=_sum_riesgo("riesgo_economico", 2),
+                riesgo_economico_medio=_sum_riesgo("riesgo_economico", 1),
+                riesgo_economico_bajo=_sum_riesgo("riesgo_economico", 0),
+                riesgo_vida_univ_alto=_sum_riesgo("riesgo_vida_universitaria_ciudad", 2),
+                riesgo_vida_univ_medio=_sum_riesgo("riesgo_vida_universitaria_ciudad", 1),
+                riesgo_vida_univ_bajo=_sum_riesgo("riesgo_vida_universitaria_ciudad", 0),
+                # Temáticas
+                tem_autoconocimiento=_sum_bool("autoconocimiento"),
+                tem_autonomia=_sum_bool("autonomia"),
+                tem_proyecto_de_vida=_sum_bool("proyecto_de_vida"),
+                tem_historia_de_vida=_sum_bool("historia_de_vida"),
+                tem_salud=_sum_bool("salud"),
+                tem_relacion_erotico_afectivas=_sum_bool("relación_eriótico_afectivas"),
+                tem_documentos_identificacion=_sum_bool("identificación"),
+                tem_aspectos_motivacionales=_sum_bool("aspectos_motivacionales"),
+                tem_diversidad_sexual=_sum_bool("diversidad_sexual"),
+                tem_red_de_apoyo=_sum_bool("red_de_apoyo"),
+                tem_rasgos_personalidad=_sum_bool("rasgos_de_personalidad"),
+                tem_relaciones_familiares=_sum_bool("relaciones_familiares"),
+                tem_red_de_apoyo_familiar=_sum_bool("red_de_apoyo_familiar"),
+                tem_rol_estudiante_familia=_sum_bool("rol_del_estudiante_en_la_familia"),
+                tem_dinamica_familiar=_sum_bool("dinamica_familiar"),
+                tem_desempeno_academico=_sum_bool("desempeño_académico"),
+                tem_eleccion_vocacional=_sum_bool("elección_vocacional"),
+                tem_autogestion_academica=_sum_bool("autogestion_academica"),
+                tem_manejo_del_tiempo=_sum_bool("manejo_del_tiempo"),
+                tem_apoyos_econ_institucionales=_sum_bool("apoyos_económicos_institucionales"),
+                tem_manejo_finanzas=_sum_bool("manejo_finanzas"),
+                tem_apoyo_econ_familiar=_sum_bool("apoyo_económico_familiar"),
+                tem_situacion_laboral_ocupacional=_sum_bool("situación_laboral_ocupacional"),
+                tem_motivacion_acompanamiento=_sum_bool("motivación_compañamiento"),
+                tem_referencia_geografica=_sum_bool("referencia_geográfica"),
+                tem_adaptacion_territorio_univ=_sum_bool("adaptación_ciudad_Universidad"),
+                tem_movilidad_transporte=_sum_bool("movilidad_y_transporte"),
+                tem_integracion_cultura_univ=_sum_bool("integracion_a_la_cultura_universitaria"),
+                tem_vinculacion_grupos_extracurr=_sum_bool("vinculación_grupos_actividades_extracurriculares"),
+                tem_uso_servicios_univ=_sum_bool("uso_de_los_servicios_universitarios"),
+                tem_vivienda=_sum_bool("vivienda"),
+                tem_oferta_servicios=_sum_bool("oferta_servicios"),
+                # Acciones del monitor
+                acc_apoyo_academico=_sum_bool("apoyo_académico"),
+                acc_taller_par_par=_sum_bool("taller_par_par"),
+                acc_reconocimiento_ciudad_u=_sum_bool("reconocimiento_ciudad_U"),
+                acc_rem_profesional_se=_sum_bool("rem_profesional_SE"),
+                acc_rem_practicante_se=_sum_bool("rem_racticante_SE"),
+                acc_rem_oitel=_sum_bool("rem_OITEL"),
+                acc_rem_actividades_grupales=_sum_bool("rem_actividades_grupales"),
+                acc_rem_monitorias_academicas=_sum_bool("rem_monitorías_académicas"),
+                acc_rem_proyectos_universidad=_sum_bool("rem_proyectos_Universidad"),
+                acc_rem_servicio_salud=_sum_bool("rem_servicio_salud"),
+                acc_rem_registro_academico=_sum_bool("rem_registro_académico"),
+                acc_rem_rep_estudiantiles=_sum_bool("rem_rep_estudiantiles"),
+                acc_rem_matricula_financiera=_sum_bool("rem_matrícula_financiera"),
+                acc_rem_desarrollo_humano_se=_sum_bool("rem_desarrollo_humano_promoción_SE"),
+                acc_rem_directores_programa=_sum_bool("rem_directores_programa"),
+                acc_rem_grupos_universidad=_sum_bool("rem_grupos_universidad"),
+                acc_rem_externa=_sum_bool("rem_externa"),
+                acc_escucha_activa=_sum_bool("escucha_activa"),
+                acc_ninguna_accion=_sum_bool("Ninguna_acción_realizada"),
+            )
+            .filter(total_acompanamientos__gte=minimo_acompanamientos)
+            .order_by("sede_nombre", "id_estudiante__cod_univalle", "semestre_nombre")
+        )
+
+        rows = list(consolidado_qs)
+        if not rows:
+            return Response({"message": "No hay datos para exportar", "datos": []}, status=200)
+
+        #nombres de columna para el CSV
+        mapeo_columnas = {
+            "id_estudiante_id": "id_estudiante",
+            "id_estudiante__cod_univalle": "codigo_estudiante",
+            "id_estudiante__num_doc": "documento",
+            "id_estudiante__nombre": "nombre",
+            "id_estudiante__apellido": "apellido",
+            "sede_nombre": "sede",
+            "semestre_nombre": "semestre",
+            "id_estudiante__id_cond_excepcion_id": "condicion_excepcion_id",
+        }
+
+        formatted_rows = []
+        for r in rows:
+            nueva_fila = {}
+            for k, v in r.items():
+                col_name = mapeo_columnas.get(k, k)
+                nueva_fila[col_name] = escape_quotes(v) if isinstance(v, str) else v
+            formatted_rows.append(nueva_fila)
+
+        fieldnames = list(formatted_rows[0].keys())
+
+        response = HttpResponse(content_type="text/csv; charset=utf-8")
+        response["Content-Disposition"] = f'attachment; filename="{self.filename}"'
+        response.write("\uFEFF")
+
+        writer = csv.DictWriter(response, fieldnames=fieldnames, quoting=csv.QUOTE_MINIMAL)
+        writer.writeheader()
+        for row in formatted_rows:
+            writer.writerow(row)
+
+        return response
