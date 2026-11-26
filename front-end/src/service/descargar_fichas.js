@@ -40,8 +40,30 @@ const descargar_fichas = async (form) => {
   }
 };
 
+const descargar_consolidado = async (form) => {
+  const config = {
+    headers: {
+      Authorization: "Bearer " + decryptTokenFromSessionStorage(),
+    },
+  };
+
+  try {
+    // Ajusta la ruta si en tu urls.py de seguimiento usas otro path
+    const url_consolidado = `${process.env.REACT_APP_API_URL}/seguimiento/exportar/consolidado/`;
+    const consolidadoRes = await axios.post(url_consolidado, form, config);
+
+    return {
+      data: consolidadoRes.data,
+    };
+  } catch (err) {
+    console.error("Error al descargar consolidado:", err);
+    return false;
+  }
+};
+
 const descargarFichasService = {
   descargar_fichas,
+  descargar_consolidado,
 };
 
 export default descargarFichasService;

@@ -12,21 +12,23 @@ import Descargar_fichas from "../../service/descargar_fichas";
 import All_cohorte_service from "../../service/all_cohorte";
 import All_sede_service from "../../service/all_sede";
 import Form from "react-bootstrap/Form";
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
 const Descarga_fichas_component = () => {
   // Estados para opciones de select
   const [opciones_sede, setOpcionesSede] = useState([]);
   const [opciones_cohorte, setOpcionesCohorte] = useState([]);
-  
+
   // Se inicializan como arreglos vacíos (sin datos por defecto)
   const [seguimientosData, set_seguimientosData] = useState([]);
   const [inasistenciasData, set_inasistenciasData] = useState([]);
+  const [consolidadoData, set_consolidadoData] = useState([]);
 
   // Banderas para controlar si hay contenido descargable
   const [tieneSeguimientos, setTieneSeguimientos] = useState(false);
   const [tieneInasistencias, setTieneInasistencias] = useState(false);
+  const [tieneConsolidado, setTieneConsolidado] = useState(false)
 
   // constante con mensaje para el modal
   const [respuesta, set_respuesta] = useState("Cargando, espera un momento.");
@@ -44,7 +46,22 @@ const Descarga_fichas_component = () => {
     sede: "",
     cohorte: "",
   });
-  
+
+  // Valida que al menos uno de los 6 filtros principales tenga valor
+  const hayFiltro = () => {
+    const filtrosPrincipales = [
+      form.estudiante,
+      form.fecha_inicio,
+      form.fecha_fin,
+      form.programa,
+      form.sede,
+      form.cohorte,
+    ];
+    return filtrosPrincipales.some(
+      (valor) => valor !== "" && valor !== null && valor !== undefined
+    );
+  };
+
   /**
    * Función para cambiar los valores de los filtros.
    * @param {Event} e Información del evento del filtro que está cambiando.
@@ -75,12 +92,12 @@ const Descarga_fichas_component = () => {
       cohorte: e.value,
     });
   };
-  
+
   /**
    * Función para abrir el modal, cambiando el show a true.
    */
   const handle_open = () => setShow(true);
-  
+
   /**
    * Función para cerrar el modal, cambiando el show a false.
    */
@@ -90,20 +107,17 @@ const Descarga_fichas_component = () => {
     setDescargaHabilitada(true);
     setTieneSeguimientos(false);
     setTieneInasistencias(false);
+    setTieneConsolidado(false);
     set_seguimientosData([]);
     set_inasistenciasData([]);
+    set_consolidadoData([]);
   };
-  
+
   /**
    * Función asincronica que hace la consulta en la API para traer las fichas.
    */
   const handle_upload = async () => {
-    // Validar que al menos un filtro tenga valor en el form
-    const alMenosUnFiltroActivo = Object.values(form).some(
-      (valor) => valor !== "" && valor !== null && valor !== undefined
-    );
-
-    if (!alMenosUnFiltroActivo) {
+    if (!hayFiltro()) {
       set_respuesta("Por favor, ingrese al menos un filtro antes de continuar.");
       setShow(true);
       return;
@@ -114,16 +128,21 @@ const Descarga_fichas_component = () => {
     handle_open();
 
     try {
-      const res = await Descargar_fichas.descargar_fichas(form);
+      // Ejecuta la descarga normal y la del consolidado al dar "Filtrar"
+      const [res, resConsolidado] = await Promise.all([
+        Descargar_fichas.descargar_fichas(form),
+        Descargar_fichas.descargar_consolidado(form),
+      ]);
 
-      // Si hubo un error en la respuesta, lanzar error
+      // Si hubo un error en la respuesta principal, lanzar error
       if (!res || !res.data) {
         throw new Error("No se obtuvieron datos de la API");
       }
 
-      // Validar si los CSV tienen contenido real (no están vacíos)
       const tieneContenidoValido = (csv) =>
-        typeof csv === "string" && csv.trim() !== "";
+        typeof csv === "string" &&
+        csv.trim() !== "" &&
+        !csv.trim().startsWith("{");
 
       // Procesar seguimientos
       if (tieneContenidoValido(res.data.seguimientos)) {
@@ -137,6 +156,7 @@ const Descarga_fichas_component = () => {
         set_seguimientosData([]);
         setTieneSeguimientos(false);
       }
+
       // Procesar inasistencias
       if (tieneContenidoValido(res.data.inasistencias)) {
         const inasistenciasBlob = new Blob(["\uFEFF" + res.data.inasistencias], {
@@ -148,19 +168,38 @@ const Descarga_fichas_component = () => {
       } else {
         set_inasistenciasData([]);
         setTieneInasistencias(false);
-      }      
+      }
+
+      //Procesar consolidado
+      if (
+        resConsolidado &&
+        typeof resConsolidado.data === "string" &&
+        resConsolidado.data.trim() !== "" &&
+        !resConsolidado.data.trim().startsWith("{")
+      ) {
+        const consolidadoBlob = new Blob(["\uFEFF" + resConsolidado.data], {
+          type: "text/csv;charset=utf-8",
+        });
+        const consolidadoUrl = URL.createObjectURL(consolidadoBlob);
+        set_consolidadoData([consolidadoUrl]);
+        setTieneConsolidado(true);
+      } else {
+        set_consolidadoData([]);
+        setTieneConsolidado(false);
+      }
 
       set_respuesta("Búsqueda finalizada.");
       setDescargaHabilitada(false);
+
+      console.log("resConsolidado:", resConsolidado?.data);
+
     } catch (err) {
-      // Registrar errores y mostrar un mensaje de error
-      //console.log("response.seguimientos:", response?.seguimientos);
-      //console.log("response.inasistencias:", response?.inasistencias);
       console.error("Error en handle_upload:", err);
       set_respuesta("Error al momento de buscar las fichas.");
       setDescargaHabilitada(true);
       setTieneSeguimientos(false);
       setTieneInasistencias(false);
+      setTieneConsolidado(false);
     }
   };
 
@@ -191,7 +230,7 @@ const Descarga_fichas_component = () => {
   useEffect(() => {
     cargar_selects();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);  
+  }, []);
 
   // Efecto para disparar la descarga cuando los datos estén listos
   useEffect(() => {
@@ -199,7 +238,7 @@ const Descarga_fichas_component = () => {
       // Ya se prepararon los archivos, mostramos el modal
       setShow(true);
     }
-  }, [descargaHabilitada]);  
+  }, [descargaHabilitada]);
 
   return (
     <Container className="mi-clase-background">
@@ -306,14 +345,24 @@ const Descarga_fichas_component = () => {
               Descargar Seguimientos
             </a>
           )}
+          {descargaHabilitada === false && tieneConsolidado && (
+            <a
+              href={consolidadoData[0]}
+              download="consolidado_seguimientos.csv"
+              className="btn btn-primary m-2"
+            >
+              Descargar conteos consolidados
+            </a>
+          )}
           {/* Mensaje si no hay nada para descargar */}
           {descargaHabilitada === false &&
             !tieneInasistencias &&
-            !tieneSeguimientos && (
+            !tieneSeguimientos &&
+            !tieneConsolidado && (
               <div className="text-muted w-100 text-center">
                 No se encontraron datos para descargar.
               </div>
-          )}
+            )}
           <Button variant="secondary" onClick={handle_close}>
             Salir
           </Button>
